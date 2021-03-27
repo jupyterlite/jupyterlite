@@ -89,8 +89,4 @@ window.addEventListener('load', async () => {
   console.log('JupyterLite started, waiting for restore');
   await lab.restored;
   console.log('JupyterLite restored');
-
-  lab.commands.execute('apputils:change-theme', {
-    theme: 'JupyterLab Light'
-  });
 });

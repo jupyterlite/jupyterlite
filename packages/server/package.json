@@ -51,9 +51,8 @@
     "@jupyterlab/theme-light-extension": "^3.0.7",
     "@lumino/application": "^1.16.0",
     "@lumino/coreutils": "^1.5.3",
-    "mock-socket": "^9.0.3",
-    "raw-loader": "^4.0.2",
-    "strip-json-comments": "^3.1.1"
+    "json5": "^2.2.0",
+    "mock-socket": "^9.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

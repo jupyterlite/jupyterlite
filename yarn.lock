@@ -2289,7 +2289,7 @@
     simulate-event "~1.4.0"
     ts-jest "^26.3.0"
 
-"@jupyterlab/theme-dark-extension@^3.0.0", "@jupyterlab/theme-dark-extension@^3.0.5":
+"@jupyterlab/theme-dark-extension@^3.0.0":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@jupyterlab/theme-dark-extension/-/theme-dark-extension-3.0.7.tgz#e074858213187d9b757af6208d56de6a74e3a5d6"
   integrity sha512-WiBeEVMSPx+x+AqJFVfmsft8lmklGYxMVFexn0bqwAdAeCwvwK85fFntbaoKVr122pFPHF4eccU91DRL+3dfeA==
@@ -2298,7 +2298,7 @@
     "@jupyterlab/apputils" "^3.0.5"
     "@jupyterlab/translation" "^3.0.5"
 
-"@jupyterlab/theme-light-extension@^3.0.0", "@jupyterlab/theme-light-extension@^3.0.5", "@jupyterlab/theme-light-extension@^3.0.7":
+"@jupyterlab/theme-light-extension@^3.0.0", "@jupyterlab/theme-light-extension@^3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@jupyterlab/theme-light-extension/-/theme-light-extension-3.0.7.tgz#1cf9ec4bca5c3a98fff78bf7dfd1957e5b421363"
   integrity sha512-KgUfKXvMDvWHhfq0oRxx003cmpVdcWaOA7C9AOlztZlbO8VQYq59JKUz3RRshoGQDuFp1xZ2BbLePtCJieNrfw==
@@ -7886,7 +7886,7 @@ json-to-html@~0.1.2:
   resolved "https://registry.yarnpkg.com/json-to-html/-/json-to-html-0.1.2.tgz#7a095ae4a34b33534aad0970ca4b7417b2c11ee3"
   integrity sha1-egla5KNLM1NKrQlwykt0F7LBHuM=
 
-json5@2.x, json5@^2.1.1, json5@^2.1.2:
+json5@2.x, json5@^2.1.1, json5@^2.1.2, json5@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.0.tgz#2dfefe720c6ba525d9ebd909950f0515316c89a3"
   integrity sha512-f+8cldu7X/y7RAJurMEJmdoKXGB/X550w2Nr3tTbezL6RwEE/iMcm+tZnXeoZtKuOq6ft8+CqzEkrIgx1fPoQA==
