@@ -16,12 +16,11 @@ jobs:
       uses: actions/setup-node@v2
       with:
        node-version: '14.x'
-    - name: Lint
+    - name: Build
       run: |
         yarn
+        yarn run build
+    - name: Lint
+      run: |
         yarn run eslint:check
         yarn run prettier:check
-    - name: Test
-      run: |
-        yarn run build:test
-        yarn run test
