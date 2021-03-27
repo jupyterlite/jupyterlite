@@ -6,7 +6,7 @@ import { LocalStorageConnector } from './storage';
 
 import { JSONObject, PartialJSONObject } from '@lumino/coreutils';
 
-import stripJsonComments from 'strip-json-comments';
+import * as json5 from 'json5';
 
 import { Router } from './router';
 
@@ -71,7 +71,7 @@ export class Settings {
       const payload = await req.text();
       const parsed = JSON.parse(payload);
       const { raw } = parsed;
-      this._storage.save(pluginId, stripJsonComments(raw));
+      this._storage.save(pluginId, raw);
       return new Response(null, { status: 204 });
     });
   }
@@ -104,7 +104,7 @@ export class Settings {
         return {
           ...plugin,
           raw,
-          settings: JSON.parse(stripJsonComments(raw))
+          settings: json5.parse(raw)
         };
       })
     );
