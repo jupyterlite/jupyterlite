@@ -24,3 +24,7 @@ jobs:
       run: |
         yarn run eslint:check
         yarn run prettier:check
+    - name: Test
+      run: |
+        yarn run build:test
+        yarn run test
