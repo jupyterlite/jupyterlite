@@ -1,3 +1,5 @@
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { StateDB } from '@jupyterlab/statedb';
@@ -94,8 +96,9 @@ export class Settings {
    * Get the settings
    */
   private async _getAll(): Promise<{ settings: IPlugin[] }> {
+    const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
     const all = (await (
-      await fetch('/build/all_schemas.json')
+      await fetch(`${settingsUrl}/all.json`)
     ).json()) as IPlugin[];
     const settings = await Promise.all(
       all.map(async plugin => {
