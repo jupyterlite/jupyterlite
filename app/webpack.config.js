@@ -32,7 +32,9 @@ fs.mkdirpSync(jupyterliteApputilsPlugin);
 
 // ensure all schemas are statically compiled
 const schemaDir = path.resolve(buildDir, './schemas');
-const files = glob.sync(`${schemaDir}/**/*.json`);
+const files = glob.sync(`${schemaDir}/**/*.json`, {
+  ignore: [`${schemaDir}/all.json`]
+});
 const all = files.map(file => {
   const schema = fs.readJSONSync(file);
   const pluginFile = file.replace(`${schemaDir}/`, '');
@@ -50,10 +52,7 @@ const all = files.map(file => {
   };
 });
 
-fs.writeFileSync(
-  path.resolve(buildDir, 'all_schemas.json'),
-  JSON.stringify(all)
-);
+fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
 
 module.exports = [
   {

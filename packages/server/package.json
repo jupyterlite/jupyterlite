@@ -43,6 +43,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@jupyterlab/coreutils": "^5.0.3",
     "@jupyterlab/observables": "^4.0.3",
     "@jupyterlab/nbformat": "^3.0.3",
     "@jupyterlab/services": "^6.0.5",
