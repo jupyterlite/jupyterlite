@@ -34,8 +34,7 @@ export class JupyterServer {
     if (!(req instanceof Request)) {
       throw Error('Request info is not a Request');
     }
-    const res = this._router.route(req);
-    return res;
+    return this._router.route(req);
   }
 
   /**
@@ -56,6 +55,17 @@ export class JupyterServer {
       }
     );
 
+    // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
+    this._router.add(
+      'POST',
+      `/api/contents${filePattern}/checkpoints/(.*)`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
+        return new Response(JSON.stringify(res), { status: 204 });
+      }
+    );
+
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
     this._router.add(
       'POST',
@@ -64,17 +74,6 @@ export class JupyterServer {
         const filename = Private.parseFilename(req.url, filePattern);
         const res = await this._contents.createCheckpoint(filename);
         return new Response(JSON.stringify(res), { status: 201 });
-      }
-    );
-
-    // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
-    this._router.add(
-      'POST',
-      `/api/contents${filePattern}/checkpoints/(.*)`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
-        return new Response(JSON.stringify(res));
       }
     );
 
@@ -184,6 +183,7 @@ export class JupyterServer {
     });
 
     // Settings
+    // TODO: improve the regex
     const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
 
     this._router.add('GET', pluginPattern, async (req: Request) => {
