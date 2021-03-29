@@ -1,9 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-describe('KernelSpec', () => {
+describe('Settings', () => {
   describe('#constructor()', () => {
-    it('should create a KernelSpec instance', () => {
+    it('should create a Settings instance', () => {
       expect(true).toBe(true);
     });
   });

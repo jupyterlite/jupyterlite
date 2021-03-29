@@ -1,9 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-describe('Contents', () => {
+describe('Session', () => {
   describe('#constructor()', () => {
-    it('should create a Contents instance', () => {
+    it('should create a Session instance', () => {
       expect(true).toBe(true);
     });
   });

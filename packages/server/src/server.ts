@@ -45,10 +45,54 @@ export class JupyterServer {
     // Contents
     const filePattern = '(.*)';
 
+    // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
+    this._router.add(
+      'GET',
+      `/api/contents${filePattern}/checkpoints`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.listCheckpoints(filename);
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
+    this._router.add(
+      'POST',
+      `/api/contents${filePattern}/checkpoints`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.createCheckpoint(filename);
+        return new Response(JSON.stringify(res), { status: 201 });
+      }
+    );
+
+    // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
+    this._router.add(
+      'POST',
+      `/api/contents${filePattern}/checkpoints/(.*)`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
+    this._router.add(
+      'DELETE',
+      `/api/contents${filePattern}/checkpoints/(.*)`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.deleteCheckpoint(filename, 'TODO');
+        return new Response(JSON.stringify(res), { status: 204 });
+      }
+    );
+
     // GET /api/contents/{path} - Get contents of file or directory
     this._router.add(
       'GET',
-      `/api/contents/${filePattern}`,
+      `/api/contents${filePattern}`,
       async (req: Request) => {
         const filename = Private.parseFilename(req.url, filePattern);
         const nb = await this._contents.get(filename);
@@ -59,7 +103,7 @@ export class JupyterServer {
     // POST /api/contents/{path} - Create a new file in the specified path
     this._router.add(
       'POST',
-      `/api/contents/${filePattern}`,
+      `/api/contents${filePattern}`,
       async (req: Request) => {
         const file = await this._contents.newUntitled();
         return new Response(JSON.stringify(file), { status: 201 });
@@ -69,7 +113,7 @@ export class JupyterServer {
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
     this._router.add(
       'PATCH',
-      `/api/contents/${filePattern}`,
+      `/api/contents${filePattern}`,
       async (req: Request) => {
         const filename = Private.parseFilename(req.url, filePattern);
         const payload = await req.text();
@@ -83,7 +127,7 @@ export class JupyterServer {
     // PUT /api/contents/{path} - Save or upload a file
     this._router.add(
       'PUT',
-      `/api/contents/${filePattern}`,
+      `/api/contents${filePattern}`,
       async (req: Request) => {
         const filename = Private.parseFilename(req.url, filePattern);
         const nb = await this._contents.save(filename);
@@ -94,55 +138,11 @@ export class JupyterServer {
     // DELETE /api/contents/{path} - Delete a file in the given path
     this._router.add(
       'DELETE',
-      `/api/contents/${filePattern}`,
+      `/api/contents${filePattern}`,
       async (req: Request) => {
         const filename = Private.parseFilename(req.url, filePattern);
         await this._contents.delete(filename);
         return new Response(JSON.stringify(null), { status: 204 });
-      }
-    );
-
-    // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
-    this._router.add(
-      'GET',
-      `/api/contents/${filePattern}/checkpoints`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.listCheckpoints(filename);
-        return new Response(JSON.stringify(res));
-      }
-    );
-
-    // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
-    this._router.add(
-      'POST',
-      `/api/contents/${filePattern}/checkpoints`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.createCheckpoint(filename);
-        return new Response(JSON.stringify(res));
-      }
-    );
-
-    // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
-    this._router.add(
-      'POST',
-      `/api/contents/${filePattern}/checkpoints/(.*)`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
-        return new Response(JSON.stringify(res));
-      }
-    );
-
-    // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
-    this._router.add(
-      'DELETE',
-      `/api/contents/${filePattern}/checkpoints/(.*)`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
-        return new Response(JSON.stringify(res));
       }
     );
 
@@ -184,28 +184,26 @@ export class JupyterServer {
     });
 
     // Settings
-    this._router.add('GET', Private.PLUGIN_NAME_REGEX, async (req: Request) => {
-      const pluginId = Private.parsePluginId(req.url);
+    const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
+
+    this._router.add('GET', pluginPattern, async (req: Request) => {
+      const pluginId = Private.parsePluginId(req.url, pluginPattern);
       const settings = await this._settings.get(pluginId);
       return new Response(JSON.stringify(settings));
     });
 
-    this._router.add(
-      'GET',
-      Settings.SETTINGS_SERVICE_URL,
-      async (req: Request) => {
-        const plugins = await this._settings.getAll();
-        return new Response(JSON.stringify(plugins));
-      }
-    );
-
-    this._router.add('PUT', Private.PLUGIN_NAME_REGEX, async (req: Request) => {
-      const pluginId = Private.parsePluginId(req.url);
+    this._router.add('PUT', pluginPattern, async (req: Request) => {
+      const pluginId = Private.parsePluginId(req.url, pluginPattern);
       const payload = await req.text();
       const parsed = JSON.parse(payload);
       const { raw } = parsed;
       await this._settings.save(pluginId, raw);
       return new Response(null, { status: 204 });
+    });
+
+    this._router.add('GET', '/api/settings', async (req: Request) => {
+      const plugins = await this._settings.getAll();
+      return new Response(JSON.stringify(plugins));
     });
   }
 
@@ -227,19 +225,12 @@ export namespace JupyterServer {}
  */
 namespace Private {
   /**
-   * The regex to match plugin names.
-   */
-  export const PLUGIN_NAME_REGEX = new RegExp(
-    /(?:@([^/]+?)[/])?([^/]+?):(\w+)/
-  );
-
-  /**
    * Parse the plugin id from a URL.
    *
    * @param url The request url.
    */
-  export const parsePluginId = (url: string): string => {
-    const matches = new URL(url).pathname.match(PLUGIN_NAME_REGEX);
+  export const parsePluginId = (url: string, pattern: RegExp): string => {
+    const matches = new URL(url).pathname.match(pattern);
     return matches?.[0] ?? '';
   };
 
