@@ -23,12 +23,23 @@ const jupyterliteApputilsPlugin = path.resolve(
 );
 fs.mkdirpSync(jupyterliteApputilsPlugin);
 
-['themes.json', 'package.json.orig'].forEach(file => {
-  fs.copySync(
-    path.resolve(buildDir, 'schemas/@jupyterlab/apputils-extension', file),
-    path.resolve(jupyterliteApputilsPlugin, file)
-  );
-});
+fs.moveSync(
+  path.resolve(
+    buildDir,
+    'schemas/@jupyterlab/apputils-extension',
+    'themes.json'
+  ),
+  path.resolve(jupyterliteApputilsPlugin, 'themes.json')
+);
+
+fs.copySync(
+  path.resolve(
+    buildDir,
+    'schemas/@jupyterlab/apputils-extension',
+    'package.json.orig'
+  ),
+  path.resolve(jupyterliteApputilsPlugin, 'package.json.orig')
+);
 
 // ensure all schemas are statically compiled
 const schemaDir = path.resolve(buildDir, './schemas');
