@@ -11,12 +11,10 @@ import { Server as WebSocketServer } from 'mock-socket';
 
 import { KernelIFrame } from './kernel';
 
-import { IJupyterServer } from './tokens';
-
 /**
  * A class to handle requests to /api/kernels
  */
-export class Kernels implements IJupyterServer.IRoutable {
+export class Kernels {
   /**
    * Start a new kernel.
    *
@@ -70,17 +68,7 @@ export class Kernels implements IJupyterServer.IRoutable {
     return model;
   }
 
-  /**
-   * Dispatch a request to the local router.
-   *
-   * @param req The request to dispatch.
-   */
-  dispatch(req: Request): Response {
-    // TODO: handle kernel lifecycle
-    return new Response(null);
-  }
-
-  private _kernels = new ObservableMap<IJupyterServer.IKernelIFrame>();
+  private _kernels = new ObservableMap<KernelIFrame>();
 }
 
 /**
@@ -108,9 +96,4 @@ export namespace Kernels {
   export const WS_BASE_URL = `${
     window.location.protocol === 'https:' ? 'wss' : 'ws'
   }://${window.location.host}`;
-
-  /**
-   * The kernel service URL.
-   */
-  export const KERNEL_SERVICE_URL = '/api/kernels';
 }

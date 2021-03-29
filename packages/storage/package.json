@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/server",
+  "name": "@jupyterlite/storage",
   "version": "0.1.0",
-  "description": "JupyterLite - Server",
+  "description": "JupyterLite - Storage",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
     "url": "https://github.com/jtpio/jupyterlite/issues"
@@ -43,20 +43,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^5.0.3",
-    "@jupyterlab/observables": "^4.0.3",
-    "@jupyterlab/nbformat": "^3.0.3",
-    "@jupyterlab/services": "^6.0.5",
-    "@jupyterlab/settingregistry": "^3.0.3",
-    "@jupyterlab/statedb": "^3.0.3",
-    "@jupyterlite/contents": "^0.1.0",
-    "@jupyterlite/kernel": "^0.1.0",
-    "@jupyterlite/kernelspec": "^0.1.0",
-    "@jupyterlite/session": "^0.1.0",
-    "@jupyterlite/settings": "^0.1.0",
-    "@lumino/application": "^1.16.0",
-    "@lumino/coreutils": "^1.5.3",
-    "mock-socket": "^9.0.3"
+    "@jupyterlab/statedb": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

@@ -7,19 +7,7 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../contents"
-    },
-    {
       "path": "../kernel"
-    },
-    {
-      "path": "../kernelspec"
-    },
-    {
-      "path": "../session"
-    },
-    {
-      "path": "../settings"
     }
   ]
 }

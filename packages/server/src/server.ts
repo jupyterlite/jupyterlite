@@ -1,20 +1,26 @@
-import { Contents } from './contents';
+import { Kernels } from '@jupyterlite/kernel';
 
-import { KernelSpecs } from './kernelspecs';
+import { KernelSpecs } from '@jupyterlite/kernelspec';
 
-import { Kernels } from './kernels';
+import { Sessions } from '@jupyterlite/session';
 
-import { Sessions } from './sessions';
+import { Contents } from '@jupyterlite/contents';
 
-import { Settings } from './settings';
+import { Settings } from '@jupyterlite/settings';
 
-import { Themes } from './themes';
-import { NbConvert } from './nbconvert';
+import { Router } from './router';
 
 /**
  * A (very, very) simplified Jupyter Server running in the browser.
  */
 export class JupyterServer {
+  /**
+   * Construct a new JupyterServer.
+   */
+  constructor() {
+    this._addRoutes();
+  }
+
   /**
    * Handle an incoming request from the client.
    *
@@ -28,33 +34,186 @@ export class JupyterServer {
     if (!(req instanceof Request)) {
       throw Error('Request info is not a Request');
     }
-
-    // dispatch requests
-    // TODO: reuse an existing routing library?
-    if (req.url.match(Contents.CONTENTS_SERVICE_URL)) {
-      return this._contents.dispatch(req);
-    } else if (req.url.match(KernelSpecs.KERNELSPEC_SERVICE_URL)) {
-      return this._kernelspecs.dispatch(req);
-    } else if (req.url.match(Sessions.SESSION_SERVICE_URL)) {
-      return this._sessions.dispatch(req);
-    } else if (req.url.match(Kernels.KERNEL_SERVICE_URL)) {
-      return this._kernels.dispatch(req);
-    } else if (req.url.match(Settings.SETTINGS_SERVICE_URL)) {
-      return this._settings.dispatch(req);
-    } else if (req.url.match(Themes.THEMES_SERVICE_URL)) {
-      return this._themes.dispatch(req);
-    } else if (req.url.match(NbConvert.NBCONVERT_SERVICE_URL)) {
-      return this._nbconvert.dispatch(req);
-    }
-    return new Response(null);
+    const res = this._router.route(req);
+    return res;
   }
 
+  /**
+   * Add the routes.
+   */
+  private _addRoutes(): void {
+    // Contents
+    const filePattern = '(.*)';
+
+    // GET /api/contents/{path} - Get contents of file or directory
+    this._router.add(
+      'GET',
+      `/api/contents/${filePattern}`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const nb = await this._contents.get(filename);
+        return new Response(JSON.stringify(nb));
+      }
+    );
+
+    // POST /api/contents/{path} - Create a new file in the specified path
+    this._router.add(
+      'POST',
+      `/api/contents/${filePattern}`,
+      async (req: Request) => {
+        const file = await this._contents.newUntitled();
+        return new Response(JSON.stringify(file), { status: 201 });
+      }
+    );
+
+    // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
+    this._router.add(
+      'PATCH',
+      `/api/contents/${filePattern}`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const payload = await req.text();
+        const options = JSON.parse(payload);
+        const newPath = options.path;
+        const nb = await this._contents.rename(filename, newPath);
+        return new Response(JSON.stringify(nb));
+      }
+    );
+
+    // PUT /api/contents/{path} - Save or upload a file
+    this._router.add(
+      'PUT',
+      `/api/contents/${filePattern}`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const nb = await this._contents.save(filename);
+        return new Response(JSON.stringify(nb));
+      }
+    );
+
+    // DELETE /api/contents/{path} - Delete a file in the given path
+    this._router.add(
+      'DELETE',
+      `/api/contents/${filePattern}`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        await this._contents.delete(filename);
+        return new Response(JSON.stringify(null), { status: 204 });
+      }
+    );
+
+    // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
+    this._router.add(
+      'GET',
+      `/api/contents/${filePattern}/checkpoints`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.listCheckpoints(filename);
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
+    this._router.add(
+      'POST',
+      `/api/contents/${filePattern}/checkpoints`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.createCheckpoint(filename);
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
+    this._router.add(
+      'POST',
+      `/api/contents/${filePattern}/checkpoints/(.*)`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
+    this._router.add(
+      'DELETE',
+      `/api/contents/${filePattern}/checkpoints/(.*)`,
+      async (req: Request) => {
+        const filename = Private.parseFilename(req.url, filePattern);
+        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // Kernel
+    // TODO
+
+    // KernelSpecs
+    this._router.add('GET', '/api/kernelspecs', async (req: Request) => {
+      const res = this._kernelspecs.get();
+      return new Response(JSON.stringify(res));
+    });
+
+    // NbConvert
+    this._router.add('GET', '/api/nbconvert', async (req: Request) => {
+      return new Response(JSON.stringify({}));
+    });
+
+    // Sessions
+    this._router.add('GET', '/api/sessions.*', async (req: Request) => {
+      return new Response(JSON.stringify([]), { status: 200 });
+    });
+
+    this._router.add('PATCH', '/api/sessions.*', async (req: Request) => {
+      const payload = await req.text();
+      const options = JSON.parse(payload);
+      const session = this._sessions.patch(options);
+      return new Response(JSON.stringify(session), { status: 200 });
+    });
+
+    this._router.add('DELETE', '/api/sessions.*', async (req: Request) => {
+      return new Response(null, { status: 204 });
+    });
+
+    this._router.add('POST', '/api/sessions.*', async (req: Request) => {
+      const payload = await req.text();
+      const options = JSON.parse(payload);
+      const session = this._sessions.startNew(options);
+      return new Response(JSON.stringify(session), { status: 201 });
+    });
+
+    // Settings
+    this._router.add('GET', Private.PLUGIN_NAME_REGEX, async (req: Request) => {
+      const pluginId = Private.parsePluginId(req.url);
+      const settings = await this._settings.get(pluginId);
+      return new Response(JSON.stringify(settings));
+    });
+
+    this._router.add(
+      'GET',
+      Settings.SETTINGS_SERVICE_URL,
+      async (req: Request) => {
+        const plugins = await this._settings.getAll();
+        return new Response(JSON.stringify(plugins));
+      }
+    );
+
+    this._router.add('PUT', Private.PLUGIN_NAME_REGEX, async (req: Request) => {
+      const pluginId = Private.parsePluginId(req.url);
+      const payload = await req.text();
+      const parsed = JSON.parse(payload);
+      const { raw } = parsed;
+      await this._settings.save(pluginId, raw);
+      return new Response(null, { status: 204 });
+    });
+  }
+
+  private _router = new Router();
   private _kernelspecs = new KernelSpecs();
   private _contents = new Contents();
   private _kernels = new Kernels();
   private _settings = new Settings();
-  private _themes = new Themes();
-  private _nbconvert = new NbConvert();
   private _sessions = new Sessions({ kernels: this._kernels });
 }
 
@@ -62,3 +221,35 @@ export class JupyterServer {
  * A namespace for JupyterServer statics.
  */
 export namespace JupyterServer {}
+
+/**
+ * A namespace for private data.
+ */
+namespace Private {
+  /**
+   * The regex to match plugin names.
+   */
+  export const PLUGIN_NAME_REGEX = new RegExp(
+    /(?:@([^/]+?)[/])?([^/]+?):(\w+)/
+  );
+
+  /**
+   * Parse the plugin id from a URL.
+   *
+   * @param url The request url.
+   */
+  export const parsePluginId = (url: string): string => {
+    const matches = new URL(url).pathname.match(PLUGIN_NAME_REGEX);
+    return matches?.[0] ?? '';
+  };
+
+  /**
+   * Parse the file name from a URL.
+   *
+   * @param url The request url.
+   */
+  export const parseFilename = (url: string, pattern: string): string => {
+    const matches = new URL(url).pathname.match(pattern);
+    return matches?.[0] ?? '';
+  };
+}
