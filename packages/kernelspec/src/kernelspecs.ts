@@ -7,7 +7,7 @@ export class KernelSpecs {
   /**
    * Get the kernel specs.
    */
-  get(): KernelSpec.ISpecModels {
+  get specs(): KernelSpec.ISpecModels | null {
     return Private.DEFAULT_SPECS;
   }
 }

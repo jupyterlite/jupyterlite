@@ -150,7 +150,7 @@ export class JupyterServer {
 
     // KernelSpecs
     this._router.add('GET', '/api/kernelspecs', async (req: Request) => {
-      const res = this._kernelspecs.get();
+      const res = this._kernelspecs.specs;
       return new Response(JSON.stringify(res));
     });
 
