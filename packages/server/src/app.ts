@@ -3,20 +3,18 @@
 
 import { Application, IPlugin } from '@lumino/application';
 
-import { Widget } from '@lumino/widgets';
-
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
 
 /**
  * Server is the main application class. It is instantiated once and shared.
  */
-export class JupyterLiteServer extends Application<Widget> {
+export class JupyterLiteServer extends Application<never> {
   /**
    * Construct a new App object.
    *
    * @param options The instantiation options for a JupyterLiteServer application.
    */
-  constructor(options: Application.IOptions<Widget>) {
+  constructor(options: Application.IOptions<never>) {
     super(options);
   }
 
