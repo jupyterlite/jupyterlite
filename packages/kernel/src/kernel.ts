@@ -85,3 +85,33 @@ export interface IKernel extends IObservableDisposable {
     content: KernelMessage.IInputRequestMsg['content']
   ): Promise<void>;
 }
+
+/**
+ * A namespace for IKernel statics.
+ */
+export namespace IKernel {
+  /**
+   * The type for the send message function.
+   */
+  export type SendMessage = (msg: KernelMessage.IMessage) => void;
+
+  /**
+   * The instantiation options for an IKernel.
+   */
+  export interface IOptions {
+    /**
+     * The kernel id.
+     */
+    id: string;
+
+    /**
+     * The session id.
+     */
+    sessionId: string;
+
+    /**
+     * The method to send messages back to the server.
+     */
+    sendMessage: SendMessage;
+  }
+}

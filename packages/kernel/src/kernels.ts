@@ -11,16 +11,28 @@ import { Server as WebSocketServer } from 'mock-socket';
 
 import { KernelIFrame } from './kernel';
 
+import { KernelRegistry } from './registry';
+
 /**
  * A class to handle requests to /api/kernels
  */
 export class Kernels {
   /**
+   * Construct a new Kernels
+   *
+   * @param options The instantiation options
+   */
+  constructor(options: Kernels.IOptions) {
+    const { registry } = options;
+    this._registry = registry;
+  }
+
+  /**
    * Start a new kernel.
    *
    * @param options The kernel start options.
    */
-  startNew(options: Kernels.IStartOptions): Kernel.IModel {
+  startNew(options: Kernels.IKernelOptions): Kernel.IModel {
     const { id, name } = options;
     const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
     const wsServer = new WebSocketServer(kernelUrl);
@@ -69,6 +81,7 @@ export class Kernels {
   }
 
   private _kernels = new ObservableMap<KernelIFrame>();
+  private _registry: KernelRegistry;
 }
 
 /**
@@ -76,9 +89,19 @@ export class Kernels {
  */
 export namespace Kernels {
   /**
-   * Options to start a new options.
+   * Options to create an new Kernels.
    */
-  export interface IStartOptions {
+  export interface IOptions {
+    /**
+     * The kernel registry.
+     */
+    registry: KernelRegistry;
+  }
+
+  /**
+   * Options to start a new kernel.
+   */
+  export interface IKernelOptions {
     /**
      * The kernel id.
      */

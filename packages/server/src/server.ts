@@ -1,4 +1,4 @@
-import { Kernels } from '@jupyterlite/kernel';
+import { KernelRegistry, Kernels } from '@jupyterlite/kernel';
 
 import { KernelSpecs } from '@jupyterlite/kernelspec';
 
@@ -18,6 +18,9 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor() {
+    const registry = new KernelRegistry();
+    this._kernels = new Kernels({ registry });
+    this._sessions = new Sessions({ kernels: this._kernels });
     this._addRoutes();
   }
 
@@ -210,9 +213,9 @@ export class JupyterServer {
   private _router = new Router();
   private _kernelspecs = new KernelSpecs();
   private _contents = new Contents();
-  private _kernels = new Kernels();
   private _settings = new Settings();
-  private _sessions = new Sessions({ kernels: this._kernels });
+  private _sessions: Sessions;
+  private _kernels: Kernels;
 }
 
 /**

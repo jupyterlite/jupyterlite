@@ -3,6 +3,7 @@
 
 export * from './kernels';
 export * from './default';
+export * from './registry';
 import * as Kernel from './kernel';
 
 export { Kernel };

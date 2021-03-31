@@ -2,18 +2,18 @@ import { KernelMessage } from '@jupyterlab/services';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
-import * as Kernel from './kernel';
+import { IKernel } from './kernel';
 
 /**
  * A base kernel class handling basic kernel messaging.
  */
-export abstract class BaseKernel implements Kernel.IKernel {
+export abstract class BaseKernel implements IKernel {
   /**
    * Construct a new BaseKernel.
    *
    * @param options The instantiation options for a BaseKernel.
    */
-  constructor(options: BaseKernel.IOptions) {
+  constructor(options: IKernel.IOptions) {
     const { id, sessionId, sendMessage } = options;
     this._id = id;
     // TODO: handle session id
@@ -395,38 +395,8 @@ export abstract class BaseKernel implements Kernel.IKernel {
   private _sessionId: string;
   private _isDisposed = false;
   private _disposed = new Signal<this, void>(this);
-  private _sendMessage: BaseKernel.SendMessage;
+  private _sendMessage: IKernel.SendMessage;
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
-}
-
-/**
- * A namespace for BaseKernel statics.
- */
-export namespace BaseKernel {
-  /**
-   * The type for the send message function.
-   */
-  export type SendMessage = (msg: KernelMessage.IMessage) => void;
-
-  /**
-   * The instantiation options for a BaseKernel.
-   */
-  export interface IOptions {
-    /**
-     * The kernel id.
-     */
-    id: string;
-
-    /**
-     * The session id.
-     */
-    sessionId: string;
-
-    /**
-     * The method to send messages back to the server.
-     */
-    sendMessage: SendMessage;
-  }
 }

@@ -59,8 +59,7 @@ window.addEventListener('load', async () => {
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(await Promise.all(mods));
 
-  const server = new JupyterServer();
-  const serviceManager = new BrowserServiceManager({ server });
+  const serviceManager = new BrowserServiceManager();
 
   // create a full-blown JupyterLab frontend
   const lab = new JupyterLab({
