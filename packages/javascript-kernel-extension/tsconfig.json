@@ -7,22 +7,10 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../contents"
-    },
-    {
-      "path": "../kernel"
-    },
-    {
       "path": "../kernelspec"
     },
     {
       "path": "../server"
-    },
-    {
-      "path": "../session"
-    },
-    {
-      "path": "../settings"
     }
   ]
 }

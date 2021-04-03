@@ -7,11 +7,11 @@ import {
   serialize
 } from '@jupyterlab/services/lib/kernel/serialize';
 
-import { Server as WebSocketServer } from 'mock-socket';
+import { IKernelSpecs } from '@jupyterlite/kernelspec';
 
-import { KernelIFrame } from './kernel';
+import { Server as WebSocketServer, WebSocket } from 'mock-socket';
 
-import { IKernelRegistry } from './tokens';
+import { BaseKernel } from './default';
 
 /**
  * A class to handle requests to /api/kernels
@@ -23,8 +23,8 @@ export class Kernels {
    * @param options The instantiation options
    */
   constructor(options: Kernels.IOptions) {
-    const { registry } = options;
-    this._registry = registry;
+    const { kernelspecs } = options;
+    this._kernelspecs = kernelspecs;
   }
 
   /**
@@ -34,18 +34,21 @@ export class Kernels {
    */
   startNew(options: Kernels.IKernelOptions): Kernel.IModel {
     const { id, name } = options;
-    const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
-    const wsServer = new WebSocketServer(kernelUrl);
 
-    // TODO: handle multiple connections to the same kernel
-    wsServer.on('connection', socket => {
-      // handle new kernel
+    const factory = this._kernelspecs.factories.get(name);
+    // bail if there is no factory associated with the requested kernel
+    if (!factory) {
+      return { id, name };
+    }
+
+    const startKernel = async (socket: WebSocket): Promise<void> => {
       const sendMessage = (msg: KernelMessage.IMessage): void => {
         const message = serialize(msg);
         socket.send(message);
       };
 
-      const kernel = new KernelIFrame({ id, sendMessage, sessionId: id });
+      const kernel = await factory();
+      // const kernel = new KernelIFrame({ id, sendMessage, sessionId: id });
       this._kernels.set(id, kernel);
 
       socket.on(
@@ -68,20 +71,24 @@ export class Kernels {
         kernel.dispose();
         this._kernels.delete(id);
       });
-    });
+    };
+
+    const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
+    const wsServer = new WebSocketServer(kernelUrl);
+
+    // TODO: handle multiple connections to the same kernel?
+    wsServer.on('connection', startKernel);
 
     const model = {
       id,
       name: name ?? ''
     };
 
-    console.log('kernels', this._kernels);
-
     return model;
   }
 
-  private _kernels = new ObservableMap<KernelIFrame>();
-  private _registry: IKernelRegistry;
+  private _kernels = new ObservableMap<BaseKernel>();
+  private _kernelspecs: IKernelSpecs;
 }
 
 /**
@@ -93,9 +100,9 @@ export namespace Kernels {
    */
   export interface IOptions {
     /**
-     * The kernel registry.
+     * The kernel specs service.
      */
-    registry: IKernelRegistry;
+    kernelspecs: IKernelSpecs;
   }
 
   /**
@@ -110,7 +117,7 @@ export namespace Kernels {
     /**
      * The kernel name.
      */
-    name?: string;
+    name: string;
   }
 
   /**

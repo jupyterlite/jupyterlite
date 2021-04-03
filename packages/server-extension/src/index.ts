@@ -8,27 +8,11 @@ import {
   LiteServiceManager
 } from '@jupyterlite/server';
 
-import {
-  IKernelRegistry,
-  IKernels,
-  KernelRegistry,
-  Kernels
-} from '@jupyterlite/kernel';
+import { IKernels, Kernels } from '@jupyterlite/kernel';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
 
-/**
- * The kernel registry plugin.
- */
-const kernelRegistry: JupyterLiteServerPlugin<IKernelRegistry> = {
-  id: '@jupyterlite/server-extension:kernel-registry',
-  autoStart: true,
-  provides: IKernelRegistry,
-  activate: (app: JupyterLiteServer) => {
-    const registry = new KernelRegistry();
-    return registry;
-  }
-};
+import { IKernelSpecs, KernelSpecs } from '@jupyterlite/kernelspec';
 
 /**
  * The kernels service plugin.
@@ -37,9 +21,21 @@ const kernels: JupyterLiteServerPlugin<IKernels> = {
   id: '@jupyterlite/server-extension:kernels',
   autoStart: true,
   provides: IKernels,
-  requires: [IKernelRegistry],
-  activate: (app: JupyterLiteServer, registry: IKernelRegistry) => {
-    return new Kernels({ registry });
+  requires: [IKernelSpecs],
+  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+    return new Kernels({ kernelspecs });
+  }
+};
+
+/**
+ * The kernel spec service plugin.
+ */
+const kernelSpec: JupyterLiteServerPlugin<IKernelSpecs> = {
+  id: '@jupyterlite/server-extension:kernelspec',
+  autoStart: true,
+  provides: IKernelSpecs,
+  activate: (app: JupyterLiteServer) => {
+    return new KernelSpecs({});
   }
 };
 
@@ -62,14 +58,15 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
 const server: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:server',
   autoStart: true,
-  requires: [IKernels, ISessions],
+  requires: [IKernels, IKernelSpecs, ISessions],
   activate: (
     app: JupyterLiteServer,
     kernels: IKernels,
+    kernelspecs: IKernelSpecs,
     sessions: ISessions
   ) => {
     console.log(server.id, 'activated');
-    const jupyterServer = new JupyterServer({ kernels, sessions });
+    const jupyterServer = new JupyterServer({ kernels, kernelspecs, sessions });
     const serviceManager = new LiteServiceManager({ server: jupyterServer });
     app.registerServiceManager(serviceManager);
     console.log(jupyterServer);
@@ -77,8 +74,8 @@ const server: JupyterLiteServerPlugin<void> = {
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [
-  kernelRegistry,
   kernels,
+  kernelSpec,
   server,
   sessions
 ];
