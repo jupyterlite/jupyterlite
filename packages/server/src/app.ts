@@ -43,6 +43,28 @@ export class JupyterLiteServer extends Application<never> {
   }
 
   /**
+   * Attach the application shell to the DOM.
+   *
+   * @param id - The id of the host node for the shell, or `''`.
+   *
+   * #### Notes
+   * For this server application there is no shell to attach
+   */
+  protected attachShell(id: string): void {
+    // no-op
+  }
+
+  /**
+   * A method invoked on a window `'resize'` event.
+   *
+   * #### Notes
+   * For this server application there is no shell to update
+   */
+  protected evtResize(event: Event): void {
+    // no-op
+  }
+
+  /**
    * Register plugins from a plugin module.
    *
    * @param mod - The plugin module to register.
