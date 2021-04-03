@@ -1,10 +1,10 @@
+import { Contents } from '@jupyterlite/contents';
+
 import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
 
 import { ISessions } from '@jupyterlite/session';
 
-import { Contents } from '@jupyterlite/contents';
-
-import { Settings } from '@jupyterlite/settings';
+import { ISettings } from '@jupyterlite/settings';
 
 import { Router } from './router';
 
@@ -16,10 +16,11 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor(options: JupyterServer.IOptions) {
-    const { kernels, kernelspecs, sessions } = options;
+    const { kernels, kernelspecs, sessions, settings } = options;
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
+    this._settings = settings;
     console.log(this._kernels);
     this._addRoutes();
   }
@@ -212,10 +213,10 @@ export class JupyterServer {
 
   private _router = new Router();
   private _contents = new Contents();
-  private _settings = new Settings();
   private _kernels: IKernels;
   private _kernelspecs: IKernelSpecs;
   private _sessions: ISessions;
+  private _settings: ISettings;
 }
 
 /**
@@ -240,6 +241,11 @@ export namespace JupyterServer {
      * The sessions service.
      */
     sessions: ISessions;
+
+    /**
+     * The settings service.
+     */
+    settings: ISettings;
   }
 }
 

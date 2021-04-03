@@ -1,44 +1,12 @@
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';
-
 import { StateDB } from '@jupyterlab/statedb';
 
 import { LocalStorageConnector } from '@jupyterlite/storage';
 
-import { JSONObject, PartialJSONObject } from '@lumino/coreutils';
-
 import * as json5 from 'json5';
 
-/**
- * An interface for the plugin settings.
- */
-interface IPlugin extends PartialJSONObject {
-  /**
-   * The name of the plugin.
-   */
-  id: string;
-
-  /**
-   * The settings for the plugin.
-   */
-  settings: JSONObject;
-
-  /**
-   * The raw user settings data as a string containing JSON with comments.
-   */
-  raw: string;
-
-  /**
-   * The JSON schema for the plugin.
-   */
-  schema: ISettingRegistry.ISchema;
-
-  /**
-   * The published version of the NPM package containing the plugin.
-   */
-  version: string;
-}
+import { IPlugin } from './tokens';
 
 /**
  * A class to handle requests to /api/settings
@@ -69,7 +37,7 @@ export class Settings {
   }
 
   /**
-   * Get the settings
+   * Get all the settings
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';

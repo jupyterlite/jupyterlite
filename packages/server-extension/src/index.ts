@@ -17,6 +17,8 @@ import {
 
 import { ISessions, Sessions } from '@jupyterlite/session';
 
+import { ISettings, Settings } from '@jupyterlite/settings';
+
 /**
  * The kernels service plugin.
  */
@@ -61,18 +63,36 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
 const server: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:server',
   autoStart: true,
-  requires: [IKernels, IKernelSpecs, ISessions],
+  requires: [IKernels, IKernelSpecs, ISessions, ISettings],
   activate: (
     app: JupyterLiteServer,
     kernels: IKernels,
     kernelspecs: IKernelSpecs,
-    sessions: ISessions
+    sessions: ISessions,
+    settings: ISettings
   ) => {
     console.log(server.id, 'activated');
-    const jupyterServer = new JupyterServer({ kernels, kernelspecs, sessions });
+    const jupyterServer = new JupyterServer({
+      kernels,
+      kernelspecs,
+      sessions,
+      settings
+    });
     const serviceManager = new LiteServiceManager({ server: jupyterServer });
     app.registerServiceManager(serviceManager);
     console.log(jupyterServer);
+  }
+};
+
+/**
+ * The settings service plugin.
+ */
+const settings: JupyterLiteServerPlugin<ISettings> = {
+  id: '@jupyterlite/server-extension:settings',
+  autoStart: true,
+  provides: ISettings,
+  activate: (app: JupyterLiteServer) => {
+    return new Settings();
   }
 };
 
@@ -80,7 +100,8 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   kernels,
   kernelSpec,
   server,
-  sessions
+  sessions,
+  settings
 ];
 
 export default plugins;
