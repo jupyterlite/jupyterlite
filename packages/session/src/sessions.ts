@@ -1,15 +1,17 @@
 import { Session } from '@jupyterlab/services';
 
-import { Kernels } from '@jupyterlite/kernel';
+import { IKernels } from '@jupyterlite/kernel';
 
 import { UUID } from '@lumino/coreutils';
+
+import { ISessions } from './tokens';
 
 const DEFAULT_NAME = 'example.ipynb';
 
 /**
  * A class to handle requests to /api/sessions
  */
-export class Sessions {
+export class Sessions implements ISessions {
   /**
    * Construct a new Sessions.
    *
@@ -65,7 +67,7 @@ export class Sessions {
     return session;
   }
 
-  private _kernels: Kernels;
+  private _kernels: IKernels;
 }
 
 /**
@@ -79,6 +81,6 @@ export namespace Sessions {
     /**
      * A reference to the kernels service.
      */
-    kernels: Kernels;
+    kernels: IKernels;
   }
 }

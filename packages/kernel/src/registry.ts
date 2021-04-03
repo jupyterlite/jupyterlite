@@ -2,12 +2,7 @@ import { KernelSpec } from '@jupyterlab/services';
 
 import { IKernel } from './kernel';
 
-export interface IKernelRegistry {
-  /**
-   * Register a new kernel.
-   */
-  register: (options: KernelRegistry.IKernelOptions) => void;
-}
+import { IKernelRegistry } from './tokens';
 
 /**
  * A registry to register new kernels.

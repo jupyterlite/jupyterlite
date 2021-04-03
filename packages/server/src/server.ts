@@ -1,8 +1,8 @@
-import { KernelRegistry, Kernels } from '@jupyterlite/kernel';
+import { IKernels } from '@jupyterlite/kernel';
 
 import { KernelSpecs } from '@jupyterlite/kernelspec';
 
-import { Sessions } from '@jupyterlite/session';
+import { ISessions } from '@jupyterlite/session';
 
 import { Contents } from '@jupyterlite/contents';
 
@@ -17,10 +17,10 @@ export class JupyterServer {
   /**
    * Construct a new JupyterServer.
    */
-  constructor() {
-    const registry = new KernelRegistry();
-    this._kernels = new Kernels({ registry });
-    this._sessions = new Sessions({ kernels: this._kernels });
+  constructor(options: JupyterServer.IOptions) {
+    const { kernels, sessions } = options;
+    this._kernels = kernels;
+    this._sessions = sessions;
     this._addRoutes();
   }
 
@@ -214,14 +214,29 @@ export class JupyterServer {
   private _kernelspecs = new KernelSpecs();
   private _contents = new Contents();
   private _settings = new Settings();
-  private _sessions: Sessions;
-  private _kernels: Kernels;
+  private _sessions: ISessions;
+  private _kernels: IKernels;
 }
 
 /**
  * A namespace for JupyterServer statics.
  */
-export namespace JupyterServer {}
+export namespace JupyterServer {
+  /**
+   * The instantiation options for a JupyterServer
+   */
+  export interface IOptions {
+    /**
+     * The kernels service.
+     */
+    kernels: IKernels;
+
+    /**
+     * The sessions service.
+     */
+    sessions: ISessions;
+  }
+}
 
 /**
  * A namespace for private data.

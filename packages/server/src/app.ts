@@ -3,6 +3,8 @@
 
 import { Application, IPlugin } from '@lumino/application';
 
+import { LiteServiceManager } from './service';
+
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
 
 /**
@@ -10,7 +12,7 @@ export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
  */
 export class JupyterLiteServer extends Application<never> {
   /**
-   * Construct a new App object.
+   * Construct a new JupyterLite object.
    *
    * @param options The instantiation options for a JupyterLiteServer application.
    */
@@ -32,6 +34,13 @@ export class JupyterLiteServer extends Application<never> {
    * The version of the application.
    */
   readonly version = 'unknown';
+
+  /**
+   * Get the underlying lite service manager for this app.
+   */
+  get serviceManager(): LiteServiceManager | null {
+    return this._serviceManager;
+  }
 
   /**
    * Register plugins from a plugin module.
@@ -66,6 +75,17 @@ export class JupyterLiteServer extends Application<never> {
       this.registerPluginModule(mod);
     });
   }
+
+  /**
+   * Register the underlying lite service manager for this app.
+   *
+   * @param serviceManager The Service Manager for the app.
+   */
+  registerServiceManager(serviceManager: LiteServiceManager): void {
+    this._serviceManager = serviceManager;
+  }
+
+  private _serviceManager: LiteServiceManager | null = null;
 }
 
 /**

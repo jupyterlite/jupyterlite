@@ -11,7 +11,7 @@ import { Server as WebSocketServer } from 'mock-socket';
 
 import { KernelIFrame } from './kernel';
 
-import { KernelRegistry } from './registry';
+import { IKernelRegistry } from './tokens';
 
 /**
  * A class to handle requests to /api/kernels
@@ -81,7 +81,7 @@ export class Kernels {
   }
 
   private _kernels = new ObservableMap<KernelIFrame>();
-  private _registry: KernelRegistry;
+  private _registry: IKernelRegistry;
 }
 
 /**
@@ -95,7 +95,7 @@ export namespace Kernels {
     /**
      * The kernel registry.
      */
-    registry: KernelRegistry;
+    registry: IKernelRegistry;
   }
 
   /**
