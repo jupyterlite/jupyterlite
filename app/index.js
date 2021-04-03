@@ -45,7 +45,10 @@ const extensions = [
 
 const mimeExtensions = [import('@jupyterlab/json-extension')];
 
-const mods = [import('@jupyterlite/server-extension')];
+const mods = [
+  import('@jupyterlite/javascript-kernel-extension'),
+  import('@jupyterlite/server-extension')
+];
 
 window.addEventListener('load', async () => {
   // Make sure the styles have loaded
