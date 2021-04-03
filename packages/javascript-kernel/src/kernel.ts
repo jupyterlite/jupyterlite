@@ -1,19 +1,19 @@
 import { KernelMessage } from '@jupyterlab/services';
 
-import { BaseKernel, Kernel } from '@jupyterlite/kernel';
+import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
  * A kernel that executes code in an IFrame.
  */
-export class JavaScriptKernel extends BaseKernel implements Kernel.IKernel {
+export class JavaScriptKernel extends BaseKernel implements IKernel {
   /**
    * Instantiate a new JavaScriptKernel
    *
    * @param options The instantiation options for a new JavaScriptKernel
    */
-  constructor(options: BaseKernel.IOptions) {
+  constructor(options: IKernel.IOptions) {
     super(options);
 
     // create the main IFrame
@@ -145,6 +145,69 @@ export class JavaScriptKernel extends BaseKernel implements Kernel.IKernel {
       metadata: {},
       status: 'ok'
     };
+  }
+
+  /**
+   * Handle an `inspect_request` message.
+   *
+   * @param content - The content of the request.
+   *
+   * @returns A promise that resolves with the response message.
+   */
+  async inspectRequest(
+    content: KernelMessage.IInspectRequestMsg['content']
+  ): Promise<KernelMessage.IInspectReplyMsg['content']> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Send a `history_request` message.
+   *
+   * @param content - The content of the request.
+   *
+   * @returns A promise that resolves with the response message.
+   */
+  async historyRequest(
+    content: KernelMessage.IHistoryRequestMsg['content']
+  ): Promise<KernelMessage.IHistoryReplyMsg['content']> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Handle an `is_complete_request` message.
+   *
+   * @param content - The content of the request.
+   *
+   * @returns A promise that resolves with the response message.
+   */
+  async isCompleteRequest(
+    content: KernelMessage.IIsCompleteRequestMsg['content']
+  ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Handle a `comm_info_request` message.
+   *
+   * @param content - The content of the request.
+   *
+   * @returns A promise that resolves with the response message.
+   */
+  async commInfoRequest(
+    content: KernelMessage.ICommInfoRequestMsg['content']
+  ): Promise<KernelMessage.ICommInfoReplyMsg['content']> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Send an `input_request` message.
+   *
+   * @param content - The content of the request.
+   */
+  async inputRequest(
+    content: KernelMessage.IInputRequestMsg['content']
+  ): Promise<void> {
+    throw new Error('Not implemented');
   }
 
   /**

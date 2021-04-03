@@ -6,12 +6,11 @@ import {
   deserialize,
   serialize
 } from '@jupyterlab/services/lib/kernel/serialize';
-
-import { IKernelSpecs } from '@jupyterlite/kernelspec';
+import { UUID } from '@lumino/coreutils';
 
 import { Server as WebSocketServer, WebSocket } from 'mock-socket';
 
-import { BaseKernel } from './default';
+import { IKernel, IKernelSpecs } from './tokens';
 
 /**
  * A class to handle requests to /api/kernels
@@ -47,7 +46,12 @@ export class Kernels {
         socket.send(message);
       };
 
-      const kernel = await factory();
+      const kernelId = id ?? UUID.uuid4();
+      const kernel = await factory({
+        id: kernelId,
+        sendMessage,
+        sessionId: id
+      });
       // const kernel = new KernelIFrame({ id, sendMessage, sessionId: id });
       this._kernels.set(id, kernel);
 
@@ -87,7 +91,7 @@ export class Kernels {
     return model;
   }
 
-  private _kernels = new ObservableMap<BaseKernel>();
+  private _kernels = new ObservableMap<IKernel>();
   private _kernelspecs: IKernelSpecs;
 }
 

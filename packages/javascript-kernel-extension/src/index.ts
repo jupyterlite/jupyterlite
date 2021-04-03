@@ -6,7 +6,9 @@ import {
   JupyterLiteServerPlugin
 } from '@jupyterlite/server';
 
-import { IKernelSpecs } from '@jupyterlite/kernelspec';
+import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
+
+import { JavaScriptKernel } from '@jupyterlite/javascript-kernel';
 
 /**
  * A plugin to register the JavaScrit kernel.
@@ -35,8 +37,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
           'logo-64x64': '/kernelspecs/javascript.svg'
         }
       },
-      create: async (): Promise<void> => {
-        console.log('register javascript kernel');
+      create: async (options: IKernel.IOptions): Promise<IKernel> => {
+        return new JavaScriptKernel(options);
       }
     });
   }

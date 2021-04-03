@@ -1,6 +1,4 @@
-import { IKernels } from '@jupyterlite/kernel';
-
-import { IKernelSpecs } from '@jupyterlite/kernelspec';
+import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
 
 import { ISessions } from '@jupyterlite/session';
 
@@ -22,6 +20,7 @@ export class JupyterServer {
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
+    console.log(this._kernels);
     this._addRoutes();
   }
 

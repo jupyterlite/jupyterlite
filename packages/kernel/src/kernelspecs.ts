@@ -1,6 +1,6 @@
 import { KernelSpec } from '@jupyterlab/services';
 
-import { IKernelSpecs } from './tokens';
+import { IKernel, IKernelSpecs } from './tokens';
 
 /**
  * A class to handle requests to /api/kernelspecs
@@ -65,8 +65,7 @@ export namespace KernelSpecs {
     create: KernelFactory;
   }
 
-  // TODO: define the options
-  export type KernelFactory = () => Promise<void>;
+  export type KernelFactory = (options: IKernel.IOptions) => Promise<IKernel>;
 
   export type KernelFactories = Map<string, KernelFactory>;
 }

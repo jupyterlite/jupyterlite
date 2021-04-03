@@ -8,11 +8,14 @@ import {
   LiteServiceManager
 } from '@jupyterlite/server';
 
-import { IKernels, Kernels } from '@jupyterlite/kernel';
+import {
+  IKernels,
+  Kernels,
+  IKernelSpecs,
+  KernelSpecs
+} from '@jupyterlite/kernel';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
-
-import { IKernelSpecs, KernelSpecs } from '@jupyterlite/kernelspec';
 
 /**
  * The kernels service plugin.

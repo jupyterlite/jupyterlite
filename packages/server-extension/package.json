@@ -39,7 +39,6 @@
   },
   "dependencies": {
     "@jupyterlite/kernel": "^0.1.0",
-    "@jupyterlite/kernelspec": "^0.1.0",
     "@jupyterlite/server": "^0.1.0",
     "@jupyterlite/session": "^0.1.0"
   },
