@@ -9,10 +9,12 @@ import { ModelDB } from '@jupyterlab/observables';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
+import { IContents } from './tokens';
+
 /**
  * A class to handle requests to /api/contents
  */
-export class Contents implements ServerContents.IManager {
+export class Contents implements IContents {
   get fileChanged(): ISignal<
     ServerContents.IManager,
     ServerContents.IChangedArgs

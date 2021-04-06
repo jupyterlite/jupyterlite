@@ -1,12 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  JupyterLiteServer,
-  JupyterLiteServerPlugin,
-  JupyterServer,
-  LiteServiceManager
-} from '@jupyterlite/server';
+import { Contents, IContents } from '@jupyterlite/contents';
 
 import {
   IKernels,
@@ -15,9 +10,28 @@ import {
   KernelSpecs
 } from '@jupyterlite/kernel';
 
+import {
+  JupyterLiteServer,
+  JupyterLiteServerPlugin,
+  JupyterServer,
+  LiteServiceManager
+} from '@jupyterlite/server';
+
 import { ISessions, Sessions } from '@jupyterlite/session';
 
 import { ISettings, Settings } from '@jupyterlite/settings';
+
+/**
+ * The contents service plugin.
+ */
+const contents: JupyterLiteServerPlugin<IContents> = {
+  id: '@jupyterlite/server-extension:contents',
+  autoStart: true,
+  provides: IContents,
+  activate: (app: JupyterLiteServer) => {
+    return new Contents();
+  }
+};
 
 /**
  * The kernels service plugin.
@@ -63,16 +77,17 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
 const server: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:server',
   autoStart: true,
-  requires: [IKernels, IKernelSpecs, ISessions, ISettings],
+  requires: [IContents, IKernels, IKernelSpecs, ISessions, ISettings],
   activate: (
     app: JupyterLiteServer,
+    contents: IContents,
     kernels: IKernels,
     kernelspecs: IKernelSpecs,
     sessions: ISessions,
     settings: ISettings
   ) => {
-    console.log(server.id, 'activated');
     const jupyterServer = new JupyterServer({
+      contents,
       kernels,
       kernelspecs,
       sessions,
@@ -97,6 +112,7 @@ const settings: JupyterLiteServerPlugin<ISettings> = {
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [
+  contents,
   kernels,
   kernelSpec,
   server,

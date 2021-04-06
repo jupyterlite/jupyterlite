@@ -1,4 +1,4 @@
-import { Contents } from '@jupyterlite/contents';
+import { IContents } from '@jupyterlite/contents';
 
 import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
 
@@ -16,7 +16,8 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor(options: JupyterServer.IOptions) {
-    const { kernels, kernelspecs, sessions, settings } = options;
+    const { contents, kernels, kernelspecs, sessions, settings } = options;
+    this._contents = contents;
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
@@ -212,7 +213,7 @@ export class JupyterServer {
   }
 
   private _router = new Router();
-  private _contents = new Contents();
+  private _contents: IContents;
   private _kernels: IKernels;
   private _kernelspecs: IKernelSpecs;
   private _sessions: ISessions;
@@ -227,6 +228,11 @@ export namespace JupyterServer {
    * The instantiation options for a JupyterServer
    */
   export interface IOptions {
+    /**
+     * The contents service.
+     */
+    contents: IContents;
+
     /**
      * The kernels service.
      */
