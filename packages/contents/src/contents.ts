@@ -15,6 +15,9 @@ import { IContents } from './tokens';
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
+  /**
+   * A signal emitted when the file has changed.
+   */
   get fileChanged(): ISignal<
     ServerContents.IManager,
     ServerContents.IChangedArgs
@@ -29,6 +32,9 @@ export class Contents implements IContents {
     return this._isDisposed;
   }
 
+  /**
+   * Return the server settings.
+   */
   get serverSettings(): ServerConnection.ISettings {
     // TODO: placeholder
     return ServerConnection.makeSettings();

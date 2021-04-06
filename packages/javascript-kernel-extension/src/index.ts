@@ -11,7 +11,7 @@ import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 import { JavaScriptKernel } from '@jupyterlite/javascript-kernel';
 
 /**
- * A plugin to register the JavaScrit kernel.
+ * A plugin to register the JavaScript kernel.
  */
 const kernel: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/javascript-kernel-extension:kernel',

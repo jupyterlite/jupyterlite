@@ -6,6 +6,7 @@ import {
   deserialize,
   serialize
 } from '@jupyterlab/services/lib/kernel/serialize';
+
 import { UUID } from '@lumino/coreutils';
 
 import { Server as WebSocketServer, WebSocket } from 'mock-socket';
@@ -100,7 +101,7 @@ export class Kernels {
  */
 export namespace Kernels {
   /**
-   * Options to create an new Kernels.
+   * Options to create a new Kernels.
    */
   export interface IOptions {
     /**

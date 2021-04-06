@@ -95,7 +95,6 @@ const server: JupyterLiteServerPlugin<void> = {
     });
     const serviceManager = new LiteServiceManager({ server: jupyterServer });
     app.registerServiceManager(serviceManager);
-    console.log(jupyterServer);
   }
 };
 

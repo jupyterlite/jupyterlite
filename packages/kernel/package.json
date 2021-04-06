@@ -43,10 +43,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@jupyterlab/observables": "^4.0.3",
     "@jupyterlab/services": "^6.0.5",
     "@lumino/coreutils": "^1.5.3",
     "@lumino/disposable": "^1.4.3",
-    "@lumino/signaling": "^1.4.3"
+    "@lumino/signaling": "^1.4.3",
+    "mock-socket": "^9.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

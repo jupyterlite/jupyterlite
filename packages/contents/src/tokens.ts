@@ -9,4 +9,7 @@ export const IContents = new Token<IContents>(
   '@jupyterlite/contents:IContents'
 );
 
+/**
+ * The interface for the contents service.
+ */
 export interface IContents extends Contents.IManager {}

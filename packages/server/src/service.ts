@@ -20,7 +20,7 @@ export class LiteServiceManager extends ServiceManager {
       serverSettings: {
         ...ServerConnection.makeSettings(),
         WebSocket,
-        fetch: server?.fetch.bind(server) ?? undefined
+        fetch: server.fetch.bind(server) ?? undefined
       }
     });
     this._server = server;
