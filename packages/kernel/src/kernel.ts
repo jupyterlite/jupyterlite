@@ -98,7 +98,8 @@ export abstract class BaseKernel implements IKernel {
    * @param content - The content of the execute_request kernel message
    */
   abstract executeRequest(
-    content: KernelMessage.IExecuteRequestMsg['content']
+    content: KernelMessage.IExecuteRequestMsg['content'],
+    msg?: KernelMessage.IMessage
   ): Promise<KernelMessage.IExecuteResultMsg['content']>;
 
   /**
@@ -228,6 +229,9 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'kernel_info_reply',
       channel: 'shell',
       session: this._sessionId,
+      parentHeader: parent.header as KernelMessage.IHeader<
+        'kernel_info_request'
+      >,
       content
     });
 
@@ -248,8 +252,8 @@ export abstract class BaseKernel implements IKernel {
     this._parentHeader = msg.header;
 
     this._executeInput(msg);
+    const result = await this.executeRequest(content, msg);
     try {
-      const result = await this.executeRequest(content);
       this._history.push(content.code);
       this._executeResult(msg, result);
       this._executeReply(msg, {
@@ -303,7 +307,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The execut result content.
    */
-  private _executeResult(
+  protected _executeResult(
     msg: KernelMessage.IMessage,
     content: Pick<
       KernelMessage.IExecuteResultMsg['content'],
@@ -331,7 +335,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The content for the execute reply.
    */
-  private _executeReply(
+  protected _executeReply(
     msg: KernelMessage.IMessage,
     content: KernelMessage.IExecuteReplyMsg['content']
   ): void {
@@ -354,7 +358,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The content for the execution error response.
    */
-  private _error(
+  protected _error(
     msg: KernelMessage.IMessage,
     content: KernelMessage.IErrorMsg['content']
   ): void {
@@ -391,7 +395,7 @@ export abstract class BaseKernel implements IKernel {
 
   private _id: string;
   private _history: string[] = [];
-  private _executionCount = 0;
+  protected _executionCount = 0;
   private _sessionId: string;
   private _isDisposed = false;
   private _disposed = new Signal<this, void>(this);
