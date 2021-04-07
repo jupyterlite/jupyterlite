@@ -92,4 +92,7 @@ window.addEventListener('load', async () => {
   console.log('JupyterLite started, waiting for restore');
   await lab.restored;
   console.log('JupyterLite restored');
+
+  // TODO: remove the default collapsing
+  lab.shell.collapseLeft();
 });
