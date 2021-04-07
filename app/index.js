@@ -3,11 +3,7 @@
 
 import { JupyterLab } from '@jupyterlab/application';
 
-import {
-  BrowserServiceManager,
-  JupyterLiteServer,
-  JupyterServer
-} from '@jupyterlite/server';
+import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
@@ -49,7 +45,10 @@ const extensions = [
 
 const mimeExtensions = [import('@jupyterlab/json-extension')];
 
-const mods = [import('@jupyterlite/server-extension')];
+const mods = [
+  import('@jupyterlite/javascript-kernel-extension'),
+  import('@jupyterlite/server-extension')
+];
 
 window.addEventListener('load', async () => {
   // Make sure the styles have loaded
@@ -58,9 +57,11 @@ window.addEventListener('load', async () => {
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(await Promise.all(mods));
+  // start the server
+  await jupyterLiteServer.start();
 
-  const server = new JupyterServer();
-  const serviceManager = new BrowserServiceManager({ server });
+  // retrieve the custom service manager from the server app
+  const { serviceManager } = jupyterLiteServer;
 
   // create a full-blown JupyterLab frontend
   const lab = new JupyterLab({

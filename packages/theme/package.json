@@ -44,9 +44,7 @@
   },
   "dependencies": {
     "@jupyterlab/apputils": "^3.0.5",
-    "@jupyterlab/coreutils": "^5.0.3",
-    "@lumino/disposable": "^1.4.3",
-    "raw-loader": "^4.0.2"
+    "@jupyterlab/coreutils": "^5.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

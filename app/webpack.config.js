@@ -29,7 +29,8 @@ fs.moveSync(
     'schemas/@jupyterlab/apputils-extension',
     'themes.json'
   ),
-  path.resolve(jupyterliteApputilsPlugin, 'themes.json')
+  path.resolve(jupyterliteApputilsPlugin, 'themes.json'),
+  { overwrite: true }
 );
 
 fs.copySync(

@@ -4,5 +4,19 @@
     "outDir": "lib",
     "rootDir": "src"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "references": [
+    {
+      "path": "../contents"
+    },
+    {
+      "path": "../kernel"
+    },
+    {
+      "path": "../session"
+    },
+    {
+      "path": "../settings"
+    }
+  ]
 }

@@ -3,20 +3,20 @@
 
 import { Application, IPlugin } from '@lumino/application';
 
-import { Widget } from '@lumino/widgets';
+import { LiteServiceManager } from './service';
 
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
 
 /**
  * Server is the main application class. It is instantiated once and shared.
  */
-export class JupyterLiteServer extends Application<Widget> {
+export class JupyterLiteServer extends Application<never> {
   /**
-   * Construct a new App object.
+   * Construct a new JupyterLite object.
    *
    * @param options The instantiation options for a JupyterLiteServer application.
    */
-  constructor(options: Application.IOptions<Widget>) {
+  constructor(options: Application.IOptions<never>) {
     super(options);
   }
 
@@ -34,6 +34,35 @@ export class JupyterLiteServer extends Application<Widget> {
    * The version of the application.
    */
   readonly version = 'unknown';
+
+  /**
+   * Get the underlying lite service manager for this app.
+   */
+  get serviceManager(): LiteServiceManager | null {
+    return this._serviceManager;
+  }
+
+  /**
+   * Attach the application shell to the DOM.
+   *
+   * @param id - The id of the host node for the shell, or `''`.
+   *
+   * #### Notes
+   * For this server application there is no shell to attach
+   */
+  protected attachShell(id: string): void {
+    // no-op
+  }
+
+  /**
+   * A method invoked on a window `'resize'` event.
+   *
+   * #### Notes
+   * For this server application there is no shell to update
+   */
+  protected evtResize(event: Event): void {
+    // no-op
+  }
 
   /**
    * Register plugins from a plugin module.
@@ -68,6 +97,17 @@ export class JupyterLiteServer extends Application<Widget> {
       this.registerPluginModule(mod);
     });
   }
+
+  /**
+   * Register the underlying lite service manager for this app.
+   *
+   * @param serviceManager The Service Manager for the app.
+   */
+  registerServiceManager(serviceManager: LiteServiceManager): void {
+    this._serviceManager = serviceManager;
+  }
+
+  private _serviceManager: LiteServiceManager | null = null;
 }
 
 /**
