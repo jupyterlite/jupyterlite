@@ -40,7 +40,8 @@ const extensions = [
   import('@jupyterlab/theme-dark-extension'),
   import('@jupyterlab/theme-light-extension'),
   import('@jupyterlab/tooltip-extension'),
-  import('@jupyterlab/ui-components-extension')
+  import('@jupyterlab/ui-components-extension'),
+  import('@telamonian/theme-darcula')
 ];
 
 const mimeExtensions = [import('@jupyterlab/json-extension')];
