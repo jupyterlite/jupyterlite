@@ -133,9 +133,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
    * @param msg The parent message.
    */
   async executeRequest(
-    content: KernelMessage.IExecuteRequestMsg['content'],
-    // TODO: remove?
-    msg?: KernelMessage.IMessage
+    content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
     const { code } = content;
     this._executeDelegate = new PromiseDelegate<any>();
@@ -235,6 +233,8 @@ export class PyodideKernel extends BaseKernel implements IKernel {
 }
 
 namespace Private {
+  // TODO: move most of the inner logic to a separate Python file
+  // that would be loaded on startup by Pyodide
   export const WORKER_SCRIPT = `
     importScripts("https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js");
     addEventListener("message", ({ data }) => {

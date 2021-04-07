@@ -110,8 +110,7 @@ export abstract class BaseKernel implements IKernel {
    * @param content - The content of the execute_request kernel message
    */
   abstract executeRequest(
-    content: KernelMessage.IExecuteRequestMsg['content'],
-    msg?: KernelMessage.IMessage
+    content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteResultMsg['content']>;
 
   /**
@@ -190,7 +189,7 @@ export abstract class BaseKernel implements IKernel {
   private _idle(parent: KernelMessage.IMessage): void {
     const message = KernelMessage.createMessage<KernelMessage.IStatusMsg>({
       msgType: 'status',
-      session: '',
+      session: this._sessionId,
       parentHeader: parent.header,
       channel: 'iopub',
       content: {
@@ -254,7 +253,7 @@ export abstract class BaseKernel implements IKernel {
 
     this._executeInput(msg);
     try {
-      const result = await this.executeRequest(content, msg);
+      const result = await this.executeRequest(content);
       this._history.push([0, 0, content.code]);
       this._executeResult(msg, result);
       this._executeReply(msg, {
