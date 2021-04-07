@@ -252,8 +252,8 @@ export abstract class BaseKernel implements IKernel {
     this._parentHeader = msg.header;
 
     this._executeInput(msg);
-    const result = await this.executeRequest(content, msg);
     try {
+      const result = await this.executeRequest(content, msg);
       this._history.push(content.code);
       this._executeResult(msg, result);
       this._executeReply(msg, {
@@ -307,7 +307,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The execut result content.
    */
-  protected _executeResult(
+  private _executeResult(
     msg: KernelMessage.IMessage,
     content: Pick<
       KernelMessage.IExecuteResultMsg['content'],
@@ -335,7 +335,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The content for the execute reply.
    */
-  protected _executeReply(
+  private _executeReply(
     msg: KernelMessage.IMessage,
     content: KernelMessage.IExecuteReplyMsg['content']
   ): void {
@@ -358,7 +358,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    * @param content The content for the execution error response.
    */
-  protected _error(
+  private _error(
     msg: KernelMessage.IMessage,
     content: KernelMessage.IErrorMsg['content']
   ): void {
@@ -395,7 +395,7 @@ export abstract class BaseKernel implements IKernel {
 
   private _id: string;
   private _history: string[] = [];
-  protected _executionCount = 0;
+  private _executionCount = 0;
   private _sessionId: string;
   private _isDisposed = false;
   private _disposed = new Signal<this, void>(this);

@@ -24,13 +24,21 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     this._initIFrame(this._iframe).then(() => {
       // TODO: handle kernel ready
       window.addEventListener('message', (e: MessageEvent) => {
-        console.log('iFrame message: ', e);
         const msg = e.data;
+        if (!msg.parentHeader) {
+          return;
+        }
+        console.log('iFrame message: ', e);
         this._processWorkerMessage(msg);
       });
     });
   }
 
+  /**
+   * Process a message coming from the pyodide web worker.
+   *
+   * @param msg The worker message to process.
+   */
   private _processWorkerMessage(msg: any): void {
     const parentHeader = msg.parentHeader as KernelMessage.IHeader<
       KernelMessage.MessageType
@@ -44,16 +52,28 @@ export class PyodideKernel extends BaseKernel implements IKernel {
           text: msg.stdout
         } as KernelMessage.IStreamMsg['content'];
         this.stream(content);
+        this._executeDelegate.resolve({ data: {}, metadata: {} });
         break;
       }
       case 'stderr': {
         const { name, stack, message } = msg.stderr;
         const error = {
-          ename: name,
-          evalue: message,
-          traceback: [stack]
+          name,
+          stack,
+          message
         };
-        this._error(msg, error);
+        if (msg.error) {
+          this._executeDelegate.resolve(error);
+          break;
+        }
+        const content = {
+          event: 'stream',
+          name: 'stderr',
+          parentHeader,
+          text: message ?? msg.stderr
+        } as KernelMessage.IStreamMsg['content'];
+        this.stream(content);
+        this._executeDelegate.resolve({ data: {}, metadata: {} });
         break;
       }
       case 'results': {
@@ -130,6 +150,9 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     this._executeDelegate = new PromiseDelegate<any>();
     this._eval(code);
     const result = await this._executeDelegate.promise;
+    if (result.name) {
+      throw result;
+    }
     // TODO: move executeResult and executeError here
     return {
       execution_count: this.executionCount,
@@ -294,7 +317,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
               });
           }).catch(error => {
             msgType = 'stderr';
-            postMessage({ stderr: error, type: msgType, msg: data.message });
+            postMessage({ error: true, stderr: error, type: msgType, msg: data.message });
           });
       });
     });
