@@ -5,33 +5,32 @@ import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
- * A kernel that executes code in an IFrame.
+ * A kernel that executes Python code with Pyodide.
  */
 export class PyodideKernel extends BaseKernel implements IKernel {
   /**
    * Instantiate a new PyodideKernel
    *
-   * @param options The instantiation options for a new JavaScriptKernel
+   * @param options The instantiation options for a new PyodideKernel
    */
   constructor(options: IKernel.IOptions) {
     super(options);
+    const blob = new Blob([Private.WORKER_SCRIPT]);
+    this._worker = new Worker(window.URL.createObjectURL(blob));
+    this._worker.onmessage = e => {
+      this._processWorkerMessage(e.data);
+    };
+  }
 
-    // create the main IFrame
-    this._iframe = document.createElement('iframe');
-    this._iframe.style.visibility = 'hidden';
-    document.body.appendChild(this._iframe);
-
-    this._initIFrame(this._iframe).then(() => {
-      // TODO: handle kernel ready
-      window.addEventListener('message', (e: MessageEvent) => {
-        const msg = e.data;
-        if (!msg.parentHeader) {
-          return;
-        }
-        console.log('iFrame message: ', e);
-        this._processWorkerMessage(msg);
-      });
-    });
+  /**
+   * Dispose the kernel.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    this._worker.terminate();
+    super.dispose();
   }
 
   /**
@@ -40,9 +39,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
    * @param msg The worker message to process.
    */
   private _processWorkerMessage(msg: any): void {
-    const parentHeader = msg.parentHeader as KernelMessage.IHeader<
-      KernelMessage.MessageType
-    >;
+    const parentHeader = this.parentHeader;
     switch (msg.type) {
       case 'stdout': {
         const content = {
@@ -122,8 +119,8 @@ export class PyodideKernel extends BaseKernel implements IKernel {
       banner: 'Pyodide: A WebAssembly-powered Python kernel',
       help_links: [
         {
-          text: 'Pyhthon (WASM) Kernel',
-          url: 'https://github.com/jtpio/jupyterlite'
+          text: 'Python (WASM) Kernel',
+          url: 'https://pyodide.org'
         }
       ]
     };
@@ -141,12 +138,6 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     msg?: KernelMessage.IMessage
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
     const { code } = content;
-    // store previous parent header
-    this._jsFunc(
-      this._iframe.contentWindow,
-      `window._parentHeader = ${JSON.stringify(msg?.header ?? '')};`
-    );
-
     this._executeDelegate = new PromiseDelegate<any>();
     this._eval(code);
     const result = await this._executeDelegate.promise;
@@ -188,19 +179,6 @@ export class PyodideKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * Send a `history_request` message.
-   *
-   * @param content - The content of the request.
-   *
-   * @returns A promise that resolves with the response message.
-   */
-  async historyRequest(
-    content: KernelMessage.IHistoryRequestMsg['content']
-  ): Promise<KernelMessage.IHistoryReplyMsg['content']> {
     throw new Error('Not implemented');
   }
 
@@ -247,37 +225,25 @@ export class PyodideKernel extends BaseKernel implements IKernel {
    * @param code The code to execute.
    */
   private _eval(code: string): void {
-    this._evalFunc(this._iframe.contentWindow, code);
+    this._worker.postMessage({
+      code
+    });
   }
 
-  /**
-   * Create a new IFrame
-   *
-   * @param iframe The IFrame to initialize.
-   */
-  private async _initIFrame(
-    iframe: HTMLIFrameElement
-  ): Promise<HTMLIFrameElement | undefined> {
-    console.log('Initialized iFrame.');
-    const delegate = new PromiseDelegate<void>();
-    if (!iframe.contentWindow) {
-      delegate.reject('IFrame not ready');
-      return;
-    }
-    const doc = iframe.contentWindow.document;
+  private _executeDelegate = new PromiseDelegate<any>();
+  private _worker: Worker;
+}
 
-    const workerScript = doc.createElement('script');
-    workerScript.type = 'javascript/worker';
-    workerScript.id = 'worker1';
-    workerScript.textContent = `
+namespace Private {
+  export const WORKER_SCRIPT = `
     importScripts("https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js");
     addEventListener("message", ({ data }) => {
       languagePluginLoader.then(() => {
           pyodide.loadPackage([]).then(() => {
           const keys = Object.keys(data);
           for (let key of keys) {
-              if (key !== "python") {
-              self[key] = data[key];
+              if (key !== "code") {
+                self[key] = data[key];
               }
           }
           console.log("Inside worker", data);
@@ -287,7 +253,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
           let msgType = 'results';
           let renderHtml = false;
           pyodide
-              .runPythonAsync(data.python, (ev) => {
+              .runPythonAsync(data.code, (ev) => {
                 console.log(ev);
               })
               .then((results) => {
@@ -321,41 +287,5 @@ export class PyodideKernel extends BaseKernel implements IKernel {
           });
       });
     });
-    `;
-
-    doc.head.appendChild(workerScript);
-    const initScript = doc.createElement('script');
-    initScript.textContent = `
-    console.log("Webworker script injected successfully");
-    const blob = new Blob([document.querySelector('#worker1').textContent]);
-    window.worker = new Worker(window.URL.createObjectURL(blob));
-    window._bubbleUp = function(msg) {
-      window.parent.postMessage({
-        ...msg,
-        "parentHeader": window._parentHeader
-      });
-    }
-    // Forwarding messages from the WebWorker up to the iframe.
-    window.worker.onmessage = e => {
-      window._bubbleUp({
-        ...e.data,
-      });
-    }
-    `;
-    doc.head.appendChild(initScript);
-
-    delegate.resolve();
-    await delegate.promise;
-    return iframe;
-  }
-
-  private _iframe: HTMLIFrameElement;
-  private _jsFunc = new Function('window', 'code', 'return window.eval(code);');
-  private _evalFunc = new Function(
-    'window',
-    'code',
-    'msg',
-    'return window.worker.postMessage({ python:code, parentHeader:window._parentHeader, message: msg });'
-  );
-  private _executeDelegate = new PromiseDelegate<any>();
+  `;
 }

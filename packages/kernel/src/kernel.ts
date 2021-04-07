@@ -50,6 +50,15 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Get the last parent header
+   */
+  get parentHeader():
+    | KernelMessage.IHeader<KernelMessage.MessageType>
+    | undefined {
+    return this._parentHeader;
+  }
+
+  /**
    * Dispose the kernel.
    */
   dispose(): void {
@@ -77,6 +86,9 @@ export abstract class BaseKernel implements IKernel {
         break;
       case 'complete_request':
         await this._complete(msg);
+        break;
+      case 'history_request':
+        await this._historyRequest(msg);
         break;
       default:
         break;
@@ -121,17 +133,6 @@ export abstract class BaseKernel implements IKernel {
   abstract inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']>;
-
-  /**
-   * Send a `history_request` message.
-   *
-   * @param content - The content of the request.
-   *
-   * @returns A promise that resolves with the response message.
-   */
-  abstract historyRequest(
-    content: KernelMessage.IHistoryRequestMsg['content']
-  ): Promise<KernelMessage.IHistoryReplyMsg['content']>;
 
   /**
    * Handle an `is_complete_request` message.
@@ -254,7 +255,7 @@ export abstract class BaseKernel implements IKernel {
     this._executeInput(msg);
     try {
       const result = await this.executeRequest(content, msg);
-      this._history.push(content.code);
+      this._history.push([0, 0, content.code]);
       this._executeResult(msg, result);
       this._executeReply(msg, {
         execution_count: this._executionCount,
@@ -276,6 +277,28 @@ export abstract class BaseKernel implements IKernel {
         ...error
       });
     }
+  }
+
+  /**
+   * Handle a `history_request` message
+   *
+   * @param msg The parent message.
+   */
+  private async _historyRequest(msg: KernelMessage.IMessage): Promise<void> {
+    const historyMsg = msg as KernelMessage.IHistoryRequestMsg;
+    const message = KernelMessage.createMessage<KernelMessage.IHistoryReplyMsg>(
+      {
+        msgType: 'history_reply',
+        channel: 'shell',
+        parentHeader: historyMsg.header,
+        session: this._sessionId,
+        content: {
+          status: 'ok',
+          history: this._history as KernelMessage.IHistoryReply['history']
+        }
+      }
+    );
+    this._sendMessage(message);
   }
 
   /**
@@ -394,7 +417,7 @@ export abstract class BaseKernel implements IKernel {
   }
 
   private _id: string;
-  private _history: string[] = [];
+  private _history: [number, number, string][] = [];
   private _executionCount = 0;
   private _sessionId: string;
   private _isDisposed = false;

@@ -78,17 +78,6 @@ export interface IKernel extends IObservableDisposable {
   ): Promise<KernelMessage.IInspectReplyMsg['content']>;
 
   /**
-   * Send a `history_request` message.
-   *
-   * @param content - The content of the request.
-   *
-   * @returns A promise that resolves with the response message.
-   */
-  historyRequest(
-    content: KernelMessage.IHistoryRequestMsg['content']
-  ): Promise<KernelMessage.IHistoryReplyMsg['content']>;
-
-  /**
    * Handle an `is_complete_request` message.
    *
    * @param content - The content of the request.
