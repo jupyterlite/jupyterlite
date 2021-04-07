@@ -115,7 +115,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
         name: 'python',
         nbconvert_exporter: 'python',
         pygments_lexer: 'ipython3',
-        version: '3.8'
+        version: '3.7'
       },
       protocol_version: '5.3',
       status: 'ok',
