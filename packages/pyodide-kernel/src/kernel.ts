@@ -119,7 +119,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
       },
       protocol_version: '5.3',
       status: 'ok',
-      banner: 'A WebAssembly-powered Python kernel',
+      banner: 'Pyodide: A WebAssembly-powered Python kernel',
       help_links: [
         {
           text: 'Pyhthon (WASM) Kernel',
