@@ -39,6 +39,7 @@ const extensions = [
   import('@jupyterlab/statusbar-extension'),
   import('@jupyterlab/theme-dark-extension'),
   import('@jupyterlab/theme-light-extension'),
+  import('@jupyterlab/toc-extension'),
   import('@jupyterlab/tooltip-extension'),
   import('@jupyterlab/ui-components-extension'),
   import('@telamonian/theme-darcula')
@@ -48,6 +49,7 @@ const mimeExtensions = [import('@jupyterlab/json-extension')];
 
 const mods = [
   import('@jupyterlite/javascript-kernel-extension'),
+  import('@jupyterlite/pyodide-kernel-extension'),
   import('@jupyterlite/server-extension')
 ];
 
@@ -91,4 +93,7 @@ window.addEventListener('load', async () => {
   console.log('JupyterLite started, waiting for restore');
   await lab.restored;
   console.log('JupyterLite restored');
+
+  // TODO: remove the default collapsing
+  lab.shell.collapseLeft();
 });

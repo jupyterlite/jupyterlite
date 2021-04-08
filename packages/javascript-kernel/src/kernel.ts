@@ -161,19 +161,6 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Send a `history_request` message.
-   *
-   * @param content - The content of the request.
-   *
-   * @returns A promise that resolves with the response message.
-   */
-  async historyRequest(
-    content: KernelMessage.IHistoryRequestMsg['content']
-  ): Promise<KernelMessage.IHistoryReplyMsg['content']> {
-    throw new Error('Not implemented');
-  }
-
-  /**
    * Handle an `is_complete_request` message.
    *
    * @param content - The content of the request.

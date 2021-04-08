@@ -17,6 +17,7 @@
   "dependencies": {
     "@jupyterlite/server": "^0.1.0",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0",
+    "@jupyterlite/pyodide-kernel-extension": "^0.1.0",
     "@jupyterlite/application-extension": "^0.1.0",
     "@jupyterlite/server-extension": "^0.1.0",
     "@jupyterlite/theme-extension": "^0.1.0",
@@ -46,6 +47,7 @@
     "@jupyterlab/statusbar-extension": "^3.0.0",
     "@jupyterlab/theme-dark-extension": "^3.0.0",
     "@jupyterlab/theme-light-extension": "^3.0.0",
+    "@jupyterlab/toc-extension": "^5.0.0",
     "@jupyterlab/tooltip-extension": "^3.0.0",
     "@jupyterlab/ui-components-extension": "^3.0.0",
     "@telamonian/theme-darcula": "^3.0.0",
@@ -109,6 +111,7 @@
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
       "@telamonian/theme-darcula",
+      "@jupyterlab/toc-extension",
       "@jupyterlab/tooltip-extension",
       "@jupyterlab/ui-components-extension"
     ]
