@@ -2,6 +2,8 @@ import { Session } from '@jupyterlab/services';
 
 import { IKernels } from '@jupyterlite/kernel';
 
+import { ArrayExt } from '@lumino/algorithm';
+
 import { UUID } from '@lumino/coreutils';
 
 import { ISessions } from './tokens';
@@ -25,21 +27,18 @@ export class Sessions implements ISessions {
    * @param id The id of the session.
    */
   async get(id: string): Promise<Session.IModel> {
-    console.log(`get session ${id}`);
-    return {
-      id,
-      kernel: { id: '', name: '' },
-      name: '',
-      path: '',
-      type: ''
-    };
+    const session = this._sessions.find(s => s.id);
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    return session;
   }
 
   /**
    * List the running sessions
    */
   async list(): Promise<Session.IModel[]> {
-    return [];
+    return this._sessions;
   }
 
   /**
@@ -51,17 +50,18 @@ export class Sessions implements ISessions {
    */
   async patch(options: Session.IModel): Promise<Session.IModel> {
     const { id, path, name } = options;
-    const session: Session.IModel = {
-      id,
+    const index = this._sessions.findIndex(s => s.id);
+    const session = this._sessions[index];
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    const patched = {
+      ...session,
       path: path ?? name,
-      name: name ?? path,
-      type: 'notebook',
-      kernel: {
-        id: id,
-        name: 'javascript'
-      }
+      name: name ?? path
     };
-    return session;
+    this._sessions[index] = patched;
+    return patched;
   }
 
   /**
@@ -85,6 +85,7 @@ export class Sessions implements ISessions {
         name: kernel.name
       }
     };
+    this._sessions.push(session);
     return session;
   }
 
@@ -94,10 +95,20 @@ export class Sessions implements ISessions {
    * @param id The id of the session to shut down.
    */
   async shutdown(id: string): Promise<void> {
-    console.log(`shut down session ${id}`);
+    const session = this._sessions.find(s => s.id);
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    const kernelId = session.kernel?.id;
+    if (kernelId) {
+      await this._kernels.shutdown(kernelId);
+    }
+    ArrayExt.removeFirstOf(this._sessions, session);
   }
 
   private _kernels: IKernels;
+  // TODO: offload to a database
+  private _sessions: Session.IModel[] = [];
 }
 
 /**

@@ -45,6 +45,7 @@
   "dependencies": {
     "@jupyterlab/services": "^6.0.0",
     "@jupyterlite/kernel": "^0.1.0",
+    "@lumino/algorithm": "^1.3.3",
     "@lumino/coreutils": "^1.5.3"
   },
   "devDependencies": {
