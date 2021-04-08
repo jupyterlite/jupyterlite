@@ -20,6 +20,9 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
     };
+    this._eval('').then(() => {
+      this._ready.resolve();
+    });
   }
 
   /**
@@ -31,6 +34,13 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     }
     this._worker.terminate();
     super.dispose();
+  }
+
+  /**
+   * A promise that is fulfilled when the kernel is ready.
+   */
+  get ready(): Promise<void> {
+    return this._ready.promise;
   }
 
   /**
@@ -136,9 +146,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
     const { code } = content;
-    this._executeDelegate = new PromiseDelegate<any>();
-    this._eval(code);
-    const result = await this._executeDelegate.promise;
+    const result = await this._eval(code);
     if (result.name) {
       throw result;
     }
@@ -222,14 +230,17 @@ export class PyodideKernel extends BaseKernel implements IKernel {
    *
    * @param code The code to execute.
    */
-  private _eval(code: string): void {
+  private async _eval(code: string): Promise<any> {
+    this._executeDelegate = new PromiseDelegate<any>();
     this._worker.postMessage({
       code
     });
+    return await this._executeDelegate.promise;
   }
 
   private _executeDelegate = new PromiseDelegate<any>();
   private _worker: Worker;
+  private _ready = new PromiseDelegate<void>();
 }
 
 namespace Private {

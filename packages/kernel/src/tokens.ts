@@ -23,6 +23,20 @@ export interface IKernels {
    * @param options The kernel startup options.
    */
   startNew: (options: Kernels.IKernelOptions) => Kernel.IModel;
+
+  /**
+   * Restart a kernel.
+   *
+   * @param id The kernel id.
+   */
+  restart: (id: string) => Promise<Kernel.IModel>;
+
+  /**
+   * Shut down a kernel.
+   *
+   * @param id The kernel id.
+   */
+  shutdown: (id: string) => Promise<void>;
 }
 
 /**
@@ -33,6 +47,16 @@ export interface IKernel extends IObservableDisposable {
    * The id of the server-side kernel.
    */
   readonly id: string;
+
+  /**
+   * The name of the server-side kernel.
+   */
+  readonly name: string;
+
+  /**
+   * A promise that is fulfilled when the kernel is ready.
+   */
+  readonly ready: Promise<void>;
 
   /**
    * Handle an incoming message from the client.
@@ -126,6 +150,11 @@ export namespace IKernel {
      * The kernel id.
      */
     id: string;
+
+    /**
+     * The name of the kernel.
+     */
+    name: string;
 
     /**
      * The session id.

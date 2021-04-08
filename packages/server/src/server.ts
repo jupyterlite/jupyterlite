@@ -151,7 +151,23 @@ export class JupyterServer {
     );
 
     // Kernel
-    // TODO
+    // POST /api/kernels/{kernel_id} - Restart a kernel
+    this._router.add(
+      'POST',
+      '/api/kernels/(.*)/restart',
+      async (req: Request) => {
+        const kernelId = req.url.match('/api/kernels/(.*)/restart')?.[1] ?? '';
+        const res = await this._kernels.restart(kernelId);
+        return new Response(JSON.stringify(res));
+      }
+    );
+
+    // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
+    this._router.add('DELETE', '/api/kernels/(.*)', async (req: Request) => {
+      const kernelId = req.url.match('/api/kernels/(.*)')?.[1] ?? '';
+      const res = await this._kernels.shutdown(kernelId);
+      return new Response(JSON.stringify(res), { status: 204 });
+    });
 
     // KernelSpecs
     this._router.add('GET', '/api/kernelspecs', async (req: Request) => {

@@ -14,11 +14,19 @@ export abstract class BaseKernel implements IKernel {
    * @param options The instantiation options for a BaseKernel.
    */
   constructor(options: IKernel.IOptions) {
-    const { id, sessionId, sendMessage } = options;
+    const { id, name, sessionId, sendMessage } = options;
     this._id = id;
+    this._name = name;
     // TODO: handle session id
     this._sessionId = sessionId;
     this._sendMessage = sendMessage;
+  }
+
+  /**
+   * A promise that is fulfilled when the kernel is ready.
+   */
+  get ready(): Promise<void> {
+    return Promise.resolve();
   }
 
   /**
@@ -40,6 +48,13 @@ export abstract class BaseKernel implements IKernel {
    */
   get id(): string {
     return this._id;
+  }
+
+  /**
+   * Get the name of the kernel
+   */
+  get name(): string {
+    return this._name;
   }
 
   /**
@@ -416,6 +431,7 @@ export abstract class BaseKernel implements IKernel {
   }
 
   private _id: string;
+  private _name: string;
   private _history: [number, number, string][] = [];
   private _executionCount = 0;
   private _sessionId: string;
