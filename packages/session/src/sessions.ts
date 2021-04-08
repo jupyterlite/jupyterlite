@@ -6,8 +6,6 @@ import { UUID } from '@lumino/coreutils';
 
 import { ISessions } from './tokens';
 
-const DEFAULT_NAME = 'example.ipynb';
-
 /**
  * A class to handle requests to /api/sessions
  */
@@ -22,18 +20,41 @@ export class Sessions implements ISessions {
   }
 
   /**
+   * Get a session by id.
+   *
+   * @param id The id of the session.
+   */
+  async get(id: string): Promise<Session.IModel> {
+    console.log(`get session ${id}`);
+    return {
+      id,
+      kernel: { id: '', name: '' },
+      name: '',
+      path: '',
+      type: ''
+    };
+  }
+
+  /**
+   * List the running sessions
+   */
+  async list(): Promise<Session.IModel[]> {
+    return [];
+  }
+
+  /**
    * Path an existing session.
    * This can be used to rename a session.
    * TODO: read path and name
    *
    * @param options The options to patch the session.
    */
-  patch(options: Session.IModel): Session.IModel {
+  async patch(options: Session.IModel): Promise<Session.IModel> {
     const { id, path, name } = options;
     const session: Session.IModel = {
       id,
-      path: path ?? DEFAULT_NAME,
-      name: name ?? DEFAULT_NAME,
+      path: path ?? name,
+      name: name ?? path,
       type: 'notebook',
       kernel: {
         id: id,
@@ -49,15 +70,15 @@ export class Sessions implements ISessions {
    *
    * @param options The options to start a new session.
    */
-  startNew(options: Session.IModel): Session.IModel {
+  async startNew(options: Session.IModel): Promise<Session.IModel> {
     const { path, name } = options;
     const kernelName = options.kernel?.name ?? '';
     const id = options.id ?? UUID.uuid4();
     const kernel = this._kernels.startNew({ id, name: kernelName });
     const session: Session.IModel = {
       id,
-      path: path ?? name,
-      name: name ?? DEFAULT_NAME,
+      path,
+      name: name ?? path,
       type: 'notebook',
       kernel: {
         id: kernel.id,
@@ -65,6 +86,15 @@ export class Sessions implements ISessions {
       }
     };
     return session;
+  }
+
+  /**
+   * Shut down a session.
+   *
+   * @param id The id of the session to shut down.
+   */
+  async shutdown(id: string): Promise<void> {
+    console.log(`shut down session ${id}`);
   }
 
   private _kernels: IKernels;

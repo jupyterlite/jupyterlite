@@ -57,7 +57,20 @@ export class Contents implements IContents {
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
     console.warn('TODO: implement newUntitled');
-    return Private.EMPTY_NOTEBOOK;
+    const name = `Untitled${Contents._counter++ || ''}.ipynb`;
+    const created = new Date().toISOString();
+    return {
+      name,
+      path: name,
+      last_modified: created,
+      created,
+      content: Private.EMPTY_NB,
+      format: 'json',
+      mimetype: 'application/json',
+      size: JSON.stringify(Private.EMPTY_NB).length,
+      writable: true,
+      type: 'notebook'
+    };
   }
 
   /**
@@ -73,7 +86,23 @@ export class Contents implements IContents {
     options?: ServerContents.IFetchOptions
   ): Promise<ServerContents.IModel> {
     console.warn('TODO: implement get');
-    return Private.EMPTY_NOTEBOOK;
+    // just to avoid popups on save for now
+    const createdDate = new Date(Date.now() - 1e10);
+    const created = createdDate.toISOString();
+    return {
+      name: path,
+      path,
+      last_modified: created,
+      created,
+      content: options?.content ? Private.EMPTY_NB : null,
+      size: options?.content
+        ? JSON.stringify(Private.EMPTY_NB).length
+        : undefined,
+      format: 'json',
+      mimetype: 'application/json',
+      writable: true,
+      type: 'notebook'
+    };
   }
 
   /**
@@ -89,7 +118,19 @@ export class Contents implements IContents {
     newLocalPath: string
   ): Promise<ServerContents.IModel> {
     console.warn('TODO: implement rename');
-    return Private.EMPTY_NOTEBOOK;
+    const created = new Date().toISOString();
+    return {
+      name: newLocalPath,
+      path: newLocalPath,
+      last_modified: created,
+      created,
+      content: null,
+      size: undefined,
+      format: 'json',
+      mimetype: 'application/json',
+      writable: true,
+      type: 'notebook'
+    };
   }
 
   /**
@@ -105,7 +146,19 @@ export class Contents implements IContents {
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
     console.warn('TODO: implement save');
-    return Private.EMPTY_NOTEBOOK;
+    const created = new Date().toISOString();
+    return {
+      name: path,
+      path,
+      last_modified: created,
+      created,
+      content: null,
+      size: undefined,
+      format: 'json',
+      mimetype: 'application/json',
+      writable: true,
+      type: 'notebook'
+    };
   }
 
   /**
@@ -275,6 +328,7 @@ export class Contents implements IContents {
 
   private _isDisposed = false;
   private _fileChanged = new Signal<this, ServerContents.IChangedArgs>(this);
+  private static _counter = 0;
 }
 
 /**
@@ -291,28 +345,12 @@ namespace Private {
   /**
    * The content for an empty notebook.
    */
-  const EMPTY_NB: INotebookContent = {
+  export const EMPTY_NB: INotebookContent = {
     metadata: {
       orig_nbformat: 4
     },
     nbformat_minor: 4,
     nbformat: 4,
     cells: []
-  };
-
-  /**
-   * The default notebook to serve.
-   */
-  export const EMPTY_NOTEBOOK: ServerContents.IModel = {
-    name: 'untitled.ipynb',
-    path: 'untitled.ipynb',
-    last_modified: '2021-03-27T18:41:01.243007Z',
-    created: '2021-03-27T18:41:01.243007Z',
-    content: EMPTY_NB,
-    format: 'json',
-    mimetype: 'application/json',
-    size: JSON.stringify(EMPTY_NB).length,
-    writable: true,
-    type: 'notebook'
   };
 }

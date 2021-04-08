@@ -1,3 +1,5 @@
+import { Contents as ServerContents } from '@jupyterlab/services';
+
 import { IContents } from '@jupyterlite/contents';
 
 import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
@@ -85,24 +87,24 @@ export class JupyterServer {
     // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
     this._router.add(
       'DELETE',
-      `/api/contents${filePattern}/checkpoints/(.*)`,
+      '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
+        const filename =
+          req.url.match('/api/contents(.+)/checkpoints/(.*)')?.[1] ?? '';
         const res = await this._contents.deleteCheckpoint(filename, 'TODO');
         return new Response(JSON.stringify(res), { status: 204 });
       }
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
-    this._router.add(
-      'GET',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const nb = await this._contents.get(filename);
-        return new Response(JSON.stringify(nb));
-      }
-    );
+    this._router.add('GET', '/api/contents(.+)', async (req: Request) => {
+      const filename = req.url.match('/api/contents(.+)')?.[1] ?? '';
+      const options: ServerContents.IFetchOptions = {
+        content: req.url.includes('content=1')
+      };
+      const nb = await this._contents.get(filename, options);
+      return new Response(JSON.stringify(nb));
+    });
 
     // POST /api/contents/{path} - Create a new file in the specified path
     this._router.add(
@@ -181,25 +183,39 @@ export class JupyterServer {
     });
 
     // Sessions
-    this._router.add('GET', '/api/sessions.*', async (req: Request) => {
-      return new Response(JSON.stringify([]), { status: 200 });
-    });
-
-    this._router.add('PATCH', '/api/sessions.*', async (req: Request) => {
-      const payload = await req.text();
-      const options = JSON.parse(payload);
-      const session = this._sessions.patch(options);
+    // GET /api/sessions/{session} - Get session
+    this._router.add('GET', '/api/sessions(.+)', async (req: Request) => {
+      const id = req.url.match('/api/sessions(.+)')?.[1] ?? '';
+      const session = await this._sessions.get(id);
       return new Response(JSON.stringify(session), { status: 200 });
     });
 
-    this._router.add('DELETE', '/api/sessions.*', async (req: Request) => {
+    // GET /api/sessions - List available sessions
+    this._router.add('GET', '/api/sessions', async (req: Request) => {
+      const sessions = await this._sessions.list();
+      return new Response(JSON.stringify(sessions), { status: 200 });
+    });
+
+    // PATCH /api/sessions/{session} - This can be used to rename a session
+    this._router.add('PATCH', '/api/sessions.*', async (req: Request) => {
+      const payload = await req.text();
+      const options = JSON.parse(payload);
+      const session = await this._sessions.patch(options);
+      return new Response(JSON.stringify(session), { status: 200 });
+    });
+
+    // DELETE /api/sessions/{session} - Delete a session
+    this._router.add('DELETE', '/api/sessions(.+)', async (req: Request) => {
+      const id = req.url.match('/api/sessions(.+)')?.[1] ?? '';
+      await this._sessions.shutdown(id);
       return new Response(null, { status: 204 });
     });
 
-    this._router.add('POST', '/api/sessions.*', async (req: Request) => {
+    // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
+    this._router.add('POST', '/api/sessions', async (req: Request) => {
       const payload = await req.text();
       const options = JSON.parse(payload);
-      const session = this._sessions.startNew(options);
+      const session = await this._sessions.startNew(options);
       return new Response(JSON.stringify(session), { status: 201 });
     });
 
