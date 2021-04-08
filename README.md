@@ -2,13 +2,19 @@
 
 ![Github Actions Status](https://github.com/jtpio/jupyterlite/workflows/Build/badge.svg)
 
-JupyterLite is a JupyterLab distribution that runs entirely in the browser without a Jupyter Server.
+JupyterLite is a JupyterLab distribution that runs entirely in the browser without a Jupyter Server, built from the ground-up with JupyterLab components and plugins.
+
+The default JupyterLite distribution currently features:
+
+- a JavaScript kernel running in an IFrame
+- a basic [Pyodide](https://pyodide.org) kernel running in a Web Worker
+- support for code consoles
 
 ## Try it in your browser
 
 **✨ [Try it in your browser!](https://jupyterlite.vercel.app/) ✨**
 
-![image](https://user-images.githubusercontent.com/591645/112733042-edc7bf80-8f3d-11eb-83d6-f4b8b4320ed8.png)
+![image](https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png)
 
 ## Status
 
