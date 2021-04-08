@@ -247,7 +247,7 @@ namespace Private {
   // TODO: move most of the inner logic to a separate Python file
   // that would be loaded on startup by Pyodide
   export const WORKER_SCRIPT = `
-    importScripts("https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js");
+    importScripts("https://pyodide-cdn2.iodide.io/v0.17.0a2/full/pyodide.js");
     addEventListener("message", ({ data }) => {
       languagePluginLoader.then(() => {
           pyodide.loadPackage([]).then(() => {
