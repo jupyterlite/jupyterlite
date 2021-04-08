@@ -16,10 +16,12 @@ import { ThemeManager } from '@jupyterlite/theme';
  */
 namespace CommandIDs {
   export const changeTheme = 'apputils:change-theme';
+
+  export const themeScrollbars = 'apputils:theme-scrollbars';
 }
 
 /**
- * The theme plugin.
+ * The themes plugin.
  */
 const themes: JupyterFrontEndPlugin<IThemeManager> = {
   id: '@jupyterlite/apputils-extension:themes',
@@ -79,6 +81,12 @@ const themes: JupyterFrontEndPlugin<IThemeManager> = {
         }
         return manager.setTheme(theme);
       }
+    });
+
+    commands.addCommand(CommandIDs.themeScrollbars, {
+      label: 'Theme Scrollbars',
+      isToggled: () => manager.isToggledThemeScrollbars(),
+      execute: () => manager.toggleThemeScrollbars()
     });
 
     return manager;
