@@ -48,11 +48,11 @@ export class JupyterServer {
    * Add the routes.
    */
   private _addRoutes(): void {
+    const app = this._router;
     // Contents
 
     // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
-    this._router.add(
-      'GET',
+    app.get(
       '/api/contents(.*)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.listCheckpoints(filename);
@@ -61,8 +61,7 @@ export class JupyterServer {
     );
 
     // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
-    this._router.add(
-      'POST',
+    app.post(
       '/api/contents(.*)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await this._contents.restoreCheckpoint(
@@ -74,8 +73,7 @@ export class JupyterServer {
     );
 
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
-    this._router.add(
-      'POST',
+    app.post(
       '/api/contents(.*)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.createCheckpoint(filename);
@@ -84,8 +82,7 @@ export class JupyterServer {
     );
 
     // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
-    this._router.add(
-      'DELETE',
+    app.delete(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await this._contents.deleteCheckpoint(filename, checkpoint);
@@ -94,8 +91,7 @@ export class JupyterServer {
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
-    this._router.add(
-      'GET',
+    app.get(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         const options: ServerContents.IFetchOptions = {
@@ -107,14 +103,13 @@ export class JupyterServer {
     );
 
     // POST /api/contents/{path} - Create a new file in the specified path
-    this._router.add('POST', '/api/contents', async (req: Router.IRequest) => {
+    app.post('/api/contents', async (req: Router.IRequest) => {
       const file = await this._contents.newUntitled();
       return new Response(JSON.stringify(file), { status: 201 });
     });
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
-    this._router.add(
-      'PATCH',
+    app.patch(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         const newPath = (req.body?.path as string) ?? '';
@@ -124,8 +119,7 @@ export class JupyterServer {
     );
 
     // PUT /api/contents/{path} - Save or upload a file
-    this._router.add(
-      'PUT',
+    app.put(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         const nb = await this._contents.save(filename);
@@ -134,8 +128,7 @@ export class JupyterServer {
     );
 
     // DELETE /api/contents/{path} - Delete a file in the given path
-    this._router.add(
-      'DELETE',
+    app.delete(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         await this._contents.delete(filename);
@@ -145,8 +138,7 @@ export class JupyterServer {
 
     // Kernel
     // POST /api/kernels/{kernel_id} - Restart a kernel
-    this._router.add(
-      'POST',
+    app.post(
       '/api/kernels/(.*)/restart',
       async (req: Router.IRequest, kernelId: string) => {
         const res = await this._kernels.restart(kernelId);
@@ -155,8 +147,7 @@ export class JupyterServer {
     );
 
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
-    this._router.add(
-      'DELETE',
+    app.delete(
       '/api/kernels/(.*)',
       async (req: Router.IRequest, kernelId: string) => {
         const res = await this._kernels.shutdown(kernelId);
@@ -165,51 +156,38 @@ export class JupyterServer {
     );
 
     // KernelSpecs
-    this._router.add(
-      'GET',
-      '/api/kernelspecs',
-      async (req: Router.IRequest) => {
-        const res = this._kernelspecs.specs;
-        return new Response(JSON.stringify(res));
-      }
-    );
+    app.get('/api/kernelspecs', async (req: Router.IRequest) => {
+      const res = this._kernelspecs.specs;
+      return new Response(JSON.stringify(res));
+    });
 
     // NbConvert
-    this._router.add('GET', '/api/nbconvert', async (req: Router.IRequest) => {
+    app.get('/api/nbconvert', async (req: Router.IRequest) => {
       return new Response(JSON.stringify({}));
     });
 
     // Sessions
     // GET /api/sessions/{session} - Get session
-    this._router.add(
-      'GET',
-      '/api/sessions/(.+)',
-      async (req: Router.IRequest, id: string) => {
-        const session = await this._sessions.get(id);
-        return new Response(JSON.stringify(session), { status: 200 });
-      }
-    );
+    app.get('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
+      const session = await this._sessions.get(id);
+      return new Response(JSON.stringify(session), { status: 200 });
+    });
 
     // GET /api/sessions - List available sessions
-    this._router.add('GET', '/api/sessions', async (req: Router.IRequest) => {
+    app.get('/api/sessions', async (req: Router.IRequest) => {
       const sessions = await this._sessions.list();
       return new Response(JSON.stringify(sessions), { status: 200 });
     });
 
     // PATCH /api/sessions/{session} - This can be used to rename a session
-    this._router.add(
-      'PATCH',
-      '/api/sessions(.*)',
-      async (req: Router.IRequest, id: string) => {
-        const options = req.body as any;
-        const session = await this._sessions.patch(options);
-        return new Response(JSON.stringify(session), { status: 200 });
-      }
-    );
+    app.patch('/api/sessions(.*)', async (req: Router.IRequest, id: string) => {
+      const options = req.body as any;
+      const session = await this._sessions.patch(options);
+      return new Response(JSON.stringify(session), { status: 200 });
+    });
 
     // DELETE /api/sessions/{session} - Delete a session
-    this._router.add(
-      'DELETE',
+    app.delete(
       '/api/sessions/(.+)',
       async (req: Router.IRequest, id: string) => {
         await this._sessions.shutdown(id);
@@ -218,7 +196,7 @@ export class JupyterServer {
     );
 
     // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
-    this._router.add('POST', '/api/sessions', async (req: Router.IRequest) => {
+    app.post('/api/sessions', async (req: Router.IRequest) => {
       const options = req.body as any;
       const session = await this._sessions.startNew(options);
       return new Response(JSON.stringify(session), { status: 201 });
@@ -228,27 +206,19 @@ export class JupyterServer {
     // TODO: improve the regex
     const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
 
-    this._router.add(
-      'GET',
-      pluginPattern,
-      async (req: Router.IRequest, pluginId: string) => {
-        const settings = await this._settings.get(pluginId);
-        return new Response(JSON.stringify(settings));
-      }
-    );
+    app.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
+      const settings = await this._settings.get(pluginId);
+      return new Response(JSON.stringify(settings));
+    });
 
-    this._router.add(
-      'PUT',
-      pluginPattern,
-      async (req: Router.IRequest, pluginId: string) => {
-        const body = req.body as any;
-        const { raw } = body;
-        await this._settings.save(pluginId, raw);
-        return new Response(null, { status: 204 });
-      }
-    );
+    app.put(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
+      const body = req.body as any;
+      const { raw } = body;
+      await this._settings.save(pluginId, raw);
+      return new Response(null, { status: 204 });
+    });
 
-    this._router.add('GET', '/api/settings', async (req: Router.IRequest) => {
+    app.get('/api/settings', async (req: Router.IRequest) => {
       const plugins = await this._settings.getAll();
       return new Response(JSON.stringify(plugins));
     });

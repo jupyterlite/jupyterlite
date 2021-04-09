@@ -5,25 +5,58 @@ import { ReadonlyJSONObject } from '@lumino/coreutils';
  */
 export class Router {
   /**
-   * Add a new route.
+   * Add a new GET route
    *
-   * @param method The method
-   * @param pattern The pattern
-   * @param callback The callback
+   * @param pattern The pattern to match
+   * @param callback The function to call on pattern match
+   *
    */
-  add(
-    method: Router.Method,
-    pattern: string | RegExp,
-    callback: Router.Callback
-  ): void {
-    if (typeof pattern === 'string') {
-      pattern = new RegExp(pattern);
-    }
-    this._routes.push({
-      method,
-      pattern,
-      callback
-    });
+  get(pattern: string | RegExp, callback: Router.Callback): void {
+    this._add('GET', pattern, callback);
+  }
+
+  /**
+   * Add a new PUT route
+   *
+   * @param pattern The pattern to match
+   * @param callback The function to call on pattern match
+   *
+   */
+  put(pattern: string | RegExp, callback: Router.Callback): void {
+    this._add('PUT', pattern, callback);
+  }
+
+  /**
+   * Add a new POST route
+   *
+   * @param pattern The pattern to match
+   * @param callback The function to call on pattern match
+   *
+   */
+  post(pattern: string | RegExp, callback: Router.Callback): void {
+    this._add('POST', pattern, callback);
+  }
+
+  /**
+   * Add a new PATCH route
+   *
+   * @param pattern The pattern to match
+   * @param callback The function to call on pattern match
+   *
+   */
+  patch(pattern: string | RegExp, callback: Router.Callback): void {
+    this._add('PATCH', pattern, callback);
+  }
+
+  /**
+   * Add a new DELETE route
+   *
+   * @param pattern The pattern to match
+   * @param callback The function to call on pattern match
+   *
+   */
+  delete(pattern: string | RegExp, callback: Router.Callback): void {
+    this._add('DELETE', pattern, callback);
   }
 
   /**
@@ -66,6 +99,28 @@ export class Router {
     }
 
     throw new Error('Cannot route ' + req.method + ' ' + req.url);
+  }
+
+  /**
+   * Add a new route.
+   *
+   * @param method The method
+   * @param pattern The pattern
+   * @param callback The callback
+   */
+  private _add(
+    method: Router.Method,
+    pattern: string | RegExp,
+    callback: Router.Callback
+  ): void {
+    if (typeof pattern === 'string') {
+      pattern = new RegExp(pattern);
+    }
+    this._routes.push({
+      method,
+      pattern,
+      callback
+    });
   }
 
   private _routes: Router.IRoute[] = [];
