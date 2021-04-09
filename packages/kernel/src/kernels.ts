@@ -110,7 +110,10 @@ export class Kernels implements IKernels {
     const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
     const runningKernel = this._kernels.get(id);
     if (runningKernel) {
-      return runningKernel;
+      return {
+        id: runningKernel.id,
+        name: runningKernel.name
+      };
     }
 
     const kernel = await startKernel(id);

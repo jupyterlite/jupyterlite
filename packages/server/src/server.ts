@@ -112,6 +112,7 @@ export class JupyterServer {
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
         const newPath = (req.body?.path as string) ?? '';
+        filename = filename[0] === '/' ? filename.slice(1) : filename;
         const nb = await this._contents.rename(filename, newPath);
         return new Response(JSON.stringify(nb));
       }
