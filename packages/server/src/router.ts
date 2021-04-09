@@ -1,3 +1,5 @@
+import { ReadonlyJSONObject } from '@lumino/coreutils';
+
 /**
  * A simple router.
  */
@@ -14,6 +16,9 @@ export class Router {
     pattern: string | RegExp,
     callback: Router.Callback
   ): void {
+    if (typeof pattern === 'string') {
+      pattern = new RegExp(pattern);
+    }
     this._routes.push({
       method,
       pattern,
@@ -32,9 +37,32 @@ export class Router {
     const { pathname } = url;
 
     for (const r of this._routes) {
-      if (r.method === method && pathname.match(r.pattern)) {
-        return r.callback.call(null, req);
+      if (r.method !== method) {
+        continue;
       }
+      const match = pathname.match(r.pattern);
+      if (!match) {
+        continue;
+      }
+      // const matches = match.slice(1);
+      const matches = match;
+      let body;
+      if (r.method === 'PATCH' || r.method === 'PUT' || r.method === 'POST') {
+        try {
+          body = JSON.parse(await req.text());
+        } catch {
+          body = undefined;
+        }
+      }
+      return r.callback.call(
+        null,
+        {
+          pathname,
+          body,
+          query: Object.fromEntries(url.searchParams)
+        },
+        ...matches
+      );
     }
 
     throw new Error('Cannot route ' + req.method + ' ' + req.url);
@@ -50,12 +78,35 @@ export namespace Router {
   /**
    * The Callback type.
    */
-  export type Callback = (req: Request) => Promise<Response>;
+  export type Callback = (
+    req: IRequest,
+    ...args: string[]
+  ) => Promise<Response>;
 
   /**
    * The Method type.
    */
   export type Method = 'GET' | 'PUT' | 'POST' | 'PATCH' | 'DELETE';
+
+  /**
+   * The interface for a parsed request
+   */
+  export interface IRequest {
+    /**
+     * The path for the url.
+     */
+    pathname: string;
+
+    /**
+     * The optional query parameters.
+     */
+    query?: ReadonlyJSONObject;
+
+    /**
+     * The optional body parameters.
+     */
+    body?: ReadonlyJSONObject;
+  }
 
   /**
    * An interface for a route.

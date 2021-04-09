@@ -32,6 +32,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     if (this.isDisposed) {
       return;
     }
+    console.log(`Dispose worker for kernel ${this.id}`);
     this._worker.terminate();
     super.dispose();
   }

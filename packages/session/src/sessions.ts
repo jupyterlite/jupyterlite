@@ -57,8 +57,8 @@ export class Sessions implements ISessions {
     }
     const patched = {
       ...session,
-      path: path ?? name,
-      name: name ?? path
+      path: path ?? session.path,
+      name: name ?? session.name
     };
     this._sessions[index] = patched;
     return patched;
