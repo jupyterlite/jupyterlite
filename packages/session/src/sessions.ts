@@ -2,11 +2,11 @@ import { Session } from '@jupyterlab/services';
 
 import { IKernels } from '@jupyterlite/kernel';
 
+import { ArrayExt } from '@lumino/algorithm';
+
 import { UUID } from '@lumino/coreutils';
 
 import { ISessions } from './tokens';
-
-const DEFAULT_NAME = 'example.ipynb';
 
 /**
  * A class to handle requests to /api/sessions
@@ -22,25 +22,46 @@ export class Sessions implements ISessions {
   }
 
   /**
+   * Get a session by id.
+   *
+   * @param id The id of the session.
+   */
+  async get(id: string): Promise<Session.IModel> {
+    const session = this._sessions.find(s => s.id === id);
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    return session;
+  }
+
+  /**
+   * List the running sessions
+   */
+  async list(): Promise<Session.IModel[]> {
+    return this._sessions;
+  }
+
+  /**
    * Path an existing session.
    * This can be used to rename a session.
    * TODO: read path and name
    *
    * @param options The options to patch the session.
    */
-  patch(options: Session.IModel): Session.IModel {
+  async patch(options: Session.IModel): Promise<Session.IModel> {
     const { id, path, name } = options;
-    const session: Session.IModel = {
-      id,
-      path: path ?? DEFAULT_NAME,
-      name: name ?? DEFAULT_NAME,
-      type: 'notebook',
-      kernel: {
-        id: id,
-        name: 'javascript'
-      }
+    const index = this._sessions.findIndex(s => s.id === id);
+    const session = this._sessions[index];
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    const patched = {
+      ...session,
+      path: path ?? session.path,
+      name: name ?? session.name
     };
-    return session;
+    this._sessions[index] = patched;
+    return patched;
   }
 
   /**
@@ -49,25 +70,49 @@ export class Sessions implements ISessions {
    *
    * @param options The options to start a new session.
    */
-  startNew(options: Session.IModel): Session.IModel {
+  async startNew(options: Session.IModel): Promise<Session.IModel> {
     const { path, name } = options;
+    const running = this._sessions.find(s => s.name === name);
+    if (running) {
+      return running;
+    }
     const kernelName = options.kernel?.name ?? '';
     const id = options.id ?? UUID.uuid4();
-    const kernel = this._kernels.startNew({ id, name: kernelName });
+    const kernel = await this._kernels.startNew({ id, name: kernelName });
     const session: Session.IModel = {
       id,
-      path: path ?? name,
-      name: name ?? DEFAULT_NAME,
+      path,
+      name: name ?? path,
       type: 'notebook',
       kernel: {
         id: kernel.id,
         name: kernel.name
       }
     };
+    this._sessions.push(session);
     return session;
   }
 
+  /**
+   * Shut down a session.
+   *
+   * @param id The id of the session to shut down.
+   */
+  async shutdown(id: string): Promise<void> {
+    const session = this._sessions.find(s => s.id === id);
+    if (!session) {
+      throw Error(`Session ${id} not found`);
+    }
+    const kernelId = session.kernel?.id;
+    if (kernelId) {
+      await this._kernels.shutdown(kernelId);
+    }
+    ArrayExt.removeFirstOf(this._sessions, session);
+  }
+
   private _kernels: IKernels;
+  // TODO: offload to a database
+  private _sessions: Session.IModel[] = [];
 }
 
 /**

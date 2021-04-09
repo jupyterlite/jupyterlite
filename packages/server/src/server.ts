@@ -1,3 +1,5 @@
+import { Contents as ServerContents } from '@jupyterlab/services';
+
 import { IContents } from '@jupyterlite/contents';
 
 import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
@@ -22,7 +24,6 @@ export class JupyterServer {
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
     this._settings = settings;
-    console.log(this._kernels);
     this._addRoutes();
   }
 
@@ -46,183 +47,175 @@ export class JupyterServer {
    * Add the routes.
    */
   private _addRoutes(): void {
-    // Contents
-    const filePattern = '(.*)';
+    const app = this._router;
 
     // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
-    this._router.add(
-      'GET',
-      `/api/contents${filePattern}/checkpoints`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
+    app.get(
+      '/api/contents(.*)/checkpoints',
+      async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.listCheckpoints(filename);
         return new Response(JSON.stringify(res));
       }
     );
 
     // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
-    this._router.add(
-      'POST',
-      `/api/contents${filePattern}/checkpoints/(.*)`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.restoreCheckpoint(filename, 'TODO');
+    app.post(
+      '/api/contents(.*)/checkpoints/(.*)',
+      async (req: Router.IRequest, filename: string, checkpoint: string) => {
+        const res = await this._contents.restoreCheckpoint(
+          filename,
+          checkpoint
+        );
         return new Response(JSON.stringify(res), { status: 204 });
       }
     );
 
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
-    this._router.add(
-      'POST',
-      `/api/contents${filePattern}/checkpoints`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
+    app.post(
+      '/api/contents(.*)/checkpoints',
+      async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.createCheckpoint(filename);
         return new Response(JSON.stringify(res), { status: 201 });
       }
     );
 
     // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
-    this._router.add(
-      'DELETE',
-      `/api/contents${filePattern}/checkpoints/(.*)`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const res = await this._contents.deleteCheckpoint(filename, 'TODO');
+    app.delete(
+      '/api/contents/(.+)/checkpoints/(.*)',
+      async (req: Router.IRequest, filename: string, checkpoint: string) => {
+        const res = await this._contents.deleteCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
       }
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
-    this._router.add(
-      'GET',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const nb = await this._contents.get(filename);
+    app.get(
+      '/api/contents/(.+)',
+      async (req: Router.IRequest, filename: string) => {
+        const options: ServerContents.IFetchOptions = {
+          content: req.query?.content === '1'
+        };
+        const nb = await this._contents.get(filename, options);
         return new Response(JSON.stringify(nb));
       }
     );
 
     // POST /api/contents/{path} - Create a new file in the specified path
-    this._router.add(
-      'POST',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const file = await this._contents.newUntitled();
-        return new Response(JSON.stringify(file), { status: 201 });
-      }
-    );
+    app.post('/api/contents', async (req: Router.IRequest) => {
+      const file = await this._contents.newUntitled();
+      return new Response(JSON.stringify(file), { status: 201 });
+    });
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
-    this._router.add(
-      'PATCH',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
-        const payload = await req.text();
-        const options = JSON.parse(payload);
-        const newPath = options.path;
+    app.patch(
+      '/api/contents/(.+)',
+      async (req: Router.IRequest, filename: string) => {
+        const newPath = (req.body?.path as string) ?? '';
         const nb = await this._contents.rename(filename, newPath);
         return new Response(JSON.stringify(nb));
       }
     );
 
     // PUT /api/contents/{path} - Save or upload a file
-    this._router.add(
-      'PUT',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
+    app.put(
+      '/api/contents/(.+)',
+      async (req: Router.IRequest, filename: string) => {
         const nb = await this._contents.save(filename);
         return new Response(JSON.stringify(nb));
       }
     );
 
     // DELETE /api/contents/{path} - Delete a file in the given path
-    this._router.add(
-      'DELETE',
-      `/api/contents${filePattern}`,
-      async (req: Request) => {
-        const filename = Private.parseFilename(req.url, filePattern);
+    app.delete(
+      '/api/contents/(.+)',
+      async (req: Router.IRequest, filename: string) => {
         await this._contents.delete(filename);
         return new Response(JSON.stringify(null), { status: 204 });
       }
     );
 
-    // Kernel
     // POST /api/kernels/{kernel_id} - Restart a kernel
-    this._router.add(
-      'POST',
+    app.post(
       '/api/kernels/(.*)/restart',
-      async (req: Request) => {
-        const kernelId = req.url.match('/api/kernels/(.*)/restart')?.[1] ?? '';
+      async (req: Router.IRequest, kernelId: string) => {
         const res = await this._kernels.restart(kernelId);
         return new Response(JSON.stringify(res));
       }
     );
 
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
-    this._router.add('DELETE', '/api/kernels/(.*)', async (req: Request) => {
-      const kernelId = req.url.match('/api/kernels/(.*)')?.[1] ?? '';
-      const res = await this._kernels.shutdown(kernelId);
-      return new Response(JSON.stringify(res), { status: 204 });
-    });
+    app.delete(
+      '/api/kernels/(.*)',
+      async (req: Router.IRequest, kernelId: string) => {
+        const res = await this._kernels.shutdown(kernelId);
+        return new Response(JSON.stringify(res), { status: 204 });
+      }
+    );
 
     // KernelSpecs
-    this._router.add('GET', '/api/kernelspecs', async (req: Request) => {
+    app.get('/api/kernelspecs', async (req: Router.IRequest) => {
       const res = this._kernelspecs.specs;
       return new Response(JSON.stringify(res));
     });
 
     // NbConvert
-    this._router.add('GET', '/api/nbconvert', async (req: Request) => {
+    app.get('/api/nbconvert', async (req: Router.IRequest) => {
       return new Response(JSON.stringify({}));
     });
 
-    // Sessions
-    this._router.add('GET', '/api/sessions.*', async (req: Request) => {
-      return new Response(JSON.stringify([]), { status: 200 });
-    });
-
-    this._router.add('PATCH', '/api/sessions.*', async (req: Request) => {
-      const payload = await req.text();
-      const options = JSON.parse(payload);
-      const session = this._sessions.patch(options);
+    // GET /api/sessions/{session} - Get session
+    app.get('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
+      const session = await this._sessions.get(id);
       return new Response(JSON.stringify(session), { status: 200 });
     });
 
-    this._router.add('DELETE', '/api/sessions.*', async (req: Request) => {
-      return new Response(null, { status: 204 });
+    // GET /api/sessions - List available sessions
+    app.get('/api/sessions', async (req: Router.IRequest) => {
+      const sessions = await this._sessions.list();
+      return new Response(JSON.stringify(sessions), { status: 200 });
     });
 
-    this._router.add('POST', '/api/sessions.*', async (req: Request) => {
-      const payload = await req.text();
-      const options = JSON.parse(payload);
-      const session = this._sessions.startNew(options);
+    // PATCH /api/sessions/{session} - This can be used to rename a session
+    app.patch('/api/sessions(.*)', async (req: Router.IRequest, id: string) => {
+      const options = req.body as any;
+      const session = await this._sessions.patch(options);
+      return new Response(JSON.stringify(session), { status: 200 });
+    });
+
+    // DELETE /api/sessions/{session} - Delete a session
+    app.delete(
+      '/api/sessions/(.+)',
+      async (req: Router.IRequest, id: string) => {
+        await this._sessions.shutdown(id);
+        return new Response(null, { status: 204 });
+      }
+    );
+
+    // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
+    app.post('/api/sessions', async (req: Router.IRequest) => {
+      const options = req.body as any;
+      const session = await this._sessions.startNew(options);
       return new Response(JSON.stringify(session), { status: 201 });
     });
 
     // Settings
     // TODO: improve the regex
-    const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
+    // const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
+    const pluginPattern = '/api/settings/((?:@([^/]+?)[/])?([^/]+?):(\\w+))';
 
-    this._router.add('GET', pluginPattern, async (req: Request) => {
-      const pluginId = Private.parsePluginId(req.url, pluginPattern);
+    app.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
       const settings = await this._settings.get(pluginId);
       return new Response(JSON.stringify(settings));
     });
 
-    this._router.add('PUT', pluginPattern, async (req: Request) => {
-      const pluginId = Private.parsePluginId(req.url, pluginPattern);
-      const payload = await req.text();
-      const parsed = JSON.parse(payload);
-      const { raw } = parsed;
+    app.put(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
+      const body = req.body as any;
+      const { raw } = body;
       await this._settings.save(pluginId, raw);
       return new Response(null, { status: 204 });
     });
 
-    this._router.add('GET', '/api/settings', async (req: Request) => {
+    app.get('/api/settings', async (req: Router.IRequest) => {
       const plugins = await this._settings.getAll();
       return new Response(JSON.stringify(plugins));
     });
@@ -269,29 +262,4 @@ export namespace JupyterServer {
      */
     settings: ISettings;
   }
-}
-
-/**
- * A namespace for private data.
- */
-namespace Private {
-  /**
-   * Parse the plugin id from a URL.
-   *
-   * @param url The request url.
-   */
-  export const parsePluginId = (url: string, pattern: RegExp): string => {
-    const matches = new URL(url).pathname.match(pattern);
-    return matches?.[0] ?? '';
-  };
-
-  /**
-   * Parse the file name from a URL.
-   *
-   * @param url The request url.
-   */
-  export const parseFilename = (url: string, pattern: string): string => {
-    const matches = new URL(url).pathname.match(pattern);
-    return matches?.[0] ?? '';
-  };
 }

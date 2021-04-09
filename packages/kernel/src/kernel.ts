@@ -14,11 +14,9 @@ export abstract class BaseKernel implements IKernel {
    * @param options The instantiation options for a BaseKernel.
    */
   constructor(options: IKernel.IOptions) {
-    const { id, name, sessionId, sendMessage } = options;
+    const { id, name, sendMessage } = options;
     this._id = id;
     this._name = name;
-    // TODO: handle session id
-    this._sessionId = sessionId;
     this._sendMessage = sendMessage;
   }
 
@@ -189,7 +187,8 @@ export abstract class BaseKernel implements IKernel {
     const message = KernelMessage.createMessage<KernelMessage.IStreamMsg>({
       channel: 'iopub',
       msgType: 'stream',
-      session: this._sessionId,
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
       parentHeader: this._parentHeader,
       content
     });
@@ -204,7 +203,7 @@ export abstract class BaseKernel implements IKernel {
   private _idle(parent: KernelMessage.IMessage): void {
     const message = KernelMessage.createMessage<KernelMessage.IStatusMsg>({
       msgType: 'status',
-      session: this._sessionId,
+      session: parent.header.session,
       parentHeader: parent.header,
       channel: 'iopub',
       content: {
@@ -222,7 +221,7 @@ export abstract class BaseKernel implements IKernel {
   private _busy(parent: KernelMessage.IMessage): void {
     const message = KernelMessage.createMessage<KernelMessage.IStatusMsg>({
       msgType: 'status',
-      session: '',
+      session: parent.header.session,
       parentHeader: parent.header,
       channel: 'iopub',
       content: {
@@ -243,7 +242,7 @@ export abstract class BaseKernel implements IKernel {
     const message = KernelMessage.createMessage<KernelMessage.IInfoReplyMsg>({
       msgType: 'kernel_info_reply',
       channel: 'shell',
-      session: this._sessionId,
+      session: parent.header.session,
       parentHeader: parent.header as KernelMessage.IHeader<
         'kernel_info_request'
       >,
@@ -305,7 +304,7 @@ export abstract class BaseKernel implements IKernel {
         msgType: 'history_reply',
         channel: 'shell',
         parentHeader: historyMsg.header,
-        session: this._sessionId,
+        session: msg.header.session,
         content: {
           status: 'ok',
           history: this._history as KernelMessage.IHistoryReply['history']
@@ -328,7 +327,7 @@ export abstract class BaseKernel implements IKernel {
         msgType: 'execute_input',
         parentHeader: parent.header,
         channel: 'iopub',
-        session: this._sessionId,
+        session: msg.header.session,
         content: {
           code,
           execution_count: this._executionCount
@@ -357,7 +356,7 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'execute_result',
       parentHeader: msg.header,
       channel: 'iopub',
-      session: this._sessionId,
+      session: msg.header.session,
       content: {
         ...content,
         execution_count: this._executionCount
@@ -382,7 +381,7 @@ export abstract class BaseKernel implements IKernel {
         msgType: 'execute_reply',
         channel: 'shell',
         parentHeader: parent.header,
-        session: this._sessionId,
+        session: msg.header.session,
         content
       }
     );
@@ -403,7 +402,7 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'error',
       parentHeader: msg.header,
       channel: 'iopub',
-      session: this._sessionId,
+      session: msg.header.session,
       content
     });
     this._sendMessage(message);
@@ -423,7 +422,7 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'complete_reply',
       parentHeader: completeMsg.header,
       channel: 'shell',
-      session: this._sessionId,
+      session: msg.header.session,
       content
     });
 
@@ -434,7 +433,6 @@ export abstract class BaseKernel implements IKernel {
   private _name: string;
   private _history: [number, number, string][] = [];
   private _executionCount = 0;
-  private _sessionId: string;
   private _isDisposed = false;
   private _disposed = new Signal<this, void>(this);
   private _sendMessage: IKernel.SendMessage;
