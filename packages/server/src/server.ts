@@ -131,7 +131,7 @@ export class JupyterServer {
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         await this._contents.delete(filename);
-        return new Response(JSON.stringify(null), { status: 204 });
+        return new Response(null, { status: 204 });
       }
     );
 
