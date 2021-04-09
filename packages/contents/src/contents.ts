@@ -60,21 +60,64 @@ export class Contents implements IContents {
   async newUntitled(
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
-    const name = options?.path ?? `Untitled${Contents._counter++ || ''}.ipynb`;
+    const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
-    const isFile = PathExt.extname(options?.path ?? '') !== '.ipynb';
-    const file: ServerContents.IModel = {
-      name,
-      path: name,
-      last_modified: created,
-      created,
-      format: isFile ? 'text' : 'json',
-      mimetype: isFile ? '' : 'application/json',
-      content: null,
-      size: undefined,
-      writable: true,
-      type: options?.type ?? 'notebook'
-    };
+
+    let file: ServerContents.IModel;
+    let name: string;
+    switch (type) {
+      case 'directory': {
+        name = `Untitled Folder${Contents._folderCounter++ || ''}`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'text',
+          mimetype: '',
+          content: null,
+          size: undefined,
+          writable: true,
+          type: 'directory'
+        };
+        break;
+      }
+      case 'file': {
+        const ext = options?.ext ?? '.txt';
+        name = `untitled${Contents._fileCounter++ || ''}${ext}`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'text',
+          // TODO: handle mimetypes
+          mimetype: 'text/plain',
+          content: '',
+          size: 0,
+          writable: true,
+          type: 'file'
+        };
+        break;
+      }
+      default: {
+        name = `Untitled${Contents._notebookCounter++ || ''}.ipynb`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'json',
+          mimetype: 'application/json',
+          content: Private.EMPTY_NB,
+          size: JSON.stringify(Private.EMPTY_NB).length,
+          writable: true,
+          type: 'notebook'
+        };
+        break;
+      }
+    }
+
     await this._storage.setItem(name, file);
     return file;
   }
@@ -372,7 +415,9 @@ export class Contents implements IContents {
     version: 1,
     storeName: 'files'
   });
-  private static _counter = 0;
+  private static _folderCounter = 0;
+  private static _fileCounter = 0;
+  private static _notebookCounter = 0;
 }
 
 /**
