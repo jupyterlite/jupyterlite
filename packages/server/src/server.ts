@@ -120,7 +120,8 @@ export class JupyterServer {
     app.put(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
-        const nb = await this._contents.save(filename);
+        const body = req.body;
+        const nb = await this._contents.save(filename, body);
         return new Response(JSON.stringify(nb));
       }
     );

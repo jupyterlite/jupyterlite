@@ -9,6 +9,8 @@ import { ModelDB } from '@jupyterlab/observables';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
+import localforage from 'localforage';
+
 import { IContents } from './tokens';
 
 /**
@@ -56,12 +58,11 @@ export class Contents implements IContents {
   async newUntitled(
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement newUntitled');
     const name = `Untitled${Contents._counter++ || ''}.ipynb`;
     const created = new Date().toISOString();
-    return {
+    const file: ServerContents.IModel = {
       name,
-      path: name,
+      path: options?.path ?? name,
       last_modified: created,
       created,
       content: Private.EMPTY_NB,
@@ -71,6 +72,8 @@ export class Contents implements IContents {
       writable: true,
       type: 'notebook'
     };
+    await this._storage.setItem(name, file);
+    return file;
   }
 
   /**
@@ -87,22 +90,19 @@ export class Contents implements IContents {
   ): Promise<ServerContents.IModel> {
     console.warn('TODO: implement get');
     // just to avoid popups on save for now
-    const createdDate = new Date(Date.now() - 1e10);
-    const created = createdDate.toISOString();
-    return {
-      name: path,
-      path,
-      last_modified: created,
-      created,
-      content: options?.content ? Private.EMPTY_NB : null,
-      size: options?.content
-        ? JSON.stringify(Private.EMPTY_NB).length
-        : undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
-    };
+    const item = await this._storage.getItem(path);
+    if (!item) {
+      throw Error(`Could not find file with path ${path}`);
+    }
+    const model = (item as unknown) as ServerContents.IModel;
+    if (!options?.content) {
+      return {
+        ...model,
+        content: null,
+        size: undefined
+      };
+    }
+    return model;
   }
 
   /**
@@ -117,20 +117,22 @@ export class Contents implements IContents {
     oldLocalPath: string,
     newLocalPath: string
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement rename');
-    const created = new Date().toISOString();
-    return {
+    const item = await this._storage.getItem(oldLocalPath);
+    if (!item) {
+      throw Error(`Could not find file with path ${oldLocalPath}`);
+    }
+    const file = (item as unknown) as ServerContents.IModel;
+    const modified = new Date().toISOString();
+    const newFile = {
+      ...file,
       name: newLocalPath,
       path: newLocalPath,
-      last_modified: created,
-      created,
-      content: null,
-      size: undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
+      last_modified: modified
     };
+    await this._storage.setItem(newLocalPath, newFile);
+    // remove the old file
+    await this._storage.removeItem(oldLocalPath);
+    return newFile;
   }
 
   /**
@@ -145,20 +147,20 @@ export class Contents implements IContents {
     path: string,
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement save');
-    const created = new Date().toISOString();
-    return {
-      name: path,
-      path,
-      last_modified: created,
-      created,
-      content: null,
-      size: undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
+    let item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    if (!item) {
+      item = await this.newUntitled({ path });
+    }
+    // override with the new values
+    const modified = new Date().toISOString();
+    item = {
+      ...item,
+      ...options,
+      last_modified: modified
     };
+
+    await this._storage.setItem(path, item);
+    return item;
   }
 
   /**
@@ -167,8 +169,7 @@ export class Contents implements IContents {
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
-    console.warn('TODO: implement delete');
-    return;
+    return this._storage.removeItem(path);
   }
 
   /**
@@ -328,6 +329,12 @@ export class Contents implements IContents {
 
   private _isDisposed = false;
   private _fileChanged = new Signal<this, ServerContents.IChangedArgs>(this);
+  private _storage = localforage.createInstance({
+    name: 'JupyterLite Storage',
+    description: 'Offline Storage for Notebooks and Files',
+    version: 1,
+    storeName: 'files'
+  });
   private static _counter = 0;
 }
 
