@@ -7,7 +7,9 @@ JupyterLite is a JupyterLab distribution that runs entirely in the browser witho
 The default JupyterLite distribution currently features:
 
 - a JavaScript kernel running in an IFrame
-- a basic [Pyodide](https://pyodide.org) kernel running in a Web Worker
+- a basic Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
+- offline notebook storage in the browser
+- basic session and kernel management to have multiple kernels running at once
 - support for code consoles
 
 ## Try it in your browser

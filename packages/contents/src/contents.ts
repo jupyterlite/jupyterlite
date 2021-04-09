@@ -185,6 +185,7 @@ export class Contents implements IContents {
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
     if (options.content && options.format === 'base64') {
+      // TODO: keep base64 if not a text file (image)
       const content = atob(options.content);
       const nb = ext === '.ipynb';
       item = {
