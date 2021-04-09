@@ -32,7 +32,7 @@ export class Kernels implements IKernels {
    *
    * @param options The kernel start options.
    */
-  startNew(options: Kernels.IKernelOptions): Kernel.IModel {
+  async startNew(options: Kernels.IKernelOptions): Promise<Kernel.IModel> {
     const { id, name } = options;
 
     const factory = this._kernelspecs.factories.get(name);
@@ -41,24 +41,44 @@ export class Kernels implements IKernels {
       return { id, name };
     }
 
-    const startKernel = async (id: string): Promise<void> => {
-      const socket = this._sockets.get(id);
-      if (!socket) {
-        throw Error(`No socket for kernel ${id}`);
-      }
+    const startKernel = async (id: string): Promise<IKernel> => {
+      const kernelId = id ?? UUID.uuid4();
+
       const sendMessage = (msg: KernelMessage.IMessage): void => {
+        const clientId = msg.header.session;
+        const socket = this._clientIds.get(clientId);
+        if (!socket) {
+          console.warn(
+            `Trying to send message on removed socket for kernel ${kernelId}`
+          );
+          return;
+        }
         const message = serialize(msg);
         socket.send(message);
       };
 
-      const kernelId = id ?? UUID.uuid4();
       const kernel = await factory({
         id: kernelId,
         sendMessage,
-        sessionId: id,
         name
       });
-      this._kernels.set(id, kernel);
+
+      await kernel.ready;
+      return kernel;
+    };
+
+    const hook = (
+      kernelId: string,
+      clientId: string,
+      socket: WebSocket
+    ): void => {
+      const kernel = this._kernels.get(kernelId);
+
+      if (!kernel) {
+        throw Error(`No kernel ${id}`);
+      }
+
+      this._clientIds.set(clientId, socket);
 
       socket.on(
         'message',
@@ -77,35 +97,33 @@ export class Kernels implements IKernels {
       );
 
       socket.on('close', () => {
-        kernel.dispose();
-        this._kernels.delete(id);
+        this._clientIds.delete(clientId);
+      });
+
+      // cleanup connections when the kernel is disposed
+      kernel.disposed.connect(() => {
+        socket.close();
       });
     };
 
+    // There is one server per kernel which handles multiple clients
     const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
-    let wsServer: WebSocketServer;
-    if (this._servers.has(id)) {
-      wsServer = this._servers.get(id)!;
-    } else {
-      wsServer = new WebSocketServer(kernelUrl);
+    if (!this._servers.has(id)) {
+      const wsServer = new WebSocketServer(kernelUrl);
       this._servers.set(id, wsServer);
+      wsServer.on('connection', (socket: WebSocket): void => {
+        const url = new URL(socket.url);
+        const clientId = url.searchParams.get('session_id') ?? '';
+        hook(id, clientId, socket);
+      });
     }
 
-    // TODO: handle multiple connections to the same kernel?
-    wsServer.on(
-      'connection',
-      async (socket: WebSocket): Promise<void> => {
-        if (this._sockets.has(id)) {
-          return;
-        }
-        this._sockets.set(id, socket);
-        return startKernel(id);
-      }
-    );
+    const kernel = await startKernel(id);
+    this._kernels.set(id, kernel);
 
     const model = {
-      id,
-      name: name ?? ''
+      id: kernel.id,
+      name: kernel.name
     };
 
     return model;
@@ -123,8 +141,6 @@ export class Kernels implements IKernels {
     }
     const { id, name } = kernel;
     kernel.dispose();
-    this._sockets.get(id)?.close();
-    this._sockets.delete(id);
     return this.startNew({ id, name });
   }
 
@@ -135,13 +151,11 @@ export class Kernels implements IKernels {
    */
   async shutdown(id: string): Promise<void> {
     this._kernels.get(id)?.dispose();
-    this._sockets.get(id)?.close();
-    this._sockets.delete(id);
     this._servers.delete(id);
   }
 
   private _servers = new ObservableMap<WebSocketServer>();
-  private _sockets = new ObservableMap<WebSocket>();
+  private _clientIds = new ObservableMap<WebSocket>();
   private _kernels = new ObservableMap<IKernel>();
   private _kernelspecs: IKernelSpecs;
 }

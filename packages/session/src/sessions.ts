@@ -74,7 +74,7 @@ export class Sessions implements ISessions {
     const { path, name } = options;
     const kernelName = options.kernel?.name ?? '';
     const id = options.id ?? UUID.uuid4();
-    const kernel = this._kernels.startNew({ id, name: kernelName });
+    const kernel = await this._kernels.startNew({ id, name: kernelName });
     const session: Session.IModel = {
       id,
       path,

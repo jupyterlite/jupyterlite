@@ -24,7 +24,6 @@ export class JupyterServer {
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
     this._settings = settings;
-    console.log(this._kernels);
     this._addRoutes();
   }
 
@@ -49,7 +48,6 @@ export class JupyterServer {
    */
   private _addRoutes(): void {
     const app = this._router;
-    // Contents
 
     // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
     app.get(
@@ -136,7 +134,6 @@ export class JupyterServer {
       }
     );
 
-    // Kernel
     // POST /api/kernels/{kernel_id} - Restart a kernel
     app.post(
       '/api/kernels/(.*)/restart',
@@ -166,7 +163,6 @@ export class JupyterServer {
       return new Response(JSON.stringify({}));
     });
 
-    // Sessions
     // GET /api/sessions/{session} - Get session
     app.get('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
       const session = await this._sessions.get(id);
@@ -204,7 +200,8 @@ export class JupyterServer {
 
     // Settings
     // TODO: improve the regex
-    const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
+    // const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
+    const pluginPattern = '/api/settings/((?:@([^/]+?)[/])?([^/]+?):(\\w+))';
 
     app.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
       const settings = await this._settings.get(pluginId);

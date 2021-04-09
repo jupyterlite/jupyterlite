@@ -77,8 +77,7 @@ export class Router {
       if (!match) {
         continue;
       }
-      // const matches = match.slice(1);
-      const matches = match;
+      const matches = match.slice(1);
       let body;
       if (r.method === 'PATCH' || r.method === 'PUT' || r.method === 'POST') {
         try {

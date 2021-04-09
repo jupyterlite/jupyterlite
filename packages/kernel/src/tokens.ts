@@ -22,7 +22,7 @@ export interface IKernels {
    *
    * @param options The kernel startup options.
    */
-  startNew: (options: Kernels.IKernelOptions) => Kernel.IModel;
+  startNew: (options: Kernels.IKernelOptions) => Promise<Kernel.IModel>;
 
   /**
    * Restart a kernel.
@@ -155,11 +155,6 @@ export namespace IKernel {
      * The name of the kernel.
      */
     name: string;
-
-    /**
-     * The session id.
-     */
-    sessionId: string;
 
     /**
      * The method to send messages back to the server.
