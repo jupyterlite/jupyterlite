@@ -88,8 +88,28 @@ export class Contents implements IContents {
     path: string,
     options?: ServerContents.IFetchOptions
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement get');
-    // just to avoid popups on save for now
+    // only handle flat for now
+    if (path === '') {
+      const content: ServerContents.IModel[] = [];
+      await this._storage.iterate(item => {
+        const file = (item as unknown) as ServerContents.IModel;
+        content.push(file);
+      });
+      return {
+        name: '',
+        path: '',
+        last_modified: new Date(0).toISOString(),
+        created: new Date(0).toISOString(),
+        format: 'json',
+        mimetype: 'application/json',
+        content,
+        size: undefined,
+        writable: true,
+        type: 'directory'
+      };
+    }
+    // remove leading slash
+    path = path.slice(1);
     const item = await this._storage.getItem(path);
     if (!item) {
       throw Error(`Could not find file with path ${path}`);

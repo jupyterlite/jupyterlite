@@ -90,7 +90,7 @@ export class JupyterServer {
 
     // GET /api/contents/{path} - Get contents of file or directory
     app.get(
-      '/api/contents/(.+)',
+      '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
         const options: ServerContents.IFetchOptions = {
           content: req.query?.content === '1'
