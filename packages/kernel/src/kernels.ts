@@ -99,18 +99,16 @@ export class Kernels implements IKernels {
       socket.on('close', () => {
         this._clientIds.delete(clientId);
       });
-
-      // cleanup connections when the kernel is disposed
-      kernel.disposed.connect(() => {
-        socket.close();
-      });
     };
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
     const runningKernel = this._kernels.get(id);
     if (runningKernel) {
-      return runningKernel;
+      return {
+        id: runningKernel.id,
+        name: runningKernel.name
+      };
     }
 
     const kernel = await startKernel(id);

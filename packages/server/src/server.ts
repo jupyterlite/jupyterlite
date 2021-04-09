@@ -90,7 +90,7 @@ export class JupyterServer {
 
     // GET /api/contents/{path} - Get contents of file or directory
     app.get(
-      '/api/contents/(.+)',
+      '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
         const options: ServerContents.IFetchOptions = {
           content: req.query?.content === '1'
@@ -102,15 +102,17 @@ export class JupyterServer {
 
     // POST /api/contents/{path} - Create a new file in the specified path
     app.post('/api/contents', async (req: Router.IRequest) => {
-      const file = await this._contents.newUntitled();
+      const options = req.body;
+      const file = await this._contents.newUntitled(options);
       return new Response(JSON.stringify(file), { status: 201 });
     });
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
     app.patch(
-      '/api/contents/(.+)',
+      '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
         const newPath = (req.body?.path as string) ?? '';
+        filename = filename[0] === '/' ? filename.slice(1) : filename;
         const nb = await this._contents.rename(filename, newPath);
         return new Response(JSON.stringify(nb));
       }
@@ -120,7 +122,8 @@ export class JupyterServer {
     app.put(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
-        const nb = await this._contents.save(filename);
+        const body = req.body;
+        const nb = await this._contents.save(filename, body);
         return new Response(JSON.stringify(nb));
       }
     );
@@ -130,7 +133,7 @@ export class JupyterServer {
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         await this._contents.delete(filename);
-        return new Response(JSON.stringify(null), { status: 204 });
+        return new Response(null, { status: 204 });
       }
     );
 

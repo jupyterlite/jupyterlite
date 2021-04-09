@@ -7,9 +7,18 @@ import { INotebookContent } from '@jupyterlab/nbformat';
 
 import { ModelDB } from '@jupyterlab/observables';
 
+import { PathExt } from '@jupyterlab/coreutils';
+
 import { ISignal, Signal } from '@lumino/signaling';
 
+import localforage from 'localforage';
+
 import { IContents } from './tokens';
+
+/**
+ * The name of the local storage.
+ */
+const STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * A class to handle requests to /api/contents
@@ -56,21 +65,69 @@ export class Contents implements IContents {
   async newUntitled(
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement newUntitled');
-    const name = `Untitled${Contents._counter++ || ''}.ipynb`;
+    const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
-    return {
-      name,
-      path: name,
-      last_modified: created,
-      created,
-      content: Private.EMPTY_NB,
-      format: 'json',
-      mimetype: 'application/json',
-      size: JSON.stringify(Private.EMPTY_NB).length,
-      writable: true,
-      type: 'notebook'
-    };
+
+    let file: ServerContents.IModel;
+    let name: string;
+    switch (type) {
+      case 'directory': {
+        const counter = await this._incrementCounter('directory');
+        name = `Untitled Folder${counter || ''}`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'text',
+          mimetype: '',
+          content: null,
+          size: undefined,
+          writable: true,
+          type: 'directory'
+        };
+        break;
+      }
+      case 'file': {
+        const ext = options?.ext ?? '.txt';
+        const counter = await this._incrementCounter('file');
+        name = `untitled${counter || ''}${ext}`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'text',
+          // TODO: handle mimetypes
+          mimetype: 'text/plain',
+          content: '',
+          size: 0,
+          writable: true,
+          type: 'file'
+        };
+        break;
+      }
+      default: {
+        const counter = await this._incrementCounter('notebook');
+        name = `Untitled${counter || ''}.ipynb`;
+        file = {
+          name,
+          path: name,
+          last_modified: created,
+          created,
+          format: 'json',
+          mimetype: 'application/json',
+          content: Private.EMPTY_NB,
+          size: JSON.stringify(Private.EMPTY_NB).length,
+          writable: true,
+          type: 'notebook'
+        };
+        break;
+      }
+    }
+
+    await this._storage.setItem(name, file);
+    return file;
   }
 
   /**
@@ -85,24 +142,41 @@ export class Contents implements IContents {
     path: string,
     options?: ServerContents.IFetchOptions
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement get');
-    // just to avoid popups on save for now
-    const createdDate = new Date(Date.now() - 1e10);
-    const created = createdDate.toISOString();
-    return {
-      name: path,
-      path,
-      last_modified: created,
-      created,
-      content: options?.content ? Private.EMPTY_NB : null,
-      size: options?.content
-        ? JSON.stringify(Private.EMPTY_NB).length
-        : undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
-    };
+    // only handle flat for now
+    if (path === '') {
+      const content: ServerContents.IModel[] = [];
+      await this._storage.iterate(item => {
+        const file = (item as unknown) as ServerContents.IModel;
+        content.push(file);
+      });
+      return {
+        name: '',
+        path: '',
+        last_modified: new Date(0).toISOString(),
+        created: new Date(0).toISOString(),
+        format: 'json',
+        mimetype: 'application/json',
+        content,
+        size: undefined,
+        writable: true,
+        type: 'directory'
+      };
+    }
+    // remove leading slash
+    path = path.slice(1);
+    const item = await this._storage.getItem(path);
+    if (!item) {
+      throw Error(`Could not find file with path ${path}`);
+    }
+    const model = (item as unknown) as ServerContents.IModel;
+    if (!options?.content) {
+      return {
+        ...model,
+        content: null,
+        size: undefined
+      };
+    }
+    return model;
   }
 
   /**
@@ -117,20 +191,22 @@ export class Contents implements IContents {
     oldLocalPath: string,
     newLocalPath: string
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement rename');
-    const created = new Date().toISOString();
-    return {
+    const item = await this._storage.getItem(oldLocalPath);
+    if (!item) {
+      throw Error(`Could not find file with path ${oldLocalPath}`);
+    }
+    const file = (item as unknown) as ServerContents.IModel;
+    const modified = new Date().toISOString();
+    const newFile = {
+      ...file,
       name: newLocalPath,
       path: newLocalPath,
-      last_modified: created,
-      created,
-      content: null,
-      size: undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
+      last_modified: modified
     };
+    await this._storage.setItem(newLocalPath, newFile);
+    // remove the old file
+    await this._storage.removeItem(oldLocalPath);
+    return newFile;
   }
 
   /**
@@ -145,20 +221,34 @@ export class Contents implements IContents {
     path: string,
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
-    console.warn('TODO: implement save');
-    const created = new Date().toISOString();
-    return {
-      name: path,
-      path,
-      last_modified: created,
-      created,
-      content: null,
-      size: undefined,
-      format: 'json',
-      mimetype: 'application/json',
-      writable: true,
-      type: 'notebook'
+    let item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    if (!item) {
+      item = await this.newUntitled({ path });
+    }
+    // override with the new values
+    const modified = new Date().toISOString();
+    item = {
+      ...item,
+      ...options,
+      last_modified: modified
     };
+
+    // process the file if coming from an upload
+    const ext = PathExt.extname(options.name ?? '');
+    if (options.content && options.format === 'base64') {
+      // TODO: keep base64 if not a text file (image)
+      const content = atob(options.content);
+      const nb = ext === '.ipynb';
+      item = {
+        ...item,
+        content: nb ? JSON.parse(content) : content,
+        format: nb ? 'json' : 'text',
+        type: nb ? 'notebook' : 'file'
+      };
+    }
+
+    await this._storage.setItem(path, item);
+    return item;
   }
 
   /**
@@ -167,8 +257,7 @@ export class Contents implements IContents {
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
-    console.warn('TODO: implement delete');
-    return;
+    return this._storage.removeItem(path);
   }
 
   /**
@@ -326,9 +415,35 @@ export class Contents implements IContents {
     throw new Error('Method not implemented.');
   }
 
+  /**
+   * Increment the counter for a given file type.
+   * Used to avoid collisions when creating new untitled files.
+   *
+   * @param type The file type to increment the counter for.
+   */
+  private async _incrementCounter(
+    type: ServerContents.ContentType
+  ): Promise<number> {
+    const current = ((await this._counters.getItem(type)) as number) ?? -1;
+    const counter = current + 1;
+    await this._counters.setItem(type, counter);
+    return counter;
+  }
+
   private _isDisposed = false;
   private _fileChanged = new Signal<this, ServerContents.IChangedArgs>(this);
-  private static _counter = 0;
+  private _storage = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Offline Storage for Notebooks and Files',
+    storeName: 'files',
+    version: 1
+  });
+  private _counters = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Store the current file suffix counters',
+    storeName: 'counters',
+    version: 1
+  });
 }
 
 /**
