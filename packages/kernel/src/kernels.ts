@@ -108,25 +108,31 @@ export class Kernels implements IKernels {
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
-    if (!this._servers.has(id)) {
-      const wsServer = new WebSocketServer(kernelUrl);
-      this._servers.set(id, wsServer);
-      wsServer.on('connection', (socket: WebSocket): void => {
-        const url = new URL(socket.url);
-        const clientId = url.searchParams.get('session_id') ?? '';
-        hook(id, clientId, socket);
-      });
+    const runningKernel = this._kernels.get(id);
+    if (runningKernel) {
+      return runningKernel;
     }
 
     const kernel = await startKernel(id);
     this._kernels.set(id, kernel);
 
-    const model = {
+    const wsServer = new WebSocketServer(kernelUrl);
+    wsServer.on('connection', (socket: WebSocket): void => {
+      const url = new URL(socket.url);
+      const clientId = url.searchParams.get('session_id') ?? '';
+      hook(id, clientId, socket);
+    });
+
+    // cleanup on kernel shutdown
+    kernel.disposed.connect(() => {
+      wsServer.close();
+      this._kernels.delete(id);
+    });
+
+    return {
       id: kernel.id,
       name: kernel.name
     };
-
-    return model;
   }
 
   /**
@@ -151,10 +157,8 @@ export class Kernels implements IKernels {
    */
   async shutdown(id: string): Promise<void> {
     this._kernels.get(id)?.dispose();
-    this._servers.delete(id);
   }
 
-  private _servers = new ObservableMap<WebSocketServer>();
   private _clientIds = new ObservableMap<WebSocket>();
   private _kernels = new ObservableMap<IKernel>();
   private _kernelspecs: IKernelSpecs;
