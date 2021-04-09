@@ -79,6 +79,7 @@ export abstract class BaseKernel implements IKernel {
       return;
     }
     this._isDisposed = true;
+    this._disposed.emit(void 0);
   }
 
   /**

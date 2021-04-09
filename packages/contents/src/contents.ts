@@ -16,6 +16,11 @@ import localforage from 'localforage';
 import { IContents } from './tokens';
 
 /**
+ * The name of the local storage.
+ */
+const STORAGE_NAME = 'JupyterLite Storage';
+
+/**
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
@@ -67,7 +72,8 @@ export class Contents implements IContents {
     let name: string;
     switch (type) {
       case 'directory': {
-        name = `Untitled Folder${Contents._folderCounter++ || ''}`;
+        const counter = await this._incrementCounter('directory');
+        name = `Untitled Folder${counter || ''}`;
         file = {
           name,
           path: name,
@@ -84,7 +90,8 @@ export class Contents implements IContents {
       }
       case 'file': {
         const ext = options?.ext ?? '.txt';
-        name = `untitled${Contents._fileCounter++ || ''}${ext}`;
+        const counter = await this._incrementCounter('file');
+        name = `untitled${counter || ''}${ext}`;
         file = {
           name,
           path: name,
@@ -101,7 +108,8 @@ export class Contents implements IContents {
         break;
       }
       default: {
-        name = `Untitled${Contents._notebookCounter++ || ''}.ipynb`;
+        const counter = await this._incrementCounter('notebook');
+        name = `Untitled${counter || ''}.ipynb`;
         file = {
           name,
           path: name,
@@ -407,17 +415,35 @@ export class Contents implements IContents {
     throw new Error('Method not implemented.');
   }
 
+  /**
+   * Increment the counter for a given file type.
+   * Used to avoid collisions when creating new untitled files.
+   *
+   * @param type The file type to increment the counter for.
+   */
+  private async _incrementCounter(
+    type: ServerContents.ContentType
+  ): Promise<number> {
+    const current = ((await this._counters.getItem(type)) as number) ?? -1;
+    const counter = current + 1;
+    await this._counters.setItem(type, counter);
+    return counter;
+  }
+
   private _isDisposed = false;
   private _fileChanged = new Signal<this, ServerContents.IChangedArgs>(this);
   private _storage = localforage.createInstance({
-    name: 'JupyterLite Storage',
+    name: STORAGE_NAME,
     description: 'Offline Storage for Notebooks and Files',
-    version: 1,
-    storeName: 'files'
+    storeName: 'files',
+    version: 1
   });
-  private static _folderCounter = 0;
-  private static _fileCounter = 0;
-  private static _notebookCounter = 0;
+  private _counters = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Store the current file suffix counters',
+    storeName: 'counters',
+    version: 1
+  });
 }
 
 /**

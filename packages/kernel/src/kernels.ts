@@ -99,11 +99,6 @@ export class Kernels implements IKernels {
       socket.on('close', () => {
         this._clientIds.delete(clientId);
       });
-
-      // cleanup connections when the kernel is disposed
-      kernel.disposed.connect(() => {
-        socket.close();
-      });
     };
 
     // There is one server per kernel which handles multiple clients
