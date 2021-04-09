@@ -7,6 +7,8 @@ import { INotebookContent } from '@jupyterlab/nbformat';
 
 import { ModelDB } from '@jupyterlab/observables';
 
+import { PathExt } from '@jupyterlab/coreutils';
+
 import { ISignal, Signal } from '@lumino/signaling';
 
 import localforage from 'localforage';
@@ -58,19 +60,20 @@ export class Contents implements IContents {
   async newUntitled(
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
-    const name = `Untitled${Contents._counter++ || ''}.ipynb`;
+    const name = options?.path ?? `Untitled${Contents._counter++ || ''}.ipynb`;
     const created = new Date().toISOString();
+    const isFile = PathExt.extname(options?.path ?? '') !== '.ipynb';
     const file: ServerContents.IModel = {
       name,
-      path: options?.path ?? name,
+      path: name,
       last_modified: created,
       created,
-      content: Private.EMPTY_NB,
-      format: 'json',
-      mimetype: 'application/json',
-      size: JSON.stringify(Private.EMPTY_NB).length,
+      format: isFile ? 'text' : 'json',
+      mimetype: isFile ? '' : 'application/json',
+      content: null,
+      size: undefined,
       writable: true,
-      type: 'notebook'
+      type: options?.type ?? 'notebook'
     };
     await this._storage.setItem(name, file);
     return file;
@@ -178,6 +181,19 @@ export class Contents implements IContents {
       ...options,
       last_modified: modified
     };
+
+    // process the file if coming from an upload
+    const ext = PathExt.extname(options.name ?? '');
+    if (options.content && options.format === 'base64') {
+      const content = atob(options.content);
+      const nb = ext === '.ipynb';
+      item = {
+        ...item,
+        content: nb ? JSON.parse(content) : content,
+        format: nb ? 'json' : 'text',
+        type: nb ? 'notebook' : 'file'
+      };
+    }
 
     await this._storage.setItem(path, item);
     return item;
