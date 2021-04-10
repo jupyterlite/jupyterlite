@@ -119,3 +119,7 @@ jupyterlab_classic/labextension
 # playwright
 app/artifacts/videos
 app/test/data
+
+# extras
+# do not include kernels such as Pyodide
+app/kernels
