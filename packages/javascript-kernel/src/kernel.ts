@@ -69,6 +69,17 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
+   * Dispose the kernel.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    this._iframe.remove();
+    super.dispose();
+  }
+
+  /**
    * Handle a kernel_info_request message
    */
   async kernelInfoRequest(): Promise<KernelMessage.IInfoReplyMsg['content']> {
