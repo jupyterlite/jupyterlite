@@ -19,6 +19,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     // create the main IFrame
     this._iframe = document.createElement('iframe');
     this._iframe.style.visibility = 'hidden';
+    this._iframe.style.position = 'absolute';
+    // position outside of the page
+    this._iframe.style.top = '-100000px';
     document.body.appendChild(this._iframe);
 
     this._initIFrame(this._iframe).then(() => {
@@ -66,6 +69,17 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
         }
       });
     });
+  }
+
+  /**
+   * Dispose the kernel.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    this._iframe.remove();
+    super.dispose();
   }
 
   /**
