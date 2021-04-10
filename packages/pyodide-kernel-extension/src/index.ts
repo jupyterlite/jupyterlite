@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import {
   JupyterLiteServer,
   JupyterLiteServerPlugin
@@ -11,6 +13,12 @@ import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 import { PyodideKernel } from '@jupyterlite/pyodide-kernel';
 
 /**
+ * The default CDN fallback for Pyodide
+ */
+const PYODIDE_CDN_URL =
+  'https://pyodide-cdn2.iodide.io/v0.17.0a2/full/pyodide.js';
+
+/**
  * A plugin to register the Pyodide kernel.
  */
 const kernel: JupyterLiteServerPlugin<void> = {
@@ -18,6 +26,11 @@ const kernel: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+    const url = PageConfig.getOption('pyodideUrl') || PYODIDE_CDN_URL;
+    const pyodideUrl = URLExt.isLocal(url)
+      ? URLExt.join(window.location.origin, url)
+      : url;
+
     kernelspecs.register({
       spec: {
         name: 'python',
@@ -38,7 +51,10 @@ const kernel: JupyterLiteServerPlugin<void> = {
         }
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
-        return new PyodideKernel(options);
+        return new PyodideKernel({
+          ...options,
+          pyodideUrl
+        });
       }
     });
   }

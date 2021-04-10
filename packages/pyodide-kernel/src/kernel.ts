@@ -13,9 +13,12 @@ export class PyodideKernel extends BaseKernel implements IKernel {
    *
    * @param options The instantiation options for a new PyodideKernel
    */
-  constructor(options: IKernel.IOptions) {
+  constructor(options: PyodideKernel.IOptions) {
     super(options);
-    const blob = new Blob([Private.WORKER_SCRIPT]);
+    const { pyodideUrl } = options;
+    const blob = new Blob([
+      [`importScripts("${pyodideUrl}");`, Private.WORKER_SCRIPT].join('\n')
+    ]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
@@ -244,11 +247,25 @@ export class PyodideKernel extends BaseKernel implements IKernel {
   private _ready = new PromiseDelegate<void>();
 }
 
+/**
+ * A namespace for PyodideKernel statics.
+ */
+export namespace PyodideKernel {
+  /**
+   * The instantiation options for a Pyodide kernel
+   */
+  export interface IOptions extends IKernel.IOptions {
+    /**
+     * The URL to fetch Pyodide.
+     */
+    pyodideUrl: string;
+  }
+}
+
 namespace Private {
   // TODO: move most of the inner logic to a separate Python file
   // that would be loaded on startup by Pyodide
   export const WORKER_SCRIPT = `
-    importScripts("https://pyodide-cdn2.iodide.io/v0.17.0a2/full/pyodide.js");
     addEventListener("message", ({ data }) => {
       languagePluginLoader.then(() => {
           pyodide.loadPackage([]).then(() => {
