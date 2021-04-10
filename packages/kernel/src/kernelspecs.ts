@@ -23,7 +23,7 @@ export class KernelSpecs implements IKernelSpecs {
       return null;
     }
     return {
-      default: 'javascript',
+      default: 'python',
       kernelspecs: Object.fromEntries(this._specs)
     };
   }
