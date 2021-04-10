@@ -26,7 +26,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
-    const url = PageConfig.getOption('pyodideUrl') ?? PYODIDE_CDN_URL;
+    const url = PageConfig.getOption('pyodideUrl') || PYODIDE_CDN_URL;
     const pyodideUrl = URLExt.isLocal(url)
       ? URLExt.join(window.location.origin, url)
       : url;
