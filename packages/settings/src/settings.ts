@@ -1,27 +1,20 @@
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { StateDB } from '@jupyterlab/statedb';
-
-import { LocalStorageConnector } from '@jupyterlite/storage';
-
 import * as json5 from 'json5';
 
+import localforage from 'localforage';
+
 import { IPlugin } from './tokens';
+
+/**
+ * The name of the local storage.
+ */
+const STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * A class to handle requests to /api/settings
  */
 export class Settings {
-  /**
-   * Construct a new Settings.
-   */
-  constructor() {
-    const connector = new LocalStorageConnector('settings');
-    this._storage = new StateDB<string>({
-      connector
-    });
-  }
-
   /**
    * Get settings by plugin id
    *
@@ -47,7 +40,7 @@ export class Settings {
     const settings = await Promise.all(
       all.map(async plugin => {
         const { id } = plugin;
-        const raw = (await this._storage.fetch(id)) ?? plugin.raw;
+        const raw = ((await this._storage.getItem(id)) as string) ?? plugin.raw;
         return {
           ...plugin,
           raw,
@@ -68,8 +61,13 @@ export class Settings {
    *
    */
   async save(plugin: string, raw: string): Promise<void> {
-    return this._storage.save(plugin, raw);
+    await this._storage.setItem(plugin, raw);
   }
 
-  private _storage: StateDB<string>;
+  private _storage = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Offline Storage for Settings',
+    storeName: 'settings',
+    version: 1
+  });
 }
