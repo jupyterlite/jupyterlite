@@ -45,10 +45,9 @@
   "dependencies": {
     "@jupyterlab/coreutils": "^5.0.0",
     "@jupyterlab/settingregistry": "^3.0.0",
-    "@jupyterlab/statedb": "^3.0.0",
-    "@jupyterlite/storage": "^0.1.0",
     "@lumino/coreutils": "^1.5.3",
-    "json5": "^2.2.0"
+    "json5": "^2.2.0",
+    "localforage": "^1.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
