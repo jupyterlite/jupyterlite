@@ -13,6 +13,7 @@
   "workspaces": {
     "packages": [
       "app",
+      "app-classic",
       "packages/*"
     ]
   },
