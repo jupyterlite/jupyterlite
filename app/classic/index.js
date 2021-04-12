@@ -35,6 +35,8 @@ window.addEventListener('load', async () => {
     require('@jupyterlite/application-extension'),
     require('@jupyterlite/classic-application-extension'),
     require('@jupyterlite/theme-extension'),
+    // third-party plugins
+    require('@telamonian/theme-darcula'),
     // @jupyterlab-classic plugins
     // do not enable the document opener from JupyterLab Classic
     require('@jupyterlab-classic/application-extension').default.filter(

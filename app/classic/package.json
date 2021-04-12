@@ -97,7 +97,8 @@
       "@jupyterlab/shortcuts-extension",
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
-      "@jupyterlab/tooltip-extension"
+      "@jupyterlab/tooltip-extension",
+      "@telamonian/theme-darcula"
     ]
   }
 }

@@ -1,4 +1,4 @@
 {
-  "extends": "../tsconfigbase.test",
+  "extends": "../../tsconfigbase.test",
   "include": ["test/**/*"]
 }
