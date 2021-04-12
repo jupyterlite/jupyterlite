@@ -27,11 +27,8 @@ window.addEventListener('load', async () => {
   const { serviceManager } = jupyterLiteServer;
 
   // create a JupyterLab Classic frontend
-  const { App, ClassicShell } = require('@jupyterlab-classic/application');
-  // TODO: remove explicit shell instantiation when fixed in jupyterlab-classic
-  const app = new App({ shell: new ClassicShell() });
-  // TODO: remove when fixed upstream
-  app.serviceManager = serviceManager;
+  const { App } = require('@jupyterlab-classic/application');
+  const app = new App({ serviceManager });
 
   let mods = [
     // @jupyterlite plugins
@@ -42,15 +39,12 @@ window.addEventListener('load', async () => {
     require('@jupyterlab-classic/docmanager-extension'),
     require('@jupyterlab-classic/help-extension'),
     require('@jupyterlab-classic/notebook-extension'),
-    // to handle opening new tabs after creating a new terminal
-    require('@jupyterlab-classic/terminal-extension'),
 
     // @jupyterlab plugins
     require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
       [
         '@jupyterlab/apputils-extension:palette',
         '@jupyterlab/apputils-extension:settings',
-        '@jupyterlab/apputils-extension:themes',
         '@jupyterlab/apputils-extension:themes-palette-menu'
       ].includes(id)
     ),
@@ -77,8 +71,6 @@ window.addEventListener('load', async () => {
     ),
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
-    // so new terminals can be create from the menu
-    require('@jupyterlab/terminal-extension'),
     require('@jupyterlab/theme-light-extension'),
     require('@jupyterlab/theme-dark-extension')
   ];
@@ -122,4 +114,6 @@ window.addEventListener('load', async () => {
   console.log('Starting app');
   await app.start();
   console.log('JupyterLite Classic started, waiting for restore');
+  await app.restored;
+  console.log('JupyterLite Classic restored');
 });
