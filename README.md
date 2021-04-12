@@ -35,6 +35,9 @@ yarn
 # build the app
 yarn run build
 
+# go to the app folder
+cd app/
+
 # start a local http server
 npx http-server
 ```
