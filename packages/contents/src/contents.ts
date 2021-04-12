@@ -186,12 +186,11 @@ export class Contents implements IContents {
     if (model.type === 'directory') {
       const content: ServerContents.IModel[] = [];
       await this._storage.iterate((item, key) => {
-        // use an additional slash to not include the directory itself
-        if (!key.startsWith(`${path}/`)) {
-          return;
-        }
         const file = (item as unknown) as ServerContents.IModel;
-        content.push(file);
+        // use an additional slash to not include the directory itself
+        if (key === `${path}/${file.name}`) {
+          content.push(file);
+        }
       });
       return {
         name: '',
@@ -228,9 +227,10 @@ export class Contents implements IContents {
     }
     const file = (item as unknown) as ServerContents.IModel;
     const modified = new Date().toISOString();
+    const name = PathExt.basename(newLocalPath);
     const newFile = {
       ...file,
-      name: newLocalPath,
+      name,
       path: newLocalPath,
       last_modified: modified
     };
