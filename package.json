@@ -12,8 +12,8 @@
   "author": "JupyterLite Contributors",
   "workspaces": {
     "packages": [
-      "app",
-      "app-classic",
+      "lab",
+      "classic",
       "packages/*"
     ]
   },
