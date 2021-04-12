@@ -65,15 +65,17 @@ export class Contents implements IContents {
   async newUntitled(
     options?: ServerContents.ICreateOptions
   ): Promise<ServerContents.IModel> {
+    const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
+    const prefix = path ? `${path}/` : '';
 
     let file: ServerContents.IModel;
-    let name: string;
+    let name = '';
     switch (type) {
       case 'directory': {
         const counter = await this._incrementCounter('directory');
-        name = `Untitled Folder${counter || ''}`;
+        name += `Untitled Folder${counter || ''}`;
         file = {
           name,
           path: name,
@@ -91,7 +93,7 @@ export class Contents implements IContents {
       case 'file': {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
-        name = `untitled${counter || ''}${ext}`;
+        name += `untitled${counter || ''}${ext}`;
         file = {
           name,
           path: name,
@@ -109,7 +111,7 @@ export class Contents implements IContents {
       }
       default: {
         const counter = await this._incrementCounter('notebook');
-        name = `Untitled${counter || ''}.ipynb`;
+        name += `Untitled${counter || ''}.ipynb`;
         file = {
           name,
           path: name,
@@ -126,7 +128,8 @@ export class Contents implements IContents {
       }
     }
 
-    await this._storage.setItem(name, file);
+    const key = `${prefix}${name}`;
+    await this._storage.setItem(key, file);
     return file;
   }
 
@@ -145,7 +148,10 @@ export class Contents implements IContents {
     // only handle flat for now
     if (path === '') {
       const content: ServerContents.IModel[] = [];
-      await this._storage.iterate(item => {
+      await this._storage.iterate((item, key) => {
+        if (key.includes('/')) {
+          return;
+        }
         const file = (item as unknown) as ServerContents.IModel;
         content.push(file);
       });
@@ -163,7 +169,7 @@ export class Contents implements IContents {
       };
     }
     // remove leading slash
-    path = path.slice(1);
+    path = decodeURIComponent(path.slice(1));
     const item = await this._storage.getItem(path);
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
@@ -174,6 +180,30 @@ export class Contents implements IContents {
         ...model,
         content: null,
         size: undefined
+      };
+    }
+    // for directories, find all files with the path as the prefix
+    if (model.type === 'directory') {
+      const content: ServerContents.IModel[] = [];
+      await this._storage.iterate((item, key) => {
+        // use an additional slash to not include the directory itself
+        if (!key.startsWith(`${path}/`)) {
+          return;
+        }
+        const file = (item as unknown) as ServerContents.IModel;
+        content.push(file);
+      });
+      return {
+        name: '',
+        path: '',
+        last_modified: model.last_modified,
+        created: model.created,
+        format: 'json',
+        mimetype: 'application/json',
+        content,
+        size: undefined,
+        writable: true,
+        type: 'directory'
       };
     }
     return model;
@@ -191,9 +221,10 @@ export class Contents implements IContents {
     oldLocalPath: string,
     newLocalPath: string
   ): Promise<ServerContents.IModel> {
-    const item = await this._storage.getItem(oldLocalPath);
+    const path = decodeURIComponent(oldLocalPath);
+    const item = await this._storage.getItem(path);
     if (!item) {
-      throw Error(`Could not find file with path ${oldLocalPath}`);
+      throw Error(`Could not find file with path ${path}`);
     }
     const file = (item as unknown) as ServerContents.IModel;
     const modified = new Date().toISOString();
@@ -205,7 +236,7 @@ export class Contents implements IContents {
     };
     await this._storage.setItem(newLocalPath, newFile);
     // remove the old file
-    await this._storage.removeItem(oldLocalPath);
+    await this._storage.removeItem(path);
     return newFile;
   }
 
@@ -257,6 +288,7 @@ export class Contents implements IContents {
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
+    path = decodeURIComponent(path);
     return this._storage.removeItem(path);
   }
 
