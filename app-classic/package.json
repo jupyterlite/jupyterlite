@@ -15,9 +15,10 @@
   },
   "dependencies": {
     "@jupyterlite/server": "^0.1.0",
+    "@jupyterlite/application-extension": "^0.1.0",
+    "@jupyterlite/classic-application-extension": "^0.1.0",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0",
     "@jupyterlite/pyodide-kernel-extension": "^0.1.0",
-    "@jupyterlite/application-extension": "^0.1.0",
     "@jupyterlite/server-extension": "^0.1.0",
     "@jupyterlite/theme-extension": "^0.1.0",
     "@jupyterlab-classic/application": "^0.1.8",
@@ -78,6 +79,7 @@
     "name": "JupyterLite Classic",
     "extensions": [
       "@jupyterlite/application-extension",
+      "@jupyterlite/classic-application-extension",
       "@jupyterlab-classic/application-extension",
       "@jupyterlab-classic/docmanager-extension",
       "@jupyterlab-classic/help-extension",

@@ -33,10 +33,13 @@ window.addEventListener('load', async () => {
   let mods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
+    require('@jupyterlite/classic-application-extension'),
     require('@jupyterlite/theme-extension'),
     // @jupyterlab-classic plugins
-    require('@jupyterlab-classic/application-extension'),
-    require('@jupyterlab-classic/docmanager-extension'),
+    // do not enable the document opener from JupyterLab Classic
+    require('@jupyterlab-classic/application-extension').default.filter(
+      ({ id }) => id !== '@jupyterlab-classic/application-extension:opener'
+    ),
     require('@jupyterlab-classic/help-extension'),
     require('@jupyterlab-classic/notebook-extension'),
 
