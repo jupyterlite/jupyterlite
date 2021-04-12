@@ -84,10 +84,7 @@ window.addEventListener('load', async () => {
   // the current page
   const page = PageConfig.getOption('classicPage');
   if (page === 'tree') {
-    mods = mods.concat([
-      require('@jupyterlab-classic/tree-extension'),
-      require('@jupyterlab/running-extension')
-    ]);
+    mods = mods.concat([require('@jupyterlab-classic/tree-extension')]);
   } else if (page === 'notebooks') {
     mods = mods.concat([
       require('@jupyterlab/completer-extension').default.filter(({ id }) =>
