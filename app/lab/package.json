@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/app",
-  "version": "0.1.6",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "webpack",
@@ -112,10 +112,10 @@
       "@jupyterlab/statusbar-extension",
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
-      "@telamonian/theme-darcula",
       "@jupyterlab/toc-extension",
       "@jupyterlab/tooltip-extension",
-      "@jupyterlab/ui-components-extension"
+      "@jupyterlab/ui-components-extension",
+      "@telamonian/theme-darcula"
     ]
   }
 }

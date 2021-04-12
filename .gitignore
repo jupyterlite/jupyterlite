@@ -113,8 +113,6 @@ dmypy.json
 _temp_extension
 junit.xml
 [uU]ntitled*
-jupyterlab_classic/static
-jupyterlab_classic/labextension
 
 # playwright
 app/artifacts/videos
@@ -123,3 +121,5 @@ app/test/data
 # extras
 # do not include kernels such as Pyodide
 app/kernels
+
+yarn-error.log

@@ -2,21 +2,28 @@
 
 ![Github Actions Status](https://github.com/jtpio/jupyterlite/workflows/Build/badge.svg)
 
-JupyterLite is a JupyterLab distribution that runs entirely in the browser without a Jupyter Server, built from the ground-up with JupyterLab components and plugins.
+JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built from the ground-up using JupyterLab components and plugins.
 
-The default JupyterLite distribution currently features:
+## ✨ Try it in your browser ✨
 
-- a JavaScript kernel running in an IFrame
-- a basic Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-- offline notebook storage in the browser
-- basic session and kernel management to have multiple kernels running at once
-- support for code consoles
+JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and [JupyterLab Classic](https://github.com/jtpio/jupyterlab-classic).
 
-## Try it in your browser
-
-**✨ [Try it in your browser!](https://jupyterlite.vercel.app/) ✨**
+### [Try it with JupyterLab!](https://jupyterlite.vercel.app/)
 
 ![image](https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png)
+
+### [Try it with JupyterLab Classic!](https://jupyterlite.vercel.app/classic)
+
+![image](https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png)
+
+## Features
+
+- Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
+- JavaScript kernel running in an IFrame
+- Offline Notebook storage in the browser
+- Support for saving settings
+- Basic session and kernel management to have multiple kernels running at the same time
+- Support for code consoles
 
 ## Status
 
@@ -34,6 +41,9 @@ yarn
 
 # build the app
 yarn run build
+
+# go to the app folder
+cd app/
 
 # start a local http server
 npx http-server

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JupyterLite</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="/lab/favicon.ico">
+</head>
+<body>
+    <script id="jupyter-config-data" type="application/json">
+      {
+        "baseUrl": "/",
+        "fullStaticUrl": "/lab/build",
+        "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
+        "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
+        "settingsUrl": "/lab/build/schemas",
+        "themesUrl": "/lab/build/themes"
+      }
+    </script>
+    <script src="/lab/build/bundle.js" main="index"></script>
+</body>
+</html>
+
