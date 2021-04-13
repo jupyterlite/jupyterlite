@@ -78,7 +78,7 @@ export class Contents implements IContents {
         name += `Untitled Folder${counter || ''}`;
         file = {
           name,
-          path: name,
+          path: `${prefix}${name}`,
           last_modified: created,
           created,
           format: 'text',
@@ -96,7 +96,7 @@ export class Contents implements IContents {
         name += `untitled${counter || ''}${ext}`;
         file = {
           name,
-          path: name,
+          path: `${prefix}${name}`,
           last_modified: created,
           created,
           format: 'text',
@@ -114,7 +114,7 @@ export class Contents implements IContents {
         name += `Untitled${counter || ''}.ipynb`;
         file = {
           name,
-          path: name,
+          path: `${prefix}${name}`,
           last_modified: created,
           created,
           format: 'json',
