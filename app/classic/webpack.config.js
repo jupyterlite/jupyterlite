@@ -113,6 +113,10 @@ module.exports = [
           use: {
             loader: 'raw-loader'
           }
+        },
+        {
+          resourceQuery: /raw/,
+          type: 'asset/source'
         }
       ]
     },

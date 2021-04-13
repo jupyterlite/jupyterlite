@@ -5,6 +5,7 @@
     "rootDir": "src"
   },
   "include": ["src/**/*"],
+  "exclude": ["worker.js"],
   "references": [
     {
       "path": "../kernel"
