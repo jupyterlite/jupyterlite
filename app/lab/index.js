@@ -76,7 +76,8 @@ window.addEventListener('load', async () => {
   const disabled = [
     '@jupyterlab/apputils-extension:themes',
     '@jupyterlab/apputils-extension:workspaces',
-    '@jupyterlab/application-extension:tree-resolver'
+    '@jupyterlab/application-extension:tree-resolver',
+    '@jupyterlab/docmanager-extension:download'
   ];
   const plugins = (await Promise.all(extensions)).map(mod => {
     let data = mod.default;
