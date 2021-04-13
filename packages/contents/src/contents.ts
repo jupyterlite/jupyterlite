@@ -147,7 +147,7 @@ export class Contents implements IContents {
    */
   async copy(path: string, toDir: string): Promise<ServerContents.IModel> {
     let name = PathExt.basename(path);
-    toDir = toDir === '' ? '' : `${toDir}/`;
+    toDir = toDir === '' ? '' : `${toDir.slice(1)}/`;
     // TODO: better handle naming collisions with existing files
     while (await this._storage.getItem(`${toDir}${name}`)) {
       const ext = PathExt.extname(name);
