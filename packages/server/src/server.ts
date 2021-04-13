@@ -101,11 +101,20 @@ export class JupyterServer {
     );
 
     // POST /api/contents/{path} - Create a new file in the specified path
-    app.post('/api/contents', async (req: Router.IRequest) => {
-      const options = req.body;
-      const file = await this._contents.newUntitled(options);
-      return new Response(JSON.stringify(file), { status: 201 });
-    });
+    app.post(
+      '/api/contents(.*)',
+      async (req: Router.IRequest, path: string) => {
+        const options = req.body;
+        const copyFrom = options?.copy_from as string;
+        let file: ServerContents.IModel;
+        if (copyFrom) {
+          file = await this._contents.copy(copyFrom, path);
+        } else {
+          file = await this._contents.newUntitled(options);
+        }
+        return new Response(JSON.stringify(file), { status: 201 });
+      }
+    );
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
     app.patch(
