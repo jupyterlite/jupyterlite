@@ -134,6 +134,38 @@ export class Contents implements IContents {
   }
 
   /**
+   * Copy a file into a given directory.
+   *
+   * @param path - The original file path.
+   * @param toDir - The destination directory path.
+   *
+   * @returns A promise which resolves with the new contents model when the
+   *  file is copied.
+   *
+   * #### Notes
+   * The server will select the name of the copied file.
+   */
+  async copy(path: string, toDir: string): Promise<ServerContents.IModel> {
+    let name = PathExt.basename(path);
+    toDir = toDir === '' ? '' : `${toDir}/`;
+    // TODO: better handle naming collisions with existing files
+    while (await this._storage.getItem(`${toDir}${name}`)) {
+      const ext = PathExt.extname(name);
+      const base = name.replace(ext, '');
+      name = `${base} (copy)${ext}`;
+    }
+    const toPath = `${toDir}${name}`;
+    let item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    item = {
+      ...item,
+      name,
+      path: toPath
+    };
+    await this._storage.setItem(toPath, item);
+    return item;
+  }
+
+  /**
    * Get a file or directory.
    *
    * @param path: The path to the file.
@@ -428,22 +460,6 @@ export class Contents implements IContents {
    * The returned URL may include a query parameter.
    */
   getDownloadUrl(path: string): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
-
-  /**
-   * Copy a file into a given directory.
-   *
-   * @param path - The original file path.
-   * @param toDir - The destination directory path.
-   *
-   * @returns A promise which resolves with the new contents model when the
-   *  file is copied.
-   *
-   * #### Notes
-   * The server will select the name of the copied file.
-   */
-  copy(path: string, toDir: string): Promise<ServerContents.IModel> {
     throw new Error('Method not implemented.');
   }
 
