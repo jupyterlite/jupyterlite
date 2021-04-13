@@ -321,7 +321,14 @@ export class Contents implements IContents {
    */
   async delete(path: string): Promise<void> {
     path = decodeURIComponent(path);
-    return this._storage.removeItem(path);
+    const toDelete: string[] = [];
+    // handle deleting directories recursively
+    await this._storage.iterate((item, key) => {
+      if (key.startsWith(path)) {
+        toDelete.push(key);
+      }
+    });
+    await Promise.all(toDelete.map(async p => this._storage.removeItem(p)));
   }
 
   /**
