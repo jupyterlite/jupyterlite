@@ -4,6 +4,8 @@ import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
+import worker from '../py/worker.js?raw';
+
 /**
  * A kernel that executes Python code with Pyodide.
  */
@@ -17,7 +19,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     super(options);
     const { pyodideUrl } = options;
     const blob = new Blob([
-      [`importScripts("${pyodideUrl}");`, Private.WORKER_SCRIPT].join('\n')
+      [`importScripts("${pyodideUrl}");`, worker].join('\n')
     ]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
     this._worker.onmessage = e => {
@@ -260,61 +262,4 @@ export namespace PyodideKernel {
      */
     pyodideUrl: string;
   }
-}
-
-namespace Private {
-  // TODO: move most of the inner logic to a separate Python file
-  // that would be loaded on startup by Pyodide
-  export const WORKER_SCRIPT = `
-    addEventListener("message", ({ data }) => {
-      languagePluginLoader.then(() => {
-          pyodide.loadPackage([]).then(() => {
-          const keys = Object.keys(data);
-          for (let key of keys) {
-              if (key !== "code") {
-                self[key] = data[key];
-              }
-          }
-          console.log("Inside worker", data);
-          pyodide.runPython(
-            "import io, code, sys; sys.stdout = io.StringIO(); sys.stderr = io.StringIO()"
-          )
-          let msgType = 'results';
-          let renderHtml = false;
-          pyodide
-              .runPythonAsync(data.code, (ev) => {
-                console.log(ev);
-              })
-              .then((results) => {
-                let stdo = pyodide.runPython("sys.stdout.getvalue()")
-                if (stdo !== "") {
-                  msgType = 'stdout';
-                }
-                let stde = pyodide.runPython("sys.stderr.getvalue()")
-                if (stde !== "") {
-                  msgType = 'stderr';
-                }
-                // hack to support rendering of pandas dataframes.
-                if (typeof results === 'function' && pyodide._module.PyProxy.isPyProxy(results)) {
-                  try {
-                    results = results._repr_html_();
-                    renderHtml = true;
-                  } catch {
-                    results = String(results)
-                  }
-                }
-                postMessage({ result: results, parentHeader: data.parentHeader, stdout: stdo, stderr: stde,
-                              type: msgType, msg: data.message, renderHtml: renderHtml });
-              })
-              .catch((error) => {
-                  msgType = 'stderr';
-                  postMessage({ stderr: error, type: msgType, msg: data.message });
-              });
-          }).catch(error => {
-            msgType = 'stderr';
-            postMessage({ error: true, stderr: error, type: msgType, msg: data.message });
-          });
-      });
-    });
-  `;
 }

@@ -6,7 +6,7 @@ const glob = require('glob');
 const webpack = require('webpack');
 const Build = require('@jupyterlab/builder').Build;
 
-const data = require('./package.json');
+const data = fs.readJSONSync('./package.json');
 
 const buildDir = './build';
 // Generate webpack config to copy extension assets to the build directory,
@@ -70,7 +70,7 @@ module.exports = [
   {
     entry: ['whatwg-fetch', './index.js'],
     output: {
-      path: path.resolve(__dirname, buildDir),
+      path: path.resolve(buildDir),
       filename: 'bundle.js'
     },
     bail: true,
@@ -113,6 +113,10 @@ module.exports = [
           use: {
             loader: 'raw-loader'
           }
+        },
+        {
+          resourceQuery: /raw/,
+          type: 'asset/source'
         }
       ]
     },
