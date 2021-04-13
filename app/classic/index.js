@@ -84,7 +84,12 @@ window.addEventListener('load', async () => {
   // the current page
   const page = PageConfig.getOption('classicPage');
   if (page === 'tree') {
-    mods = mods.concat([require('@jupyterlab-classic/tree-extension')]);
+    mods = mods.concat([
+      // do not enable the new terminal button from JupyterLab Classic
+      require('@jupyterlab-classic/tree-extension').default.filter(
+        ({ id }) => id !== '@jupyterlab-classic/tree-extension:new-terminal'
+      )
+    ]);
   } else if (page === 'notebooks') {
     mods = mods.concat([
       require('@jupyterlab/completer-extension').default.filter(({ id }) =>
