@@ -37,6 +37,10 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@jupyterlab/application": "^3.1.0-alpha.8",
+    "@jupyterlab/apputils": "^3.1.0-alpha.8",
+    "@jupyterlab/docmanager": "^3.1.0-alpha.8",
+    "@jupyterlab/mainmenu": "^3.1.0-alpha.8",
     "@jupyterlab/translation": "^3.1.0-alpha.8"
   },
   "devDependencies": {
