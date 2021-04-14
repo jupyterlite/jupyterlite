@@ -22,9 +22,8 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     this._iframe.style.position = 'absolute';
     // position outside of the page
     this._iframe.style.top = '-100000px';
-    document.body.appendChild(this._iframe);
-
-    this._initIFrame().then(() => {
+    this._iframe.onload = async () => {
+      await this._initIFrame();
       this._ready.resolve();
       window.addEventListener('message', (e: MessageEvent) => {
         const msg = e.data;
@@ -33,7 +32,8 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
           this.stream(content);
         }
       });
-    });
+    };
+    document.body.appendChild(this._iframe);
   }
 
   /**
