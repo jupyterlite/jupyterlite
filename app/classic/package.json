@@ -18,6 +18,7 @@
     "@jupyterlite/application-extension": "^0.1.0",
     "@jupyterlite/classic-application-extension": "^0.1.0",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0",
+    "@jupyterlite/p5-kernel-extension": "^0.1.0",
     "@jupyterlite/pyodide-kernel-extension": "^0.1.0",
     "@jupyterlite/server-extension": "^0.1.0",
     "@jupyterlite/theme-extension": "^0.1.0",

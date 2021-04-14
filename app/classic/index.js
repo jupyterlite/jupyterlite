@@ -12,6 +12,7 @@ require('./build/style.js');
 
 const serverMods = [
   import('@jupyterlite/javascript-kernel-extension'),
+  import('@jupyterlite/p5-kernel-extension'),
   import('@jupyterlite/pyodide-kernel-extension'),
   import('@jupyterlite/server-extension')
 ];
