@@ -20,6 +20,3 @@ coverage
 # ms IDE stuff
 .history/
 .vscode/
-
-# raw worke files
-worker.js

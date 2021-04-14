@@ -3,20 +3,14 @@ const BOOTSTRAP =
 
 async function loadPyodideAndPackages() {
   await languagePluginLoader;
-  await self.pyodide.loadPackage([]);
+  await pyodide.loadPackage([]);
 }
 
-let pyodideReadyPromise = loadPyodideAndPackages();
+const pyodideReadyPromise = loadPyodideAndPackages();
 
-self.onmessage = async event => {
+self.onmessage = async (event: MessageEvent): Promise<void> => {
   await pyodideReadyPromise;
   const data = event.data;
-  const keys = Object.keys(data);
-  for (let key of keys) {
-    if (key !== 'code') {
-      self[key] = data[key];
-    }
-  }
   console.log('Inside worker', data);
 
   pyodide.runPython(BOOTSTRAP);
@@ -24,16 +18,16 @@ self.onmessage = async event => {
   let msgType = 'results';
   let renderHtml = false;
   try {
-    let results = await pyodide.runPythonAsync(data.code, ev => {
+    let results = await pyodide.runPythonAsync(data.code, (ev: any) => {
       console.log(ev);
     });
 
-    let stdo = pyodide.runPython('sys.stdout.getvalue()');
-    if (stdo !== '') {
+    const stdout = pyodide.runPython('sys.stdout.getvalue()');
+    if (stdout !== '') {
       msgType = 'stdout';
     }
-    let stde = pyodide.runPython('sys.stderr.getvalue()');
-    if (stde !== '') {
+    const stderr = pyodide.runPython('sys.stderr.getvalue()');
+    if (stderr !== '') {
       msgType = 'stderr';
     }
     // hack to support rendering of pandas dataframes.
@@ -48,8 +42,8 @@ self.onmessage = async event => {
     const msg = {
       result: results,
       parentHeader: data.parentHeader,
-      stdout: stdo,
-      stderr: stde,
+      stdout,
+      stderr,
       type: msgType,
       msg: data.message,
       renderHtml: renderHtml

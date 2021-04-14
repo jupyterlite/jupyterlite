@@ -4,7 +4,7 @@ import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import worker from '../py/worker.js?raw';
+import worker from './worker?raw';
 
 /**
  * A kernel that executes Python code with Pyodide.
