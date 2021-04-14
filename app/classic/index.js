@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { createRendermimePlugins } from '@jupyterlab/application/lib/mimerenderers';
+
 import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
@@ -125,6 +127,16 @@ window.addEventListener('load', async () => {
   }
 
   app.registerPluginModules(mods);
+
+  const mimeExtensions = [
+    require('@jupyterlite/iframe-extension'),
+    require('@jupyterlab/json-extension')
+  ];
+  // register mime extensions manually
+  // TODO: move to JupyterLab Classic constructor
+  for (const plugin of createRendermimePlugins(mimeExtensions)) {
+    app.registerPlugin(plugin);
+  }
 
   console.log('Starting app');
   await app.start();

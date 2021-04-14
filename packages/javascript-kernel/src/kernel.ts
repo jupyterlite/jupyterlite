@@ -201,7 +201,6 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     if (!this._iframe.contentWindow) {
       return;
     }
-    // TODO: handle kernel ready
     this._evalFunc(
       this._iframe.contentWindow,
       `
