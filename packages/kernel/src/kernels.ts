@@ -13,6 +13,8 @@ import { Server as WebSocketServer, WebSocket } from 'mock-socket';
 
 import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
+import { Mutex } from 'async-mutex';
+
 /**
  * A class to handle requests to /api/kernels
  */
@@ -80,9 +82,19 @@ export class Kernels implements IKernels {
 
       this._clientIds.set(clientId, socket);
 
+      // create a synchronization mechanism to allow only one message
+      // to be processed at a time
+      const mutex = new Mutex();
+
+      const processMsg = async (msg: KernelMessage.IMessage) => {
+        await mutex.runExclusive(async () => {
+          await kernel.handleMessage(msg);
+        });
+      };
+
       socket.on(
         'message',
-        (message: string | ArrayBuffer | Blob | ArrayBufferView) => {
+        async (message: string | ArrayBuffer | Blob | ArrayBufferView) => {
           let msg;
           if (message instanceof ArrayBuffer) {
             message = new Uint8Array(message).buffer;
@@ -92,7 +104,7 @@ export class Kernels implements IKernels {
           } else {
             return;
           }
-          kernel.handleMessage(msg);
+          void processMsg(msg);
         }
       );
 
