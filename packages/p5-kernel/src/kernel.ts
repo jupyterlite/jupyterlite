@@ -10,7 +10,8 @@ const BOOTSTRAP = `
 import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
   // create the p5 global instance
   new p5();
-});
+  return Promise.resolve();
+})
 `;
 
 /**
@@ -79,17 +80,32 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
     const { code } = content;
     if (code.startsWith('%show')) {
+      const input = this._inputs.map(c => `window.eval(\`${c}\`);`).join('\n');
+      const script = `
+        import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
+          // create the p5 global instance
+          const p = new p5();
+          ${input}
+          p._start();
+        });
+      `;
       return {
         execution_count: this.executionCount,
         data: {
-          'text/html-sandboxed':
-            '<h1>TEST IFRAME FROM KERNEL</h1><script>alert("Hey There")</script>'
+          'text/html-sandboxed': [
+            '<body style="overflow: hidden;">',
+            `<script>${script}</script>`,
+            '</body>'
+          ].join('\n')
         },
         metadata: {}
       };
     }
-    return super.executeRequest(content);
+    const res = super.executeRequest(content);
+    this._inputs.push(code);
+    return res;
   }
 
+  private _inputs: string[] = [];
   private _p5Ready = new PromiseDelegate<void>();
 }

@@ -42,7 +42,7 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
   }
 
   /**
-   * Dispose of the resources held by the ifrane widget.
+   * Dispose of the resources held by the iframe widget.
    */
   dispose(): void {
     this._iframe.remove();
