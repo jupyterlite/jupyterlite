@@ -7,17 +7,6 @@ import { JavaScriptKernel } from '@jupyterlite/javascript-kernel';
 import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
- * Starter code to bootstrap the IFrame with p5
- */
-const BOOTSTRAP = `
-import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
-  // create the p5 global instance
-  window.__globalP5 = new p5();
-  return Promise.resolve();
-})
-`;
-
-/**
  * The mimetype for mime bundle results
  */
 const MIME_TYPE = 'text/html-sandboxed';
@@ -31,11 +20,19 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
    *
    * @param options The instantiation options for a new P5Kernel.
    */
-  constructor(options: IKernel.IOptions) {
+  constructor(options: P5Kernel.IOptions) {
     super(options);
+    const { p5Url } = options;
+    this._bootstrap = `
+      import('${p5Url}').then(() => {
+        // create the p5 global instance
+        window.__globalP5 = new p5();
+        return Promise.resolve();
+      })
+    `;
     // wait for the parent IFrame to be ready
     super.ready.then(() => {
-      this._eval(BOOTSTRAP);
+      this._eval(this._bootstrap);
       this._p5Ready.resolve();
     });
   }
@@ -109,7 +106,7 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
     if (code.startsWith('%show')) {
       const input = this._inputs.map(c => `window.eval(\`${c}\`);`).join('\n');
       const script = `
-        ${BOOTSTRAP}.then(() => {
+        ${this._bootstrap}.then(() => {
           ${input}
           window.__globalP5._start();
         })
@@ -139,6 +136,22 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
     }
   }
 
+  private _bootstrap = '';
   private _inputs: string[] = [];
   private _p5Ready = new PromiseDelegate<void>();
+}
+
+/**
+ * A namespace for P5Kernel statics.
+ */
+export namespace P5Kernel {
+  /**
+   * The instantiation options for a P5Kernel
+   */
+  export interface IOptions extends IKernel.IOptions {
+    /**
+     * The URL to fetch p5.js
+     */
+    p5Url: string;
+  }
 }
