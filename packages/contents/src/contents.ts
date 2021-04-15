@@ -21,6 +21,11 @@ import { IContents } from './tokens';
 const STORAGE_NAME = 'JupyterLite Storage';
 
 /**
+ * The number of checkpoints to save.
+ */
+const N_CHECKPOINTS = 5;
+
+/**
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
@@ -269,6 +274,8 @@ export class Contents implements IContents {
     await this._storage.setItem(newLocalPath, newFile);
     // remove the old file
     await this._storage.removeItem(path);
+    // remove the corresponding checkpoint
+    await this._checkpoints.removeItem(path);
     return newFile;
   }
 
@@ -328,7 +335,14 @@ export class Contents implements IContents {
         toDelete.push(key);
       }
     });
-    await Promise.all(toDelete.map(async p => this._storage.removeItem(p)));
+    await Promise.all(
+      toDelete.map(async p => {
+        return Promise.all([
+          this._storage.removeItem(p),
+          this._checkpoints.removeItem(p)
+        ]);
+      })
+    );
   }
 
   /**
@@ -342,8 +356,21 @@ export class Contents implements IContents {
   async createCheckpoint(
     path: string
   ): Promise<ServerContents.ICheckpointModel> {
-    console.warn('TODO: implement createCheckpoint');
-    return Private.DEFAULT_CHECKPOINTS[0];
+    const item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    const copies =
+      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ??
+      [];
+    copies.push(item);
+    // keep only a certain amount of checkpoints per file
+    if (copies.length > N_CHECKPOINTS) {
+      copies.splice(0, copies.length - N_CHECKPOINTS);
+    }
+    await this._checkpoints.setItem(path, copies);
+    const id = `${copies.length - 1}`;
+    return {
+      id,
+      last_modified: (item as ServerContents.IModel).last_modified
+    };
   }
 
   /**
@@ -357,8 +384,18 @@ export class Contents implements IContents {
   async listCheckpoints(
     path: string
   ): Promise<ServerContents.ICheckpointModel[]> {
-    console.warn('TODO: implement listCheckpoints');
-    return Private.DEFAULT_CHECKPOINTS;
+    const copies = (await this._checkpoints.getItem(
+      path
+    )) as ServerContents.IModel[];
+    if (!copies) {
+      return [];
+    }
+    return copies.map((file, id) => {
+      return {
+        id: id.toString(),
+        last_modified: file.last_modified
+      };
+    });
   }
 
   /**
@@ -370,8 +407,12 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
-    console.warn('TODO: implement listCheckpoints');
-    return;
+    const copies = (await this._checkpoints.getItem(
+      path
+    )) as ServerContents.IModel[];
+    const id = parseInt(checkpointID);
+    const item = copies[id];
+    await this._storage.setItem(path, item);
   }
 
   /**
@@ -383,8 +424,12 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
-    console.warn('TODO: implement deleteCheckpoint');
-    return;
+    const copies = (await this._checkpoints.getItem(
+      path
+    )) as ServerContents.IModel[];
+    const id = parseInt(checkpointID);
+    copies.splice(id, 1);
+    await this._checkpoints.setItem(path, copies);
   }
 
   /**
@@ -499,19 +544,18 @@ export class Contents implements IContents {
     storeName: 'counters',
     version: 1
   });
+  private _checkpoints = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Offline Storage for Checkpoints',
+    storeName: 'checkpoints',
+    version: 1
+  });
 }
 
 /**
  * A namespace for private data.
  */
 namespace Private {
-  /**
-   * The default checkpoints.
-   */
-  export const DEFAULT_CHECKPOINTS = [
-    { id: 'checkpoint', last_modified: '2021-03-27T13:51:59.816052Z' }
-  ];
-
   /**
    * The content for an empty notebook.
    */

@@ -51,7 +51,7 @@ export class JupyterServer {
 
     // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
     app.get(
-      '/api/contents(.*)/checkpoints',
+      '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.listCheckpoints(filename);
         return new Response(JSON.stringify(res));
@@ -60,7 +60,7 @@ export class JupyterServer {
 
     // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
     app.post(
-      '/api/contents(.*)/checkpoints/(.*)',
+      '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await this._contents.restoreCheckpoint(
           filename,
@@ -72,7 +72,7 @@ export class JupyterServer {
 
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
     app.post(
-      '/api/contents(.*)/checkpoints',
+      '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await this._contents.createCheckpoint(filename);
         return new Response(JSON.stringify(res), { status: 201 });
