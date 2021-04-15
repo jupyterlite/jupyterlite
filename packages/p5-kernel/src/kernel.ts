@@ -6,6 +6,9 @@ import { JavaScriptKernel } from '@jupyterlite/javascript-kernel';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
+/**
+ * Starter code to bootstrap the IFrame
+ */
 const BOOTSTRAP = `
 import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
   // create the p5 global instance
@@ -13,6 +16,11 @@ import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
   return Promise.resolve();
 })
 `;
+
+/**
+ * The mimetype for mime bundle results
+ */
+const MIME_TYPE = 'text/html-sandboxed';
 
 /**
  * A kernel that executes code in an IFrame.
@@ -79,6 +87,25 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
     const { code } = content;
+    if (code.startsWith('%')) {
+      const res = await this._magics(code);
+      if (res) {
+        return res;
+      }
+    }
+    const res = super.executeRequest(content);
+    this._inputs.push(code);
+    return res;
+  }
+
+  /**
+   * Handle magics coming from execute requests.
+   *
+   * @param code The code block to handle.
+   */
+  private async _magics(
+    code: string
+  ): Promise<KernelMessage.IExecuteResultMsg['content'] | undefined> {
     if (code.startsWith('%show')) {
       const input = this._inputs.map(c => `window.eval(\`${c}\`);`).join('\n');
       const script = `
@@ -89,21 +116,29 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
           p._start();
         });
       `;
+
+      // add metadata
+      const re = /^%show(?: (.+)\s+(.+))?\s*$/;
+      const matches = code.match(re);
+      const width = matches?.[1] ?? undefined;
+      const height = matches?.[2] ?? undefined;
       return {
         execution_count: this.executionCount,
         data: {
-          'text/html-sandboxed': [
+          [MIME_TYPE]: [
             '<body style="overflow: hidden;">',
             `<script>${script}</script>`,
             '</body>'
           ].join('\n')
         },
-        metadata: {}
+        metadata: {
+          [MIME_TYPE]: {
+            width,
+            height
+          }
+        }
       };
     }
-    const res = super.executeRequest(content);
-    this._inputs.push(code);
-    return res;
   }
 
   private _inputs: string[] = [];

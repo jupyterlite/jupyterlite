@@ -13,6 +13,21 @@ import { Widget } from '@lumino/widgets';
 const MIME_TYPE = 'text/html-sandboxed';
 
 /**
+ * The interface for the metadata
+ */
+interface IIFrameMetadata {
+  /**
+   * The suggested width of the IFrame
+   */
+  width?: string;
+
+  /**
+   * The suggested height of the IFrame
+   */
+  height?: string;
+}
+
+/**
  * A class for rendering an IFrame document.
  */
 export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
@@ -20,7 +35,7 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
     super();
     this.addClass('jp-IFrameContainer');
     this._iframe = document.createElement('iframe');
-    // TODO: make this configurable
+    // Provide default dimensions
     this._iframe.width = '100%';
     this._iframe.height = '400px';
     this._iframe.onload = () => {
@@ -38,6 +53,9 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
     if (!data || !this._iframe.contentWindow) {
       return;
     }
+    const metadata = model.metadata[MIME_TYPE] as IIFrameMetadata | undefined;
+    this._iframe.width = metadata?.width ?? this._iframe.width;
+    this._iframe.height = metadata?.height ?? this._iframe.height;
     this._iframe.contentWindow.document.write(data);
   }
 
