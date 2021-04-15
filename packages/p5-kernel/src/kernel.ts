@@ -7,12 +7,12 @@ import { JavaScriptKernel } from '@jupyterlite/javascript-kernel';
 import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
- * Starter code to bootstrap the IFrame
+ * Starter code to bootstrap the IFrame with p5
  */
 const BOOTSTRAP = `
 import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
   // create the p5 global instance
-  new p5();
+  window.__globalP5 = new p5();
   return Promise.resolve();
 })
 `;
@@ -109,12 +109,10 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
     if (code.startsWith('%show')) {
       const input = this._inputs.map(c => `window.eval(\`${c}\`);`).join('\n');
       const script = `
-        import('https://cdn.jsdelivr.net/npm/p5@1.3.1/lib/p5.js').then(() => {
-          // create the p5 global instance
-          const p = new p5();
+        ${BOOTSTRAP}.then(() => {
           ${input}
-          p._start();
-        });
+          window.__globalP5._start();
+        })
       `;
 
       // add metadata
