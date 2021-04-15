@@ -67,7 +67,7 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
     super.dispose();
   }
 
-  protected _iframe: HTMLIFrameElement;
+  private _iframe: HTMLIFrameElement;
   private _ready = new PromiseDelegate<void>();
 }
 

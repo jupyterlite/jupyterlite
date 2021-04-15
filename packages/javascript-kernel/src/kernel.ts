@@ -238,7 +238,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     );
   }
 
-  protected _iframe: HTMLIFrameElement;
+  private _iframe: HTMLIFrameElement;
   private _evalFunc = new Function(
     'window',
     'code',
