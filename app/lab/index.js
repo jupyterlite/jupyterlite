@@ -46,10 +46,14 @@ const extensions = [
   import('@telamonian/theme-darcula')
 ];
 
-const mimeExtensions = [import('@jupyterlab/json-extension')];
+const mimeExtensions = [
+  import('@jupyterlite/iframe-extension'),
+  import('@jupyterlab/json-extension')
+];
 
 const mods = [
   import('@jupyterlite/javascript-kernel-extension'),
+  import('@jupyterlite/p5-kernel-extension'),
   import('@jupyterlite/pyodide-kernel-extension'),
   import('@jupyterlite/server-extension')
 ];

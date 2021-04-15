@@ -22,45 +22,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     this._iframe.style.position = 'absolute';
     // position outside of the page
     this._iframe.style.top = '-100000px';
-    document.body.appendChild(this._iframe);
-
-    this._initIFrame(this._iframe).then(() => {
-      // TODO: handle kernel ready
-      this._evalFunc(
-        this._iframe.contentWindow,
-        `
-        console._log = console.log;
-        console._error = console.error;
-
-        window._bubbleUp = function(msg) {
-          window.parent.postMessage(msg);
-        }
-
-        console.log = function() {
-          const args = Array.prototype.slice.call(arguments);
-          window._bubbleUp({
-            "event": "stream",
-            "name": "stdout",
-            "text": args.join(' ') + '\\n'
-          });
-        };
-        console.info = console.log;
-
-        console.error = function() {
-          const args = Array.prototype.slice.call(arguments);
-          window._bubbleUp({
-            "event": "stream",
-            "name": "stderr",
-            "text": args.join(' ') + '\\n'
-          });
-        };
-        console.warn = console.error;
-
-        window.onerror = function(message, source, lineno, colno, error) {
-          console.error(message);
-        }
-      `
-      );
+    this._iframe.onload = async () => {
+      await this._initIFrame();
+      this._ready.resolve();
       window.addEventListener('message', (e: MessageEvent) => {
         const msg = e.data;
         if (msg.event === 'stream') {
@@ -68,7 +32,8 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
           this.stream(content);
         }
       });
-    });
+    };
+    document.body.appendChild(this._iframe);
   }
 
   /**
@@ -80,6 +45,13 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     }
     this._iframe.remove();
     super.dispose();
+  }
+
+  /**
+   * A promise that is fulfilled when the kernel is ready.
+   */
+  get ready(): Promise<void> {
+    return this._ready.promise;
   }
 
   /**
@@ -216,16 +188,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    *
    * @param code The code to execute.
    */
-  private _eval(code: string): string {
-    // TODO: handle magics
-    if (code.startsWith('%show')) {
-      return '';
-    }
-    for (const frame of this._iframes) {
-      if (frame?.contentWindow) {
-        this._evalFunc(frame.contentWindow, code);
-      }
-    }
+  protected _eval(code: string): string {
     return this._evalFunc(this._iframe.contentWindow, code);
   }
 
@@ -234,25 +197,52 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    *
    * @param iframe The IFrame to initialize.
    */
-  private async _initIFrame(
-    iframe: HTMLIFrameElement
-  ): Promise<HTMLIFrameElement | undefined> {
-    const delegate = new PromiseDelegate<void>();
-    if (!iframe.contentWindow) {
-      delegate.reject('IFrame not ready');
+  protected async _initIFrame(): Promise<void> {
+    if (!this._iframe.contentWindow) {
       return;
     }
-    // TODO: init
-    delegate.resolve();
-    await delegate.promise;
-    return iframe;
+    this._evalFunc(
+      this._iframe.contentWindow,
+      `
+        console._log = console.log;
+        console._error = console.error;
+
+        window._bubbleUp = function(msg) {
+          window.parent.postMessage(msg);
+        }
+
+        console.log = function() {
+          const args = Array.prototype.slice.call(arguments);
+          window._bubbleUp({
+            "event": "stream",
+            "name": "stdout",
+            "text": args.join(' ') + '\\n'
+          });
+        };
+        console.info = console.log;
+
+        console.error = function() {
+          const args = Array.prototype.slice.call(arguments);
+          window._bubbleUp({
+            "event": "stream",
+            "name": "stderr",
+            "text": args.join(' ') + '\\n'
+          });
+        };
+        console.warn = console.error;
+
+        window.onerror = function(message, source, lineno, colno, error) {
+          console.error(message);
+        }
+      `
+    );
   }
 
   private _iframe: HTMLIFrameElement;
-  private _iframes: HTMLIFrameElement[] = [];
   private _evalFunc = new Function(
     'window',
     'code',
     'return window.eval(code);'
   );
+  private _ready = new PromiseDelegate<void>();
 }

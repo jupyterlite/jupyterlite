@@ -269,7 +269,10 @@ export abstract class BaseKernel implements IKernel {
     this._executeInput(msg);
     try {
       const result = await this.executeRequest(content);
-      this._history.push([0, 0, content.code]);
+      // do not store magics in the history
+      if (!content.code.startsWith('%')) {
+        this._history.push([0, 0, content.code]);
+      }
       this._executeResult(msg, result);
       this._executeReply(msg, {
         execution_count: this._executionCount,
