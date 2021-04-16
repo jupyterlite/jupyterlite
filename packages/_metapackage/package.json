@@ -17,7 +17,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -b",
-    "watch": "tsc -b -w"
+    "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
     "@jupyterlite/application": "file:../application",

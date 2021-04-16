@@ -12,7 +12,7 @@
     "test:cov": "jest --collect-coverage",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "watch": "webpack --watch"
+    "watch": "webpack --config ../webpack.config.watch.js"
   },
   "dependencies": {
     "@jupyterlite/server": "^0.1.0",
