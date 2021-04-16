@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: '*'
 
+env:
+  CACHE_EPOCH: 0
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,15 +19,30 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      - name: Build
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: 'node_modules/'
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Cache yarn packages
+        uses: actions/cache@v2
+        with:
+          path: '.yarn-packages'
+          key: |
+            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-yarn-packages-
+      - name: Install
         run: |
           yarn
-          yarn run build
+      - name: Build
+        run: |
+          yarn build
       - name: Lint
         run: |
-          yarn run eslint:check
-          yarn run prettier:check
+          yarn lint
       - name: Test
         run: |
-          yarn run build:test
-          yarn run test
+          yarn build:test
+          yarn test

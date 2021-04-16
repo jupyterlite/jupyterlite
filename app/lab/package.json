@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "build": "webpack --config ../webpack.config.js",
-    "build:prod": "yarn run build --mode=production",
+    "build:prod": "yarn build --mode=production",
     "build:test": "tsc --build tsconfig.test.json",
     "clean": "rimraf build",
     "clean:artifacts": "rimraf artifacts",
-    "prepublishOnly": "yarn run build",
+    "prepublishOnly": "yarn build",
     "test:cov": "jest --collect-coverage",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",

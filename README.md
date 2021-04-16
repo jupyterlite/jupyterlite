@@ -36,27 +36,11 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 
 ⚠️ Currently in active development ⚠️
 
-## Dev install
+## Development install
 
-Make sure [Node.js](https://nodejs.org) is installed.
-
-Then run the following commands:
-
-```bash
-# install the dependencies
-yarn
-
-# build the app
-yarn run build
-
-# go to the app folder
-cd app/
-
-# start a local http server
-npx http-server
-```
-
-Then go to http://localhost:5000 in a web browser to start JupyterLite.
+See the
+[contributing guide](https://github.com/jtpio/jupyterlead/blob/main/CONTRIBUTING.md) for
+a development installation.
 
 ## Related
 

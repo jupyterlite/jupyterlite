@@ -1,7 +1,7 @@
 {
   "ServerProxy": {
     "test-server": {
-      "command": ["python3", "-m", "http.server", "{port}"],
+      "command": ["yarn", "serve:py", "{port}"],
       "absolute_url": true,
       "new_browser_tab": false,
       "launcher_entry": {

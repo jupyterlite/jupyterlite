@@ -65,6 +65,18 @@ To build production assets:
 yarn build:prod
 ```
 
+#### Serve
+
+```
+yarn serve
+```
+
+To serve with python's built-in http server:
+
+```
+yarn serve:py
+```
+
 #### Watch
 
 ```bash
