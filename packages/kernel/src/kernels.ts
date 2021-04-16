@@ -109,7 +109,7 @@ export class Kernels implements IKernels {
     };
 
     // There is one server per kernel which handles multiple clients
-    const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
+    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${id}/channels`;
     const runningKernel = this._kernels.get(id);
     if (runningKernel) {
       return {
@@ -201,7 +201,5 @@ export namespace Kernels {
   /**
    * The base url for the Kernels manager
    */
-  export const WS_BASE_URL = `${
-    window.location.protocol === 'https:' ? 'wss' : 'ws'
-  }://${window.location.host}${PageConfig.getBaseUrl()}`;
+  export const WS_BASE_URL = PageConfig.getBaseUrl().replace(/^http/, 'ws');
 }
