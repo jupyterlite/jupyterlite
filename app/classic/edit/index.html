@@ -11,7 +11,7 @@
       (function() {
         var pageInfo = document.getElementById('jupyter-config-data');
         var base = window.location.pathname.replace(
-          /\/classic\/edit\/(index.html)?$/,
+          /\/classic\/edit(\/|\/index.html)?$/,
           '/'
         );
         pageInfo.textContent = JSON.stringify(
