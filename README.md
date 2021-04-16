@@ -1,6 +1,11 @@
 # JupyterLite
 
-![Github Actions Status](https://github.com/jtpio/jupyterlite/workflows/Build/badge.svg)
+[![ci-badge]][ci] [![binder-badge]][binder]
+
+[ci-badge]: https://github.com/jtpio/jupyterlite/workflows/Build/badge.svg
+[ci]: https://github.com/jtpio/jupyterlite/actions?query=branch%3Amain
+[binder-badge]: https://mybinder.org/badge_logo.svg
+[binder]: https://mybinder.org/v2/gh/jtpio/jupyterlite/main?urlpath=lab
 
 JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built
 from the ground-up using JupyterLab components and plugins.

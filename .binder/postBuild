@@ -1,2 +1,9 @@
 #!/usr/bin/env bash
-yarn bootstrap
+yarn
+yarn build
+
+# enable the proxy
+for app in notebook server; do
+    mkdir -p ${CONDA_DIR}/share/jupyter/jupyter_${app}_config.d
+    cp .binder/jupyterlite-proxy.json ${CONDA_DIR}/share/jupyter/jupyter_{app}_config.d
+done

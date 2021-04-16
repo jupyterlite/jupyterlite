@@ -1,0 +1,11 @@
+{
+  "ServerProxy": {
+    "test-server": {
+      "command": ["python3", "-m", "http.server", "{port}"],
+      "absolute_url": true,
+      "launcher_entry": {
+        "title": "JupyterLite"
+      }
+    }
+  }
+}
