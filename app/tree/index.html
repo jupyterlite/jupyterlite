@@ -2,10 +2,10 @@
 <html>
   <head>
     <script>
-      // redirect to /lab by default
+      // redirect to /classic by default
       (function() {
         window.location.href = window.location.href.replace(
-          /(\/|\/index.html)?$/,
+          /\/tree(\/|\/index.html)?$/,
           '/../classic/tree/index.html'
         );
       }.call(this));
