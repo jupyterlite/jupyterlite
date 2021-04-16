@@ -3,7 +3,6 @@
     "servers": {
       "jupyterlite-py": {
         "command": ["yarn", "serve:py", "{port}"],
-        "absolute_url": true,
         "new_browser_tab": false,
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
@@ -15,7 +14,6 @@
       },
       "jupyterlite-js": {
         "command": ["yarn", "serve", "--port", "{port}"],
-        "absolute_url": true,
         "new_browser_tab": false,
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
