@@ -57,10 +57,11 @@ JupyterLite is a reboot of several attemps at making a full static Jupyter distr
 
 The goal is to provide a lightweight computing environment accessible in a matter of seconds with a single click, in a web browser and without having to install anything.
 
-This project is a collection of packages that can be remixed together in variety of ways to create new application and distributions. Most of the packages in this repo focus on providing server-like components that run in the browser (to manager kernels, files and settings), so existing JupyterLab extensions and plugins can be reused out of the box.
+This project is a collection of packages that can be remixed together in variety of ways to create new applications and distributions. Most of the packages in this repo focus on providing server-like components that run in the browser (to manage kernels, files and settings), so existing JupyterLab extensions and plugins can be reused out of the box.
 
 See also:
 
 - [p5-notebook](https://github.com/jtpio/p5-notebook): A minimal Jupyter Notebook UI for p5.js kernels running in the browser
 - [jyve](https://github.com/deathbeds/jyve): Jupyter Kernels, right inside JupyterLab
 - [Starboard Notebook](https://github.com/gzuidhof/starboard-notebook): In-browser literal notebooks
+- [Basthon](https://basthon.fr/about.html): A Jupyter notebook implementation using Pyodide
