@@ -3,18 +3,13 @@
     "servers": {
       "jupyterlite-py": {
         "command": ["yarn", "serve:py", "{port}"],
-        "new_browser_tab": false,
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
           "title": "JupyterLite (py)"
-        },
-        "mappath": {
-          "/": "/index.html"
         }
       },
       "jupyterlite-js": {
         "command": ["yarn", "serve", "--port", "{port}"],
-        "new_browser_tab": false,
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
           "title": "JupyterLite (js)"
