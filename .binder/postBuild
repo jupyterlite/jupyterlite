@@ -7,5 +7,5 @@ yarn build
 # enable the proxy
 for app in notebook server; do
     mkdir -p ${NB_PYTHON_PREFIX}/etc/jupyter/jupyter_${app}_config.d
-    cp .binder/jupyterlite-proxy.json ${NB_PYTHON_PREFIX}/etc/jupyter/jupyter_{app}_config.d
+    cp .binder/jupyterlite-proxy.json ${NB_PYTHON_PREFIX}/etc/jupyter/jupyter_${app}_config.d
 done
