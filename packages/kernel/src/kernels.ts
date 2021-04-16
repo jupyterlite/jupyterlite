@@ -12,6 +12,8 @@ import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
 import { Mutex } from 'async-mutex';
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 /**
  * A class to handle requests to /api/kernels
  */
@@ -201,5 +203,5 @@ export namespace Kernels {
    */
   export const WS_BASE_URL = `${
     window.location.protocol === 'https:' ? 'wss' : 'ws'
-  }://${window.location.host}`;
+  }://${window.location.host}${PageConfig.getBaseUrl()}`;
 }
