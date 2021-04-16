@@ -1,12 +1,14 @@
 {
   "ServerProxy": {
-    "test-server": {
-      "command": ["yarn", "serve:py", "{port}"],
-      "absolute_url": true,
-      "new_browser_tab": false,
-      "launcher_entry": {
-        "icon_path": "/home/jovyan/docs/_static/icon.svg",
-        "title": "JupyterLite"
+    "servers": {
+      "jupyterlite": {
+        "command": ["yarn", "serve:py", "{port}"],
+        "absolute_url": true,
+        "new_browser_tab": false,
+        "launcher_entry": {
+          "icon_path": "/home/jovyan/docs/_static/icon.svg",
+          "title": "JupyterLite"
+        }
       }
     }
   }
