@@ -6,6 +6,7 @@ channels:
   - conda-forge
 
 dependencies:
+  - git
   - jupyter-server-proxy
   - jupyterlab >=3,<4
   - jupyterlab-classic
