@@ -4,6 +4,7 @@
       "command": ["python3", "-m", "http.server", "{port}"],
       "absolute_url": true,
       "launcher_entry": {
+        "icon_path": "/home/jovyan/docs/_static/icon.svg",
         "title": "JupyterLite"
       }
     }
