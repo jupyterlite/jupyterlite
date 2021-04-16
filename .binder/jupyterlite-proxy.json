@@ -3,6 +3,7 @@
     "test-server": {
       "command": ["python3", "-m", "http.server", "{port}"],
       "absolute_url": true,
+      "new_browser_tab": false,
       "launcher_entry": {
         "icon_path": "/home/jovyan/docs/_static/icon.svg",
         "title": "JupyterLite"
