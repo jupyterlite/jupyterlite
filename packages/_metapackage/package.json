@@ -1,0 +1,44 @@
+{
+  "name": "@jupyterlite/metapackage",
+  "private": true,
+  "version": "0.1.7",
+  "description": "JupyterLite - Metapackage",
+  "homepage": "https://github.com/jtpio/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jtpio/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jtpio/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributor",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "watch": "tsc -b -w"
+  },
+  "dependencies": {
+    "@jupyterlite/application": "file:../application",
+    "@jupyterlite/application-extension": "file:../application-extension",
+    "@jupyterlite/classic-application-extension": "file:../classic-application-extension",
+    "@jupyterlite/contents": "file:../contents",
+    "@jupyterlite/iframe-extension": "file:../iframe-extension",
+    "@jupyterlite/javascript-kernel": "file:../javascript-kernel",
+    "@jupyterlite/javascript-kernel-extension": "file:../javascript-kernel-extension",
+    "@jupyterlite/kernel": "file:../kernel",
+    "@jupyterlite/p5-kernel": "file:../p5-kernel",
+    "@jupyterlite/p5-kernel-extension": "file:../p5-kernel-extension",
+    "@jupyterlite/pyodide-kernel": "file:../pyodide-kernel",
+    "@jupyterlite/pyodide-kernel-extension": "file:../pyodide-kernel-extension",
+    "@jupyterlite/server": "file:../server-extension",
+    "@jupyterlite/session": "file:../session",
+    "@jupyterlite/settings": "file:../settings",
+    "@jupyterlite/theme": "file:../theme",
+    "@jupyterlite/theme-extension": "file:../theme-extension"
+  },
+  "devDependencies": {
+    "typescript": "~4.2.3"
+  }
+}

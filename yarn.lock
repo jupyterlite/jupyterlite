@@ -2633,6 +2633,128 @@
     react-dom "^17.0.1"
     typestyle "^2.0.4"
 
+"@jupyterlite/application-extension@file:packages/application-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/translation" "^3.0.5"
+
+"@jupyterlite/application@file:packages/application":
+  version "0.1.7"
+  dependencies:
+    "@jupyterlab/application" "^3.0.0"
+
+"@jupyterlite/classic-application-extension@file:packages/classic-application-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/application" "^3.0.0"
+    "@jupyterlab/coreutils" "^5.0.0"
+    "@jupyterlab/docmanager" "^3.0.0"
+    "@jupyterlab/services" "^6.0.0"
+
+"@jupyterlite/contents@file:packages/contents":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/nbformat" "^3.0.3"
+    "@jupyterlab/services" "^6.0.5"
+    "@lumino/coreutils" "^1.5.3"
+    "@lumino/signaling" "^1.4.3"
+    localforage "^1.9.0"
+
+"@jupyterlite/iframe-extension@file:packages/iframe-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/rendermime-interfaces" "^3.0.0"
+    "@lumino/coreutils" "^1.5.3"
+    "@lumino/widgets" "^1.19.0"
+
+"@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/javascript-kernel" "^0.1.0"
+    "@jupyterlite/kernel" "^0.1.0"
+    "@jupyterlite/server" "^0.1.0"
+
+"@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/kernel" "^0.1.0"
+
+"@jupyterlite/kernel@file:packages/kernel":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/observables" "^4.0.3"
+    "@jupyterlab/services" "^6.0.5"
+    "@lumino/coreutils" "^1.5.3"
+    "@lumino/disposable" "^1.4.3"
+    "@lumino/signaling" "^1.4.3"
+    async-mutex "^0.3.1"
+    mock-socket "^9.0.3"
+
+"@jupyterlite/p5-kernel-extension@file:packages/p5-kernel-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/kernel" "^0.1.0"
+    "@jupyterlite/p5-kernel" "^0.1.0"
+    "@jupyterlite/server" "^0.1.0"
+
+"@jupyterlite/p5-kernel@file:packages/p5-kernel":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/kernel" "^0.1.0"
+
+"@jupyterlite/pyodide-kernel-extension@file:packages/pyodide-kernel-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/coreutils" "^5.0.0"
+    "@jupyterlite/kernel" "^0.1.0"
+    "@jupyterlite/pyodide-kernel" "^0.1.0"
+    "@jupyterlite/server" "^0.1.0"
+
+"@jupyterlite/pyodide-kernel@file:packages/pyodide-kernel":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/kernel" "^0.1.0"
+
+"@jupyterlite/server@file:packages/server-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlite/kernel" "^0.1.0"
+    "@jupyterlite/server" "^0.1.0"
+    "@jupyterlite/session" "^0.1.0"
+    "@jupyterlite/settings" "^0.1.0"
+
+"@jupyterlite/session@file:packages/session":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/services" "^6.0.0"
+    "@jupyterlite/kernel" "^0.1.0"
+    "@lumino/algorithm" "^1.3.3"
+    "@lumino/coreutils" "^1.5.3"
+
+"@jupyterlite/settings@file:packages/settings":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/coreutils" "^5.0.0"
+    "@jupyterlab/settingregistry" "^3.0.0"
+    "@lumino/coreutils" "^1.5.3"
+    json5 "^2.2.0"
+    localforage "^1.9.0"
+
+"@jupyterlite/theme-extension@file:packages/theme-extension":
+  version "0.1.0"
+  dependencies:
+    "@jupyterlab/application" "^3.0.7"
+    "@jupyterlab/apputils" "^3.0.5"
+    "@jupyterlab/coreutils" "^5.0.3"
+    "@jupyterlab/settingregistry" "^3.0.3"
+    "@jupyterlite/theme" "^0.1.0"
+
+"@jupyterlite/theme@file:packages/theme":
+  version "0.1.7"
+  dependencies:
+    "@jupyterlab/apputils" "^3.0.5"
+    "@jupyterlab/coreutils" "^5.0.3"
+
 "@lerna/add@3.21.0":
   version "3.21.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.21.0.tgz#27007bde71cc7b0a2969ab3c2f0ae41578b4577b"

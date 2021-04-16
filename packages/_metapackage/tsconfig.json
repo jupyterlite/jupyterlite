@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    { "path": "../application" },
+    { "path": "../application-extension" },
+    { "path": "../classic-application-extension" },
+    { "path": "../contents" },
+    { "path": "../iframe-extension" },
+    { "path": "../javascript-kernel" },
+    { "path": "../javascript-kernel-extension" },
+    { "path": "../kernel" },
+    { "path": "../p5-kernel" },
+    { "path": "../p5-kernel-extension" },
+    { "path": "../pyodide-kernel" },
+    { "path": "../pyodide-kernel-extension" },
+    { "path": "../server-extension" },
+    { "path": "../session" },
+    { "path": "../settings" },
+    { "path": "../theme" },
+    { "path": "../theme-extension" }
+  ]
+}
