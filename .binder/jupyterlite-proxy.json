@@ -1,16 +1,25 @@
 {
   "ServerProxy": {
     "servers": {
-      "jupyterlite": {
+      "jupyterlite-py": {
         "command": ["yarn", "serve:py", "{port}"],
         "absolute_url": true,
         "new_browser_tab": false,
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
-          "title": "JupyterLite"
+          "title": "JupyterLite (py)"
         },
         "mappath": {
           "/": "/index.html"
+        }
+      },
+      "jupyterlite-js": {
+        "command": ["yarn", "serve", "--port", "{port}"],
+        "absolute_url": true,
+        "new_browser_tab": false,
+        "launcher_entry": {
+          "icon_path": "/home/jovyan/docs/_static/icon.svg",
+          "title": "JupyterLite (js)"
         }
       }
     }
