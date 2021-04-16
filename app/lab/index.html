@@ -1,30 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>JupyterLite</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="/lab/favicon.ico">
-</head>
-<body>
+  <head>
+    <title>JupyterLite</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script id="jupyter-config-data" type="application/json"></script>
     <script>
-      (function (){
-        var pageInfo = document.getElementById("jupyter-config-data");
-        var base = window.location.pathname.replace(/\/lab\/(index.html)?$/, "/");
-        pageInfo.textContent = JSON.stringify({
-          "baseUrl": base,
-          "fullStaticUrl": base + "lab/build",
-          "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
-          "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
-          "settingsUrl": base + "lab/build/schemas",
-          "themesUrl": base + "lab/build/themes"
-        }, null, 2);
-        const bundle = document.createElement("script");
-        bundle.src = base + "lab/build/bundle.js";
-        bundle.main = "index";
+      (function() {
+        var pageInfo = document.getElementById('jupyter-config-data');
+        var base = window.location.pathname.replace(/\/lab\/(index.html)?$/, '/');
+        pageInfo.textContent = JSON.stringify(
+          {
+            baseUrl: base,
+            fullStaticUrl: base + 'lab/build',
+            fullMathjaxUrl:
+              'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
+            mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
+            settingsUrl: base + 'lab/build/schemas',
+            themesUrl: base + 'lab/build/themes'
+          },
+          null,
+          2
+        );
+        const bundle = document.createElement('script');
+        bundle.src = base + 'lab/build/bundle.js';
+        bundle.main = 'index';
         document.body.appendChild(bundle);
+        const favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/x-icon';
+        favicon.href = base + 'lab/favicon.ico';
+        document.head.appendChild(favicon);
       })();
     </script>
-</body>
+  </head>
 </html>
