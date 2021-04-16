@@ -10,7 +10,7 @@
     <script>
       (function() {
         var pageInfo = document.getElementById('jupyter-config-data');
-        var base = window.location.pathname.replace(/\/lab\/(index.html)?$/, '/');
+        var base = window.location.pathname.replace(/\/lab(\/|\/index.html)?$/, '/');
         pageInfo.textContent = JSON.stringify(
           {
             baseUrl: base,

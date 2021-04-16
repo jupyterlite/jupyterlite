@@ -5,7 +5,7 @@
       // redirect to /lab by default
       (function() {
         window.location.href = window.location.href.replace(
-          /\/(index.html)?$/,
+          /(\/|\/index.html)?$/,
           '/lab/index.html'
         );
       }.call(this));
