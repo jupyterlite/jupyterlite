@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- Redirect to /lab by default -->
-  <meta http-equiv="refresh" content="0; url=/lab" />
+  <script>
+    // redirect to /lab by default
+    ;(function() {
+      window.location.href = window.location.href.replace(/\/(index.html)?$/, "/lab/index.html");
+    }).call(this);
+  </script>
 </head>
 </html>

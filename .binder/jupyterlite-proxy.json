@@ -8,6 +8,9 @@
         "launcher_entry": {
           "icon_path": "/home/jovyan/docs/_static/icon.svg",
           "title": "JupyterLite"
+        },
+        "mappath": {
+          "/": "/index.html"
         }
       }
     }
