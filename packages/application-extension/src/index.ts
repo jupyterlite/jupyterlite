@@ -1,10 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd
-} from '@jupyterlab/application';
+import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { ITranslator, TranslationManager } from '@jupyterlab/translation';
 

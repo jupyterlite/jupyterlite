@@ -2,10 +2,7 @@ import { ObservableMap } from '@jupyterlab/observables';
 
 import { Kernel, KernelMessage } from '@jupyterlab/services';
 
-import {
-  deserialize,
-  serialize
-} from '@jupyterlab/services/lib/kernel/serialize';
+import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
 import { UUID } from '@lumino/coreutils';
 
@@ -69,11 +66,7 @@ export class Kernels implements IKernels {
       return kernel;
     };
 
-    const hook = (
-      kernelId: string,
-      clientId: string,
-      socket: WebSocket
-    ): void => {
+    const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {

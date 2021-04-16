@@ -62,10 +62,7 @@ export class JupyterServer {
     app.post(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
-        const res = await this._contents.restoreCheckpoint(
-          filename,
-          checkpoint
-        );
+        const res = await this._contents.restoreCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
       }
     );
@@ -89,62 +86,47 @@ export class JupyterServer {
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
-    app.get(
-      '/api/contents(.*)',
-      async (req: Router.IRequest, filename: string) => {
-        const options: ServerContents.IFetchOptions = {
-          content: req.query?.content === '1'
-        };
-        const nb = await this._contents.get(filename, options);
-        return new Response(JSON.stringify(nb));
-      }
-    );
+    app.get('/api/contents(.*)', async (req: Router.IRequest, filename: string) => {
+      const options: ServerContents.IFetchOptions = {
+        content: req.query?.content === '1'
+      };
+      const nb = await this._contents.get(filename, options);
+      return new Response(JSON.stringify(nb));
+    });
 
     // POST /api/contents/{path} - Create a new file in the specified path
-    app.post(
-      '/api/contents(.*)',
-      async (req: Router.IRequest, path: string) => {
-        const options = req.body;
-        const copyFrom = options?.copy_from as string;
-        let file: ServerContents.IModel;
-        if (copyFrom) {
-          file = await this._contents.copy(copyFrom, path);
-        } else {
-          file = await this._contents.newUntitled(options);
-        }
-        return new Response(JSON.stringify(file), { status: 201 });
+    app.post('/api/contents(.*)', async (req: Router.IRequest, path: string) => {
+      const options = req.body;
+      const copyFrom = options?.copy_from as string;
+      let file: ServerContents.IModel;
+      if (copyFrom) {
+        file = await this._contents.copy(copyFrom, path);
+      } else {
+        file = await this._contents.newUntitled(options);
       }
-    );
+      return new Response(JSON.stringify(file), { status: 201 });
+    });
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
-    app.patch(
-      '/api/contents(.*)',
-      async (req: Router.IRequest, filename: string) => {
-        const newPath = (req.body?.path as string) ?? '';
-        filename = filename[0] === '/' ? filename.slice(1) : filename;
-        const nb = await this._contents.rename(filename, newPath);
-        return new Response(JSON.stringify(nb));
-      }
-    );
+    app.patch('/api/contents(.*)', async (req: Router.IRequest, filename: string) => {
+      const newPath = (req.body?.path as string) ?? '';
+      filename = filename[0] === '/' ? filename.slice(1) : filename;
+      const nb = await this._contents.rename(filename, newPath);
+      return new Response(JSON.stringify(nb));
+    });
 
     // PUT /api/contents/{path} - Save or upload a file
-    app.put(
-      '/api/contents/(.+)',
-      async (req: Router.IRequest, filename: string) => {
-        const body = req.body;
-        const nb = await this._contents.save(filename, body);
-        return new Response(JSON.stringify(nb));
-      }
-    );
+    app.put('/api/contents/(.+)', async (req: Router.IRequest, filename: string) => {
+      const body = req.body;
+      const nb = await this._contents.save(filename, body);
+      return new Response(JSON.stringify(nb));
+    });
 
     // DELETE /api/contents/{path} - Delete a file in the given path
-    app.delete(
-      '/api/contents/(.+)',
-      async (req: Router.IRequest, filename: string) => {
-        await this._contents.delete(filename);
-        return new Response(null, { status: 204 });
-      }
-    );
+    app.delete('/api/contents/(.+)', async (req: Router.IRequest, filename: string) => {
+      await this._contents.delete(filename);
+      return new Response(null, { status: 204 });
+    });
 
     // POST /api/kernels/{kernel_id} - Restart a kernel
     app.post(
@@ -156,13 +138,10 @@ export class JupyterServer {
     );
 
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
-    app.delete(
-      '/api/kernels/(.*)',
-      async (req: Router.IRequest, kernelId: string) => {
-        const res = await this._kernels.shutdown(kernelId);
-        return new Response(JSON.stringify(res), { status: 204 });
-      }
-    );
+    app.delete('/api/kernels/(.*)', async (req: Router.IRequest, kernelId: string) => {
+      const res = await this._kernels.shutdown(kernelId);
+      return new Response(JSON.stringify(res), { status: 204 });
+    });
 
     // KernelSpecs
     app.get('/api/kernelspecs', async (req: Router.IRequest) => {
@@ -195,13 +174,10 @@ export class JupyterServer {
     });
 
     // DELETE /api/sessions/{session} - Delete a session
-    app.delete(
-      '/api/sessions/(.+)',
-      async (req: Router.IRequest, id: string) => {
-        await this._sessions.shutdown(id);
-        return new Response(null, { status: 204 });
-      }
-    );
+    app.delete('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
+      await this._sessions.shutdown(id);
+      return new Response(null, { status: 204 });
+    });
 
     // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
     app.post('/api/sessions', async (req: Router.IRequest) => {

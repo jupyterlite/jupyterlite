@@ -1,7 +1,4 @@
-import {
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin
-} from '@jupyterlab/application';
+import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
 import { ISplashScreen, IThemeManager } from '@jupyterlab/apputils';
 
@@ -50,9 +47,7 @@ const themes: JupyterFrontEndPlugin<IThemeManager> = {
 
     manager.themeChanged.connect((sender, args) => {
       const currentTheme = args.newValue;
-      document.body.dataset.jpThemeLight = String(
-        manager.isLight(currentTheme)
-      );
+      document.body.dataset.jpThemeLight = String(manager.isLight(currentTheme));
       document.body.dataset.jpThemeName = currentTheme;
       if (
         document.body.dataset.jpThemeScrollbars !==

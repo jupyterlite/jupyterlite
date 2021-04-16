@@ -24,21 +24,13 @@ const jupyterliteApputilsPlugin = path.resolve(
 fs.mkdirpSync(jupyterliteApputilsPlugin);
 
 fs.moveSync(
-  path.resolve(
-    buildDir,
-    'schemas/@jupyterlab/apputils-extension',
-    'themes.json'
-  ),
+  path.resolve(buildDir, 'schemas/@jupyterlab/apputils-extension', 'themes.json'),
   path.resolve(jupyterliteApputilsPlugin, 'themes.json'),
   { overwrite: true }
 );
 
 fs.copySync(
-  path.resolve(
-    buildDir,
-    'schemas/@jupyterlab/apputils-extension',
-    'package.json.orig'
-  ),
+  path.resolve(buildDir, 'schemas/@jupyterlab/apputils-extension', 'package.json.orig'),
   path.resolve(jupyterliteApputilsPlugin, 'package.json.orig')
 );
 

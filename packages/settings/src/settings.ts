@@ -34,9 +34,7 @@ export class Settings {
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
-    const all = (await (
-      await fetch(`${settingsUrl}/all.json`)
-    ).json()) as IPlugin[];
+    const all = (await (await fetch(`${settingsUrl}/all.json`)).json()) as IPlugin[];
     const settings = await Promise.all(
       all.map(async plugin => {
         const { id } = plugin;

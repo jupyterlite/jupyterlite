@@ -3,10 +3,7 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import {
-  JupyterLiteServer,
-  JupyterLiteServerPlugin
-} from '@jupyterlite/server';
+import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server';
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 
@@ -26,9 +23,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     const url = PageConfig.getOption('p5Url') || P5_CDN_URL;
-    const p5Url = URLExt.isLocal(url)
-      ? URLExt.join(window.location.origin, url)
-      : url;
+    const p5Url = URLExt.isLocal(url) ? URLExt.join(window.location.origin, url) : url;
     kernelspecs.register({
       spec: {
         name: 'p5js',

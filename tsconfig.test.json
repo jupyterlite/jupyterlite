@@ -6,13 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es2015",
-    "lib": [
-      "es2015",
-      "es2015.collection",
-      "dom",
-      "es2015.iterable",
-      "es2017.object"
-    ],
+    "lib": ["es2015", "es2015.collection", "dom", "es2015.iterable", "es2017.object"],
     "types": ["jest"],
     "jsx": "react",
     "resolveJsonModule": true,
