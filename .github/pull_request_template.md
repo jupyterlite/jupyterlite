@@ -1,8 +1,8 @@
 <!--
-Thanks for contributing to JupyterLab!
+Thanks for contributing to JupyterLite!
 Please fill out the following items to submit a pull request.
 See the contributing guidelines for more information:
-https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
+https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md
 -->
 
 ## References
@@ -23,4 +23,4 @@ https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md
 
 ## Backwards-incompatible changes
 
-<!-- Describe any backwards-incompatible changes to JupyterLab public APIs. -->
+<!-- Describe any backwards-incompatible changes to JupyterLite public APIs. -->
