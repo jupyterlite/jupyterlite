@@ -28,7 +28,7 @@ const EDITOR_FACTORY = 'Editor';
 /**
  * A regular expression to match path to notebooks and documents
  */
-const TREE_PATTERN = new RegExp('/(notebooks|edit)\\?path=(.*)');
+const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?\\?path=(.*)');
 
 /**
  * A plugin to open document in a new browser tab.
