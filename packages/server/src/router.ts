@@ -132,10 +132,7 @@ export namespace Router {
   /**
    * The Callback type.
    */
-  export type Callback = (
-    req: IRequest,
-    ...args: string[]
-  ) => Promise<Response>;
+  export type Callback = (req: IRequest, ...args: string[]) => Promise<Response>;
 
   /**
    * The Method type.

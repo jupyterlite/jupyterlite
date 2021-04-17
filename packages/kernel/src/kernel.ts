@@ -65,9 +65,7 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Get the last parent header
    */
-  get parentHeader():
-    | KernelMessage.IHeader<KernelMessage.MessageType>
-    | undefined {
+  get parentHeader(): KernelMessage.IHeader<KernelMessage.MessageType> | undefined {
     return this._parentHeader;
   }
 
@@ -244,9 +242,7 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'kernel_info_reply',
       channel: 'shell',
       session: parent.header.session,
-      parentHeader: parent.header as KernelMessage.IHeader<
-        'kernel_info_request'
-      >,
+      parentHeader: parent.header as KernelMessage.IHeader<'kernel_info_request'>,
       content
     });
 
@@ -303,18 +299,16 @@ export abstract class BaseKernel implements IKernel {
    */
   private async _historyRequest(msg: KernelMessage.IMessage): Promise<void> {
     const historyMsg = msg as KernelMessage.IHistoryRequestMsg;
-    const message = KernelMessage.createMessage<KernelMessage.IHistoryReplyMsg>(
-      {
-        msgType: 'history_reply',
-        channel: 'shell',
-        parentHeader: historyMsg.header,
-        session: msg.header.session,
-        content: {
-          status: 'ok',
-          history: this._history as KernelMessage.IHistoryReply['history']
-        }
+    const message = KernelMessage.createMessage<KernelMessage.IHistoryReplyMsg>({
+      msgType: 'history_reply',
+      channel: 'shell',
+      parentHeader: historyMsg.header,
+      session: msg.header.session,
+      content: {
+        status: 'ok',
+        history: this._history as KernelMessage.IHistoryReply['history']
       }
-    );
+    });
     this._sendMessage(message);
   }
 
@@ -326,18 +320,16 @@ export abstract class BaseKernel implements IKernel {
   private _executeInput(msg: KernelMessage.IMessage): void {
     const parent = msg as KernelMessage.IExecuteInputMsg;
     const code = parent.content.code;
-    const message = KernelMessage.createMessage<KernelMessage.IExecuteInputMsg>(
-      {
-        msgType: 'execute_input',
-        parentHeader: parent.header,
-        channel: 'iopub',
-        session: msg.header.session,
-        content: {
-          code,
-          execution_count: this._executionCount
-        }
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteInputMsg>({
+      msgType: 'execute_input',
+      parentHeader: parent.header,
+      channel: 'iopub',
+      session: msg.header.session,
+      content: {
+        code,
+        execution_count: this._executionCount
       }
-    );
+    });
     this._sendMessage(message);
   }
 
@@ -349,14 +341,9 @@ export abstract class BaseKernel implements IKernel {
    */
   private _executeResult(
     msg: KernelMessage.IMessage,
-    content: Pick<
-      KernelMessage.IExecuteResultMsg['content'],
-      'data' | 'metadata'
-    >
+    content: Pick<KernelMessage.IExecuteResultMsg['content'], 'data' | 'metadata'>
   ): void {
-    const message = KernelMessage.createMessage<
-      KernelMessage.IExecuteResultMsg
-    >({
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
       msgType: 'execute_result',
       parentHeader: msg.header,
       channel: 'iopub',
@@ -380,15 +367,13 @@ export abstract class BaseKernel implements IKernel {
     content: KernelMessage.IExecuteReplyMsg['content']
   ): void {
     const parent = msg as KernelMessage.IExecuteRequestMsg;
-    const message = KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>(
-      {
-        msgType: 'execute_reply',
-        channel: 'shell',
-        parentHeader: parent.header,
-        session: msg.header.session,
-        content
-      }
-    );
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
+      msgType: 'execute_reply',
+      channel: 'shell',
+      parentHeader: parent.header,
+      session: msg.header.session,
+      content
+    });
     this._sendMessage(message);
   }
 
@@ -420,9 +405,7 @@ export abstract class BaseKernel implements IKernel {
   private async _complete(msg: KernelMessage.IMessage): Promise<void> {
     const completeMsg = msg as KernelMessage.ICompleteRequestMsg;
     const content = await this.completeRequest(completeMsg.content);
-    const message = KernelMessage.createMessage<
-      KernelMessage.ICompleteReplyMsg
-    >({
+    const message = KernelMessage.createMessage<KernelMessage.ICompleteReplyMsg>({
       msgType: 'complete_reply',
       parentHeader: completeMsg.header,
       channel: 'shell',

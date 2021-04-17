@@ -1,0 +1,20 @@
+{
+  "ServerProxy": {
+    "servers": {
+      "jupyterlite-py": {
+        "command": ["yarn", "serve:py", "{port}"],
+        "launcher_entry": {
+          "icon_path": "docs/_static/icon.svg",
+          "title": "JupyterLite (py)"
+        }
+      },
+      "jupyterlite-js": {
+        "command": ["yarn", "serve", "--port", "{port}"],
+        "launcher_entry": {
+          "icon_path": "docs/_static/icon.svg",
+          "title": "JupyterLite (js)"
+        }
+      }
+    }
+  }
+}

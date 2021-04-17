@@ -1,7 +1,4 @@
-import {
-  Contents as ServerContents,
-  ServerConnection
-} from '@jupyterlab/services';
+import { Contents as ServerContents, ServerConnection } from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
 
@@ -32,10 +29,7 @@ export class Contents implements IContents {
   /**
    * A signal emitted when the file has changed.
    */
-  get fileChanged(): ISignal<
-    ServerContents.IManager,
-    ServerContents.IChangedArgs
-  > {
+  get fileChanged(): ISignal<ServerContents.IManager, ServerContents.IChangedArgs> {
     return this._fileChanged;
   }
 
@@ -353,13 +347,10 @@ export class Contents implements IContents {
    * @returns A promise which resolves with the new checkpoint model when the
    *   checkpoint is created.
    */
-  async createCheckpoint(
-    path: string
-  ): Promise<ServerContents.ICheckpointModel> {
+  async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
     const item = (await this._storage.getItem(path)) as ServerContents.IModel;
     const copies =
-      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ??
-      [];
+      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? [];
     copies.push(item);
     // keep only a certain amount of checkpoints per file
     if (copies.length > N_CHECKPOINTS) {
@@ -381,12 +372,8 @@ export class Contents implements IContents {
    * @returns A promise which resolves with a list of checkpoint models for
    *    the file.
    */
-  async listCheckpoints(
-    path: string
-  ): Promise<ServerContents.ICheckpointModel[]> {
-    const copies = (await this._checkpoints.getItem(
-      path
-    )) as ServerContents.IModel[];
+  async listCheckpoints(path: string): Promise<ServerContents.ICheckpointModel[]> {
+    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
     if (!copies) {
       return [];
     }
@@ -407,9 +394,7 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
-    const copies = (await this._checkpoints.getItem(
-      path
-    )) as ServerContents.IModel[];
+    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];
     await this._storage.setItem(path, item);
@@ -424,9 +409,7 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
-    const copies = (await this._checkpoints.getItem(
-      path
-    )) as ServerContents.IModel[];
+    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
     await this._checkpoints.setItem(path, copies);
@@ -521,9 +504,7 @@ export class Contents implements IContents {
    *
    * @param type The file type to increment the counter for.
    */
-  private async _incrementCounter(
-    type: ServerContents.ContentType
-  ): Promise<number> {
+  private async _incrementCounter(type: ServerContents.ContentType): Promise<number> {
     const current = ((await this._counters.getItem(type)) as number) ?? -1;
     const counter = current + 1;
     await this._counters.setItem(type, counter);

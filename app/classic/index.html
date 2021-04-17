@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta http-equiv="refresh" content="0; url=/classic/tree" />
-</head>
+  <head>
+    <script>
+      (function() {
+        window.location.href = window.location.href.replace(
+          /\/classic(\/|\/index.html)?$/,
+          '/classic/tree/index.html'
+        );
+      }.call(this));
+    </script>
+  </head>
 </html>

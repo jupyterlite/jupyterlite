@@ -2,10 +2,7 @@ import { ObservableMap } from '@jupyterlab/observables';
 
 import { Kernel, KernelMessage } from '@jupyterlab/services';
 
-import {
-  deserialize,
-  serialize
-} from '@jupyterlab/services/lib/kernel/serialize';
+import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
 import { UUID } from '@lumino/coreutils';
 
@@ -14,6 +11,8 @@ import { Server as WebSocketServer, WebSocket } from 'mock-socket';
 import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
 import { Mutex } from 'async-mutex';
+
+import { PageConfig } from '@jupyterlab/coreutils';
 
 /**
  * A class to handle requests to /api/kernels
@@ -69,11 +68,7 @@ export class Kernels implements IKernels {
       return kernel;
     };
 
-    const hook = (
-      kernelId: string,
-      clientId: string,
-      socket: WebSocket
-    ): void => {
+    const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
@@ -114,7 +109,7 @@ export class Kernels implements IKernels {
     };
 
     // There is one server per kernel which handles multiple clients
-    const kernelUrl = `${Kernels.WS_BASE_URL}/api/kernels/${id}/channels`;
+    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${id}/channels`;
     const runningKernel = this._kernels.get(id);
     if (runningKernel) {
       return {
@@ -206,7 +201,5 @@ export namespace Kernels {
   /**
    * The base url for the Kernels manager
    */
-  export const WS_BASE_URL = `${
-    window.location.protocol === 'https:' ? 'wss' : 'ws'
-  }://${window.location.host}`;
+  export const WS_BASE_URL = PageConfig.getBaseUrl().replace(/^http/, 'ws');
 }

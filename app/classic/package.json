@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "build": "webpack --config ../webpack.config.js",
-    "build:prod": "yarn run build --mode=production",
+    "build:prod": "yarn build --mode=production",
     "clean": "rimraf build",
     "clean:artifacts": "rimraf artifacts",
-    "prepublishOnly": "yarn run build",
+    "prepublishOnly": "yarn build",
     "test:cov": "jest --collect-coverage",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "watch": "webpack --watch"
+    "watch": "webpack --config ../webpack.config.watch.js"
   },
   "dependencies": {
     "@jupyterlite/server": "^0.1.0",

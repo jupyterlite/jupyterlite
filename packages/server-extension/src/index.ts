@@ -3,12 +3,7 @@
 
 import { Contents, IContents } from '@jupyterlite/contents';
 
-import {
-  IKernels,
-  Kernels,
-  IKernelSpecs,
-  KernelSpecs
-} from '@jupyterlite/kernel';
+import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
 import {
   JupyterLiteServer,

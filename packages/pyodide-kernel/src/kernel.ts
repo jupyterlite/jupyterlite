@@ -18,9 +18,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
   constructor(options: PyodideKernel.IOptions) {
     super(options);
     const { pyodideUrl } = options;
-    const blob = new Blob([
-      [`importScripts("${pyodideUrl}");`, worker].join('\n')
-    ]);
+    const blob = new Blob([[`importScripts("${pyodideUrl}");`, worker].join('\n')]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
