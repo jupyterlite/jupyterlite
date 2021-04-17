@@ -54,7 +54,16 @@ export class Kernels implements IKernels {
           );
           return;
         }
+
         const message = serialize(msg);
+        // process iopub messages
+        if (msg.channel === 'iopub') {
+          const clients = this._kernelClients.get(id);
+          clients?.forEach(client => {
+            client.send(message);
+          });
+          return;
+        }
         socket.send(message);
       };
 
@@ -76,6 +85,7 @@ export class Kernels implements IKernels {
       }
 
       this._clientIds.set(clientId, socket);
+      this._kernelClients.get(kernelId)?.add(socket);
 
       // create a synchronization mechanism to allow only one message
       // to be processed at a time
@@ -105,6 +115,7 @@ export class Kernels implements IKernels {
 
       socket.on('close', () => {
         this._clientIds.delete(clientId);
+        this._kernelClients.get(kernelId)?.delete(socket);
       });
     };
 
@@ -120,6 +131,7 @@ export class Kernels implements IKernels {
 
     const kernel = await startKernel(id);
     this._kernels.set(id, kernel);
+    this._kernelClients.set(id, new Set<WebSocket>());
 
     const wsServer = new WebSocketServer(kernelUrl);
     wsServer.on('connection', (socket: WebSocket): void => {
@@ -161,11 +173,12 @@ export class Kernels implements IKernels {
    * @param id The kernel id.
    */
   async shutdown(id: string): Promise<void> {
-    this._kernels.get(id)?.dispose();
+    this._kernels.delete(id)?.dispose();
   }
 
   private _clientIds = new ObservableMap<WebSocket>();
   private _kernels = new ObservableMap<IKernel>();
+  private _kernelClients = new ObservableMap<Set<WebSocket>>();
   private _kernelspecs: IKernelSpecs;
 }
 
