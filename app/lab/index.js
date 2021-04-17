@@ -81,6 +81,8 @@ window.addEventListener('load', async () => {
     '@jupyterlab/apputils-extension:themes',
     '@jupyterlab/apputils-extension:workspaces',
     '@jupyterlab/application-extension:tree-resolver',
+    // TODO: improve/replace resolver
+    // @see https://github.com/jtpio/jupyterlite/issues/22
     '@jupyterlab/apputils-extension:resolver'
   ];
   const plugins = (await Promise.all(extensions)).map(mod => {
