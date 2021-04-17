@@ -1,3 +1,5 @@
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import { KernelMessage } from '@jupyterlab/services';
 
 import { BaseKernel, IKernel } from '@jupyterlite/kernel';
@@ -6,16 +8,18 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
+import pyolite from '../py/dist/pyolite-0.1.0-py2.py3-none-any.whl';
+
 /**
  * A kernel that executes Python code with Pyodide.
  */
-export class PyodideKernel extends BaseKernel implements IKernel {
+export class PyoliteKernel extends BaseKernel implements IKernel {
   /**
    * Instantiate a new PyodideKernel
    *
    * @param options The instantiation options for a new PyodideKernel
    */
-  constructor(options: PyodideKernel.IOptions) {
+  constructor(options: PyoliteKernel.IOptions) {
     super(options);
     const { pyodideUrl } = options;
     const blob = new Blob([[`importScripts("${pyodideUrl}");`, worker].join('\n')]);
@@ -23,7 +27,11 @@ export class PyodideKernel extends BaseKernel implements IKernel {
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
     };
-    this._eval('').then(() => {
+
+    // load the pyolite package
+    const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
+    const pyoliteWheelUrl = URLExt.join(PageConfig.getBaseUrl(), pyoliteWheel);
+    this._sendWorkerMessage({ type: 'init', pyoliteWheelUrl }).then(() => {
       this._ready.resolve();
     });
   }
@@ -105,6 +113,10 @@ export class PyodideKernel extends BaseKernel implements IKernel {
         break;
       }
       default:
+        this._executeDelegate.resolve({
+          data: {},
+          metadata: {}
+        });
         break;
     }
   }
@@ -130,7 +142,7 @@ export class PyodideKernel extends BaseKernel implements IKernel {
       },
       protocol_version: '5.3',
       status: 'ok',
-      banner: 'Pyodide: A WebAssembly-powered Python kernel',
+      banner: 'Pyolite: A WebAssembly-powered Python kernel backed by Pyodide',
       help_links: [
         {
           text: 'Python (WASM) Kernel',
@@ -230,16 +242,23 @@ export class PyodideKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Execute code in the kernel IFrame.
+   * Send a message to the web worker
+   *
+   * @param msg The message to send to the worker.
+   */
+  private async _sendWorkerMessage(msg: any): Promise<any> {
+    this._executeDelegate = new PromiseDelegate<any>();
+    this._worker.postMessage(msg);
+    return await this._executeDelegate.promise;
+  }
+
+  /**
+   * Send code to be executed in the web worker
    *
    * @param code The code to execute.
    */
   private async _eval(code: string): Promise<any> {
-    this._executeDelegate = new PromiseDelegate<any>();
-    this._worker.postMessage({
-      code
-    });
-    return await this._executeDelegate.promise;
+    return this._sendWorkerMessage({ code });
   }
 
   private _executeDelegate = new PromiseDelegate<any>();
@@ -248,9 +267,9 @@ export class PyodideKernel extends BaseKernel implements IKernel {
 }
 
 /**
- * A namespace for PyodideKernel statics.
+ * A namespace for PyoliteKernel statics.
  */
-export namespace PyodideKernel {
+export namespace PyoliteKernel {
   /**
    * The instantiation options for a Pyodide kernel
    */
@@ -259,5 +278,10 @@ export namespace PyodideKernel {
      * The URL to fetch Pyodide.
      */
     pyodideUrl: string;
+
+    /**
+     * The URL to fetch the Pyolite wheel.
+     */
+    pyoliteWheel?: string;
   }
 }

@@ -7,7 +7,7 @@ import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server'
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 
-import { PyodideKernel } from '@jupyterlite/pyodide-kernel';
+import { PyoliteKernel } from '@jupyterlite/pyolite-kernel';
 
 /**
  * The default CDN fallback for Pyodide
@@ -18,7 +18,7 @@ const PYODIDE_CDN_URL = 'https://pyodide-cdn2.iodide.io/v0.17.0a2/full/pyodide.j
  * A plugin to register the Pyodide kernel.
  */
 const kernel: JupyterLiteServerPlugin<void> = {
-  id: '@jupyterlite/pyodide-kernel-extension:kernel',
+  id: '@jupyterlite/pyolite-kernel-extension:kernel',
   autoStart: true,
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
@@ -30,13 +30,13 @@ const kernel: JupyterLiteServerPlugin<void> = {
     kernelspecs.register({
       spec: {
         name: 'python',
-        display_name: 'Pyodide',
+        display_name: 'Pyolite',
         language: 'python',
         argv: [],
         spec: {
           argv: [],
           env: {},
-          display_name: 'Pyodide',
+          display_name: 'Pyolite',
           language: 'python',
           interrupt_mode: 'message',
           metadata: {}
@@ -47,7 +47,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         }
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
-        return new PyodideKernel({
+        return new PyoliteKernel({
           ...options,
           pyodideUrl
         });

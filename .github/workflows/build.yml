@@ -36,6 +36,14 @@ jobs:
             ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-yarn-packages-
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+      - name: Install Python dependencies
+        run: |
+          python -m pip install build
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |

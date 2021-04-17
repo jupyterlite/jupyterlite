@@ -10,7 +10,7 @@
       "path": "../kernel"
     },
     {
-      "path": "../pyodide-kernel"
+      "path": "../pyolite-kernel"
     },
     {
       "path": "../server"

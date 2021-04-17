@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/pyodide-kernel-extension",
+  "name": "@jupyterlite/pyolite-kernel-extension",
   "version": "0.1.0",
-  "description": "JupyterLite - Pyodide Kernel Extension",
+  "description": "JupyterLite - Pyolite Kernel Extension",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
     "url": "https://github.com/jtpio/jupyterlite/issues"
@@ -40,7 +40,7 @@
   "dependencies": {
     "@jupyterlab/coreutils": "^5.0.0",
     "@jupyterlite/kernel": "^0.1.0",
-    "@jupyterlite/pyodide-kernel": "^0.1.0",
+    "@jupyterlite/pyolite-kernel": "^0.1.0",
     "@jupyterlite/server": "^0.1.0"
   },
   "devDependencies": {

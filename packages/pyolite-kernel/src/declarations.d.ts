@@ -3,5 +3,10 @@ declare module '*?raw' {
   return res;
 }
 
+declare module '*.whl' {
+  const res: string;
+  return res;
+}
+
 declare let pyodide: any;
 declare let languagePluginLoader: any;

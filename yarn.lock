@@ -2703,15 +2703,15 @@
   dependencies:
     "@jupyterlite/kernel" "^0.1.0"
 
-"@jupyterlite/pyodide-kernel-extension@file:packages/pyodide-kernel-extension":
+"@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
   version "0.1.0"
   dependencies:
     "@jupyterlab/coreutils" "^5.0.0"
     "@jupyterlite/kernel" "^0.1.0"
-    "@jupyterlite/pyodide-kernel" "^0.1.0"
+    "@jupyterlite/pyolite-kernel" "^0.1.0"
     "@jupyterlite/server" "^0.1.0"
 
-"@jupyterlite/pyodide-kernel@file:packages/pyodide-kernel":
+"@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
   version "0.1.0"
   dependencies:
     "@jupyterlite/kernel" "^0.1.0"

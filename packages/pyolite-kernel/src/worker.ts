@@ -13,7 +13,19 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   const data = event.data;
   console.log('Inside worker', data);
 
-  pyodide.runPython(BOOTSTRAP);
+  // if this is the init event
+  if (data.type === 'init') {
+    const pyoliteWheelUrl = data.pyoliteWheelUrl;
+    await pyodide.runPythonAsync(`
+      import micropip
+      await micropip.install('${pyoliteWheelUrl}')
+      import pyolite
+    `);
+    postMessage({});
+    return;
+  }
+
+  await pyodide.runPythonAsync(BOOTSTRAP);
 
   let msgType = 'results';
   let renderHtml = false;
