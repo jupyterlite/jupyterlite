@@ -6,5 +6,5 @@ yarn build
 
 # enable the proxy
 for app in notebook server; do
-    cp .binder/jupyterlite-proxy.json /home/jovyan/jupyter_${app}_config.json
+    cp .binder/jupyterlite-proxy.json jupyter_${app}_config.json
 done
