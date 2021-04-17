@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/theme",
-  "version": "0.1.7",
+  "version": "0.1.0",
   "description": "JupyterLite - Themes",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
