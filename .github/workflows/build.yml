@@ -21,12 +21,15 @@ jobs:
           node-version: '14.x'
       - name: Cache node modules
         uses: actions/cache@v2
+        id: cache-node-modules
         with:
           path: 'node_modules/'
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
       - name: Cache yarn packages
         uses: actions/cache@v2
+        id: cache-yarn-packages
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         with:
           path: '.yarn-packages'
           key: |
@@ -34,8 +37,9 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-yarn-packages-
       - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          yarn
+          yarn --frozen-lockfile
       - name: Build
         run: |
           yarn build
