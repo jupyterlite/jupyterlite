@@ -42,54 +42,20 @@ export class Kernels implements IKernels {
       return { id, name };
     }
 
-    const startKernel = async (id: string): Promise<IKernel> => {
-      const kernelId = id ?? UUID.uuid4();
+    // create a synchronization mechanism to allow only one message
+    // to be processed at a time
+    const mutex = new Mutex();
 
-      const sendMessage = (msg: KernelMessage.IMessage): void => {
-        const clientId = msg.header.session;
-        const socket = this._clientIds.get(clientId);
-        if (!socket) {
-          console.warn(
-            `Trying to send message on removed socket for kernel ${kernelId}`
-          );
-          return;
-        }
-
-        const message = serialize(msg);
-        // process iopub messages
-        if (msg.channel === 'iopub') {
-          const clients = this._kernelClients.get(id);
-          clients?.forEach(client => {
-            client.send(message);
-          });
-          return;
-        }
-        socket.send(message);
-      };
-
-      const kernel = await factory({
-        id: kernelId,
-        sendMessage,
-        name
-      });
-
-      await kernel.ready;
-      return kernel;
-    };
-
+    // hook a new client to a kernel
     const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
-        throw Error(`No kernel ${id}`);
+        throw Error(`No kernel ${kernelId}`);
       }
 
       this._clientIds.set(clientId, socket);
       this._kernelClients.get(kernelId)?.add(socket);
-
-      // create a synchronization mechanism to allow only one message
-      // to be processed at a time
-      const mutex = new Mutex();
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
         await mutex.runExclusive(async () => {
@@ -119,9 +85,12 @@ export class Kernels implements IKernels {
       });
     };
 
+    // ensure kernel id
+    const kernelId = id ?? UUID.uuid4();
+
     // There is one server per kernel which handles multiple clients
-    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${id}/channels`;
-    const runningKernel = this._kernels.get(id);
+    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${kernelId}/channels`;
+    const runningKernel = this._kernels.get(kernelId);
     if (runningKernel) {
       return {
         id: runningKernel.id,
@@ -129,21 +98,50 @@ export class Kernels implements IKernels {
       };
     }
 
-    const kernel = await startKernel(id);
-    this._kernels.set(id, kernel);
-    this._kernelClients.set(id, new Set<WebSocket>());
+    // start the kernel
+    const sendMessage = (msg: KernelMessage.IMessage): void => {
+      const clientId = msg.header.session;
+      const socket = this._clientIds.get(clientId);
+      if (!socket) {
+        console.warn(`Trying to send message on removed socket for kernel ${kernelId}`);
+        return;
+      }
 
+      const message = serialize(msg);
+      // process iopub messages
+      if (msg.channel === 'iopub') {
+        const clients = this._kernelClients.get(kernelId);
+        clients?.forEach(client => {
+          client.send(message);
+        });
+        return;
+      }
+      socket.send(message);
+    };
+
+    const kernel = await factory({
+      id: kernelId,
+      sendMessage,
+      name
+    });
+
+    await kernel.ready;
+
+    this._kernels.set(kernelId, kernel);
+    this._kernelClients.set(kernelId, new Set<WebSocket>());
+
+    // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
     wsServer.on('connection', (socket: WebSocket): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
-      hook(id, clientId, socket);
+      hook(kernelId, clientId, socket);
     });
 
     // cleanup on kernel shutdown
     kernel.disposed.connect(() => {
       wsServer.close();
-      this._kernels.delete(id);
+      this._kernels.delete(kernelId);
     });
 
     return {
