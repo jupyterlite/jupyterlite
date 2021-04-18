@@ -54,7 +54,7 @@ export class Kernels implements IKernels {
         throw Error(`No kernel ${kernelId}`);
       }
 
-      this._clientIds.set(clientId, socket);
+      this._clients.set(clientId, socket);
       this._kernelClients.get(kernelId)?.add(socket);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
@@ -80,7 +80,7 @@ export class Kernels implements IKernels {
       );
 
       socket.on('close', () => {
-        this._clientIds.delete(clientId);
+        this._clients.delete(clientId);
         this._kernelClients.get(kernelId)?.delete(socket);
       });
     };
@@ -101,7 +101,7 @@ export class Kernels implements IKernels {
     // start the kernel
     const sendMessage = (msg: KernelMessage.IMessage): void => {
       const clientId = msg.header.session;
-      const socket = this._clientIds.get(clientId);
+      const socket = this._clients.get(clientId);
       if (!socket) {
         console.warn(`Trying to send message on removed socket for kernel ${kernelId}`);
         return;
@@ -174,8 +174,8 @@ export class Kernels implements IKernels {
     this._kernels.delete(id)?.dispose();
   }
 
-  private _clientIds = new ObservableMap<WebSocket>();
   private _kernels = new ObservableMap<IKernel>();
+  private _clients = new ObservableMap<WebSocket>();
   private _kernelClients = new ObservableMap<Set<WebSocket>>();
   private _kernelspecs: IKernelSpecs;
 }
