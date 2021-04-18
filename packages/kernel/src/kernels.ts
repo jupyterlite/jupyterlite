@@ -55,7 +55,7 @@ export class Kernels implements IKernels {
       }
 
       this._clients.set(clientId, socket);
-      this._kernelClients.get(kernelId)?.add(socket);
+      this._kernelClients.get(kernelId)?.add(clientId);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
         await mutex.runExclusive(async () => {
@@ -79,10 +79,16 @@ export class Kernels implements IKernels {
         }
       );
 
-      socket.on('close', () => {
+      const removeClient = () => {
         this._clients.delete(clientId);
-        this._kernelClients.get(kernelId)?.delete(socket);
-      });
+        this._kernelClients.get(kernelId)?.delete(clientId);
+      };
+
+      kernel.disposed.connect(removeClient);
+
+      // TODO: looks like this is not called on connection closed?
+      // https://github.com/thoov/mock-socket/issues/298
+      socket.onclose = removeClient;
     };
 
     // ensure kernel id
@@ -111,8 +117,8 @@ export class Kernels implements IKernels {
       // process iopub messages
       if (msg.channel === 'iopub') {
         const clients = this._kernelClients.get(kernelId);
-        clients?.forEach(client => {
-          client.send(message);
+        clients?.forEach(id => {
+          this._clients.get(id)?.send(message);
         });
         return;
       }
@@ -128,7 +134,7 @@ export class Kernels implements IKernels {
     await kernel.ready;
 
     this._kernels.set(kernelId, kernel);
-    this._kernelClients.set(kernelId, new Set<WebSocket>());
+    this._kernelClients.set(kernelId, new Set<string>());
 
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
@@ -142,6 +148,7 @@ export class Kernels implements IKernels {
     kernel.disposed.connect(() => {
       wsServer.close();
       this._kernels.delete(kernelId);
+      this._kernelClients.delete(kernelId);
     });
 
     return {
@@ -176,7 +183,7 @@ export class Kernels implements IKernels {
 
   private _kernels = new ObservableMap<IKernel>();
   private _clients = new ObservableMap<WebSocket>();
-  private _kernelClients = new ObservableMap<Set<WebSocket>>();
+  private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
 }
 
