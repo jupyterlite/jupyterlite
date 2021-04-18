@@ -86,8 +86,9 @@ export class Kernels implements IKernels {
 
       kernel.disposed.connect(removeClient);
 
-      // TODO: looks like this is not called on connection closed?
+      // TODO: check whether this is called
       // https://github.com/thoov/mock-socket/issues/298
+      // https://github.com/jupyterlab/jupyterlab/blob/6bc884a7a8ed73c615ce72ba097bdb790482b5bf/packages/services/src/kernel/default.ts#L1245
       socket.onclose = removeClient;
     };
 
@@ -142,6 +143,17 @@ export class Kernels implements IKernels {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
       hook(kernelId, clientId, socket);
+    });
+
+    // clean up closed connection
+    wsServer.on('close', (): void => {
+      this._clients.keys().forEach(clientId => {
+        const socket = this._clients.get(clientId);
+        if (socket?.readyState === WebSocket.CLOSED) {
+          this._clients.delete(clientId);
+          this._kernelClients.get(kernelId)?.delete(clientId);
+        }
+      });
     });
 
     // cleanup on kernel shutdown
