@@ -42,44 +42,20 @@ export class Kernels implements IKernels {
       return { id, name };
     }
 
-    const startKernel = async (id: string): Promise<IKernel> => {
-      const kernelId = id ?? UUID.uuid4();
+    // create a synchronization mechanism to allow only one message
+    // to be processed at a time
+    const mutex = new Mutex();
 
-      const sendMessage = (msg: KernelMessage.IMessage): void => {
-        const clientId = msg.header.session;
-        const socket = this._clientIds.get(clientId);
-        if (!socket) {
-          console.warn(
-            `Trying to send message on removed socket for kernel ${kernelId}`
-          );
-          return;
-        }
-        const message = serialize(msg);
-        socket.send(message);
-      };
-
-      const kernel = await factory({
-        id: kernelId,
-        sendMessage,
-        name
-      });
-
-      await kernel.ready;
-      return kernel;
-    };
-
+    // hook a new client to a kernel
     const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
-        throw Error(`No kernel ${id}`);
+        throw Error(`No kernel ${kernelId}`);
       }
 
-      this._clientIds.set(clientId, socket);
-
-      // create a synchronization mechanism to allow only one message
-      // to be processed at a time
-      const mutex = new Mutex();
+      this._clients.set(clientId, socket);
+      this._kernelClients.get(kernelId)?.add(clientId);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
         await mutex.runExclusive(async () => {
@@ -103,14 +79,25 @@ export class Kernels implements IKernels {
         }
       );
 
-      socket.on('close', () => {
-        this._clientIds.delete(clientId);
-      });
+      const removeClient = () => {
+        this._clients.delete(clientId);
+        this._kernelClients.get(kernelId)?.delete(clientId);
+      };
+
+      kernel.disposed.connect(removeClient);
+
+      // TODO: check whether this is called
+      // https://github.com/thoov/mock-socket/issues/298
+      // https://github.com/jupyterlab/jupyterlab/blob/6bc884a7a8ed73c615ce72ba097bdb790482b5bf/packages/services/src/kernel/default.ts#L1245
+      socket.onclose = removeClient;
     };
 
+    // ensure kernel id
+    const kernelId = id ?? UUID.uuid4();
+
     // There is one server per kernel which handles multiple clients
-    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${id}/channels`;
-    const runningKernel = this._kernels.get(id);
+    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${kernelId}/channels`;
+    const runningKernel = this._kernels.get(kernelId);
     if (runningKernel) {
       return {
         id: runningKernel.id,
@@ -118,20 +105,62 @@ export class Kernels implements IKernels {
       };
     }
 
-    const kernel = await startKernel(id);
-    this._kernels.set(id, kernel);
+    // start the kernel
+    const sendMessage = (msg: KernelMessage.IMessage): void => {
+      const clientId = msg.header.session;
+      const socket = this._clients.get(clientId);
+      if (!socket) {
+        console.warn(`Trying to send message on removed socket for kernel ${kernelId}`);
+        return;
+      }
 
+      const message = serialize(msg);
+      // process iopub messages
+      if (msg.channel === 'iopub') {
+        const clients = this._kernelClients.get(kernelId);
+        clients?.forEach(id => {
+          this._clients.get(id)?.send(message);
+        });
+        return;
+      }
+      socket.send(message);
+    };
+
+    const kernel = await factory({
+      id: kernelId,
+      sendMessage,
+      name
+    });
+
+    await kernel.ready;
+
+    this._kernels.set(kernelId, kernel);
+    this._kernelClients.set(kernelId, new Set<string>());
+
+    // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
     wsServer.on('connection', (socket: WebSocket): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
-      hook(id, clientId, socket);
+      hook(kernelId, clientId, socket);
+    });
+
+    // clean up closed connection
+    wsServer.on('close', (): void => {
+      this._clients.keys().forEach(clientId => {
+        const socket = this._clients.get(clientId);
+        if (socket?.readyState === WebSocket.CLOSED) {
+          this._clients.delete(clientId);
+          this._kernelClients.get(kernelId)?.delete(clientId);
+        }
+      });
     });
 
     // cleanup on kernel shutdown
     kernel.disposed.connect(() => {
       wsServer.close();
-      this._kernels.delete(id);
+      this._kernels.delete(kernelId);
+      this._kernelClients.delete(kernelId);
     });
 
     return {
@@ -161,11 +190,12 @@ export class Kernels implements IKernels {
    * @param id The kernel id.
    */
   async shutdown(id: string): Promise<void> {
-    this._kernels.get(id)?.dispose();
+    this._kernels.delete(id)?.dispose();
   }
 
-  private _clientIds = new ObservableMap<WebSocket>();
   private _kernels = new ObservableMap<IKernel>();
+  private _clients = new ObservableMap<WebSocket>();
+  private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
 }
 
