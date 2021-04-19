@@ -1,8 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { createRendermimePlugins } from '@jupyterlab/application/lib/mimerenderers';
-
 import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
@@ -19,6 +17,11 @@ const serverMods = [
   import('@jupyterlite/server-extension')
 ];
 
+const mimeExtensionsMods = [
+  import('@jupyterlite/iframe-extension'),
+  import('@jupyterlab/json-extension')
+];
+
 window.addEventListener('load', async () => {
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
@@ -29,9 +32,11 @@ window.addEventListener('load', async () => {
   // retrieve the custom service manager from the server app
   const { serviceManager } = jupyterLiteServer;
 
+  const mimeExtensions = await Promise.all(mimeExtensionsMods);
+
   // create a JupyterLab Classic frontend
   const { App } = require('@jupyterlab-classic/application');
-  const app = new App({ serviceManager });
+  const app = new App({ serviceManager, mimeExtensions });
 
   let mods = [
     // @jupyterlite plugins
@@ -127,16 +132,6 @@ window.addEventListener('load', async () => {
   }
 
   app.registerPluginModules(mods);
-
-  const mimeExtensions = [
-    require('@jupyterlite/iframe-extension'),
-    require('@jupyterlab/json-extension')
-  ];
-  // register mime extensions manually
-  // TODO: move to JupyterLab Classic constructor
-  for (const plugin of createRendermimePlugins(mimeExtensions)) {
-    app.registerPlugin(plugin);
-  }
 
   console.log('Starting app');
   await app.start();
