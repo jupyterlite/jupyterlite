@@ -7,3 +7,4 @@ docs/_build
 node_modules
 docs/api/ts
 .pytest_cache
+app/lab/extensions/

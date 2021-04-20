@@ -15,6 +15,7 @@ coverage
 *.map.js
 *.bundle.js
 docs/_build
+app/lab/extensions/
 
 # jetbrains IDE stuff
 .idea/

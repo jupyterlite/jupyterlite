@@ -58,48 +58,135 @@ const mods = [
   import('@jupyterlite/server-extension')
 ];
 
-window.addEventListener('load', async () => {
-  // Make sure the styles have loaded
-  await styles;
+// Promise.allSettled polyfill, until our supported browsers implement it
+// See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled
+if (Promise.allSettled === undefined) {
+  Promise.allSettled = promises =>
+    Promise.all(
+      promises.map(promise =>
+        promise.then(
+          value => ({
+            status: 'fulfilled',
+            value
+          }),
+          reason => ({
+            status: 'rejected',
+            reason
+          })
+        )
+      )
+    );
+}
 
-  // create the in-browser JupyterLite Server
-  const jupyterLiteServer = new JupyterLiteServer({});
-  jupyterLiteServer.registerPluginModules(await Promise.all(mods));
-  // start the server
-  await jupyterLiteServer.start();
-
-  // retrieve the custom service manager from the server app
-  const { serviceManager } = jupyterLiteServer;
-
-  // create a full-blown JupyterLab frontend
-  const lab = new JupyterLab({
-    mimeExtensions: await Promise.all(mimeExtensions),
-    serviceManager
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const newScript = document.createElement('script');
+    newScript.onerror = reject;
+    newScript.onload = resolve;
+    newScript.async = true;
+    document.head.appendChild(newScript);
+    newScript.src = url;
   });
+}
 
-  const disabled = [
-    '@jupyterlab/apputils-extension:themes',
-    '@jupyterlab/apputils-extension:workspaces',
-    '@jupyterlab/application-extension:tree-resolver',
-    // TODO: improve/replace resolver and main to avoid redirect issues
-    // @see https://github.com/jtpio/jupyterlite/issues/22
-    '@jupyterlab/apputils-extension:resolver',
-    '@jupyterlab/application-extension:main'
-  ];
-  const plugins = (await Promise.all(extensions)).map(mod => {
-    let data = mod.default;
-    if (!Array.isArray(data)) {
-      data = [data];
-    }
-    return data.filter(mod => !disabled.includes(mod.id));
+async function loadComponent(url, scope) {
+  await loadScript(url);
+
+  // From https://webpack.js.org/concepts/module-federation/#dynamic-remote-containers
+  // eslint-disable-next-line no-undef
+  await __webpack_init_sharing__('default');
+  const container = window._JUPYTERLAB[scope];
+  // Initialize the container, it may provide shared modules and may need ours
+  // eslint-disable-next-line no-undef
+  await container.init(__webpack_share_scopes__.default);
+}
+
+void (async function bootstrap() {
+  // This is all the data needed to load and activate plugins. This should be
+  // gathered by the server and put onto the initial page template.
+  const extension_text = PageConfig.getOption('federated_extensions');
+  let fed_extensions = [];
+
+  if (extension_text) {
+    const extension_data = JSON.parse(extension_text);
+
+    // We first load all federated components so that the shared module
+    // deduplication can run and figure out which shared modules from all
+    // components should be actually used. We have to do this before importing
+    // and using the module that actually uses these components so that all
+    // dependencies are initialized.
+    let labExtensionUrl = PageConfig.getOption('fullLabextensionsUrl');
+    fed_extensions = await Promise.allSettled(
+      extension_data.map(async data => {
+        await loadComponent(`${labExtensionUrl}/${data.name}/${data.load}`, data.name);
+        // eslint-disable-next-line no-undef
+        const mod = Object.values(__webpack_share_scopes__.default[data.name])[0];
+        const p = await mod.get();
+        return p;
+      })
+    );
+
+    fed_extensions.forEach(p => {
+      if (p.status === 'rejected') {
+        // There was an error loading the component
+        console.error(p.reason);
+      }
+    });
+  }
+
+  // Now that all federated containers are initialized with the main
+  // container, we can import the main function.
+  // let main = (await import('./index.out.js')).main;
+  window.addEventListener('load', async () => {
+    // Make sure the styles have loaded
+    await styles;
+
+    // create the in-browser JupyterLite Server
+    const jupyterLiteServer = new JupyterLiteServer({});
+    jupyterLiteServer.registerPluginModules(await Promise.all(mods));
+    // start the server
+    await jupyterLiteServer.start();
+
+    // retrieve the custom service manager from the server app
+    const { serviceManager } = jupyterLiteServer;
+
+    // create a full-blown JupyterLab frontend
+    const lab = new JupyterLab({
+      mimeExtensions: await Promise.all(mimeExtensions),
+      serviceManager
+    });
+
+    const disabled = [
+      '@jupyterlab/apputils-extension:themes',
+      '@jupyterlab/apputils-extension:workspaces',
+      '@jupyterlab/application-extension:tree-resolver',
+      // TODO: improve/replace resolver and main to avoid redirect issues
+      // @see https://github.com/jtpio/jupyterlite/issues/22
+      '@jupyterlab/apputils-extension:resolver',
+      '@jupyterlab/application-extension:main'
+    ];
+    const plugins = (await Promise.all(extensions)).map(mod => {
+      let data = mod.default;
+      if (!Array.isArray(data)) {
+        data = [data];
+      }
+      return data.filter(mod => !disabled.includes(mod.id));
+    });
+
+    await Promise.all(
+      fed_extensions.map(async p => {
+        const data = await p.value();
+        console.log(data);
+      })
+    );
+
+    lab.registerPluginModules(plugins);
+
+    /* eslint-disable no-console */
+    console.log('Starting app');
+    await lab.start();
+    console.log('JupyterLite started, waiting for restore');
+    await lab.restored;
+    console.log('JupyterLite restored');
   });
-
-  lab.registerPluginModules(plugins);
-
-  /* eslint-disable no-console */
-  console.log('Starting app');
-  await lab.start();
-  console.log('JupyterLite started, waiting for restore');
-  await lab.restored;
-  console.log('JupyterLite restored');
-});
+})();
