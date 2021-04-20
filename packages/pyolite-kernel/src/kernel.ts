@@ -22,18 +22,20 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   constructor(options: PyoliteKernel.IOptions) {
     super(options);
     const { pyodideUrl } = options;
-    const blob = new Blob([[`importScripts("${pyodideUrl}");`, worker].join('\n')]);
+    const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
+    const pyoliteWheelUrl = URLExt.join(PageConfig.getBaseUrl(), pyoliteWheel);
+    const blob = new Blob([
+      [
+        `importScripts("${pyodideUrl}");`,
+        `var _pyoliteWheelUrl = '${pyoliteWheelUrl}'`,
+        worker
+      ].join('\n')
+    ]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
     };
-
-    // load the pyolite package
-    const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
-    const pyoliteWheelUrl = URLExt.join(PageConfig.getBaseUrl(), pyoliteWheel);
-    this._sendWorkerMessage({ type: 'init', pyoliteWheelUrl }).then(() => {
-      this._ready.resolve();
-    });
+    this._ready.resolve();
   }
 
   /**

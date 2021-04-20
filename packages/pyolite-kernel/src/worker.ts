@@ -1,9 +1,17 @@
-const BOOTSTRAP =
-  'import io, code, sys; sys.stdout = io.StringIO(); sys.stderr = io.StringIO()';
+/**
+ * Load Pyodided and initialize the interpreter.
+ */
+let kernel: any;
 
 async function loadPyodideAndPackages() {
   await languagePluginLoader;
   await pyodide.loadPackage([]);
+  await pyodide.runPythonAsync(`
+    import micropip
+    await micropip.install('${_pyoliteWheelUrl}')
+    import pyolite
+  `);
+  kernel = pyodide.globals.get('pyolite').kernel;
 }
 
 const pyodideReadyPromise = loadPyodideAndPackages();
@@ -13,56 +21,32 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   const data = event.data;
   console.log('Inside worker', data);
 
-  // if this is the init event
-  if (data.type === 'init') {
-    const pyoliteWheelUrl = data.pyoliteWheelUrl;
-    await pyodide.runPythonAsync(`
-      import micropip
-      await micropip.install('${pyoliteWheelUrl}')
-      import pyolite
-    `);
-    postMessage({});
-    return;
-  }
-
-  await pyodide.runPythonAsync(BOOTSTRAP);
-
-  let msgType = 'results';
-  let renderHtml = false;
-  try {
-    let results = await pyodide.runPythonAsync(data.code, (ev: any) => {
-      console.log(ev);
-    });
-
-    const stdout = pyodide.runPython('sys.stdout.getvalue()');
-    if (stdout !== '') {
-      msgType = 'stdout';
-    }
-    const stderr = pyodide.runPython('sys.stderr.getvalue()');
-    if (stderr !== '') {
-      msgType = 'stderr';
-    }
-    // hack to support rendering of pandas dataframes.
-    if (pyodide._module.PyProxy.isPyProxy(results)) {
-      try {
-        results = results._repr_html_();
-        renderHtml = true;
-      } catch {
-        results = String(results);
-      }
-    }
-    const msg = {
-      result: results,
+  const stdoutCallback = (stdout: string): void => {
+    postMessage({
       parentHeader: data.parentHeader,
       stdout,
+      type: 'stdout'
+    });
+  };
+
+  const stderrCallback = (stderr: string): void => {
+    postMessage({
+      parentHeader: data.parentHeader,
       stderr,
-      type: msgType,
-      msg: data.message,
-      renderHtml: renderHtml
-    };
-    postMessage(msg);
-  } catch (error) {
-    msgType = 'stderr';
-    postMessage({ stderr: error, type: msgType, msg: data.message });
-  }
+      type: 'stderr'
+    });
+  };
+
+  const results = await kernel.interpreter.runcode(
+    data.code,
+    stdoutCallback,
+    stderrCallback
+  );
+
+  console.log('results', results);
+
+  // TODO: handle different types of responses:
+  // - execute finished -> should resolve the promise in the JS part of the kernel
+  // - displays -> postmessage with the parent header
+  postMessage({});
 };
