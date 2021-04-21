@@ -1,10 +1,14 @@
 /**
- * Load Pyodided and initialize the interpreter.
+ * Store the kernel and interpreter instances.
  */
 let kernel: any;
+let interpreter: any;
 
+/**
+ * Load Pyodided and initialize the interpreter.
+ */
 async function loadPyodideAndPackages() {
-  await languagePluginLoader;
+  await loadPyodide();
   await pyodide.loadPackage([]);
   await pyodide.runPythonAsync(`
     import micropip
@@ -12,6 +16,7 @@ async function loadPyodideAndPackages() {
     import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel;
+  interpreter = kernel.interpreter;
 }
 
 const pyodideReadyPromise = loadPyodideAndPackages();
@@ -37,11 +42,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
     });
   };
 
-  const results = await kernel.interpreter.runcode(
-    data.code,
-    stdoutCallback,
-    stderrCallback
-  );
+  interpreter.stdout_callback = stdoutCallback;
+  interpreter.stderr_callback = stderrCallback;
+
+  const results = await interpreter.run(data.code);
 
   console.log('results', results);
 

@@ -12,7 +12,7 @@ import { PyoliteKernel } from '@jupyterlite/pyolite-kernel';
 /**
  * The default CDN fallback for Pyodide
  */
-const PYODIDE_CDN_URL = 'https://pyodide-cdn2.iodide.io/v0.17.0a2/full/pyodide.js';
+const PYODIDE_CDN_URL = 'https://pyodide-cdn2.iodide.io/dev/full/pyodide.js';
 
 /**
  * A plugin to register the Pyodide kernel.

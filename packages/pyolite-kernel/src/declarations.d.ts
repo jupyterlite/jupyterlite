@@ -9,5 +9,5 @@ declare module '*.whl' {
 }
 
 declare let pyodide: any;
-declare let languagePluginLoader: any;
+declare let loadPyodide: any;
 declare let _pyoliteWheelUrl: string;
