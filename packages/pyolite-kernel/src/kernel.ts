@@ -98,20 +98,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         break;
       }
       case 'results': {
-        let dataObj: any = {
-          'text/plain': msg.result
-        };
-        if (msg.renderHtml) {
-          dataObj = {
-            'text/html': msg.result
-          };
-        }
-        this._executeDelegate.resolve({
-          data: {
-            ...dataObj
-          },
-          metadata: {}
-        });
+        const bundle = msg.results ?? { data: {}, metadata: {} };
+        this._executeDelegate.resolve(bundle);
         break;
       }
       default:

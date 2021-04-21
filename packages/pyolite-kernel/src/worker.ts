@@ -45,12 +45,29 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   interpreter.stdout_callback = stdoutCallback;
   interpreter.stderr_callback = stderrCallback;
 
-  const results = await interpreter.run(data.code);
+  const res = await interpreter.run(data.code);
+  const reply = {
+    parentheader: data.parentheader,
+    type: 'results'
+  };
 
-  console.log('results', results);
+  if (!res) {
+    postMessage(reply);
+    return;
+  }
 
-  // TODO: handle different types of responses:
-  // - execute finished -> should resolve the promise in the JS part of the kernel
-  // - displays -> postmessage with the parent header
-  postMessage({});
+  try {
+    // TODO: this is a bit brittle
+    const results = {
+      data: Object.fromEntries(res.toJs().get('data')),
+      metadata: Object.fromEntries(res.toJs().get('metadata'))
+    };
+    console.log('results', results);
+    postMessage({
+      ...reply,
+      results
+    });
+  } catch (e) {
+    postMessage(reply);
+  }
 };
