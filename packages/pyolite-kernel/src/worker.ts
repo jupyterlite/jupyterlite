@@ -23,6 +23,18 @@ async function loadPyodideAndPackages() {
 }
 
 /**
+ * Recursively convert a Map to a JavaScript object
+ * @param The Map object to convert
+ */
+function mapToObject(map: any) {
+  const out: any = {};
+  map.forEach((value: any, key: string) => {
+    out[key] = value instanceof Map ? mapToObject(value) : value;
+  });
+  return out;
+}
+
+/**
  * Format the response from the Pyodide evaluation.
  *
  * @param res The result object from the Pyodide evaluation
@@ -33,13 +45,7 @@ function formatResult(res: any): any {
   }
   // TODO: this is a bit brittle
   const m = res.toJs();
-  const results = {
-    data: Object.fromEntries(m.get('data')),
-    metadata: Object.fromEntries(m.get('metadata'))
-  };
-  if (results.data['application/json']) {
-    results.data['application/json'] = JSON.parse(results.data['application/json']);
-  }
+  const results = mapToObject(m);
   console.log('results', results);
   return results;
 }
