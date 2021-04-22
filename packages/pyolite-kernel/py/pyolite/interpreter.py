@@ -21,5 +21,5 @@ class Interpreter(_InteractiveConsole):
             self.load_packages_and_run(self.run_complete, code)
         )
         result = await self.run_complete
-        if result:
+        if result is not None:
             return format_result(result)
