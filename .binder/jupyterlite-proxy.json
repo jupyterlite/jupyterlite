@@ -9,10 +9,13 @@
         }
       },
       "jupyterlite-js": {
-        "command": ["yarn", "serve", "--port", "{port}"],
+        "command": ["yarn", "serve"],
         "launcher_entry": {
           "icon_path": "docs/_static/icon.svg",
           "title": "JupyterLite (js)"
+        },
+        "environment": {
+          "PORT": "{port}"
         }
       }
     }

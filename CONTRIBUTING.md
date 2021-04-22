@@ -67,11 +67,20 @@ yarn build:prod
 
 #### Serve
 
+> These are **not real server solutions**, but they _will_ serve all of the assets types
+> (including `.wasm`) correctly for JupyterLite under development, testing, and demo
+> purposes.
+
+To serve with `scripts/serve.js`, based on Node.js's
+[`http`](https://nodejs.org/api/http.html) module:
+
 ```
 yarn serve
 ```
 
-To serve with python's built-in http server:
+To serve with Python's built-in
+[`http.server`](https://docs.python.org/3/library/http.server.html) module (requires
+Python 3.7+):
 
 ```
 yarn serve:py
