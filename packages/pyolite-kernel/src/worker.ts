@@ -10,7 +10,7 @@ let interpreter: any;
 async function loadPyodideAndPackages() {
   // new in 0.17.0 indexURL must be provided
   await loadPyodide({ indexURL });
-  await pyodide.loadPackage([]);
+  await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
     await micropip.install('${_pyoliteWheelUrl}')

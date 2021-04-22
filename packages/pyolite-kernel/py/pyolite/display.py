@@ -1,3 +1,4 @@
+import base64
 import json
 
 
@@ -95,3 +96,11 @@ class Latex(DisplayObject):
 class JSON(DisplayObject):
     def _repr_json_(self):
         return json.dumps(self.data)
+
+
+class Image():
+    def __init__(self, data):
+        self.data = base64.b64encode(data).decode()
+
+    def _repr_png_(self):
+        return self.data
