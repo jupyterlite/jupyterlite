@@ -1,5 +1,5 @@
+from io import BytesIO
 import os
-import tempfile
 
 os.environ['MPLBACKEND'] = 'AGG'
 
@@ -12,11 +12,9 @@ def ensure_matplotlib_patch():
     _old_show = matplotlib.pyplot.show
 
     def show():
-        tmp_file = f"{tempfile.NamedTemporaryFile().name}.png"
-        matplotlib.pyplot.savefig(tmp_file)
-        with open(tmp_file, 'rb') as f:
-            data = f.read()
-        os.remove(tmp_file)
-        display(Image(data))
+        buf = BytesIO()
+        matplotlib.pyplot.savefig(buf, format='png')
+        buf.seek(0)
+        display(Image(buf))
 
     matplotlib.pyplot.show = show
