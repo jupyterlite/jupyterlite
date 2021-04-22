@@ -163,7 +163,10 @@ const MIME_TYPES = {
 
   // also jupyter stuff
   '.ipynb': 'application/json',
-  '.jupyterlab-workspace': 'application/json'
+  '.jupyterlab-workspace': 'application/json',
+
+  // pyolite
+  '.data': 'application/wasm'
 };
 
 function serve(request, response) {
