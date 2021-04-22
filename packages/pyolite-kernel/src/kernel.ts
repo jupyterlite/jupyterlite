@@ -85,7 +85,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
           message
         };
         if (msg.error) {
-          this._executeDelegate.resolve(error);
+          this._executeDelegate.resolve({
+            ...error,
+            parentHeader
+          });
           break;
         }
         const content = {
@@ -100,6 +103,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'results': {
         const bundle = msg.results ?? { data: {}, metadata: {} };
         this._executeDelegate.resolve(bundle);
+        break;
+      }
+      case 'display': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {} };
+        this.displayData(bundle);
         break;
       }
       default:

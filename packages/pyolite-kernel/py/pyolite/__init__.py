@@ -2,5 +2,6 @@
 
 __version__ = "0.1.0"
 
-from . import display
-from . import kernel
+from .kernel import Pyolite
+
+kernel_instance = Pyolite()
