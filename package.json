@@ -18,7 +18,7 @@
   },
   "scripts": {
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
-    "build": "yarn build:python && yarn build:lib && yarn build:app",
+    "build": "yarn build:lib && yarn build:app",
     "build:python": "lerna run build:python",
     "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:app": "lerna run build --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\"",
