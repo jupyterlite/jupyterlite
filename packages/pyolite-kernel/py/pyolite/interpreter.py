@@ -1,6 +1,6 @@
 from asyncio import ensure_future
 
-from pyodide.console import InteractiveConsole
+from pyodide.console import _InteractiveConsole
 
 
 def format_result(result):
@@ -11,6 +11,10 @@ def format_result(result):
         data["image/svg+xml"] = result._repr_svg_()
     if hasattr(result, "_repr_png_"):
         data["image/png"] = result._repr_png_()
+    if hasattr(result, "_repr_latex_"):
+        data["text/latex"] = result._repr_latex_()
+    if hasattr(result, "_repr_json_"):
+        data["application/json"] = result._repr_json_()
     bundle = {
         'data': data,
         'metadata': {}
@@ -18,7 +22,7 @@ def format_result(result):
     return bundle
 
 
-class Interpreter(InteractiveConsole):
+class Interpreter(_InteractiveConsole):
     def __init__(self):
         super().__init__(persistent_stream_redirection=False)
         self.display_callback = None

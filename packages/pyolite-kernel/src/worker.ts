@@ -8,7 +8,8 @@ let interpreter: any;
  * Load Pyodided and initialize the interpreter.
  */
 async function loadPyodideAndPackages() {
-  await loadPyodide();
+  // new in 0.17.0 indexURL must be provided
+  await loadPyodide({ indexURL });
   await pyodide.loadPackage([]);
   await pyodide.runPythonAsync(`
     import micropip
@@ -58,10 +59,14 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   try {
     // TODO: this is a bit brittle
+    const m = res.toJs();
     const results = {
-      data: Object.fromEntries(res.toJs().get('data')),
-      metadata: Object.fromEntries(res.toJs().get('metadata'))
+      data: Object.fromEntries(m.get('data')),
+      metadata: Object.fromEntries(m.get('metadata'))
     };
+    if (results.data['application/json']) {
+      results.data['application/json'] = JSON.parse(results.data['application/json']);
+    }
     console.log('results', results);
     postMessage({
       ...reply,

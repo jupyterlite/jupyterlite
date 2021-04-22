@@ -24,9 +24,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     const { pyodideUrl } = options;
     const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
     const pyoliteWheelUrl = URLExt.join(PageConfig.getBaseUrl(), pyoliteWheel);
+    const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
     const blob = new Blob([
       [
         `importScripts("${pyodideUrl}");`,
+        `var indexURL = "${indexUrl}";`,
         `var _pyoliteWheelUrl = '${pyoliteWheelUrl}'`,
         worker
       ].join('\n')
@@ -73,7 +75,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
           text: msg.stdout
         } as KernelMessage.IStreamMsg['content'];
         this.stream(content);
-        this._executeDelegate.resolve({ data: {}, metadata: {} });
         break;
       }
       case 'stderr': {
@@ -94,7 +95,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
           text: message ?? msg.stderr
         } as KernelMessage.IStreamMsg['content'];
         this.stream(content);
-        this._executeDelegate.resolve({ data: {}, metadata: {} });
         break;
       }
       case 'results': {
