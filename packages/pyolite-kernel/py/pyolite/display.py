@@ -7,8 +7,9 @@ class DisplayPublisher:
         self.display_callback = None
 
     def publish(self, obj):
-        formatted = format_result(obj)
-        self.display_callback(formatted)
+        if self.display_callback:
+            formatted = format_result(obj)
+            self.display_callback(formatted)
 
 display_publisher = DisplayPublisher()
 
