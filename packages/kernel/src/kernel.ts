@@ -286,7 +286,10 @@ export abstract class BaseKernel implements IKernel {
       if (!content.code.startsWith('%')) {
         this._history.push([0, 0, content.code]);
       }
-      this._executeResult(msg, result);
+      // send the execute result only if there is a result
+      if (Object.keys(result.data).length > 0) {
+        this._executeResult(msg, result);
+      }
       this._executeReply(msg, {
         execution_count: this._executionCount,
         status: 'ok',
