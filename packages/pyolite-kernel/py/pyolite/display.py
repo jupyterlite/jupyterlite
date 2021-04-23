@@ -1,5 +1,14 @@
 import base64
-import json
+
+
+MIMETYPES  = [
+    ('text/html', '_repr_html_'),
+    ('text/markdown', '_repr_markdown_'),
+    ('text/latex', '_repr_latex_'),
+    ('image/svg+xml', '_repr_svg_'),
+    ('image/png', '_repr_png_'),
+    ('application/json', '_repr_json_'),
+]
 
 
 class DisplayPublisher:
@@ -21,18 +30,10 @@ def display(obj):
 def format_result(result):
     data = {"text/plain": repr(result)}
     metadata = {}
-    if hasattr(result, "_repr_html_"):
-        data["text/html"] = result._repr_html_()
-    if hasattr(result, "_repr_markdown_"):
-        data["text/markdown"] = result._repr_markdown_()
-    if hasattr(result, "_repr_svg_"):
-        data["image/svg+xml"] = result._repr_svg_()
-    if hasattr(result, "_repr_png_"):
-        data["image/png"] = result._repr_png_()
-    if hasattr(result, "_repr_latex_"):
-        data["text/latex"] = result._repr_latex_()
-    if hasattr(result, "_repr_json_"):
-        data["application/json"] = result._repr_json_()
+    for mimetype, method in MIMETYPES:
+        if hasattr(result, method):
+            # TODO: repr methods should return data and metadata
+            data[mimetype] = getattr(result, method)()
     bundle = {
         'data': data,
         'metadata': metadata
