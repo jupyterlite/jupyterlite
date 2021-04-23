@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfigbase",
   "compilerOptions": {
+    "lib": ["ES2019", "WebWorker", "ScriptHost", "DOM", "DOM.Iterable"],
     "outDir": "lib",
     "rootDir": "src"
   },
@@ -8,12 +9,6 @@
   "references": [
     {
       "path": "../kernel"
-    },
-    {
-      "path": "../pyodide-kernel"
-    },
-    {
-      "path": "../server"
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfigbase.test",
   "compilerOptions": {
-    "lib": ["ES6", "WebWorker", "ScriptHost", "DOM", "DOM.Iterable"]
+    "lib": ["ES2019", "WebWorker", "ScriptHost", "DOM", "DOM.Iterable"]
   },
   "include": ["src/**/*", "test/**/*"],
   "references": [

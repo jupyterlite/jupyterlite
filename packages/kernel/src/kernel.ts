@@ -182,10 +182,27 @@ export abstract class BaseKernel implements IKernel {
    * @param parentHeader The parent header.
    * @param content The stream content.
    */
-  stream(content: KernelMessage.IStreamMsg['content']): void {
+  protected stream(content: KernelMessage.IStreamMsg['content']): void {
     const message = KernelMessage.createMessage<KernelMessage.IStreamMsg>({
       channel: 'iopub',
       msgType: 'stream',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `display_data` message to the client.
+   *
+   * @param content The display_data content.
+   */
+  protected displayData(content: KernelMessage.IDisplayDataMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IDisplayDataMsg>({
+      channel: 'iopub',
+      msgType: 'display_data',
       // TODO: better handle this
       session: this._parentHeader?.session ?? '',
       parentHeader: this._parentHeader,
@@ -269,7 +286,10 @@ export abstract class BaseKernel implements IKernel {
       if (!content.code.startsWith('%')) {
         this._history.push([0, 0, content.code]);
       }
-      this._executeResult(msg, result);
+      // send the execute result only if there is a result
+      if (Object.keys(result.data).length > 0) {
+        this._executeResult(msg, result);
+      }
       this._executeReply(msg, {
         execution_count: this._executionCount,
         status: 'ok',

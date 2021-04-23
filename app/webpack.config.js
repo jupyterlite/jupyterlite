@@ -63,7 +63,9 @@ module.exports = [
     entry: ['whatwg-fetch', './index.js'],
     output: {
       path: path.resolve(buildDir),
-      filename: 'bundle.js'
+      filename: 'bundle.js',
+      // to generate valid wheel names
+      assetModuleFilename: '[name][ext][query]'
     },
     bail: true,
     devtool: 'source-map',
@@ -105,6 +107,10 @@ module.exports = [
           use: {
             loader: 'raw-loader'
           }
+        },
+        {
+          test: /\.whl/,
+          type: 'asset/resource'
         },
         {
           resourceQuery: /raw/,

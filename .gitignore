@@ -124,3 +124,5 @@ app/test/data
 app/kernels
 
 yarn-error.log
+
+!packages/pyolite-kernel/py/dist/

@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/pyodide-kernel",
+  "name": "@jupyterlite/pyolite-kernel-extension",
   "version": "0.1.0",
-  "description": "JupyterLite - Pyodide Kernel",
+  "description": "JupyterLite - Pyolite Kernel Extension",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
     "url": "https://github.com/jtpio/jupyterlite/issues"
@@ -32,23 +32,20 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "build:test": "tsc --build tsconfig.test.json",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "docs": "typedoc src",
     "prepublishOnly": "npm run build",
-    "test": "jest",
-    "test:cov": "jest --collect-coverage",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0"
+    "@jupyterlab/coreutils": "^5.0.0",
+    "@jupyterlite/kernel": "^0.1.0",
+    "@jupyterlite/pyolite-kernel": "^0.1.0",
+    "@jupyterlite/server": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "^3.0.0",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
