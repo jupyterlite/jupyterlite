@@ -1,5 +1,6 @@
 lint-staged.config.js
 .eslintrc.js
+scripts/serve.js
 
 node_modules
 **/build
