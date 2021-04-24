@@ -17,3 +17,4 @@ dependencies:
   # docs
   - sphinx
   - pydata-sphinx-theme
+  - myst-nb

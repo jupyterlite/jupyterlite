@@ -1,4 +1,4 @@
-# Contributing to JupyterLite
+# Contributing
 
 Thanks for contributing to JupyterLite!
 
@@ -148,5 +148,5 @@ JupyterLite become _real_ as [pull requests].
 [new issue]: https://github.com/jtpio/jupyterlite/issues/new
 [pull requests]: https://github.com/jtpio/jupyterlite/pulls
 [repo]: https://github.com/jtpio/jupyterlite
-[coc]: (https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md)
-[mambaforge]: https://github.com/conda-forge/miniforge/
+[coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
+[mambaforge]: https://github.com/conda-forge/miniforge

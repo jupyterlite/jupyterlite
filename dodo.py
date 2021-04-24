@@ -58,7 +58,7 @@ def task_build():
         yield dict(
             name=f"py:{name}",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[doit.tools.CmdAction(["flit", "build"], shell=False, cwd=py_pkg)],
+            actions=[U.do("flit", "build", cwd=py_pkg)],
             # TODO: get version
             targets=[wheel],
         )
@@ -96,6 +96,15 @@ def task_build():
     )
 
 
+def task_docs():
+    yield dict(
+        name="sphinx",
+        file_dep=[*P.DOCS_MD, *P.DOCS_PY],
+        actions=[U.do("sphinx-build", "-M", "html", P.DOCS, B.DOCS)],
+        targets=[B.DOCS_BUILDINFO],
+    )
+
+
 class C:
     NAME = "jupyterlite"
     APPS = ["classic", "lab"]
@@ -122,6 +131,10 @@ class P:
     # docs
     README = ROOT / "README.md"
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
+    CHANGELOG = ROOT / "CHANGELOG.md"
+    DOCS = ROOT / "docs"
+    DOCS_PY = [*DOCS.rglob("*.py")]
+    DOCS_MD = [*DOCS.rglob("*.md"), README, CONTRIBUTING, CHANGELOG]
 
     # demo
     BINDER = ROOT / ".binder"
@@ -149,10 +162,14 @@ class L:
     # linting
     ALL_TS = [*P.PACKAGES.rglob("*/src/**/*.js"), *P.PACKAGES.rglob("*/src/**/*.ts")]
     ALL_JSON = [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *ALL_TS]
-    ALL_MD = [P.CONTRIBUTING, P.README, *P.CI.rglob("*.md")]
+    ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
     ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
-    ALL_BLACK = [P.DODO, *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], [])]
+    ALL_BLACK = [
+        *P.DOCS_PY,
+        P.DODO,
+        *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], []),
+    ]
 
 
 class B:
@@ -165,6 +182,9 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
+    DOCS = P.DOCS / "_build"
+    DOCS_HTML = DOCS / "html"
+    DOCS_BUILDINFO = DOCS_HTML / ".buildinfo"
 
     OK = BUILD / "ok"
     OK_PRETTIER = OK / "prettier"
