@@ -49,13 +49,16 @@ def task_build():
         targets=[B.META_BUILDINFO],
     )
 
+    pyolite_tasks = []
+
     for py_pkg in P.PYOLITE_PACKAGES:
+        pyolite_tasks += [f"build:py:{py_pkg.name}"]
         yield dict(
-            name=f"py:{py_pkg.parent.name}",
+            name=f"py:{py_pkg.name}",
             file_dep=[*py_pkg.rglob("*.py")],
-            actions=[
-                doit.tools.CmdAction(["flit", "build"], shell=False, cwd=py_pkg)
-            ]
+            actions=[doit.tools.CmdAction(["flit", "build"], shell=False, cwd=py_pkg)],
+            # TODO: figure out a way to derive .whl name
+            # targets=[]
         )
 
     for app_json in P.APP_JSONS:
@@ -63,6 +66,7 @@ def task_build():
         app_data = json.loads(app_json.read_text(**C.ENC))
         yield dict(
             name=f"js:app:{app.name}",
+            task_dep=pyolite_tasks,
             file_dep=[B.META_BUILDINFO, app_json, P.WEBPACK_CONFIG, app / "index.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
