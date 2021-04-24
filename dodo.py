@@ -26,7 +26,7 @@ def task_setup():
         name="js",
         file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
         actions=[U.do("jlpm", "--prefer-offline", "--ignore-optional")],
-        targets=[P.YARN_INTEGRITY],
+        targets=[B.YARN_INTEGRITY],
     )
 
 
@@ -34,7 +34,7 @@ def task_lint():
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
-        file_dep=[*P.ALL_PRETTIER, P.YARN_INTEGRITY],
+        file_dep=[*P.ALL_PRETTIER, B.YARN_INTEGRITY],
         actions=[U.do("jlpm", "prettier")],
     )
 
@@ -56,11 +56,11 @@ def task_lint():
 def task_build():
     yield dict(
         name="js:lib",
-        file_dep=[*P.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, P.YARN_INTEGRITY],
+        file_dep=[*P.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
         actions=[
             U.do("jlpm", "build:lib"),
         ],
-        targets=[P.META_BUILDINFO],
+        targets=[B.META_BUILDINFO],
     )
 
     for app_json in P.APP_JSONS:
@@ -68,7 +68,7 @@ def task_build():
         app_data = json.loads(app_json.read_text(encoding="utf-8"))
         yield dict(
             name=f"js:app:{app.name}",
-            file_dep=[P.META_BUILDINFO, app_json, P.WEBPACK_CONFIG, app / "index.js"],
+            file_dep=[B.META_BUILDINFO, app_json, P.WEBPACK_CONFIG, app / "index.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
@@ -77,7 +77,7 @@ def task_build():
 
     yield dict(
         name="js:pack",
-        file_dep=[P.META_BUILDINFO, *P.APP.glob("*/build/bundle.js")],
+        file_dep=[B.META_BUILDINFO, *P.APP.glob("*/build/bundle.js")],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
             U.do("npm", "pack", "../app", cwd=B.DIST),
@@ -106,19 +106,22 @@ class P:
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = [*APP.glob("*/package.json")]
 
-    # deploy
-    STATIC = PY_SRC / "static"
-    STATIC_INDEX = STATIC / "index.html"
+    # docs
+    README = ROOT / "README.md"
+    CONTRIBUTING = ROOT / "CONTRIBUTING.md"
 
-    # built
-    NODE_MODULES = ROOT / "node_modules"
-    YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
-    META_BUILDINFO = PACKAGES / "_metapackage/tsconfig.tsbuildinfo"
+    # demo
+    BINDER = ROOT / ".binder"
+
+    # CI
+    CI = ROOT / ".github"
 
     # linting
     ALL_TS = [*PACKAGES.rglob("*/src/**/*.js"), *PACKAGES.rglob("*/src/**/*.ts")]
     ALL_JSON = [*PACKAGE_JSONS, *APP_JSONS, ROOT_PACKAGE_JSON, *ALL_TS]
-    ALL_PRETTIER = [*ALL_JSON]
+    ALL_MD = [CONTRIBUTING, README, *CI.rglob("*.md")]
+    ALL_YAML = [*BINDER.glob("*.yml"), *CI.rglob("*.yml")]
+    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
     ALL_BLACK = [DODO]
 
 
@@ -128,10 +131,14 @@ class D:
 
 
 class B:
+    # built
+    NODE_MODULES = P.ROOT / "node_modules"
+    YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
+    META_BUILDINFO = P.PACKAGES / "_metapackage/tsconfig.tsbuildinfo"
+
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
-    BUNDLES_JS = [P.STATIC / app / "build/bundle.js" for app in C.APPS]
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
 
     OK = BUILD / "ok"
