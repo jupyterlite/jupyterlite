@@ -1,5 +1,5 @@
 """documentation for jupyterlite"""
-
+import os
 import json
 import datetime
 from pathlib import Path
@@ -55,3 +55,9 @@ html_context = {
     "github_version": "main",
     "doc_path": "docs",
 }
+
+
+if os.environ.get("READTHEDOCS"):
+    import subprocess
+
+    subprocess.check_call(["doit", "build"])

@@ -178,7 +178,7 @@ class L:
     ALL_TS = [*P.PACKAGES.rglob("*/src/**/*.js"), *P.PACKAGES.rglob("*/src/**/*.ts")]
     ALL_JSON = [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *ALL_TS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = [*P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
+    ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
     ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
     ALL_BLACK = [
         *P.DOCS_PY,
