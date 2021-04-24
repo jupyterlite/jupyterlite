@@ -99,9 +99,24 @@ def task_build():
 def task_docs():
     yield dict(
         name="sphinx",
-        file_dep=[*P.DOCS_MD, *P.DOCS_PY],
-        actions=[U.do("sphinx-build", "-M", "html", P.DOCS, B.DOCS)],
+        file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
+        actions=[U.do("sphinx-build", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
+    )
+
+
+def task_watch():
+    yield dict(
+        name="js",
+        uptodate=[lambda: False],
+        file_dep=[B.YARN_INTEGRITY],
+        actions=[U.do("jlpm", "watch")],
+    )
+    yield dict(
+        name="docs",
+        uptodate=[lambda: False],
+        file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
+        actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
     )
 
 

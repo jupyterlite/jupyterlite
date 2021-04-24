@@ -21,7 +21,20 @@ release = APP_DATA["version"]
 version = ".".join(release.rsplit(".", 1))
 
 # files
-exclude_patterns = [".ipynb_checkpoints", "**/.ipynb_checkpoints", "**/~.*"]
+html_favicon = "../app/lab/favicon.ico"
+html_static_path = ["_static", "../app"]
+exclude_patterns = [
+    ".ipynb_checkpoints",
+    "**/.ipynb_checkpoints",
+    "**/~.*",
+    "**/node_modules",
+    "babel.config.*",
+    "jest-setup.js",
+    "jest.config.js",
+    "test/",
+    "tsconfig.*",
+    "webpack.config.*",
+]
 
 # sphinx config
 extensions = ["sphinx.ext.autosectionlabel", "myst_nb"]
@@ -42,5 +55,3 @@ html_context = {
     "github_version": "main",
     "doc_path": "docs",
 }
-
-html_static_path = ["_static"]

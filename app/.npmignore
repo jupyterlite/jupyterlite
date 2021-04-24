@@ -1,0 +1,7 @@
+*/test/**
+babel.config.*
+jest-setup.js
+jest.config.js
+node_modules/
+tsconfig.*
+webpack.config.*
