@@ -104,7 +104,7 @@ class P:
     APP = ROOT / "app"
     APP_PACKAGE_JSON = APP / "package.json"
     WEBPACK_CONFIG = APP / "webpack.config.js"
-    APP_JSONS = [*APP.glob("*/package.json"), APP_PACKAGE_JSON]
+    APP_JSONS = [*APP.glob("*/package.json")]
 
     # deploy
     STATIC = PY_SRC / "static"

@@ -12,6 +12,7 @@
   "author": "JupyterLite Contributors",
   "workspaces": {
     "packages": [
+      "app",
       "app/*",
       "packages/*"
     ]
