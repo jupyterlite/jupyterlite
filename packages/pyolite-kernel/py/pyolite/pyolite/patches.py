@@ -1,7 +1,7 @@
 from io import BytesIO
 import os
 
-os.environ['MPLBACKEND'] = 'AGG'
+os.environ["MPLBACKEND"] = "AGG"
 
 import matplotlib.pyplot
 
@@ -13,7 +13,7 @@ def ensure_matplotlib_patch():
 
     def show():
         buf = BytesIO()
-        matplotlib.pyplot.savefig(buf, format='png')
+        matplotlib.pyplot.savefig(buf, format="png")
         buf.seek(0)
         display(Image(buf.read()))
         matplotlib.pyplot.clf()

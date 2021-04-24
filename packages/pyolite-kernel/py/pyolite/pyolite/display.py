@@ -1,13 +1,13 @@
 import base64
 
 
-MIMETYPES  = [
-    ('text/html', '_repr_html_'),
-    ('text/markdown', '_repr_markdown_'),
-    ('text/latex', '_repr_latex_'),
-    ('image/svg+xml', '_repr_svg_'),
-    ('image/png', '_repr_png_'),
-    ('application/json', '_repr_json_'),
+MIMETYPES = [
+    ("text/html", "_repr_html_"),
+    ("text/markdown", "_repr_markdown_"),
+    ("text/latex", "_repr_latex_"),
+    ("image/svg+xml", "_repr_svg_"),
+    ("image/png", "_repr_png_"),
+    ("application/json", "_repr_json_"),
 ]
 
 
@@ -19,6 +19,7 @@ class DisplayPublisher:
         if self.display_callback:
             formatted = format_result(obj)
             self.display_callback(formatted)
+
 
 display_publisher = DisplayPublisher()
 
@@ -34,10 +35,7 @@ def format_result(result):
         if hasattr(result, method):
             # TODO: repr methods should return data and metadata
             data[mimetype] = getattr(result, method)()
-    bundle = {
-        'data': data,
-        'metadata': metadata
-    }
+    bundle = {"data": data, "metadata": metadata}
     return bundle
 
 
@@ -69,7 +67,7 @@ class JSON(DisplayObject):
         return self.data
 
 
-class Image():
+class Image:
     def __init__(self, data):
         self.data = base64.b64encode(data).decode()
 

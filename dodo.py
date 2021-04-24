@@ -6,20 +6,6 @@ import tarfile
 import shutil
 from pathlib import Path
 
-os.environ.update(
-    NODE_OPTS="--max-old-space-size=4096",
-    PYTHONIOENCODING="utf-8",
-    PIP_DISABLE_PIP_VERSION_CHECK="1",
-    MAMBA_NO_BANNER="1",
-)
-
-DOIT_CONFIG = {
-    "backend": "sqlite3",
-    "verbosity": 2,
-    "par_type": "thread",
-    "default_tasks": ["lint", "build"],
-}
-
 
 def task_setup():
     yield dict(
@@ -34,7 +20,7 @@ def task_lint():
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
-        file_dep=[*P.ALL_PRETTIER, B.YARN_INTEGRITY],
+        file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
         actions=[U.do("jlpm", "prettier")],
     )
 
@@ -48,24 +34,33 @@ def task_lint():
     yield U.ok(
         B.OK_BLACK,
         name="black",
-        file_dep=P.ALL_BLACK,
-        actions=[U.do("black", *P.ALL_BLACK)],
+        file_dep=L.ALL_BLACK,
+        actions=[U.do("black", *L.ALL_BLACK)],
     )
 
 
 def task_build():
     yield dict(
         name="js:lib",
-        file_dep=[*P.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
+        file_dep=[*L.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
         actions=[
             U.do("jlpm", "build:lib"),
         ],
         targets=[B.META_BUILDINFO],
     )
 
+    for py_pkg in P.PYOLITE_PACKAGES:
+        yield dict(
+            name=f"py:{py_pkg.parent.name}",
+            file_dep=[*py_pkg.rglob("*.py")],
+            actions=[
+                doit.tools.CmdAction(["flit", "build"], shell=False, cwd=py_pkg)
+            ]
+        )
+
     for app_json in P.APP_JSONS:
         app = app_json.parent
-        app_data = json.loads(app_json.read_text(encoding="utf-8"))
+        app_data = json.loads(app_json.read_text(**C.ENC))
         yield dict(
             name=f"js:app:{app.name}",
             file_dep=[B.META_BUILDINFO, app_json, P.WEBPACK_CONFIG, app / "index.js"],
@@ -89,6 +84,7 @@ def task_build():
 class C:
     NAME = "jupyterlite"
     APPS = ["classic", "lab"]
+    ENC = dict(encoding="utf-8")
 
 
 class P:
@@ -99,7 +95,8 @@ class P:
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
-    PY_SRC = ROOT / "src/jupyterlite"
+    # set later
+    PYOLITE_PACKAGES = []
 
     APP = ROOT / "app"
     APP_PACKAGE_JSON = APP / "package.json"
@@ -116,18 +113,30 @@ class P:
     # CI
     CI = ROOT / ".github"
 
-    # linting
-    ALL_TS = [*PACKAGES.rglob("*/src/**/*.js"), *PACKAGES.rglob("*/src/**/*.ts")]
-    ALL_JSON = [*PACKAGE_JSONS, *APP_JSONS, ROOT_PACKAGE_JSON, *ALL_TS]
-    ALL_MD = [CONTRIBUTING, README, *CI.rglob("*.md")]
-    ALL_YAML = [*BINDER.glob("*.yml"), *CI.rglob("*.yml")]
-    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
-    ALL_BLACK = [DODO]
-
 
 class D:
-    # DATA
-    APP = json.loads(P.APP_PACKAGE_JSON.read_text(encoding="utf-8"))
+    # data
+    APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
+    PACKAGE_JSONS = {
+        p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
+    }
+
+
+P.PYOLITE_PACKAGES = [
+    P.PACKAGES / pkg / pyp
+    for pkg, pkg_data in D.PACKAGE_JSONS.items()
+    for pyp in pkg_data.get("pyolite", {}).get("packages", [])
+]
+
+
+class L:
+    # linting
+    ALL_TS = [*P.PACKAGES.rglob("*/src/**/*.js"), *P.PACKAGES.rglob("*/src/**/*.ts")]
+    ALL_JSON = [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *ALL_TS]
+    ALL_MD = [P.CONTRIBUTING, P.README, *P.CI.rglob("*.md")]
+    ALL_YAML = [*P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
+    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
+    ALL_BLACK = [P.DODO, *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], [])]
 
 
 class B:
@@ -164,3 +173,19 @@ class U:
             lambda: [ok.touch(), None][-1],
         ]
         return task
+
+
+# environment overloads
+os.environ.update(
+    NODE_OPTS="--max-old-space-size=4096",
+    PYTHONIOENCODING=C.ENC["encoding"],
+    PIP_DISABLE_PIP_VERSION_CHECK="1",
+)
+
+# doit configuration
+DOIT_CONFIG = {
+    "backend": "sqlite3",
+    "verbosity": 2,
+    "par_type": "thread",
+    "default_tasks": ["lint", "build"],
+}
