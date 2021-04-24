@@ -51,8 +51,9 @@ jobs:
           pip install -U pip setuptools
           pip install -r requirements.txt
       - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          doit setup
+          doit setup:js
       - name: Build
         run: |
           doit build

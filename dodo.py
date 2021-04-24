@@ -9,35 +9,41 @@ from pathlib import Path
 
 def task_setup():
     """perform initial non-python setup"""
+    args = ["yarn", "--prefer-offline", "--ignore-optional"]
+
+    if C.CI:
+        args += ["--frozen-lockfile"]
+
     yield dict(
         name="js",
         file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
-        actions=[U.do("yarn", "--prefer-offline", "--ignore-optional")],
+        actions=[U.do(*args)],
         targets=[B.YARN_INTEGRITY],
     )
 
 
 def task_lint():
     """format and ensure style of code, docs, etc."""
+
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier")],
+        actions=[U.do("yarn", "prettier" if C.CI else "prettier:check")],
     )
 
     yield U.ok(
         B.OK_ESLINT,
         name="eslint",
         file_dep=[B.OK_PRETTIER],
-        actions=[U.do("yarn", "eslint")],
+        actions=[U.do("yarn", "eslint" if C.CI else "eslint:check")],
     )
 
     yield U.ok(
         B.OK_BLACK,
         name="black",
         file_dep=L.ALL_BLACK,
-        actions=[U.do("black", *L.ALL_BLACK)],
+        actions=[U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK)],
     )
 
 
@@ -139,6 +145,7 @@ class C:
     NAME = "jupyterlite"
     APPS = ["classic", "lab"]
     ENC = dict(encoding="utf-8")
+    CI = bool(json.loads(os.environ.get("CI", "0")))
 
 
 class P:
