@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 def task_setup():
+    """perform initial non-python setup"""
     yield dict(
         name="js",
         file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
@@ -17,6 +18,7 @@ def task_setup():
 
 
 def task_lint():
+    """format and ensure style of code, docs, etc."""
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
@@ -40,6 +42,7 @@ def task_lint():
 
 
 def task_build():
+    """build code and intermediate packages"""
     yield dict(
         name="js:lib",
         file_dep=[*L.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
@@ -97,6 +100,7 @@ def task_build():
 
 
 def task_docs():
+    """build documentation"""
     yield dict(
         name="sphinx",
         file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
@@ -106,6 +110,7 @@ def task_docs():
 
 
 def task_watch():
+    """watch sources and rebuild on change"""
     yield dict(
         name="js",
         uptodate=[lambda: False],
@@ -117,6 +122,16 @@ def task_watch():
         uptodate=[lambda: False],
         file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
         actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
+    )
+
+
+def task_test():
+    """test jupyterlite"""
+    yield U.ok(
+        B.OK_JEST,
+        name="js",
+        file_dep=[B.YARN_INTEGRITY, B.META_BUILDINFO],
+        actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
     )
 
 
@@ -205,7 +220,7 @@ class B:
     OK_PRETTIER = OK / "prettier"
     OK_ESLINT = OK / "eslint"
     OK_BLACK = OK / "black"
-    OK_PIP_E = OK / "pip-e"
+    OK_JEST = OK / "jest"
 
 
 class U:
