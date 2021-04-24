@@ -57,6 +57,11 @@ jobs:
       - name: Build
         run: |
           doit build
+      - name: Upload (dist)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
       - name: Lint
         run: |
           doit lint
