@@ -49,25 +49,30 @@ def task_build():
         targets=[B.META_BUILDINFO],
     )
 
-    pyolite_tasks = []
+    wheels = []
 
     for py_pkg in P.PYOLITE_PACKAGES:
-        pyolite_tasks += [f"build:py:{py_pkg.name}"]
+        name = py_pkg.name
+        wheel = py_pkg / f"dist/{name}-0.1.0-py3-none-any.whl"
+        wheels += [wheel]
         yield dict(
-            name=f"py:{py_pkg.name}",
-            file_dep=[*py_pkg.rglob("*.py")],
+            name=f"py:{name}",
+            file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[doit.tools.CmdAction(["flit", "build"], shell=False, cwd=py_pkg)],
-            # TODO: figure out a way to derive .whl name
-            # targets=[]
+            # TODO: get version
+            targets=[wheel],
         )
+
+    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG]
+    app_wheels = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
         app_data = json.loads(app_json.read_text(**C.ENC))
+        app_wheels += [app / f"build/{w.name}" for w in wheels]
         yield dict(
             name=f"js:app:{app.name}",
-            task_dep=pyolite_tasks,
-            file_dep=[B.META_BUILDINFO, app_json, P.WEBPACK_CONFIG, app / "index.js"],
+            file_dep=[*wheels, *app_deps, app_json, app / "index.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
@@ -76,7 +81,12 @@ def task_build():
 
     yield dict(
         name="js:pack",
-        file_dep=[B.META_BUILDINFO, *P.APP.glob("*/build/bundle.js")],
+        file_dep=[
+            P.APP_NPM_IGNORE,
+            B.META_BUILDINFO,
+            *P.APP.glob("*/build/bundle.js"),
+            *app_wheels,
+        ],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
             U.do("npm", "pack", "../app", cwd=B.DIST),
@@ -106,6 +116,7 @@ class P:
     APP_PACKAGE_JSON = APP / "package.json"
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = [*APP.glob("*/package.json")]
+    APP_NPM_IGNORE = APP / ".npmignore"
 
     # docs
     README = ROOT / "README.md"
