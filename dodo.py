@@ -64,19 +64,20 @@ def task_build():
         )
 
     app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG]
-    app_wheels = []
+    all_app_wheels = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
         app_data = json.loads(app_json.read_text(**C.ENC))
-        app_wheels += [app / f"build/{w.name}" for w in wheels]
+        app_wheels = [app / f"build/{w.name}" for w in wheels]
+        all_app_wheels += app_wheels
         yield dict(
             name=f"js:app:{app.name}",
             file_dep=[*wheels, *app_deps, app_json, app / "index.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
-            targets=[app / "build/bundle.js"],
+            targets=[app / "build/bundle.js", *app_wheels],
         )
 
     yield dict(
@@ -85,7 +86,7 @@ def task_build():
             P.APP_NPM_IGNORE,
             B.META_BUILDINFO,
             *P.APP.glob("*/build/bundle.js"),
-            *app_wheels,
+            *all_app_wheels,
         ],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
