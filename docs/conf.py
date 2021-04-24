@@ -69,4 +69,4 @@ html_context = {
 if os.environ.get("READTHEDOCS"):
     import subprocess
 
-    subprocess.check_call(["doit", "build"])
+    subprocess.check_call(["doit", "build"], cwd=str(ROOT))
