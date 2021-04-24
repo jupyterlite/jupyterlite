@@ -12,7 +12,7 @@ def task_setup():
     yield dict(
         name="js",
         file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
-        actions=[U.do("jlpm", "--prefer-offline", "--ignore-optional")],
+        actions=[U.do("yarn", "--prefer-offline", "--ignore-optional")],
         targets=[B.YARN_INTEGRITY],
     )
 
@@ -23,14 +23,14 @@ def task_lint():
         B.OK_PRETTIER,
         name="prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("jlpm", "prettier")],
+        actions=[U.do("yarn", "prettier")],
     )
 
     yield U.ok(
         B.OK_ESLINT,
         name="eslint",
         file_dep=[B.OK_PRETTIER],
-        actions=[U.do("jlpm", "eslint")],
+        actions=[U.do("yarn", "eslint")],
     )
 
     yield U.ok(
@@ -47,7 +47,7 @@ def task_build():
         name="js:lib",
         file_dep=[*L.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
         actions=[
-            U.do("jlpm", "build:lib"),
+            U.do("yarn", "build:lib"),
         ],
         targets=[B.META_BUILDINFO],
     )
@@ -115,7 +115,7 @@ def task_watch():
         name="js",
         uptodate=[lambda: False],
         file_dep=[B.YARN_INTEGRITY],
-        actions=[U.do("jlpm", "watch")],
+        actions=[U.do("yarn", "watch")],
     )
     yield dict(
         name="docs",
@@ -131,7 +131,7 @@ def task_test():
         B.OK_JEST,
         name="js",
         file_dep=[B.YARN_INTEGRITY, B.META_BUILDINFO],
-        actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
+        actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
 
 
