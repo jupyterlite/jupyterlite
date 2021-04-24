@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -eux
 
-yarn
-yarn build
+doit build
 
 # enable the proxy
 for app in notebook server; do
