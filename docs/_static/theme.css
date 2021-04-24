@@ -1,0 +1,27 @@
+:root {
+  --jp-orange: #f37726;
+}
+
+@media (min-width: 1200px) {
+  .container,
+  .container-xl {
+    max-width: 100%;
+  }
+}
+
+#navbar-start {
+  font-family: var(--pst-font-family-heading);
+  font-size: 1.6em;
+}
+
+@media (min-width: 960px) {
+  #navbar-center {
+    display: flex;
+    align-items: baseline;
+  }
+}
+
+.btn-warning {
+  background-color: var(--jp-orange);
+  color: #fff;
+}

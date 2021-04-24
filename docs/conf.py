@@ -20,7 +20,16 @@ release = APP_DATA["version"]
 # The short X.Y version
 version = ".".join(release.rsplit(".", 1))
 
+# sphinx config
+extensions = [
+    "sphinx.ext.autosectionlabel",
+    "myst_nb",
+]
+
+autosectionlabel_prefix_document = True
+
 # files
+templates_path = ["_templates"]
 html_favicon = "../app/lab/favicon.ico"
 html_static_path = ["_static", "../app"]
 exclude_patterns = [
@@ -35,11 +44,9 @@ exclude_patterns = [
     "tsconfig.*",
     "webpack.config.*",
 ]
-
-# sphinx config
-extensions = ["sphinx.ext.autosectionlabel", "myst_nb"]
-
-autosectionlabel_prefix_document = True
+html_css_files = [
+    "theme.css",
+]
 
 # theme
 html_theme = "pydata_sphinx_theme"
@@ -47,6 +54,8 @@ html_logo = "_static/icon.svg"
 html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
+    "navbar_start": ["launch.html"],
+    "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
 }
 
 html_context = {

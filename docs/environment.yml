@@ -15,6 +15,6 @@ dependencies:
   - wheel
   - yarn <2
   # docs
-  - sphinx
-  - pydata-sphinx-theme
   - myst-nb
+  - pydata-sphinx-theme
+  - sphinx
