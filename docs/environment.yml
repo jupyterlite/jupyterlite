@@ -1,0 +1,19 @@
+name: jupyterlite-docs
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  # runtimes
+  - nodejs >=14,<15
+  - python >=3.8,<3.9
+  # build
+  - doit
+  - flit
+  - pip
+  - wheel
+  - yarn <2
+  # docs
+  - sphinx
+  - pydata-sphinx-theme
