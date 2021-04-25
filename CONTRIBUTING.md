@@ -22,6 +22,7 @@ You'll need:
 - `git`
 - `nodejs >=12`
 - `yarn <2`
+- `python >=3.8`
 
 Various package managers on different operating systems provide these.
 
@@ -35,7 +36,44 @@ Various package managers on different operating systems provide these.
 
 ## Development Tasks
 
+### doit
+
+[doit](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
+JavaScript to documentation building. It understands the dependencies between different
+nested _tasks_, usually as files that change on disk.
+
+#### List tasks
+
+To see all of the _tasks_ available, use the `list` action:
+
+```bash
+doit list --all --status
+```
+
+To get information about a specific _task_, use the info `info` _action_ with the _task_
+name from the first column of `list`:
+
+```bash
+doit info build:js:app:classic
+```
+
+#### Defaults
+
+The default `doit` _action_ is `run` which... runs the named _tasks_.
+
+The default tasks are `lint` and `build`, which do basically everything performed by
+continuous integration, so the following are equivalent:
+
+```bash
+doit
+doit lint build
+doit run lint build
+```
+
 ### JavaScript development
+
+While most of the scripts below will be run (in the correct order based on changes) by
+`doit`, the following _scripts_ (defined in `package.json`) are worth highlighting.
 
 #### Quick start
 
@@ -105,6 +143,24 @@ yarn build:test
 yarn test
 ```
 
+### Documentation
+
+The documentation site, served on readthedocs.io, uses information from different parts
+of the software lifecycle (e.g. contains a copy of the built `app` directory), so using
+the [doit](#doit) tools are recommended.
+
+#### Build
+
+```bash
+doit docs
+```
+
+#### Watch
+
+```bash
+doit watch:docs
+```
+
 ## Community Tasks
 
 ### Issues
@@ -130,7 +186,7 @@ JupyterLite become _real_ as [pull requests].
 - Fork the repo
 - Make a new branch off `main`
 - Make changes
-- Run the `lint` and `test`
+- Run `doit lint test`
 - Push to your fork
 - Start the pull request
   - your `git` cli should offer you a link, as will the GitHub web UI

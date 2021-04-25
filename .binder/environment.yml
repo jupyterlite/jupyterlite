@@ -1,16 +1,28 @@
-# this is a minimal conda/mamba environment for working on JupyterLite and upstreams
-
 name: jupyterlite-dev
+# this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
   - conda-forge
 
 dependencies:
-  - git
-  - doit >=0.33,<0.34
-  - flit >=3.1
+  # demo stuff
   - jupyter-server-proxy
   - jupyterlab >=3,<4
   - jupyterlab-classic
-  - nodejs >=12,!=13.*,<15
+  - git
+
+  ### DOCS ENV ###
+  # runtimes
+  - nodejs >=14,<15
+  - python >=3.8,<3.9
+  # build
+  - doit >=0.33,<0.34
+  - flit >=3.1
+  - pip
+  - wheel
   - yarn <2
+  # docs
+  - myst-nb
+  - pydata-sphinx-theme
+  - sphinx
+  ### DOCS ENV ###

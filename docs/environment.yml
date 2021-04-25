@@ -1,10 +1,12 @@
 name: jupyterlite-docs
+# this is a conda/mamba environment for building the JupyterLite documentation
 
 channels:
   - conda-forge
   - nodefaults
 
 dependencies:
+  ### DOCS ENV ###
   # runtimes
   - nodejs >=14,<15
   - python >=3.8,<3.9
@@ -18,3 +20,4 @@ dependencies:
   - myst-nb
   - pydata-sphinx-theme
   - sphinx
+  ### DOCS ENV ###

@@ -7,6 +7,17 @@ import shutil
 from pathlib import Path
 
 
+def task_env():
+    """keep environments in sync"""
+
+    yield dict(
+        name="binder",
+        file_dep=[P.DOCS_ENV],
+        targets=[P.BINDER_ENV],
+        actions=[(U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER])],
+    )
+
+
 def task_setup():
     """perform initial non-python setup"""
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
@@ -16,6 +27,7 @@ def task_setup():
 
     yield dict(
         name="js",
+        doc="install node packages",
         file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
         actions=[U.do(*args)],
         targets=[B.YARN_INTEGRITY],
@@ -28,20 +40,23 @@ def task_lint():
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
+        doc="format .ts, .md, .json, etc. files with prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier" if C.CI else "prettier:check")],
+        actions=[U.do("yarn", "prettier:check" if C.CI else "prettier")],
     )
 
     yield U.ok(
         B.OK_ESLINT,
         name="eslint",
+        doc="format and verify .ts, .js files with eslint",
         file_dep=[B.OK_PRETTIER],
-        actions=[U.do("yarn", "eslint" if C.CI else "eslint:check")],
+        actions=[U.do("yarn", "eslint:check" if C.CI else "eslint")],
     )
 
     yield U.ok(
         B.OK_BLACK,
         name="black",
+        doc="format python files with black",
         file_dep=L.ALL_BLACK,
         actions=[U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK)],
     )
@@ -51,6 +66,7 @@ def task_build():
     """build code and intermediate packages"""
     yield dict(
         name="js:lib",
+        doc="build .ts files into .js files",
         file_dep=[*L.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
         actions=[
             U.do("yarn", "build:lib"),
@@ -66,6 +82,7 @@ def task_build():
         wheels += [wheel]
         yield dict(
             name=f"py:{name}",
+            doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[U.do("flit", "build", cwd=py_pkg)],
             # TODO: get version
@@ -82,6 +99,7 @@ def task_build():
         all_app_wheels += app_wheels
         yield dict(
             name=f"js:app:{app.name}",
+            doc=f"build JupyterLite {app.name.title()} with webpack",
             file_dep=[*wheels, *app_deps, app_json, app / "index.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
@@ -91,6 +109,7 @@ def task_build():
 
     yield dict(
         name="js:pack",
+        doc="build the JupyterLite distribution",
         file_dep=[
             P.APP_NPM_IGNORE,
             B.META_BUILDINFO,
@@ -109,6 +128,7 @@ def task_docs():
     """build documentation"""
     yield dict(
         name="sphinx",
+        doc="build the documentation site with sphinx",
         file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
         actions=[U.do("sphinx-build", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
@@ -119,12 +139,14 @@ def task_watch():
     """watch sources and rebuild on change"""
     yield dict(
         name="js",
+        doc="watch .ts, .js, and .css sources and rebuild packages and apps",
         uptodate=[lambda: False],
         file_dep=[B.YARN_INTEGRITY],
         actions=[U.do("yarn", "watch")],
     )
     yield dict(
         name="docs",
+        doc="watch .md sources and rebuild the documentation",
         uptodate=[lambda: False],
         file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
         actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
@@ -136,6 +158,7 @@ def task_test():
     yield U.ok(
         B.OK_JEST,
         name="js",
+        doc="run the .js, .ts unit tests with jest",
         file_dep=[B.YARN_INTEGRITY, B.META_BUILDINFO],
         actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
@@ -146,6 +169,7 @@ class C:
     APPS = ["classic", "lab"]
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
+    DOCS_ENV_MARKER = "### DOCS ENV ###"
 
 
 class P:
@@ -170,11 +194,13 @@ class P:
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
+    DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = [*DOCS.rglob("*.py")]
     DOCS_MD = [*DOCS.rglob("*.md"), README, CONTRIBUTING, CHANGELOG]
 
     # demo
     BINDER = ROOT / ".binder"
+    BINDER_ENV = BINDER / "environment.yml"
 
     # CI
     CI = ROOT / ".github"
@@ -246,6 +272,15 @@ class U:
             lambda: [ok.touch(), None][-1],
         ]
         return task
+
+    @staticmethod
+    def sync_env(from_env, to_env, marker):
+        from_chunks = from_env.read_text(**C.ENC).split(marker)
+        to_chunks = to_env.read_text(**C.ENC).split(marker)
+        to_env.write_text(
+            "".join([to_chunks[0], marker, from_chunks[1], marker, to_chunks[2]]),
+            **C.ENC,
+        )
 
 
 # environment overloads
