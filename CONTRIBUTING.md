@@ -7,7 +7,7 @@ Thanks for contributing to JupyterLite!
 
 ## Setup
 
-### Get the code
+### Get the Code
 
 ```bash
 git clone https://github.com/jtpio/jupyterlite
@@ -42,7 +42,7 @@ Various package managers on different operating systems provide these.
 JavaScript to documentation building. It understands the dependencies between different
 nested _tasks_, usually as files that change on disk.
 
-#### List tasks
+#### List Tasks
 
 To see all of the _tasks_ available, use the `list` action:
 
@@ -57,7 +57,7 @@ name from the first column of `list`:
 doit info build:js:app:classic
 ```
 
-#### Defaults
+#### Task and Action Defaults
 
 The default `doit` _action_ is `run` which... runs the named _tasks_.
 
@@ -83,13 +83,13 @@ Most of the [development tasks](#development-tasks) can be run with one command:
 yarn bootstrap
 ```
 
-#### Install
+#### Install JavaScript Dependencies
 
 ```bash
 yarn
 ```
 
-#### Build
+#### Build Apps
 
 To build development assets:
 
@@ -103,7 +103,7 @@ To build production assets:
 yarn build:prod
 ```
 
-#### Serve
+#### Serve Apps
 
 > These are **not real server solutions**, but they _will_ serve all of the assets types
 > (including `.wasm`) correctly for JupyterLite under development, testing, and demo
@@ -124,19 +124,19 @@ Python 3.7+):
 yarn serve:py
 ```
 
-#### Watch
+#### Watch Sources
 
 ```bash
 yarn watch
 ```
 
-#### Lint
+#### Lint/Format Sources
 
 ```bash
 yarn lint
 ```
 
-#### Test
+#### Run Unit Tests
 
 ```bash
 yarn build:test
@@ -149,13 +149,13 @@ The documentation site, served on readthedocs.io, uses information from differen
 of the software lifecycle (e.g. contains a copy of the built `app` directory), so using
 the [doit](#doit) tools are recommended.
 
-#### Build
+#### Build Documentation
 
 ```bash
 doit docs
 ```
 
-#### Watch
+#### Watch Documentation
 
 ```bash
 doit watch:docs
