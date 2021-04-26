@@ -28,7 +28,13 @@ def task_setup():
     yield dict(
         name="js",
         doc="install node packages",
-        file_dep=[P.YARN_LOCK, *P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON],
+        file_dep=[
+            P.YARN_LOCK,
+            *P.PACKAGE_JSONS,
+            P.ROOT_PACKAGE_JSON,
+            P.APP_PACKAGE_JSON,
+            *P.APP_JSONS,
+        ],
         actions=[U.do(*args)],
         targets=[B.YARN_INTEGRITY],
     )
