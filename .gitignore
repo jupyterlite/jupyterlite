@@ -126,3 +126,6 @@ app/kernels
 *.log
 
 .doit*
+
+# generated
+docs/api/ts

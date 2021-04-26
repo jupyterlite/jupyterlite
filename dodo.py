@@ -1,8 +1,11 @@
 import json
 import os
+import re
+import shutil
 from pathlib import Path
 
 import doit
+from collections import defaultdict
 
 
 def task_env():
@@ -53,7 +56,7 @@ def task_lint():
         B.OK_ESLINT,
         name="eslint",
         doc="format and verify .ts, .js files with eslint",
-        file_dep=[B.OK_PRETTIER],
+        file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
         actions=[U.do("yarn", "eslint:check" if C.CI else "eslint")],
     )
 
@@ -71,7 +74,12 @@ def task_build():
     yield dict(
         name="js:lib",
         doc="build .ts files into .js files",
-        file_dep=[*L.ALL_TS, P.ROOT_PACKAGE_JSON, *P.PACKAGE_JSONS, B.YARN_INTEGRITY],
+        file_dep=[
+            *L.ALL_ESLINT,
+            P.ROOT_PACKAGE_JSON,
+            *P.PACKAGE_JSONS,
+            B.YARN_INTEGRITY,
+        ],
         actions=[
             U.do("yarn", "build:lib"),
         ],
@@ -131,11 +139,46 @@ def task_build():
 def task_docs():
     """build documentation"""
     yield dict(
+        name="typedoc:ensure",
+        file_dep=[*P.PACKAGE_JSONS],
+        actions=[U.typedoc_conf],
+        targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
+    )
+    yield dict(
+        name="typedoc:build",
+        doc="build the TS API documentation with typedoc",
+        file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
+        actions=[U.do("yarn", "docs")],
+        targets=[B.DOCS_RAW_TYPEDOC_README],
+    )
+
+    yield dict(
+        name="typedoc:mystify",
+        doc="transform raw typedoc into myst markdown",
+        file_dep=[B.DOCS_RAW_TYPEDOC_README],
+        targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
+        actions=[U.mystify, U.do("yarn", "prettier")],
+    )
+
+    yield dict(
         name="sphinx",
         doc="build the documentation site with sphinx",
-        file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
+        file_dep=[B.DOCS_TS_MYST_INDEX, *P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
         actions=[U.do("sphinx-build", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
+    )
+
+
+@doit.create_after("docs")
+def task_check():
+    """perform checks of built artifacts"""
+    yield dict(
+        name="docs:links",
+        doc="check for broken (internal) links",
+        file_dep=[*B.DOCS.rglob("*.html")],
+        actions=[
+            U.do("pytest-check-links", B.DOCS, "--check-links-ignore", "^https?://")
+        ],
     )
 
 
@@ -174,13 +217,14 @@ class C:
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
+    NO_TYPEDOC = ["_metapackage"]
 
 
 class P:
     DODO = Path(__file__)
     ROOT = DODO.parent
     PACKAGES = ROOT / "packages"
-    PACKAGE_JSONS = [*PACKAGES.glob("*/package.json")]
+    PACKAGE_JSONS = sorted(PACKAGES.glob("*/package.json"))
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
@@ -190,7 +234,7 @@ class P:
     APP = ROOT / "app"
     APP_PACKAGE_JSON = APP / "package.json"
     WEBPACK_CONFIG = APP / "webpack.config.js"
-    APP_JSONS = [*APP.glob("*/package.json")]
+    APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
 
     # docs
@@ -198,9 +242,15 @@ class P:
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
+    TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
+    TYPEDOC_JSON = ROOT / "typedoc.json"
+    TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
+    DOCS_SRC_MD = sorted(
+        [p for p in DOCS.rglob("*.md") if "docs/api" not in str(p.as_posix())]
+    )
     DOCS_ENV = DOCS / "environment.yml"
-    DOCS_PY = [*DOCS.rglob("*.py")]
-    DOCS_MD = [*DOCS.rglob("*.md"), README, CONTRIBUTING, CHANGELOG]
+    DOCS_PY = sorted([*DOCS.rglob("*.py")])
+    DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
 
     # demo
     BINDER = ROOT / ".binder"
@@ -227,11 +277,16 @@ P.PYOLITE_PACKAGES = [
 
 class L:
     # linting
-    ALL_TS = [*P.PACKAGES.rglob("*/src/**/*.js"), *P.PACKAGES.rglob("*/src/**/*.ts")]
-    ALL_JSON = [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *ALL_TS]
+    ALL_ESLINT = [
+        *P.PACKAGES.rglob("*/src/**/*.js"),
+        *P.PACKAGES.rglob("*/src/**/*.ts"),
+    ]
+    ALL_JSON = set(
+        [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
+    )
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
-    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML]
+    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT]
     ALL_BLACK = [
         *P.DOCS_PY,
         P.DODO,
@@ -250,8 +305,18 @@ class B:
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
     DOCS = P.DOCS / "_build"
-    DOCS_HTML = DOCS / "html"
-    DOCS_BUILDINFO = DOCS_HTML / ".buildinfo"
+    DOCS_BUILDINFO = DOCS / ".buildinfo"
+
+    # typedoc
+    DOCS_RAW_TYPEDOC = BUILD / "typedoc"
+    DOCS_RAW_TYPEDOC_README = DOCS_RAW_TYPEDOC / "README.md"
+    DOCS_TS = P.DOCS / "api/ts"
+    DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
+    DOCS_TS_MODULES = [
+        P.ROOT / "docs/api/ts" / f"{p.parent.name}.md"
+        for p in P.PACKAGE_JSONS
+        if p.parent.name not in C.NO_TYPEDOC
+    ]
 
     OK = BUILD / "ok"
     OK_PRETTIER = OK / "prettier"
@@ -283,6 +348,98 @@ class U:
         to_chunks = to_env.read_text(**C.ENC).split(marker)
         to_env.write_text(
             "".join([to_chunks[0], marker, from_chunks[1], marker, to_chunks[2]]),
+            **C.ENC,
+        )
+
+    @staticmethod
+    def typedoc_conf():
+        typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
+        typedoc["entryPoints"] = [
+            str((p.parent / "src/index.ts").relative_to(P.ROOT).as_posix())
+            for p in P.PACKAGE_JSONS
+            if p.parent.name not in C.NO_TYPEDOC
+        ]
+        P.TYPEDOC_JSON.write_text(
+            json.dumps(typedoc, indent=2, sort_keys=True), **C.ENC
+        )
+
+        tsconfig = json.loads(P.TSCONFIG_TYPEDOC.read_text(**C.ENC))
+        tsconfig["references"] = [
+            {"path": f"./packages/{p.parent.name}"}
+            for p in P.PACKAGE_JSONS
+            if p.parent.name not in C.NO_TYPEDOC
+        ]
+
+        P.TSCONFIG_TYPEDOC.write_text(
+            json.dumps(tsconfig, indent=2, sort_keys=True), **C.ENC
+        )
+
+    @staticmethod
+    def mystify():
+        """unwrap monorepo docs into per-module docs"""
+        mods = defaultdict(lambda: defaultdict(list))
+        if B.DOCS_TS.exists():
+            shutil.rmtree(B.DOCS_TS)
+
+        def mod_md_name(mod):
+            return mod.replace("@jupyterlite/", "") + ".md"
+
+        for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
+            if doc.parent == B.DOCS_RAW_TYPEDOC:
+                continue
+            if doc.name == "README.md":
+                continue
+            doc_text = doc.read_text(**C.ENC)
+            doc_lines = doc_text.splitlines()
+            mod_chunks = doc_lines[0].split(" / ")
+            src = mod_chunks[1]
+            if src.startswith("["):
+                src = re.findall(r"\[(.*)/src\]", src)[0]
+            else:
+                src = src.replace("/src", "")
+            pkg = f"""@jupyterlite/{src.replace("/src", "")}"""
+            mods[pkg][doc.parent.name] += [
+                str(doc.relative_to(B.DOCS_RAW_TYPEDOC).as_posix())[:-3]
+            ]
+
+            # rewrite doc and write back out
+            out_doc = B.DOCS_TS / doc.relative_to(B.DOCS_RAW_TYPEDOC)
+            if not out_doc.parent.exists():
+                out_doc.parent.mkdir(parents=True)
+
+            out_text = doc_text.replace("README.md", "index.md")
+            out_text = re.sub(
+                r"## Table of contents(.*?)\n## ",
+                "\n## ",
+                out_text,
+                flags=re.M | re.S,
+            )
+
+            out_doc.write_text(out_text, **C.ENC)
+
+        for mod, sections in mods.items():
+            out_doc = B.DOCS_TS / mod_md_name(mod)
+            mod_lines = [f"# `{mod}`\n"]
+            for label, contents in sections.items():
+                mod_lines += [
+                    f"## {label.title()}\n",
+                    "```{toctree}",
+                    ":maxdepth: 1",
+                    *contents,
+                    "```\n",
+                ]
+            out_doc.write_text("\n".join(mod_lines))
+
+        B.DOCS_TS_MYST_INDEX.write_text(
+            "\n".join(
+                [
+                    "# TypeScript API\n",
+                    "```{toctree}",
+                    ":maxdepth: 1",
+                    *[mod_md_name(mod) for mod in sorted(mods)],
+                    "```",
+                ]
+            ),
             **C.ENC,
         )
 
