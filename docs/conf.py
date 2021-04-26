@@ -71,4 +71,4 @@ html_context = {
 if os.environ.get("READTHEDOCS"):
     import subprocess
 
-    subprocess.check_call(["doit", "build"], cwd=str(ROOT))
+    subprocess.check_call(["doit", "build", "typedoc:mystify"], cwd=str(ROOT))
