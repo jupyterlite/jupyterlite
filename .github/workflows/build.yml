@@ -19,6 +19,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14.x'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
       - name: Cache node modules
         uses: actions/cache@v2
         id: cache-node-modules
@@ -36,17 +39,32 @@ jobs:
             ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-yarn-packages-
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - name: Setup
+        run: |
+          pip install -U pip setuptools
+          pip install -r requirements.txt
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
-          yarn --frozen-lockfile
+          doit setup:js
       - name: Build
         run: |
-          yarn build
+          doit build
+      - name: Upload (dist)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
       - name: Lint
         run: |
-          yarn lint
+          doit lint
       - name: Test
         run: |
-          yarn build:test
-          yarn test
+          doit test

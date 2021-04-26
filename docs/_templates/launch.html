@@ -1,0 +1,31 @@
+<strong>Try</strong>
+
+<a
+  href="{{ pathto('_static/lab/index.html', 1) }}"
+  class="btn btn-warning"
+  target="_blank"
+  data-toggle="tooltip"
+  data-placement="bottom"
+  title="Try JupyterLab Lite"
+>
+  <i class="fas fa-flask"></i>
+  Lab
+</a>
+
+<a
+  href="{{ pathto('_static/classic/index.html', 1) }}"
+  class="btn btn-warning"
+  target="_blank"
+  data-toggle="tooltip"
+  data-placement="bottom"
+  title="Try JupyterLab Classic Lite"
+>
+  <i class="fas fa-book"></i>
+  Classic
+</a>
+
+<script>
+  $(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>

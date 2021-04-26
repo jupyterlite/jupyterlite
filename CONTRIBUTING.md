@@ -1,4 +1,4 @@
-# Contributing to JupyterLite
+# Contributing
 
 Thanks for contributing to JupyterLite!
 
@@ -7,7 +7,7 @@ Thanks for contributing to JupyterLite!
 
 ## Setup
 
-### Get the code
+### Get the Code
 
 ```bash
 git clone https://github.com/jtpio/jupyterlite
@@ -22,6 +22,7 @@ You'll need:
 - `git`
 - `nodejs >=12`
 - `yarn <2`
+- `python >=3.8`
 
 Various package managers on different operating systems provide these.
 
@@ -35,7 +36,44 @@ Various package managers on different operating systems provide these.
 
 ## Development Tasks
 
+### doit
+
+[doit](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
+JavaScript to documentation building. It understands the dependencies between different
+nested _tasks_, usually as files that change on disk.
+
+#### List Tasks
+
+To see all of the _tasks_ available, use the `list` action:
+
+```bash
+doit list --all --status
+```
+
+To get information about a specific _task_, use the info `info` _action_ with the _task_
+name from the first column of `list`:
+
+```bash
+doit info build:js:app:classic
+```
+
+#### Task and Action Defaults
+
+The default `doit` _action_ is `run` which... runs the named _tasks_.
+
+The default tasks are `lint` and `build`, which do basically everything performed by
+continuous integration, so the following are equivalent:
+
+```bash
+doit
+doit lint build
+doit run lint build
+```
+
 ### JavaScript development
+
+While most of the scripts below will be run (in the correct order based on changes) by
+`doit`, the following _scripts_ (defined in `package.json`) are worth highlighting.
 
 #### Quick start
 
@@ -45,13 +83,13 @@ Most of the [development tasks](#development-tasks) can be run with one command:
 yarn bootstrap
 ```
 
-#### Install
+#### Install JavaScript Dependencies
 
 ```bash
 yarn
 ```
 
-#### Build
+#### Build Apps
 
 To build development assets:
 
@@ -65,7 +103,7 @@ To build production assets:
 yarn build:prod
 ```
 
-#### Serve
+#### Serve Apps
 
 > These are **not real server solutions**, but they _will_ serve all of the assets types
 > (including `.wasm`) correctly for JupyterLite under development, testing, and demo
@@ -86,23 +124,41 @@ Python 3.7+):
 yarn serve:py
 ```
 
-#### Watch
+#### Watch Sources
 
 ```bash
 yarn watch
 ```
 
-#### Lint
+#### Lint/Format Sources
 
 ```bash
 yarn lint
 ```
 
-#### Test
+#### Run Unit Tests
 
 ```bash
 yarn build:test
 yarn test
+```
+
+### Documentation
+
+The documentation site, served on readthedocs.io, uses information from different parts
+of the software lifecycle (e.g. contains a copy of the built `app` directory), so using
+the [doit](#doit) tools are recommended.
+
+#### Build Documentation
+
+```bash
+doit docs
+```
+
+#### Watch Documentation
+
+```bash
+doit watch:docs
 ```
 
 ## Community Tasks
@@ -130,7 +186,7 @@ JupyterLite become _real_ as [pull requests].
 - Fork the repo
 - Make a new branch off `main`
 - Make changes
-- Run the `lint` and `test`
+- Run `doit lint test`
 - Push to your fork
 - Start the pull request
   - your `git` cli should offer you a link, as will the GitHub web UI
@@ -148,5 +204,5 @@ JupyterLite become _real_ as [pull requests].
 [new issue]: https://github.com/jtpio/jupyterlite/issues/new
 [pull requests]: https://github.com/jtpio/jupyterlite/pulls
 [repo]: https://github.com/jtpio/jupyterlite
-[coc]: (https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md)
-[mambaforge]: https://github.com/conda-forge/miniforge/
+[coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
+[mambaforge]: https://github.com/conda-forge/miniforge

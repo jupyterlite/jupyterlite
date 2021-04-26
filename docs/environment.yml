@@ -1,16 +1,11 @@
-name: jupyterlite-dev
-# this is a conda/mamba environment for working on JupyterLite and upstreams
+name: jupyterlite-docs
+# this is a conda/mamba environment for building the JupyterLite documentation
 
 channels:
   - conda-forge
+  - nodefaults
 
 dependencies:
-  # demo stuff
-  - jupyter-server-proxy
-  - jupyterlab >=3,<4
-  - jupyterlab-classic
-  - git
-
   ### DOCS ENV ###
   # runtimes
   - nodejs >=14,<15

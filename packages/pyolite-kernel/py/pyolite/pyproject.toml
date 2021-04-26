@@ -6,4 +6,4 @@ build-backend = "flit_core.buildapi"
 module = "pyolite"
 author = "JupyterLite Contributors"
 home-page = "https://github.com/jtpio/jupyterlite"
-
+requires-python = ">=3.6"

@@ -1,4 +1,4 @@
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { URLExt } from '@jupyterlab/coreutils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
@@ -8,7 +8,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
-import pyolite from '../py/dist/pyolite-0.1.0-py2.py3-none-any.whl';
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0-py3-none-any.whl';
 
 /**
  * A kernel that executes Python code with Pyodide.
@@ -23,7 +23,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     super(options);
     const { pyodideUrl } = options;
     const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
-    const pyoliteWheelUrl = URLExt.join(PageConfig.getBaseUrl(), pyoliteWheel);
+    const pyoliteWheelUrl = URLExt.join(window.location.origin, pyoliteWheel);
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
     const blob = new Blob([
       [
