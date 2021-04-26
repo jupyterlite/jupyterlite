@@ -126,3 +126,5 @@ app/kernels
 *.log
 
 .doit*
+
+.vercel
