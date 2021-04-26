@@ -70,6 +70,7 @@ jobs:
           doit test
 
   deploy:
+    if: ${{ secrets.VERCEL_TOKEN != '' }}
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -94,7 +95,6 @@ jobs:
         env:
           REF: ${{ github.ref }}
       - uses: amondnet/vercel-action@v20
-        if: secrets.VERCEL_TOKEN != ''
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
