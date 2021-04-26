@@ -24,6 +24,9 @@ def task_setup():
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
 
     if C.CI:
+        # .yarn-integrity will only exist on a full cache hit vs yarn.lock, saves 1min+
+        if B.YARN_INTEGRITY.exists():
+            return
         args += ["--frozen-lockfile"]
 
     yield dict(
