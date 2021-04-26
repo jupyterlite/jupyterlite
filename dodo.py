@@ -354,25 +354,34 @@ class U:
     @staticmethod
     def typedoc_conf():
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
-        typedoc["entryPoints"] = [
-            str((p.parent / "src/index.ts").relative_to(P.ROOT).as_posix())
-            for p in P.PACKAGE_JSONS
-            if p.parent.name not in C.NO_TYPEDOC
-        ]
-        P.TYPEDOC_JSON.write_text(
-            json.dumps(typedoc, indent=2, sort_keys=True), **C.ENC
+        original_entry_points = sorted(typedoc["entryPoints"])
+        new_entry_points = sorted(
+            [
+                str((p.parent / "src/index.ts").relative_to(P.ROOT).as_posix())
+                for p in P.PACKAGE_JSONS
+                if p.parent.name not in C.NO_TYPEDOC
+            ]
         )
 
+        if json.dumps(original_entry_points) != json.dumps(new_entry_points):
+            typedoc["entryPoints"] = new_entry_points
+            P.TYPEDOC_JSON.write_text(
+                json.dumps(typedoc, indent=2, sort_keys=True), **C.ENC
+            )
+
         tsconfig = json.loads(P.TSCONFIG_TYPEDOC.read_text(**C.ENC))
-        tsconfig["references"] = [
+        original_references = tsconfig["references"]
+        new_references = [
             {"path": f"./packages/{p.parent.name}"}
             for p in P.PACKAGE_JSONS
             if p.parent.name not in C.NO_TYPEDOC
         ]
 
-        P.TSCONFIG_TYPEDOC.write_text(
-            json.dumps(tsconfig, indent=2, sort_keys=True), **C.ENC
-        )
+        if json.dumps(original_references) != json.dumps(new_references):
+            tsconfig["references"] = new_references
+            P.TSCONFIG_TYPEDOC.write_text(
+                json.dumps(tsconfig, indent=2, sort_keys=True), **C.ENC
+            )
 
     @staticmethod
     def mystify():
