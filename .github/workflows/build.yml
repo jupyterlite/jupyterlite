@@ -7,7 +7,7 @@ on:
     branches: '*'
 
 env:
-  CACHE_EPOCH: 0
+  CACHE_EPOCH: 1
 
 jobs:
   build:
@@ -39,6 +39,9 @@ jobs:
             ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-yarn-packages-
+      - name: Setup pip (pip)
+        run: |
+          pip install -U pip setuptools wheel
       - uses: actions/cache@v2
         with:
           path: ~/.cache/pip
@@ -46,9 +49,8 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
-      - name: Setup
+      - name: Setup pip (dependecies)
         run: |
-          pip install -U pip setuptools
           pip install -r requirements.txt
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -73,8 +75,6 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: jupyterlite dist ${{ github.run_number }}
