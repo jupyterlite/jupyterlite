@@ -129,3 +129,4 @@ app/kernels
 
 # generated
 docs/api/ts
+.vercel
