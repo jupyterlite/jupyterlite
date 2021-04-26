@@ -70,6 +70,7 @@ jobs:
           doit test
 
   deploy:
+    if: secrets.VERCEL_TOKEN == ''
     needs: [build]
     runs-on: ubuntu-latest
     steps:
