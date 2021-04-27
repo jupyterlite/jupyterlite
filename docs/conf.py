@@ -23,12 +23,19 @@ version = ".".join(release.rsplit(".", 1))
 # sphinx config
 extensions = [
     "sphinx.ext.autosectionlabel",
+    "sphinxext.rediraffe",
     "myst_nb",
 ]
 
 autosectionlabel_prefix_document = True
 myst_heading_anchors = 3
 suppress_warnings = ["autosectionlabel.*"]
+
+rediraffe_redirects = {
+    "try/index": "_static/index",
+    "try/lab/index": "_static/lab/index",
+    "try/classic/index": "_static/classic/tree/index",
+}
 
 # files
 templates_path = ["_templates"]
