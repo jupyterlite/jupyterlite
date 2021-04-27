@@ -228,7 +228,7 @@ class C:
     APPS = ["classic", "lab"]
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
-    RTD = bool(json.loads(os.environ.get("READTHEDOCS", "0")))
+    RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
 
