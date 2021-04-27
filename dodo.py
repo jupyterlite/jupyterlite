@@ -180,7 +180,13 @@ def task_check():
         doc="check for broken (internal) links",
         file_dep=[*B.DOCS.rglob("*.html")],
         actions=[
-            U.do("pytest-check-links", B.DOCS, "--check-links-ignore", "^https?://")
+            U.do(
+                "pytest-check-links",
+                B.DOCS,
+                "--check-anchors",
+                "--check-links-ignore",
+                "^https?://",
+            )
         ],
     )
 
@@ -249,7 +255,7 @@ class P:
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
     DOCS_SRC_MD = sorted(
-        [p for p in DOCS.rglob("*.md") if "docs/api" not in str(p.as_posix())]
+        [p for p in DOCS.rglob("*.md") if "docs/api/ts" not in str(p.as_posix())]
     )
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([*DOCS.rglob("*.py")])
@@ -419,10 +425,24 @@ class U:
             if not out_doc.parent.exists():
                 out_doc.parent.mkdir(parents=True)
 
-            out_text = doc_text.replace("README.md", "index.md")
+            out_text = "\n".join([*doc_lines[1:], ""]).replace("README.md", "index.md")
             out_text = re.sub(
                 r"## Table of contents(.*?)\n## ",
                 "\n## ",
+                out_text,
+                flags=re.M | re.S,
+            )
+            out_text = out_text.replace("/src]", "]")
+            out_text = re.sub("/src$", "", out_text, flags=re.M)
+            out_text = re.sub(
+                r"^Defined in: ([^\n]+)$",
+                "_Defined in:_ `\\1`",
+                out_text,
+                flags=re.M | re.S,
+            )
+            out_text = re.sub(
+                r"^((Implementation of|Overrides|Inherited from):)",
+                "_\\1_",
                 out_text,
                 flags=re.M | re.S,
             )
@@ -431,7 +451,7 @@ class U:
 
         for mod, sections in mods.items():
             out_doc = B.DOCS_TS / mod_md_name(mod)
-            mod_lines = [f"# `{mod}`\n"]
+            mod_lines = [f"""# `{mod.replace("@jupyterlite/", "")}`\n"""]
             for label, contents in sections.items():
                 mod_lines += [
                     f"## {label.title()}\n",
@@ -445,7 +465,7 @@ class U:
         B.DOCS_TS_MYST_INDEX.write_text(
             "\n".join(
                 [
-                    "# TypeScript API\n",
+                    "# `@jupyterlite`\n",
                     "```{toctree}",
                     ":maxdepth: 1",
                     *[mod_md_name(mod) for mod in sorted(mods)],
