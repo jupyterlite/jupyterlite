@@ -10,6 +10,8 @@ dependencies:
   - jupyterlab >=3,<4
   - jupyterlab-classic
   - git
+  # extra docs tools
+  - sphinx-autobuild
 
   ### DOCS ENV ###
   # runtimes
@@ -24,5 +26,6 @@ dependencies:
   # docs
   - myst-nb
   - pydata-sphinx-theme
+  - pytest-check-links
   - sphinx
   ### DOCS ENV ###

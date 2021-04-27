@@ -1,0 +1,27 @@
+{
+  "entryPoints": [
+    "packages/application/src/index.ts",
+    "packages/application-extension/src/index.ts",
+    "packages/classic-application-extension/src/index.ts",
+    "packages/contents/src/index.ts",
+    "packages/iframe-extension/src/index.ts",
+    "packages/javascript-kernel/src/index.ts",
+    "packages/javascript-kernel-extension/src/index.ts",
+    "packages/kernel/src/index.ts",
+    "packages/p5-kernel/src/index.ts",
+    "packages/p5-kernel-extension/src/index.ts",
+    "packages/pyolite-kernel/src/index.ts",
+    "packages/pyolite-kernel-extension/src/index.ts",
+    "packages/server/src/index.ts",
+    "packages/server-extension/src/index.ts",
+    "packages/session/src/index.ts",
+    "packages/settings/src/index.ts",
+    "packages/theme/src/index.ts",
+    "packages/theme-extension/src/index.ts"
+  ],
+  "exclude": ["*.spec.ts", "**/node_modules/**", "**/test/**", "**/lib/**"],
+  "name": "@jupyterlite",
+  "out": "build/typedoc",
+  "readme": "none",
+  "tsconfig": "tsconfig.typedoc.json"
+}

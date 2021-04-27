@@ -127,4 +127,6 @@ app/kernels
 
 .doit*
 
+# generated
+docs/api/ts
 .vercel

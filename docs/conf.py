@@ -27,6 +27,8 @@ extensions = [
 ]
 
 autosectionlabel_prefix_document = True
+myst_heading_anchors = 3
+suppress_warnings = ["autosectionlabel.*"]
 
 # files
 templates_path = ["_templates"]
@@ -69,4 +71,4 @@ html_context = {
 if os.environ.get("READTHEDOCS"):
     import subprocess
 
-    subprocess.check_call(["doit", "build"], cwd=str(ROOT))
+    subprocess.check_call(["doit", "build", "docs:typedoc:mystify"], cwd=str(ROOT))

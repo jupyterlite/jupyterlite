@@ -40,7 +40,8 @@
     "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch",
     "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\" yarn watch",
     "serve": "node scripts/serve.js",
-    "serve:py": "cd app && python -m http.server -b 127.0.0.1"
+    "serve:py": "cd app && python -m http.server -b 127.0.0.1",
+    "docs": "typedoc"
   },
   "husky": {
     "hooks": {
@@ -68,6 +69,8 @@
     "prettier": "^1.19.0",
     "rimraf": "^3.0.2",
     "shell-quote": "^1.7.2",
+    "typedoc": "^0.20.36",
+    "typedoc-plugin-markdown": "^3.7.2",
     "typescript": "~4.2.3"
   }
 }

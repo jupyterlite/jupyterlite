@@ -1,7 +1,11 @@
 /**
  * Store the kernel and interpreter instances.
  */
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
 let kernel: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
 let interpreter: any;
 
 /**
@@ -50,6 +54,8 @@ function formatResult(res: any): any {
   return results;
 }
 
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
 const pyodideReadyPromise = loadPyodideAndPackages();
 
 self.onmessage = async (event: MessageEvent): Promise<void> => {
