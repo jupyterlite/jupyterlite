@@ -200,13 +200,14 @@ def task_watch():
         file_dep=[B.YARN_INTEGRITY],
         actions=[U.do("yarn", "watch")],
     )
-    yield dict(
-        name="docs",
-        doc="watch .md sources and rebuild the documentation",
-        uptodate=[lambda: False],
-        file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-        actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
-    )
+    if shutil.which("sphinx-autobuild"):
+        yield dict(
+            name="docs",
+            doc="watch .md sources and rebuild the documentation",
+            uptodate=[lambda: False],
+            file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
+            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
+        )
 
 
 def task_test():
