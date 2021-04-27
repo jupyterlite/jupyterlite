@@ -17,11 +17,11 @@ from the ground-up using JupyterLab components and plugins.
 JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and
 [JupyterLab Classic](https://github.com/jtpio/jupyterlab-classic).
 
-### [Try it with JupyterLab!](https://jupyterlite.readthedocs.io/en/latest/_static/lab/index.html)
+### [Try it with JupyterLab!](https://jupyterlite.readthedocs.io/en/latest/try/lab)
 
 ![image](https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png)
 
-### [Try it with JupyterLab Classic!](https://jupyterlite.readthedocs.io/en/latest/_static/classic/index.html)
+### [Try it with JupyterLab Classic!](https://jupyterlite.readthedocs.io/en/latest/try/classic)
 
 ![image](https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png)
 

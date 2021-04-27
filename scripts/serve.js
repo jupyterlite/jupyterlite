@@ -10,14 +10,18 @@ const DO_NOT_USE_THIS = `
 ********************************************************************************
 `;
 const http = require('http');
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
+const { resolve } = require('path');
 
 const ROOT = path.resolve(__dirname, '..', 'app');
 const HOST = process.env['HOST'] || '127.0.0.1';
 const PORT = parseInt(process.env['PORT'] || '5000');
 const PREFIX = process.env['PREFIX'] || '/';
 const ERRORS = { ENOENT: 404 };
+const CUSTOM_ROUTES = {
+  '/favicon.ico': '/lab/favicon.ico'
+};
 
 const MIME_TYPES = {
   // from https://github.com/python/cpython/blob/3.9/Lib/mimetypes.py
@@ -169,22 +173,55 @@ const MIME_TYPES = {
   '.data': 'application/wasm'
 };
 
-function serve(request, response) {
+function stripSlash(url) {
+  return url.replace(/\/$/, '');
+}
+
+async function serve(request, response) {
   let { url, method } = request;
-  url = `${url.slice(PREFIX.length - 1)}`;
-  url = url.endsWith('/') ? `${url}index.html` : url;
-  fs.readFile(path.join(ROOT, url), function(error, content) {
-    const code = error ? ERRORS[error.code] || 500 : 200;
-    console.error(new Date().toISOString(), code, method, url);
-    if (code === 200) {
-      mime = MIME_TYPES[`${path.extname(url)}`] || 'application/octet-stream';
-    } else {
-      content = `<h1>${code}</h1>`;
-      mime = 'text/html';
-    }
+  let code = 500;
+  let mime = 'application/octet-stream';
+  let content = '<h1><pre>500 Really Unexpected Error</pre></h1>';
+
+  url = stripSlash(`${url.slice(PREFIX.length - 1)}`);
+  url = CUSTOM_ROUTES[url] || url;
+
+  let resolved = path.join(ROOT, url);
+  let exists = false;
+  let isDirectory = false;
+  try {
+    let stat = await fs.stat(resolved);
+    exists = true;
+    isDirectory = stat.isDirectory();
+  } catch (error) {
+    // will attempt to find index.html
+  }
+
+  if (exists && isDirectory) {
+    url = [url, 'index.html'].join('/');
+    resolved = path.join(ROOT, url);
+  }
+
+  let extname = path.extname(url);
+
+  try {
+    content = await fs.readFile(resolved);
+    mime = MIME_TYPES[extname] || mime;
+    code = 200;
+  } catch (error) {
+    code = ERRORS[error.code] || code;
+    content = `<h1><pre>${code} ${error.code}</pre></h1>`;
+    mime = 'text/html';
+  } finally {
+    (code == 200 ? console.info : console.error)(
+      new Date().toISOString(),
+      code,
+      method,
+      url
+    );
     response.writeHead(code, { 'Content-Type': mime });
     response.end(content, 'utf-8');
-  });
+  }
 }
 
 http.createServer(serve).listen(PORT, HOST, () => {
