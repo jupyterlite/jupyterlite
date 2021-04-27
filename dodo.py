@@ -297,9 +297,10 @@ class L:
     ALL_JSON = set(
         [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
     )
+    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.js")]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
-    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT]
+    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT, *ALL_JS]
     ALL_BLACK = [
         *P.DOCS_PY,
         P.DODO,
