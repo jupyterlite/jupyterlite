@@ -1,5 +1,6 @@
 import json
 import os
+import platform
 from pathlib import Path
 
 import doit
@@ -258,7 +259,7 @@ class U:
     @staticmethod
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency"""
-        return doit.tools.CmdAction(list(args), shell=False, cwd=str(Path(cwd)))
+        return doit.tools.CmdAction(list(args), shell=platform.system() == 'Windows', cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):
