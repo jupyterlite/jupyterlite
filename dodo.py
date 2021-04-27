@@ -338,7 +338,14 @@ class U:
     @staticmethod
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency"""
-        return doit.tools.CmdAction(list(args), shell=False, cwd=str(Path(cwd)))
+        cmd = args[0]
+        cmd = Path(
+            shutil.which(cmd)
+            or shutil.which(f"{cmd}.exe")
+            or shutil.which(f"{cmd}.cmd")
+            or shutil.which(f"{cmd}.bat")
+        ).resolve()
+        return doit.tools.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):

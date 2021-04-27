@@ -49,7 +49,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
-      - name: Setup pip (dependencies)
+      - name: Setup pip (dependecies)
         run: |
           pip install -r requirements-docs.txt
       - name: Install
@@ -78,11 +78,10 @@ jobs:
           doit check
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
           name: jupyterlite dist ${{ github.run_number }}
