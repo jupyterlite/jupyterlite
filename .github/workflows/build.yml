@@ -49,7 +49,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
-      - name: Setup pip (dependecies)
+      - name: Setup pip (dependencies)
         run: |
           pip install -r requirements-docs.txt
       - name: Install
