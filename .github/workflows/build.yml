@@ -46,12 +46,12 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (dependecies)
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements-docs.txt
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: |
@@ -70,6 +70,12 @@ jobs:
       - name: Test
         run: |
           doit test
+      - name: Docs
+        run: |
+          doit docs
+      - name: Check Built Artifacts
+        run: |
+          doit check
 
   deploy:
     needs: [build]
