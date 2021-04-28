@@ -96,11 +96,11 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   let res;
   try {
     res = await interpreter.run(data.code);
-  } catch (err) {
+  } catch (error) {
     postMessage({
       parentheader: data.parentheader,
-      type: 'stderr',
-      stderr: err
+      type: 'error',
+      error
     });
     return;
   }
