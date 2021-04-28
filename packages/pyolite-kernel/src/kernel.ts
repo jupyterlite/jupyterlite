@@ -78,19 +78,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         break;
       }
       case 'stderr': {
-        const { name, stack, message } = msg.stderr;
-        const error = {
-          name,
-          stack,
-          message
-        };
-        if (msg.error) {
-          this._executeDelegate.resolve({
-            ...error,
-            parentHeader
-          });
-          break;
-        }
+        const { message } = msg.stderr;
         const content = {
           event: 'stream',
           name: 'stderr',
@@ -103,6 +91,19 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'results': {
         const bundle = msg.results ?? { data: {}, metadata: {} };
         this._executeDelegate.resolve(bundle);
+        break;
+      }
+      case 'error': {
+        const { name, stack, message } = msg.error;
+        const error = {
+          name,
+          stack,
+          message
+        };
+        this._executeDelegate.resolve({
+          ...error,
+          parentHeader
+        });
         break;
       }
       case 'display': {
