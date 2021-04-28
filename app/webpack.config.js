@@ -35,7 +35,8 @@ fs.copySync(
 );
 
 // ensure all schemas are statically compiled
-const schemaDir = path.resolve(buildDir, './schemas');
+// fix windows path issue, use / as path separator instead of \
+const schemaDir = path.resolve(buildDir, './schemas').replace(/\\/g, '/');
 const files = glob.sync(`${schemaDir}/**/*.json`, {
   ignore: [`${schemaDir}/all.json`]
 });
