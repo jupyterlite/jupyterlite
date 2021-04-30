@@ -23,7 +23,16 @@
               'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
             mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
             settingsUrl: base + 'classic/build/schemas',
-            themesUrl: base + 'classic/build/themes'
+            themesUrl: base + 'classic/build/themes',
+            fullLabextensionsUrl: base + 'lab/extensions',
+            federated_extensions: [
+              {
+                extension: './extension',
+                load: 'remoteEntry.807752ccb7a01c72408f.js',
+                name: 'jupyterlab-python-file',
+                // style: './style'
+              }
+            ]
           },
           null,
           2

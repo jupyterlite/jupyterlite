@@ -5,10 +5,8 @@ import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
-// eslint-disable-next-line
-__webpack_public_path__ = PageConfig.getOption('fullStaticUrl') + '/';
 
-require('./build/style.js');
+require('./style.js');
 
 const serverMods = [
   import('@jupyterlite/javascript-kernel-extension'),
@@ -22,7 +20,22 @@ const mimeExtensionsMods = [
   import('@jupyterlab/json-extension')
 ];
 
-window.addEventListener('load', async () => {
+const disabled = [];
+
+async function createModule(scope, module) {
+  try {
+    const factory = await window._JUPYTERLAB[scope].get(module);
+    return factory();
+  } catch (e) {
+    console.warn(`Failed to create module: package: ${scope}; module: ${module}`);
+    throw e;
+  }
+}
+
+/**
+ * The main entry point for the application.
+ */
+async function main() {
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(await Promise.all(serverMods));
@@ -131,6 +144,68 @@ window.addEventListener('load', async () => {
     }
   }
 
+  const federatedExtensionPromises = [];
+  const federatedMimeExtensionPromises = [];
+  const federatedStylePromises = [];
+
+  // This is all the data needed to load and activate plugins. This should be
+  // gathered by the server and put onto the initial page template.
+  const extensions = JSON.parse(
+    PageConfig.getOption('federated_extensions')
+  );
+
+  // The set of federated extension names.
+  const federatedExtensionNames = new Set();
+
+  extensions.forEach(data => {
+    if (data.extension) {
+      federatedExtensionNames.add(data.name);
+      federatedExtensionPromises.push(createModule(data.name, data.extension));
+    }
+    if (data.mimeExtension) {
+      federatedExtensionNames.add(data.name);
+      federatedMimeExtensionPromises.push(createModule(data.name, data.mimeExtension));
+    }
+    if (data.style) {
+      federatedStylePromises.push(createModule(data.name, data.style));
+    }
+  });
+
+  /**
+   * Iterate over active plugins in an extension.
+   */
+  function* activePlugins(extension) {
+    // Handle commonjs or es2015 modules
+    let exports;
+    if (extension.hasOwnProperty('__esModule')) {
+      exports = extension.default;
+    } else {
+      // CommonJS exports.
+      exports = extension;
+    }
+
+    let plugins = Array.isArray(exports) ? exports : [exports];
+    for (let plugin of plugins) {
+      // skip the plugin if disabled
+      if (disabled.includes(plugin.id)) {
+        continue;
+      }
+      yield plugin;
+    }
+  }
+
+  // Add the federated extensions.
+  const federatedExtensions = await Promise.allSettled(federatedExtensionPromises);
+  federatedExtensions.forEach(p => {
+    if (p.status === "fulfilled") {
+      for (let plugin of activePlugins(p.value)) {
+        mods.push(plugin);
+      }
+    } else {
+      console.error(p.reason);
+    }
+  });
+
   app.registerPluginModules(mods);
 
   console.log('Starting app');
@@ -138,4 +213,6 @@ window.addEventListener('load', async () => {
   console.log('JupyterLite Classic started, waiting for restore');
   await app.restored;
   console.log('JupyterLite Classic restored');
-});
+}
+
+window.addEventListener('load', main);
