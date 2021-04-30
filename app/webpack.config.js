@@ -4,8 +4,11 @@ const path = require('path');
 const fs = require('fs-extra');
 const glob = require('glob');
 const webpack = require('webpack');
+const merge = require('webpack-merge').default;
 const { ModuleFederationPlugin } = webpack.container;
+const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
+const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
 const data = fs.readJSONSync('./package.json');
 
@@ -159,56 +162,53 @@ const all = files.map(file => {
 
 fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
 
+// Create a list of application extensions and mime extensions from
+// jlab.extensions
+const extensions = {};
+const mimeExtensions = {};
+for (const key of data.jupyterlab.extensions) {
+  const {
+    jupyterlab: { extension, mimeExtension }
+  } = require(`${key}/package.json`);
+  if (extension !== undefined) {
+    extensions[key] = extension === true ? '' : extension;
+  }
+  if (mimeExtension !== undefined) {
+    mimeExtensions[key] = mimeExtension === true ? '' : mimeExtension;
+  }
+}
+
+// Create the entry point and other assets in build directory.
+const template = Handlebars.compile(
+  fs.readFileSync(path.resolve('./index.template.js')).toString()
+);
+fs.writeFileSync(
+  path.join(buildDir, 'index.js'),
+  template({ extensions, mimeExtensions: [] })
+);
+
+// Create the bootstrap file that loads federated extensions and calls the
+// initialization logic in index.js
+const entryPoint = './build/bootstrap.js';
+fs.copySync('../bootstrap.js', entryPoint);
+
 module.exports = [
-  {
-    entry: ['whatwg-fetch', './index.js'],
+  merge(baseConfig, {
+    mode: 'development',
+    devtool: 'source-map',
+    entry: ['./publicpath.js', entryPoint],
     output: {
       path: path.resolve(buildDir),
+      library: {
+        type: 'var',
+        name: ['_JUPYTERLAB', 'CORE_OUTPUT']
+      },
       filename: 'bundle.js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
     },
-    bail: true,
-    devtool: 'source-map',
-    mode: 'development',
     module: {
       rules: [
-        { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-        { test: /\.html$/, use: 'file-loader' },
-        { test: /\.md$/, use: 'raw-loader' },
-        { test: /\.(jpg|png|gif)$/, use: 'file-loader' },
-        { test: /\.js.map$/, use: 'file-loader' },
-        {
-          test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-          use: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-          test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-          use: 'url-loader?limit=10000&mimetype=application/font-woff'
-        },
-        {
-          test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          use: 'url-loader?limit=10000&mimetype=application/octet-stream'
-        },
-        { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
-        {
-          // In .css files, svg is loaded as a data URI.
-          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          issuer: /\.css$/,
-          use: {
-            loader: 'svg-url-loader',
-            options: { encoding: 'none', limit: 10000 }
-          }
-        },
-        {
-          // In .ts and .tsx files (both of which compile to .js), svg files
-          // must be loaded as a raw string instead of data URIs.
-          test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-          issuer: /\.js$/,
-          use: {
-            loader: 'raw-loader'
-          }
-        },
         {
           test: /\.whl/,
           type: 'asset/resource'
@@ -235,5 +235,5 @@ module.exports = [
         shared: createShared(data)
       })
     ]
-  }
+  })
 ].concat(extensionAssetConfig);

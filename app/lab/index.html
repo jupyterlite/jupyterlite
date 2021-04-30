@@ -21,19 +21,18 @@
             settingsUrl: base + 'lab/build/schemas',
             themesUrl: base + 'lab/build/themes',
             fullLabextensionsUrl: base + 'lab/extensions',
-
             federated_extensions: [
+              // {
+              //   extension: './extension',
+              //   load: 'static/remoteEntry.7555dfa06a264a14b728.js',
+              //   name: 'jupyterlab-cell-flash',
+              //   style: './style'
+              // }
               {
                 extension: './extension',
-                load: 'static/remoteEntry.2aa891a54123e8a60666.js',
-                name: 'jupyterlab-videochat',
-                style: './style'
-              },
-              {
-                extension: './extension',
-                load: 'static/remoteEntry.8659a10365f8519626af.js',
-                name: 'jupyterlab-tour',
-                style: './style'
+                load: 'remoteEntry.807752ccb7a01c72408f.js',
+                name: 'jupyterlab-python-file',
+                // style: './style'
               }
             ]
           },

@@ -23,3 +23,7 @@ app/lab/extensions/
 # ms IDE stuff
 .history/
 .vscode/
+
+# JS templating
+bootstrap.js
+index.template.js

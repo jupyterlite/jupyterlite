@@ -8,3 +8,7 @@ node_modules
 docs/api/ts
 .pytest_cache
 app/lab/extensions/
+
+# JS templating
+bootstrap.js
+index.template.js
