@@ -117,7 +117,7 @@ def task_build():
         yield dict(
             name=f"js:app:{app.name}",
             doc=f"build JupyterLite {app.name.title()} with webpack",
-            file_dep=[*wheels, *app_deps, app_json, app / "index.js"],
+            file_dep=[*wheels, *app_deps, app_json, app / "index.template.js"],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
@@ -297,7 +297,7 @@ class L:
     ALL_JSON = set(
         [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
     )
-    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.js")]
+    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.template.js")]
     ALL_HTML = [(P.APP / "index.html"), *P.APP.glob("*/index.html")]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
