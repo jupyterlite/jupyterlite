@@ -3,3 +3,4 @@
 black
 doit >=0.33,<0.34
 flit >=3.1
+jsonschema >=3

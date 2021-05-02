@@ -8,6 +8,7 @@ dependencies:
   # build stuff
   - black
   - flit >=3.1
+  - jsonschema >=3
   # demo stuff
   - jupyter-server-proxy
   - jupyterlab >=3,<4
@@ -24,6 +25,7 @@ dependencies:
   - flit >=3.1
   - pip
   - wheel
+  - jsonschema >=3
   - yarn <2
   # docs
   - myst-nb
