@@ -5,6 +5,7 @@ import shutil
 import pprint
 from pathlib import Path
 import jsonschema
+import sys
 
 import doit
 from collections import defaultdict
@@ -182,6 +183,14 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO],
     )
 
+    if shutil.which("jupyter-lab"):
+        yield dict(
+            name="extensions",
+            doc="add extensions from share/jupyter/labextensions to docs",
+            actions=[(U.extend_docs, [])],
+            file_dep=[B.DOCS_BUILDINFO],
+        )
+
 
 def task_schema():
     """validate the schema and instance documents"""
@@ -358,6 +367,8 @@ class B:
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
     DOCS = P.DOCS / "_build"
     DOCS_BUILDINFO = DOCS / ".buildinfo"
+    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
+    DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -543,6 +554,31 @@ class U:
             print("\t!!!", error.message)
             print("\ton:", str(error.instance)[:64])
         return not errors
+
+    @staticmethod
+    def extend_docs():
+        if B.DOCS_LAB_EXTENSIONS.exists():
+            shutil.rmtree(B.DOCS_LAB_EXTENSIONS)
+        shutil.copytree(
+            Path(sys.prefix) / "share/jupyter/labextensions", B.DOCS_LAB_EXTENSIONS
+        )
+        config = json.loads(B.DOCS_JUPYTERLITE_JSON.read_text(**C.ENC))
+
+        extensions = []
+        all_package_json = [
+            *B.DOCS_LAB_EXTENSIONS.glob("*/package.json"),
+            *B.DOCS_LAB_EXTENSIONS.glob("@*/*/package.json"),
+        ]
+
+        for pkg_json in all_package_json:
+            pkg_data = json.loads(pkg_json.read_text(**C.ENC))
+            extensions += [
+                dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
+            ]
+
+        config["jupyter-config-data"]["federated_extensions"] = extensions
+
+        B.DOCS_JUPYTERLITE_JSON.write_text(json.dumps(config, indent=2, sort_keys=True))
 
 
 # environment overloads
