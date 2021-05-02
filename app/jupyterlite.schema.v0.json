@@ -20,6 +20,7 @@
       }
     },
     "jupyter-config-data": {
+      "title": "Jupyter Config Data",
       "description": "contents of a jupyter-config-data `<script>`, as read by `PageConfig`. These well-known values may be augmented by other extensions.",
       "properties": {
         "baseUrl": {
@@ -81,11 +82,13 @@
       }
     },
     "non-trailing-slash-uri": {
+      "title": "A URI what doesn't end in /",
       "type": "string",
       "format": "uri",
       "pattern": ".*[^/]$"
     },
     "federated-extension": {
+      "title": "A Federated Extension",
       "type": "object",
       "required": ["extension", "name", "load"],
       "properties": {
@@ -110,6 +113,7 @@
       }
     },
     "npm-package-name": {
+      "title": "An NPM Package Name",
       "type": "string",
       "description": "package.json-compatible extension name, with an optional organziation prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
       "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"

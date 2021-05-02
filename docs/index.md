@@ -8,6 +8,7 @@
 :maxdepth: 1
 
 kernels/index
+deploying
 configuring
 api/index
 contributing

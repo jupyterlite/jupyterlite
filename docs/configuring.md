@@ -1,18 +1,9 @@
 # Configuring
 
-## Start with an empty site
-
-You can get an empty JupyterLite by:
-
-- _TBD: downloading a release archive from [GitHub Releases][releases]_
-- _TBD: installing `jupyterlite` from [PyPI]_
-- _TBD: installing `@jupyterlite/builder` from [npmjs.com]_
-- cloning/forking the repository and doing a [development build](../contributing.md)
-
 ## Configuration Files
 
-The configuration of a JupyterLite can be controlled by including specially-named files
-at any level of the file tree. It is expected each file conforms to the
+The configuration of your JupyterLite can be controlled by creating specially-named
+files at any level of the file tree. It is expected each file conforms to the
 [schema](#schema).
 
 | File                 | Config Location              | `jupyter-config-data` | Note                                            |
@@ -25,9 +16,10 @@ Each can be omitted from the file tree, and will result in a harmless (though no
 `404` response.
 
 ```{hint}
-Configuration cascades _up_, such that the closest, most-user-editable file
-to the page being serve takes precedence. With the exception of `federated_extensions`,
-which are _merged_, like-named keys will be _replaced_ by higher-priority files.
+Configuration cascades _down_, such that the closest, most-user-editable file
+to the `index.html` being serve takes highest precedence. With the exception of
+the list of `federated_extensions`, which are _merged_, like-named keys will be
+_replaced_  by higher-priority files.
 ```
 
 ### Schema
@@ -49,14 +41,26 @@ schema-v0
 [pypi]: https://pypi.org/project/jupyterlite
 [npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
 
-## Add Extensions
+## Adding Initial Content
+
+```{danger}
+This feature hasn't even been _started_!
+```
+
+### _Content, The Hard Way_
+
+- _Copy your files in `$YOUR_JUPYTERLITE/files`._
+- _Do something to generate valid Jupyter Server API responses_
+- _Put them someplace_
+
+## Adding Extensions
 
 ```{warning}
 This is a heavily work-in-progress procedure, and will hopefully soon be improved
 with convenience tools in (at least) python and JavaScript.
 ```
 
-### The Hard Way
+### Extensions, The Hard Way
 
 ### Get the extension assets
 
@@ -79,7 +83,7 @@ determined by looking in `package.json` for the extension, specifically
 `#/jupyterlab/sharedPackages`.
 ```
 
-### Fill out `jupyter-lite.json` in `federated_extensions`
+### Fill Out `federated_extensions`
 
 Again, assuming you have a working JupyterLab, click _Inspect Element_ in your Lab and
 inspect the `<script id="jupyter-config-data">` in the `<head>`. The entry you need will
@@ -100,10 +104,14 @@ Update your `/app/jupyter-lite.json` like so:
 ```
 
 ```{hint}
-Some extensions also include a `style` key.
+Some extensions also include a `style` key, and may look _off_ if omitted.
 ```
 
-### Customizing a specific app
+### Customizing a Specific App
 
 Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
 federated extensions will only be avaialable for pages within that file tree.
+
+## Customizing Settings
+
+> _TBD_
