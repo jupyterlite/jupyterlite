@@ -2,18 +2,50 @@
  * configuration utilities for jupyter-lite
  *
  * this file may not import anything else, and exposes no API
- *
+ */
+
+/*
  * an `index.html` should `await import('../config-utils.js')` after specifying
  * the key `script` tags...
+ *
+ * ```html
+ *  <script id="jupyter-config-data" type="application/json" data-jupyter-lite-root="..">
+ *    {}
+ *  </script>
+ * ```
  */
-const JUPYTER_CONFIG_DATA = 'jupyter-config-data';
-const LITE_ROOT = 'jupyter-lite-root';
+const JUPYTER_CONFIG_ID = 'jupyter-config-data';
+const JUPYTER_CONFIG_ATTR = 'jupyterConfigData';
+const LITE_ROOT_ID = 'jupyter-lite-root';
+const LITE_ROOT_ATTR = 'jupyterLiteRoot';
+
 /**
- * And this link tag.
+ * The well-known filename that contains `#jupyter-config-data` and other goodies
+ */
+const LITE_FILE = '.jupyter-lite';
+
+/**
+ * And this link tag, used like so to load a bundle after configuration.
+ *
+ * ```html
+ *  <link
+ *    id="jupyter-lite-main"
+ *    rel="preload"
+ *    href="./build/bundle.js"
+ *    main="index"
+ *    as="script"
+ *  />
+ * ```
  */
 const LITE_MAIN = 'jupyter-lite-main';
 
-const parser = new DOMParser();
+/**
+ * The current page, with trailing server junk stripped
+ */
+const HERE = `${window.location.origin}${window.location.pathname.replace(
+  /(\/|\/index.html)?$/,
+  ''
+)}/`;
 
 /**
  * The computed composite configuration
@@ -21,34 +53,73 @@ const parser = new DOMParser();
 let _JUPYTER_CONFIG;
 
 /**
- * Merge `jupyter-config-data` on the current page with `jupyter-lite-root`
+ * A handle on the config script, must exist, and will be overridden
+ */
+const CONFIG_SCRIPT = document.getElementById(JUPYTER_CONFIG_ID);
+
+/**
+ * The relative path to the root of this JupyterLite
+ */
+const RAW_LITE_ROOT = CONFIG_SCRIPT.dataset[LITE_ROOT_ATTR];
+
+/**
+ * The fully-resolved path to the root of this JupyterLite
+ */
+const FULL_LITE_ROOT = new URL(RAW_LITE_ROOT, HERE).toString();
+
+/**
+ * Whether we are currently operating on the root itself, changes some behaviors
+ */
+const IS_ROOT = HERE == FULL_LITE_ROOT;
+
+/* a DOM parser for reading html files */
+const parser = new DOMParser();
+
+/**
+ * Merge `jupyter-config-data` on the current page with:
+ * - the contents of `.jupyter-lite#/jupyter-config-data`
+ * - parent documents, and their `.jupyter-lite#/jupyter-config-data`
+ * ...up to `jupyter-lite-root`.
  */
 async function jupyterConfigData() {
+  /**
+   * Return the value if already cached for some reason
+   */
   if (_JUPYTER_CONFIG != null) {
     return _JUPYTER_CONFIG;
   }
-  // TBD: the other ones
-  let promises = [pageConfigData()];
-  let root = liteRoot();
-  if (root != null) {
-    promises.unshift(pageConfigData(root, root));
+
+  let parent = new URL(HERE).toString();
+  let promises = [getPathConfig(HERE)];
+  while (parent != FULL_LITE_ROOT) {
+    parent = new URL('..', parent).toString();
+    promises.unshift(getPathConfig(parent));
   }
-  const configs = await Promise.all(promises);
-  return (_JUPYTER_CONFIG = configs.reduce((memo, config) => {
-    if (memo == null) {
-      return config;
+
+  const configs = (await Promise.all(promises)).flat();
+
+  return (_JUPYTER_CONFIG = configs.reduce(mergeOneConfig));
+}
+
+function mergeOneConfig(memo, config) {
+  for (const [k, v] of Object.entries(config)) {
+    switch (k) {
+      case 'federated_extensions':
+        memo[k] = [...(memo[k] || []), ...v];
+        break;
+      default:
+        memo[k] = v;
     }
-    for (const [k, v] of Object.entries(config)) {
-      switch (k) {
-        case 'federated_extensions':
-          memo[k] = [...(memo[k] || []), ...v];
-          break;
-        default:
-          memo[k] = v;
-      }
-    }
-    return memo;
-  }, null));
+  }
+  return memo;
+}
+
+/**
+ * Load jupyter config data from (this) page and merge with
+ * `.jupyter-lite#jupyter-config-data`
+ */
+async function getPathConfig(url) {
+  return await Promise.all([getPageConfig(url), getLiteConfig(url)]);
 }
 
 /**
@@ -59,40 +130,42 @@ function here() {
 }
 
 /**
- * The fully-resolved root of this JupyterLite site
+ * Maybe fetch an `index.html` in this folder, which must contain the trailing slash.
  */
-function liteRoot() {
-  const el = document.getElementById(LITE_ROOT);
-  const root = JSON.parse(el.textContent);
-  if (root == '.') {
-    return null;
-  }
-  return new URL(root, here());
-}
-
-/**
- * Fetch an `index.html` in this folder, which must contain the trailing slash.
- */
-export async function fetchIndex(url) {
-  const text = await (await window.fetch(`${url}index.html`)).text();
-  const html = parser.parseFromString(text, 'text/html');
-  return html.getElementById(JUPYTER_CONFIG_DATA).textContent;
-}
-
-/**
- * Load jupyter config data from (this) page.
- */
-async function pageConfigData(url, root) {
-  let configText;
-  let urlBase = new URL(url || here()).pathname;
+export async function getPageConfig(url = null) {
+  let script = CONFIG_SCRIPT;
 
   if (url != null) {
-    configText = await fetchIndex(url);
-  } else {
-    configText = document.getElementById(JUPYTER_CONFIG_DATA).textContent;
+    const text = await (await window.fetch(`${url}index.html`)).text();
+    const doc = parser.parseFromString(text, 'text/html');
+    script = doc.getElementById(JUPYTER_CONFIG_ID);
   }
-  configText = configText.replace(/(?<=Url"\s*:\s*")\.\//g, urlBase);
-  const config = JSON.parse(configText);
+  return fixRelativeUrls(url, JSON.parse(script.textContent));
+}
+
+/**
+ * Fetch a `.jupyter-lite` in this folder, which must contain the trailing slash.
+ */
+export async function getLiteConfig(url) {
+  let text = '{}';
+  let config = {};
+  const liteUrl = `${url || HERE}${LITE_FILE}`;
+  try {
+    text = await (await window.fetch(liteUrl)).text();
+    config = JSON.parse(text)[JUPYTER_CONFIG_ID] || {};
+  } catch (err) {
+    console.warn(`failed fetch config data from ${liteUrl}`, text, config);
+  }
+  return fixRelativeUrls(url, config);
+}
+
+export function fixRelativeUrls(url, config) {
+  let urlBase = new URL(url || here()).pathname;
+  for (const [k, v] of Object.entries(config)) {
+    if (k.endsWith('Url') && v.startsWith('./')) {
+      config[k] = `${urlBase}${v.slice(2)}`;
+    }
+  }
   return config;
 }
 
@@ -116,11 +189,8 @@ async function main() {
     window.location.href = config.appUrl;
     return;
   }
-  document.getElementById(JUPYTER_CONFIG_DATA).textContent = JSON.stringify(
-    config,
-    null,
-    2
-  );
+  // rewrite the config
+  CONFIG_SCRIPT.textContent = JSON.stringify(config, null, 2);
   addFavicon(config);
   const preloader = document.getElementById(LITE_MAIN);
   const bundle = document.createElement('script');

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html>
-  <!--
+<!--
   This is the root document for _your_ JupyterLite. Thanks for viewing your source!
      ___ __   __ _______ __   __ _______ _______ ______   ___     ___ _______ _______
     |   |  | |  |       |  | |  |       |       |    _ | |   |   |   |       |       |
@@ -31,20 +30,12 @@ Your JupyterLite is structured like this:
       {:app}
 
 -->
+<html>
   <head>
-    <!--
-      # jupyter-lite-root
-
-      The source of truth for relative path locations. A "." indicates _this_
-      is the root, and will redirect to the `appUrl` defined in jupyter-config-data.
-    -->
-    <script id="jupyter-lite-root" type="application/json">
-      "."
-    </script>
     <!--
       # jupyter-config-data
 
-      The strict JSON below is the last that will be loaded by most child `index.html`,
+      The JSON in .jupyter-lite is the last that will be loaded by most child `index.html`,
       and every field can be overridden.
 
       See the recognized schema as described in the documentation:
@@ -59,20 +50,16 @@ Your JupyterLite is structured like this:
               with or without a slash
         - some fields, such as `federated_extensions` will be _added together_
     -->
-    <script id="jupyter-config-data" type="application/json">
-      {
-        "baseUrl": "./",
-        "appUrl": "./lab",
-        "faviconUrl": "./lab/favicon.ico",
-        "federated_extensions": [],
-        "fullLabextensionsUrl": "./lab/extensions",
-        "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
-        "fullStaticUrl": "./lab/build",
-        "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
-        "settingsUrl": "./lab/build/schemas",
-        "themesUrl": "./lab/build/themes"
-      }
+    <script id="jupyter-config-data" type="application/json" data-jupyter-lite-root=".">
+      {}
     </script>
+    <!--
+      # jupyter-lite-root
+
+      The source of truth for relative path locations. The `.` means _this_
+      is the root, and will redirect to the `appUrl` defined in
+      `.jupyter-lite/#jupyter-config-data`.
+    -->
     <script type="module">
       await import('./config-utils.js');
     </script>

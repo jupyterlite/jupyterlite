@@ -4,9 +4,6 @@
     <title>JupyterLite Classic - Edit</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script id="jupyter-lite-root" type="application/json">
-      "../.."
-    </script>
     <link
       id="jupyter-lite-main"
       rel="preload"
@@ -14,14 +11,12 @@
       main="index"
       as="script"
     />
-    <script id="jupyter-config-data" type="application/json">
-      {
-        "classicPage": "edit",
-        "fullStaticUrl": "../build",
-        "settingsUrl": "../build/schemas",
-        "themesUrl": "../build/themes",
-        "faviconUrl": "./favicon.ico"
-      }
+    <script
+      id="jupyter-config-data"
+      type="application/json"
+      data-jupyter-lite-root="../.."
+    >
+      {}
     </script>
     <script>
       (async function() {
@@ -30,7 +25,7 @@
           window.location.href = `${origin}${pathname}/${search}${hash}`;
           return;
         }
-        await import('../config-utils.js');
+        await import('../../config-utils.js');
       })();
     </script>
   </head>

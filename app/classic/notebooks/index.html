@@ -11,17 +11,12 @@
       main="index"
       as="script"
     />
-    <script id="jupyter-lite-root" type="application/json">
-      "../.."
-    </script>
-    <script id="jupyter-config-data" type="application/json">
-      {
-        "classicPage": "notebooks",
-        "fullStaticUrl": "../build",
-        "settingsUrl": "../build/schemas",
-        "themesUrl": "../build/themes",
-        "faviconUrl": "./favicon.ico"
-      }
+    <script
+      id="jupyter-config-data"
+      type="application/json"
+      data-jupyter-lite-root="../.."
+    >
+      {}
     </script>
     <script>
       (async function() {
@@ -30,7 +25,7 @@
           window.location.href = `${origin}${pathname}/${search}${hash}`;
           return;
         }
-        await import('../config-utils.js');
+        await import('../../config-utils.js');
       })();
     </script>
   </head>

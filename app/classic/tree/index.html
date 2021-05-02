@@ -11,24 +11,21 @@
       main="index"
       as="script"
     />
-    <script id="jupyter-lite-root" type="application/json">
-      "../.."
-    </script>
-    <script id="jupyter-config-data" type="application/json">
-      {
-        "classicPage": "tree",
-        "fullStaticUrl": "../build",
-        "settingsUrl": "../build/schemas",
-        "themesUrl": "../build/themes"
-      }
+    <script
+      id="jupyter-config-data"
+      type="application/json"
+      data-jupyter-lite-root="../.."
+    >
+      {}
     </script>
     <script>
       (async function() {
+        const { pathname, origin, search, hash } = window.location;
+        if (pathname.match(/(index.html|\/)$/) == null) {
+          window.location.href = `${origin}${pathname}/${search}${hash}`;
+          return;
+        }
         await import('../../config-utils.js');
-        const bundle = document.createElement('script');
-        bundle.src = '../build/bundle.js';
-        bundle.main = 'index';
-        document.head.appendChild(bundle);
       })();
     </script>
   </head>
