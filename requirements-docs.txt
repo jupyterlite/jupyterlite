@@ -5,4 +5,5 @@ myst-nb
 pydata-sphinx-theme
 pytest-check-links
 sphinx
+sphinx-jsonschema
 sphinxext-rediraffe
