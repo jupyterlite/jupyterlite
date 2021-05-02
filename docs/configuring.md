@@ -2,24 +2,33 @@
 
 ## Start with an empty site
 
-You can get an empty JupyterLite from:
+You can get an empty JupyterLite by:
 
-- cloning/forking the repository and doing a [development build](../contributing.md)
-- _TBD: downloading a tarball from [GitHub Releases][releases]_
+- _TBD: downloading a release archive from [GitHub Releases][releases]_
 - _TBD: installing `jupyterlite` from [PyPI]_
-- _TBD: installing `@jupyterlite/app` from [npmjs.com]_
+- _TBD: installing `@jupyterlite/builder` from [npmjs.com]_
+- cloning/forking the repository and doing a [development build](../contributing.md)
 
 ## Configuration Files
 
 The configuration of a JupyterLite can be controlled by including specially-named files
-in each folder. It is expected each file conforms to the [schema](#schema).
+at any level of the file tree. It is expected each file conforms to the
+[schema](#schema).
 
-- `jupyter-lite.json` is good for simple configuration
-  - the whole document _is_ the configuration, and may not contain comments, trailing
-    commas, etc.
-- `jupyter-lite.ipynb` can integrate nicely into existing Jupyter workflows
-  - the configuration is stored in [Notebook][nbformat] metadata, namely under
-    `#/metadata/jupyter-lite`
+| File                 | Config Location              | `jupyter-config-data` | Note                                            |
+| -------------------- | ---------------------------- | --------------------- | ----------------------------------------------- |
+| `jupyter-lite.ipynb` | `#/metadata/jupyter-lite`    | ✔️                    | integrates into existing Jupyter workflows      |
+| `jupyter-lite.json`  | whole file                   | ✔️                    | good for simple/automated configuration         |
+| `index.html`         | `script#jupyter-config-data` | ✔️                    | configuration of last resort, _not recommended_ |
+
+Each can be omitted from the file tree, and will result in a harmless (though noisy)
+`404` response.
+
+```{hint}
+Configuration cascades _up_, such that the closest, most-user-editable file
+to the page being serve takes precedence. With the exception of `federated_extensions`,
+which are _merged_, like-named keys will be _replaced_ by higher-priority files.
+```
 
 ### Schema
 
