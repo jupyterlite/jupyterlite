@@ -2,7 +2,9 @@
 import os
 import json
 import datetime
+import re
 from pathlib import Path
+from sphinx.application import Sphinx
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
@@ -24,6 +26,8 @@ version = ".".join(release.rsplit(".", 1))
 extensions = [
     "sphinx.ext.autosectionlabel",
     "sphinxext.rediraffe",
+    "sphinx.ext.autodoc",
+    "sphinx-jsonschema",
     "myst_nb",
 ]
 
@@ -79,3 +83,17 @@ if os.environ.get("READTHEDOCS"):
     import subprocess
 
     subprocess.check_call(["doit", "build", "docs:typedoc:mystify"], cwd=str(ROOT))
+
+
+def clean_schema(app: Sphinx, error):
+    if error:
+        return
+    for schema_html in Path(app.builder.outdir).glob("schema-v*.html"):
+        text = schema_html.read_text(encoding="utf-8")
+        new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
+        if text != new_text:
+            schema_html.write_text(new_text, encoding="utf-8")
+
+
+def setup(app):
+    app.connect("build-finished", clean_schema)

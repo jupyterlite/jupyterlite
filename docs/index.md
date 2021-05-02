@@ -8,6 +8,7 @@
 :maxdepth: 1
 
 kernels/index
+configuring
 api/index
 contributing
 changelog

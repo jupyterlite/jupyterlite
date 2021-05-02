@@ -1,10 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "title": "JupyterLite Configuration",
-  "description": "a user-serviceable file for customizing a JupyterLite site",
+  "$id": "https://jupyterlite.readthedocs.org/en/latest/schema-v0.html#",
+  "title": "JupyterLite Schema v0",
+  "description": "a schema for user-serviceable customizaton of a JupyterLite",
   "$ref": "#/definitions/top",
   "definitions": {
     "top": {
+      "title": "JupyterLite Configuration",
+      "description": "a user-serviceable file for customizing a JupyterLite site",
       "properties": {
         "jupyter-lite-schema-version": {
           "type": "integer",
@@ -17,7 +20,7 @@
       }
     },
     "jupyter-config-data": {
-      "description": "contents of a jupyter-config-data <script>, as read by PageConfig. These well-known values may be augmented by other extensions.",
+      "description": "contents of a jupyter-config-data `<script>`, as read by `PageConfig`. These well-known values may be augmented by other extensions.",
       "properties": {
         "baseUrl": {
           "description": "base URL of this JupyterLite, must end in `/`, will be expanded by `config-utils.js` to include a leading `/`",
@@ -108,7 +111,7 @@
     },
     "npm-package-name": {
       "type": "string",
-      "description": "package.json-compatible extension name, with an optional organziation prefix. See (package-name-regex)[https://github.com/dword-design/package-name-regex/blob/master/src/index.js]",
+      "description": "package.json-compatible extension name, with an optional organziation prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
       "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
     }
   }
