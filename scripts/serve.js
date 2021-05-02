@@ -183,6 +183,7 @@ async function serve(request, response) {
   let mime = 'application/octet-stream';
   let content = '<h1><pre>500 Really Unexpected Error</pre></h1>';
 
+  url = url.split(/[\?#]/)[0];
   url = stripSlash(`${url.slice(PREFIX.length - 1)}`);
   url = CUSTOM_ROUTES[url] || url;
 

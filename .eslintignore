@@ -27,3 +27,4 @@ app/lab/extensions/
 # JS templating
 bootstrap.js
 index.template.js
+config-utils.js

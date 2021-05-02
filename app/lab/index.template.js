@@ -179,4 +179,4 @@ async function main() {
   console.log('JupyterLite restored');
 }
 
-window.addEventListener('load', main);
+main();

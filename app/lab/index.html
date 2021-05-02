@@ -4,51 +4,28 @@
     <title>JupyterLite</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script id="jupyter-config-data" type="application/json"></script>
-  </head>
-  <body>
-    <script>
-      (function() {
-        var pageInfo = document.getElementById('jupyter-config-data');
-        var base = window.location.pathname.replace(/\/lab(\/|\/index.html)?$/, '/');
-        pageInfo.textContent = JSON.stringify(
-          {
-            baseUrl: base,
-            fullStaticUrl: base + 'lab/build',
-            fullMathjaxUrl:
-              'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
-            mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
-            settingsUrl: base + 'lab/build/schemas',
-            themesUrl: base + 'lab/build/themes',
-            fullLabextensionsUrl: base + 'lab/extensions',
-            federated_extensions: [
-              // {
-              //   extension: './extension',
-              //   load: 'static/remoteEntry.7555dfa06a264a14b728.js',
-              //   name: 'jupyterlab-cell-flash',
-              //   style: './style'
-              // }
-              {
-                extension: './extension',
-                load: 'remoteEntry.807752ccb7a01c72408f.js',
-                name: 'jupyterlab-python-file'
-                // style: './style'
-              }
-            ]
-          },
-          null,
-          2
-        );
-        const bundle = document.createElement('script');
-        bundle.src = base + 'lab/build/bundle.js';
-        bundle.main = 'index';
-        document.body.appendChild(bundle);
-        const favicon = document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.type = 'image/x-icon';
-        favicon.href = base + 'lab/favicon.ico';
-        document.head.appendChild(favicon);
-      })();
+    <link
+      id="jupyter-lite-main"
+      rel="preload"
+      href="./build/bundle.js"
+      main="index"
+      as="script"
+    />
+    <script id="jupyter-lite-root" type="application/json">
+      ".."
     </script>
-  </body>
+    <script id="jupyter-config-data" type="application/json">
+      {}
+    </script>
+    <script>
+      (async function() {
+        const { pathname, origin, search, hash } = window.location;
+        if (pathname.match(/(index.html|\/)$/) == null) {
+          window.location.href = `${origin}${pathname}/${search}${hash}`;
+          return;
+        }
+        await import('../config-utils.js');
+      }.call(this));
+    </script>
+  </head>
 </html>

@@ -117,7 +117,12 @@ def task_build():
         yield dict(
             name=f"js:app:{app.name}",
             doc=f"build JupyterLite {app.name.title()} with webpack",
-            file_dep=[*wheels, *app_deps, app_json, app / "index.template.js"],
+            file_dep=[
+                *app_deps,
+                *wheels,
+                app / "index.template.js",
+                app_json,
+            ],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
@@ -128,10 +133,12 @@ def task_build():
         name="js:pack",
         doc="build the JupyterLite distribution",
         file_dep=[
-            P.APP_NPM_IGNORE,
-            B.META_BUILDINFO,
-            *P.APP.glob("*/build/bundle.js"),
             *all_app_wheels,
+            *P.APP.glob("*/*/index.html"),
+            *P.APP.glob("*/build/bundle.js"),
+            B.META_BUILDINFO,
+            P.APP / "index.html",
+            P.APP_NPM_IGNORE,
         ],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
@@ -208,7 +215,7 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
+            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS, "-a", "-j8")],
         )
 
 

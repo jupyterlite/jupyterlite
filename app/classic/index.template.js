@@ -215,4 +215,4 @@ async function main() {
   console.log('JupyterLite Classic restored');
 }
 
-window.addEventListener('load', main);
+main();
