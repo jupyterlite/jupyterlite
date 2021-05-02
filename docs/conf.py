@@ -3,6 +3,7 @@ import os
 import json
 import datetime
 import re
+import subprocess
 from pathlib import Path
 from sphinx.application import Sphinx
 
@@ -10,6 +11,7 @@ HERE = Path(__file__).parent
 ROOT = HERE.parent
 APP_PKG = ROOT / "app/package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
+RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
 
 # metadata
 author = APP_DATA["author"]
@@ -79,9 +81,7 @@ html_context = {
 }
 
 
-if os.environ.get("READTHEDOCS"):
-    import subprocess
-
+if RTD:
     subprocess.check_call(["doit", "build", "docs:typedoc:mystify"], cwd=str(ROOT))
 
 
@@ -93,6 +93,9 @@ def clean_schema(app: Sphinx, error):
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
+
+    if RTD:
+        subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
 
 
 def setup(app):
