@@ -22,5 +22,6 @@ dependencies:
   - pydata-sphinx-theme
   - pytest-check-links
   - sphinx
+  - sphinx-jsonschema
   - sphinxext-rediraffe
   ### DOCS ENV ###
