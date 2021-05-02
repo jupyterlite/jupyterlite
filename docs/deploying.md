@@ -5,7 +5,7 @@ Deploying your JupyterLite requires:
 - an actual HTTP server (doesn't presently woth with `file://` URLs)
 
 ```{warning}
-Serving some of the [kernels](./kernels.md) requires that your web server supports
+Serving some of the [kernels](./kernels/index.md) requires that your web server supports
 serving `application/wasm` files with the correct headers
 ```
 
@@ -60,7 +60,7 @@ This will regenerate your docs site and automatically refresh any browsers you h
 open.
 
 ```{hint}
-See the [ReadTheDocs](#ReadTheDocs) section for configuration options
+See the [ReadTheDocs](#readthedocs) section for configuration options
 ```
 
 #### NodeJS
