@@ -94,8 +94,9 @@ def clean_schema(app: Sphinx, error):
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
 
-    if RTD:
-        subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
+    # decide which labextensions to install
+    # if RTD:
+    #     subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
 
 
 def setup(app):
