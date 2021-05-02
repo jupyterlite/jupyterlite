@@ -1,0 +1,115 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "title": "JupyterLite Configuration",
+  "description": "a user-serviceable file for customizing a JupyterLite site",
+  "$ref": "#/definitions/top",
+  "definitions": {
+    "top": {
+      "properties": {
+        "jupyter-lite-schema-version": {
+          "type": "integer",
+          "description": "version of the schema to which the instance conforms",
+          "enum": [0]
+        },
+        "jupyter-config-data": {
+          "$ref": "#/definitions/jupyter-config-data"
+        }
+      }
+    },
+    "jupyter-config-data": {
+      "description": "contents of a jupyter-config-data <script>, as read by PageConfig. These well-known values may be augmented by other extensions.",
+      "properties": {
+        "baseUrl": {
+          "description": "base URL of this JupyterLite, must end in `/`, will be expanded by `config-utils.js` to include a leading `/`",
+          "type": "string",
+          "format": "uri",
+          "default": "./",
+          "pattern": ".*/$"
+        },
+        "appUrl": {
+          "description": "default app to load",
+          "default": "./lab",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
+        "faviconUrl": {
+          "description": "browser tab icon to show",
+          "type": "string",
+          "format": "uri",
+          "default": "./lab/favicon.ico"
+        },
+        "federated_extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/federated-extension"
+          },
+          "default": []
+        },
+        "fullLabextensionsUrl": {
+          "description": "path to federated extensions, a folder organized by `({:org}/){package}`",
+          "default": "./lab/extensions",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
+        "fullMathjaxUrl": {
+          "type": "string",
+          "description": "path to MathJax2 assets",
+          "default": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
+          "format": "uri"
+        },
+        "mathjaxConfig": {
+          "type": "string",
+          "default": "TeX-AMS_CHTML-full,Safe",
+          "description": "a valid MathJax configuration blob, a comma-delimted list of... something"
+        },
+        "fullStaticUrl": {
+          "description": "relative path to built static assets",
+          "default": "./lab/build",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
+        "settingsUrl": {
+          "description": "relative path to bundled schemas",
+          "default": "./lab/build/schemas",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
+        "themesUrl": {
+          "description": "relative path to bundled themes",
+          "default": "./lab/build/themes",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        }
+      }
+    },
+    "non-trailing-slash-uri": {
+      "type": "string",
+      "format": "uri",
+      "pattern": ".*[^/]$"
+    },
+    "federated-extension": {
+      "type": "object",
+      "required": ["extension", "name", "load"],
+      "properties": {
+        "extension": {
+          "type": "string",
+          "format": "uri",
+          "description": "path to the extension module to load, relative to the extension's `package.json`"
+        },
+        "load": {
+          "type": "string",
+          "format": "uri",
+          "description": "path to the WebPack 5-compatible `remoteEntry*.js` file describing the bundle"
+        },
+        "name": {
+          "$ref": "#/definitions/npm-package-name"
+        },
+        "style": {
+          "type": "string",
+          "format": "uri",
+          "description": "path to the optional style module provided by the extension"
+        }
+      }
+    },
+    "npm-package-name": {
+      "type": "string",
+      "description": "package.json-compatible extension name, with an optional organziation prefix. See (package-name-regex)[https://github.com/dword-design/package-name-regex/blob/master/src/index.js]",
+      "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
+    }
+  }
+}

@@ -2,7 +2,9 @@ import json
 import os
 import re
 import shutil
+import pprint
 from pathlib import Path
+import jsonschema
 
 import doit
 from collections import defaultdict
@@ -181,6 +183,20 @@ def task_docs():
     )
 
 
+def task_schema():
+    """validate the schema and instance documents"""
+    yield dict(
+        name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
+    )
+
+    for config in D.APP_CONFIGS:
+        yield dict(
+            name=f"validate:{config.relative_to(P.ROOT)}",
+            file_dep=[P.APP_SCHEMA, config],
+            actions=[(U.validate, (P.APP_SCHEMA, config))],
+        )
+
+
 @doit.create_after("docs")
 def task_check():
     """perform checks of built artifacts"""
@@ -238,6 +254,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
+    LITE_CONFIG_FILES = [".jupyter-lite.json", ".jupyter-lite.ipynb"]
 
 
 class P:
@@ -253,6 +270,8 @@ class P:
 
     APP = ROOT / "app"
     APP_PACKAGE_JSON = APP / "package.json"
+    APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
+    APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
@@ -287,6 +306,17 @@ class D:
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
     }
 
+    APP_CONFIGS = [
+        p
+        for fname in C.LITE_CONFIG_FILES
+        for p in [
+            *P.APP.glob(fname),
+            *P.APP.glob(f"*/{fname}"),
+            *P.APP.glob(f"*/*/{fname}"),
+        ]
+        if p.exists()
+    ]
+
 
 P.PYOLITE_PACKAGES = [
     P.PACKAGES / pkg / pyp
@@ -305,7 +335,7 @@ class L:
         [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
     )
     ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.template.js")]
-    ALL_HTML = [(P.APP / "index.html"), *P.APP.glob("*/index.html")]
+    ALL_HTML = [*P.APP_HTMLS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
     ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT, *ALL_JS, *ALL_HTML]
@@ -494,6 +524,25 @@ class U:
             ),
             **C.ENC,
         )
+
+    @staticmethod
+    def validate(schema_path, instance_path=None):
+        schema = json.loads(schema_path.read_text(**C.ENC))
+        validator = jsonschema.Draft7Validator(schema)
+        if instance_path is None:
+            # probably just validating itself, carry on
+            return
+        instance = json.loads(instance_path.read_text(**C.ENC))
+        if instance_path.name.endswith(".ipynb"):
+            instance = instance["metadata"]["jupyterlite"]
+        errors = [*validator.iter_errors(instance)]
+        for error in errors:
+            print(
+                f"""{instance_path.relative_to(P.ROOT)}#/{"/".join(error.relative_path)}"""
+            )
+            print("\t!!!", error.message)
+            print("\ton:", str(error.instance)[:64])
+        return not errors
 
 
 # environment overloads

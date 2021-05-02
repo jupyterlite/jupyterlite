@@ -15,14 +15,12 @@
  * ```
  */
 const JUPYTER_CONFIG_ID = 'jupyter-config-data';
-const JUPYTER_CONFIG_ATTR = 'jupyterConfigData';
-const LITE_ROOT_ID = 'jupyter-lite-root';
 const LITE_ROOT_ATTR = 'jupyterLiteRoot';
 
 /**
  * The well-known filename that contains `#jupyter-config-data` and other goodies
  */
-const LITE_FILE = '.jupyter-lite';
+const LITE_FILE = '.jupyter-lite.json';
 
 /**
  * And this link tag, used like so to load a bundle after configuration.
@@ -116,7 +114,7 @@ function mergeOneConfig(memo, config) {
 
 /**
  * Load jupyter config data from (this) page and merge with
- * `.jupyter-lite#jupyter-config-data`
+ * `.jupyter-lite.json#jupyter-config-data`
  */
 async function getPathConfig(url) {
   return await Promise.all([getPageConfig(url), getLiteConfig(url)]);
@@ -144,7 +142,7 @@ export async function getPageConfig(url = null) {
 }
 
 /**
- * Fetch a `.jupyter-lite` in this folder, which must contain the trailing slash.
+ * Fetch a `.jupyter-lite.json` in this folder, which must contain the trailing slash.
  */
 export async function getLiteConfig(url) {
   let text = '{}';
