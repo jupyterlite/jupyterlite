@@ -254,7 +254,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
-    LITE_CONFIG_FILES = [".jupyter-lite.json", ".jupyter-lite.ipynb"]
+    LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
 
 
 class P:

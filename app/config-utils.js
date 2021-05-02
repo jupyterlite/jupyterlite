@@ -20,7 +20,7 @@ const LITE_ROOT_ATTR = 'jupyterLiteRoot';
 /**
  * The well-known filename that contains `#jupyter-config-data` and other goodies
  */
-const LITE_FILE = '.jupyter-lite.json';
+const LITE_FILES = ['jupyter-lite.json', 'jupyter-lite.ipynb'];
 
 /**
  * And this link tag, used like so to load a bundle after configuration.
@@ -114,10 +114,14 @@ function mergeOneConfig(memo, config) {
 
 /**
  * Load jupyter config data from (this) page and merge with
- * `.jupyter-lite.json#jupyter-config-data`
+ * `jupyter-lite.json#jupyter-config-data`
  */
 async function getPathConfig(url) {
-  return await Promise.all([getPageConfig(url), getLiteConfig(url)]);
+  let promises = [getPageConfig(url)];
+  for (const fileName of LITE_FILES) {
+    promises.unshift(getLiteConfig(url, fileName));
+  }
+  return Promise.all(promises);
 }
 
 /**
@@ -142,17 +146,21 @@ export async function getPageConfig(url = null) {
 }
 
 /**
- * Fetch a `.jupyter-lite.json` in this folder, which must contain the trailing slash.
+ * Fetch a jupyter-lite JSON or Notebook in this folder, which must contain the trailing slash.
  */
-export async function getLiteConfig(url) {
+export async function getLiteConfig(url, fileName) {
   let text = '{}';
   let config = {};
-  const liteUrl = `${url || HERE}${LITE_FILE}`;
+  const liteUrl = `${url || HERE}${fileName}`;
   try {
     text = await (await window.fetch(liteUrl)).text();
-    config = JSON.parse(text)[JUPYTER_CONFIG_ID] || {};
+    const json = JSON.parse(text);
+    const liteConfig = fileName.endsWith('.ipynb')
+      ? json['metadata']['jupyter-lite']
+      : json;
+    config = liteConfig[JUPYTER_CONFIG_ID] || {};
   } catch (err) {
-    console.warn(`failed fetch config data from ${liteUrl}`, text, config);
+    console.warn(`failed get ${JUPYTER_CONFIG_ID} from ${liteUrl}`);
   }
   return fixRelativeUrls(url, config);
 }
