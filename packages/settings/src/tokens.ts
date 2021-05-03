@@ -44,10 +44,10 @@ export interface ISettings {
   /**
    * Get settings by plugin id
    *
-   * @param plugin the id of the plugin
+   * @param pluginId the id of the plugin
    *
    */
-  get(plugin: string): Promise<IPlugin | undefined>;
+  get(pluginId: string): Promise<IPlugin | undefined>;
 
   /**
    * Get all the settings
@@ -57,9 +57,33 @@ export interface ISettings {
   /**
    * Save settings for a given plugin id
    *
-   * @param plugin The id of the plugin
+   * @param pluginId The id of the plugin
    * @param raw The raw settings
    *
    */
-  save(plugin: string, raw: string): Promise<void>;
+  save(pluginId: string, raw: string): Promise<void>;
+}
+
+/**
+ * The interface for a federated extension, as it appears in `jupyter-config-data`
+ *
+ * TODO: sync with schema, Lab core, etc.
+ */
+export interface IFederatedExtension {
+  /**
+   * The npm-compatible name of the package
+   */
+  name: string;
+  /**
+   * The relative path to the extension
+   */
+  extension: string;
+  /**
+   * The relative entrypoint to the WebPack remoteEntry
+   */
+  load: string;
+  /**
+   * Optional path to the style module
+   */
+  style?: string;
 }

@@ -4,7 +4,7 @@ import * as json5 from 'json5';
 
 import localforage from 'localforage';
 
-import { IPlugin } from './tokens';
+import { IFederatedExtension, IPlugin } from './tokens';
 
 /**
  * The name of the local storage.
@@ -18,18 +18,18 @@ export class Settings {
   /**
    * Get settings by plugin id
    *
-   * @param plugin the id of the plugin
+   * @param pluginId the id of the plugin
    *
    */
-  async get(plugin: string): Promise<IPlugin | undefined> {
+  async get(pluginId: string): Promise<IPlugin | undefined> {
     const all = await this.getAll();
     const settings = all.settings as IPlugin[];
     let found = settings.find((setting: IPlugin) => {
-      return setting.id === plugin;
+      return setting.id === pluginId;
     });
 
     if (found == null) {
-      found = await Private.getFederated(plugin);
+      found = await Private.getFederated(pluginId);
     }
 
     return found;
@@ -45,12 +45,12 @@ export class Settings {
   /**
    * Save settings for a given plugin id
    *
-   * @param plugin The id of the plugin
+   * @param pluginId The id of the plugin
    * @param raw The raw settings
    *
    */
-  async save(plugin: string, raw: string): Promise<void> {
-    await Private._storage.setItem(plugin, raw);
+  async save(pluginId: string, raw: string): Promise<void> {
+    await Private._storage.setItem(pluginId, raw);
   }
 }
 
@@ -90,40 +90,57 @@ namespace Private {
   /**
    * Get the settings for a federated extension
    *
-   * @param id The id of the federated extension
+   * @param pluginId The id of a plugin
    */
-  export async function getFederated(id: string): Promise<IPlugin | undefined> {
-    const [ext, plugin] = id.split(':');
-    let federated: string[];
-    try {
-      federated = JSON.parse(PageConfig.getOption('federated_extensions'));
-    } catch {
-      federated = [];
-    }
+  export async function getFederated(pluginId: string): Promise<IPlugin | undefined> {
+    const [packageName, schemaName] = pluginId.split(':');
 
-    if (!federated.indexOf(ext)) {
+    if (!isFederated(packageName)) {
       return;
     }
 
     const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
     const schemaUrl = URLExt.join(
       labExtensionsUrl,
-      ext,
+      packageName,
       'schemas',
-      ext,
-      `${plugin}.json`
+      packageName,
+      `${schemaName}.json`
     );
-    const packageUrl = URLExt.join(labExtensionsUrl, ext, 'package.json');
+    const packageUrl = URLExt.join(labExtensionsUrl, packageName, 'package.json');
     const schema = await (await fetch(schemaUrl)).json();
     const packageJson = await (await fetch(packageUrl)).json();
-    const raw = ((await _storage.getItem(id)) as string) ?? '{}';
+    const raw = ((await _storage.getItem(pluginId)) as string) ?? '{}';
     const settings = json5.parse(raw) || {};
     return {
-      id,
+      id: pluginId,
       raw,
       schema,
       settings,
       version: packageJson.version || '3.0.8'
     };
+  }
+
+  /**
+   * Test whether this package is configured in `federated_extensions` in this app
+   *
+   * @param packageName The npm name of a package
+   */
+  export function isFederated(packageName: string): boolean {
+    let federated: IFederatedExtension[];
+
+    try {
+      federated = JSON.parse(PageConfig.getOption('federated_extensions'));
+    } catch {
+      return false;
+    }
+
+    for (const { name } of federated) {
+      if (name === packageName) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
