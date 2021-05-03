@@ -2,7 +2,7 @@
 
 Deploying your JupyterLite requires:
 
-- an actual HTTP server (doesn't presently woth with `file://` URLs)
+- an actual HTTP server (doesn't presently work with `file://` URLs)
 
 ```{warning}
 Serving some of the [kernels](./kernels/index.md) requires that your web server supports
