@@ -54,10 +54,10 @@ export class Settings {
   }
 }
 
+/**
+ * A namespace for private data
+ */
 namespace Private {
-  let _all: { settings: IPlugin[] };
-  const _federated = new Map<string, IPlugin | undefined>();
-
   export const _storage = localforage.createInstance({
     name: STORAGE_NAME,
     description: 'Offline Storage for Settings',
@@ -65,34 +65,34 @@ namespace Private {
     version: 1
   });
 
+  /**
+   * Get all the settings.
+   */
   export async function getAll(): Promise<{ settings: IPlugin[] }> {
-    if (_all == null) {
-      const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
-      const all = (await (
-        await fetch(URLExt.join(settingsUrl, 'all.json'))
-      ).json()) as IPlugin[];
-      const settings = await Promise.all(
-        all.map(async plugin => {
-          const { id } = plugin;
-          const raw = ((await _storage.getItem(id)) as string) ?? plugin.raw;
-          return {
-            ...plugin,
-            raw,
-            settings: json5.parse(raw)
-          };
-        })
-      );
-      _all = { settings };
-    }
-    return _all;
+    const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
+    const all = (await (
+      await fetch(URLExt.join(settingsUrl, 'all.json'))
+    ).json()) as IPlugin[];
+    const settings = await Promise.all(
+      all.map(async plugin => {
+        const { id } = plugin;
+        const raw = ((await _storage.getItem(id)) as string) ?? plugin.raw;
+        return {
+          ...plugin,
+          raw,
+          settings: json5.parse(raw)
+        };
+      })
+    );
+    return { settings };
   }
 
+  /**
+   * Get the settings for a federated extension
+   *
+   * @param id The id of the federated extension
+   */
   export async function getFederated(id: string): Promise<IPlugin | undefined> {
-    console.warn('federated', id);
-    if (_federated.has(id)) {
-      return _federated.get(id);
-    }
-
     const [ext, plugin] = id.split(':');
     let federated: string[];
     try {
@@ -101,26 +101,29 @@ namespace Private {
       federated = [];
     }
 
-    if (federated.indexOf(ext)) {
-      const url = URLExt.join(
-        PageConfig.getOption('fullLabextensionsUrl'),
-        ext,
-        'schemas',
-        ext,
-        `${plugin}.json`
-      );
-      const schema = await (await fetch(url)).json();
-      const raw = ((await _storage.getItem(id)) as string) ?? '{}';
-      _federated.set(id, {
-        id,
-        raw,
-        schema,
-        settings: json5.parse(raw) || {},
-        version: _all?.settings[0]?.version || '3.0.8'
-      });
-    } else {
-      _federated.set(id, void 0);
+    if (!federated.indexOf(ext)) {
+      return;
     }
-    return _federated.get(id);
+
+    const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
+    const schemaUrl = URLExt.join(
+      labExtensionsUrl,
+      ext,
+      'schemas',
+      ext,
+      `${plugin}.json`
+    );
+    const packageUrl = URLExt.join(labExtensionsUrl, ext, 'package.json');
+    const schema = await (await fetch(schemaUrl)).json();
+    const packageJson = await (await fetch(packageUrl)).json();
+    const raw = ((await _storage.getItem(id)) as string) ?? '{}';
+    const settings = json5.parse(raw) || {};
+    return {
+      id,
+      raw,
+      schema,
+      settings,
+      version: packageJson.version || '3.0.8'
+    };
   }
 }
