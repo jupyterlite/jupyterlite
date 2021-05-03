@@ -41,7 +41,7 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 ## Development install
 
 See the
-[contributing guide](https://github.com/jtpio/jupyterlead/blob/main/CONTRIBUTING.md) for
+[contributing guide](https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md) for
 a development installation.
 
 ## Related
