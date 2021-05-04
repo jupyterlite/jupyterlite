@@ -89,6 +89,7 @@
     "extensions": [
       "@jupyterlite/application-extension",
       "@jupyterlite/theme-extension",
+      "@jupyterlite/iframe-extension",
       "@jupyterlab/application-extension",
       "@jupyterlab/apputils-extension",
       "@jupyterlab/celltags-extension",
@@ -102,6 +103,7 @@
       "@jupyterlab/help-extension",
       "@jupyterlab/imageviewer-extension",
       "@jupyterlab/inspector-extension",
+      "@jupyterlab/json-extension",
       "@jupyterlab/launcher-extension",
       "@jupyterlab/mainmenu-extension",
       "@jupyterlab/markdownviewer-extension",
@@ -117,10 +119,6 @@
       "@jupyterlab/toc-extension",
       "@jupyterlab/tooltip-extension",
       "@jupyterlab/ui-components-extension"
-    ],
-    "mimeExtensions": [
-      "@jupyterlite/iframe-extension",
-      "@jupyterlab/json-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",

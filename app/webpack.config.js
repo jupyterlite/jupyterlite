@@ -184,7 +184,7 @@ const template = Handlebars.compile(
 );
 fs.writeFileSync(
   path.join(buildDir, 'index.js'),
-  template({ extensions, mimeExtensions: [] })
+  template({ extensions, mimeExtensions })
 );
 
 // Create the bootstrap file that loads federated extensions and calls the
