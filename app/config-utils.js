@@ -208,4 +208,4 @@ async function main() {
 /**
  * TODO: consider better pattern for invocation.
  */
-await main();
+void main();

@@ -28,8 +28,8 @@ export class Settings {
       return setting.id === pluginId;
     });
 
-    if (found == null) {
-      found = await Private.getFederated(pluginId);
+    if (!found) {
+      found = await this._getFederated(pluginId);
     }
 
     return found;
@@ -39,36 +39,6 @@ export class Settings {
    * Get all the settings
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
-    return Private.getAll();
-  }
-
-  /**
-   * Save settings for a given plugin id
-   *
-   * @param pluginId The id of the plugin
-   * @param raw The raw settings
-   *
-   */
-  async save(pluginId: string, raw: string): Promise<void> {
-    await Private._storage.setItem(pluginId, raw);
-  }
-}
-
-/**
- * A namespace for private data
- */
-namespace Private {
-  export const _storage = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Settings',
-    storeName: 'settings',
-    version: 1
-  });
-
-  /**
-   * Get all the settings.
-   */
-  export async function getAll(): Promise<{ settings: IPlugin[] }> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
     const all = (await (
       await fetch(URLExt.join(settingsUrl, 'all.json'))
@@ -76,7 +46,7 @@ namespace Private {
     const settings = await Promise.all(
       all.map(async plugin => {
         const { id } = plugin;
-        const raw = ((await _storage.getItem(id)) as string) ?? plugin.raw;
+        const raw = ((await this._storage.getItem(id)) as string) ?? plugin.raw;
         return {
           ...plugin,
           raw,
@@ -88,14 +58,25 @@ namespace Private {
   }
 
   /**
+   * Save settings for a given plugin id
+   *
+   * @param pluginId The id of the plugin
+   * @param raw The raw settings
+   *
+   */
+  async save(pluginId: string, raw: string): Promise<void> {
+    await this._storage.setItem(pluginId, raw);
+  }
+
+  /**
    * Get the settings for a federated extension
    *
    * @param pluginId The id of a plugin
    */
-  export async function getFederated(pluginId: string): Promise<IPlugin | undefined> {
+  private async _getFederated(pluginId: string): Promise<IPlugin | undefined> {
     const [packageName, schemaName] = pluginId.split(':');
 
-    if (!isFederated(packageName)) {
+    if (!Private.isFederated(packageName)) {
       return;
     }
 
@@ -110,7 +91,7 @@ namespace Private {
     const packageUrl = URLExt.join(labExtensionsUrl, packageName, 'package.json');
     const schema = await (await fetch(schemaUrl)).json();
     const packageJson = await (await fetch(packageUrl)).json();
-    const raw = ((await _storage.getItem(pluginId)) as string) ?? '{}';
+    const raw = ((await this._storage.getItem(pluginId)) as string) ?? '{}';
     const settings = json5.parse(raw) || {};
     return {
       id: pluginId,
@@ -121,6 +102,18 @@ namespace Private {
     };
   }
 
+  private _storage = localforage.createInstance({
+    name: STORAGE_NAME,
+    description: 'Offline Storage for Settings',
+    storeName: 'settings',
+    version: 1
+  });
+}
+
+/**
+ * A namespace for private data
+ */
+namespace Private {
   /**
    * Test whether this package is configured in `federated_extensions` in this app
    *
