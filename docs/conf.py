@@ -82,7 +82,9 @@ html_context = {
 
 
 if RTD:
-    subprocess.check_call(["doit", "build", "docs:typedoc:mystify"], cwd=str(ROOT))
+    subprocess.check_call(
+        ["doit", "build", "docs:extensions", "docs:typedoc:mystify"], cwd=str(ROOT)
+    )
 
 
 def clean_schema(app: Sphinx, error):
@@ -94,7 +96,6 @@ def clean_schema(app: Sphinx, error):
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
 
-    # decide which labextensions to install
     # if RTD:
     #     subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
 

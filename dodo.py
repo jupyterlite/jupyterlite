@@ -183,13 +183,12 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO],
     )
 
-    if shutil.which("jupyter-lab"):
-        yield dict(
-            name="extensions",
-            doc="add extensions from share/jupyter/labextensions to docs",
-            actions=[(U.extend_docs, [])],
-            file_dep=[B.DOCS_BUILDINFO],
-        )
+    yield dict(
+        name="extensions",
+        doc="add extensions from share/jupyter/labextensions to docs",
+        actions=[U.extend_docs],
+        file_dep=[B.DOCS_BUILDINFO],
+    )
 
 
 def task_schema():
