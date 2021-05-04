@@ -45,7 +45,7 @@ module.exports = {
       { avoidEscape: true, allowTemplateLiterals: false }
     ],
     curly: ['error', 'all'],
-    eqeqeq: 'error',
+    eqeqeq: ['error'],
     'prefer-arrow-callback': 'error'
   },
   settings: {

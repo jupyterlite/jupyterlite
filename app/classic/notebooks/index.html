@@ -4,40 +4,29 @@
     <title>JupyterLite Classic - Notebook</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script id="jupyter-config-data" type="application/json"></script>
-  </head>
-  <body>
+    <link
+      id="jupyter-lite-main"
+      rel="preload"
+      href="../build/bundle.js"
+      main="index"
+      as="script"
+    />
+    <script
+      id="jupyter-config-data"
+      type="application/json"
+      data-jupyter-lite-root="../.."
+    >
+      {}
+    </script>
     <script>
-      (function() {
-        var pageInfo = document.getElementById('jupyter-config-data');
-        var base = window.location.pathname.replace(
-          /\/classic\/notebooks(\/|\/index.html)?$/,
-          '/'
-        );
-        pageInfo.textContent = JSON.stringify(
-          {
-            classicPage: 'notebooks',
-            baseUrl: base,
-            fullStaticUrl: base + 'classic/build',
-            fullMathjaxUrl:
-              'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js',
-            mathjaxConfig: 'TeX-AMS_CHTML-full,Safe',
-            settingsUrl: base + 'classic/build/schemas',
-            themesUrl: base + 'classic/build/themes'
-          },
-          null,
-          2
-        );
-        const bundle = document.createElement('script');
-        bundle.src = base + 'classic/build/bundle.js';
-        bundle.main = 'index';
-        document.body.appendChild(bundle);
-        const favicon = document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.type = 'image/x-icon';
-        favicon.href = base + 'classic/notebooks/favicon.ico';
-        document.head.appendChild(favicon);
+      (async function() {
+        const { pathname, origin, search, hash } = window.location;
+        if (pathname.match(/(index.html|\/)$/) == null) {
+          window.location.href = `${origin}${pathname}/${search}${hash}`;
+          return;
+        }
+        await import('../../config-utils.js');
       })();
     </script>
-  </body>
+  </head>
 </html>

@@ -2,7 +2,10 @@ import json
 import os
 import re
 import shutil
+import pprint
 from pathlib import Path
+import jsonschema
+import sys
 
 import doit
 from collections import defaultdict
@@ -117,7 +120,12 @@ def task_build():
         yield dict(
             name=f"js:app:{app.name}",
             doc=f"build JupyterLite {app.name.title()} with webpack",
-            file_dep=[*wheels, *app_deps, app_json, app / "index.js"],
+            file_dep=[
+                *app_deps,
+                *wheels,
+                app / "index.template.js",
+                app_json,
+            ],
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
@@ -128,10 +136,12 @@ def task_build():
         name="js:pack",
         doc="build the JupyterLite distribution",
         file_dep=[
-            P.APP_NPM_IGNORE,
-            B.META_BUILDINFO,
-            *P.APP.glob("*/build/bundle.js"),
             *all_app_wheels,
+            *P.APP.glob("*/*/index.html"),
+            *P.APP.glob("*/build/bundle.js"),
+            B.META_BUILDINFO,
+            P.APP / "index.html",
+            P.APP_NPM_IGNORE,
         ],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
@@ -173,6 +183,28 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO],
     )
 
+    if shutil.which("jupyter-lab"):
+        yield dict(
+            name="extensions",
+            doc="add extensions from share/jupyter/labextensions to docs",
+            actions=[(U.extend_docs, [])],
+            file_dep=[B.DOCS_BUILDINFO],
+        )
+
+
+def task_schema():
+    """validate the schema and instance documents"""
+    yield dict(
+        name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
+    )
+
+    for config in D.APP_CONFIGS:
+        yield dict(
+            name=f"validate:{config.relative_to(P.ROOT)}",
+            file_dep=[P.APP_SCHEMA, config],
+            actions=[(U.validate, (P.APP_SCHEMA, config))],
+        )
+
 
 @doit.create_after("docs")
 def task_check():
@@ -208,7 +240,7 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS)],
+            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS, "-a", "-j8")],
         )
 
 
@@ -231,6 +263,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
+    LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
 
 
 class P:
@@ -246,6 +279,8 @@ class P:
 
     APP = ROOT / "app"
     APP_PACKAGE_JSON = APP / "package.json"
+    APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
+    APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
@@ -280,6 +315,17 @@ class D:
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
     }
 
+    APP_CONFIGS = [
+        p
+        for fname in C.LITE_CONFIG_FILES
+        for p in [
+            *P.APP.glob(fname),
+            *P.APP.glob(f"*/{fname}"),
+            *P.APP.glob(f"*/*/{fname}"),
+        ]
+        if p.exists()
+    ]
+
 
 P.PYOLITE_PACKAGES = [
     P.PACKAGES / pkg / pyp
@@ -297,8 +343,8 @@ class L:
     ALL_JSON = set(
         [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
     )
-    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.js")]
-    ALL_HTML = [(P.APP / "index.html"), *P.APP.glob("*/index.html")]
+    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.template.js")]
+    ALL_HTML = [*P.APP_HTMLS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
     ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT, *ALL_JS, *ALL_HTML]
@@ -321,6 +367,8 @@ class B:
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
     DOCS = P.DOCS / "_build"
     DOCS_BUILDINFO = DOCS / ".buildinfo"
+    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
+    DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -488,6 +536,50 @@ class U:
             **C.ENC,
         )
 
+    @staticmethod
+    def validate(schema_path, instance_path=None):
+        schema = json.loads(schema_path.read_text(**C.ENC))
+        validator = jsonschema.Draft7Validator(schema)
+        if instance_path is None:
+            # probably just validating itself, carry on
+            return
+        instance = json.loads(instance_path.read_text(**C.ENC))
+        if instance_path.name.endswith(".ipynb"):
+            instance = instance["metadata"]["jupyterlite"]
+        errors = [*validator.iter_errors(instance)]
+        for error in errors:
+            print(
+                f"""{instance_path.relative_to(P.ROOT)}#/{"/".join(error.relative_path)}"""
+            )
+            print("\t!!!", error.message)
+            print("\ton:", str(error.instance)[:64])
+        return not errors
+
+    @staticmethod
+    def extend_docs():
+        if B.DOCS_LAB_EXTENSIONS.exists():
+            shutil.rmtree(B.DOCS_LAB_EXTENSIONS)
+        shutil.copytree(
+            Path(sys.prefix) / "share/jupyter/labextensions", B.DOCS_LAB_EXTENSIONS
+        )
+        config = json.loads(B.DOCS_JUPYTERLITE_JSON.read_text(**C.ENC))
+
+        extensions = []
+        all_package_json = [
+            *B.DOCS_LAB_EXTENSIONS.glob("*/package.json"),
+            *B.DOCS_LAB_EXTENSIONS.glob("@*/*/package.json"),
+        ]
+
+        for pkg_json in all_package_json:
+            pkg_data = json.loads(pkg_json.read_text(**C.ENC))
+            extensions += [
+                dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
+            ]
+
+        config["jupyter-config-data"]["federated_extensions"] = extensions
+
+        B.DOCS_JUPYTERLITE_JSON.write_text(json.dumps(config, indent=2, sort_keys=True))
+
 
 # environment overloads
 os.environ.update(
@@ -501,5 +593,5 @@ DOIT_CONFIG = {
     "backend": "sqlite3",
     "verbosity": 2,
     "par_type": "thread",
-    "default_tasks": ["lint", "build"],
+    "default_tasks": ["lint", "schema", "build"],
 }

@@ -67,6 +67,9 @@ jobs:
       - name: Lint
         run: |
           doit lint
+      - name: Schema
+        run: |
+          doit schema
       - name: Test
         run: |
           doit test

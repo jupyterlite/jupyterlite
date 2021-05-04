@@ -15,6 +15,7 @@ coverage
 *.map.js
 *.bundle.js
 docs/_build
+app/lab/extensions/
 
 # jetbrains IDE stuff
 .idea/
@@ -22,3 +23,8 @@ docs/_build
 # ms IDE stuff
 .history/
 .vscode/
+
+# JS templating
+bootstrap.js
+index.template.js
+config-utils.js
