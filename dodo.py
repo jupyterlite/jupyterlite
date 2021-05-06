@@ -176,18 +176,25 @@ def task_docs():
     )
 
     yield dict(
-        name="sphinx",
-        doc="build the documentation site with sphinx",
-        file_dep=[B.DOCS_TS_MYST_INDEX, *P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO],
+        name="extensions",
+        doc="cache extensions from share/jupyter/labextensions",
+        actions=[U.extend_docs],
+        file_dep=[P.APP_JUPYTERLITE_JSON],
+        targets=[B.PATCHED_JUPYTERLITE_JSON],
     )
 
     yield dict(
-        name="extensions",
-        doc="add extensions from share/jupyter/labextensions to the built docs",
-        actions=[U.extend_docs],
-        file_dep=[] if C.RTD else [B.DOCS_BUILDINFO],
+        name="sphinx",
+        doc="build the documentation site with sphinx",
+        file_dep=[
+            B.DOCS_TS_MYST_INDEX,
+            *P.DOCS_MD,
+            *P.DOCS_PY,
+            B.APP_PACK,
+            B.PATCHED_JUPYTERLITE_JSON,
+        ],
+        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
+        targets=[B.DOCS_BUILDINFO],
     )
 
 
@@ -279,6 +286,7 @@ class P:
     PYOLITE_PACKAGES = []
 
     APP = ROOT / "app"
+    APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
@@ -388,8 +396,12 @@ class B:
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
-    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
     DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
+    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
+
+    PATCHED_STATIC = BUILD / "env-extensions"
+    CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
+    PATCHED_JUPYTERLITE_JSON = PATCHED_STATIC / "jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -578,33 +590,35 @@ class U:
 
     @staticmethod
     def extend_docs():
-        if B.DOCS_LAB_EXTENSIONS.exists():
-            print(f"... Cleaning {B.DOCS_LAB_EXTENSIONS}...")
-            shutil.rmtree(B.DOCS_LAB_EXTENSIONS)
+        """before sphinx ensure a build directory of the lab extensions and patched JSON"""
+        if B.CACHED_LAB_EXTENSIONS.exists():
+            print(f"... Cleaning {B.CACHED_LAB_EXTENSIONS}...")
+            shutil.rmtree(B.CACHED_LAB_EXTENSIONS)
 
-        print(f"... Copying {P.ENV_EXTENSIONS} to {B.DOCS_LAB_EXTENSIONS}...")
-        shutil.copytree(P.ENV_EXTENSIONS, B.DOCS_LAB_EXTENSIONS)
-
-        print(f"... Patching {B.DOCS_JUPYTERLITE_JSON}...")
-        config = json.loads(B.DOCS_JUPYTERLITE_JSON.read_text(**C.ENC))
+        print(f"... Copying {P.ENV_EXTENSIONS} to {B.CACHED_LAB_EXTENSIONS}...")
+        shutil.copytree(P.ENV_EXTENSIONS, B.CACHED_LAB_EXTENSIONS)
 
         extensions = []
         all_package_json = [
-            *B.DOCS_LAB_EXTENSIONS.glob("*/package.json"),
-            *B.DOCS_LAB_EXTENSIONS.glob("@*/*/package.json"),
+            *B.CACHED_LAB_EXTENSIONS.glob("*/package.json"),
+            *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
         ]
 
         for pkg_json in all_package_json:
-            print(f"... adding {pkg_json.relative_to(B.DOCS_LAB_EXTENSIONS)}...")
+            print(f"... adding {pkg_json.relative_to(B.CACHED_LAB_EXTENSIONS)}...")
             pkg_data = json.loads(pkg_json.read_text(**C.ENC))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
 
+        print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
+        config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
         config["jupyter-config-data"]["federated_extensions"] = extensions
 
-        print(f"... writing")
-        B.DOCS_JUPYTERLITE_JSON.write_text(json.dumps(config, indent=2, sort_keys=True))
+        print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
+        B.PATCHED_JUPYTERLITE_JSON.write_text(
+            json.dumps(config, indent=2, sort_keys=True)
+        )
 
 
 # environment overloads

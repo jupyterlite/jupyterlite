@@ -46,7 +46,15 @@ rediraffe_redirects = {
 # files
 templates_path = ["_templates"]
 html_favicon = "../app/lab/favicon.ico"
-html_static_path = ["_static", "../app"]
+# rely on the order of these to patch json, labextensions correctly
+html_static_path = [
+    # docs stuff
+    "_static",
+    # the as-built application
+    "../app",
+    # extensions and patched jupyter-lite.json
+    "../build/env-extensions",
+]
 exclude_patterns = [
     ".ipynb_checkpoints",
     "**/.ipynb_checkpoints",
@@ -97,22 +105,12 @@ def before_rtd_build(app: Sphinx, error):
     """this performs the full frontend build, and ensures the typedoc"""
     print("jupyterlite: Ensuring built application...", flush=True)
     subprocess.check_call(
-        ["doit", "-n4", "build", "docs:typedoc:mystify"], cwd=str(ROOT)
+        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:extensions"],
+        cwd=str(ROOT),
     )
-
-
-def after_rtd_build(app: Sphinx, error):
-    """copy the local labextensions and patch `_build/_static/jupyter-lite.json`"""
-    print(
-        "jupyterlite: Copying installed labextensions from environment...", flush=True
-    )
-    env = dict(**os.environ)
-    env["JLITE_DOCS_OUT"] = str(app.builder.outdir)
-    subprocess.check_call(["doit", "-s", "docs:extensions"], cwd=str(ROOT))
 
 
 def setup(app):
     app.connect("build-finished", clean_schema)
     if RTD:
         app.connect("config-inited", before_rtd_build)
-        app.connect("build-finished", after_rtd_build)
