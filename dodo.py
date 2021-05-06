@@ -333,25 +333,45 @@ P.PYOLITE_PACKAGES = [
 ]
 
 
+def _clean_paths(*paths_or_globs):
+    final_paths = []
+    for pg in paths_or_globs:
+        if isinstance(pg, Path):
+            paths = [pg]
+        else:
+            paths = sorted(pg)
+        for path in paths:
+            if "node_modules" in str(path) or ".ipynb_checkpoints" in str(path):
+                continue
+            final_paths += [path]
+    return sorted(set(final_paths))
+
+
 class L:
     # linting
-    ALL_ESLINT = [
-        *P.PACKAGES.rglob("*/src/**/*.js"),
-        *P.PACKAGES.rglob("*/src/**/*.ts"),
-    ]
-    ALL_JSON = set(
-        [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
+    ALL_ESLINT = _clean_paths(
+        P.PACKAGES.rglob("*/src/**/*.js"),
+        P.PACKAGES.rglob("*/src/**/*.ts"),
     )
-    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.template.js")]
+    ALL_JSON = _clean_paths(
+        P.PACKAGE_JSONS, P.APP_JSONS, P.ROOT_PACKAGE_JSON, P.ROOT.glob("*.json")
+    )
+    ALL_JS = _clean_paths(
+        (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
+    )
     ALL_HTML = [*P.APP_HTMLS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
-    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT, *ALL_JS, *ALL_HTML]
-    ALL_BLACK = [
+    ALL_YAML = _clean_paths(
+        P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml")
+    )
+    ALL_PRETTIER = _clean_paths(
+        ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS, ALL_HTML
+    )
+    ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
         P.DODO,
         *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], []),
-    ]
+    )
 
 
 class B:
