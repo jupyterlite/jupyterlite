@@ -590,10 +590,12 @@ class U:
 
     @staticmethod
     def extend_docs():
-        """before sphinx ensure a build directory of the lab extensions and patched JSON"""
-        if B.CACHED_LAB_EXTENSIONS.exists():
-            print(f"... Cleaning {B.CACHED_LAB_EXTENSIONS}...")
-            shutil.rmtree(B.CACHED_LAB_EXTENSIONS)
+        """before sphinx ensure a build directory of the lab extensions/themes and patch JSON"""
+        if B.PATCHED_STATIC.exists():
+            print(f"... Cleaning {B.PATCHED_STATIC}...")
+            shutil.rmtree(B.PATCHED_STATIC)
+
+        B.PATCHED_STATIC.mkdir(parents=True)
 
         print(f"... Copying {P.ENV_EXTENSIONS} to {B.CACHED_LAB_EXTENSIONS}...")
         shutil.copytree(P.ENV_EXTENSIONS, B.CACHED_LAB_EXTENSIONS)
@@ -603,13 +605,22 @@ class U:
             *B.CACHED_LAB_EXTENSIONS.glob("*/package.json"),
             *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
         ]
+        # we might find themes
+        themes = B.PATCHED_STATIC / "lab/build/themes"
 
         for pkg_json in all_package_json:
-            print(f"... adding {pkg_json.relative_to(B.CACHED_LAB_EXTENSIONS)}...")
+            print(
+                f"... adding {pkg_json.parent.relative_to(B.CACHED_LAB_EXTENSIONS)}..."
+            )
             pkg_data = json.loads(pkg_json.read_text(**C.ENC))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
+            for theme in pkg_json.parent.glob("themes/*"):
+                if not themes.exists():
+                    themes.mkdir(parents=True)
+                print(f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}")
+                shutil.copytree(theme, themes / theme.name)
 
         print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
         config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
