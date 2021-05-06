@@ -3761,14 +3761,6 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@telamonian/theme-darcula@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@telamonian/theme-darcula/-/theme-darcula-3.0.0.tgz#2247ef26f2644dd8b7857f25999a5e8aae91fc34"
-  integrity sha512-zC7b+RJMDekdguetc9G1VpcgkNX1BCU0A72OuelsUryN2y/g5hhWW4QNBOkmgADkj9lnfnVDpkUtU67CUxjJCQ==
-  dependencies:
-    "@jupyterlab/application" "^2.0.0 || ^3.0.0-rc.13"
-    "@jupyterlab/apputils" "^2.0.0 || ^3.0.0"
-
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.14"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.14.tgz#faaeefc4185ec71c389f4501ee5ec84b170cc402"

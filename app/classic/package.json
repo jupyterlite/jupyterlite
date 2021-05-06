@@ -45,7 +45,6 @@
     "@jupyterlab/theme-dark-extension": "^3.0.0",
     "@jupyterlab/theme-light-extension": "^3.0.0",
     "@jupyterlab/tooltip-extension": "^3.0.0",
-    "@telamonian/theme-darcula": "^3.0.0",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
@@ -100,8 +99,7 @@
       "@jupyterlab/shortcuts-extension",
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
-      "@jupyterlab/tooltip-extension",
-      "@telamonian/theme-darcula"
+      "@jupyterlab/tooltip-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",
