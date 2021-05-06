@@ -187,7 +187,7 @@ def task_docs():
         name="extensions",
         doc="add extensions from share/jupyter/labextensions to the built docs",
         actions=[U.extend_docs],
-        file_dep=[B.DOCS_BUILDINFO],
+        file_dep=[] if C.RTD else [B.DOCS_BUILDINFO],
     )
 
 
