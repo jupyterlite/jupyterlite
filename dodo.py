@@ -179,7 +179,7 @@ def task_docs():
         name="sphinx",
         doc="build the documentation site with sphinx",
         file_dep=[B.DOCS_TS_MYST_INDEX, *P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-        actions=[U.do("sphinx-build", "-b", "html", P.DOCS, B.DOCS)],
+        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
     )
 
@@ -239,7 +239,7 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS, "-a", "-j8")],
+            actions=[U.do("sphinx-autobuild", "-a", "-j8", P.DOCS, B.DOCS)],
         )
 
 
@@ -272,6 +272,8 @@ class P:
     PACKAGE_JSONS = sorted(PACKAGES.glob("*/package.json"))
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
+
+    ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
     # set later
     PYOLITE_PACKAGES = []
@@ -384,7 +386,7 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
-    DOCS = P.DOCS / "_build"
+    DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
     DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
     DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
@@ -577,10 +579,13 @@ class U:
     @staticmethod
     def extend_docs():
         if B.DOCS_LAB_EXTENSIONS.exists():
+            print(f"... Cleaning {B.DOCS_LAB_EXTENSIONS}...")
             shutil.rmtree(B.DOCS_LAB_EXTENSIONS)
-        shutil.copytree(
-            Path(sys.prefix) / "share/jupyter/labextensions", B.DOCS_LAB_EXTENSIONS
-        )
+
+        print(f"... Copying {P.ENV_EXTENSIONS} to {B.DOCS_LAB_EXTENSIONS}...")
+        shutil.copytree(P.ENV_EXTENSIONS, B.DOCS_LAB_EXTENSIONS)
+
+        print(f"... Patching {B.DOCS_JUPYTERLITE_JSON}...")
         config = json.loads(B.DOCS_JUPYTERLITE_JSON.read_text(**C.ENC))
 
         extensions = []
@@ -590,6 +595,7 @@ class U:
         ]
 
         for pkg_json in all_package_json:
+            print(f"... adding {pkg_json.relative_to(B.DOCS_LAB_EXTENSIONS)}...")
             pkg_data = json.loads(pkg_json.read_text(**C.ENC))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
@@ -597,6 +603,7 @@ class U:
 
         config["jupyter-config-data"]["federated_extensions"] = extensions
 
+        print(f"... writing")
         B.DOCS_JUPYTERLITE_JSON.write_text(json.dumps(config, indent=2, sort_keys=True))
 
 

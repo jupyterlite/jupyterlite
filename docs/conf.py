@@ -83,8 +83,10 @@ html_context = {
 
 def clean_schema(app: Sphinx, error):
     """sphinx-jsonschema makes duplicate ids. clean them"""
-    print("jupyterlite: Cleaning generated ids in JSON schema html...")
-    for schema_html in Path(app.builder.outdir).glob("schema-v*.html"):
+    print("jupyterlite: Cleaning generated ids in JSON schema html...", flush=True)
+    outdir = Path(app.builder.outdir)
+    for schema_html in outdir.glob("schema-v*.html"):
+        print(f"... fixing: {schema_html.relative_to(outdir)}")
         text = schema_html.read_text(encoding="utf-8")
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
@@ -93,15 +95,19 @@ def clean_schema(app: Sphinx, error):
 
 def before_rtd_build(app: Sphinx, error):
     """this performs the full frontend build, and ensures the typedoc"""
-    print("jupyterlite: Ensuring built application...")
+    print("jupyterlite: Ensuring built application...", flush=True)
     subprocess.check_call(
         ["doit", "-n4", "build", "docs:typedoc:mystify"], cwd=str(ROOT)
     )
 
 
 def after_rtd_build(app: Sphinx, error):
-    """copy the local labextensions and patch `_build_static/jupyter-lite.json`"""
-    print("jupyterlite: Copying installed labextensions from environment...")
+    """copy the local labextensions and patch `_build/_static/jupyter-lite.json`"""
+    print(
+        "jupyterlite: Copying installed labextensions from environment...", flush=True
+    )
+    env = dict(**os.environ)
+    env["JLITE_DOCS_OUT"] = str(app.builder.outdir)
     subprocess.check_call(["doit", "-s", "docs:extensions"], cwd=str(ROOT))
 
 
