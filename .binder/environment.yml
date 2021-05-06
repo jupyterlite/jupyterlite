@@ -33,4 +33,7 @@ dependencies:
   - sphinx
   - sphinx-jsonschema
   - sphinxext-rediraffe
+  # list of federated extensions for the demo site
+  - jupyterlab-drawio
+  - theme-darcula
   ### DOCS ENV ###

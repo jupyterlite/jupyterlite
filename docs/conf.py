@@ -81,24 +81,32 @@ html_context = {
 }
 
 
-if RTD:
-    subprocess.check_call(
-        ["doit", "build", "docs:extensions", "docs:typedoc:mystify"], cwd=str(ROOT)
-    )
-
-
 def clean_schema(app: Sphinx, error):
-    if error:
-        return
+    """sphinx-jsonschema makes duplicate ids. clean them"""
+    print("jupyterlite: Cleaning generated ids in JSON schema html...")
     for schema_html in Path(app.builder.outdir).glob("schema-v*.html"):
         text = schema_html.read_text(encoding="utf-8")
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
 
-    # if RTD:
-    #     subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
+
+def before_rtd_build(app: Sphinx, error):
+    """this performs the full frontend build, and ensures the typedoc"""
+    print("jupyterlite: Ensuring built application...")
+    subprocess.check_call(
+        ["doit", "-n4", "build", "docs:typedoc:mystify"], cwd=str(ROOT)
+    )
+
+
+def after_rtd_build(app: Sphinx, error):
+    """copy the local labextensions and patch `_build_static/jupyter-lite.json`"""
+    print("jupyterlite: Copying installed labextensions from environment...")
+    subprocess.check_call(["doit", "-s", "docs:extensions"], cwd=str(ROOT))
 
 
 def setup(app):
     app.connect("build-finished", clean_schema)
+    if RTD:
+        app.connect("config-inited", before_rtd_build)
+        app.connect("build-finished", after_rtd_build)

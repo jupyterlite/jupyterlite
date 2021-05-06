@@ -185,7 +185,7 @@ def task_docs():
 
     yield dict(
         name="extensions",
-        doc="add extensions from share/jupyter/labextensions to docs",
+        doc="add extensions from share/jupyter/labextensions to the built docs",
         actions=[U.extend_docs],
         file_dep=[B.DOCS_BUILDINFO],
     )
