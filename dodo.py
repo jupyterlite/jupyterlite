@@ -6,6 +6,7 @@ import pprint
 from pathlib import Path
 import jsonschema
 import sys
+import textwrap
 
 import doit
 from collections import defaultdict
@@ -176,20 +177,26 @@ def task_docs():
     )
 
     yield dict(
-        name="sphinx",
-        doc="build the documentation site with sphinx",
-        file_dep=[B.DOCS_TS_MYST_INDEX, *P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-        actions=[U.do("sphinx-build", "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO],
+        name="extensions",
+        doc="cache extensions from share/jupyter/labextensions",
+        actions=[U.extend_docs],
+        file_dep=[P.APP_JUPYTERLITE_JSON],
+        targets=[B.PATCHED_JUPYTERLITE_JSON],
     )
 
-    if shutil.which("jupyter-lab"):
-        yield dict(
-            name="extensions",
-            doc="add extensions from share/jupyter/labextensions to docs",
-            actions=[(U.extend_docs, [])],
-            file_dep=[B.DOCS_BUILDINFO],
-        )
+    yield dict(
+        name="sphinx",
+        doc="build the documentation site with sphinx",
+        file_dep=[
+            B.DOCS_TS_MYST_INDEX,
+            *P.DOCS_MD,
+            *P.DOCS_PY,
+            B.APP_PACK,
+            B.PATCHED_JUPYTERLITE_JSON,
+        ],
+        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
+        targets=[B.DOCS_BUILDINFO],
+    )
 
 
 def task_schema():
@@ -217,6 +224,8 @@ def task_check():
             U.do(
                 "pytest-check-links",
                 B.DOCS,
+                "-p",
+                "no:warnings",
                 "--check-anchors",
                 "--check-links-ignore",
                 "^https?://",
@@ -240,7 +249,7 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", P.DOCS, B.DOCS, "-a", "-j8")],
+            actions=[U.do("sphinx-autobuild", "-a", "-j8", P.DOCS, B.DOCS)],
         )
 
 
@@ -274,10 +283,13 @@ class P:
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
+    ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
+
     # set later
     PYOLITE_PACKAGES = []
 
     APP = ROOT / "app"
+    APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
@@ -334,25 +346,45 @@ P.PYOLITE_PACKAGES = [
 ]
 
 
+def _clean_paths(*paths_or_globs):
+    final_paths = []
+    for pg in paths_or_globs:
+        if isinstance(pg, Path):
+            paths = [pg]
+        else:
+            paths = sorted(pg)
+        for path in paths:
+            if "node_modules" in str(path) or ".ipynb_checkpoints" in str(path):
+                continue
+            final_paths += [path]
+    return sorted(set(final_paths))
+
+
 class L:
     # linting
-    ALL_ESLINT = [
-        *P.PACKAGES.rglob("*/src/**/*.js"),
-        *P.PACKAGES.rglob("*/src/**/*.ts"),
-    ]
-    ALL_JSON = set(
-        [*P.PACKAGE_JSONS, *P.APP_JSONS, P.ROOT_PACKAGE_JSON, *P.ROOT.glob("*.json")]
+    ALL_ESLINT = _clean_paths(
+        P.PACKAGES.rglob("*/src/**/*.js"),
+        P.PACKAGES.rglob("*/src/**/*.ts"),
     )
-    ALL_JS = [*(P.ROOT / "scripts").glob("*.js"), *(P.APP).glob("*/index.template.js")]
+    ALL_JSON = _clean_paths(
+        P.PACKAGE_JSONS, P.APP_JSONS, P.ROOT_PACKAGE_JSON, P.ROOT.glob("*.json")
+    )
+    ALL_JS = _clean_paths(
+        (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
+    )
     ALL_HTML = [*P.APP_HTMLS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = [*P.ROOT.glob("*.yml"), *P.BINDER.glob("*.yml"), *P.CI.rglob("*.yml")]
-    ALL_PRETTIER = [*ALL_JSON, *ALL_MD, *ALL_YAML, *ALL_ESLINT, *ALL_JS, *ALL_HTML]
-    ALL_BLACK = [
+    ALL_YAML = _clean_paths(
+        P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml")
+    )
+    ALL_PRETTIER = _clean_paths(
+        ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS, ALL_HTML
+    )
+    ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
         P.DODO,
         *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], []),
-    ]
+    )
 
 
 class B:
@@ -365,10 +397,14 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
-    DOCS = P.DOCS / "_build"
+    DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
-    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
     DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
+    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
+
+    PATCHED_STATIC = BUILD / "env-extensions"
+    CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
+    PATCHED_JUPYTERLITE_JSON = PATCHED_STATIC / "jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -557,28 +593,53 @@ class U:
 
     @staticmethod
     def extend_docs():
-        if B.DOCS_LAB_EXTENSIONS.exists():
-            shutil.rmtree(B.DOCS_LAB_EXTENSIONS)
-        shutil.copytree(
-            Path(sys.prefix) / "share/jupyter/labextensions", B.DOCS_LAB_EXTENSIONS
-        )
-        config = json.loads(B.DOCS_JUPYTERLITE_JSON.read_text(**C.ENC))
+        """before sphinx ensure a build directory of the lab extensions/themes and patch JSON"""
+        if B.PATCHED_STATIC.exists():
+            print(f"... Cleaning {B.PATCHED_STATIC}...")
+            shutil.rmtree(B.PATCHED_STATIC)
+
+        B.PATCHED_STATIC.mkdir(parents=True)
+
+        print(f"... Copying {P.ENV_EXTENSIONS} to {B.CACHED_LAB_EXTENSIONS}...")
+        shutil.copytree(P.ENV_EXTENSIONS, B.CACHED_LAB_EXTENSIONS)
 
         extensions = []
         all_package_json = [
-            *B.DOCS_LAB_EXTENSIONS.glob("*/package.json"),
-            *B.DOCS_LAB_EXTENSIONS.glob("@*/*/package.json"),
+            *B.CACHED_LAB_EXTENSIONS.glob("*/package.json"),
+            *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
+        ]
+        # we might find themes
+        app_themes = [
+            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "classic"]
         ]
 
         for pkg_json in all_package_json:
+            print(
+                f"... adding {pkg_json.parent.relative_to(B.CACHED_LAB_EXTENSIONS)}..."
+            )
             pkg_data = json.loads(pkg_json.read_text(**C.ENC))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
+            for app_theme in app_themes:
+                for theme in pkg_json.parent.glob("themes/*"):
+                    print(
+                        f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}"
+                    )
 
+                    if not app_theme.exists():
+                        app_theme.mkdir(parents=True)
+                    print(f"... ... to {app_theme}")
+                    shutil.copytree(theme, app_theme / theme.name)
+
+        print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
+        config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
         config["jupyter-config-data"]["federated_extensions"] = extensions
 
-        B.DOCS_JUPYTERLITE_JSON.write_text(json.dumps(config, indent=2, sort_keys=True))
+        print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
+        B.PATCHED_JUPYTERLITE_JSON.write_text(
+            textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
+        )
 
 
 # environment overloads

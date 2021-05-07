@@ -46,7 +46,15 @@ rediraffe_redirects = {
 # files
 templates_path = ["_templates"]
 html_favicon = "../app/lab/favicon.ico"
-html_static_path = ["_static", "../app"]
+# rely on the order of these to patch json, labextensions correctly
+html_static_path = [
+    # docs stuff
+    "_static",
+    # the as-built application
+    "../app",
+    # extensions and patched jupyter-lite.json
+    "../build/env-extensions",
+]
 exclude_patterns = [
     ".ipynb_checkpoints",
     "**/.ipynb_checkpoints",
@@ -58,6 +66,7 @@ exclude_patterns = [
     "test/",
     "tsconfig.*",
     "webpack.config.*",
+    "jupyter_execute",
 ]
 html_css_files = [
     "theme.css",
@@ -81,23 +90,28 @@ html_context = {
 }
 
 
-if RTD:
-    subprocess.check_call(["doit", "build", "docs:typedoc:mystify"], cwd=str(ROOT))
-
-
 def clean_schema(app: Sphinx, error):
-    if error:
-        return
-    for schema_html in Path(app.builder.outdir).glob("schema-v*.html"):
+    """sphinx-jsonschema makes duplicate ids. clean them"""
+    print("jupyterlite: Cleaning generated ids in JSON schema html...", flush=True)
+    outdir = Path(app.builder.outdir)
+    for schema_html in outdir.glob("schema-v*.html"):
+        print(f"... fixing: {schema_html.relative_to(outdir)}")
         text = schema_html.read_text(encoding="utf-8")
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
 
-    # decide which labextensions to install
-    # if RTD:
-    #     subprocess.check_call(["doit", "docs:extensions"], cwd=str(ROOT))
+
+def before_rtd_build(app: Sphinx, error):
+    """this performs the full frontend build, and ensures the typedoc"""
+    print("jupyterlite: Ensuring built application...", flush=True)
+    subprocess.check_call(
+        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:extensions"],
+        cwd=str(ROOT),
+    )
 
 
 def setup(app):
     app.connect("build-finished", clean_schema)
+    if RTD:
+        app.connect("config-inited", before_rtd_build)

@@ -1314,7 +1314,7 @@
     "@lumino/widgets" "^1.16.1"
     react "^17.0.1"
 
-"@jupyterlab/application@^2.0.0 || ^3.0.0-rc.13", "@jupyterlab/application@^3.0.0", "@jupyterlab/application@^3.0.7", "@jupyterlab/application@^3.0.8":
+"@jupyterlab/application@^3.0.0", "@jupyterlab/application@^3.0.7", "@jupyterlab/application@^3.0.8":
   version "3.0.8"
   resolved "https://registry.yarnpkg.com/@jupyterlab/application/-/application-3.0.8.tgz#859f910c30c125cadf5486a45d1df0095472d30b"
   integrity sha512-zlJrMqaGPtT6O3dvrZ7G2JJg/eqUqVvoPacm0Hsqx7xtRnPez1CfOVgONPTsqKj7V+2ZK4f4K6B5eAZ9Zpeu8A==
@@ -1364,7 +1364,7 @@
     "@lumino/widgets" "^1.16.1"
     es6-promise "~4.2.8"
 
-"@jupyterlab/apputils@^2.0.0 || ^3.0.0", "@jupyterlab/apputils@^3.0.0", "@jupyterlab/apputils@^3.0.5", "@jupyterlab/apputils@^3.0.6":
+"@jupyterlab/apputils@^3.0.0", "@jupyterlab/apputils@^3.0.5", "@jupyterlab/apputils@^3.0.6":
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/@jupyterlab/apputils/-/apputils-3.0.6.tgz#6cca547d5e101a16372eec9deae0a67160576ab1"
   integrity sha512-VRzejzm59eeuaR1r6qz93r5BxLg72V9FJKeYRJ1gOcCBTsE35tulNFzL9vQf7PfiVm1EYOTuT1NKNys0nFLIEA==
@@ -3760,14 +3760,6 @@
   integrity sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
   dependencies:
     defer-to-connect "^1.0.1"
-
-"@telamonian/theme-darcula@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@telamonian/theme-darcula/-/theme-darcula-3.0.0.tgz#2247ef26f2644dd8b7857f25999a5e8aae91fc34"
-  integrity sha512-zC7b+RJMDekdguetc9G1VpcgkNX1BCU0A72OuelsUryN2y/g5hhWW4QNBOkmgADkj9lnfnVDpkUtU67CUxjJCQ==
-  dependencies:
-    "@jupyterlab/application" "^2.0.0 || ^3.0.0-rc.13"
-    "@jupyterlab/apputils" "^2.0.0 || ^3.0.0"
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.14"

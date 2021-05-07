@@ -10,29 +10,45 @@
 [docs]: https://jupyterlite.readthedocs.io/en/latest/?badge=latest
 
 JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built
-from the ground-up using JupyterLab components and plugins.
+from the ground-up using JupyterLab components and extensions.
 
 ## ✨ Try it in your browser ✨
 
 JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and
 [JupyterLab Classic](https://github.com/jtpio/jupyterlab-classic).
 
-### [Try it with JupyterLab!](https://jupyterlite.readthedocs.io/en/latest/try/lab)
+| [Try it with JupyterLab!] | [Try it with JupyterLab Classic!] |
+| :-----------------------: | :-------------------------------: |
+|     ![lab-screenshot]     |       ![classic-screenshot]       |
 
-![image](https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png)
-
-### [Try it with JupyterLab Classic!](https://jupyterlite.readthedocs.io/en/latest/try/classic)
-
-![image](https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png)
+[try it with jupyterlab!]: https://jupyterlite.readthedocs.io/en/latest/try/lab
+[lab-screenshot]:
+  https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png
+[try it with jupyterlab classic!]:
+  https://jupyterlite.readthedocs.io/en/latest/try/classic
+[classic-screenshot]:
+  https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png
 
 ## Features
 
+> For more details, see the [JupyterLite documentation](https://jupyterlite.rtfd.io).
+
+### Browser-based Interactive Computing
+
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-- JavaScript kernel running in an IFrame
-- Offline Notebook storage in the browser
-- Support for saving settings
+- JavaScript kernel running in an `IFrame`
+- Offline Notebook storage in browser `localStorage` or `IndexDB`
+- Support for saving settings for JupyterLab/Lite core and federated extensions
 - Basic session and kernel management to have multiple kernels running at the same time
-- Support for code consoles
+- Support for
+  [Code Consoles](https://jupyterlab.readthedocs.io/en/stable/user/code_console.html)
+
+### Ease of Deployment
+
+- Served via well-cacheable, static HTTP(S), works on most static web hosts, and locally
+- Embeddable within larger applications
+- Requires no dedicated _application server_ much less a container orchestrator
+- Fine-grained configurability of page settings, including reuse of federated extensions
 
 ## Status
 
