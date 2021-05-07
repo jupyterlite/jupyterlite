@@ -130,4 +130,5 @@ app/lab/extensions
 
 # generated
 docs/api/ts
+docs/jupyter_execute
 .vercel

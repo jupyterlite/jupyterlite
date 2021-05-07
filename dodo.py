@@ -6,6 +6,7 @@ import pprint
 from pathlib import Path
 import jsonschema
 import sys
+import textwrap
 
 import doit
 from collections import defaultdict
@@ -635,7 +636,7 @@ class U:
 
         print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
         B.PATCHED_JUPYTERLITE_JSON.write_text(
-            json.dumps(config, indent=2, sort_keys=True)
+            textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
         )
 
 

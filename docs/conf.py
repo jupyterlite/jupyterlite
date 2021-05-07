@@ -66,6 +66,7 @@ exclude_patterns = [
     "test/",
     "tsconfig.*",
     "webpack.config.*",
+    "jupyter_execute",
 ]
 html_css_files = [
     "theme.css",
