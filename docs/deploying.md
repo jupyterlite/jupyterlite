@@ -16,13 +16,81 @@ You can get an empty JupyterLite by:
 - _TBD: downloading a release archive from [GitHub Releases][releases]_
 - _TBD: using `cookiecutter-jupyterlite`_
 - _TBD: installing `jupyterlite` from [PyPI]_
-- _TBD: installing `@jupyterlite/builder` from [npmjs.com]_
+- _TBD: installing `@jupyterlite/builder` from `npmjs.com`_
+- downloading nightly/work-in-progress builds from [GitHub actions]
 - cloning/forking the repository and doing a [development build](../contributing.md)
+
+[github actions]: https://github.com/jtpio/jupyterlite/actions
+[releases]: https://github.com/jtpio/jupyterlite/releases
+[pypi]: https://pypi.org/project/jupyterlite/
 
 ```{hint}
 It is recommended to put these files under revision control. See [Configuring](./configuring.md)
 for what you can configure in your JupyterLite.
 ```
+
+## Build Tools
+
+### WebPack
+
+> TBD
+
+### sphinx
+
+[Sphinx] is the workhorse of documentation of not only the scientific Python
+documentation community, but also the broader Python ecosystem, and many languages
+beyond it. It is well adapted to building sites of any size, and tools like [myst-nb]
+enable make it very palletable to include executable, and even interactive, content.
+
+JupyterLite assets can be copied to the default static directory in `conf.py`, e.g.
+`docs/_static` with [`html_static_path`](#html_static_path), or replace the entire site
+with [`html_extra_path`](#html_extra_path)
+
+### `html_static_path`
+
+This searach path can be merge several layers deep, such that your theme assets, the
+"gold master" JupyterLite assets, and any customizations you wish to make are combined.
+
+```python
+html_static_path = [
+    "_static",
+    "../upstream-jupyterlite",
+    "../my-jupyterlite"        # <- these "win"
+]
+```
+
+The composite directory will end up in `docs/_build/_static`.
+
+```{hint}
+See the JupyterLite [conf.py] for an example approach, though it likely a good
+deal more complicated than you will need, because it needs to build _itself_ first!
+This complexity is managed in [dodo.py]
+```
+
+### `html_extra_path`
+
+A slightly more aggressive approach is to use [`html_extra_path`][html_extra_path] to
+simply _dump_ the assets directly into the doc folder. This approach can be used to
+deploy a site that launches _directly_ into your JupyterLite.
+
+Adapting the example above:
+
+```python
+html_extra_path = ["../upstream-jupyterlite", "../my-jupyterlite"]
+```
+
+Again, the last-written `index.html` will "win" and be shown to vistors to `/`, which
+will immediately redirect to `appUrl` as defined in the [schema].
+
+[html_static_path]:
+  https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_static_path
+[html_extra_path]:
+  https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_extra_path
+[sphinx]: https://www.sphinx-doc.org
+[myst-nb]: https://github.com/executablebooks/MyST-NB
+[conf.py]: https://github.com/jtpio/jupyterlite/blob/main/docs/conf.py
+[dodo.py]: https://github.com/jtpio/jupyterlite/blob/main/dodo.py
+[schema]: ./schema-v0.rst
 
 ## Standalone Servers
 
@@ -47,21 +115,31 @@ local purposes.
 python -m http.server -b 127.0.0.1
 ```
 
+If you are using a recently-released Python 3.7+, this will correctly server
+`application/wasm` files for pyodide.
+
 ##### sphinx-autobuild
 
-The [sphinx-autobuild](https://github.com/executablebooks/sphinx-autobuild) provides a
-convenient way to manage both static content and rich interactive HTML like JupyterLite.
+If using [Sphinx](#sphinx), [sphinx-autobuild][] provides a convenient way to manage
+both static content and rich interactive HTML like your JupyterLite.
 
 ```bash
 sphinx-autobuild docs docs/_build
 ```
 
 This will regenerate your docs site and automatically refresh any browsers you have
-open.
+open. As your JupyterLite is mostly comprised of static assets, changes will _not_
+trigger a refresh by default.
 
-```{hint}
-See the [ReadTheDocs](#readthedocs) section for configuration options
+Enabling the `-a` flag _will_ allow reloading when static assets change, but at the
+price rebuild the _whole_ site when _any_ file changes... this can be improved with the
+`-j<N>` flag, but is not compatible with all sphinx extensions.
+
+```bash
+sphinx-autobuild docs docs/_build -aj8
 ```
+
+[sphinx-autobuild]: https://github.com/executablebooks/sphinx-autobuild
 
 #### NodeJS
 
@@ -86,17 +164,28 @@ however, that `http-server` does not support the `application/wasm` MIME type.
 
 ### Binder
 
-A JupyterLite can be deployed behind `jupyter-server-proxy` using a [local](#local)
-method. This is a good way to test deployment interactively.
+A JupyterLite can be deployed behind `jupyter-server-proxy` using any
+[local server](#local) method. This is a good way to preview deployment interactively of
+a e.g. Lab extension that can work in both the "full" binder experience, and as a static
+preview.
+
+```{hint}
+See the JupyterLite [binder configuration] for an example.
+```
+
+[binder configuration]: https://github.com/jtpio/jupyterlite/tree/main/.binder
 
 ### ReadTheDocs
 
-In a sphinx-based build, include the JupyterLite assets in `_static`, or configure with
-`html_static_path`.
+The [Sphinx](#sphinx) deployment approach will work almost transparently with
+[ReadTheDocs](https://readthedocs.org), for the small price of a `.readthedocs.yml` file
+in the root of your repository.
 
-```python
-html_static_path = ["_static", "../my-jupyterlite"]
+```{hint}
+See the JuptyerLite [.readthedocs.yml] for an example.
 ```
+
+[.readthedocs.yml]: https://github.com/jtpio/jupyterlite/blob/main/.readthedocs.yml
 
 ### Vercel
 
