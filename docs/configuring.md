@@ -94,7 +94,7 @@ determined by looking in `package.json` for the extension, specifically
 
 #### Handle theme assets
 
-The Theme Manager expect to be able to load theme CSS/font assets from
+The Theme Manager expects to be able to load theme CSS/font assets from
 `{:app}/build/themes/({:org}/){:package}`, where `app` is usually `lab`.
 
 Continuing the example above:
@@ -146,7 +146,7 @@ federated extensions will only be avaialable for pages within that file tree.
 ## About the Demo
 
 This documentation site contains the JupyterLite Demo (the **Try** buttons on the top of
-the screen) and use a number of techiniques described on this page.
+the screen) and use a number of techniques described on this page.
 
 ### Demo Configuration
 

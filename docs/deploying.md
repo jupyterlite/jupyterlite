@@ -48,7 +48,7 @@ with [`html_extra_path`](#html_extra_path)
 
 ### `html_static_path`
 
-This searach path can be merge several layers deep, such that your theme assets, the
+This search path can be merged several layers deep, such that your theme assets, the
 "gold master" JupyterLite assets, and any customizations you wish to make are combined.
 
 ```python
@@ -62,7 +62,7 @@ html_static_path = [
 The composite directory will end up in `docs/_build/_static`.
 
 ```{hint}
-See the JupyterLite [conf.py] for an example approach, though it likely a good
+See the JupyterLite [conf.py] for an example approach, though it's likely a good
 deal more complicated than you will need, because it needs to build _itself_ first!
 This complexity is managed in [dodo.py]
 ```
@@ -115,7 +115,7 @@ local purposes.
 python -m http.server -b 127.0.0.1
 ```
 
-If you are using a recently-released Python 3.7+, this will correctly server
+If you are using a recently-released Python 3.7+, this will correctly serve
 `application/wasm` files for pyodide.
 
 ##### sphinx-autobuild
@@ -182,7 +182,7 @@ The [Sphinx](#sphinx) deployment approach will work almost transparently with
 in the root of your repository.
 
 ```{hint}
-See the JuptyerLite [.readthedocs.yml] for an example.
+See the JupyterLite [.readthedocs.yml] for an example.
 ```
 
 [.readthedocs.yml]: https://github.com/jtpio/jupyterlite/blob/main/.readthedocs.yml
