@@ -606,7 +606,9 @@ class U:
             *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
         ]
         # we might find themes
-        themes = B.PATCHED_STATIC / "lab/build/themes"
+        app_themes = [
+            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "classic"]
+        ]
 
         for pkg_json in all_package_json:
             print(
@@ -616,11 +618,16 @@ class U:
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
-            for theme in pkg_json.parent.glob("themes/*"):
-                if not themes.exists():
-                    themes.mkdir(parents=True)
-                print(f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}")
-                shutil.copytree(theme, themes / theme.name)
+            for app_theme in app_themes:
+                for theme in pkg_json.parent.glob("themes/*"):
+                    print(
+                        f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}"
+                    )
+
+                    if not app_theme.exists():
+                        app_theme.mkdir(parents=True)
+                    print(f"... ... to {app_theme}")
+                    shutil.copytree(theme, app_theme / theme.name)
 
         print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
         config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))

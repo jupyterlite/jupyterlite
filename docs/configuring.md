@@ -83,6 +83,24 @@ determined by looking in `package.json` for the extension, specifically
 `#/jupyterlab/sharedPackages`.
 ```
 
+### Handle theme assets
+
+The Theme Manager expect to be able to load theme CSS/font assets from
+`{:app}/build/themes/({:org}/){:package}`, where `app` is usually `lab`.
+
+Continuing the example above:
+
+```bash
+cd $YOUR_JUPYTERLITE/lab/extensions
+mkdir -p ../build/themes
+cp -r @*/*/themes/* ../build/themes/
+cp -r @*/themes/* ../build/themes/
+# To also ensure these are available for JupyterLite Classic:
+mkdir -p ../../classic/build/themes
+cp -r @*/*/themes/* ../../classic/build/themes/
+cp -r @*/themes/* ../../classic/build/themes/
+```
+
 ### Fill Out `federated_extensions`
 
 Again, assuming you have a working JupyterLab, click _Inspect Element_ in your Lab and
