@@ -224,7 +224,8 @@ def task_check():
             U.do(
                 "pytest-check-links",
                 B.DOCS,
-                "-p", "no:warnings",
+                "-p",
+                "no:warnings",
                 "--check-anchors",
                 "--check-links-ignore",
                 "^https?://",
