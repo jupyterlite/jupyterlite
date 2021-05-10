@@ -62,7 +62,7 @@ a development installation.
 
 ## Related
 
-JupyterLite is a reboot of several attemps at making a full static Jupyter distribution
+JupyterLite is a reboot of several attempts at making a full static Jupyter distribution
 that runs in the browser, without having to start the Python Jupyter Server on the host
 machine.
 
