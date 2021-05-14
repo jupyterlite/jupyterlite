@@ -19,7 +19,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/",
     "py": "py/"
@@ -54,19 +53,20 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "^3.0.0",
+    "@jupyterlab/testutils": "^3.1.0-alpha.8",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
     "typescript": "~4.2.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "pyolite": {
     "packages": [
       "py/pyolite"
     ]
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "styleModule": "style/index.js"
 }

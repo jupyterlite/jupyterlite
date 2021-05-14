@@ -19,7 +19,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
@@ -38,10 +37,10 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "^3.0.7",
-    "@jupyterlab/apputils": "^3.0.5",
-    "@jupyterlab/coreutils": "^5.0.3",
-    "@jupyterlab/settingregistry": "^3.0.3",
+    "@jupyterlab/application": "^3.1.0-alpha.8",
+    "@jupyterlab/apputils": "^3.1.0-alpha.8",
+    "@jupyterlab/coreutils": "^5.1.0-alpha.8",
+    "@jupyterlab/settingregistry": "^3.1.0-alpha.8",
     "@jupyterlite/theme": "^0.1.0"
   },
   "devDependencies": {
@@ -53,10 +52,11 @@
     "ts-jest": "^26.3.0",
     "typescript": "~4.2.3"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "jupyterlab": {
     "extension": true
   },
-  "publishConfig": {
-    "access": "public"
-  }
+  "styleModule": "style/index.js"
 }

@@ -19,7 +19,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
@@ -43,24 +42,24 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^5.0.3",
-    "@jupyterlab/observables": "^4.0.3",
-    "@jupyterlab/nbformat": "^3.0.3",
-    "@jupyterlab/services": "^6.0.5",
-    "@jupyterlab/settingregistry": "^3.0.3",
-    "@jupyterlab/statedb": "^3.0.3",
+    "@jupyterlab/coreutils": "^5.1.0-alpha.8",
+    "@jupyterlab/nbformat": "^3.1.0-alpha.8",
+    "@jupyterlab/observables": "^3.1.0-alpha.8",
+    "@jupyterlab/services": "^6.1.0-alpha.8",
+    "@jupyterlab/settingregistry": "^3.1.0-alpha.8",
+    "@jupyterlab/statedb": "^3.1.0-alpha.8",
     "@jupyterlite/contents": "^0.1.0",
     "@jupyterlite/kernel": "^0.1.0",
     "@jupyterlite/session": "^0.1.0",
     "@jupyterlite/settings": "^0.1.0",
-    "@lumino/application": "^1.16.0",
-    "@lumino/coreutils": "^1.5.3",
+    "@lumino/application": "^1.20.0",
+    "@lumino/coreutils": "^1.8.0",
     "mock-socket": "^9.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "^3.0.0",
+    "@jupyterlab/testutils": "^3.1.0-alpha.8",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
@@ -69,5 +68,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "styleModule": "style/index.js"
 }

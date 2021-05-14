@@ -14,34 +14,36 @@
     "packages": [
       "app",
       "app/*",
+      "buildutils",
       "packages/*"
     ]
   },
   "scripts": {
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
     "build": "yarn build:lib && yarn build:app",
-    "build:python": "lerna run build:python",
-    "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:app": "lerna run build --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\"",
+    "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:prod": "lerna run build:prod",
+    "build:python": "lerna run build:python",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
-    "lint": "yarn prettier && yarn eslint",
-    "lint:check": "yarn prettier:check && yarn eslint:check",
+    "docs": "typedoc",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
     "install": "lerna bootstrap",
+    "integrity": "node buildutils/lib/ensure-repo.js",
+    "lint": "yarn prettier && yarn eslint",
+    "lint:check": "yarn prettier:check && yarn eslint:check",
     "prettier": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml,.html}\"",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml,.html}\"",
     "publish": "yarn clean && yarn build && lerna publish",
+    "serve": "node scripts/serve.js",
+    "serve:py": "cd app && python -m http.server -b 127.0.0.1",
     "test": "lerna run test",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
     "watch": "run-p watch:lib watch:app",
-    "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch",
     "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\" yarn watch",
-    "serve": "node scripts/serve.js",
-    "serve:py": "cd app && python -m http.server -b 127.0.0.1",
-    "docs": "typedoc"
+    "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch"
   },
   "husky": {
     "hooks": {
@@ -49,7 +51,7 @@
     }
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^3.0.0",
+    "@jupyterlab/buildutils": "^3.1.0-alpha.8",
     "@typescript-eslint/eslint-plugin": "^4.2.0",
     "@typescript-eslint/parser": "^4.2.0",
     "eslint": "^7.10.0",
