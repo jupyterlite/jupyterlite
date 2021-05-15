@@ -197,6 +197,11 @@ module.exports = [
     mode: 'development',
     devtool: 'source-map',
     entry: ['./publicpath.js', entryPoint],
+    resolve: {
+      fallback: {
+        util: false
+      }
+    },
     output: {
       path: path.resolve(buildDir),
       library: {
