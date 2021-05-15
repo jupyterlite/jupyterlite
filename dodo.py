@@ -3,6 +3,7 @@ import os
 import re
 import shutil
 import pprint
+import subprocess
 from pathlib import Path
 import jsonschema
 import sys
@@ -80,6 +81,37 @@ def task_lint():
 
 def task_build():
     """build code and intermediate packages"""
+
+    yield dict(
+        name="favicon",
+        doc="rebuild favicons from svg source, requires imagemagick",
+        file_dep=[P.DOCS_ICON],
+        targets=[P.LAB_FAVICON],
+        actions=[["echo", "... `convert` not found, install imagemagick"]]
+        if not shutil.which("convert")
+        else [
+            lambda: [
+                subprocess.call(
+                    [
+                        "convert",
+                        "-verbose",
+                        "-density",
+                        "256x256",
+                        "-background",
+                        "transparent",
+                        P.DOCS_ICON,
+                        "-define",
+                        "icon:auto-resize",
+                        "-colors",
+                        "256",
+                        P.LAB_FAVICON,
+                    ]
+                ),
+                None,
+            ][-1]
+        ],
+    )
+
     yield dict(
         name="js:lib",
         doc="build .ts files into .js files",
@@ -296,12 +328,14 @@ class P:
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
+    LAB_FAVICON = APP / "lab/favicon.ico"
 
     # docs
     README = ROOT / "README.md"
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
+    DOCS_ICON = DOCS / "_static/icon.svg"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
