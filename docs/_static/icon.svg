@@ -74,9 +74,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="33.700915"
-     inkscape:cy="39.704274"
+     inkscape:zoom="5.6"
+     inkscape:cx="141.96884"
+     inkscape:cy="-57.074088"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -113,32 +113,6 @@
        cx="83.727013"
        cy="85.551445"
        r="6.5982165" />
-    <g
-       aria-label="lite"
-       style="font-weight:500;font-size:7.10527754px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:'Roboto, Medium';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke-width:0.21614319"
-       id="text973"
-       transform="matrix(1.2241113,0,0,1.2241113,-14.439838,-21.50533)">
-      <path
-         d="m 78.175881,89.941383 q -0.836119,-0.03469 -1.238566,-1.019996 -0.298367,-0.742446 -0.298367,-1.817951 0,-0.05551 0.0069,-0.142245 0.04857,-0.732038 0.270611,-1.342647 0.360815,-0.985303 1.019996,-0.985303 0.03469,0 0.07286,0.0035 0.600202,0.03816 0.600202,0.697344 0,0.71816 -0.617549,1.595912 -0.392039,0.558569 -0.822241,0.905506 0.117958,0.659181 0.260203,0.988772 0.263672,0.61061 0.784078,0.61061 0.03469,0 0.07286,-0.0069 0.114489,-0.02082 0.319182,-0.16653 0.197755,-0.135305 0.308775,-0.135305 0.04857,0 0.09367,0.03122 0.100612,0.06939 0.100612,0.187346 -0.0069,0.180408 -0.256734,0.371223 -0.312244,0.225509 -0.676528,0.225509 z m -0.235917,-4.784266 q -0.204693,0.0035 -0.360815,0.176938 -0.395509,0.447549 -0.433672,1.869992 0.208162,-0.211631 0.416325,-0.499589 0.575916,-0.787548 0.575916,-1.328771 0,-0.02775 -0.01388,-0.06592 -0.05551,-0.152652 -0.183876,-0.152652 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.10527754px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.21614319"
-         id="path1254"
-         inkscape:connector-curvature="0" />
-      <path
-         d="m 79.220163,87.252619 q 0,0.100612 -0.03469,0.433671 -0.107551,0.985303 -0.107551,1.224689 0,0.159592 0.06592,0.298366 0.09714,0.208163 0.260203,0.208163 0.03469,0 0.07286,-0.0069 0.100612,-0.02428 0.291428,-0.16306 0.187346,-0.138775 0.301835,-0.138775 0.04857,0 0.09714,0.03469 0.09714,0.06939 0.09714,0.183877 -0.01388,0.176938 -0.27408,0.374693 -0.319183,0.222039 -0.66959,0.222039 -0.294896,0 -0.489181,-0.204693 -0.291428,-0.312243 -0.291428,-0.99224 0,-0.232449 0.09367,-0.908976 0.04163,-0.315713 0.05898,-0.464896 0.0035,-0.03122 0.0069,-0.06245 0.05551,-0.346938 0.284488,-0.346938 0.03816,0 0.07633,0.0069 0.159592,0.03816 0.159592,0.301836 z m -0.395509,-0.908976 q 0,-0.06245 0.02775,-0.117959 0.06939,-0.135306 0.225509,-0.135306 0.06245,0 0.117959,0.02775 0.135306,0.06939 0.135306,0.22551 0,0.06245 -0.02775,0.117958 -0.06939,0.135306 -0.22551,0.135306 -0.06245,0 -0.117958,-0.02775 -0.135306,-0.06939 -0.135306,-0.225509 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.10527754px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.21614319"
-         id="path1256"
-         inkscape:connector-curvature="0" />
-      <path
-         d="m 79.986894,86.100787 q 0.0035,0 0.03469,0 0.194285,0.0069 0.350407,0.0069 l 0.152652,-1.072036 q 0.01388,-0.107551 0.03469,-0.180408 0.06245,-0.228978 0.253264,-0.228978 0.03816,0 0.07633,0.0069 0.159592,0.03816 0.159592,0.301836 0,0.08326 -0.138775,1.172648 h 0.364284 q 0.09367,0 0.16306,0.03816 0.121429,0.07286 0.121429,0.215102 0,0.06245 -0.03122,0.117958 -0.0798,0.131837 -0.260203,0.131837 h -0.430202 q -0.270611,2.081624 -0.270611,2.334888 0,0.159591 0.06592,0.298366 0.09714,0.208163 0.256733,0.208163 0.03816,0 0.0798,-0.01041 0.09367,-0.02429 0.267142,-0.159592 0.169999,-0.135305 0.284488,-0.135305 0.04857,0 0.09367,0.02082 0.124898,0.06245 0.124898,0.190816 -0.01041,0.180407 -0.267142,0.374692 -0.312243,0.225509 -0.66265,0.225509 -0.343468,-0.0035 -0.562039,-0.287958 -0.22204,-0.301835 -0.22204,-0.759793 0,-0.100611 0.274081,-2.300194 h -0.312244 q -0.02082,0 -0.04163,0 -0.239387,-0.02082 -0.239387,-0.249795 0,-0.06245 0.02082,-0.11449 0.06245,-0.145713 0.260203,-0.145713 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.10527754px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.21614319"
-         id="path1258"
-         inkscape:connector-curvature="0" />
-      <path
-         d="m 81.416276,88.879755 q 0,-0.117959 0.01388,-0.249795 0.07286,-0.593263 0.374692,-1.05469 0.367754,-0.565507 0.88469,-0.565507 0.138775,0 0.267142,0.03469 0.457957,0.131836 0.457957,0.645304 0,0.03816 -0.0035,0.07979 -0.03469,0.464896 -0.416325,0.780609 -0.374692,0.312244 -0.870813,0.312244 -0.09367,0 -0.183876,-0.01735 -0.0069,0.05204 -0.0069,0.145714 0,0.201224 0.06939,0.312244 0.09367,0.142244 0.385101,0.16653 0.128367,0 0.253264,-0.02775 0.218571,-0.05204 0.516937,-0.246326 0.194285,-0.128367 0.27408,-0.128367 0.0451,0 0.09367,0.02775 0.11102,0.06592 0.11102,0.190816 0,0.04163 -0.01735,0.0902 -0.09367,0.22551 -0.562038,0.426733 -0.433672,0.187347 -0.763262,0.187347 -0.124898,0 -0.232448,-0.02082 -0.645304,-0.131836 -0.645304,-1.089383 z m 1.113669,-1.325301 q -0.315713,0.211632 -0.49612,0.804895 0.08673,0.02082 0.16653,0.02082 0.287958,0 0.503059,-0.176938 0.239387,-0.194285 0.239387,-0.461427 0,-0.267141 -0.17,-0.270611 -0.121428,0.0035 -0.242856,0.08327 z"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.10527754px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.21614319"
-         id="path1260"
-         inkscape:connector-curvature="0" />
-    </g>
     <rect
        style="opacity:1;vector-effect:none;fill:#9e9e9e;fill-opacity:1;stroke:none;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
        id="rect1223"
@@ -166,6 +140,224 @@
        y="94.93792"
        ry="0.41676137"
        rx="0.41676137" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke-width:0.26458335"
+       x="85.064537"
+       y="90.288925"
+       id="text2086"><tspan
+         sodipodi:role="line"
+         id="tspan2084"
+         x="85.064537"
+         y="90.288925"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke-width:0.26458335">l</tspan></text>
+    <text
+       id="text2092"
+       y="89.830017"
+       x="96.091583"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:1;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         y="89.830017"
+         x="96.091583"
+         id="tspan2090"
+         sodipodi:role="line">JupyterLite</tspan></text>
+    <g
+       id="g2117">
+      <circle
+         r="1.0583334"
+         cy="83.123352"
+         cx="84.242455"
+         id="path2108"
+         style="opacity:1;vector-effect:none;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke-width:0.26458335"
+         x="82.947868"
+         y="88.172256"
+         id="text2112"><tspan
+           sodipodi:role="line"
+           id="tspan2110"
+           x="82.947868"
+           y="88.172256"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke-width:0.26458335">j</tspan></text>
+    </g>
+    <circle
+       r="6.5982165"
+       cy="107.24443"
+       cx="83.727013"
+       id="circle2119"
+       style="opacity:1;vector-effect:none;fill:#f7dc1e;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+    <rect
+       rx="0.4125087"
+       ry="0.4125087"
+       y="113.9557"
+       x="80.831047"
+       height="1.0099131"
+       width="5.6534319"
+       id="rect2121"
+       style="opacity:1;vector-effect:none;fill:#9e9e9e;fill-opacity:1;stroke:none;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" />
+    <rect
+       rx="0.42101401"
+       ry="0.42101401"
+       style="opacity:1;vector-effect:none;fill:#767677;fill-opacity:1;stroke:none;stroke-width:1.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect2123"
+       width="5.6413827"
+       height="1.030736"
+       x="80.837059"
+       y="115.2829" />
+    <rect
+       rx="0.41676137"
+       ry="0.41676137"
+       y="116.63093"
+       x="82.037766"
+       height="1.0203246"
+       width="3.2399781"
+       id="rect2125"
+       style="opacity:1;vector-effect:none;fill:#616262;fill-opacity:1;stroke:none;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers" />
+    <text
+       id="text2129"
+       y="111.98193"
+       x="85.064537"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f37726;fill-opacity:1;stroke-width:0.26458335"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f37726;fill-opacity:1;stroke-width:0.26458335"
+         y="111.98193"
+         x="85.064537"
+         id="tspan2127"
+         sodipodi:role="line">l</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:1;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       x="96.091583"
+       y="111.52302"
+       id="text2133"><tspan
+         sodipodi:role="line"
+         id="tspan2131"
+         x="96.091583"
+         y="111.52302"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill">Jupyter</tspan></text>
+    <g
+       id="g2141"
+       transform="translate(0,21.692985)"
+       style="fill:#f37726;fill-opacity:1">
+      <circle
+         style="opacity:1;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         id="circle2135"
+         cx="84.242455"
+         cy="83.123352"
+         r="1.0583334" />
+      <text
+         id="text2139"
+         y="88.172256"
+         x="82.947868"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f37726;fill-opacity:1;stroke-width:0.26458335"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f37726;fill-opacity:1;stroke-width:0.26458335"
+           y="88.172256"
+           x="82.947868"
+           id="tspan2137"
+           sodipodi:role="line">j</tspan></text>
+    </g>
+    <text
+       id="text2145"
+       y="111.52302"
+       x="126.78326"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:1;vector-effect:none;fill:#f7dc1e;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;vector-effect:none;fill:#f7dc1e;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         y="111.52302"
+         x="126.78326"
+         id="tspan2143"
+         sodipodi:role="line">Lite</tspan></text>
+    <circle
+       style="opacity:1;vector-effect:none;fill:#2196f3;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       id="circle2147"
+       cx="83.727013"
+       cy="129.46942"
+       r="6.5982165" />
+    <rect
+       style="opacity:1;vector-effect:none;fill:#9e9e9e;fill-opacity:1;stroke:none;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect2149"
+       width="5.6534319"
+       height="1.0099131"
+       x="80.831047"
+       y="136.18069"
+       ry="0.4125087"
+       rx="0.4125087" />
+    <rect
+       y="137.50789"
+       x="80.837059"
+       height="1.030736"
+       width="5.6413827"
+       id="rect2151"
+       style="opacity:1;vector-effect:none;fill:#767677;fill-opacity:1;stroke:none;stroke-width:1.99999976;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       ry="0.42101401"
+       rx="0.42101401" />
+    <rect
+       style="opacity:1;vector-effect:none;fill:#616262;fill-opacity:1;stroke:none;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect2153"
+       width="3.2399781"
+       height="1.0203246"
+       x="82.037766"
+       y="138.85591"
+       ry="0.41676137"
+       rx="0.41676137" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458335;"
+       x="85.064537"
+       y="134.20692"
+       id="text2157"><tspan
+         sodipodi:role="line"
+         id="tspan2155"
+         x="85.064537"
+         y="134.20692"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458335;">l</tspan></text>
+    <text
+       id="text2161"
+       y="133.74802"
+       x="96.091583"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:1;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;vector-effect:none;fill:#f37726;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+         y="133.74802"
+         x="96.091583"
+         id="tspan2159"
+         sodipodi:role="line">Jupyter</tspan></text>
+    <g
+       style="fill:#ffffff;fill-opacity:1"
+       transform="translate(0,43.917987)"
+       id="g2169">
+      <circle
+         r="1.0583334"
+         cy="83.123352"
+         cx="84.242455"
+         id="circle2163"
+         style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458335"
+         x="82.947868"
+         y="88.172256"
+         id="text2167"><tspan
+           sodipodi:role="line"
+           id="tspan2165"
+           x="82.947868"
+           y="88.172256"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.46666718px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke-width:0.26458335">j</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;line-height:1.25;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;opacity:1;vector-effect:none;fill:#2196f3;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill;"
+       x="126.78326"
+       y="133.74802"
+       id="text2173"><tspan
+         sodipodi:role="line"
+         id="tspan2171"
+         x="126.78326"
+         y="133.74802"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.28888893px;font-family:Vibur;-inkscape-font-specification:'Vibur, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;vector-effect:none;fill:#2196f3;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill;">Lite</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
