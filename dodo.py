@@ -3,6 +3,7 @@ import os
 import re
 import shutil
 import pprint
+import subprocess
 from pathlib import Path
 import jsonschema
 import sys
@@ -81,28 +82,35 @@ def task_lint():
 def task_build():
     """build code and intermediate packages"""
 
-    if shutil.which("convert"):
-        yield dict(
-            name="favicon",
-            doc="rebuild favicons from svg source, requires imagemagick",
-            file_dep=[P.DOCS_ICON],
-            targets=[P.LAB_FAVICON],
-            actions=[
-                U.do(
-                    "convert",
-                    "-density",
-                    "256x256",
-                    "-background",
-                    "transparent",
-                    P.DOCS_ICON,
-                    "-define",
-                    "icon:auto-resize",
-                    "-colors",
-                    "256",
-                    P.LAB_FAVICON,
-                )
-            ],
-        )
+    yield dict(
+        name="favicon",
+        doc="rebuild favicons from svg source, requires imagemagick",
+        file_dep=[P.DOCS_ICON],
+        targets=[P.LAB_FAVICON],
+        actions=[["echo", "... `convert` not found, install imagemagick"]]
+        if not shutil.which("convert")
+        else [
+            lambda: [
+                subprocess.call(
+                    [
+                        "convert",
+                        "-verbose",
+                        "-density",
+                        "256x256",
+                        "-background",
+                        "transparent",
+                        P.DOCS_ICON,
+                        "-define",
+                        "icon:auto-resize",
+                        "-colors",
+                        "256",
+                        P.LAB_FAVICON,
+                    ]
+                ),
+                None,
+            ][-1]
+        ],
+    )
 
     yield dict(
         name="js:lib",
