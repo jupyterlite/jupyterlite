@@ -177,24 +177,21 @@ export class Contents implements IContents {
     path: string,
     options?: ServerContents.IFetchOptions
   ): Promise<ServerContents.IModel> {
-    // only handle flat for now
+    // remove leading slash
+    path = decodeURIComponent(path.replace(/^\//, ''));
+
     if (path === '') {
       return await this.getFolder(path);
     }
 
-    // remove leading slash
-    path = decodeURIComponent(path.replace(/^\//, ''));
-    let item = await this._storage.getItem(path);
+    const item = await this._storage.getItem(path);
+    const serverItem = await this.getServerContents(path, options);
 
-    if (!item) {
-      item = await this.getServerContents(path, options);
-    }
+    const model = (item || serverItem) as ServerContents.IModel | null;
 
-    if (!item) {
+    if (!model) {
       throw Error(`Could not find file with path ${path}`);
     }
-
-    const model = (item as unknown) as ServerContents.IModel;
 
     if (!options?.content) {
       return {
@@ -206,18 +203,25 @@ export class Contents implements IContents {
 
     // for directories, find all files with the path as the prefix
     if (model.type === 'directory') {
-      const content: ServerContents.IModel[] = [];
+      const contentMap = new Map<string, ServerContents.IModel>();
       await this._storage.iterate((item, key) => {
         const file = (item as unknown) as ServerContents.IModel;
         // use an additional slash to not include the directory itself
         if (key === `${path}/${file.name}`) {
-          content.push(file);
+          contentMap.set(file.name, file);
         }
       });
-      const serverContents = await this.getServerDirectory(path);
-      for (const item of Array.from(serverContents.values())) {
-        content.push(item);
+
+      const serverContents: ServerContents.IModel[] = serverItem
+        ? serverItem.content
+        : Array.from((await this.getServerDirectory(path)).values());
+      for (const file of serverContents) {
+        if (!contentMap.has(file.name)) {
+          contentMap.set(file.name, file);
+        }
       }
+
+      const content = [...contentMap.values()];
 
       return {
         name: PathExt.basename(path),
@@ -236,10 +240,10 @@ export class Contents implements IContents {
   }
 
   /**
-   * retrieve the contents for this path from `all.json` in the appropriate
-   * folder.
+   * retrieve the contents for this path from the union of local storage and
+   * `api/contents/{path}/all.json`.
    *
-   * @param newLocalPath - The new file path.
+   * @param path - The contents path to retrieve
    *
    * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
@@ -342,36 +346,35 @@ export class Contents implements IContents {
       } else {
         const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
         const response = await fetch(fileUrl);
-        if (model.type === 'notebook' || model.mimetype.endsWith('json')) {
+        const mimetype = model.mimetype || response.headers.get('Content-Type');
+
+        if (
+          model.type === 'notebook' ||
+          mimetype?.indexOf('json') !== -1 ||
+          path.match(/\.(ipynb|[^/]*json[^/]*)$/)
+        ) {
           model = {
             ...model,
             content: await response.json(),
             format: 'json',
-            type: model.type,
             mimetype: model.mimetype || 'application/json'
           };
           // TODO: this is not great, need a better oracle
-        } else if (
-          model.format === 'base64' ||
-          model.mimetype.indexOf('text/') === -1
-        ) {
+        } else if (mimetype === 'image/svg+xml' || mimetype.indexOf('text') !== -1) {
+          model = {
+            ...model,
+            content: await response.text(),
+            format: 'text',
+            mimetype: mimetype || 'text/plain'
+          };
+        } else {
           model = {
             ...model,
             content: btoa(
               String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
             ),
             format: 'base64',
-            type: model.type,
-            mimetype:
-              model.mimetype || response.headers.get('Content-Type') || 'octet/stream'
-          };
-        } else {
-          model = {
-            ...model,
-            content: await response.text(),
-            format: 'text',
-            mimetype:
-              model.mimetype || response.headers.get('Content-Type') || 'text/plain'
+            mimetype: mimetype || 'octet/stream'
           };
         }
       }
