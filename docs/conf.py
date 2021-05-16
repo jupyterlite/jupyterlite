@@ -74,7 +74,7 @@ html_css_files = [
 
 # theme
 html_theme = "pydata_sphinx_theme"
-html_logo = "_static/icon.svg"
+html_logo = "_static/wordmark.svg"
 html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
