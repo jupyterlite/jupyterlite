@@ -342,9 +342,37 @@ export class Contents implements IContents {
       } else {
         const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
         const response = await fetch(fileUrl);
-        model = { ...model, content: await response.text() };
         if (model.type === 'notebook' || model.mimetype.endsWith('json')) {
-          model = { ...model, content: JSON.parse(model.content) };
+          model = {
+            ...model,
+            content: await response.json(),
+            format: 'json',
+            type: model.type,
+            mimetype: model.mimetype || 'application/json'
+          };
+          // TODO: this is not great, need a better oracle
+        } else if (
+          model.format === 'base64' ||
+          model.mimetype.indexOf('text/') === -1
+        ) {
+          model = {
+            ...model,
+            content: btoa(
+              String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
+            ),
+            format: 'base64',
+            type: model.type,
+            mimetype:
+              model.mimetype || response.headers.get('Content-Type') || 'octet/stream'
+          };
+        } else {
+          model = {
+            ...model,
+            content: await response.text(),
+            format: 'text',
+            mimetype:
+              model.mimetype || response.headers.get('Content-Type') || 'text/plain'
+          };
         }
       }
     }

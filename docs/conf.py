@@ -17,6 +17,16 @@ ROOT = HERE.parent
 APP_PKG = ROOT / "app/package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
 RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
+EXAMPLE_FILES = [
+    ROOT / "README.md",
+    ROOT / "docs/_static/icon.svg",
+    *[
+        example
+        for example in (ROOT / "examples").rglob("*.*")
+        if not ".ipynb_checkpoints" in str(example)
+        and "__pycache__" not in str(example)
+    ],
+]
 
 # metadata
 author = APP_DATA["author"]
@@ -118,7 +128,8 @@ def after_build(app: Sphinx, error):
             return json.JSONEncoder.default(self, o)
 
     # all relative to ROOT
-    for example_path in ["README.md", "docs/_static/icon.svg"]:
+    for example_file in EXAMPLE_FILES:
+        example_path = str(example_file.relative_to(ROOT))
         dest = files_dir / example_path
         dest.parent.mkdir(parents=True, exist_ok=True)
         print(f"... writing  /files/{example_path}")
