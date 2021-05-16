@@ -1,3 +1,4 @@
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { Contents as ServerContents, ServerConnection } from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
@@ -178,34 +179,23 @@ export class Contents implements IContents {
   ): Promise<ServerContents.IModel> {
     // only handle flat for now
     if (path === '') {
-      const content: ServerContents.IModel[] = [];
-      await this._storage.iterate((item, key) => {
-        if (key.includes('/')) {
-          return;
-        }
-        const file = (item as unknown) as ServerContents.IModel;
-        content.push(file);
-      });
-      return {
-        name: '',
-        path: '',
-        last_modified: new Date(0).toISOString(),
-        created: new Date(0).toISOString(),
-        format: 'json',
-        mimetype: 'application/json',
-        content,
-        size: undefined,
-        writable: true,
-        type: 'directory'
-      };
+      return await this.getFolder(path);
     }
+
     // remove leading slash
-    path = decodeURIComponent(path.slice(1));
-    const item = await this._storage.getItem(path);
+    path = decodeURIComponent(path.replace(/^\//, ''));
+    let item = await this._storage.getItem(path);
+
+    if (!item) {
+      item = await this.getServerContents(path, options);
+    }
+
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
     }
+
     const model = (item as unknown) as ServerContents.IModel;
+
     if (!options?.content) {
       return {
         ...model,
@@ -213,6 +203,7 @@ export class Contents implements IContents {
         size: undefined
       };
     }
+
     // for directories, find all files with the path as the prefix
     if (model.type === 'directory') {
       const content: ServerContents.IModel[] = [];
@@ -223,9 +214,14 @@ export class Contents implements IContents {
           content.push(file);
         }
       });
+      const serverContents = await this.getServerDirectory(path);
+      for (const item of Array.from(serverContents.values())) {
+        content.push(item);
+      }
+
       return {
-        name: '',
-        path: '',
+        name: PathExt.basename(path),
+        path,
         last_modified: model.last_modified,
         created: model.created,
         format: 'json',
@@ -236,6 +232,123 @@ export class Contents implements IContents {
         type: 'directory'
       };
     }
+    return model;
+  }
+
+  /**
+   * retrieve the contents for this path from `all.json` in the appropriate
+   * folder.
+   *
+   * @param newLocalPath - The new file path.
+   *
+   * @returns A promise which resolves with a Map of contents, keyed by local file name
+   */
+  async getFolder(path: string): Promise<ServerContents.IModel> {
+    const content = new Map<string, ServerContents.IModel>();
+    await this._storage.iterate((item, key) => {
+      if (key.includes('/')) {
+        return;
+      }
+      const file = (item as unknown) as ServerContents.IModel;
+      content.set(file.path, file);
+    });
+
+    // layer in contents that don't have local overwrites
+    for (const file of (await this.getServerDirectory(path)).values()) {
+      if (!content.has(file.path)) {
+        content.set(file.path, file);
+      }
+    }
+
+    return {
+      name: '',
+      path,
+      last_modified: new Date(0).toISOString(),
+      created: new Date(0).toISOString(),
+      format: 'json',
+      mimetype: 'application/json',
+      content: Array.from(content.values()),
+      size: undefined,
+      writable: true,
+      type: 'directory'
+    };
+  }
+
+  private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
+
+  /**
+   * retrieve the contents for this path from `__index__.json` in the appropriate
+   * folder.
+   *
+   * @param newLocalPath - The new file path.
+   *
+   * @returns A promise which resolves with a Map of contents, keyed by local file name
+   */
+  async getServerDirectory(path: string): Promise<Map<string, ServerContents.IModel>> {
+    const content = this._serverContents.get(path) || new Map();
+
+    if (!this._serverContents.has(path)) {
+      const apiURL = URLExt.join(
+        PageConfig.getBaseUrl(),
+        'api/contents',
+        path,
+        'all.json'
+      );
+
+      try {
+        const response = await fetch(apiURL);
+        const json = JSON.parse(await response.text());
+        for (const file of json['content'] as ServerContents.IModel[]) {
+          content.set(file.name, file);
+        }
+      } catch (err) {
+        console.warn(
+          `don't worry, about ${err}... nothing's broken. if there had been a
+          file at ${apiURL}, you might see some more files.`
+        );
+      }
+      this._serverContents.set(path, content);
+    }
+
+    return content;
+  }
+
+  /**
+   * Attempt to recover the model from `{:path}/__all__.json` file, fall back to
+   * deriving the model (including content) off the file in `/files/`.
+   */
+  async getServerContents(
+    path: string,
+    options?: ServerContents.IFetchOptions
+  ): Promise<ServerContents.IModel | null> {
+    const name = PathExt.basename(path);
+    const parentContents = await this.getServerDirectory(URLExt.join(path, '..'));
+    let model = parentContents.get(name) || {
+      name,
+      path,
+      last_modified: new Date(0).toISOString(),
+      created: new Date(0).toISOString(),
+      format: 'text',
+      mimetype: 'text/plain',
+      type: 'file',
+      writable: true,
+      content: null
+    };
+
+    if (options?.content) {
+      if (model.type === 'directory') {
+        const serverContents = await this.getServerDirectory(path);
+        model = { ...model, content: Array.from(serverContents.values()) };
+      } else {
+        const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
+        const response = await fetch(fileUrl);
+        model = { ...model, content: await response.text() };
+        if (model.type === 'notebook' || model.mimetype.endsWith('json')) {
+          model = { ...model, content: JSON.parse(model.content) };
+        }
+      }
+    }
+
     return model;
   }
 
@@ -285,7 +398,7 @@ export class Contents implements IContents {
     path: string,
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
-    let item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    let item = await this.get(path);
     if (!item) {
       item = await this.newUntitled({ path });
     }
@@ -348,9 +461,11 @@ export class Contents implements IContents {
    *   checkpoint is created.
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
-    const item = (await this._storage.getItem(path)) as ServerContents.IModel;
-    const copies =
-      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? [];
+    const item = ((await this._storage.getItem(path)) ||
+      (await this.getServerContents(path))) as ServerContents.IModel;
+    const copies = (
+      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? []
+    ).filter(item => !!item);
     copies.push(item);
     // keep only a certain amount of checkpoints per file
     if (copies.length > N_CHECKPOINTS) {
@@ -373,16 +488,16 @@ export class Contents implements IContents {
    *    the file.
    */
   async listCheckpoints(path: string): Promise<ServerContents.ICheckpointModel[]> {
-    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
-    if (!copies) {
-      return [];
-    }
-    return copies.map((file, id) => {
-      return {
-        id: id.toString(),
-        last_modified: file.last_modified
-      };
-    });
+    const copies = ((await this._checkpoints.getItem(path)) ||
+      []) as ServerContents.IModel[];
+    return copies
+      .filter(item => !!item)
+      .map((file, id) => {
+        return {
+          id: id.toString(),
+          last_modified: file.last_modified
+        };
+      });
   }
 
   /**
@@ -394,7 +509,8 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
-    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
+    const copies = ((await this._checkpoints.getItem(path)) ||
+      []) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];
     await this._storage.setItem(path, item);
@@ -409,7 +525,8 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
-    const copies = (await this._checkpoints.getItem(path)) as ServerContents.IModel[];
+    const copies = ((await this._checkpoints.getItem(path)) ||
+      []) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
     await this._checkpoints.setItem(path, copies);

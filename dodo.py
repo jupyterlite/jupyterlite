@@ -232,7 +232,16 @@ def task_docs():
 
 
 def task_schema():
-    """validate the schema and instance documents"""
+    """update, validate the schema and instance documents"""
+    yield dict(
+        name="swagger",
+        uptodate=[
+            doit.tools.config_changed(json.loads(P.APP_API_JSON.read_text(**C.ENC)))
+        ],
+        targets=[P.APP_API_JSON],
+        actions=[(U.jp_server_json, [])],
+    )
+
     yield dict(
         name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
     )
@@ -321,6 +330,7 @@ class P:
     PYOLITE_PACKAGES = []
 
     APP = ROOT / "app"
+    APP_API_JSON = APP / "swagger.json"
     APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
@@ -673,6 +683,26 @@ class U:
         print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
         B.PATCHED_JUPYTERLITE_JSON.write_text(
             textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
+        )
+
+    def jp_server_json():
+        api_json = {}
+
+        try:
+            import yaml
+            import jupyter_server
+
+            jp_server_path = Path(jupyter_server.__file__).parent
+            api_yaml = jp_server_path / "services/api/api.yaml"
+            api_json = yaml.safe_load(api_yaml.read_text(**C.ENC))
+        except Exception:
+            print("jupyter_server not installed, can't update /app/swagger.json")
+
+        if not api_json:
+            return
+
+        P.APP_API_JSON.write_text(
+            json.dumps(api_json, indent=2, sort_keys=True), **C.ENC
         )
 
 

@@ -1,0 +1,1155 @@
+{
+  "basePath": "/",
+  "consumes": ["application/json"],
+  "definitions": {
+    "APIStatus": {
+      "description": "Notebook server API status.\nAdded in notebook 5.0.\n",
+      "properties": {
+        "connections": {
+          "description": "The total number of currently open connections to kernels.\n",
+          "type": "number"
+        },
+        "kernels": {
+          "description": "The total number of running kernels.\n",
+          "type": "number"
+        },
+        "last_activity": {
+          "description": "ISO8601 timestamp indicating the last activity on the server,\neither on the REST API or kernel activity.\n",
+          "type": "string"
+        },
+        "started": {
+          "description": "ISO8601 timestamp indicating when the notebook server started.\n",
+          "type": "string"
+        }
+      }
+    },
+    "Checkpoints": {
+      "description": "A checkpoint object.",
+      "properties": {
+        "id": {
+          "description": "Unique id for the checkpoint.",
+          "type": "string"
+        },
+        "last_modified": {
+          "description": "Last modified timestamp",
+          "format": "dateTime",
+          "type": "string"
+        }
+      },
+      "required": ["id", "last_modified"],
+      "type": "object"
+    },
+    "Contents": {
+      "description": "A contents object.  The content and format keys may be null if content is not contained.  If type is 'file', then the mimetype will be null.",
+      "properties": {
+        "content": {
+          "description": "The content, if requested (otherwise null).  Will be an array if type is 'directory'",
+          "type": "string"
+        },
+        "created": {
+          "description": "Creation timestamp",
+          "format": "dateTime",
+          "type": "string"
+        },
+        "format": {
+          "description": "Format of content (one of null, 'text', 'base64', 'json')",
+          "type": "string"
+        },
+        "last_modified": {
+          "description": "Last modified timestamp",
+          "format": "dateTime",
+          "type": "string"
+        },
+        "mimetype": {
+          "description": "The mimetype of a file.  If content is not null, and type is 'file', this will contain the mimetype of the file, otherwise this will be null.",
+          "type": "string"
+        },
+        "name": {
+          "description": "Name of file or directory, equivalent to the last part of the path",
+          "type": "string"
+        },
+        "path": {
+          "description": "Full path for file or directory",
+          "type": "string"
+        },
+        "size": {
+          "description": "The size of the file or notebook in bytes. If no size is provided, defaults to null.",
+          "type": "integer"
+        },
+        "type": {
+          "description": "Type of content",
+          "enum": ["directory", "file", "notebook"],
+          "type": "string"
+        },
+        "writable": {
+          "description": "indicates whether the requester has permission to edit the file",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "path",
+        "writable",
+        "created",
+        "last_modified",
+        "mimetype",
+        "format",
+        "content"
+      ],
+      "type": "object"
+    },
+    "Kernel": {
+      "description": "Kernel information",
+      "properties": {
+        "connections": {
+          "description": "The number of active connections to this kernel.\n",
+          "type": "number"
+        },
+        "execution_state": {
+          "description": "Current execution state of the kernel (typically 'idle' or 'busy', but may be other values, such as 'starting').\nAdded in notebook server 5.0.\n",
+          "type": "string"
+        },
+        "id": {
+          "description": "uuid of kernel",
+          "format": "uuid",
+          "type": "string"
+        },
+        "last_activity": {
+          "description": "ISO 8601 timestamp for the last-seen activity on this kernel.\nUse this in combination with execution_state == 'idle' to identify\nwhich kernels have been idle since a given time.\nTimestamps will be UTC, indicated 'Z' suffix.\nAdded in notebook server 5.0.\n",
+          "type": "string"
+        },
+        "name": {
+          "description": "kernel spec name",
+          "type": "string"
+        }
+      },
+      "required": ["id", "name"]
+    },
+    "KernelSpec": {
+      "description": "Kernel spec (contents of kernel.json)",
+      "properties": {
+        "KernelSpecFile": {
+          "$ref": "#/definitions/KernelSpecFile"
+        },
+        "name": {
+          "description": "Unique name for kernel",
+          "type": "string"
+        },
+        "resources": {
+          "properties": {
+            "kernel.css": {
+              "description": "path for kernel.css file",
+              "format": "filename",
+              "type": "string"
+            },
+            "kernel.js": {
+              "description": "path for kernel.js file",
+              "format": "filename",
+              "type": "string"
+            },
+            "logo-*": {
+              "description": "path for logo file.  Logo filenames are of the form `logo-widthxheight`",
+              "format": "filename",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      }
+    },
+    "KernelSpecFile": {
+      "description": "Kernel spec json file",
+      "properties": {
+        "argv": {
+          "description": "A list of command line arguments used to start the kernel. The text `{connection_file}` in any argument will be replaced with the path to the connection file.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "codemirror_mode": {
+          "description": "Codemirror mode.  Can be a string *or* an valid Codemirror mode object.  This defaults to the string from the `language` property.",
+          "type": "string"
+        },
+        "display_name": {
+          "description": "The kernel's name as it should be displayed in the UI. Unlike the kernel name used in the API, this can contain arbitrary unicode characters.",
+          "type": "string"
+        },
+        "env": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "A dictionary of environment variables to set for the kernel. These will be added to the current environment variables.",
+          "type": "object"
+        },
+        "help_links": {
+          "description": "Help items to be displayed in the help menu in the notebook UI.",
+          "items": {
+            "properties": {
+              "text": {
+                "description": "menu item link text",
+                "type": "string"
+              },
+              "url": {
+                "description": "menu item link url",
+                "format": "URL",
+                "type": "string"
+              }
+            },
+            "required": ["text", "url"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "language": {
+          "description": "The programming language which this kernel runs. This will be stored in notebook metadata.",
+          "type": "string"
+        }
+      },
+      "required": ["argv", "display_name", "language"]
+    },
+    "Session": {
+      "description": "A session",
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "kernel": {
+          "$ref": "#/definitions/Kernel"
+        },
+        "name": {
+          "description": "name of the session",
+          "type": "string"
+        },
+        "path": {
+          "description": "path to the session",
+          "type": "string"
+        },
+        "type": {
+          "description": "session type",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "Terminal": {
+      "description": "A Terminal object",
+      "properties": {
+        "last_activity": {
+          "description": "ISO 8601 timestamp for the last-seen activity on this terminal.  Use\nthis to identify which terminals have been inactive since a given time.\nTimestamps will be UTC, indicated 'Z' suffix.\n",
+          "type": "string"
+        },
+        "name": {
+          "description": "name of terminal",
+          "type": "string"
+        }
+      },
+      "required": ["name"],
+      "type": "object"
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "Jupyter Project",
+      "url": "https://jupyter.org"
+    },
+    "description": "Server API",
+    "title": "Jupyter Server API",
+    "version": "5"
+  },
+  "parameters": {
+    "checkpoint_id": {
+      "description": "Checkpoint id for a file",
+      "in": "path",
+      "name": "checkpoint_id",
+      "required": true,
+      "type": "string"
+    },
+    "kernel": {
+      "description": "kernel uuid",
+      "format": "uuid",
+      "in": "path",
+      "name": "kernel_id",
+      "required": true,
+      "type": "string"
+    },
+    "path": {
+      "description": "file path",
+      "in": "path",
+      "name": "path",
+      "required": true,
+      "type": "string"
+    },
+    "section_name": {
+      "description": "Name of config section",
+      "in": "path",
+      "name": "section_name",
+      "required": true,
+      "type": "string"
+    },
+    "session": {
+      "description": "session uuid",
+      "format": "uuid",
+      "in": "path",
+      "name": "session",
+      "required": true,
+      "type": "string"
+    },
+    "terminal_id": {
+      "description": "ID of terminal session",
+      "in": "path",
+      "name": "terminal_id",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "paths": {
+    "/api/config/{section_name}": {
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/section_name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration object",
+            "schema": {
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Get a configuration section by name",
+        "tags": ["config"]
+      },
+      "patch": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/section_name"
+          },
+          {
+            "in": "body",
+            "name": "configuration",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration object",
+            "schema": {
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Update a configuration section by name",
+        "tags": ["config"]
+      }
+    },
+    "/api/contents/{path}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "File deleted",
+            "headers": {
+              "Location": {
+                "description": "URL for the removed file",
+                "format": "url",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "summary": "Delete a file in the given path",
+        "tags": ["contents"]
+      },
+      "get": {
+        "description": "A client can optionally specify a type and/or format argument via URL parameter. When given, the Contents service shall return a model in the requested type and/or format. If the request cannot be satisfied, e.g. type=text is requested, but the file is binary, then the request shall fail with 400 and have a JSON response containing a 'reason' field, with the value 'bad format' or 'bad type', depending on what was requested.",
+        "parameters": [
+          {
+            "description": "File type ('file', 'directory')",
+            "enum": ["file", "directory"],
+            "in": "query",
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "description": "How file content should be returned ('text', 'base64')",
+            "enum": ["text", "base64"],
+            "in": "query",
+            "name": "format",
+            "type": "string"
+          },
+          {
+            "description": "Return content (0 for no content, 1 for return content)",
+            "in": "query",
+            "name": "content",
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contents of file or directory",
+            "headers": {
+              "Last-Modified": {
+                "description": "Last modified date for file",
+                "format": "dateTime",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Contents"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "No item found"
+          },
+          "500": {
+            "description": "Model key error"
+          }
+        },
+        "summary": "Get contents of file or directory",
+        "tags": ["contents"]
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/path"
+        }
+      ],
+      "patch": {
+        "parameters": [
+          {
+            "description": "New path for file or directory.",
+            "in": "body",
+            "name": "path",
+            "required": true,
+            "schema": {
+              "properties": {
+                "path": {
+                  "description": "New path for file or directory",
+                  "format": "path",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Path updated",
+            "headers": {
+              "Location": {
+                "description": "Updated URL for the file or directory",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Contents"
+            }
+          },
+          "400": {
+            "description": "No data provided",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Rename a file or directory without re-uploading content",
+        "tags": ["contents"]
+      },
+      "post": {
+        "description": "A POST to /api/contents/path creates a New untitled, empty file or directory. A POST to /api/contents/path with body {'copy_from': '/path/to/OtherNotebook.ipynb'} creates a new copy of OtherNotebook in path.",
+        "parameters": [
+          {
+            "description": "Path of file to copy",
+            "in": "body",
+            "name": "model",
+            "schema": {
+              "properties": {
+                "copy_from": {
+                  "type": "string"
+                },
+                "ext": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "File created",
+            "headers": {
+              "Location": {
+                "description": "URL for the new file",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Contents"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "No item found"
+          }
+        },
+        "summary": "Create a new file in the specified path",
+        "tags": ["contents"]
+      },
+      "put": {
+        "description": "Saves the file in the location specified by name and path.  PUT is very similar to POST, but the requester specifies the name, whereas with POST, the server picks the name.",
+        "parameters": [
+          {
+            "description": "New path for file or directory",
+            "in": "body",
+            "name": "model",
+            "schema": {
+              "properties": {
+                "content": {
+                  "description": "The actual body of the document excluding directory type",
+                  "type": "string"
+                },
+                "format": {
+                  "description": "File format ('json', 'text', 'base64')",
+                  "type": "string"
+                },
+                "name": {
+                  "description": "The new filename if changed",
+                  "type": "string"
+                },
+                "path": {
+                  "description": "New path for file or directory",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Path dtype ('notebook', 'file', 'directory')",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File saved",
+            "headers": {
+              "Location": {
+                "description": "Updated URL for the file or directory",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Contents"
+            }
+          },
+          "201": {
+            "description": "Path created",
+            "headers": {
+              "Location": {
+                "description": "URL for the file or directory",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Contents"
+            }
+          },
+          "400": {
+            "description": "No data provided",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Save or upload file.",
+        "tags": ["contents"]
+      }
+    },
+    "/api/contents/{path}/checkpoints": {
+      "get": {
+        "description": "List checkpoints for a given file. There will typically be zero or one results.",
+        "responses": {
+          "200": {
+            "description": "List of checkpoints for a file",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Checkpoints"
+              },
+              "type": "array"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "No item found"
+          },
+          "500": {
+            "description": "Model key error"
+          }
+        },
+        "summary": "Get a list of checkpoints for a file",
+        "tags": ["contents"]
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/path"
+        }
+      ],
+      "post": {
+        "description": "Create a new checkpoint with the current state of a file. With the default FileContentsManager, only one checkpoint is supported, so creating new checkpoints clobbers existing ones.",
+        "responses": {
+          "201": {
+            "description": "Checkpoint created",
+            "headers": {
+              "Location": {
+                "description": "URL for the checkpoint",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Checkpoints"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "404": {
+            "description": "No item found"
+          }
+        },
+        "summary": "Create a new checkpoint for a file",
+        "tags": ["contents"]
+      }
+    },
+    "/api/contents/{path}/checkpoints/{checkpoint_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/path"
+          },
+          {
+            "$ref": "#/parameters/checkpoint_id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Checkpoint deleted"
+          }
+        },
+        "summary": "Delete a checkpoint",
+        "tags": ["contents"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/path"
+          },
+          {
+            "$ref": "#/parameters/checkpoint_id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Checkpoint restored"
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "properties": {
+                "error": {
+                  "description": "Error condition",
+                  "type": "string"
+                },
+                "reason": {
+                  "description": "Explanation of error reason",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Restore a file to a particular checkpointed state",
+        "tags": ["contents"]
+      }
+    },
+    "/api/kernels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "List of currently-running kernel uuids",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Kernel"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "List the JSON data for all kernels that are currently running",
+        "tags": ["kernels"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "options",
+            "schema": {
+              "properties": {
+                "name": {
+                  "description": "Kernel spec name (defaults to default kernel spec for server)",
+                  "type": "string"
+                },
+                "path": {
+                  "description": "API path from root to the cwd of the kernel",
+                  "type": "string"
+                }
+              },
+              "required": ["name"],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Kernel started",
+            "headers": {
+              "Location": {
+                "description": "Model for started kernel",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Kernel"
+            }
+          }
+        },
+        "summary": "Start a kernel and return the uuid",
+        "tags": ["kernels"]
+      }
+    },
+    "/api/kernels/{kernel_id}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Kernel deleted"
+          }
+        },
+        "summary": "Kill a kernel and delete the kernel id",
+        "tags": ["kernels"]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Kernel information",
+            "schema": {
+              "$ref": "#/definitions/Kernel"
+            }
+          }
+        },
+        "summary": "Get kernel information",
+        "tags": ["kernels"]
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/kernel"
+        }
+      ]
+    },
+    "/api/kernels/{kernel_id}/interrupt": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/kernel"
+        }
+      ],
+      "post": {
+        "responses": {
+          "204": {
+            "description": "Kernel interrupted"
+          }
+        },
+        "summary": "Interrupt a kernel",
+        "tags": ["kernels"]
+      }
+    },
+    "/api/kernels/{kernel_id}/restart": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/kernel"
+        }
+      ],
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Kernel restarted",
+            "headers": {
+              "Location": {
+                "description": "URL for kernel commands",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Kernel"
+            }
+          }
+        },
+        "summary": "Restart a kernel",
+        "tags": ["kernels"]
+      }
+    },
+    "/api/kernelspecs": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Kernel specs",
+            "schema": {
+              "properties": {
+                "default": {
+                  "description": "Default kernel name",
+                  "type": "string"
+                },
+                "kernelspecs": {
+                  "additionalProperties": {
+                    "$ref": "#/definitions/KernelSpec"
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Get kernel specs",
+        "tags": ["kernelspecs"]
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "List of current sessions",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Session"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "summary": "List available sessions",
+        "tags": ["sessions"]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "session",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Session created or returned",
+            "headers": {
+              "Location": {
+                "description": "URL for session commands",
+                "format": "url",
+                "type": "string"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "501": {
+            "description": "Session not available",
+            "schema": {
+              "description": "error message",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "short_message": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Create a new session, or return an existing session if a session of the same name already exists",
+        "tags": ["sessions"]
+      }
+    },
+    "/api/sessions/{session}": {
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "Session (and kernel) were deleted"
+          },
+          "410": {
+            "description": "Kernel was deleted before the session, and the session was *not* deleted (TODO - check to make sure session wasn't deleted)"
+          }
+        },
+        "summary": "Delete a session",
+        "tags": ["sessions"]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Session",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          }
+        },
+        "summary": "Get session",
+        "tags": ["sessions"]
+      },
+      "parameters": [
+        {
+          "$ref": "#/parameters/session"
+        }
+      ],
+      "patch": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "400": {
+            "description": "No data provided"
+          }
+        },
+        "summary": "This can be used to rename the session.",
+        "tags": ["sessions"]
+      }
+    },
+    "/api/spec.yaml": {
+      "get": {
+        "produces": ["text/x-yaml"],
+        "responses": {
+          "200": {
+            "description": "The current spec for the notebook server's APIs.",
+            "schema": {
+              "type": "file"
+            }
+          }
+        },
+        "summary": "Get the current spec for the notebook server's APIs.",
+        "tags": ["api-spec"]
+      }
+    },
+    "/api/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "The current status of the server",
+            "schema": {
+              "$ref": "#/definitions/APIStatus"
+            }
+          }
+        },
+        "summary": "Get the current status/activity of the server.",
+        "tags": ["status"]
+      }
+    },
+    "/api/terminals": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "A list of all available terminal ids.",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Terminal"
+              },
+              "type": "array"
+            }
+          },
+          "403": {
+            "description": "Forbidden to access"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "summary": "Get available terminals",
+        "tags": ["terminals"]
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Succesfully created a new terminal",
+            "schema": {
+              "$ref": "#/definitions/Terminal"
+            }
+          },
+          "403": {
+            "description": "Forbidden to access"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "summary": "Create a new terminal",
+        "tags": ["terminals"]
+      }
+    },
+    "/api/terminals/{terminal_id}": {
+      "delete": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/terminal_id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Succesfully deleted terminal session"
+          },
+          "403": {
+            "description": "Forbidden to access"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "summary": "Delete a terminal session corresponding to an id.",
+        "tags": ["terminals"]
+      },
+      "get": {
+        "parameters": [
+          {
+            "$ref": "#/parameters/terminal_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Terminal session with given id",
+            "schema": {
+              "$ref": "#/definitions/Terminal"
+            }
+          },
+          "403": {
+            "description": "Forbidden to access"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "summary": "Get a terminal session corresponding to an id.",
+        "tags": ["terminals"]
+      }
+    }
+  },
+  "produces": ["application/json"],
+  "swagger": "2.0"
+}

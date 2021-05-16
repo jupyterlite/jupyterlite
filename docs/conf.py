@@ -1,11 +1,16 @@
 """documentation for jupyterlite"""
+from json import encoder
 import os
 import json
 import datetime
 import re
+import shutil
 import subprocess
+from jupyter_server.services.contents.filemanager import FileContentsManager
+from tornado.escape import json_encode
 from pathlib import Path
 from sphinx.application import Sphinx
+
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
@@ -90,7 +95,7 @@ html_context = {
 }
 
 
-def clean_schema(app: Sphinx, error):
+def after_build(app: Sphinx, error):
     """sphinx-jsonschema makes duplicate ids. clean them"""
     print("jupyterlite: Cleaning generated ids in JSON schema html...", flush=True)
     outdir = Path(app.builder.outdir)
@@ -100,6 +105,47 @@ def clean_schema(app: Sphinx, error):
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
+
+    files_dir = outdir / "_static/files"
+    print("Copying files to", files_dir)
+    files_dir.mkdir(parents=True, exist_ok=True)
+
+    class DateTimeEncoder(json.JSONEncoder):
+        def default(self, o):
+            if isinstance(o, datetime.datetime):
+                return o.isoformat()
+
+            return json.JSONEncoder.default(self, o)
+
+    # all relative to ROOT
+    for example_path in ["README.md", "docs/_static/icon.svg"]:
+        dest = files_dir / example_path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        print(f"... writing  /files/{example_path}")
+        shutil.copy2(ROOT / example_path, dest)
+
+    fm = FileContentsManager(root_dir=str(files_dir))
+
+    for file_dir in [files_dir, *files_dir.rglob("*")]:
+        if not file_dir.is_dir():
+            continue
+        all_json = (
+            outdir
+            / "_static/api/contents"
+            / file_dir.relative_to(files_dir)
+            / "all.json"
+        )
+        all_json.parent.mkdir(parents=True, exist_ok=True)
+        listing_path = str(file_dir.relative_to(files_dir).as_posix())
+        if listing_path.startswith("."):
+            listing_path = listing_path[1:]
+        print(f"... indexing /api/contents/{listing_path}")
+        all_json.write_text(
+            json.dumps(
+                fm.get(listing_path), indent=2, sort_keys=True, cls=DateTimeEncoder
+            ),
+            encoding="utf-8",
+        )
 
 
 def before_rtd_build(app: Sphinx, error):
@@ -112,6 +158,6 @@ def before_rtd_build(app: Sphinx, error):
 
 
 def setup(app):
-    app.connect("build-finished", clean_schema)
+    app.connect("build-finished", after_build)
     if RTD:
         app.connect("config-inited", before_rtd_build)
