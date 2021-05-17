@@ -319,7 +319,8 @@ export class Contents implements IContents {
 
   /**
    * Attempt to recover the model from `{:path}/__all__.json` file, fall back to
-   * deriving the model (including content) off the file in `/files/`.
+   * deriving the model (including content) off the file in `/files/`. Otherwise
+   * return `null`.
    */
   async getServerContents(
     path: string,
@@ -346,6 +347,9 @@ export class Contents implements IContents {
       } else {
         const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
         const response = await fetch(fileUrl);
+        if (!response.ok) {
+          return null;
+        }
         const mimetype = model.mimetype || response.headers.get('Content-Type');
 
         if (
