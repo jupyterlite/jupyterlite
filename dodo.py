@@ -212,7 +212,7 @@ def task_docs():
         name="extensions",
         doc="cache extensions from share/jupyter/labextensions",
         actions=[U.extend_docs],
-        file_dep=[P.APP_JUPYTERLITE_JSON],
+        file_dep=[P.APP_JUPYTERLITE_JSON, P.DOCS_OVERRIDES],
         targets=[B.PATCHED_JUPYTERLITE_JSON],
     )
 
@@ -336,6 +336,7 @@ class P:
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
     DOCS_ICON = DOCS / "_static/icon.svg"
+    DOCS_OVERRIDES = DOCS / "overrides.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
@@ -668,7 +669,13 @@ class U:
 
         print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
         config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
+        print(f"... ... {len(extensions)} federated extensions...")
         config["jupyter-config-data"]["federated_extensions"] = extensions
+
+        # add settings from `overrides.json`
+        overrides = json.loads(P.DOCS_OVERRIDES.read_text(**C.ENC))
+        print(f"... ... {len(overrides.keys())} settings overrides")
+        config["jupyter-config-data"]["settingsOverrides"] = overrides
 
         print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
         B.PATCHED_JUPYTERLITE_JSON.write_text(

@@ -1,0 +1,17 @@
+{
+  "jupyterlab-tour:user-tours": {
+    "tours": [
+      {
+        "id": "jupyter-lite",
+        "label": "Welcome to JupyterLite",
+        "steps": [
+          {
+            "target": "#jp-MainLogo",
+            "content": "This is JupyterLite"
+          }
+        ],
+        "options": {}
+      }
+    ]
+  }
+}
