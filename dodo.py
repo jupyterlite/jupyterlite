@@ -265,6 +265,20 @@ def task_check():
         ],
     )
 
+    config = json.loads(B.PATCHED_JUPYTERLITE_JSON.read_text(**C.ENC))
+    overrides = config.get("jupyter-config-data", {}).get("settingsOverrides", {})
+    for plugin_id, defaults in overrides.items():
+        ext, plugin = plugin_id.split(":")
+        schema_file = B.DOCS_LAB_EXTENSIONS / ext / "schemas" / ext / f"{plugin}.json"
+        if not schema_file.exists():
+            # this is probably in all.json
+            continue
+        yield dict(
+            name=f"overrides:{plugin_id}",
+            file_dep=[B.PATCHED_JUPYTERLITE_JSON, schema_file],
+            actions=[(U.validate, [schema_file, None, defaults])],
+        )
+
 
 def task_watch():
     """watch sources and rebuild on change"""
@@ -608,20 +622,24 @@ class U:
         )
 
     @staticmethod
-    def validate(schema_path, instance_path=None):
+    def validate(schema_path, instance_path=None, instance_obj=None):
         schema = json.loads(schema_path.read_text(**C.ENC))
         validator = jsonschema.Draft7Validator(schema)
-        if instance_path is None:
+        if instance_path is None and instance_obj is None:
             # probably just validating itself, carry on
             return
-        instance = json.loads(instance_path.read_text(**C.ENC))
-        if instance_path.name.endswith(".ipynb"):
-            instance = instance["metadata"]["jupyterlite"]
+        if instance_obj:
+            instance = instance_obj
+            label = "some JSON"
+        else:
+            instance = json.loads(instance_path.read_text(**C.ENC))
+            # handle special case of loading from ipynb
+            if instance_path.name.endswith(".ipynb"):
+                instance = instance["metadata"]["jupyterlite"]
+            label = instance_path.relative_to(P.ROOT)
         errors = [*validator.iter_errors(instance)]
         for error in errors:
-            print(
-                f"""{instance_path.relative_to(P.ROOT)}#/{"/".join(error.relative_path)}"""
-            )
+            print(f"""{label}#/{"/".join(error.relative_path)}""")
             print("\t!!!", error.message)
             print("\ton:", str(error.instance)[:64])
         return not errors
