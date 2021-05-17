@@ -20,6 +20,8 @@ RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
 EXAMPLE_FILES = [
     ROOT / "README.md",
     ROOT / "docs/_static/icon.svg",
+    ROOT / "app/jupyter-lite.json",
+    ROOT / "app/jupyterlite.schema.v0.json",
     *[
         example
         for example in (ROOT / "examples").rglob("*.*")
