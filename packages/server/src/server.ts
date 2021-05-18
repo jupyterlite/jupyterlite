@@ -189,7 +189,7 @@ export class JupyterServer {
     // Settings
     // TODO: improve the regex
     // const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
-    const pluginPattern = '/api/settings/((?:@([^/]+?)[/])?([^/]+?):(\\w+))';
+    const pluginPattern = '/api/settings/((?:@([^/]+?)[/])?([^/]+?):([^:]+))$';
 
     app.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
       const settings = await this._settings.get(pluginId);

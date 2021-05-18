@@ -35,6 +35,6 @@ dependencies:
   - sphinxext-rediraffe
   # list of federated extensions for the demo site
   - jupyterlab-drawio
-  - jupyterlab-tour
+  - jupyterlab-tour >=3.1.0
   - theme-darcula
   ### DOCS ENV ###

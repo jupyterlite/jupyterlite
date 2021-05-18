@@ -5,7 +5,7 @@
  */
 
 /*
- * an `index.html` should `await import('../config-utils.js')` after specifying
+ * An `index.html` should `await import('../config-utils.js')` after specifying
  * the key `script` tags...
  *
  * ```html
@@ -15,6 +15,10 @@
  * ```
  */
 const JUPYTER_CONFIG_ID = 'jupyter-config-data';
+
+/*
+ * The JS-mangled name for `data-jupyter-lite-root`
+ */
 const LITE_ROOT_ATTR = 'jupyterLiteRoot';
 
 /**
@@ -99,11 +103,24 @@ async function jupyterConfigData() {
   return (_JUPYTER_CONFIG = configs.reduce(mergeOneConfig));
 }
 
+/**
+ * Merge a new configuration on top of the existing config
+ */
 function mergeOneConfig(memo, config) {
   for (const [k, v] of Object.entries(config)) {
     switch (k) {
+      // this list of extension names is appended
       case 'federated_extensions':
         memo[k] = [...(memo[k] || []), ...v];
+        break;
+      // this `@org/pkg:plugin` is merged at the first level of values
+      case 'settingsOverrides':
+        if (!memo[k]) {
+          memo[k] = {};
+        }
+        for (const [plugin, defaults] of Object.entries(v || {})) {
+          memo[k][plugin] = { ...(memo[k][plugin] || {}), ...defaults };
+        }
         break;
       default:
         memo[k] = v;

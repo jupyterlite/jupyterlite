@@ -48,7 +48,7 @@ export class Settings {
         const { id } = plugin;
         const raw = ((await this._storage.getItem(id)) as string) ?? plugin.raw;
         return {
-          ...plugin,
+          ...Private.override(plugin),
           raw,
           settings: json5.parse(raw)
         };
@@ -93,13 +93,13 @@ export class Settings {
     const packageJson = await (await fetch(packageUrl)).json();
     const raw = ((await this._storage.getItem(pluginId)) as string) ?? '{}';
     const settings = json5.parse(raw) || {};
-    return {
+    return Private.override({
       id: pluginId,
       raw,
       schema,
       settings,
       version: packageJson.version || '3.0.8'
-    };
+    });
   }
 
   private _storage = localforage.createInstance({
@@ -114,6 +114,10 @@ export class Settings {
  * A namespace for private data
  */
 namespace Private {
+  const _overrides: Record<string, IPlugin['schema']['default']> = JSON.parse(
+    PageConfig.getOption('settingsOverrides')
+  );
+
   /**
    * Test whether this package is configured in `federated_extensions` in this app
    *
@@ -135,5 +139,23 @@ namespace Private {
     }
 
     return false;
+  }
+
+  /**
+   * Override the defaults of the schema with ones from PageConfig
+   *
+   * @see https://github.com/jupyterlab/jupyterlab_server/blob/v2.5.2/jupyterlab_server/settings_handler.py#L216-L227
+   */
+  export function override(plugin: IPlugin): IPlugin {
+    if (_overrides[plugin.id]) {
+      if (!plugin.schema.properties) {
+        // probably malformed, or only provides keyboard shortcuts, etc.
+        plugin.schema.properties = {};
+      }
+      for (const [prop, propDefault] of Object.entries(_overrides[plugin.id] || {})) {
+        plugin.schema.properties[prop].default = propDefault;
+      }
+    }
+    return plugin;
   }
 }
