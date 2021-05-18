@@ -41,17 +41,62 @@ schema-v0
 [pypi]: https://pypi.org/project/jupyterlite
 [npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
 
-## Adding Initial Content
-
-```{danger}
-This feature hasn't even been _started_!
-```
+## Adding Content
 
 ### _Content, The Hard Way_
 
-- _Copy your files in `$YOUR_JUPYTERLITE/files`._
-- _Do something to generate valid Jupyter Server API responses_
-- _Put them someplace_
+```{warning}
+This is a heavily work-in-progress procedure, and will hopefully soon be improved
+with convenience tools in (at least) python and JavaScript.
+```
+
+Assuming:
+
+- you have a running JupyterLab 3
+- you want to add all of the files in the root folder of the current JupyterLab to your
+  JupyterLite.
+
+Open a browser:
+
+- view the
+  [Contents API](https://jupyter-server.readthedocs.io/en/latest/developers/rest-api.html#get--api-contents-path),
+  e.g. `http://localhost:8888/api/contents`, which should look something like:
+
+```json
+{
+  "name": "",
+  "path": "",
+  "last_modified": "2021-05-15T20:16:17.753908Z",
+  "created": "2021-05-15T20:16:17.753908Z",
+  "format": "json",
+  "mimetype": null,
+  "size": null,
+  "writable": true,
+  "type": "directory",
+  "content": [
+    {
+      "name": "README.md",
+      "path": "README.md",
+      "last_modified": "2021-05-15T20:12:22.261076Z",
+      "created": "2021-05-15T20:12:22.261076Z",
+      "content": null,
+      "format": null,
+      "mimetype": "text/markdown",
+      "size": 3735,
+      "writable": true,
+      "type": "file"
+    }
+  ]
+}
+```
+
+- Paste this JSON in `$YOUR_JUPYTERLITE/api/contents/all.json`
+- Copy your files in `$YOUR_JUPYTERLITE/files`
+- Repeat this for every subfolder `:(`
+
+Now, when the app reloads, these files will appear in the File Browser _if_ there isn't
+an existing file of that name in browser storage. If a user _has_ created such a file,
+and is deleted, the original server-backed file will become visible.
 
 ## Adding Extensions
 
