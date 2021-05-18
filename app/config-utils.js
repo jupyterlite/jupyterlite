@@ -110,6 +110,7 @@ function mergeOneConfig(memo, config) {
   for (const [k, v] of Object.entries(config)) {
     switch (k) {
       // this list of extension names is appended
+      case 'disabledExtensions':
       case 'federated_extensions':
         memo[k] = [...(memo[k] || []), ...v];
         break;

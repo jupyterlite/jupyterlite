@@ -17,9 +17,9 @@ Each can be omitted from the file tree, and will result in a harmless (though no
 
 ```{hint}
 Configuration cascades _down_, such that the closest, most-user-editable file
-to the `index.html` being serve takes highest precedence. With the exception of
-the list of `federated_extensions`, which are _merged_, like-named keys will be
-_replaced_  by higher-priority files.
+to the `index.html` being served takes highest precedence. Like-named keys will be _replaced_  by higher-priority files, with the notable exceptions of:
+- the `federated_extensions` and `disabledExtensions` lists which are appended
+- `settingsOverrides` dictionary will be merged at the top-level of each plugin
 ```
 
 ### Schema
