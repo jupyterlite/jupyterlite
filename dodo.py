@@ -320,7 +320,11 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    DOCS_DISABLED_EXT = ["nbdime-jupyterlab", "@jupyterlab/server-proxy"]
+    DOCS_DISABLED_EXT = [
+        "nbdime-jupyterlab",
+        "@jupyterlab/server-proxy",
+        "jupyterlab-server-proxy",
+    ]
 
 
 class P:

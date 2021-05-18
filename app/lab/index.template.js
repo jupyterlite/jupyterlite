@@ -89,8 +89,11 @@ async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      // skip the plugin if disabled
-      if (disabled.includes(plugin.id)) {
+      // skip the plugin (or extension) if disabled
+      if (
+        disabled.includes(plugin.id) ||
+        disabled.includes(plugin.id.split(':')[0])
+      ) {
         continue;
       }
       yield plugin;
