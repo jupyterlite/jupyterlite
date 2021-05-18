@@ -19,6 +19,17 @@
         }
       }
     },
+    "jupyterlab-settings-overrides": {
+      "title": "JupyterLab Settings Overrides",
+      "description": "A map of config objects keyed by `@org/pkg:plugin` which override the default settings. See https://jupyterlab.readthedocs.io/en/stable/user/directories.html#overridesjson",
+      "type": "object",
+      "patternProperties": {
+        "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*:(.*)$": {
+          "description": "A valid configuration which must conform to the plugin's defined schema",
+          "type": "object"
+        }
+      }
+    },
     "jupyter-config-data": {
       "title": "Jupyter Config Data",
       "description": "contents of a jupyter-config-data `<script>`, as read by `PageConfig`. These well-known values may be augmented by other extensions.",
@@ -40,6 +51,9 @@
           "type": "string",
           "format": "uri",
           "default": "./lab/favicon.ico"
+        },
+        "settingsOverrides": {
+          "$ref": "#/definitions/jupyterlab-settings-overrides"
         },
         "federated_extensions": {
           "type": "array",

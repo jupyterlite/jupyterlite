@@ -53,6 +53,7 @@ extensions = [
 autosectionlabel_prefix_document = True
 myst_heading_anchors = 3
 suppress_warnings = ["autosectionlabel.*"]
+execution_excludepatterns = ["_static/**/*"]
 
 rediraffe_redirects = {
     "try/index": "_static/index",
