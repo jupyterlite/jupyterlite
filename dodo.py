@@ -232,7 +232,7 @@ def task_docs():
 
 
 def task_schema():
-    """validate the schema and instance documents"""
+    """update, validate the schema and instance documents"""
     yield dict(
         name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
     )
@@ -622,8 +622,10 @@ class U:
         )
 
     @staticmethod
-    def validate(schema_path, instance_path=None, instance_obj=None):
+    def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
         schema = json.loads(schema_path.read_text(**C.ENC))
+        if ref:
+            schema["$ref"] = ref
         validator = jsonschema.Draft7Validator(schema)
         if instance_path is None and instance_obj is None:
             # probably just validating itself, carry on

@@ -37,7 +37,8 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
 - JavaScript kernel running in an `IFrame`
-- Offline Notebook storage in browser `localStorage` or `IndexDB`
+- Combine Offline Notebook storage in browser `localStorage` or `IndexDB` with example
+  files
 - Support for saving settings for JupyterLab/Lite core and federated extensions
 - Basic session and kernel management to have multiple kernels running at the same time
 - Support for
