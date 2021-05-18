@@ -19,6 +19,7 @@ const serverExtensions = [
 
 // custom list of disabled plugins
 const disabled = [
+  ...JSON.parse(PageConfig.getOption('disabledExtensions') || '[]'),
   '@jupyterlab/apputils-extension:themes',
   '@jupyterlab/apputils-extension:workspaces',
   '@jupyterlab/application-extension:tree-resolver',

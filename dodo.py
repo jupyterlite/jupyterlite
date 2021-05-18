@@ -320,6 +320,7 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
+    DOCS_DISABLED_EXT = ["nbdime-jupyterlab", "@jupyterlab/server-proxy"]
 
 
 class P:
@@ -697,6 +698,11 @@ class U:
         overrides = json.loads(P.DOCS_OVERRIDES.read_text(**C.ENC))
         print(f"... ... {len(overrides.keys())} settings overrides")
         config["jupyter-config-data"]["settingsOverrides"] = overrides
+
+        # disable some extensions
+        config["jupyter-config-data"].setdefault("disabledExtensions", []).extend(
+            C.DOCS_DISABLED_EXT
+        )
 
         print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
         B.PATCHED_JUPYTERLITE_JSON.write_text(

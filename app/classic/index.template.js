@@ -20,7 +20,7 @@ const mimeExtensionsMods = [
   import('@jupyterlab/json-extension')
 ];
 
-const disabled = [];
+const disabled = JSON.parse(PageConfig.getOption('disabledExtensions') || '[]');
 
 async function createModule(scope, module) {
   try {
