@@ -1,5 +1,4 @@
 """documentation for jupyterlite"""
-from json import encoder
 import os
 import json
 import datetime
@@ -7,7 +6,6 @@ import re
 import shutil
 import subprocess
 from jupyter_server.services.contents.filemanager import FileContentsManager
-from tornado.escape import json_encode
 from pathlib import Path
 from sphinx.application import Sphinx
 
@@ -85,6 +83,7 @@ exclude_patterns = [
     "webpack.config.*",
     "jupyter_execute",
 ]
+execution_excludepatterns = ["_static/**/*"]
 html_css_files = [
     "theme.css",
 ]
