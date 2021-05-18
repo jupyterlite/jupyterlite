@@ -258,6 +258,7 @@ def task_check():
                 B.DOCS,
                 "-p",
                 "no:warnings",
+                "--links-ext=html",
                 "--check-anchors",
                 "--check-links-ignore",
                 "^https?://",

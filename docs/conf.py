@@ -51,7 +51,6 @@ extensions = [
 autosectionlabel_prefix_document = True
 myst_heading_anchors = 3
 suppress_warnings = ["autosectionlabel.*"]
-execution_excludepatterns = ["_static/**/*"]
 
 rediraffe_redirects = {
     "try/index": "_static/index",
@@ -72,6 +71,7 @@ html_static_path = [
     "../build/env-extensions",
 ]
 exclude_patterns = [
+    "_build",
     ".ipynb_checkpoints",
     "**/.ipynb_checkpoints",
     "**/~.*",
@@ -79,10 +79,10 @@ exclude_patterns = [
     "babel.config.*",
     "jest-setup.js",
     "jest.config.js",
+    "jupyter_execute",
     "test/",
     "tsconfig.*",
     "webpack.config.*",
-    "jupyter_execute",
 ]
 execution_excludepatterns = ["_static/**/*"]
 html_css_files = [
