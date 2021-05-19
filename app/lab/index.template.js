@@ -19,6 +19,7 @@ const serverExtensions = [
 
 // custom list of disabled plugins
 const disabled = [
+  ...JSON.parse(PageConfig.getOption('disabledExtensions') || '[]'),
   '@jupyterlab/apputils-extension:themes',
   '@jupyterlab/apputils-extension:workspaces',
   '@jupyterlab/application-extension:tree-resolver',
@@ -88,8 +89,11 @@ async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      // skip the plugin if disabled
-      if (disabled.includes(plugin.id)) {
+      // skip the plugin (or extension) if disabled
+      if (
+        disabled.includes(plugin.id) ||
+        disabled.includes(plugin.id.split(':')[0])
+      ) {
         continue;
       }
       yield plugin;

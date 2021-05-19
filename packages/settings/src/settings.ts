@@ -115,7 +115,7 @@ export class Settings {
  */
 namespace Private {
   const _overrides: Record<string, IPlugin['schema']['default']> = JSON.parse(
-    PageConfig.getOption('settingsOverrides')
+    PageConfig.getOption('settingsOverrides') || '{}'
   );
 
   /**

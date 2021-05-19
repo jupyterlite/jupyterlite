@@ -79,6 +79,13 @@ jobs:
       - name: Check Built Artifacts
         run: |
           doit check
+      - name: Upload Sphinx Logs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: ignore
+          path: |
+            /tmp/sphinx-*.log
 
   deploy:
     if: github.ref == 'refs/heads/main'
