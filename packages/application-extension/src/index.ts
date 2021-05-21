@@ -7,9 +7,37 @@ import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
+import {
+  IDocumentProvider,
+  IDocumentProviderFactory,
+  ProviderMock
+} from '@jupyterlab/docprovider';
+
+import { WebsocketProvider } from 'y-websocket';
+
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { ITranslator, TranslationManager } from '@jupyterlab/translation';
+
+const YJS_WEBSOCKET_URL = 'wss://demos.yjs.dev';
+
+class WebSocketProvider extends WebsocketProvider implements IDocumentProvider {
+  constructor(options: IDocumentProviderFactory.IOptions) {
+    super(YJS_WEBSOCKET_URL, options.guid, options.ymodel.ydoc);
+  }
+  requestInitialContent(): Promise<boolean> {
+    return Promise.resolve(true);
+  }
+  putInitializedState(): void {
+    // no-op
+  }
+  acquireLock(): Promise<number> {
+    return Promise.resolve(0);
+  }
+  releaseLock(lock: number): void {
+    // no-op
+  }
+}
 
 /**
  * The command IDs used by the application extension.
@@ -17,6 +45,22 @@ import { ITranslator, TranslationManager } from '@jupyterlab/translation';
 namespace CommandIDs {
   export const download = 'docmanager:download';
 }
+
+/**
+ * An alternative document provider plugin
+ */
+const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
+  id: '@jupyterlite/application-extension:docprovider',
+  provides: IDocumentProviderFactory,
+  activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
+    // TODO: read from PageConfig
+    const collaborative = true;
+    const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
+      return collaborative ? new WebSocketProvider(options) : new ProviderMock();
+    };
+    return factory;
+  }
+};
 
 /**
  * A plugin providing download commands in the file menu and command palette.
@@ -83,7 +127,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
  * A simplified Translator
  */
 const translator: JupyterFrontEndPlugin<ITranslator> = {
-  id: '@jupyterlab/translation:translator',
+  id: '@jupyterlite/application-extension:translator',
   activate: (app: JupyterFrontEnd): ITranslator => {
     const translationManager = new TranslationManager();
     return translationManager;
@@ -92,6 +136,10 @@ const translator: JupyterFrontEndPlugin<ITranslator> = {
   provides: ITranslator
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [downloadPlugin, translator];
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  docProviderPlugin,
+  downloadPlugin,
+  translator
+];
 
 export default plugins;
