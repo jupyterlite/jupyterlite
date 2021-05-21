@@ -54,7 +54,7 @@ To get information about a specific _task_, use the info `info` _action_ with th
 name from the first column of `list`:
 
 ```bash
-doit info build:js:app:classic
+doit info build:js:app:retro
 ```
 
 #### Task and Action Defaults

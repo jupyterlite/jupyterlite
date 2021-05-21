@@ -21,7 +21,7 @@
   "scripts": {
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
     "build": "yarn build:lib && yarn build:app",
-    "build:app": "lerna run build --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\"",
+    "build:app": "lerna run build --stream --parallel --scope \"@jupyterlite/app-*\"",
     "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:prod": "lerna run build:prod",
     "build:python": "lerna run build:python",
@@ -42,7 +42,7 @@
     "test": "lerna run test",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
     "watch": "run-p watch:lib watch:app",
-    "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-classic\" --scope \"@jupyterlite/app-lab\" yarn watch",
+    "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-*\" yarn watch",
     "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch"
   },
   "husky": {

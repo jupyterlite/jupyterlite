@@ -35,5 +35,5 @@ function ensureResolutions(app: string): string[] {
 
 if (require.main === module) {
   ensureResolutions('lab');
-  ensureResolutions('classic');
+  ensureResolutions('retro');
 }

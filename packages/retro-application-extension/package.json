@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/classic-application-extension",
+  "name": "@jupyterlite/retro-application-extension",
   "version": "0.1.0",
-  "description": "JupyterLite - Classic Application Extension",
+  "description": "JupyterLite - Retro Application Extension",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
     "url": "https://github.com/jtpio/jupyterlite/issues"

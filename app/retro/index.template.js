@@ -47,22 +47,22 @@ async function main() {
 
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
-  // create a JupyterLab Classic frontend
-  const { App } = require('@jupyterlab-classic/application');
-  const app = new App({ serviceManager, mimeExtensions });
+  // create a RetroLab frontend
+  const { RetroApp } = require('@retrolab/application');
+  const app = new RetroApp({ serviceManager, mimeExtensions });
 
   let mods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
-    require('@jupyterlite/classic-application-extension'),
+    require('@jupyterlite/retro-application-extension'),
     require('@jupyterlite/theme-extension'),
-    // @jupyterlab-classic plugins
-    // do not enable the document opener from JupyterLab Classic
-    require('@jupyterlab-classic/application-extension').default.filter(
-      ({ id }) => id !== '@jupyterlab-classic/application-extension:opener'
+    // @retrolab plugins
+    // do not enable the document opener from RetroLab
+    require('@retrolab/application-extension').default.filter(
+      ({ id }) => id !== '@retrolab/application-extension:opener'
     ),
-    require('@jupyterlab-classic/help-extension'),
-    require('@jupyterlab-classic/notebook-extension'),
+    require('@retrolab/help-extension'),
+    require('@retrolab/notebook-extension'),
 
     // @jupyterlab plugins
     require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
@@ -101,13 +101,23 @@ async function main() {
 
   // The motivation here is to only load a specific set of plugins dependending on
   // the current page
-  const page = PageConfig.getOption('classicPage');
+  const page = PageConfig.getOption('retroPage');
   switch (page) {
     case 'tree': {
       mods = mods.concat([
-        // do not enable the new terminal button from JupyterLab Classic
-        require('@jupyterlab-classic/tree-extension').default.filter(
-          ({ id }) => id !== '@jupyterlab-classic/tree-extension:new-terminal'
+        require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
+          [
+            '@jupyterlab/filebrowser-extension:browser',
+            '@jupyterlab/filebrowser-extension:download',
+            '@jupyterlab/filebrowser-extension:factory',
+            '@jupyterlab/filebrowser-extension:file-upload-status',
+            '@jupyterlab/filebrowser-extension:open-with',
+            '@jupyterlab/filebrowser-extension:share-file'
+          ].includes(id)
+        ),
+        // do not enable the new terminal button from RetroLab
+        require('@retrolab/tree-extension').default.filter(
+          ({ id }) => id !== '@retrolab/tree-extension:new-terminal'
         )
       ]);
       break;
@@ -134,9 +144,12 @@ async function main() {
         require('@jupyterlab/fileeditor-extension').default.filter(({ id }) =>
           ['@jupyterlab/fileeditor-extension:plugin'].includes(id)
         ),
-        require('@jupyterlab-classic/tree-extension').default.filter(({ id }) =>
-          ['@jupyterlab-classic/tree-extension:factory'].includes(id)
-        )
+        require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
+          [
+            '@jupyterlab/filebrowser-extension:browser',
+            '@jupyterlab/filebrowser-extension:factory'
+          ].includes(id)
+        ),
       ]);
       break;
     }
@@ -211,9 +224,9 @@ async function main() {
 
   console.log('Starting app');
   await app.start();
-  console.log('JupyterLite Classic started, waiting for restore');
+  console.log('JupyterLite Retro started, waiting for restore');
   await app.restored;
-  console.log('JupyterLite Classic restored');
+  console.log('JupyterLite Retro restored');
 }
 
 main();
