@@ -86,37 +86,3 @@ jobs:
           if-no-files-found: ignore
           path: |
             /tmp/sphinx-*.log
-
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
-      - name: Extract the app
-        run: |
-          tar -xvf ./dist/*.tgz
-      - name: Deploy to Production
-        id: prod
-        run: |
-          if [ "$REF" == 'refs/heads/main' ]
-          then
-              echo "::set-output name=vercel-args::--prod"
-          else
-              echo "::set-output name=vercel-args::"
-          fi
-        env:
-          REF: ${{ github.ref }}
-      - uses: amondnet/vercel-action@v20
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID}}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID}}
-          vercel-args: ${{ steps.prod.outputs.vercel-args }}
-          working-directory: ./package
