@@ -22,8 +22,8 @@ function ensureResolutions(app: string): string[] {
 
   packages.forEach(name => {
     const data = require(`${name}/package.json`);
-    // Insist on a restricted version in the yarn resolution.
-    corePackage.resolutions[name] = `~${data.version}`;
+    const prefix = name.startsWith('@retrolab') ? '~' : '^';
+    corePackage.resolutions[name] = `${prefix}${data.version}`;
   });
 
   // Write the package.json back to disk.
