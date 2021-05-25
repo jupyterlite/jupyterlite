@@ -5,6 +5,8 @@ import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application'
 
 import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
 import {
@@ -53,8 +55,7 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
-    // TODO: read from PageConfig
-    const collaborative = true;
+    const collaborative = PageConfig.getOption('collaborative');
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       return collaborative ? new WebSocketProvider(options) : new ProviderMock();
     };
