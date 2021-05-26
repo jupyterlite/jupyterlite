@@ -15,16 +15,16 @@ from the ground-up using JupyterLab components and extensions.
 ## ✨ Try it in your browser ✨
 
 JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and
-[JupyterLab Retro](https://github.com/jtpio/retrolab).
+[RetroLab](https://github.com/jupyterlab/retrolab).
 
-| [Try it with JupyterLab!] | [Try it with JupyterLab Retro!] |
-| :-----------------------: | :-----------------------------: |
-|     ![lab-screenshot]     |       ![retro-screenshot]       |
+| [Try it with JupyterLab!] | [Try it with RetroLab!] |
+| :-----------------------: | :---------------------: |
+|     ![lab-screenshot]     |   ![retro-screenshot]   |
 
 [try it with jupyterlab!]: https://jupyterlite.readthedocs.io/en/latest/try/lab
 [lab-screenshot]:
   https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png
-[try it with jupyterlab retro!]: https://jupyterlite.readthedocs.io/en/latest/try/retro
+[try it with retrolab!]: https://jupyterlite.readthedocs.io/en/latest/try/retro
 [retro-screenshot]:
   https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png
 
