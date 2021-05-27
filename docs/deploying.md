@@ -185,7 +185,16 @@ in the root of your repository.
 See the JupyterLite [.readthedocs.yml] for an example.
 ```
 
+```{hint}
+You might also want to enable the [Autobuild Documentation for Pull Requests] feature of Read The Docs to
+automatically get a preview link when opening a new pull request:
+
+![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
+```
+
 [.readthedocs.yml]: https://github.com/jtpio/jupyterlite/blob/main/.readthedocs.yml
+[autobuild documentation for pull requests]:
+  https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
 
 ### Vercel
 

@@ -196,6 +196,13 @@ JupyterLite become _real_ as [pull requests].
 - Wait for continuous integration
   - If stuff breaks, fix it or ask for help!
 
+#### Previews
+
+Each pull request is built and deployed on Read The Docs. You can check the live preview
+by clicking on the Read The Docs check:
+
+![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
+
 ### Releasing
 
 > TBD
