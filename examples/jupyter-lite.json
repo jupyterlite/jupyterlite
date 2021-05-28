@@ -1,6 +1,7 @@
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
+    "collaborative": true,
     "disabledExtensions": [
       "@jupyterlab/server-proxy",
       "jupyterlab-server-proxy",
