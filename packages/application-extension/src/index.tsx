@@ -33,6 +33,8 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { toArray } from '@lumino/algorithm';
 
+import { UUID } from '@lumino/coreutils';
+
 import { Widget } from '@lumino/widgets';
 
 import { WebrtcProvider } from 'y-webrtc';
@@ -40,8 +42,8 @@ import { WebrtcProvider } from 'y-webrtc';
 import React from 'react';
 
 class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
-  constructor(options: IDocumentProviderFactory.IOptions) {
-    super(options.guid, options.ymodel.ydoc);
+  constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
+    super(`${options.room}${options.guid}`, options.ymodel.ydoc);
     this.awareness = options.ymodel.awareness;
   }
   requestInitialContent(): Promise<boolean> {
@@ -171,9 +173,17 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
+    const urlParams = new URLSearchParams(window.location.search);
+    // default to a random id to not collaborate with others by default
+    const room = urlParams.get('room') || UUID.uuid4();
     const collaborative = PageConfig.getOption('collaborative') === 'true';
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
-      return collaborative ? new WebRtcProvider(options) : new ProviderMock();
+      return collaborative
+        ? new WebRtcProvider({
+            room,
+            ...options
+          })
+        : new ProviderMock();
     };
     return factory;
   }
