@@ -45,7 +45,7 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
     this.awareness = options.ymodel.awareness;
   }
   requestInitialContent(): Promise<boolean> {
-    return Promise.resolve(true);
+    return Promise.resolve(false);
   }
   putInitializedState(): void {
     // no-op
