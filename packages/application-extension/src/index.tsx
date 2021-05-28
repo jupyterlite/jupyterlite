@@ -42,6 +42,7 @@ import React from 'react';
 class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   constructor(options: IDocumentProviderFactory.IOptions) {
     super(options.guid, options.ymodel.ydoc);
+    this.awareness = options.ymodel.awareness;
   }
   requestInitialContent(): Promise<boolean> {
     return Promise.resolve(true);
