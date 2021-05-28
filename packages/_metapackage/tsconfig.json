@@ -8,7 +8,6 @@
   "references": [
     { "path": "../application" },
     { "path": "../application-extension" },
-    { "path": "../classic-application-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
     { "path": "../javascript-kernel" },
@@ -18,6 +17,7 @@
     { "path": "../p5-kernel-extension" },
     { "path": "../pyolite-kernel" },
     { "path": "../pyolite-kernel-extension" },
+    { "path": "../retro-application-extension" },
     { "path": "../server-extension" },
     { "path": "../session" },
     { "path": "../settings" },

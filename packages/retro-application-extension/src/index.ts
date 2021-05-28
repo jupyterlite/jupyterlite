@@ -36,7 +36,7 @@ const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?\\?path=(.*)');
  * TODO: remove and use a custom doc manager?
  */
 const docmanager: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/classic-application-extension:docmanager',
+  id: '@jupyterlite/retro-application-extension:docmanager',
   requires: [IDocumentManager],
   autoStart: true,
   activate: (app: JupyterFrontEnd, docManager: IDocumentManager) => {
@@ -57,7 +57,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       }
       const ext = PathExt.extname(path);
       const route = ext === '.ipynb' ? 'notebooks' : 'edit';
-      window.open(`${baseUrl}classic/${route}?path=${path}`);
+      window.open(`${baseUrl}retro/${route}?path=${path}`);
       return undefined;
     };
   }
@@ -68,7 +68,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
  * query string parameters.
  */
 const opener: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/classic-application-extension:opener',
+  id: '@jupyterlite/retro-application-extension:opener',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
   activate: (

@@ -26,6 +26,7 @@ const disabled = [
   // TODO: improve/replace resolver and main to avoid redirect issues
   // @see https://github.com/jtpio/jupyterlite/issues/22
   '@jupyterlab/apputils-extension:resolver',
+  '@jupyterlab/docmanager-extension:download',
   '@jupyterlab/application-extension:main'
 ];
 

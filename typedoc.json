@@ -2,7 +2,6 @@
   "entryPoints": [
     "packages/application/src/index.ts",
     "packages/application-extension/src/index.ts",
-    "packages/classic-application-extension/src/index.ts",
     "packages/contents/src/index.ts",
     "packages/iframe-extension/src/index.ts",
     "packages/javascript-kernel/src/index.ts",
@@ -12,6 +11,7 @@
     "packages/p5-kernel-extension/src/index.ts",
     "packages/pyolite-kernel/src/index.ts",
     "packages/pyolite-kernel-extension/src/index.ts",
+    "packages/retro-application-extension/src/index.ts",
     "packages/server/src/index.ts",
     "packages/server-extension/src/index.ts",
     "packages/session/src/index.ts",

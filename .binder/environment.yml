@@ -2,6 +2,7 @@ name: jupyterlite-dev
 # this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
+  - conda-forge/label/jupyterlab_alpha
   - conda-forge
 
 dependencies:
@@ -10,8 +11,8 @@ dependencies:
   - flit >=3.1
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3,<4
-  - jupyterlab-classic
+  - jupyterlab >=3.1.0a10,<4
+  - retrolab
   # extra docs tools
   - sphinx-autobuild
 

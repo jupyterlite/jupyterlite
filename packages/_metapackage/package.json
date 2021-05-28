@@ -22,7 +22,7 @@
   "dependencies": {
     "@jupyterlite/application": "file:../application",
     "@jupyterlite/application-extension": "file:../application-extension",
-    "@jupyterlite/classic-application-extension": "file:../classic-application-extension",
+    "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/contents": "file:../contents",
     "@jupyterlite/iframe-extension": "file:../iframe-extension",
     "@jupyterlite/javascript-kernel": "file:../javascript-kernel",

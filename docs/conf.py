@@ -55,7 +55,7 @@ suppress_warnings = ["autosectionlabel.*"]
 rediraffe_redirects = {
     "try/index": "_static/index",
     "try/lab/index": "_static/lab/index",
-    "try/classic/index": "_static/classic/tree/index",
+    "try/retro/index": "_static/retro/tree/index",
 }
 
 # files

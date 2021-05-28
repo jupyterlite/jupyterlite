@@ -16,9 +16,6 @@
       "path": "./packages/application-extension"
     },
     {
-      "path": "./packages/classic-application-extension"
-    },
-    {
       "path": "./packages/contents"
     },
     {
@@ -44,6 +41,9 @@
     },
     {
       "path": "./packages/pyolite-kernel-extension"
+    },
+    {
+      "path": "./packages/retro-application-extension"
     },
     {
       "path": "./packages/server"

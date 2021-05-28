@@ -313,7 +313,7 @@ def task_test():
 
 class C:
     NAME = "jupyterlite"
-    APPS = ["classic", "lab"]
+    APPS = ["retro", "lab"]
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
@@ -671,7 +671,7 @@ class U:
         ]
         # we might find themes
         app_themes = [
-            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "classic"]
+            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "retro"]
         ]
 
         for pkg_json in all_package_json:
