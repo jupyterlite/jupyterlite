@@ -31,6 +31,8 @@ def display(obj, raw=False):
 def format_result(result, raw=False):
     if raw:
         return {"data": result, "metadata": {}}
+    if hasattr(result, "_repr_mimebundle_"):
+        return {"data": result._repr_mimebundle_(), "metadata": {}}
     data = {"text/plain": repr(result)}
     metadata = {}
     for mimetype, method in MIMETYPES:
