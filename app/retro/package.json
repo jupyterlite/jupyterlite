@@ -56,6 +56,7 @@
     "@jupyterlab/tooltip-extension": "^3.1.0-alpha.10",
     "@jupyterlab/translation": "^3.1.0-alpha.10",
     "@jupyterlab/ui-components": "^3.1.0-alpha.10",
+    "@jupyterlab/vega5-extension": "^3.1.0-alpha.10",
     "@jupyterlite/application-extension": "^0.1.0",
     "@jupyterlite/iframe-extension": "^0.1.0",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0",
@@ -174,7 +175,8 @@
       "@jupyterlab/shortcuts-extension",
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
-      "@jupyterlab/tooltip-extension"
+      "@jupyterlab/tooltip-extension",
+      "@jupyterlab/vega5-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",
