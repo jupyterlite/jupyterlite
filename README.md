@@ -42,6 +42,7 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 - Basic session and kernel management to have multiple kernels running at the same time
 - Support for
   [Code Consoles](https://jupyterlab.readthedocs.io/en/stable/user/code_console.html)
+- Initial support for visualization libraries such as `matplotlib` and `altair`
 
 ### Ease of Deployment
 

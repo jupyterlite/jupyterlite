@@ -17,7 +17,8 @@ const serverMods = [
 
 const mimeExtensionsMods = [
   import('@jupyterlite/iframe-extension'),
-  import('@jupyterlab/json-extension')
+  import('@jupyterlab/json-extension'),
+  import('@jupyterlab/vega5-extension')
 ];
 
 const disabled = JSON.parse(PageConfig.getOption('disabledExtensions') || '[]');

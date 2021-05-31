@@ -15,20 +15,24 @@ class DisplayPublisher:
     def __init__(self):
         self.display_callback = None
 
-    def publish(self, obj):
+    def publish(self, obj, raw=False):
         if self.display_callback:
-            formatted = format_result(obj)
+            formatted = format_result(obj, raw)
             self.display_callback(formatted)
 
 
 display_publisher = DisplayPublisher()
 
 
-def display(obj):
-    display_publisher.publish(obj)
+def display(obj, raw=False):
+    display_publisher.publish(obj, raw)
 
 
-def format_result(result):
+def format_result(result, raw=False):
+    if raw:
+        return {"data": result, "metadata": {}}
+    if hasattr(result, "_repr_mimebundle_"):
+        return {"data": result._repr_mimebundle_(), "metadata": {}}
     data = {"text/plain": repr(result)}
     metadata = {}
     for mimetype, method in MIMETYPES:
