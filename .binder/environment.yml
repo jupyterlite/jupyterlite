@@ -37,5 +37,7 @@ dependencies:
   # list of federated extensions for the demo site
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
+  - jupyterlab-fasta >=3,<4
+  - jupyterlab-geojson >=3,<4
   - theme-darcula
   ### DOCS ENV ###
