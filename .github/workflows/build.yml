@@ -86,3 +86,19 @@ jobs:
           if-no-files-found: ignore
           path: |
             /tmp/sphinx-*.log
+
+  release:
+    needs: [build]
+    # if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
+      - name: Extract the app
+        run: |
+          tar -xvf ./dist/*.tgz
+      - name: tmp - list dir
+        run: |
+          tree .
