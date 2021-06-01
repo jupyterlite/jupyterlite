@@ -10,9 +10,6 @@
   "extends": "./tsconfigbase",
   "references": [
     {
-      "path": "./packages/application"
-    },
-    {
       "path": "./packages/application-extension"
     },
     {
