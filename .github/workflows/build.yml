@@ -104,6 +104,6 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            dist/jupyterlite-*.tgz
+            dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
