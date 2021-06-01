@@ -3101,11 +3101,6 @@
     "@jupyterlab/mainmenu" "^3.1.0-alpha.10"
     "@jupyterlab/translation" "^3.1.0-alpha.10"
 
-"@jupyterlite/application@file:packages/application":
-  version "0.1.0"
-  dependencies:
-    "@jupyterlab/application" "^3.1.0-alpha.10"
-
 "@jupyterlite/contents@file:packages/contents":
   version "0.1.0"
   dependencies:

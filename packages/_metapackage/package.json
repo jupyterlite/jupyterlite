@@ -20,7 +20,6 @@
     "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
-    "@jupyterlite/application": "file:../application",
     "@jupyterlite/application-extension": "file:../application-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/contents": "file:../contents",

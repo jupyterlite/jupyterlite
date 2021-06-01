@@ -6,7 +6,6 @@
   },
   "include": ["src/**/*"],
   "references": [
-    { "path": "../application" },
     { "path": "../application-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },

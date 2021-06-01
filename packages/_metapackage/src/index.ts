@@ -1,5 +1,4 @@
 import '@jupyterlite/application-extension';
-import '@jupyterlite/application';
 import '@jupyterlite/contents';
 import '@jupyterlite/iframe-extension';
 import '@jupyterlite/javascript-kernel-extension';
