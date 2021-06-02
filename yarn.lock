@@ -2236,6 +2236,27 @@
     "@lumino/widgets" "^1.19.0"
     react "^17.0.1"
 
+"@jupyterlab/logconsole-extension@^3.1.0-alpha.10":
+  version "3.1.0-alpha.10"
+  resolved "https://registry.yarnpkg.com/@jupyterlab/logconsole-extension/-/logconsole-extension-3.1.0-alpha.10.tgz#dd3456753389f03910ad3832f2500c91b1f6f4bd"
+  integrity sha512-aVTbSn3Cjekxkg6fBQ7t+xFHkVErx7eJRN87LZWlDFWafbFTSpcOw895BdT0hUJfb0ocvGi3l1UCVcm/TeOaEQ==
+  dependencies:
+    "@jupyterlab/application" "^3.1.0-alpha.10"
+    "@jupyterlab/apputils" "^3.1.0-alpha.10"
+    "@jupyterlab/coreutils" "^5.1.0-alpha.10"
+    "@jupyterlab/logconsole" "^3.1.0-alpha.10"
+    "@jupyterlab/mainmenu" "^3.1.0-alpha.10"
+    "@jupyterlab/notebook" "^3.1.0-alpha.10"
+    "@jupyterlab/rendermime" "^3.1.0-alpha.10"
+    "@jupyterlab/settingregistry" "^3.1.0-alpha.10"
+    "@jupyterlab/statusbar" "^3.1.0-alpha.10"
+    "@jupyterlab/translation" "^3.1.0-alpha.10"
+    "@jupyterlab/ui-components" "^3.1.0-alpha.10"
+    "@lumino/coreutils" "^1.5.3"
+    "@lumino/signaling" "^1.4.3"
+    "@lumino/widgets" "^1.19.0"
+    react "^17.0.1"
+
 "@jupyterlab/logconsole@^3.1.0-alpha.10":
   version "3.1.0-alpha.10"
   resolved "https://registry.yarnpkg.com/@jupyterlab/logconsole/-/logconsole-3.1.0-alpha.10.tgz#86e51000273dbd149dd2c663b9950f629e29a555"
