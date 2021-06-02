@@ -31,3 +31,6 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - theme-darcula
   ### DOCS ENV ###
+
+  - pip:
+    - plotly==5.0.0rc1
