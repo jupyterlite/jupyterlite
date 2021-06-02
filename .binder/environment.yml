@@ -11,7 +11,7 @@ dependencies:
   - flit >=3.1
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3.1.0a10,<4
+  - jupyterlab >=3.1.0a11,<4
   - retrolab
   # extra docs tools
   - sphinx-autobuild
