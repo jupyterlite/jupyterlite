@@ -33,4 +33,4 @@ dependencies:
   ### DOCS ENV ###
 
   - pip:
-    - plotly==5.0.0rc1
+      - plotly==5.0.0rc1
