@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/buildutils",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.0",
   "private": true,
   "description": "JupyterLite - Build Utilities",
   "homepage": "https://github.com/jtpio/jupyterlite",
