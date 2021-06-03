@@ -114,9 +114,20 @@ def task_build():
     yield dict(
         name="ui-components",
         doc="copy the icon and wordmark to the ui-components package",
-        file_dep=[P.DOCS_ICON],
+        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
-        actions=[U.copy_icons],
+        actions=[
+            U.do(
+                "yarn",
+                "run",
+                "svgo",
+                P.DOCS_ICON,
+                P.DOCS_WORDMARK,
+                "-o",
+                P.LITE_ICON,
+                P.LITE_WORDMARK,
+            )
+        ],
     )
 
     yield dict(
@@ -724,11 +735,6 @@ class U:
         B.PATCHED_JUPYTERLITE_JSON.write_text(
             textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
         )
-
-    @staticmethod
-    def copy_icons():
-        shutil.copy(P.DOCS_ICON, P.LITE_ICON)
-        shutil.copy(P.DOCS_WORDMARK, P.LITE_WORDMARK)
 
 
 # environment overloads
