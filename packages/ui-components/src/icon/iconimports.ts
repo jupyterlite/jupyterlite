@@ -7,7 +7,7 @@ import { LabIcon } from '@jupyterlab/ui-components';
 
 import liteIconSvgstr from '../../style/icons/liteIcon.svg';
 
-import liteWordmarkSvgstr from '../../style/icons/liteIcon.svg';
+import liteWordmarkSvgstr from '../../style/icons/liteWordmark.svg';
 
 export const liteIcon = new LabIcon({
   name: 'lite-ui-components:liteIcon',

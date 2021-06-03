@@ -1,7 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
+import {
+  JupyterFrontEndPlugin,
+  JupyterFrontEnd,
+  ILabShell
+} from '@jupyterlab/application';
 
 import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
@@ -133,8 +137,13 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:logo',
+  // marking as optional to not throw errors in retro
+  optional: [ILabShell],
   autoStart: true,
-  activate: (app: JupyterFrontEnd) => {
+  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
+    if (!labShell) {
+      return;
+    }
     const logo = new Widget();
     liteIcon.element({
       container: logo.node,
@@ -144,7 +153,7 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
       width: '16px'
     });
     logo.id = 'jp-MainLogo';
-    app.shell.add(logo, 'top', { rank: 0 });
+    labShell.add(logo, 'top', { rank: 0 });
   }
 };
 
