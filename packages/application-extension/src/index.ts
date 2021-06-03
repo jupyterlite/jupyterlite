@@ -15,11 +15,15 @@ import {
   ProviderMock
 } from '@jupyterlab/docprovider';
 
-import { WebsocketProvider } from 'y-websocket';
-
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { ITranslator, TranslationManager } from '@jupyterlab/translation';
+
+import { liteIcon } from '@jupyterlite/ui-components';
+
+import { Widget } from '@lumino/widgets';
+
+import { WebsocketProvider } from 'y-websocket';
 
 const YJS_WEBSOCKET_URL = 'wss://demos.yjs.dev';
 
@@ -125,6 +129,26 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * The main application icon.
+ */
+const liteLogo: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:logo',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    const logo = new Widget();
+    liteIcon.element({
+      container: logo.node,
+      elementPosition: 'center',
+      margin: '2px 2px 2px 8px',
+      height: 'auto',
+      width: '16px'
+    });
+    logo.id = 'jp-MainLogo';
+    app.shell.add(logo, 'top', { rank: 0 });
+  }
+};
+
+/**
  * A simplified Translator
  */
 const translator: JupyterFrontEndPlugin<ITranslator> = {
@@ -140,6 +164,7 @@ const translator: JupyterFrontEndPlugin<ITranslator> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   docProviderPlugin,
   downloadPlugin,
+  liteLogo,
   translator
 ];
 

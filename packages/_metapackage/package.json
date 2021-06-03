@@ -35,7 +35,8 @@
     "@jupyterlite/session": "file:../session",
     "@jupyterlite/settings": "file:../settings",
     "@jupyterlite/theme": "file:../theme",
-    "@jupyterlite/theme-extension": "file:../theme-extension"
+    "@jupyterlite/theme-extension": "file:../theme-extension",
+    "@jupyterlite/ui-components": "file:../ui-components"
   },
   "devDependencies": {
     "typescript": "~4.2.3"
