@@ -2,7 +2,6 @@ import json
 import os
 import re
 import shutil
-import pprint
 import subprocess
 from pathlib import Path
 import jsonschema
@@ -110,6 +109,14 @@ def task_build():
                 None,
             ][-1]
         ],
+    )
+
+    yield dict(
+        name="ui-components",
+        doc="copy the icon and wordmark to the ui-components package",
+        file_dep=[P.DOCS_ICON],
+        targets=[P.LITE_ICON, P.LITE_WORDMARK],
+        actions=[U.copy_icons],
     )
 
     yield dict(
@@ -332,6 +339,8 @@ class P:
     ROOT = DODO.parent
     PACKAGES = ROOT / "packages"
     PACKAGE_JSONS = sorted(PACKAGES.glob("*/package.json"))
+    UI_COMPONENTS = PACKAGES / "ui-components"
+    UI_COMPONENTS_ICONS = UI_COMPONENTS / "style" / "icons"
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
@@ -349,6 +358,8 @@ class P:
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
     LAB_FAVICON = APP / "lab/favicon.ico"
+    LITE_ICON = UI_COMPONENTS_ICONS / "liteIcon.svg"
+    LITE_WORDMARK = UI_COMPONENTS_ICONS / "liteWordmark.svg"
 
     # docs
     README = ROOT / "README.md"
@@ -356,6 +367,7 @@ class P:
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
     DOCS_ICON = DOCS / "_static/icon.svg"
+    DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     DOCS_OVERRIDES = DOCS / "overrides.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
@@ -712,6 +724,11 @@ class U:
         B.PATCHED_JUPYTERLITE_JSON.write_text(
             textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
         )
+
+    @staticmethod
+    def copy_icons():
+        shutil.copy(P.DOCS_ICON, P.LITE_ICON)
+        shutil.copy(P.DOCS_WORDMARK, P.LITE_WORDMARK)
 
 
 # environment overloads
