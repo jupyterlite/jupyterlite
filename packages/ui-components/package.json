@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/application-extension",
+  "name": "@jupyterlite/ui-components",
   "version": "0.1.0-alpha.0",
-  "description": "JupyterLite - Application Extension",
+  "description": "JupyterLite - UI components",
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
     "url": "https://github.com/jtpio/jupyterlite/issues"
@@ -11,55 +11,55 @@
     "url": "https://github.com/jtpio/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors",
+  "author": "Project Jupyter",
   "sideEffects": [
-    "style/*.css",
+    "style/**/*",
     "style/index.js"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
+  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
   "files": [
-    "lib/*.d.ts",
-    "lib/*.js.map",
-    "lib/*.js",
-    "style/*.css",
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
     "style/index.js"
   ],
   "scripts": {
     "build": "tsc -b",
+    "build:test": "tsc --build tsconfig.test.json",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
+    "cleansvg": "svgo --config svgo.yaml",
     "docs": "typedoc src",
+    "docs:init": "bash docs/build.sh",
     "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:cov": "jest --collect-coverage",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "^3.1.0-alpha.11",
-    "@jupyterlab/apputils": "^3.1.0-alpha.11",
-    "@jupyterlab/docmanager": "^3.1.0-alpha.11",
-    "@jupyterlab/docprovider": "^3.1.0-alpha.11",
-    "@jupyterlab/mainmenu": "^3.1.0-alpha.11",
-    "@jupyterlab/translation": "^3.1.0-alpha.11",
-    "@jupyterlite/ui-components": "^0.1.0-alpha.0",
-    "@lumino/widgets": "^1.23.0"
+    "@jupyterlab/ui-components": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.12.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@jupyterlab/testutils": "^3.0.0",
     "@types/jest": "^26.0.10",
+    "babel-loader": "^8.0.6",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
-    "typescript": "~4.2.3"
+    "typescript": "~4.1.3"
   },
   "publishConfig": {
     "access": "public"
   },
   "jupyterlab": {
-    "extension": true
-  },
-  "styleModule": "style/index.js"
+    "coreDependency": true
+  }
 }

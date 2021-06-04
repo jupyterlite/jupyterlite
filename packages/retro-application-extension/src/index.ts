@@ -15,6 +15,10 @@ import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
 import { Kernel } from '@jupyterlab/services';
 
+import { liteWordmark } from '@jupyterlite/ui-components';
+
+import { Widget } from '@lumino/widgets';
+
 /**
  * The default notebook factory.
  */
@@ -60,6 +64,32 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       window.open(`${baseUrl}retro/${route}?path=${path}`);
       return undefined;
     };
+  }
+};
+
+/**
+ * The logo plugin.
+ */
+const logo: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/retro-application-extension:logo',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    const baseUrl = PageConfig.getBaseUrl();
+    const node = document.createElement('a');
+    node.href = `${baseUrl}retro/tree`;
+    node.target = '_blank';
+    node.rel = 'noopener noreferrer';
+    const logo = new Widget({ node });
+
+    liteWordmark.element({
+      container: node,
+      elementPosition: 'center',
+      padding: '2px 2px 2px 8px',
+      height: '28px',
+      width: 'auto'
+    });
+    logo.id = 'jp-RetroLogo';
+    app.shell.add(logo, 'top', { rank: 0 });
   }
 };
 
@@ -110,6 +140,6 @@ const opener: JupyterFrontEndPlugin<void> = {
   }
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [docmanager, opener];
+const plugins: JupyterFrontEndPlugin<any>[] = [docmanager, logo, opener];
 
 export default plugins;

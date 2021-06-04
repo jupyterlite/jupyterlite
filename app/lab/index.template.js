@@ -22,6 +22,7 @@ const disabled = [
   ...JSON.parse(PageConfig.getOption('disabledExtensions') || '[]'),
   '@jupyterlab/apputils-extension:themes',
   '@jupyterlab/apputils-extension:workspaces',
+  '@jupyterlab/application-extension:logo',
   '@jupyterlab/application-extension:tree-resolver',
   // TODO: improve/replace resolver and main to avoid redirect issues
   // @see https://github.com/jtpio/jupyterlite/issues/22
