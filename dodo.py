@@ -114,7 +114,7 @@ def task_build():
     yield dict(
         name="ui-components",
         doc="copy the icon and wordmark to the ui-components package",
-        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK],
+        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_INTEGRITY],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
@@ -160,7 +160,7 @@ def task_build():
             targets=[wheel],
         )
 
-    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG]
+    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
     all_app_wheels = []
 
     for app_json in P.APP_JSONS:
