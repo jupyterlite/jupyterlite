@@ -119,14 +119,15 @@ def task_build():
         actions=[
             U.do(
                 "yarn",
-                "run",
                 "svgo",
+                "--pretty",
+                "--indent=2",
                 P.DOCS_ICON,
                 P.DOCS_WORDMARK,
                 "-o",
                 P.LITE_ICON,
                 P.LITE_WORDMARK,
-            )
+            ),
         ],
     )
 
