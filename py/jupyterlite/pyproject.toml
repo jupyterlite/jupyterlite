@@ -1,0 +1,29 @@
+[build-system]
+requires = ["flit_core >=3.1,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "jupyterlite"
+author = "JupyterLite Contributors"
+home-page = "https://github.com/jtpio/jupyterlite"
+requires-python = ">=3.7"
+requires = [
+    "entrypoints",
+    "jupyter_core >=4.7",
+    "tornado >=6.1",
+]
+
+[tool.flit.scripts]
+jupyter-lite = "jupyterlite.app:main"
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+watch = [
+    "watchgod",
+]
+nbconvert = [
+    "nbconvert >=6",
+]
