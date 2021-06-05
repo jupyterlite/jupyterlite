@@ -209,6 +209,7 @@ module.exports = [
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
       filename: 'bundle.js',
+      chunkFilename: '[name].[contenthash].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
     },
