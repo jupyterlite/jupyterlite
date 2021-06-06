@@ -209,6 +209,7 @@ module.exports = [
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
       filename: 'bundle.js',
+      chunkFilename: '[name].[contenthash].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
     },
@@ -223,6 +224,9 @@ module.exports = [
           type: 'asset/source'
         }
       ]
+    },
+    optimization: {
+      moduleIds: 'deterministic'
     },
     plugins: [
       new webpack.DefinePlugin({
