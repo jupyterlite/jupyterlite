@@ -1,8 +1,9 @@
 import { KernelMessage } from '@jupyterlab/services';
 
 import { ISignal, Signal } from '@lumino/signaling';
+import { DefaultCommManager } from './comm_manager';
 
-import { IKernel } from './tokens';
+import { IKernel, ICommManager } from './tokens';
 
 /**
  * A base kernel class handling basic kernel messaging.
@@ -18,6 +19,8 @@ export abstract class BaseKernel implements IKernel {
     this._id = id;
     this._name = name;
     this._sendMessage = sendMessage;
+    this._comm_manager =
+      options.comm_manager || new DefaultCommManager({ kernel: this, sendMessage });
   }
 
   /**
@@ -53,6 +56,13 @@ export abstract class BaseKernel implements IKernel {
    */
   get name(): string {
     return this._name;
+  }
+
+  /**
+   * Get the comm manager
+   */
+  get comm_manager(): ICommManager {
+    return this._comm_manager;
   }
 
   /**
@@ -101,6 +111,15 @@ export abstract class BaseKernel implements IKernel {
         break;
       case 'history_request':
         await this._historyRequest(msg);
+        break;
+      case 'comm_open':
+        await this._comm_manager.comm_open(msg);
+        break;
+      case 'comm_msg':
+        await this._comm_manager.comm_msg(msg);
+        break;
+      case 'comm_close':
+        await this._comm_manager.comm_close(msg);
         break;
       default:
         break;
@@ -446,4 +465,5 @@ export abstract class BaseKernel implements IKernel {
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
+  private _comm_manager: ICommManager;
 }
