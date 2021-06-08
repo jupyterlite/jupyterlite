@@ -236,6 +236,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
         }
       `
     );
+    (this._iframe.contentWindow as any)['kernel'] = this;
   }
 
   private _iframe: HTMLIFrameElement;

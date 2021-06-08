@@ -1,7 +1,7 @@
 import { KernelMessage } from '@jupyterlab/services';
 
 import { ISignal, Signal } from '@lumino/signaling';
-import { DefaultCommManager } from './comm_manager';
+import { createDefaultCommManager } from './comm_manager';
 
 import { IKernel, ICommManager } from './tokens';
 
@@ -20,7 +20,14 @@ export abstract class BaseKernel implements IKernel {
     this._name = name;
     this._sendMessage = sendMessage;
     this._comm_manager =
-      options.comm_manager || new DefaultCommManager({ kernel: this, sendMessage });
+      options.comm_manager || createDefaultCommManager({ kernel: this, sendMessage });
+    this._attemptWidgets().catch(console.error);
+  }
+
+  private async _attemptWidgets() {
+    const widgets = await import('./proto_widgets');
+    (this as any).widgets = widgets;
+    widgets._Widget._kernel = this;
   }
 
   /**

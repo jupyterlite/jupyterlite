@@ -105,7 +105,7 @@ export class Comm implements ICommManager.IComm {
     if (this._close_callback) {
       return await this._close_callback(msg);
     }
-    console.warn('handle_close NOT IMPLEMENTED', msg);
+    console.warn('handle_close without callback NOT IMPLEMENTED', msg);
   }
 
   // _open_data = Dict(help="data dict, if any, to be included in comm_open")
@@ -149,7 +149,7 @@ export class Comm implements ICommManager.IComm {
       const message = KernelMessage.createMessage<KernelMessage.ICommOpenMsg<'iopub'>>({
         channel: 'iopub',
         msgType: 'comm_open',
-        session: 'session-uuid',
+        session: this.session,
         metadata,
         buffers,
         content: {
@@ -231,7 +231,7 @@ export class Comm implements ICommManager.IComm {
     const message = KernelMessage.createMessage<KernelMessage.ICommCloseMsg<'iopub'>>({
       msgType: 'comm_close',
       channel: 'iopub',
-      session: 'session-u-u-i-d',
+      session: this.session,
       metadata,
       buffers,
       content: {
@@ -281,11 +281,16 @@ export class Comm implements ICommManager.IComm {
             data=data, metadata=metadata, buffers=buffers,
         )
 */
+
+  get session() {
+    return (this.kernel as any).parentHeader.session;
+  }
+
   async send(data?: any, metadata?: any, buffers?: any): Promise<void> {
     const message = KernelMessage.createMessage<KernelMessage.ICommMsgMsg<'iopub'>>({
       channel: 'iopub',
       msgType: 'comm_msg',
-      session: 'session-uuid',
+      session: this.session,
       metadata,
       buffers,
       content: {

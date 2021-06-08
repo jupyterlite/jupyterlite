@@ -1,5 +1,6 @@
 import { IKernel, ICommManager } from './tokens';
 import { Comm } from './comm';
+import { UUID } from '@lumino/coreutils';
 
 /**
  * A Default CommManager
@@ -158,6 +159,7 @@ export class DefaultCommManager implements ICommManager {
                 clean-up.  The comm may not have been opened yet.""", exc_info=True)
   */
   async comm_open(msg: any): Promise<void> {
+    console.warn('comm_open', msg);
     const { content } = msg;
     const { comm_id, target_name } = content;
     const f = this._targets.get(target_name);
@@ -186,6 +188,22 @@ export class DefaultCommManager implements ICommManager {
         'Could not close comm during `comm_open` failure clean-up.  The comm may not have been opened yet.'
       );
     }
+  }
+
+  /**
+   * Convenience method for exposing the `Comm` class to the interactive shell
+   */
+  make_comm(options: Partial<ICommManager.ICommOptions>): ICommManager.IComm {
+    const comm = new Comm({
+      kernel: this.kernel,
+      sendMessage: this._sendMessage,
+      comm_id: UUID.uuid4(),
+      primary: true,
+      target_name: 'unknown',
+      ...options
+    });
+    this.register_comm(comm);
+    return comm;
   }
 
   /*
@@ -256,4 +274,11 @@ export class DefaultCommManager implements ICommManager {
       console.trace();
     }
   }
+}
+
+export function createDefaultCommManager(opts: {
+  kernel: IKernel;
+  sendMessage: IKernel.SendMessage;
+}) {
+  return new DefaultCommManager(opts);
 }
