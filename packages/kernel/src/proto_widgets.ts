@@ -1,5 +1,6 @@
 import { DefaultCommManager } from './comm_manager';
 import { ICommManager, IKernel } from './tokens';
+import { KernelMessage } from '@jupyterlab/services';
 
 /**
  * An ur-prototype of JupyterLite (T?)JS(?) kernel widgets
@@ -85,6 +86,25 @@ export class _Widget<T> extends _HasTraits<T> {
     this.open();
   }
 
+  display() {
+    if (!_Widget._kernel) {
+      return;
+    }
+
+    const content: KernelMessage.IDisplayDataMsg['content'] = {
+      data: {
+        'text/plain': `${JSON.stringify(this._trait_values, null, 2)}`,
+        'application/vnd.jupyter.widget-view+json': {
+          version_major: 2,
+          version_minor: 0,
+          model_id: `${this._comm?.comm_id}`
+        }
+      },
+      metadata: {}
+    };
+    (_Widget._kernel as any).displayData(content);
+  }
+
   open() {
     const kernel = _Widget._kernel as IKernel;
     if (kernel) {
@@ -95,6 +115,7 @@ export class _Widget<T> extends _HasTraits<T> {
         }
       });
       this.observe(async () => {
+        console.log('a change!');
         this._comm &&
           this._comm.send({
             data: {
@@ -107,13 +128,27 @@ export class _Widget<T> extends _HasTraits<T> {
 
   defaults() {
     return {
-      _model_module: '@jupyter-widgets/base',
-      _model_module_version: '1.2.0',
-      _model_name: 'WidgetModel',
+      _dom_classes: [],
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: '1.5.0',
+      _model_name: 'FloatSliderModel',
       _view_count: null,
-      _view_module: '@jupyter-widgets/base',
-      _view_module_version: '1.2.0',
-      _view_name: 'WidgetView'
+      _view_module: '@jupyter-widgets/controls',
+      _view_module_version: '1.5.0',
+      _view_name: 'FloatSliderView',
+      continuous_update: true,
+      description: '',
+      description_tooltip: null,
+      disabled: false,
+      layout: null,
+      max: 100.0,
+      min: 0.0,
+      orientation: 'horizontal',
+      readout: true,
+      readout_format: '.2f',
+      step: 0.1,
+      style: null,
+      value: 42.0
     };
   }
 

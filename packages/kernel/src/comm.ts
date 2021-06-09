@@ -36,7 +36,7 @@ export class Comm implements ICommManager.IComm {
      */
     if (this._kernel) {
       if (this._primary) {
-        void this.open();
+        void this.open(options);
       }
     }
   }
@@ -153,7 +153,7 @@ export class Comm implements ICommManager.IComm {
         metadata,
         buffers,
         content: {
-          data,
+          data: {...data.data},
           comm_id: this._comm_id,
           target_name: this._target_name,
           target_module: this._target_module || void 0
