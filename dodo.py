@@ -617,6 +617,12 @@ class U:
                 flags=re.M | re.S,
             )
             out_text = re.sub(
+                r"^#### Parameters",
+                r"### Parameters",
+                out_text,
+                flags=re.M | re.S,
+            )
+            out_text = re.sub(
                 r"^((Implementation of|Overrides|Inherited from):)",
                 "_\\1_",
                 out_text,
