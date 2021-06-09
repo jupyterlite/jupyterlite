@@ -142,9 +142,11 @@ export class _Widget<T> extends _HasTraits<T> {
     const { data } = msg.content;
     switch (data.method) {
       case 'update':
-        const { state } = data;
+        const state: T = data.state;
         for (const [k, v] of Object.entries(state)) {
-          (this as any)[k as keyof T] = v;
+          const old = this._trait_values[k as keyof T];
+          (this._trait_values as any)[k] = v as any;
+          this._emit_change({ name: k as keyof T, old, new: v });
         }
         break;
       default:
