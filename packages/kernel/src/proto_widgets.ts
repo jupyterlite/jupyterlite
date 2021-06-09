@@ -13,6 +13,7 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
   // TODO: these would be Partial<T>
   _next_resolve: null | ((args: any) => any) = null;
   _next_reject: null | ((args: any) => any) = null;
+  _observers = new Set<_HasTraits.IChangeCallback<T>>();
 
   constructor(options: Partial<T>) {
     this._trait_names = [...Object.keys(options || {})] as any;
@@ -26,10 +27,19 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
     });
   }
 
+  /** add an observer. doesn't work with names yet. */
   async observe(fn: _HasTraits.IChangeCallback<T>, names?: string[]) {
-    while (true) {
+    this._observers.add(fn);
+    while (this._observers.has(fn)) {
       const change = await this._next_change_promise;
-      fn(change);
+      await fn(change);
+    }
+  }
+
+  /** remove an observer. doesn't work with names yet. */
+  async unobserve(fn: _HasTraits.IChangeCallback<T>, names?: string[]) {
+    if (this._observers.has(fn)) {
+      this._observers.delete(fn);
     }
   }
 
@@ -109,28 +119,12 @@ export class _Widget<T> extends _HasTraits<T> {
   open() {
     const kernel = _Widget._kernel as IKernel;
 
-    const makeData = () => {
-      return {
-        data: {
-          state: this._trait_values
-        },
-        metadata: {
-          version: '2.0',
-          version_major: 2,
-          version_minor: 0,
-          model_id: `${this._comm?.comm_id}`
-        }
-      };
-    };
-
     if (kernel) {
       this._comm = (kernel.comm_manager as DefaultCommManager).make_comm({
         target_name: _Widget.WIDGET_TARGET,
-        ...makeData()
+        ...this.makeData()
       });
-      this.observe(async () => {
-        this._comm && this._comm.send(makeData());
-      });
+      this.observe(this._sync);
       this._comm.on_msg(this.on_msg);
       this._comm.on_close(async msg => {
         console.log(this._comm?.comm_id, 'should close', msg);
@@ -138,22 +132,61 @@ export class _Widget<T> extends _HasTraits<T> {
     }
   }
 
-  async on_msg(msg: any) {
+  makeData() {
+    return {
+      data: {
+        state: this._trait_values
+      },
+      metadata: {
+        version: '2.0',
+        version_major: 2,
+        version_minor: 0,
+        model_id: `${this._comm?.comm_id}`
+      }
+    };
+  }
+
+  /**
+   * sync data back to the client
+   */
+  protected _sync = async (): Promise<void> => {
+    if (!this._comm) {
+      console.warn('cannot send without comm', this);
+      return;
+    }
+    const data = this.makeData();
+    this._comm.send({
+      ...data,
+      data: {
+        ...data,
+        method: 'update'
+      }
+    });
+  };
+
+  protected on_msg = async (msg: any) => {
     const { data } = msg.content;
     switch (data.method) {
       case 'update':
         const state: T = data.state;
+        const changes = [];
         for (const [k, v] of Object.entries(state)) {
           const old = this._trait_values[k as keyof T];
+          if (old === v) {
+            continue;
+          }
           (this._trait_values as any)[k] = v as any;
-          this._emit_change({ name: k as keyof T, old, new: v });
+          changes.push({ name: k as keyof T, old, new: v });
+        }
+        for (const change of changes) {
+          this._emit_change(change);
         }
         break;
       default:
         console.warn('oh noes', data.method, msg);
         break;
     }
-  }
+  };
 
   static defaults() {
     return {
