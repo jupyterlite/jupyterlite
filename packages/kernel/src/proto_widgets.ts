@@ -238,6 +238,7 @@ export class _Widget<T> extends _HasTraits<T> {
       _model_module: _Widget.WIDGET_CONTROLS_PACKAGE,
       _model_module_version: _Widget.WIDGET_CONTROLS_VERSION,
       _view_count: null,
+      _view_module: _Widget.WIDGET_CONTROLS_PACKAGE,
       _view_module_version: _Widget.WIDGET_CONTROLS_VERSION
     };
   }
@@ -289,7 +290,7 @@ class WidgetRegistry {
 
   constructor() {
     this._commManager = WidgetRegistry.getKernel().comm_manager;
-    console.log(`managing ${_Widget.WIDGET_TARGET}`);
+    console.info(`managing ${_Widget.WIDGET_TARGET}`);
     this._commManager.register_target(
       _Widget.WIDGET_TARGET,
       _Widget.handle_comm_opened
@@ -297,11 +298,20 @@ class WidgetRegistry {
   }
 }
 
-/** a naive FloatSlider */
+/** a naive FloatSlider
+ *
+ * ```js
+ * let { FloatSlider } = kernel.widgets
+ * x = FloatSlider({description: "x", min: -1, value: 1, max: 1})
+ * x.display()
+ */
 export class _FloatSlider extends _Widget<IFloatSlider> {
   constructor(options: IFloatSlider) {
-    options = { ...FLOAT_SLIDER_DEFAULTS, ...options };
-    super(options);
+    super({ ..._FloatSlider.defaults(), ...options });
+  }
+
+  static defaults(): IFloatSlider {
+    return { ...super.defaults(), ...FLOAT_SLIDER_DEFAULTS };
   }
 }
 
@@ -341,12 +351,80 @@ const FLOAT_SLIDER_DEFAULTS: IFloatSlider = {
   style: null,
   value: 0.0,
   tabbable: true,
-  tooltip: '',
-  keys: ['value']
+  tooltip: ''
 };
 
-/** the concrete observable */
+/** the concrete observable FloatSlider */
 export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
+
+/** a naive Select
+ *
+ * ```js
+ * let { Select } = kernel.widgets
+ * options = ["apple", "banana"]
+ * self.it = it = Select({rows: 1, description: "it", options, _options_labels: options})
+ * it.display()
+ * ```
+ */
+export class _Select extends _Widget<ISelect> {
+  constructor(options: ISelect) {
+    super({ ..._Select.defaults(), ...options });
+    this.observe(this._on_change).catch(console.error);
+  }
+  /**
+   * A catch-all observer for the semi-private select behavior
+   *
+   * TODO: make the `names` part of `observe` work
+   */
+  protected _on_change = async (change: _HasTraits.IChange<ISelect>): Promise<void> => {
+    let oldValue: any;
+
+    switch (change.name) {
+      case 'index':
+        oldValue = this._trait_values['value'];
+        this._trait_values['value'] = this._trait_values['options'][change.new];
+        this._emit_change({
+          name: 'value',
+          old: oldValue,
+          new: this._trait_values['value']
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  static defaults(): ISelect {
+    return { ...super.defaults(), ...SELECT_DEFAULTS };
+  }
+}
+
+/** the concrete observable Select */
+export const Select = _HasTraits._traitMeta<ISelect>(_Select);
+
+/** some hand-made defaults */
+const SELECT_DEFAULTS: ISelect = {
+  _dom_classes: [],
+  _model_module: _Widget.WIDGET_CONTROLS_PACKAGE,
+  _model_module_version: _Widget.WIDGET_CONTROLS_VERSION,
+  _model_name: 'SelectModel',
+  _options_labels: ['1', '2'],
+  _view_count: null,
+  _view_module: _Widget.WIDGET_CONTROLS_PACKAGE,
+  _view_module_version: _Widget.WIDGET_CONTROLS_VERSION,
+  _view_name: 'SelectView',
+  options: [],
+  label: '',
+  value: 0,
+  tabbable: true,
+  tooltip: '',
+  layout: null,
+  description: '',
+  description_tooltip: null,
+  disabled: false,
+  index: 0,
+  rows: 5
+};
 
 /** a description of widget traits */
 export interface IWidget {
@@ -373,7 +451,7 @@ export interface IWidget {
   _view_count: number | null;
   // comm = Instance('ipykernel.comm.Comm', allow_none=True)
   // keys = List(help="The traits which are synced.")
-  keys: string[];
+  // keys: string[];
 }
 
 /** a description of DOM widget traits */
@@ -423,6 +501,33 @@ export interface IFloatSlider extends IDOMWidget, IDescriptionWidget, IBoundedFl
   disabled: boolean;
   // style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
   style: any;
+}
+
+export interface ISelection extends IDOMWidget, IDescriptionWidget {
+  // value = Any(None, help="Selected value", allow_none=True)
+  value: any | null;
+  // label = Unicode(None, help="Selected label", allow_none=True)
+  label: string | null;
+  // index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
+  index: number | null;
+  // options = Any((),
+  // help="""Iterable of values or (label, value) pairs that the user can select.
+  // The labels are the strings that will be displayed in the UI, representing the
+  // actual Python choices, and should be unique.
+  // """)
+  options: any[] | [string, any][];
+  // # This being read-only means that it cannot be changed by the user.
+  // _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
+  _options_labels: string[];
+  // disabled = Bool(help="Enable or disable user changes").tag(sync=True)
+  disabled: boolean;
+}
+
+export interface ISelect extends ISelection {
+  // _view_name = Unicode('SelectView').tag(sync=True)
+  // _model_name = Unicode('SelectModel').tag(sync=True)
+  // rows = Int(5, help="The number of rows to display.").tag(sync=True)
+  rows: number;
 }
 
 /** A namespace for the widgetregistry singleton */
