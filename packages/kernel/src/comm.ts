@@ -150,7 +150,7 @@ export class Comm implements ICommManager.IComm {
         channel: 'iopub',
         msgType: 'comm_open',
         session: this.session,
-        metadata,
+        metadata: {...data.metadata, metadata},
         buffers,
         content: {
           data: {...data.data},
