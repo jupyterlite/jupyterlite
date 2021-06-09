@@ -131,12 +131,25 @@ export class _Widget<T> extends _HasTraits<T> {
       this.observe(async () => {
         this._comm && this._comm.send(makeData());
       });
-      this._comm.on_msg(async msg => {
-        console.log(this._comm?.comm_id, 'got a message', msg);
-      });
+      this._comm.on_msg(this.on_msg);
       this._comm.on_close(async msg => {
         console.log(this._comm?.comm_id, 'should close', msg);
       });
+    }
+  }
+
+  async on_msg(msg: any) {
+    const { data } = msg.content;
+    switch (data.method) {
+      case 'update':
+        const { state } = data;
+        for (const [k, v] of Object.entries(state)) {
+          (this as any)[k as keyof T] = v;
+        }
+        break;
+      default:
+        console.warn('oh noes', data.method, msg);
+        break;
     }
   }
 
@@ -145,24 +158,8 @@ export class _Widget<T> extends _HasTraits<T> {
       _dom_classes: [],
       _model_module: '@jupyter-widgets/controls',
       _model_module_version: '1.5.0',
-      _model_name: 'FloatSliderModel',
       _view_count: null,
-      _view_module: '@jupyter-widgets/controls',
-      _view_module_version: '1.5.0',
-      _view_name: 'FloatSliderView',
-      continuous_update: true,
-      description: '',
-      description_tooltip: null,
-      disabled: false,
-      layout: null,
-      max: 100.0,
-      min: 0.0,
-      orientation: 'horizontal',
-      readout: true,
-      readout_format: '.2f',
-      step: 0.1,
-      style: null,
-      value: 42.0
+      _view_module_version: '1.5.0'
     };
   }
 
@@ -204,66 +201,109 @@ namespace Private {
   export let widgetRegistry: WidgetRegistry;
 }
 
-// self.WidgetRegistry = WidgetRegistry;
+const FLOAT_SLIDER_DEFAULTS: IFloatSlider = {
+  _dom_classes: [],
+  _model_module: '@jupyter-widgets/controls',
+  _model_module_version: '1.5.0',
+  _model_name: 'FloatSliderModel',
+  _view_count: null,
+  _view_module: '@jupyter-widgets/controls',
+  _view_module_version: '1.5.0',
+  _view_name: 'FloatSliderView',
+  continuous_update: true,
+  description: '',
+  description_tooltip: null,
+  disabled: false,
+  layout: null,
+  max: 100.0,
+  min: 0.0,
+  orientation: 'horizontal',
+  readout: true,
+  readout_format: '.2f',
+  step: 0.1,
+  style: null,
+  value: 0.0,
+  tabbable: true,
+  tooltip: '',
+  keys: ['value']
+};
 
-// class _FloatSlider extends _Widget {
-//   constructor(options) {
-//     options = { ..._FloatSlider.defaults(), ...options };
-//     super(options);
-//   }
-// }
-// _FloatSlider.defaults = () => {
-//   return {
-//     _model_module: '@jupyter-widgets/base',
-//     _model_module_version: '1.2.0',
-//     _model_name: 'LayoutModel',
-//     _view_count: null,
-//     _view_module: '@jupyter-widgets/base',
-//     _view_module_version: '1.2.0',
-//     _view_name: 'LayoutView',
-//     align_content: null,
-//     align_items: null,
-//     align_self: null,
-//     border: null,
-//     bottom: null,
-//     display: null,
-//     flex: null,
-//     flex_flow: null,
-//     grid_area: null,
-//     grid_auto_columns: null,
-//     grid_auto_flow: null,
-//     grid_auto_rows: null,
-//     grid_column: null,
-//     grid_gap: null,
-//     grid_row: null,
-//     grid_template_areas: null,
-//     grid_template_columns: null,
-//     grid_template_rows: null,
-//     height: null,
-//     justify_content: null,
-//     justify_items: null,
-//     left: null,
-//     margin: null,
-//     max_height: null,
-//     max_width: null,
-//     min_height: null,
-//     min_width: null,
-//     object_fit: null,
-//     object_position: null,
-//     order: null,
-//     overflow: null,
-//     overflow_x: null,
-//     overflow_y: null,
-//     padding: null,
-//     right: null,
-//     top: null,
-//     visibility: null,
-//     width: null
-//   };
-// };
+export class _FloatSlider extends _Widget<IFloatSlider> {
+  constructor(options: IFloatSlider) {
+    options = { ...FLOAT_SLIDER_DEFAULTS, ...options };
+    super(options);
+  }
+}
 
-// // self._FloatSlider = _FloatSlider;
-// // self.FloatSlider = _traitMeta(_FloatSlider);
+export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
 
-// // x = FloatSlider({value: 10});
-// // x.value
+export interface IWidget {
+  // _model_name = Unicode('WidgetModel',
+  //     help="Name of the model.", read_only=True).tag(sync=True)
+  _model_name: string;
+  // _model_module = Unicode('@jupyter-widgets/base',
+  //     help="The namespace for the model.", read_only=True).tag(sync=True)
+  _model_module: string;
+  // _model_module_version = Unicode(__jupyter_widgets_base_version__,
+  //     help="A semver requirement for namespace version containing the model.", read_only=True).tag(sync=True)
+  _model_module_version: string;
+  // _view_name = Unicode(None, allow_none=True,
+  //     help="Name of the view.").tag(sync=True)
+  _view_name: string;
+  // _view_module = Unicode(None, allow_none=True,
+  //     help="The namespace for the view.").tag(sync=True)
+  _view_module: string;
+  // _view_module_version = Unicode('',
+  //     help="A semver requirement for the namespace version containing the view.").tag(sync=True)
+  _view_module_version: string;
+  // _view_count = Int(None, allow_none=True,
+  //     help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
+  _view_count: number | null;
+  // comm = Instance('ipykernel.comm.Comm', allow_none=True)
+  // keys = List(help="The traits which are synced.")
+  keys: string[];
+}
+
+export interface IDOMWidget extends IWidget {
+  // _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
+  _dom_classes: string[];
+  // tabbable = Bool(help="Is widget tabbable?", allow_none=True, default_value=None).tag(sync=True)
+  tabbable: boolean;
+  // tooltip = Unicode(None, allow_none=True, help="A tooltip caption.").tag(sync=True)
+  tooltip: string;
+  // layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
+  layout: any;
+}
+
+export interface IDescriptionWidget extends IWidget {
+  description: string;
+  description_tooltip: string | null;
+}
+
+export interface IFloat extends IWidget {
+  value: number;
+}
+
+export interface IBoundedFloat extends IFloat {
+  min: number;
+  max: number;
+}
+
+export interface IFloatSlider extends IDOMWidget, IDescriptionWidget, IBoundedFloat {
+  // step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
+  step: number | null;
+  // orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
+  //     default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
+  orientation: 'horizontal' | 'vertical';
+  // readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+  readout: boolean;
+  // readout_format = NumberFormat(
+  //     '.2f', help="Format for the readout").tag(sync=True)
+  readout_format: string;
+  // continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+  continuous_update: boolean;
+  // disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+  disabled: boolean;
+  // style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+  style: any;
+}
