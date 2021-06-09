@@ -82,7 +82,7 @@ export class _Widget<T> extends _HasTraits<T> {
   private _comm: ICommManager.IComm | null = null;
 
   constructor(options: T) {
-    super(options);
+    super({ ...options, ..._Widget.defaults() });
     this.open();
   }
 
@@ -95,7 +95,7 @@ export class _Widget<T> extends _HasTraits<T> {
       data: {
         'text/plain': `${JSON.stringify(this._trait_values, null, 2)}`,
         'application/vnd.jupyter.widget-view+json': {
-          version: "2.0",
+          version: '2.0',
           version_major: 2,
           version_minor: 0,
           model_id: `${this._comm?.comm_id}`
@@ -106,8 +106,6 @@ export class _Widget<T> extends _HasTraits<T> {
     (_Widget._kernel as any).displayData(content);
   }
 
-
-
   open() {
     const kernel = _Widget._kernel as IKernel;
 
@@ -117,7 +115,7 @@ export class _Widget<T> extends _HasTraits<T> {
           state: this._trait_values
         },
         metadata: {
-          version: "2.0",
+          version: '2.0',
           version_major: 2,
           version_minor: 0,
           model_id: `${this._comm?.comm_id}`
@@ -133,16 +131,16 @@ export class _Widget<T> extends _HasTraits<T> {
       this.observe(async () => {
         this._comm && this._comm.send(makeData());
       });
-      this._comm.on_msg(async (msg) => {
+      this._comm.on_msg(async msg => {
         console.log(this._comm?.comm_id, 'got a message', msg);
       });
-      this._comm.on_close(async (msg) => {
+      this._comm.on_close(async msg => {
         console.log(this._comm?.comm_id, 'should close', msg);
       });
     }
   }
 
-  defaults() {
+  static defaults() {
     return {
       _dom_classes: [],
       _model_module: '@jupyter-widgets/controls',

@@ -150,10 +150,10 @@ export class Comm implements ICommManager.IComm {
         channel: 'iopub',
         msgType: 'comm_open',
         session: this.session,
-        metadata: {...data.metadata, metadata},
+        metadata: { ...data.metadata, metadata },
         buffers,
         content: {
-          data: {...data.data},
+          data: { ...data.data },
           comm_id: this._comm_id,
           target_name: this._target_name,
           target_module: this._target_module || void 0
