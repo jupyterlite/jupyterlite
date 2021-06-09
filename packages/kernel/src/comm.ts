@@ -43,7 +43,7 @@ export class Comm implements ICommManager.IComm {
 
   /** kernel = Instance('ipykernel.kernelbase.Kernel', allow_none=True) */
   private _kernel: IKernel;
-  get kernel() {
+  get kernel(): IKernel {
     return this._kernel;
   }
   set kernel(kernel: IKernel) {
@@ -52,26 +52,26 @@ export class Comm implements ICommManager.IComm {
 
   /** comm_id = Unicode() */
   private _comm_id: string;
-  get comm_id() {
+  get comm_id(): string {
     return this._comm_id;
   }
 
   /** primary = Bool(True, help="Am I the primary or secondary Comm?") */
   private _primary = true;
-  get primary() {
+  get primary(): boolean {
     return this._primary;
   }
 
-  /**  */
+  /** target name e.g. jupyter.widgets */
   private _target_name: string;
-  get target_name() {
+  get target_name(): string {
     return this._target_name;
   }
 
   // TODO:
   // target_module = Unicode(None, allow_none=True, help="""requirejs module from
   private _target_module: string | null = null;
-  get target_module() {
+  get target_module(): string | null {
     return this._target_module;
   }
   // which to load comm target.""")
@@ -84,7 +84,7 @@ export class Comm implements ICommManager.IComm {
         return ('comm-%s' % self.comm_id).encode('ascii')
    */
   private _topic: string;
-  get topic() {
+  get topic(): string {
     return this._topic;
   }
 
@@ -100,8 +100,10 @@ export class Comm implements ICommManager.IComm {
   // _close_data = Dict(help="data dict, if any, to be included in comm_close")
   _close_data: Record<string, any> = {};
   // _close_callback = Any()
-  protected _close_callback: null | ((msg: any) => Promise<void>) = null;
-  async handle_close(msg: any) {
+  protected _close_callback:
+    | null
+    | ((msg: KernelMessage.ICommCloseMsg) => Promise<void>) = null;
+  async handle_close(msg: KernelMessage.ICommCloseMsg): Promise<void> {
     if (this._close_callback) {
       return await this._close_callback(msg);
     }
@@ -112,7 +114,7 @@ export class Comm implements ICommManager.IComm {
   _open_data: Record<string, any> = {};
 
   // _msg_callback = Any()
-  _msg_callback: null | ((msg: any) => Promise<void>) = null;
+  _msg_callback: null | ((msg: KernelMessage.ICommMsgMsg) => Promise<void>) = null;
 
   /*
     def open(self, data=None, metadata=None, buffers=None):
@@ -138,7 +140,11 @@ export class Comm implements ICommManager.IComm {
 
   */
 
-  async open(data?: any, metadata?: any, buffers?: any): Promise<void> {
+  async open(
+    data?: Record<string, any>,
+    metadata?: Record<string, any>,
+    buffers?: (ArrayBuffer | ArrayBufferView)[]
+  ): Promise<void> {
     if (!data) {
       data = this._open_data;
     }
@@ -213,10 +219,10 @@ export class Comm implements ICommManager.IComm {
             self.kernel.comm_manager.unregister_comm(self)
 */
   async close(
-    data?: any,
-    metadata?: any,
-    buffers?: any,
-    deleting: boolean = false
+    data?: Record<string, any>,
+    metadata?: Record<string, any>,
+    buffers?: (ArrayBuffer | ArrayBufferView)[],
+    deleting = false
   ): Promise<void> {
     if (this._closed) {
       return;
@@ -225,7 +231,7 @@ export class Comm implements ICommManager.IComm {
     if (!this._kernel) {
       return;
     }
-    if (data == null) {
+    if (!data) {
       data = this._close_data;
     }
     const message = KernelMessage.createMessage<KernelMessage.ICommCloseMsg<'iopub'>>({
@@ -282,11 +288,15 @@ export class Comm implements ICommManager.IComm {
         )
 */
 
-  get session() {
+  get session(): string {
     return (this.kernel as any).parentHeader.session;
   }
 
-  async send(data?: any, metadata?: any, buffers?: any): Promise<void> {
+  async send(
+    data?: Record<string, any>,
+    metadata?: Record<string, any>,
+    buffers?: (ArrayBuffer | ArrayBufferView)[]
+  ): Promise<void> {
     const message = KernelMessage.createMessage<KernelMessage.ICommMsgMsg<'iopub'>>({
       channel: 'iopub',
       msgType: 'comm_msg',
@@ -294,7 +304,7 @@ export class Comm implements ICommManager.IComm {
       metadata,
       buffers,
       content: {
-        data,
+        data: data || {},
         comm_id: this._comm_id
       }
     });
@@ -313,7 +323,7 @@ export class Comm implements ICommManager.IComm {
             if shell:
                 shell.events.trigger('post_execute')
 */
-  async handle_msg(msg: any): Promise<void> {
+  async handle_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
     if (this._msg_callback) {
       this._msg_callback(msg);
     }

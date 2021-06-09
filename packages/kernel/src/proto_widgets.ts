@@ -1,18 +1,22 @@
+/**
+ * WARNING! EXPERIMENTAL! VERY DANGEROUS!
+ *
+ * This is not a stable API, but there is `/exmaples/js - widgets.ipynb` which
+ * _should_ work.
+ */
 import { DefaultCommManager } from './comm_manager';
 import { ICommManager, IKernel } from './tokens';
 import { KernelMessage } from '@jupyterlab/services';
 
 /**
- * An ur-prototype of JupyterLite (T?)JS(?) kernel widgets
+ * A naive, ur-prototype of JupyterLite (T?)JS(?) trait-ful objects
  */
 export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
   _trait_names: (keyof T)[];
-  // TODO: make generic
   _trait_values: T = {} as T;
   _next_change_promise: null | Promise<any> = null;
-  // TODO: these would be Partial<T>
-  _next_resolve: null | ((args: any) => any) = null;
-  _next_reject: null | ((args: any) => any) = null;
+  _next_resolve: null | ((args: _HasTraits.IChange<T>) => void) = null;
+  _next_reject: null | ((args: _HasTraits.IChange<T>) => void) = null;
   _observers = new Set<_HasTraits.IChangeCallback<T>>();
 
   constructor(options: Partial<T>) {
@@ -20,7 +24,9 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
     this._trait_values = { ...this._trait_values, ...options };
     this._init_next();
   }
-  _init_next() {
+
+  /** establish the promise callbacks for the next change */
+  _init_next(): void {
     this._next_change_promise = new Promise((resolve, reject) => {
       this._next_resolve = resolve;
       this._next_reject = reject;
@@ -28,7 +34,7 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
   }
 
   /** add an observer. doesn't work with names yet. */
-  async observe(fn: _HasTraits.IChangeCallback<T>, names?: string[]) {
+  async observe(fn: _HasTraits.IChangeCallback<T>, names?: string[]): Promise<void> {
     this._observers.add(fn);
     while (this._observers.has(fn)) {
       const change = await this._next_change_promise;
@@ -37,34 +43,49 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
   }
 
   /** remove an observer. doesn't work with names yet. */
-  async unobserve(fn: _HasTraits.IChangeCallback<T>, names?: string[]) {
+  async unobserve(fn: _HasTraits.IChangeCallback<T>, names?: string[]): Promise<void> {
     if (this._observers.has(fn)) {
       this._observers.delete(fn);
     }
   }
 
-  _emit_change(change: _HasTraits.IChange<T>) {
-    this._next_resolve && this._next_resolve(change);
-    this._init_next();
+  /** actually create the change */
+  _emit_change(change: _HasTraits.IChange<T>): void {
+    try {
+      this._next_resolve && this._next_resolve(change);
+    } catch (err) {
+      this._next_reject && this._next_reject(change);
+    } finally {
+      this._init_next();
+    }
   }
 }
 
+/**
+ * A namespace for naive traitlets stuff
+ */
 export namespace _HasTraits {
+  /** a change */
   export interface IChange<T> {
     name: keyof T;
     old: T[keyof T];
     new: T[keyof T];
   }
+
+  /** a change handler */
   export interface IChangeCallback<T> {
     (change: IChange<T>): Promise<void>;
   }
+
   /**
    * Set up get/set proxies
    *
    * TODO: probably a decorator?
    */
-  export function _traitMeta<T>(_Klass: new (options: T) => _HasTraits<T>) {
-    return (options: T) => {
+  export function _traitMeta<T>(
+    _Klass: new (options: T) => _HasTraits<T>
+  ): (options: T) => _HasTraits<T> {
+    return (options: T): _HasTraits<T> => {
       const __ = new _Klass(options);
       return new Proxy<_HasTraits<T>>(__, {
         get: function(target: any, prop: string | symbol, receiver: any) {
@@ -87,6 +108,9 @@ export namespace _HasTraits {
   }
 }
 
+/**
+ * A naive base widget class
+ */
 export class _Widget<T> extends _HasTraits<T> {
   static _kernel: IKernel | null = null;
   private _comm: ICommManager.IComm | null = null;
@@ -96,7 +120,14 @@ export class _Widget<T> extends _HasTraits<T> {
     this.open();
   }
 
-  display() {
+  /**
+   * Force a display of the widget over raw headers.
+   *
+   * TODO: Improve, decide on JupyterLite conventions for display, e.g.
+   *       - the pragmatic `_ipython_display_`,
+   *       - the `_repr_*` family
+   */
+  display(): void {
     if (!_Widget._kernel) {
       return;
     }
@@ -105,9 +136,9 @@ export class _Widget<T> extends _HasTraits<T> {
       data: {
         'text/plain': `${JSON.stringify(this._trait_values, null, 2)}`,
         'application/vnd.jupyter.widget-view+json': {
-          version: '2.0',
-          version_major: 2,
-          version_minor: 0,
+          version: _Widget.WIDGET_VERSION,
+          version_major: _Widget.WIDGET_VERSION_MAJOR,
+          version_minor: _Widget.WIDGET_VERSION_MINOR,
           model_id: `${this._comm?.comm_id}`
         }
       },
@@ -116,7 +147,8 @@ export class _Widget<T> extends _HasTraits<T> {
     (_Widget._kernel as any).displayData(content);
   }
 
-  open() {
+  /** open a new comm */
+  open(): void {
     const kernel = _Widget._kernel as IKernel;
 
     if (kernel) {
@@ -124,21 +156,24 @@ export class _Widget<T> extends _HasTraits<T> {
         target_name: _Widget.WIDGET_TARGET,
         ...this.makeMessage()
       });
-      this.observe(this._sync);
+      this.observe(this._sync).catch(console.error);
       this._comm.on_msg(this.on_msg);
       this._comm.on_close(async msg => {
         console.log(this._comm?.comm_id, 'should close', msg);
       });
+    } else {
+      console.warn('no kernel to back comm');
     }
   }
 
-  makeMessage(keys: string[] = []) {
-    const state: T = {} as T;
-    for (const k of keys || Object.keys(this._trait_values)) {
-      state[k as keyof T] = this._trait_values[k as keyof T];
-    }
+  /**
+   * Some boilerplate for making (bad) messages
+   *
+   * TODO: fix hard coded things? extract from python?
+   */
+  makeMessage(): Record<string, any> {
     return {
-      data: { state },
+      data: { state: this._trait_values },
       metadata: {
         version: '2.0',
         version_major: 2,
@@ -156,27 +191,19 @@ export class _Widget<T> extends _HasTraits<T> {
       console.warn('cannot send without comm', this);
       return;
     }
-    const msg = this.makeMessage([change.name as string]);
+    const msg = this.makeMessage();
     this._comm.send({ ...msg.data, method: 'update' }, msg.metadata);
   };
 
-  protected on_msg = async (msg: any) => {
+  /** a naive change batcher.
+   *
+   * TODO: investigate Debouncer/Throttler, or even ConflatableMessage patterns
+   */
+  protected on_msg = async (msg: KernelMessage.ICommMsgMsg): Promise<void> => {
     const { data } = msg.content;
     switch (data.method) {
       case 'update':
-        const state: T = data.state;
-        const changes = [];
-        for (const [k, v] of Object.entries(state)) {
-          const old = this._trait_values[k as keyof T];
-          if (old === v) {
-            continue;
-          }
-          (this._trait_values as any)[k] = v as any;
-          changes.push({ name: k as keyof T, old, new: v });
-        }
-        for (const change of changes) {
-          this._emit_change(change);
-        }
+        await this.handle_on_msg(msg);
         break;
       default:
         console.warn('oh noes', data.method, msg);
@@ -184,31 +211,73 @@ export class _Widget<T> extends _HasTraits<T> {
     }
   };
 
-  static defaults() {
+  protected async handle_on_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
+    const { data } = msg.content;
+    const state: T = (data.state as any) as T;
+    const changes = [];
+    for (const [k, v] of Object.entries(state)) {
+      const old = this._trait_values[k as keyof T];
+      if (old === v) {
+        continue;
+      }
+      (this._trait_values as any)[k] = v as any;
+      changes.push({ name: k as keyof T, old, new: v });
+    }
+    for (const change of changes) {
+      this._emit_change(change);
+    }
+  }
+
+  /** the default traits
+   *
+   * TODO: this is probably wrong,
+   */
+  static defaults(): any {
     return {
       _dom_classes: [],
-      _model_module: '@jupyter-widgets/controls',
-      _model_module_version: '1.5.0',
+      _model_module: _Widget.WIDGET_CONTROLS_PACKAGE,
+      _model_module_version: _Widget.WIDGET_CONTROLS_VERSION,
       _view_count: null,
-      _view_module_version: '1.5.0'
+      _view_module_version: _Widget.WIDGET_CONTROLS_VERSION
     };
   }
 
-  static async handle_comm_opened(comm: ICommManager.IComm, msg: any): Promise<void> {
+  /**
+   * Handle a request for a new comm from the client
+   *
+   * TODO: untested
+   */
+  static async handle_comm_opened(
+    comm: ICommManager.IComm,
+    msg: KernelMessage.ICommOpenMsg
+  ): Promise<void> {
     console.log('TODO: a comm was opened?', comm, msg);
   }
 }
 
+/** a namespace for widget specs */
 export namespace _Widget {
+  /** the widget comm target */
   export const WIDGET_TARGET = 'jupyter.widget';
+  export const WIDGET_VERSION_MAJOR = 2;
+  export const WIDGET_VERSION_MINOR = 0;
+  export const WIDGET_VERSION = `${WIDGET_VERSION_MAJOR}.${WIDGET_VERSION_MINOR}`;
+  export const WIDGET_CONTROLS_VERSION = '1.5.0';
+  export const WIDGET_CONTROLS_PACKAGE = '@jupyter-widgets/controls';
 }
 
 export const Widget = _HasTraits._traitMeta<any>(_Widget);
 
+/**
+ * A naive registry for all the widget types.
+ *
+ * Not so important... yet, but _does_ wire up target from the client,
+ * but this is not tested yet.
+ */
 class WidgetRegistry {
   _commManager: ICommManager;
 
-  static getInstance() {
+  static getInstance(): WidgetRegistry {
     return Private.widgetRegistry
       ? Private.widgetRegistry
       : (Private.widgetRegistry = new WidgetRegistry());
@@ -228,18 +297,35 @@ class WidgetRegistry {
   }
 }
 
-namespace Private {
-  export let widgetRegistry: WidgetRegistry;
+/** a naive FloatSlider */
+export class _FloatSlider extends _Widget<IFloatSlider> {
+  constructor(options: IFloatSlider) {
+    options = { ...FLOAT_SLIDER_DEFAULTS, ...options };
+    super(options);
+  }
 }
 
+/** Some copy-pasted default values
+ *
+ * TODO: it _must_ be possible to do this _en masse_:
+ * - load up each of the widgets for defaults
+ * - infer a JSON schema from the traitlets
+ * - export the widget.package.schema.json
+ * - then either
+ *   - go the ts way
+ *     - generate .d.ts types
+ *     - generate concrete .ts types
+ *   - go the js way
+ *     - dynamically build evented classes based directly on json schema
+ */
 const FLOAT_SLIDER_DEFAULTS: IFloatSlider = {
   _dom_classes: [],
-  _model_module: '@jupyter-widgets/controls',
-  _model_module_version: '1.5.0',
+  _model_module: _Widget.WIDGET_CONTROLS_PACKAGE,
+  _model_module_version: _Widget.WIDGET_CONTROLS_VERSION,
   _model_name: 'FloatSliderModel',
   _view_count: null,
-  _view_module: '@jupyter-widgets/controls',
-  _view_module_version: '1.5.0',
+  _view_module: _Widget.WIDGET_CONTROLS_PACKAGE,
+  _view_module_version: _Widget.WIDGET_CONTROLS_VERSION,
   _view_name: 'FloatSliderView',
   continuous_update: true,
   description: '',
@@ -259,15 +345,10 @@ const FLOAT_SLIDER_DEFAULTS: IFloatSlider = {
   keys: ['value']
 };
 
-export class _FloatSlider extends _Widget<IFloatSlider> {
-  constructor(options: IFloatSlider) {
-    options = { ...FLOAT_SLIDER_DEFAULTS, ...options };
-    super(options);
-  }
-}
-
+/** the concrete observable */
 export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
 
+/** a description of widget traits */
 export interface IWidget {
   // _model_name = Unicode('WidgetModel',
   //     help="Name of the model.", read_only=True).tag(sync=True)
@@ -295,6 +376,7 @@ export interface IWidget {
   keys: string[];
 }
 
+/** a description of DOM widget traits */
 export interface IDOMWidget extends IWidget {
   // _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
   _dom_classes: string[];
@@ -306,20 +388,24 @@ export interface IDOMWidget extends IWidget {
   layout: any;
 }
 
+/** a description of described widget traits */
 export interface IDescriptionWidget extends IWidget {
   description: string;
   description_tooltip: string | null;
 }
 
+/** a description of float widget traits */
 export interface IFloat extends IWidget {
   value: number;
 }
 
+/** a description of bounded float widget traits */
 export interface IBoundedFloat extends IFloat {
   min: number;
   max: number;
 }
 
+/** a description of float slider */
 export interface IFloatSlider extends IDOMWidget, IDescriptionWidget, IBoundedFloat {
   // step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
   step: number | null;
@@ -337,4 +423,9 @@ export interface IFloatSlider extends IDOMWidget, IDescriptionWidget, IBoundedFl
   disabled: boolean;
   // style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
   style: any;
+}
+
+/** A namespace for the widgetregistry singleton */
+namespace Private {
+  export let widgetRegistry: WidgetRegistry;
 }

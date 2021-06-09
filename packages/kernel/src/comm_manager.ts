@@ -1,6 +1,13 @@
+/**
+ * WARNING! EXPERIMENTAL! VERY DANGEROUS!
+ *
+ * This is not a stable API, but there is `/exmaples/js - widgets.ipynb` which
+ * _should_ work.
+ */
 import { IKernel, ICommManager } from './tokens';
 import { Comm } from './comm';
 import { UUID } from '@lumino/coreutils';
+import { KernelMessage } from '@jupyterlab/services';
 
 /**
  * A Default CommManager
@@ -26,15 +33,15 @@ export class DefaultCommManager implements ICommManager {
     this._sendMessage = options.sendMessage;
   }
 
-  get kernel() {
+  get kernel(): IKernel {
     return this._kernel;
   }
 
-  get targets() {
+  get targets(): Map<string, ICommManager.ITarget> {
     return this._targets;
   }
 
-  get comms() {
+  get comms(): Map<string, ICommManager.IComm> {
     return this._comms;
   }
 
@@ -53,7 +60,7 @@ export class DefaultCommManager implements ICommManager {
             f = import_item(f)
 
   */
-  register_target(target_name: string, f: ICommManager.ITarget | string) {
+  register_target(target_name: string, f: ICommManager.ITarget | string): void {
     if (typeof f === 'string') {
       throw new ICommManager.APINotImplemented(
         'creating a comm by import not supported'
@@ -99,7 +106,7 @@ export class DefaultCommManager implements ICommManager {
         # unlike get_comm, this should raise a KeyError
         comm = self.comms.pop(comm.comm_id)
   */
-  unregister_comm(comm: ICommManager.IComm) {
+  unregister_comm(comm: ICommManager.IComm): void {
     this._comms.delete(comm.comm_id);
   }
   /*
@@ -123,7 +130,7 @@ export class DefaultCommManager implements ICommManager {
     const comm = this._comms.get(comm_id);
 
     if (!comm) {
-      throw new Error(`don't have that comm. TODO: better error sublcass`);
+      throw new Error("don't have that comm. TODO: better error sublcass");
     }
 
     return comm;
@@ -158,8 +165,7 @@ export class DefaultCommManager implements ICommManager {
             self.log.error("""Could not close comm during `comm_open` failure
                 clean-up.  The comm may not have been opened yet.""", exc_info=True)
   */
-  async comm_open(msg: any): Promise<void> {
-    console.warn('comm_open', msg);
+  async comm_open(msg: KernelMessage.ICommOpenMsg): Promise<void> {
     const { content } = msg;
     const { comm_id, target_name } = content;
     const f = this._targets.get(target_name);
@@ -221,7 +227,7 @@ export class DefaultCommManager implements ICommManager {
             self.log.error('Exception in comm_msg for %s', comm_id, exc_info=True)
 
   */
-  async comm_msg(msg: any): Promise<void> {
+  async comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
     const { content } = msg;
     const { comm_id } = content;
     const comm = this.get_comm(comm_id);
@@ -254,7 +260,7 @@ export class DefaultCommManager implements ICommManager {
             self.log.error('Exception in comm_close for %s', comm_id, exc_info=True)
 
   */
-  async comm_close(msg: any): Promise<void> {
+  async comm_close(msg: KernelMessage.ICommCloseMsg): Promise<void> {
     const { content } = msg;
     const { comm_id } = content;
     const comm = this.get_comm(comm_id);
@@ -268,7 +274,7 @@ export class DefaultCommManager implements ICommManager {
       await comm.handle_close(msg);
     } catch (err) {
       console.error(
-        `Exception in comm_close for %s', comm_id, exc_info=True)`,
+        "Exception in comm_close for %s', comm_id, exc_info=True)",
         comm_id
       );
       console.trace();
@@ -279,6 +285,6 @@ export class DefaultCommManager implements ICommManager {
 export function createDefaultCommManager(opts: {
   kernel: IKernel;
   sendMessage: IKernel.SendMessage;
-}) {
+}): ICommManager {
   return new DefaultCommManager(opts);
 }
