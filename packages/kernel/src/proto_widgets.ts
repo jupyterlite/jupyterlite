@@ -122,7 +122,7 @@ export class _Widget<T> extends _HasTraits<T> {
     if (kernel) {
       this._comm = (kernel.comm_manager as DefaultCommManager).make_comm({
         target_name: _Widget.WIDGET_TARGET,
-        ...this.makeData()
+        ...this.makeMessage()
       });
       this.observe(this._sync);
       this._comm.on_msg(this.on_msg);
@@ -132,11 +132,13 @@ export class _Widget<T> extends _HasTraits<T> {
     }
   }
 
-  makeData() {
+  makeMessage(keys: string[] = []) {
+    const state: T = {} as T;
+    for (const k of keys || Object.keys(this._trait_values)) {
+      state[k as keyof T] = this._trait_values[k as keyof T];
+    }
     return {
-      data: {
-        state: this._trait_values
-      },
+      data: { state },
       metadata: {
         version: '2.0',
         version_major: 2,
@@ -149,19 +151,13 @@ export class _Widget<T> extends _HasTraits<T> {
   /**
    * sync data back to the client
    */
-  protected _sync = async (): Promise<void> => {
+  protected _sync = async (change: _HasTraits.IChange<T>): Promise<void> => {
     if (!this._comm) {
       console.warn('cannot send without comm', this);
       return;
     }
-    const data = this.makeData();
-    this._comm.send({
-      ...data,
-      data: {
-        ...data,
-        method: 'update'
-      }
-    });
+    const msg = this.makeMessage([change.name as string]);
+    this._comm.send({ ...msg.data, method: 'update' }, msg.metadata);
   };
 
   protected on_msg = async (msg: any) => {
