@@ -41,6 +41,7 @@
     "@jupyterlab/apputils": "^3.1.0-alpha.11",
     "@jupyterlab/docmanager": "^3.1.0-alpha.11",
     "@jupyterlab/docprovider": "^3.1.0-alpha.11",
+    "@jupyterlab/help-extension": "^3.1.0-alpha.11",
     "@jupyterlab/mainmenu": "^3.1.0-alpha.11",
     "@jupyterlab/translation": "^3.1.0-alpha.11",
     "@jupyterlite/ui-components": "^0.1.0-alpha.0",

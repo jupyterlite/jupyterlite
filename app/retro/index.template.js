@@ -51,6 +51,7 @@ async function main() {
   // create a RetroLab frontend
   const { RetroApp } = require('@retrolab/application');
   const app = new RetroApp({ serviceManager, mimeExtensions });
+  app.name = 'RetroLite';
 
   let mods = [
     // @jupyterlite plugins
@@ -228,9 +229,9 @@ async function main() {
 
   console.log('Starting app');
   await app.start();
-  console.log('JupyterLite Retro started, waiting for restore');
+  console.log(`${app.name} started, waiting for restore`);
   await app.restored;
-  console.log('JupyterLite Retro restored');
+  console.log(`${app.name} restored`);
 }
 
 main();
