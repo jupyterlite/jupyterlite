@@ -1,23 +1,46 @@
 /**
- * WARNING! EXPERIMENTAL! VERY DANGEROUS!
+ * **WARNING! EXPERIMENTAL! VERY DANGEROUS!**
  *
- * This is not a stable API, but there is `/exmaples/js - widgets.ipynb` which
- * _should_ work.
+ * > This is not a stable API, but there is `/exmaples/js - widgets.ipynb` which
+ * > _should_ work, and exercise most of the features contained in here.
+ * > There are also some (sometimes aspirational) minimal examples under
+ * > under `### Examples` headings below
+ *
+ * ### Discussion
+ *
  */
 import { DefaultCommManager } from './comm_manager';
 import { ICommManager, IKernel } from './tokens';
 import { KernelMessage } from '@jupyterlab/services';
+
+// self._trait_notifiers[name][type]
+export type TObservation = 'change' | string;
+export type TObservationMap<T> = Map<TObservation, Set<_HasTraits.IChangeCallback<T>>>;
+export type TObserverMap<T> = Map<keyof T, TObservationMap<T>>;
+
+/**
+ * An unconfigurable top-level variable. _Might_ get optimized out by the compiler.
+ *
+ * TODO: this is very nasty, but sometimes need to see _everything_...
+ * */
+const DEBUG = false;
 
 /**
  * A naive, ur-prototype of JupyterLite (T?)JS(?) trait-ful objects
  */
 export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
   _trait_names: (keyof T)[];
+  // self._trait_values = {}
   _trait_values: T = {} as T;
-  _next_change_promise: null | Promise<any> = null;
-  _next_resolve: null | ((args: _HasTraits.IChange<T>) => void) = null;
-  _next_reject: null | ((args: _HasTraits.IChange<T>) => void) = null;
-  _observers = new Set<_HasTraits.IChangeCallback<T>>();
+  // self._trait_notifiers = {}
+  _trait_notifiers: TObserverMap<T> = new Map();
+  // self._trait_validators = {}
+  // TODO: valdiators
+
+  // non-canonical stuff
+  private _next_change_promise: null | Promise<any> = null;
+  private _next_resolve: null | ((args: _HasTraits.IChange<T>) => void) = null;
+  private _next_reject: null | ((args: _HasTraits.IChange<T>) => void) = null;
 
   constructor(options: Partial<T>) {
     this._trait_names = [...Object.keys(options || {})] as any;
@@ -25,27 +48,167 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
     this._init_next();
   }
 
-  /** establish the promise callbacks for the next change */
-  _init_next(): void {
+  /**
+   * establish the promise callbacks for the next change
+   *
+   * TODO: this pattern is probably not right.
+   */
+  private _init_next(): void {
     this._next_change_promise = new Promise((resolve, reject) => {
       this._next_resolve = resolve;
       this._next_reject = reject;
     });
   }
 
-  /** add an observer. doesn't work with names yet. */
-  async observe(fn: _HasTraits.IChangeCallback<T>, names?: string[]): Promise<void> {
-    this._observers.add(fn);
-    while (this._observers.has(fn)) {
-      const change = await this._next_change_promise;
-      await fn(change);
+  /** add an observer.
+   *
+   * ### Discussion
+   *
+   * The upstream implementation return `void`.
+   *
+   * However, it would be very compelling to have access to an observation as a
+   * async iterable of changes. Perhaps there is an alternate API, or option,
+   * which could allow for retrieving this...
+   */
+  public observe(
+    handler: _HasTraits.IChangeCallback<T>,
+    names: string[] | null = null,
+    changeType: TObservation = 'change'
+  ): void {
+    // def observe(self, handler, names=All, type='change'):
+    //   """Setup a handler to be called when a trait changes.
+    //   This is used to setup dynamic notifications of trait changes.
+    //   Parameters
+    //   ----------
+    //   handler : callable
+    //       A callable that is called when a trait changes. Its
+    //       signature should be ``handler(change)``, where ``change`` is a
+    //       dictionary. The change dictionary at least holds a 'type' key.
+    //       * ``type``: the type of notification.
+    //       Other keys may be passed depending on the value of 'type'. In the
+    //       case where type is 'change', we also have the following keys:
+    //       * ``owner`` : the HasTraits instance
+    //       * ``old`` : the old value of the modified trait attribute
+    //       * ``new`` : the new value of the modified trait attribute
+    //       * ``name`` : the name of the modified trait attribute.
+    //   names : list, str, All
+    //       If names is All, the handler will apply to all traits.  If a list
+    //       of str, handler will apply to all names in the list.  If a
+    //       str, the handler will apply just to that name.
+    //   type : str, All (default: 'change')
+    //       The type of notification to filter by. If equal to All, then all
+    //       notifications are passed to the observe handler.
+    //   """
+    //   names = parse_notifier_name(names)
+    //   for n in names:
+    //       self._add_notifiers(handler, n, type)
+    for (const name of names || this._trait_names) {
+      if (!this._trait_notifiers.has(name)) {
+        this._trait_notifiers.set(name, new Map());
+      }
+      if (!this._trait_notifiers.get(name)?.get(changeType)) {
+        this._trait_notifiers.get(name)?.set(changeType, new Set());
+      }
+      if (
+        this._trait_notifiers
+          .get(name)
+          ?.get(changeType)
+          ?.has(handler)
+      ) {
+        continue;
+      }
+      this._trait_notifiers
+        .get(name)
+        ?.get(changeType)
+        ?.add(handler);
+      const observer = this._makeObserver(handler, name, changeType);
+      const observance = (async () => {
+        for await (const observation of observer) {
+          DEBUG && console.log(name, changeType, observation);
+        }
+      })();
+      DEBUG && console.log(name, changeType, handler);
+      observance.catch(console.warn);
     }
   }
 
+  /** an observer that observes until it is disposed by `.unobserve`.
+   *
+   * TODO: don't just drop this on the floor. consider an async generator.
+   */
+  private async *_makeObserver(
+    handler: _HasTraits.IChangeCallback<T>,
+    name: keyof T,
+    changeType: TObservation
+  ) {
+    const isDisposed = () => {
+      return !this._trait_notifiers
+        .get(name)
+        ?.get(changeType)
+        ?.has(handler);
+    };
+
+    let change: _HasTraits.IChange<T> | null = null;
+
+    while (!isDisposed()) {
+      yield* [[0, null]];
+      try {
+        change = await this._next_change_promise;
+        yield* [[1, change]];
+      } catch (err) {
+        console.warn('error awaiting next change promise', name, changeType, err);
+      }
+
+      // check the handler _again_
+      if (isDisposed()) {
+        DEBUG && console.log('observer closed', name, changeType);
+        break;
+      }
+      if (change && change.name === name) {
+        try {
+          await handler(change);
+        } catch (err) {
+          DEBUG && console.warn('error handling', name, changeType, handler, err);
+        }
+        yield* [[2, change]];
+      }
+    }
+    DEBUG && console.warn('just about done here', name, changeType);
+    yield* [[99, null]];
+  }
+
   /** remove an observer. doesn't work with names yet. */
-  async unobserve(fn: _HasTraits.IChangeCallback<T>, names?: string[]): Promise<void> {
-    if (this._observers.has(fn)) {
-      this._observers.delete(fn);
+  unobserve(
+    handler: _HasTraits.IChangeCallback<T>,
+    names: string[] | null = null,
+    changeType: TObservation = 'change'
+  ): void {
+    // def unobserve(self, handler, names=All, type='change'):
+    //     """Remove a trait change handler.
+    //     This is used to unregister handlers to trait change notifications.
+    //     Parameters
+    //     ----------
+    //     handler : callable
+    //         The callable called when a trait attribute changes.
+    //     names : list, str, All (default: All)
+    //         The names of the traits for which the specified handler should be
+    //         uninstalled. If names is All, the specified handler is uninstalled
+    //         from the list of notifiers corresponding to all changes.
+    //     type : str or All (default: 'change')
+    //         The type of notification to filter by. If All, the specified handler
+    //         is uninstalled from the list of notifiers corresponding to all types.
+    //     """
+    //     names = parse_notifier_name(names)
+    //     for n in names:
+    //         self._remove_notifiers(handler, n, type)
+
+    for (const name of names || this._trait_names) {
+      this._trait_notifiers
+        .get(name)
+        ?.get(changeType)
+        ?.delete(handler) &&
+        DEBUG &&
+        console.warn('unobserved', name, changeType);
     }
   }
 
@@ -67,9 +230,14 @@ export class _HasTraits<T extends Record<string, any> = Record<string, any>> {
 export namespace _HasTraits {
   /** a change */
   export interface IChange<T> {
-    name: keyof T;
+    //       * ``owner`` : the HasTraits instance
+    owner: _HasTraits<T>;
+    //       * ``old`` : the old value of the modified trait attribute
     old: T[keyof T];
+    //       * ``new`` : the new value of the modified trait attribute
     new: T[keyof T];
+    //       * ``name`` : the name of the modified trait attribute.
+    name: keyof T;
   }
 
   /** a change handler */
@@ -87,7 +255,7 @@ export namespace _HasTraits {
   ): (options: T) => _HasTraits<T> {
     return (options: T): _HasTraits<T> => {
       const __ = new _Klass(options);
-      return new Proxy<_HasTraits<T>>(__, {
+      const proxy = new Proxy<_HasTraits<T>>(__, {
         get: function(target: any, prop: string | symbol, receiver: any) {
           if (__._trait_names.indexOf(prop as keyof T) !== -1) {
             return (__._trait_values as T)[prop as keyof T];
@@ -98,12 +266,20 @@ export namespace _HasTraits {
           if (__._trait_names.indexOf(prop as keyof T) !== -1) {
             const old = __._trait_values[prop as keyof T];
             const new_ = (__._trait_values[prop as keyof T] = value);
-            __._emit_change({ name: prop as keyof T, old, new: new_ });
-            return new_;
+            if (old !== new_) {
+              __._emit_change({
+                name: prop as keyof T,
+                old,
+                new: new_,
+                owner: __
+              });
+            }
+            return true;
           }
           return Reflect.set(obj, prop, value);
         }
       });
+      return proxy;
     };
   }
 }
@@ -156,13 +332,13 @@ export class _Widget<T> extends _HasTraits<T> {
         target_name: _Widget.WIDGET_TARGET,
         ...this.makeMessage()
       });
-      this.observe(this._sync).catch(console.error);
+      this.observe(this._sync);
       this._comm.on_msg(this.on_msg);
       this._comm.on_close(async msg => {
-        console.log(this._comm?.comm_id, 'should close', msg);
+        console.warn('TODO', this._comm?.comm_id, 'should close', msg);
       });
     } else {
-      console.warn('no kernel to back comm');
+      console.error('Unexpected: no kernel to back comm');
     }
   }
 
@@ -188,7 +364,7 @@ export class _Widget<T> extends _HasTraits<T> {
    */
   protected _sync = async (change: _HasTraits.IChange<T>): Promise<void> => {
     if (!this._comm) {
-      console.warn('cannot send without comm', this);
+      console.error('Unexpected: cannot send without comm', this);
       return;
     }
     const msg = this.makeMessage();
@@ -203,10 +379,14 @@ export class _Widget<T> extends _HasTraits<T> {
     const { data } = msg.content;
     switch (data.method) {
       case 'update':
-        await this.handle_on_msg(msg);
+        try {
+          await this.handle_on_msg(msg);
+        } catch (err) {
+          console.warn('Unexpected handler error', err, msg);
+        }
         break;
       default:
-        console.warn('oh noes', data.method, msg);
+        console.error('Unexpected method', data.method, ':', msg);
         break;
     }
   };
@@ -221,7 +401,12 @@ export class _Widget<T> extends _HasTraits<T> {
         continue;
       }
       (this._trait_values as any)[k] = v as any;
-      changes.push({ name: k as keyof T, old, new: v });
+      changes.push({
+        name: k as keyof T,
+        old,
+        new: v,
+        owner: this
+      });
     }
     for (const change of changes) {
       this._emit_change(change);
@@ -252,7 +437,7 @@ export class _Widget<T> extends _HasTraits<T> {
     comm: ICommManager.IComm,
     msg: KernelMessage.ICommOpenMsg
   ): Promise<void> {
-    console.log('TODO: a comm was opened?', comm, msg);
+    console.warn('TODO: a comm was opened?', comm, msg);
   }
 }
 
@@ -285,12 +470,12 @@ class WidgetRegistry {
   }
 
   static getKernel(): IKernel {
-    return (window as any).kernel;
+    return (self as any).kernel;
   }
 
   constructor() {
     this._commManager = WidgetRegistry.getKernel().comm_manager;
-    console.info(`managing ${_Widget.WIDGET_TARGET}`);
+    DEBUG && console.info(`managing ${_Widget.WIDGET_TARGET}`);
     this._commManager.register_target(
       _Widget.WIDGET_TARGET,
       _Widget.handle_comm_opened
@@ -300,10 +485,17 @@ class WidgetRegistry {
 
 /** a naive FloatSlider
  *
+ * ### Examples
  * ```js
  * let { FloatSlider } = kernel.widgets
- * x = FloatSlider({description: "x", min: -1, value: 1, max: 1})
+ * x = FloatSlider({description: "$x$", min: -Math.PI, value: 1, max: Math.PI})
  * x.display()
+ *
+ * Object.entries({sin: Math.sin, cos: Math.cos, tan: Math.tan}).map(([k, fn])=> {
+ *     self[k] = FloatSlider({ description: '$\\' + k + '{x}$', min: -1, max: 1})
+ *     x.observe(async (change) => self[k].value = fn(change.new))
+ *     self[k].display()
+ * })
  */
 export class _FloatSlider extends _Widget<IFloatSlider> {
   constructor(options: IFloatSlider) {
@@ -359,6 +551,7 @@ export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
 
 /** a naive Select
  *
+ * ### Examples
  * ```js
  * let { Select } = kernel.widgets
  * options = ["apple", "banana"]
@@ -369,29 +562,31 @@ export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
 export class _Select extends _Widget<ISelect> {
   constructor(options: ISelect) {
     super({ ..._Select.defaults(), ...options });
-    this.observe(this._on_change).catch(console.error);
+    this.observe(this._on_index, ['index']);
   }
   /**
    * A catch-all observer for the semi-private select behavior
    *
-   * TODO: make the `names` part of `observe` work
    */
-  protected _on_change = async (change: _HasTraits.IChange<ISelect>): Promise<void> => {
-    let oldValue: any;
-
-    switch (change.name) {
-      case 'index':
-        oldValue = this._trait_values['value'];
-        this._trait_values['value'] = this._trait_values['options'][change.new];
-        this._emit_change({
-          name: 'value',
-          old: oldValue,
-          new: this._trait_values['value']
-        });
-        break;
-      default:
-        break;
+  protected _on_index = async (change: _HasTraits.IChange<ISelect>): Promise<void> => {
+    if (change.name !== 'index') {
+      console.error(
+        'Received unexpected change to',
+        change.name,
+        ':',
+        change.new,
+        change
+      );
+      return;
     }
+    const oldValue = this._trait_values['value'];
+    this._trait_values['value'] = this._trait_values['options'][change.new];
+    this._emit_change({
+      name: 'value',
+      old: oldValue,
+      new: this._trait_values['value'],
+      owner: this
+    });
   };
 
   static defaults(): ISelect {
@@ -425,6 +620,52 @@ const SELECT_DEFAULTS: ISelect = {
   index: 0,
   rows: 5
 };
+
+/** utilities */
+
+export type TLinkItem<T> = [_HasTraits<T>, keyof T];
+
+/**
+ * A `link` with the same API as traitlets
+ *
+ * ### Examples
+ * ```js
+ * let { link } = kernel.widgets
+ * let { Select } = kernel.widgets
+ * options = ["apple", "banana"]
+ * let [it1, it2] = ["one", "another"].map((d) => Select({rows: 1, description: d, options, _options_labels: options}))
+ * self.it1 = it1
+ * self.it2 = it2
+ * link([it1, "index"], [it2, "index"])
+ * it1.display()
+ * it2.display()
+ * ```
+ */
+export async function link<T, U>(
+  first: TLinkItem<T>,
+  other: TLinkItem<U>
+): Promise<void> {
+  const [firstHasTraits, firstName] = first;
+  const [otherHasTraits, otherName] = other;
+  firstHasTraits.observe(
+    async (change: _HasTraits.IChange<T>) => {
+      const old = (otherHasTraits as any)[otherName];
+      if (old !== change.new) {
+        (otherHasTraits as any)[otherName] = change.new;
+      }
+    },
+    [firstName as string]
+  );
+  otherHasTraits.observe(
+    async (change: _HasTraits.IChange<U>) => {
+      const old = (firstHasTraits as any)[firstName];
+      if (old !== change.new) {
+        (firstHasTraits as any)[firstName] = change.new;
+      }
+    },
+    [otherName as string]
+  );
+}
 
 /** a description of widget traits */
 export interface IWidget {
