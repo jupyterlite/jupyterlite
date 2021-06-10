@@ -23,11 +23,13 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { ITranslator, TranslationManager } from '@jupyterlab/translation';
 
-import { liteIcon } from '@jupyterlite/ui-components';
+import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { Widget } from '@lumino/widgets';
 
 import { WebsocketProvider } from 'y-websocket';
+
+import React from 'react';
 
 const YJS_WEBSOCKET_URL = 'wss://demos.yjs.dev';
 
@@ -53,8 +55,105 @@ class WebSocketProvider extends WebsocketProvider implements IDocumentProvider {
  * The command IDs used by the application extension.
  */
 namespace CommandIDs {
+  export const about = 'application:about';
+
   export const download = 'docmanager:download';
 }
+
+/**
+ * Add a command to show an About dialog.
+ */
+const about: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:about',
+  autoStart: true,
+  requires: [ITranslator],
+  optional: [ICommandPalette, IMainMenu],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    palette: ICommandPalette | null,
+    menu: IMainMenu | null
+  ): void => {
+    const { commands } = app;
+    const trans = translator.load('jupyterlab');
+    const category = trans.__('Help');
+
+    commands.addCommand(CommandIDs.about, {
+      label: trans.__('About %1', app.name),
+      execute: () => {
+        const versionNumber = trans.__('Version %1', app.version);
+        const versionInfo = (
+          <span className="jp-About-version-info">
+            <span className="jp-About-version">{versionNumber}</span>
+          </span>
+        );
+        const title = (
+          <span className="jp-About-header">
+            <div className="jp-About-header-info">
+              <liteWordmark.react height="auto" width="196px" />
+              {versionInfo}
+            </div>
+          </span>
+        );
+
+        // Create the body of the about dialog
+        const jupyterliteURL = 'https://github.com/jtpio/jupyterlite';
+        const contributorsURL =
+          'https://github.com/jtpio/jupyterlite/graphs/contributors';
+        const externalLinks = (
+          <span className="jp-About-externalLinks">
+            <a
+              href={contributorsURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="jp-Button-flat"
+            >
+              {trans.__('CONTRIBUTOR LIST')}
+            </a>
+            <a
+              href={jupyterliteURL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="jp-Button-flat"
+            >
+              {trans.__('JUPYTERLITE ON GITHUB')}
+            </a>
+          </span>
+        );
+        const copyright = (
+          <span className="jp-About-copyright">
+            {trans.__('© 2021 JupyterLite Contributors')}
+          </span>
+        );
+        const body = (
+          <div className="jp-About-body">
+            {externalLinks}
+            {copyright}
+          </div>
+        );
+
+        return showDialog({
+          title,
+          body,
+          buttons: [
+            Dialog.createButton({
+              label: trans.__('Dismiss'),
+              className: 'jp-About-button jp-mod-reject jp-mod-styled'
+            })
+          ]
+        });
+      }
+    });
+
+    if (palette) {
+      palette.addItem({ command: CommandIDs.about, category });
+    }
+
+    if (menu) {
+      menu.helpMenu.addGroup([{ command: CommandIDs.about }], 0);
+    }
+  }
+};
 
 /**
  * An alternative document provider plugin
@@ -171,6 +270,7 @@ const translator: JupyterFrontEndPlugin<ITranslator> = {
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
+  about,
   docProviderPlugin,
   downloadPlugin,
   liteLogo,
