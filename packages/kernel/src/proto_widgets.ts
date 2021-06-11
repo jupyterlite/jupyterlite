@@ -484,6 +484,11 @@ class WidgetRegistry {
 
 /** a naive Select
  *
+ * ### Discussion
+ *
+ * This is an example of something for which we'd want to override the default
+ * trait generation behavior.
+ *
  * ### Examples
  * ```js
  * let { Select } = kernel.widgets
@@ -553,38 +558,6 @@ const SELECT_DEFAULTS: ISelect = {
   index: 0,
   rows: 5
 };
-
-// /** a naive FloatSlider
-//  *
-//  * ### Examples
-//  * ```js
-//  * let { FloatSlider } = kernel.widgets
-//  * x = FloatSlider({description: "$x$", min: -Math.PI, value: 1, max: Math.PI})
-//  * x.display()
-//  *
-//  * Object.entries({sin: Math.sin, cos: Math.cos, tan: Math.tan}).map(([k, fn])=> {
-//  *     self[k] = FloatSlider({ description: '$\\' + k + '{x}$', min: -1, max: 1})
-//  *     x.observe(async (change) => self[k].value = fn(change.new))
-//  *     self[k].display()
-//  * })
-//  */
-// export type TAnyFloatSlider = PROTO.FloatSliderProtected | PROTO.FloatSliderPublic;
-
-// export class _FloatSlider extends _Widget<TAnyFloatSlider> {
-//   constructor(options: TAnyFloatSlider) {
-//     super({ ..._FloatSlider.defaults(), ...options });
-//   }
-
-//   static defaults(): TAnyFloatSlider {
-//     return {
-//       ...super.defaults(),
-//       ...(SCHEMA.IProtectedFloatSlider.default as TAnyFloatSlider)
-//     };
-//   }
-// }
-
-// /** the concrete observable FloatSlider */
-// export const FloatSlider = _HasTraits._traitMeta<PROTO.FloatSliderPublic>(_FloatSlider);
 
 /** utilities */
 
@@ -805,37 +778,6 @@ export interface IDOMWidget extends IWidget {
 export interface IDescriptionWidget extends IWidget {
   description: string;
   description_tooltip: string | null;
-}
-
-/** a description of float widget traits */
-export interface IFloat extends IWidget {
-  value: number;
-}
-
-/** a description of bounded float widget traits */
-export interface IBoundedFloat extends IFloat {
-  min: number;
-  max: number;
-}
-
-/** a description of float slider */
-export interface IFloatSlider extends IDOMWidget, IDescriptionWidget, IBoundedFloat {
-  // step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
-  step: number | null;
-  // orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
-  //     default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
-  orientation: 'horizontal' | 'vertical';
-  // readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-  readout: boolean;
-  // readout_format = NumberFormat(
-  //     '.2f', help="Format for the readout").tag(sync=True)
-  readout_format: string;
-  // continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
-  continuous_update: boolean;
-  // disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-  disabled: boolean;
-  // style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
-  style: any;
 }
 
 export interface ISelection extends IDOMWidget, IDescriptionWidget {

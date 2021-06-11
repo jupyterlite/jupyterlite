@@ -34,6 +34,7 @@ export abstract class BaseKernel implements IKernel {
   protected async attemptWidgets(): Promise<void> {
     let widgets = await import('./proto_widgets');
 
+    // these widgets are generated _en masse_, and should either all work or fail
     try {
       const schemaWidgets = await import('./_proto_wrappers');
       widgets = { ...widgets, ...schemaWidgets.ALL };
