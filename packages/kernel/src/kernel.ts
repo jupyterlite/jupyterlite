@@ -21,11 +21,26 @@ export abstract class BaseKernel implements IKernel {
     this._sendMessage = sendMessage;
     this._comm_manager =
       options.comm_manager || createDefaultCommManager({ kernel: this, sendMessage });
-    this._attemptWidgets().catch(console.error);
+    this.attemptWidgets().catch(console.error);
   }
 
-  private async _attemptWidgets() {
-    const widgets = await import('./proto_widgets');
+  /**
+   * Provide a widget implementation on this kernel. It's still up to the
+   * kernel to provide guest-language access to this object on `self` (or `this`).
+   *
+   * In pyodide, this might need to be achieved with `comlink` or similar,
+   * but may belong at the comm_manager level.
+   */
+  protected async attemptWidgets() {
+    let widgets = await import('./proto_widgets');
+
+    try {
+      const schemaWidgets = await import('./_proto_wrappers');
+      widgets = { ...widgets, ...schemaWidgets.ALL };
+    } catch (err) {
+      console.log('attemptWidgts error', err);
+    }
+
     (this as any).widgets = widgets;
     widgets._Widget._kernel = this;
   }

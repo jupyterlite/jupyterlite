@@ -283,7 +283,6 @@ export namespace _HasTraits {
     };
   }
 }
-
 /**
  * A naive base widget class
  */
@@ -483,72 +482,6 @@ class WidgetRegistry {
   }
 }
 
-/** a naive FloatSlider
- *
- * ### Examples
- * ```js
- * let { FloatSlider } = kernel.widgets
- * x = FloatSlider({description: "$x$", min: -Math.PI, value: 1, max: Math.PI})
- * x.display()
- *
- * Object.entries({sin: Math.sin, cos: Math.cos, tan: Math.tan}).map(([k, fn])=> {
- *     self[k] = FloatSlider({ description: '$\\' + k + '{x}$', min: -1, max: 1})
- *     x.observe(async (change) => self[k].value = fn(change.new))
- *     self[k].display()
- * })
- */
-export class _FloatSlider extends _Widget<IFloatSlider> {
-  constructor(options: IFloatSlider) {
-    super({ ..._FloatSlider.defaults(), ...options });
-  }
-
-  static defaults(): IFloatSlider {
-    return { ...super.defaults(), ...FLOAT_SLIDER_DEFAULTS };
-  }
-}
-
-/** Some copy-pasted default values
- *
- * TODO: it _must_ be possible to do this _en masse_:
- * - load up each of the widgets for defaults
- * - infer a JSON schema from the traitlets
- * - export the widget.package.schema.json
- * - then either
- *   - go the ts way
- *     - generate .d.ts types
- *     - generate concrete .ts types
- *   - go the js way
- *     - dynamically build evented classes based directly on json schema
- */
-const FLOAT_SLIDER_DEFAULTS: IFloatSlider = {
-  _dom_classes: [],
-  _model_module: _Widget.WIDGET_CONTROLS_PACKAGE,
-  _model_module_version: _Widget.WIDGET_CONTROLS_VERSION,
-  _model_name: 'FloatSliderModel',
-  _view_count: null,
-  _view_module: _Widget.WIDGET_CONTROLS_PACKAGE,
-  _view_module_version: _Widget.WIDGET_CONTROLS_VERSION,
-  _view_name: 'FloatSliderView',
-  continuous_update: true,
-  description: '',
-  description_tooltip: null,
-  disabled: false,
-  layout: null,
-  max: 100.0,
-  min: 0.0,
-  orientation: 'horizontal',
-  readout: true,
-  readout_format: '.2f',
-  step: 0.1,
-  style: null,
-  value: 0.0,
-  tabbable: true,
-  tooltip: ''
-};
-
-/** the concrete observable FloatSlider */
-export const FloatSlider = _HasTraits._traitMeta<IFloatSlider>(_FloatSlider);
-
 /** a naive Select
  *
  * ### Examples
@@ -620,6 +553,38 @@ const SELECT_DEFAULTS: ISelect = {
   index: 0,
   rows: 5
 };
+
+// /** a naive FloatSlider
+//  *
+//  * ### Examples
+//  * ```js
+//  * let { FloatSlider } = kernel.widgets
+//  * x = FloatSlider({description: "$x$", min: -Math.PI, value: 1, max: Math.PI})
+//  * x.display()
+//  *
+//  * Object.entries({sin: Math.sin, cos: Math.cos, tan: Math.tan}).map(([k, fn])=> {
+//  *     self[k] = FloatSlider({ description: '$\\' + k + '{x}$', min: -1, max: 1})
+//  *     x.observe(async (change) => self[k].value = fn(change.new))
+//  *     self[k].display()
+//  * })
+//  */
+// export type TAnyFloatSlider = PROTO.FloatSliderProtected | PROTO.FloatSliderPublic;
+
+// export class _FloatSlider extends _Widget<TAnyFloatSlider> {
+//   constructor(options: TAnyFloatSlider) {
+//     super({ ..._FloatSlider.defaults(), ...options });
+//   }
+
+//   static defaults(): TAnyFloatSlider {
+//     return {
+//       ...super.defaults(),
+//       ...(SCHEMA.IProtectedFloatSlider.default as TAnyFloatSlider)
+//     };
+//   }
+// }
+
+// /** the concrete observable FloatSlider */
+// export const FloatSlider = _HasTraits._traitMeta<PROTO.FloatSliderPublic>(_FloatSlider);
 
 /** utilities */
 
