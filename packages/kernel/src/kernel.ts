@@ -31,7 +31,7 @@ export abstract class BaseKernel implements IKernel {
    * In pyodide, this might need to be achieved with `comlink` or similar,
    * but may belong at the comm_manager level.
    */
-  protected async attemptWidgets() {
+  protected async attemptWidgets(): Promise<void> {
     let widgets = await import('./proto_widgets');
 
     try {
