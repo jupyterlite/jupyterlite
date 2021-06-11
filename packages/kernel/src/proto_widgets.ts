@@ -641,10 +641,7 @@ export type TLinkItem<T> = [_HasTraits<T>, keyof T];
  * it2.display()
  * ```
  */
-export async function link<T, U>(
-  first: TLinkItem<T>,
-  other: TLinkItem<U>
-): Promise<void> {
+export function link<T, U>(first: TLinkItem<T>, other: TLinkItem<U>): void {
   const [firstHasTraits, firstName] = first;
   const [otherHasTraits, otherName] = other;
   firstHasTraits.observe(
@@ -666,6 +663,138 @@ export async function link<T, U>(
     [otherName as string]
   );
 }
+
+export interface ITranform {
+  (newValue: any): any;
+}
+
+export interface IDLink<T, U> {
+  source: TLinkItem<T>;
+  target: TLinkItem<U>;
+  // TODO: this could be greatly improved
+  transform?: ITranform;
+}
+
+const DLINK_NOOP = async (x: any): Promise<any> => x;
+
+class _directional_link<T, U> {
+  source: TLinkItem<T>;
+  target: TLinkItem<U>;
+  transform: null | ITranform;
+  // """Link the trait of a source object with traits of target objects.
+  // Parameters
+  // ----------
+  // source : (object, attribute name) pair
+  // target : (object, attribute name) pair
+  // transform: callable (optional)
+  //     Data transformation between source and target.
+  // Examples
+  // --------
+  // >>> c = directional_link((src, "value"), (tgt, "value"))
+  // >>> src.value = 5  # updates target objects
+  // >>> tgt.value = 6  # does not update source object
+  // """
+  // updating = False
+
+  constructor(source: TLinkItem<T>, target: TLinkItem<U>, transform?: ITranform) {
+    // def __init__(self, source, target, transform=None):
+    //     self.source, self.target = source, target
+    this.source = source;
+    this.target = target;
+    //     self._transform = transform if transform else lambda x: x
+    this.transform = transform || null;
+    //     _validate_link(source, target)
+    // TODO: validate link
+    //     self.link()
+    this.link();
+  }
+
+  link() {
+    // def link(self):
+    //     try:
+    //         setattr(self.target[0], self.target[1],
+    //                 self._transform(getattr(self.source[0], self.source[1])))
+    const [source, sourceName] = this.source;
+    const [target, targetName] = this.target;
+    try {
+      ((target as any) as U)[targetName] = (this.transform || DLINK_NOOP)(
+        ((source as any) as T)[sourceName]
+      );
+    } catch (err) {
+      console.warn(
+        'unexpected failure in link from',
+        this.source,
+        'to',
+        this.target,
+        err
+      );
+    } finally {
+      //     finally:
+      //         self.source[0].observe(self._update, names=self.source[1])
+      source.observe(this.update, [sourceName as string]);
+    }
+  }
+
+  update = async (change: any): Promise<void> => {
+    ((this.target[0] as any) as U)[this.target[1]] = await (
+      this.transform || DLINK_NOOP
+    )(change.new);
+  };
+
+  unlink() {
+    // def unlink(self):
+    //     self.source[0].unobserve(self._update, names=self.source[1])
+    this.source[0].unobserve(this.update, [this.source[1] as string]);
+  }
+}
+
+/**
+ * A wrapper for the underlying `_directional_link`
+ *
+ * The python call semantics are not exactly the same...
+ */
+function directional_link<T, U>(
+  source: TLinkItem<T>,
+  target: TLinkItem<U>,
+  transform?: ITranform
+): _directional_link<T, U> {
+  return new _directional_link(source, target, transform);
+}
+
+/**
+ * A pragmatic shortcut for `directional_link`
+ *
+ * ### Examples
+ * ```js
+ * let { dlink, FloatSlider } = kernel.widgets;
+ * src = FloatSlider()
+ * tgt = FloatSlider()
+ * c = dlink([src, 'value'], [tgt, 'value'])
+ * src.display()
+ * tgt.display()
+ *
+ * src.value = 5  // updates target objects
+ * tgt.value = 6  // does not update source object
+ *
+ * c.unlink()
+ * c = dlink([src, 'value'], [tgt, 'value'], (x) => 2 * x)
+ * ```
+ *
+ * ### Advanced Examples
+ * ```
+ * c.unlink()
+ * let { FloatSlider, dlink } = kernel.widgets;
+ * tgt.description = "$$t = sin_x \\cdot cos_x$$"
+ * tx = () => sin_x.value * cos_x.value
+ * self.c = dlink([sin_x, 'value'], [tgt, 'value'], tx)
+ * self.d = dlink([cos_x, 'value'], [tgt, 'value'], tx)
+ * x.display()
+ * sin_x.display()
+ * cos_x.display()
+ * tgt.display()
+ * ```
+ */
+export const dlink = directional_link;
 
 /** a description of widget traits */
 export interface IWidget {
