@@ -746,7 +746,7 @@ class U:
 
 # environment overloads
 os.environ.update(
-    NODE_OPTS="--max-old-space-size=4096",
+    NODE_OPTS="--max-old-space-size=8192",
     PYTHONIOENCODING=C.ENC["encoding"],
     PIP_DISABLE_PIP_VERSION_CHECK="1",
 )

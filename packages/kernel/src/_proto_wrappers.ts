@@ -1,4 +1,10 @@
-/** a bunch of widgets */
+/***************************************************************************************************
+ * THIS FILE IS AUTO-GENERATED FROM *    See `/scripts/schema-widgets.ipynb`, which also generates
+ ********  ipywidgets 7.6.3  ********    `_schema_widgets.d.ts` and `_schema_widgets.json`.
+ *
+ * @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html
+ * @see https://github.com/jtpio/jupyterlite/pull/141
+ ***************************************************************************************************/
 import * as PROTO from './_schema_widgets';
 import * as SCHEMA from './_schema_widgets.json';
 import { _HasTraits, _Widget } from './proto_widgets';
@@ -422,6 +428,40 @@ export namespace ipywidgets_widgets_widget_box {
 } // end of ['ipywidgets', 'widgets', 'widget_box']
 
 export namespace ipywidgets_widgets_widget_button {
+  /** a type for the traits of ButtonStyle*/
+  export type TAnyButtonStyle = PROTO.ButtonStylePublic | PROTO.ButtonStyleProtected;
+
+  /** a naive ButtonStyle 
+
+    Button style widget.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#ButtonStyle
+    */
+  export class _ButtonStyle extends _Widget<TAnyButtonStyle> {
+    constructor(options: TAnyButtonStyle) {
+      super({ ..._ButtonStyle.defaults(), ...options });
+    }
+
+    static defaults(): TAnyButtonStyle {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicButtonStyle.default,
+        ...SCHEMA.IProtectedButtonStyle.default
+      };
+    }
+  }
+
+  /** the concrete observable ButtonStyle */
+  export const ButtonStyle = _HasTraits._traitMeta<TAnyButtonStyle>(_ButtonStyle);
+
+  if (!ALL['ButtonStyle']) {
+    ALL['ButtonStyle'] = ButtonStyle;
+  } else {
+    console.log('ButtonStyle is already hoisted', ALL['ButtonStyle']);
+  }
+
+  // ---
+
   /** a type for the traits of Button*/
   export type TAnyButton = PROTO.ButtonPublic | PROTO.ButtonProtected;
 
@@ -470,40 +510,6 @@ export namespace ipywidgets_widgets_widget_button {
   }
 
   // ---
-
-  /** a type for the traits of ButtonStyle*/
-  export type TAnyButtonStyle = PROTO.ButtonStylePublic | PROTO.ButtonStyleProtected;
-
-  /** a naive ButtonStyle 
-
-    Button style widget.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#ButtonStyle
-    */
-  export class _ButtonStyle extends _Widget<TAnyButtonStyle> {
-    constructor(options: TAnyButtonStyle) {
-      super({ ..._ButtonStyle.defaults(), ...options });
-    }
-
-    static defaults(): TAnyButtonStyle {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicButtonStyle.default,
-        ...SCHEMA.IProtectedButtonStyle.default
-      };
-    }
-  }
-
-  /** the concrete observable ButtonStyle */
-  export const ButtonStyle = _HasTraits._traitMeta<TAnyButtonStyle>(_ButtonStyle);
-
-  if (!ALL['ButtonStyle']) {
-    ALL['ButtonStyle'] = ButtonStyle;
-  } else {
-    console.log('ButtonStyle is already hoisted', ALL['ButtonStyle']);
-  }
-
-  // ---
 } // end of ['ipywidgets', 'widgets', 'widget_button']
 
 export namespace ipywidgets_widgets_widget_color {
@@ -543,40 +549,6 @@ export namespace ipywidgets_widgets_widget_color {
 } // end of ['ipywidgets', 'widgets', 'widget_color']
 
 export namespace ipywidgets_widgets_widget_controller {
-  /** a type for the traits of Button*/
-  export type TAnyButton = PROTO.ButtonPublic | PROTO.ButtonProtected;
-
-  /** a naive Button 
-
-    Represents a gamepad or joystick button.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Button
-    */
-  export class _Button extends _Widget<TAnyButton> {
-    constructor(options: TAnyButton) {
-      super({ ..._Button.defaults(), ...options });
-    }
-
-    static defaults(): TAnyButton {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicButton.default,
-        ...SCHEMA.IProtectedButton.default
-      };
-    }
-  }
-
-  /** the concrete observable Button */
-  export const Button = _HasTraits._traitMeta<TAnyButton>(_Button);
-
-  if (!ALL['Button']) {
-    ALL['Button'] = Button;
-  } else {
-    console.log('Button is already hoisted', ALL['Button']);
-  }
-
-  // ---
-
   /** a type for the traits of Controller*/
   export type TAnyController = PROTO.ControllerPublic | PROTO.ControllerProtected;
 
@@ -644,6 +616,40 @@ export namespace ipywidgets_widgets_widget_controller {
   }
 
   // ---
+
+  /** a type for the traits of Button*/
+  export type TAnyButton = PROTO.ButtonPublic | PROTO.ButtonProtected;
+
+  /** a naive Button 
+
+    Represents a gamepad or joystick button.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Button
+    */
+  export class _Button extends _Widget<TAnyButton> {
+    constructor(options: TAnyButton) {
+      super({ ..._Button.defaults(), ...options });
+    }
+
+    static defaults(): TAnyButton {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicButton.default,
+        ...SCHEMA.IProtectedButton.default
+      };
+    }
+  }
+
+  /** the concrete observable Button */
+  export const Button = _HasTraits._traitMeta<TAnyButton>(_Button);
+
+  if (!ALL['Button']) {
+    ALL['Button'] = Button;
+  } else {
+    console.log('Button is already hoisted', ALL['Button']);
+  }
+
+  // ---
 } // end of ['ipywidgets', 'widgets', 'widget_controller']
 
 export namespace ipywidgets_widgets_widget_core {
@@ -683,44 +689,6 @@ export namespace ipywidgets_widgets_widget_core {
 } // end of ['ipywidgets', 'widgets', 'widget_core']
 
 export namespace ipywidgets_widgets_widget_description {
-  /** a type for the traits of DescriptionWidget*/
-  export type TAnyDescriptionWidget =
-    | PROTO.DescriptionWidgetPublic
-    | PROTO.DescriptionWidgetProtected;
-
-  /** a naive DescriptionWidget 
-
-    Widget that has a description label to the side.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#DescriptionWidget
-    */
-  export class _DescriptionWidget extends _Widget<TAnyDescriptionWidget> {
-    constructor(options: TAnyDescriptionWidget) {
-      super({ ..._DescriptionWidget.defaults(), ...options });
-    }
-
-    static defaults(): TAnyDescriptionWidget {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicDescriptionWidget.default,
-        ...SCHEMA.IProtectedDescriptionWidget.default
-      };
-    }
-  }
-
-  /** the concrete observable DescriptionWidget */
-  export const DescriptionWidget = _HasTraits._traitMeta<TAnyDescriptionWidget>(
-    _DescriptionWidget
-  );
-
-  if (!ALL['DescriptionWidget']) {
-    ALL['DescriptionWidget'] = DescriptionWidget;
-  } else {
-    console.log('DescriptionWidget is already hoisted', ALL['DescriptionWidget']);
-  }
-
-  // ---
-
   /** a type for the traits of DescriptionStyle*/
   export type TAnyDescriptionStyle =
     | PROTO.DescriptionStylePublic
@@ -758,43 +726,47 @@ export namespace ipywidgets_widgets_widget_description {
   }
 
   // ---
-} // end of ['ipywidgets', 'widgets', 'widget_description']
 
-export namespace ipywidgets_widgets_widget_float {
-  /** a type for the traits of _FloatRange*/
-  export type TAny_FloatRange = PROTO._FloatRangePublic | PROTO._FloatRangeProtected;
+  /** a type for the traits of DescriptionWidget*/
+  export type TAnyDescriptionWidget =
+    | PROTO.DescriptionWidgetPublic
+    | PROTO.DescriptionWidgetProtected;
 
-  /** a naive _FloatRange 
+  /** a naive DescriptionWidget 
 
-    None
+    Widget that has a description label to the side.
 
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_FloatRange
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#DescriptionWidget
     */
-  export class __FloatRange extends _Widget<TAny_FloatRange> {
-    constructor(options: TAny_FloatRange) {
-      super({ ...__FloatRange.defaults(), ...options });
+  export class _DescriptionWidget extends _Widget<TAnyDescriptionWidget> {
+    constructor(options: TAnyDescriptionWidget) {
+      super({ ..._DescriptionWidget.defaults(), ...options });
     }
 
-    static defaults(): TAny_FloatRange {
+    static defaults(): TAnyDescriptionWidget {
       return {
         ...super.defaults(),
-        ...SCHEMA.IPublic_FloatRange.default,
-        ...SCHEMA.IProtected_FloatRange.default
+        ...SCHEMA.IPublicDescriptionWidget.default,
+        ...SCHEMA.IProtectedDescriptionWidget.default
       };
     }
   }
 
-  /** the concrete observable _FloatRange */
-  export const _FloatRange = _HasTraits._traitMeta<TAny_FloatRange>(__FloatRange);
+  /** the concrete observable DescriptionWidget */
+  export const DescriptionWidget = _HasTraits._traitMeta<TAnyDescriptionWidget>(
+    _DescriptionWidget
+  );
 
-  if (!ALL['_FloatRange']) {
-    ALL['_FloatRange'] = _FloatRange;
+  if (!ALL['DescriptionWidget']) {
+    ALL['DescriptionWidget'] = DescriptionWidget;
   } else {
-    console.log('_FloatRange is already hoisted', ALL['_FloatRange']);
+    console.log('DescriptionWidget is already hoisted', ALL['DescriptionWidget']);
   }
 
   // ---
+} // end of ['ipywidgets', 'widgets', 'widget_description']
 
+export namespace ipywidgets_widgets_widget_float {
   /** a type for the traits of _BoundedLogFloat*/
   export type TAny_BoundedLogFloat =
     | PROTO._BoundedLogFloatPublic
@@ -833,40 +805,62 @@ export namespace ipywidgets_widgets_widget_float {
 
   // ---
 
-  /** a type for the traits of _BoundedFloatRange*/
-  export type TAny_BoundedFloatRange =
-    | PROTO._BoundedFloatRangePublic
-    | PROTO._BoundedFloatRangeProtected;
+  /** a type for the traits of FloatRangeSlider*/
+  export type TAnyFloatRangeSlider =
+    | PROTO.FloatRangeSliderPublic
+    | PROTO.FloatRangeSliderProtected;
 
-  /** a naive _BoundedFloatRange 
+  /** a naive FloatRangeSlider 
 
-    None
+     Slider/trackbar that represents a pair of floats bounded by minimum and maximum value.
 
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_BoundedFloatRange
+    Parameters
+    ----------
+    value : float tuple
+        range of the slider displayed
+    min : float
+        minimal position of the slider
+    max : float
+        maximal position of the slider
+    step : float
+        step of the trackbar
+    description : str
+        name of the slider
+    orientation : {'horizontal', 'vertical'}
+        default is 'horizontal'
+    readout : {True, False}
+        default is True, display the current value of the slider next to it
+    readout_format : str
+        default is '.2f', specifier for the format function used to represent
+        slider value for human consumption, modeled after Python 3's format
+        specification mini-language (PEP 3101).
+    
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#FloatRangeSlider
     */
-  export class __BoundedFloatRange extends _Widget<TAny_BoundedFloatRange> {
-    constructor(options: TAny_BoundedFloatRange) {
-      super({ ...__BoundedFloatRange.defaults(), ...options });
+  export class _FloatRangeSlider extends _Widget<TAnyFloatRangeSlider> {
+    constructor(options: TAnyFloatRangeSlider) {
+      super({ ..._FloatRangeSlider.defaults(), ...options });
     }
 
-    static defaults(): TAny_BoundedFloatRange {
+    static defaults(): TAnyFloatRangeSlider {
       return {
         ...super.defaults(),
-        ...SCHEMA.IPublic_BoundedFloatRange.default,
-        ...SCHEMA.IProtected_BoundedFloatRange.default
+        ...SCHEMA.IPublicFloatRangeSlider.default,
+        ...SCHEMA.IProtectedFloatRangeSlider.default
       };
     }
   }
 
-  /** the concrete observable _BoundedFloatRange */
-  export const _BoundedFloatRange = _HasTraits._traitMeta<TAny_BoundedFloatRange>(
-    __BoundedFloatRange
+  /** the concrete observable FloatRangeSlider */
+  export const FloatRangeSlider = _HasTraits._traitMeta<TAnyFloatRangeSlider>(
+    _FloatRangeSlider
   );
 
-  if (!ALL['_BoundedFloatRange']) {
-    ALL['_BoundedFloatRange'] = _BoundedFloatRange;
+  if (!ALL['FloatRangeSlider']) {
+    ALL['FloatRangeSlider'] = FloatRangeSlider;
   } else {
-    console.log('_BoundedFloatRange is already hoisted', ALL['_BoundedFloatRange']);
+    console.log('FloatRangeSlider is already hoisted', ALL['FloatRangeSlider']);
   }
 
   // ---
@@ -929,66 +923,6 @@ export namespace ipywidgets_widgets_widget_float {
     ALL['FloatLogSlider'] = FloatLogSlider;
   } else {
     console.log('FloatLogSlider is already hoisted', ALL['FloatLogSlider']);
-  }
-
-  // ---
-
-  /** a type for the traits of FloatRangeSlider*/
-  export type TAnyFloatRangeSlider =
-    | PROTO.FloatRangeSliderPublic
-    | PROTO.FloatRangeSliderProtected;
-
-  /** a naive FloatRangeSlider 
-
-     Slider/trackbar that represents a pair of floats bounded by minimum and maximum value.
-
-    Parameters
-    ----------
-    value : float tuple
-        range of the slider displayed
-    min : float
-        minimal position of the slider
-    max : float
-        maximal position of the slider
-    step : float
-        step of the trackbar
-    description : str
-        name of the slider
-    orientation : {'horizontal', 'vertical'}
-        default is 'horizontal'
-    readout : {True, False}
-        default is True, display the current value of the slider next to it
-    readout_format : str
-        default is '.2f', specifier for the format function used to represent
-        slider value for human consumption, modeled after Python 3's format
-        specification mini-language (PEP 3101).
-    
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#FloatRangeSlider
-    */
-  export class _FloatRangeSlider extends _Widget<TAnyFloatRangeSlider> {
-    constructor(options: TAnyFloatRangeSlider) {
-      super({ ..._FloatRangeSlider.defaults(), ...options });
-    }
-
-    static defaults(): TAnyFloatRangeSlider {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicFloatRangeSlider.default,
-        ...SCHEMA.IProtectedFloatRangeSlider.default
-      };
-    }
-  }
-
-  /** the concrete observable FloatRangeSlider */
-  export const FloatRangeSlider = _HasTraits._traitMeta<TAnyFloatRangeSlider>(
-    _FloatRangeSlider
-  );
-
-  if (!ALL['FloatRangeSlider']) {
-    ALL['FloatRangeSlider'] = FloatRangeSlider;
-  } else {
-    console.log('FloatRangeSlider is already hoisted', ALL['FloatRangeSlider']);
   }
 
   // ---
@@ -1270,117 +1204,81 @@ export namespace ipywidgets_widgets_widget_float {
   }
 
   // ---
-} // end of ['ipywidgets', 'widgets', 'widget_float']
 
-export namespace ipywidgets_widgets_widget_int {
-  /** a type for the traits of IntText*/
-  export type TAnyIntText = PROTO.IntTextPublic | PROTO.IntTextProtected;
+  /** a type for the traits of _FloatRange*/
+  export type TAny_FloatRange = PROTO._FloatRangePublic | PROTO._FloatRangeProtected;
 
-  /** a naive IntText 
-
-    Textbox widget that represents an integer.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#IntText
-    */
-  export class _IntText extends _Widget<TAnyIntText> {
-    constructor(options: TAnyIntText) {
-      super({ ..._IntText.defaults(), ...options });
-    }
-
-    static defaults(): TAnyIntText {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicIntText.default,
-        ...SCHEMA.IProtectedIntText.default
-      };
-    }
-  }
-
-  /** the concrete observable IntText */
-  export const IntText = _HasTraits._traitMeta<TAnyIntText>(_IntText);
-
-  if (!ALL['IntText']) {
-    ALL['IntText'] = IntText;
-  } else {
-    console.log('IntText is already hoisted', ALL['IntText']);
-  }
-
-  // ---
-
-  /** a type for the traits of ProgressStyle*/
-  export type TAnyProgressStyle =
-    | PROTO.ProgressStylePublic
-    | PROTO.ProgressStyleProtected;
-
-  /** a naive ProgressStyle 
-
-    Button style widget.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#ProgressStyle
-    */
-  export class _ProgressStyle extends _Widget<TAnyProgressStyle> {
-    constructor(options: TAnyProgressStyle) {
-      super({ ..._ProgressStyle.defaults(), ...options });
-    }
-
-    static defaults(): TAnyProgressStyle {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicProgressStyle.default,
-        ...SCHEMA.IProtectedProgressStyle.default
-      };
-    }
-  }
-
-  /** the concrete observable ProgressStyle */
-  export const ProgressStyle = _HasTraits._traitMeta<TAnyProgressStyle>(_ProgressStyle);
-
-  if (!ALL['ProgressStyle']) {
-    ALL['ProgressStyle'] = ProgressStyle;
-  } else {
-    console.log('ProgressStyle is already hoisted', ALL['ProgressStyle']);
-  }
-
-  // ---
-
-  /** a type for the traits of _BoundedIntRange*/
-  export type TAny_BoundedIntRange =
-    | PROTO._BoundedIntRangePublic
-    | PROTO._BoundedIntRangeProtected;
-
-  /** a naive _BoundedIntRange 
+  /** a naive _FloatRange 
 
     None
 
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_BoundedIntRange
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_FloatRange
     */
-  export class __BoundedIntRange extends _Widget<TAny_BoundedIntRange> {
-    constructor(options: TAny_BoundedIntRange) {
-      super({ ...__BoundedIntRange.defaults(), ...options });
+  export class __FloatRange extends _Widget<TAny_FloatRange> {
+    constructor(options: TAny_FloatRange) {
+      super({ ...__FloatRange.defaults(), ...options });
     }
 
-    static defaults(): TAny_BoundedIntRange {
+    static defaults(): TAny_FloatRange {
       return {
         ...super.defaults(),
-        ...SCHEMA.IPublic_BoundedIntRange.default,
-        ...SCHEMA.IProtected_BoundedIntRange.default
+        ...SCHEMA.IPublic_FloatRange.default,
+        ...SCHEMA.IProtected_FloatRange.default
       };
     }
   }
 
-  /** the concrete observable _BoundedIntRange */
-  export const _BoundedIntRange = _HasTraits._traitMeta<TAny_BoundedIntRange>(
-    __BoundedIntRange
-  );
+  /** the concrete observable _FloatRange */
+  export const _FloatRange = _HasTraits._traitMeta<TAny_FloatRange>(__FloatRange);
 
-  if (!ALL['_BoundedIntRange']) {
-    ALL['_BoundedIntRange'] = _BoundedIntRange;
+  if (!ALL['_FloatRange']) {
+    ALL['_FloatRange'] = _FloatRange;
   } else {
-    console.log('_BoundedIntRange is already hoisted', ALL['_BoundedIntRange']);
+    console.log('_FloatRange is already hoisted', ALL['_FloatRange']);
   }
 
   // ---
 
+  /** a type for the traits of _BoundedFloatRange*/
+  export type TAny_BoundedFloatRange =
+    | PROTO._BoundedFloatRangePublic
+    | PROTO._BoundedFloatRangeProtected;
+
+  /** a naive _BoundedFloatRange 
+
+    None
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_BoundedFloatRange
+    */
+  export class __BoundedFloatRange extends _Widget<TAny_BoundedFloatRange> {
+    constructor(options: TAny_BoundedFloatRange) {
+      super({ ...__BoundedFloatRange.defaults(), ...options });
+    }
+
+    static defaults(): TAny_BoundedFloatRange {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublic_BoundedFloatRange.default,
+        ...SCHEMA.IProtected_BoundedFloatRange.default
+      };
+    }
+  }
+
+  /** the concrete observable _BoundedFloatRange */
+  export const _BoundedFloatRange = _HasTraits._traitMeta<TAny_BoundedFloatRange>(
+    __BoundedFloatRange
+  );
+
+  if (!ALL['_BoundedFloatRange']) {
+    ALL['_BoundedFloatRange'] = _BoundedFloatRange;
+  } else {
+    console.log('_BoundedFloatRange is already hoisted', ALL['_BoundedFloatRange']);
+  }
+
+  // ---
+} // end of ['ipywidgets', 'widgets', 'widget_float']
+
+export namespace ipywidgets_widgets_widget_int {
   /** a type for the traits of IntProgress*/
   export type TAnyIntProgress = PROTO.IntProgressPublic | PROTO.IntProgressProtected;
 
@@ -1533,40 +1431,6 @@ export namespace ipywidgets_widgets_widget_int {
 
   // ---
 
-  /** a type for the traits of SliderStyle*/
-  export type TAnySliderStyle = PROTO.SliderStylePublic | PROTO.SliderStyleProtected;
-
-  /** a naive SliderStyle 
-
-    Button style widget.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#SliderStyle
-    */
-  export class _SliderStyle extends _Widget<TAnySliderStyle> {
-    constructor(options: TAnySliderStyle) {
-      super({ ..._SliderStyle.defaults(), ...options });
-    }
-
-    static defaults(): TAnySliderStyle {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicSliderStyle.default,
-        ...SCHEMA.IProtectedSliderStyle.default
-      };
-    }
-  }
-
-  /** the concrete observable SliderStyle */
-  export const SliderStyle = _HasTraits._traitMeta<TAnySliderStyle>(_SliderStyle);
-
-  if (!ALL['SliderStyle']) {
-    ALL['SliderStyle'] = SliderStyle;
-  } else {
-    console.log('SliderStyle is already hoisted', ALL['SliderStyle']);
-  }
-
-  // ---
-
   /** a type for the traits of _IntRange*/
   export type TAny_IntRange = PROTO._IntRangePublic | PROTO._IntRangeProtected;
 
@@ -1597,6 +1461,40 @@ export namespace ipywidgets_widgets_widget_int {
     ALL['_IntRange'] = _IntRange;
   } else {
     console.log('_IntRange is already hoisted', ALL['_IntRange']);
+  }
+
+  // ---
+
+  /** a type for the traits of SliderStyle*/
+  export type TAnySliderStyle = PROTO.SliderStylePublic | PROTO.SliderStyleProtected;
+
+  /** a naive SliderStyle 
+
+    Button style widget.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#SliderStyle
+    */
+  export class _SliderStyle extends _Widget<TAnySliderStyle> {
+    constructor(options: TAnySliderStyle) {
+      super({ ..._SliderStyle.defaults(), ...options });
+    }
+
+    static defaults(): TAnySliderStyle {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicSliderStyle.default,
+        ...SCHEMA.IProtectedSliderStyle.default
+      };
+    }
+  }
+
+  /** the concrete observable SliderStyle */
+  export const SliderStyle = _HasTraits._traitMeta<TAnySliderStyle>(_SliderStyle);
+
+  if (!ALL['SliderStyle']) {
+    ALL['SliderStyle'] = SliderStyle;
+  } else {
+    console.log('SliderStyle is already hoisted', ALL['SliderStyle']);
   }
 
   // ---
@@ -1709,6 +1607,114 @@ export namespace ipywidgets_widgets_widget_int {
   }
 
   // ---
+
+  /** a type for the traits of IntText*/
+  export type TAnyIntText = PROTO.IntTextPublic | PROTO.IntTextProtected;
+
+  /** a naive IntText 
+
+    Textbox widget that represents an integer.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#IntText
+    */
+  export class _IntText extends _Widget<TAnyIntText> {
+    constructor(options: TAnyIntText) {
+      super({ ..._IntText.defaults(), ...options });
+    }
+
+    static defaults(): TAnyIntText {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicIntText.default,
+        ...SCHEMA.IProtectedIntText.default
+      };
+    }
+  }
+
+  /** the concrete observable IntText */
+  export const IntText = _HasTraits._traitMeta<TAnyIntText>(_IntText);
+
+  if (!ALL['IntText']) {
+    ALL['IntText'] = IntText;
+  } else {
+    console.log('IntText is already hoisted', ALL['IntText']);
+  }
+
+  // ---
+
+  /** a type for the traits of ProgressStyle*/
+  export type TAnyProgressStyle =
+    | PROTO.ProgressStylePublic
+    | PROTO.ProgressStyleProtected;
+
+  /** a naive ProgressStyle 
+
+    Button style widget.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#ProgressStyle
+    */
+  export class _ProgressStyle extends _Widget<TAnyProgressStyle> {
+    constructor(options: TAnyProgressStyle) {
+      super({ ..._ProgressStyle.defaults(), ...options });
+    }
+
+    static defaults(): TAnyProgressStyle {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicProgressStyle.default,
+        ...SCHEMA.IProtectedProgressStyle.default
+      };
+    }
+  }
+
+  /** the concrete observable ProgressStyle */
+  export const ProgressStyle = _HasTraits._traitMeta<TAnyProgressStyle>(_ProgressStyle);
+
+  if (!ALL['ProgressStyle']) {
+    ALL['ProgressStyle'] = ProgressStyle;
+  } else {
+    console.log('ProgressStyle is already hoisted', ALL['ProgressStyle']);
+  }
+
+  // ---
+
+  /** a type for the traits of _BoundedIntRange*/
+  export type TAny_BoundedIntRange =
+    | PROTO._BoundedIntRangePublic
+    | PROTO._BoundedIntRangeProtected;
+
+  /** a naive _BoundedIntRange 
+
+    None
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#_BoundedIntRange
+    */
+  export class __BoundedIntRange extends _Widget<TAny_BoundedIntRange> {
+    constructor(options: TAny_BoundedIntRange) {
+      super({ ...__BoundedIntRange.defaults(), ...options });
+    }
+
+    static defaults(): TAny_BoundedIntRange {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublic_BoundedIntRange.default,
+        ...SCHEMA.IProtected_BoundedIntRange.default
+      };
+    }
+  }
+
+  /** the concrete observable _BoundedIntRange */
+  export const _BoundedIntRange = _HasTraits._traitMeta<TAny_BoundedIntRange>(
+    __BoundedIntRange
+  );
+
+  if (!ALL['_BoundedIntRange']) {
+    ALL['_BoundedIntRange'] = _BoundedIntRange;
+  } else {
+    console.log('_BoundedIntRange is already hoisted', ALL['_BoundedIntRange']);
+  }
+
+  // ---
 } // end of ['ipywidgets', 'widgets', 'widget_int']
 
 export namespace ipywidgets_widgets_widget_layout {
@@ -1760,49 +1766,6 @@ export namespace ipywidgets_widgets_widget_layout {
 } // end of ['ipywidgets', 'widgets', 'widget_layout']
 
 export namespace ipywidgets_widgets_widget_media {
-  /** a type for the traits of Video*/
-  export type TAnyVideo = PROTO.VideoPublic | PROTO.VideoProtected;
-
-  /** a naive Video 
-
-    Displays a video as a widget.
-
-    The `value` of this widget accepts a byte string.  The byte string is the
-    raw video data that you want the browser to display.  You can explicitly
-    define the format of the byte string using the `format` trait (which
-    defaults to "mp4").
-
-    If you pass `"url"` to the `"format"` trait, `value` will be interpreted
-    as a URL as bytes encoded in UTF-8.
-    
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Video
-    */
-  export class _Video extends _Widget<TAnyVideo> {
-    constructor(options: TAnyVideo) {
-      super({ ..._Video.defaults(), ...options });
-    }
-
-    static defaults(): TAnyVideo {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicVideo.default,
-        ...SCHEMA.IProtectedVideo.default
-      };
-    }
-  }
-
-  /** the concrete observable Video */
-  export const Video = _HasTraits._traitMeta<TAnyVideo>(_Video);
-
-  if (!ALL['Video']) {
-    ALL['Video'] = Video;
-  } else {
-    console.log('Video is already hoisted', ALL['Video']);
-  }
-
-  // ---
-
   /** a type for the traits of _Media*/
   export type TAny_Media = PROTO._MediaPublic | PROTO._MediaProtected;
 
@@ -1926,6 +1889,49 @@ export namespace ipywidgets_widgets_widget_media {
     ALL['Image'] = Image;
   } else {
     console.log('Image is already hoisted', ALL['Image']);
+  }
+
+  // ---
+
+  /** a type for the traits of Video*/
+  export type TAnyVideo = PROTO.VideoPublic | PROTO.VideoProtected;
+
+  /** a naive Video 
+
+    Displays a video as a widget.
+
+    The `value` of this widget accepts a byte string.  The byte string is the
+    raw video data that you want the browser to display.  You can explicitly
+    define the format of the byte string using the `format` trait (which
+    defaults to "mp4").
+
+    If you pass `"url"` to the `"format"` trait, `value` will be interpreted
+    as a URL as bytes encoded in UTF-8.
+    
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Video
+    */
+  export class _Video extends _Widget<TAnyVideo> {
+    constructor(options: TAnyVideo) {
+      super({ ..._Video.defaults(), ...options });
+    }
+
+    static defaults(): TAnyVideo {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicVideo.default,
+        ...SCHEMA.IProtectedVideo.default
+      };
+    }
+  }
+
+  /** the concrete observable Video */
+  export const Video = _HasTraits._traitMeta<TAnyVideo>(_Video);
+
+  if (!ALL['Video']) {
+    ALL['Video'] = Video;
+  } else {
+    console.log('Video is already hoisted', ALL['Video']);
   }
 
   // ---
@@ -2283,78 +2289,6 @@ export namespace ipywidgets_widgets_widget_selectioncontainer {
 } // end of ['ipywidgets', 'widgets', 'widget_selectioncontainer']
 
 export namespace ipywidgets_widgets_widget_string {
-  /** a type for the traits of HTMLMath*/
-  export type TAnyHTMLMath = PROTO.HTMLMathPublic | PROTO.HTMLMathProtected;
-
-  /** a naive HTMLMath 
-
-    Renders the string `value` as HTML, and render mathematics.
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#HTMLMath
-    */
-  export class _HTMLMath extends _Widget<TAnyHTMLMath> {
-    constructor(options: TAnyHTMLMath) {
-      super({ ..._HTMLMath.defaults(), ...options });
-    }
-
-    static defaults(): TAnyHTMLMath {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicHTMLMath.default,
-        ...SCHEMA.IProtectedHTMLMath.default
-      };
-    }
-  }
-
-  /** the concrete observable HTMLMath */
-  export const HTMLMath = _HasTraits._traitMeta<TAnyHTMLMath>(_HTMLMath);
-
-  if (!ALL['HTMLMath']) {
-    ALL['HTMLMath'] = HTMLMath;
-  } else {
-    console.log('HTMLMath is already hoisted', ALL['HTMLMath']);
-  }
-
-  // ---
-
-  /** a type for the traits of Label*/
-  export type TAnyLabel = PROTO.LabelPublic | PROTO.LabelProtected;
-
-  /** a naive Label 
-
-    Label widget.
-
-    It also renders math inside the string `value` as Latex (requires $ $ or
-    $$ $$ and similar latex tags).
-    
-
-    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Label
-    */
-  export class _Label extends _Widget<TAnyLabel> {
-    constructor(options: TAnyLabel) {
-      super({ ..._Label.defaults(), ...options });
-    }
-
-    static defaults(): TAnyLabel {
-      return {
-        ...super.defaults(),
-        ...SCHEMA.IPublicLabel.default,
-        ...SCHEMA.IProtectedLabel.default
-      };
-    }
-  }
-
-  /** the concrete observable Label */
-  export const Label = _HasTraits._traitMeta<TAnyLabel>(_Label);
-
-  if (!ALL['Label']) {
-    ALL['Label'] = Label;
-  } else {
-    console.log('Label is already hoisted', ALL['Label']);
-  }
-
-  // ---
-
   /** a type for the traits of Textarea*/
   export type TAnyTextarea = PROTO.TextareaPublic | PROTO.TextareaProtected;
 
@@ -2556,6 +2490,78 @@ export namespace ipywidgets_widgets_widget_string {
     ALL['Combobox'] = Combobox;
   } else {
     console.log('Combobox is already hoisted', ALL['Combobox']);
+  }
+
+  // ---
+
+  /** a type for the traits of HTMLMath*/
+  export type TAnyHTMLMath = PROTO.HTMLMathPublic | PROTO.HTMLMathProtected;
+
+  /** a naive HTMLMath 
+
+    Renders the string `value` as HTML, and render mathematics.
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#HTMLMath
+    */
+  export class _HTMLMath extends _Widget<TAnyHTMLMath> {
+    constructor(options: TAnyHTMLMath) {
+      super({ ..._HTMLMath.defaults(), ...options });
+    }
+
+    static defaults(): TAnyHTMLMath {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicHTMLMath.default,
+        ...SCHEMA.IProtectedHTMLMath.default
+      };
+    }
+  }
+
+  /** the concrete observable HTMLMath */
+  export const HTMLMath = _HasTraits._traitMeta<TAnyHTMLMath>(_HTMLMath);
+
+  if (!ALL['HTMLMath']) {
+    ALL['HTMLMath'] = HTMLMath;
+  } else {
+    console.log('HTMLMath is already hoisted', ALL['HTMLMath']);
+  }
+
+  // ---
+
+  /** a type for the traits of Label*/
+  export type TAnyLabel = PROTO.LabelPublic | PROTO.LabelProtected;
+
+  /** a naive Label 
+
+    Label widget.
+
+    It also renders math inside the string `value` as Latex (requires $ $ or
+    $$ $$ and similar latex tags).
+    
+
+    @see https://ipywidgets.readthedocs.io/en/7.6.3/examples/Widget%20List.html#Label
+    */
+  export class _Label extends _Widget<TAnyLabel> {
+    constructor(options: TAnyLabel) {
+      super({ ..._Label.defaults(), ...options });
+    }
+
+    static defaults(): TAnyLabel {
+      return {
+        ...super.defaults(),
+        ...SCHEMA.IPublicLabel.default,
+        ...SCHEMA.IProtectedLabel.default
+      };
+    }
+  }
+
+  /** the concrete observable Label */
+  export const Label = _HasTraits._traitMeta<TAnyLabel>(_Label);
+
+  if (!ALL['Label']) {
+    ALL['Label'] = Label;
+  } else {
+    console.log('Label is already hoisted', ALL['Label']);
   }
 
   // ---

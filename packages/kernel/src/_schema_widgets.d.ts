@@ -4,321 +4,138 @@
 
 export type AnyWidget = APublicWidget | AProtectedWidget;
 export type APublicWidget =
-  | HTMLMathPublic
-  | ButtonPublic
-  | IntTextPublic
-  | DescriptionWidgetPublic
-  | ProgressStylePublic
-  | _FloatRangePublic
-  | LabelPublic
   | GridBoxPublic
-  | StylePublic
-  | _BoundedIntRangePublic
-  | VideoPublic
   | _BoundedLogFloatPublic
-  | _BoolPublic
-  | ValidPublic
-  | IntProgressPublic
-  | _BoundedFloatRangePublic
-  | WidgetPublic
   | TwoByTwoLayoutPublic
-  | FloatLogSliderPublic
+  | _BoolPublic
   | AppLayoutPublic
   | AccordionPublic
+  | ValidPublic
+  | IntProgressPublic
   | FloatRangeSliderPublic
-  | BoxPublic
-  | IntRangeSliderPublic
-  | TextareaPublic
-  | _BoundedIntPublic
-  | ColorPickerPublic
-  | _SelectionContainerPublic
-  | FloatTextPublic
-  | TabPublic
+  | FloatLogSliderPublic
   | LayoutPublic
-  | CheckboxPublic
+  | TextareaPublic
+  | _SelectionContainerPublic
+  | TabPublic
+  | IntRangeSliderPublic
+  | _BoundedIntPublic
+  | FloatTextPublic
   | ControllerPublic
-  | _IntPublic
-  | BoundedFloatTextPublic
+  | ColorPickerPublic
   | _StringPublic
   | _MediaPublic
-  | CoreWidgetPublic
-  | SliderStylePublic
-  | _IntRangePublic
-  | FloatProgressPublic
-  | AxisPublic
+  | BoxPublic
+  | CheckboxPublic
   | OutputPublic
-  | HTMLPublic
+  | _IntPublic
+  | BoundedFloatTextPublic
+  | AxisPublic
   | SelectMultiplePublic
-  | DescriptionStylePublic
-  | IntSliderPublic
-  | VBoxPublic
+  | HTMLPublic
+  | CoreWidgetPublic
   | ToggleButtonsStylePublic
-  | ButtonStylePublic
+  | _IntRangePublic
+  | SliderStylePublic
+  | FloatProgressPublic
+  | TextPublic
+  | IntSliderPublic
+  | AudioPublic
+  | DescriptionStylePublic
   | _FloatPublic
   | PlayPublic
-  | AudioPublic
-  | TextPublic
-  | BoundedIntTextPublic
-  | ToggleButtonPublic
-  | FloatSliderPublic
+  | VBoxPublic
+  | ButtonStylePublic
   | ImagePublic
-  | _MultipleSelectionPublic
   | PasswordPublic
   | FileUploadPublic
-  | HBoxPublic
-  | _BoundedFloatPublic
+  | BoundedIntTextPublic
   | DOMWidgetPublic
-  | ComboboxPublic;
+  | FloatSliderPublic
+  | ToggleButtonPublic
+  | ComboboxPublic
+  | HBoxPublic
+  | HTMLMathPublic
+  | _BoundedFloatPublic
+  | _FloatRangePublic
+  | ButtonPublic
+  | _MultipleSelectionPublic
+  | StylePublic
+  | IntTextPublic
+  | LabelPublic
+  | VideoPublic
+  | DescriptionWidgetPublic
+  | ProgressStylePublic
+  | WidgetPublic
+  | _BoundedFloatRangePublic
+  | _BoundedIntRangePublic;
 export type AProtectedWidget =
-  | HTMLMathProtected
-  | ButtonProtected
-  | IntTextProtected
-  | DescriptionWidgetProtected
-  | ProgressStyleProtected
-  | _FloatRangeProtected
-  | LabelProtected
   | GridBoxProtected
-  | StyleProtected
-  | _BoundedIntRangeProtected
-  | VideoProtected
   | _BoundedLogFloatProtected
-  | _BoolProtected
-  | ValidProtected
-  | IntProgressProtected
-  | _BoundedFloatRangeProtected
-  | WidgetProtected
   | TwoByTwoLayoutProtected
-  | FloatLogSliderProtected
+  | _BoolProtected
   | AppLayoutProtected
   | AccordionProtected
+  | ValidProtected
+  | IntProgressProtected
   | FloatRangeSliderProtected
-  | BoxProtected
-  | IntRangeSliderProtected
-  | TextareaProtected
-  | _BoundedIntProtected
-  | ColorPickerProtected
-  | _SelectionContainerProtected
-  | FloatTextProtected
-  | TabProtected
+  | FloatLogSliderProtected
   | LayoutProtected
-  | CheckboxProtected
+  | TextareaProtected
+  | _SelectionContainerProtected
+  | TabProtected
+  | IntRangeSliderProtected
+  | _BoundedIntProtected
+  | FloatTextProtected
   | ControllerProtected
-  | _IntProtected
-  | BoundedFloatTextProtected
+  | ColorPickerProtected
   | _StringProtected
   | _MediaProtected
-  | CoreWidgetProtected
-  | SliderStyleProtected
-  | _IntRangeProtected
-  | FloatProgressProtected
-  | AxisProtected
+  | BoxProtected
+  | CheckboxProtected
   | OutputProtected
-  | HTMLProtected
+  | _IntProtected
+  | BoundedFloatTextProtected
+  | AxisProtected
   | SelectMultipleProtected
-  | DescriptionStyleProtected
-  | IntSliderProtected
-  | VBoxProtected
+  | HTMLProtected
+  | CoreWidgetProtected
   | ToggleButtonsStyleProtected
-  | ButtonStyleProtected
+  | _IntRangeProtected
+  | SliderStyleProtected
+  | FloatProgressProtected
+  | TextProtected
+  | IntSliderProtected
+  | AudioProtected
+  | DescriptionStyleProtected
   | _FloatProtected
   | PlayProtected
-  | AudioProtected
-  | TextProtected
-  | BoundedIntTextProtected
-  | ToggleButtonProtected
-  | FloatSliderProtected
+  | VBoxProtected
+  | ButtonStyleProtected
   | ImageProtected
-  | _MultipleSelectionProtected
   | PasswordProtected
   | FileUploadProtected
-  | HBoxProtected
-  | _BoundedFloatProtected
+  | BoundedIntTextProtected
   | DOMWidgetProtected
-  | ComboboxProtected;
+  | FloatSliderProtected
+  | ToggleButtonProtected
+  | ComboboxProtected
+  | HBoxProtected
+  | HTMLMathProtected
+  | _BoundedFloatProtected
+  | _FloatRangeProtected
+  | ButtonProtected
+  | _MultipleSelectionProtected
+  | StyleProtected
+  | IntTextProtected
+  | LabelProtected
+  | VideoProtected
+  | DescriptionWidgetProtected
+  | ProgressStyleProtected
+  | WidgetProtected
+  | _BoundedFloatRangeProtected
+  | _BoundedIntRangeProtected;
 
-/**
- * The public API for HTMLMath
- */
-export interface HTMLMathPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The public API for Button
- */
-export interface ButtonPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Whether the button is pressed.
-   */
-  pressed: boolean;
-  /**
-   * The value of the button.
-   */
-  value: number;
-}
-/**
- * The public API for IntText
- */
-export interface IntTextPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Int value
-   */
-  value: number;
-}
-/**
- * The public API for DescriptionWidget
- */
-export interface DescriptionWidgetPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-}
-/**
- * The public API for ProgressStyle
- */
-export interface ProgressStylePublic {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Width of the description to the side of the control.
-   */
-  description_width: string;
-}
-/**
- * The public API for _FloatRange
- */
-export interface _FloatRangePublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for Label
- */
-export interface LabelPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
 /**
  * The public API for GridBox
  */
@@ -342,99 +159,6 @@ export interface GridBoxPublic {
    * List of widget children
    */
   children: unknown[];
-}
-/**
- * The public API for Style
- */
-export interface StylePublic {
-  /**
-   * The namespace for the model.
-   */
-  _model_module: string;
-  /**
-   * A semver requirement for namespace version containing the model.
-   */
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-}
-/**
- * The public API for _BoundedIntRange
- */
-export interface _BoundedIntRangePublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for Video
- */
-export interface VideoPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * When true, the video starts when it's displayed
-   */
-  autoplay: boolean;
-  /**
-   * Specifies that video controls should be displayed (such as a play/pause button etc)
-   */
-  controls: boolean;
-  /**
-   * The format of the video.
-   */
-  format: string;
-  /**
-   * Height of the video in pixels.
-   */
-  height: string;
-  /**
-   * When true, the video will start from the beginning after finishing
-   */
-  loop: boolean;
-  /**
-   * Width of the video in pixels.
-   */
-  width: string;
 }
 /**
  * The public API for _BoundedLogFloat
@@ -474,6 +198,30 @@ export interface _BoundedLogFloatPublic {
   value: number;
 }
 /**
+ * The public API for TwoByTwoLayout
+ */
+export interface TwoByTwoLayoutPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
  * The public API for _Bool
  */
 export interface _BoolPublic {
@@ -501,6 +249,61 @@ export interface _BoolPublic {
    * Bool value
    */
   value: boolean;
+}
+/**
+ * The public API for AppLayout
+ */
+export interface AppLayoutPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
+ * The public API for Accordion
+ */
+export interface AccordionPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
 }
 /**
  * The public API for Valid
@@ -577,72 +380,9 @@ export interface IntProgressPublic {
   value: number;
 }
 /**
- * The public API for _BoundedFloatRange
+ * The public API for FloatRangeSlider
  */
-export interface _BoundedFloatRangePublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Minimum step that the value can take (ignored by some views)
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for Widget
- */
-export interface WidgetPublic {
-  /**
-   * The namespace for the model.
-   */
-  _model_module: string;
-  /**
-   * A semver requirement for namespace version containing the model.
-   */
-  _model_module_version: string;
-  /**
-   * Name of the model.
-   */
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string | null;
-  /**
-   * A semver requirement for the namespace version containing the view.
-   */
-  _view_module_version: string;
-  _view_name: string | null;
-}
-/**
- * The public API for TwoByTwoLayout
- */
-export interface TwoByTwoLayoutPublic {
+export interface FloatRangeSliderPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -655,13 +395,44 @@ export interface TwoByTwoLayoutPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Use a predefined styling for the box.
+   * Update the value of the widget as the user is sliding the slider.
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  continuous_update: boolean;
   /**
-   * List of widget children
+   * Description of the control.
    */
-  children: unknown[];
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
 }
 /**
  * The public API for FloatLogSlider
@@ -719,395 +490,6 @@ export interface FloatLogSliderPublic {
    * Float value
    */
   value: number;
-}
-/**
- * The public API for AppLayout
- */
-export interface AppLayoutPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The public API for Accordion
- */
-export interface AccordionPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
-}
-/**
- * The public API for FloatRangeSlider
- */
-export interface FloatRangeSliderPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is sliding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for Box
- */
-export interface BoxPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The public API for IntRangeSlider
- */
-export interface IntRangeSliderPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is sliding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step that the value can take
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for Textarea
- */
-export interface TextareaPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  rows: number | null;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The public API for _BoundedInt
- */
-export interface _BoundedIntPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Int value
-   */
-  value: number;
-}
-/**
- * The public API for ColorPicker
- */
-export interface ColorPickerPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Display short version with just a color selector.
-   */
-  concise: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes.
-   */
-  disabled: boolean;
-  /**
-   * The color value.
-   */
-  value: string;
-}
-/**
- * The public API for _SelectionContainer
- */
-export interface _SelectionContainerPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
-}
-/**
- * The public API for FloatText
- */
-export interface FloatTextPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  step: number | null;
-  /**
-   * Float value
-   */
-  value: number;
-}
-/**
- * The public API for Tab
- */
-export interface TabPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
 }
 /**
  * The public API for Layout
@@ -1229,9 +611,9 @@ export interface LayoutPublic {
   width: string | null;
 }
 /**
- * The public API for Checkbox
+ * The public API for Textarea
  */
-export interface CheckboxPublic {
+export interface TextareaPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -1244,22 +626,211 @@ export interface CheckboxPublic {
   _view_module_version: string;
   _view_name: string;
   /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
    * Description of the control.
    */
   description: string;
   description_tooltip: string | null;
   /**
-   * Enable or disable user changes.
+   * Enable or disable user changes
    */
   disabled: boolean;
   /**
-   * Indent the control to align with other controls with a description.
+   * Placeholder text to display when nothing has been typed
    */
-  indent: boolean;
+  placeholder: string;
+  rows: number | null;
   /**
-   * Bool value
+   * String value
    */
-  value: boolean;
+  value: string;
+}
+/**
+ * The public API for _SelectionContainer
+ */
+export interface _SelectionContainerPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
+}
+/**
+ * The public API for Tab
+ */
+export interface TabPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
+}
+/**
+ * The public API for IntRangeSlider
+ */
+export interface IntRangeSliderPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value of the widget as the user is sliding the slider.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step that the value can take
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The public API for _BoundedInt
+ */
+export interface _BoundedIntPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Int value
+   */
+  value: number;
+}
+/**
+ * The public API for FloatText
+ */
+export interface FloatTextPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  step: number | null;
+  /**
+   * Float value
+   */
+  value: number;
 }
 /**
  * The public API for Controller
@@ -1304,6 +875,167 @@ export interface ControllerPublic {
    * The last time the data from this gamepad was updated.
    */
   timestamp: number;
+}
+/**
+ * The public API for ColorPicker
+ */
+export interface ColorPickerPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Display short version with just a color selector.
+   */
+  concise: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * The color value.
+   */
+  value: string;
+}
+/**
+ * The public API for _String
+ */
+export interface _StringPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
+}
+/**
+ * The public API for _Media
+ */
+export interface _MediaPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+}
+/**
+ * The public API for Box
+ */
+export interface BoxPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
+ * The public API for Checkbox
+ */
+export interface CheckboxPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Indent the control to align with other controls with a description.
+   */
+  indent: boolean;
+  /**
+   * Bool value
+   */
+  value: boolean;
+}
+/**
+ * The public API for Output
+ */
+export interface OutputPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Parent message id of messages to capture
+   */
+  msg_id: string;
+  /**
+   * The output messages synced from the frontend.
+   */
+  outputs: {
+    [k: string]: unknown;
+  }[];
 }
 /**
  * The public API for _Int
@@ -1373,9 +1105,9 @@ export interface BoundedFloatTextPublic {
   value: number;
 }
 /**
- * The public API for _String
+ * The public API for Axis
  */
-export interface _StringPublic {
+export interface AxisPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -1386,7 +1118,64 @@ export interface _StringPublic {
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
-  _view_name: string | null;
+  _view_name: string;
+  /**
+   * The value of the axis.
+   */
+  value: number;
+}
+/**
+ * The public API for SelectMultiple
+ */
+export interface SelectMultiplePublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  /**
+   * The labels for the options.
+   */
+  _options_labels: string[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Selected indices
+   */
+  index: number[];
+  /**
+   * The number of rows to display.
+   */
+  rows: number;
+}
+/**
+ * The public API for HTML
+ */
+export interface HTMLPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
   /**
    * Description of the control.
    */
@@ -1400,22 +1189,6 @@ export interface _StringPublic {
    * String value
    */
   value: string;
-}
-/**
- * The public API for _Media
- */
-export interface _MediaPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
 }
 /**
  * The public API for CoreWidget
@@ -1433,9 +1206,9 @@ export interface CoreWidgetPublic {
   _view_name: string | null;
 }
 /**
- * The public API for SliderStyle
+ * The public API for ToggleButtonsStyle
  */
-export interface SliderStylePublic {
+export interface ToggleButtonsStylePublic {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -1444,9 +1217,17 @@ export interface SliderStylePublic {
   _view_module_version: string;
   _view_name: string;
   /**
+   * The width of each button.
+   */
+  button_width: string;
+  /**
    * Width of the description to the side of the control.
    */
   description_width: string;
+  /**
+   * Text font weight of each button.
+   */
+  font_weight: string;
 }
 /**
  * The public API for _IntRange
@@ -1474,6 +1255,22 @@ export interface _IntRangePublic {
   value: {
     [k: string]: unknown;
   }[];
+}
+/**
+ * The public API for SliderStyle
+ */
+export interface SliderStylePublic {
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Width of the description to the side of the control.
+   */
+  description_width: string;
 }
 /**
  * The public API for FloatProgress
@@ -1514,9 +1311,9 @@ export interface FloatProgressPublic {
   value: number;
 }
 /**
- * The public API for Axis
+ * The public API for Text
  */
-export interface AxisPublic {
+export interface TextPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -1529,84 +1326,9 @@ export interface AxisPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * The value of the axis.
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
    */
-  value: number;
-}
-/**
- * The public API for Output
- */
-export interface OutputPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Parent message id of messages to capture
-   */
-  msg_id: string;
-  /**
-   * The output messages synced from the frontend.
-   */
-  outputs: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The public API for HTML
- */
-export interface HTMLPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The public API for SelectMultiple
- */
-export interface SelectMultiplePublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * The labels for the options.
-   */
-  _options_labels: string[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
+  continuous_update: boolean;
   /**
    * Description of the control.
    */
@@ -1617,29 +1339,13 @@ export interface SelectMultiplePublic {
    */
   disabled: boolean;
   /**
-   * Selected indices
+   * Placeholder text to display when nothing has been typed
    */
-  index: number[];
+  placeholder: string;
   /**
-   * The number of rows to display.
+   * String value
    */
-  rows: number;
-}
-/**
- * The public API for DescriptionStyle
- */
-export interface DescriptionStylePublic {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Width of the description to the side of the control.
-   */
-  description_width: string;
+  value: string;
 }
 /**
  * The public API for IntSlider
@@ -1695,9 +1401,9 @@ export interface IntSliderPublic {
   value: number;
 }
 /**
- * The public API for VBox
+ * The public API for Audio
  */
-export interface VBoxPublic {
+export interface AudioPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -1710,18 +1416,26 @@ export interface VBoxPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Use a predefined styling for the box.
+   * When true, the audio starts when it's displayed
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  autoplay: boolean;
   /**
-   * List of widget children
+   * Specifies that audio controls should be displayed (such as a play/pause button etc)
    */
-  children: unknown[];
+  controls: boolean;
+  /**
+   * The format of the audio.
+   */
+  format: string;
+  /**
+   * When true, the audio will start from the beginning after finishing
+   */
+  loop: boolean;
 }
 /**
- * The public API for ToggleButtonsStyle
+ * The public API for DescriptionStyle
  */
-export interface ToggleButtonsStylePublic {
+export interface DescriptionStylePublic {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -1729,34 +1443,10 @@ export interface ToggleButtonsStylePublic {
   _view_module: string;
   _view_module_version: string;
   _view_name: string;
-  /**
-   * The width of each button.
-   */
-  button_width: string;
   /**
    * Width of the description to the side of the control.
    */
   description_width: string;
-  /**
-   * Text font weight of each button.
-   */
-  font_weight: string;
-}
-/**
- * The public API for ButtonStyle
- */
-export interface ButtonStylePublic {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Button text font weight.
-   */
-  font_weight: string;
 }
 /**
  * The public API for _Float
@@ -1841,9 +1531,9 @@ export interface PlayPublic {
   value: number;
 }
 /**
- * The public API for Audio
+ * The public API for VBox
  */
-export interface AudioPublic {
+export interface VBoxPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -1856,30 +1546,18 @@ export interface AudioPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * When true, the audio starts when it's displayed
+   * Use a predefined styling for the box.
    */
-  autoplay: boolean;
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
   /**
-   * Specifies that audio controls should be displayed (such as a play/pause button etc)
+   * List of widget children
    */
-  controls: boolean;
-  /**
-   * The format of the audio.
-   */
-  format: string;
-  /**
-   * When true, the audio will start from the beginning after finishing
-   */
-  loop: boolean;
+  children: unknown[];
 }
 /**
- * The public API for Text
+ * The public API for ButtonStyle
  */
-export interface TextPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
+export interface ButtonStylePublic {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -1888,165 +1566,9 @@ export interface TextPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   * Button text font weight.
    */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The public API for BoundedIntText
- */
-export interface BoundedIntTextPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Int value
-   */
-  value: number;
-}
-/**
- * The public API for ToggleButton
- */
-export interface ToggleButtonPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the button.
-   */
-  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes.
-   */
-  disabled: boolean;
-  /**
-   * Font-awesome icon.
-   */
-  icon: string;
-  /**
-   * Tooltip caption of the toggle button.
-   */
-  tooltip: string;
-  /**
-   * Bool value
-   */
-  value: boolean;
-}
-/**
- * The public API for FloatSlider
- */
-export interface FloatSliderPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is holding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Float value
-   */
-  value: number;
+  font_weight: string;
 }
 /**
  * The public API for Image
@@ -2075,39 +1597,6 @@ export interface ImagePublic {
    * Width of the image in pixels. Use layout.width for styling the widget.
    */
   width: string;
-}
-/**
- * The public API for _MultipleSelection
- */
-export interface _MultipleSelectionPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * The labels for the options.
-   */
-  _options_labels: string[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Selected indices
-   */
-  index: number[];
 }
 /**
  * The public API for Password
@@ -2205,9 +1694,9 @@ export interface FileUploadPublic {
   multiple: boolean;
 }
 /**
- * The public API for HBox
+ * The public API for BoundedIntText
  */
-export interface HBoxPublic {
+export interface BoundedIntTextPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2220,34 +1709,18 @@ export interface HBoxPublic {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Use a predefined styling for the box.
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The public API for _BoundedFloat
- */
-export interface _BoundedFloatPublic {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
+  continuous_update: boolean;
   /**
    * Description of the control.
    */
   description: string;
   description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
   /**
    * Max value
    */
@@ -2257,7 +1730,11 @@ export interface _BoundedFloatPublic {
    */
   min: number;
   /**
-   * Float value
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Int value
    */
   value: number;
 }
@@ -2285,6 +1762,100 @@ export interface DOMWidgetPublic {
    */
   _view_module_version: string;
   _view_name: string | null;
+}
+/**
+ * The public API for FloatSlider
+ */
+export interface FloatSliderPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value of the widget as the user is holding the slider.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Float value
+   */
+  value: number;
+}
+/**
+ * The public API for ToggleButton
+ */
+export interface ToggleButtonPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the button.
+   */
+  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Font-awesome icon.
+   */
+  icon: string;
+  /**
+   * Tooltip caption of the toggle button.
+   */
+  tooltip: string;
+  /**
+   * Bool value
+   */
+  value: boolean;
 }
 /**
  * The public API for Combobox
@@ -2332,9 +1903,9 @@ export interface ComboboxPublic {
   value: string;
 }
 /**
- * The protected API for HTMLMath
+ * The public API for HBox
  */
-export interface HTMLMathProtected {
+export interface HBoxPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2342,9 +1913,30 @@ export interface HTMLMathProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
+ * The public API for HTMLMath
+ */
+export interface HTMLMathPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
@@ -2364,9 +1956,9 @@ export interface HTMLMathProtected {
   value: string;
 }
 /**
- * The protected API for Button
+ * The public API for _BoundedFloat
  */
-export interface ButtonProtected {
+export interface _BoundedFloatPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2374,26 +1966,95 @@ export interface ButtonProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
-  _states_to_send: {
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Float value
+   */
+  value: number;
+}
+/**
+ * The public API for _FloatRange
+ */
+export interface _FloatRangePublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
     [k: string]: unknown;
   }[];
+}
+/**
+ * The public API for Button
+ */
+export interface ButtonPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
   _view_name: string;
   /**
-   * Whether the button is pressed.
+   * Use a predefined styling for the button.
    */
-  pressed: boolean;
+  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
   /**
-   * The value of the button.
+   * Button label.
    */
-  value: number;
+  description: string;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Font-awesome icon name, without the 'fa-' prefix.
+   */
+  icon: string;
+  /**
+   * Tooltip caption of the button.
+   */
+  tooltip: string;
 }
 /**
- * The protected API for IntText
+ * The public API for _MultipleSelection
  */
-export interface IntTextProtected {
+export interface _MultipleSelectionPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2401,9 +2062,57 @@ export interface IntTextProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
+  /**
+   * The labels for the options.
+   */
+  _options_labels: string[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Selected indices
+   */
+  index: number[];
+}
+/**
+ * The public API for Style
+ */
+export interface StylePublic {
+  /**
+   * The namespace for the model.
+   */
+  _model_module: string;
+  /**
+   * A semver requirement for namespace version containing the model.
+   */
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+}
+/**
+ * The public API for IntText
+ */
+export interface IntTextPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
@@ -2431,9 +2140,9 @@ export interface IntTextProtected {
   value: number;
 }
 /**
- * The protected API for DescriptionWidget
+ * The public API for Label
  */
-export interface DescriptionWidgetProtected {
+export interface LabelPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2441,82 +2150,6 @@ export interface DescriptionWidgetProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-}
-/**
- * The protected API for ProgressStyle
- */
-export interface ProgressStyleProtected {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Width of the description to the side of the control.
-   */
-  description_width: string;
-}
-/**
- * The protected API for _FloatRange
- */
-export interface _FloatRangeProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for Label
- */
-export interface LabelProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
@@ -2536,9 +2169,9 @@ export interface LabelProtected {
   value: string;
 }
 /**
- * The protected API for GridBox
+ * The public API for Video
  */
-export interface GridBoxProtected {
+export interface VideoPublic {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2546,95 +2179,6 @@ export interface GridBoxProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The protected API for Style
- */
-export interface StyleProtected {
-  /**
-   * The namespace for the model.
-   */
-  _model_module: string;
-  /**
-   * A semver requirement for namespace version containing the model.
-   */
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-}
-/**
- * The protected API for _BoundedIntRange
- */
-export interface _BoundedIntRangeProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for Video
- */
-export interface VideoProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
   _view_count: number | null;
   _view_module: string;
   _view_module_version: string;
@@ -2663,6 +2207,168 @@ export interface VideoProtected {
    * Width of the video in pixels.
    */
   width: string;
+}
+/**
+ * The public API for DescriptionWidget
+ */
+export interface DescriptionWidgetPublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+}
+/**
+ * The public API for ProgressStyle
+ */
+export interface ProgressStylePublic {
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Width of the description to the side of the control.
+   */
+  description_width: string;
+}
+/**
+ * The public API for Widget
+ */
+export interface WidgetPublic {
+  /**
+   * The namespace for the model.
+   */
+  _model_module: string;
+  /**
+   * A semver requirement for namespace version containing the model.
+   */
+  _model_module_version: string;
+  /**
+   * Name of the model.
+   */
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string | null;
+  /**
+   * A semver requirement for the namespace version containing the view.
+   */
+  _view_module_version: string;
+  _view_name: string | null;
+}
+/**
+ * The public API for _BoundedFloatRange
+ */
+export interface _BoundedFloatRangePublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Minimum step that the value can take (ignored by some views)
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The public API for _BoundedIntRange
+ */
+export interface _BoundedIntRangePublic {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The protected API for GridBox
+ */
+export interface GridBoxProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
 }
 /**
  * The protected API for _BoundedLogFloat
@@ -2705,6 +2411,43 @@ export interface _BoundedLogFloatProtected {
   value: number;
 }
 /**
+ * The protected API for TwoByTwoLayout
+ */
+export interface TwoByTwoLayoutProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  align_items:
+    | ('top' | 'bottom' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch')
+    | null;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  grid_gap: string | null;
+  height: string | null;
+  justify_content:
+    | ('flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around')
+    | null;
+  merge: boolean;
+  width: string | null;
+}
+/**
  * The protected API for _Bool
  */
 export interface _BoolProtected {
@@ -2735,6 +2478,83 @@ export interface _BoolProtected {
    * Bool value
    */
   value: boolean;
+}
+/**
+ * The protected API for AppLayout
+ */
+export interface AppLayoutProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  align_items:
+    | ('top' | 'bottom' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch')
+    | null;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  grid_gap: string | null;
+  height: string | null;
+  justify_content:
+    | ('flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around')
+    | null;
+  merge: boolean;
+  pane_heights: {
+    [k: string]: unknown;
+  }[];
+  pane_widths: {
+    [k: string]: unknown;
+  }[];
+  width: string | null;
+}
+/**
+ * The protected API for Accordion
+ */
+export interface AccordionProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
 }
 /**
  * The protected API for Valid
@@ -2817,78 +2637,9 @@ export interface IntProgressProtected {
   value: number;
 }
 /**
- * The protected API for _BoundedFloatRange
+ * The protected API for FloatRangeSlider
  */
-export interface _BoundedFloatRangeProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Minimum step that the value can take (ignored by some views)
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for Widget
- */
-export interface WidgetProtected {
-  /**
-   * The namespace for the model.
-   */
-  _model_module: string;
-  /**
-   * A semver requirement for namespace version containing the model.
-   */
-  _model_module_version: string;
-  /**
-   * Name of the model.
-   */
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string | null;
-  /**
-   * A semver requirement for the namespace version containing the view.
-   */
-  _view_module_version: string;
-  _view_name: string | null;
-}
-/**
- * The protected API for TwoByTwoLayout
- */
-export interface TwoByTwoLayoutProtected {
+export interface FloatRangeSliderProtected {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -2903,24 +2654,45 @@ export interface TwoByTwoLayoutProtected {
   _view_module: string;
   _view_module_version: string;
   _view_name: string;
-  align_items:
-    | ('top' | 'bottom' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch')
-    | null;
   /**
-   * Use a predefined styling for the box.
+   * Update the value of the widget as the user is sliding the slider.
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  continuous_update: boolean;
   /**
-   * List of widget children
+   * Description of the control.
    */
-  children: unknown[];
-  grid_gap: string | null;
-  height: string | null;
-  justify_content:
-    | ('flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around')
-    | null;
-  merge: boolean;
-  width: string | null;
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
 }
 /**
  * The protected API for FloatLogSlider
@@ -2981,444 +2753,6 @@ export interface FloatLogSliderProtected {
    * Float value
    */
   value: number;
-}
-/**
- * The protected API for AppLayout
- */
-export interface AppLayoutProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  align_items:
-    | ('top' | 'bottom' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch')
-    | null;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  grid_gap: string | null;
-  height: string | null;
-  justify_content:
-    | ('flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around')
-    | null;
-  merge: boolean;
-  pane_heights: {
-    [k: string]: unknown;
-  }[];
-  pane_widths: {
-    [k: string]: unknown;
-  }[];
-  width: string | null;
-}
-/**
- * The protected API for Accordion
- */
-export interface AccordionProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
-}
-/**
- * The protected API for FloatRangeSlider
- */
-export interface FloatRangeSliderProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is sliding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for Box
- */
-export interface BoxProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The protected API for IntRangeSlider
- */
-export interface IntRangeSliderProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is sliding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step that the value can take
-   */
-  step: number;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for Textarea
- */
-export interface TextareaProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  rows: number | null;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The protected API for _BoundedInt
- */
-export interface _BoundedIntProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Int value
-   */
-  value: number;
-}
-/**
- * The protected API for ColorPicker
- */
-export interface ColorPickerProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Display short version with just a color selector.
-   */
-  concise: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes.
-   */
-  disabled: boolean;
-  /**
-   * The color value.
-   */
-  value: string;
-}
-/**
- * The protected API for _SelectionContainer
- */
-export interface _SelectionContainerProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
-}
-/**
- * The protected API for FloatText
- */
-export interface FloatTextProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  step: number | null;
-  /**
-   * Float value
-   */
-  value: number;
-}
-/**
- * The protected API for Tab
- */
-export interface TabProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  /**
-   * Titles of the pages
-   */
-  _titles: {
-    [k: string]: unknown;
-  };
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the box.
-   */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-  selected_index: number | null;
 }
 /**
  * The protected API for Layout
@@ -3543,9 +2877,9 @@ export interface LayoutProtected {
   width: string | null;
 }
 /**
- * The protected API for Checkbox
+ * The protected API for Textarea
  */
-export interface CheckboxProtected {
+export interface TextareaProtected {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -3561,22 +2895,226 @@ export interface CheckboxProtected {
   _view_module_version: string;
   _view_name: string;
   /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
    * Description of the control.
    */
   description: string;
   description_tooltip: string | null;
   /**
-   * Enable or disable user changes.
+   * Enable or disable user changes
    */
   disabled: boolean;
   /**
-   * Indent the control to align with other controls with a description.
+   * Placeholder text to display when nothing has been typed
    */
-  indent: boolean;
+  placeholder: string;
+  rows: number | null;
   /**
-   * Bool value
+   * String value
    */
-  value: boolean;
+  value: string;
+}
+/**
+ * The protected API for _SelectionContainer
+ */
+export interface _SelectionContainerProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
+}
+/**
+ * The protected API for Tab
+ */
+export interface TabProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  /**
+   * Titles of the pages
+   */
+  _titles: {
+    [k: string]: unknown;
+  };
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+  selected_index: number | null;
+}
+/**
+ * The protected API for IntRangeSlider
+ */
+export interface IntRangeSliderProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value of the widget as the user is sliding the slider.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step that the value can take
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The protected API for _BoundedInt
+ */
+export interface _BoundedIntProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Int value
+   */
+  value: number;
+}
+/**
+ * The protected API for FloatText
+ */
+export interface FloatTextProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  step: number | null;
+  /**
+   * Float value
+   */
+  value: number;
 }
 /**
  * The protected API for Controller
@@ -3624,6 +3162,185 @@ export interface ControllerProtected {
    * The last time the data from this gamepad was updated.
    */
   timestamp: number;
+}
+/**
+ * The protected API for ColorPicker
+ */
+export interface ColorPickerProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Display short version with just a color selector.
+   */
+  concise: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * The color value.
+   */
+  value: string;
+}
+/**
+ * The protected API for _String
+ */
+export interface _StringProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
+}
+/**
+ * The protected API for _Media
+ */
+export interface _MediaProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+}
+/**
+ * The protected API for Box
+ */
+export interface BoxProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
+ * The protected API for Checkbox
+ */
+export interface CheckboxProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Indent the control to align with other controls with a description.
+   */
+  indent: boolean;
+  /**
+   * Bool value
+   */
+  value: boolean;
+}
+/**
+ * The protected API for Output
+ */
+export interface OutputProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Parent message id of messages to capture
+   */
+  msg_id: string;
+  /**
+   * The output messages synced from the frontend.
+   */
+  outputs: {
+    [k: string]: unknown;
+  }[];
 }
 /**
  * The protected API for _Int
@@ -3699,165 +3416,6 @@ export interface BoundedFloatTextProtected {
   value: number;
 }
 /**
- * The protected API for _String
- */
-export interface _StringProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The protected API for _Media
- */
-export interface _MediaProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-}
-/**
- * The protected API for CoreWidget
- */
-export interface CoreWidgetProtected {
-  _model_module: string;
-  _model_module_version: string;
-  /**
-   * Name of the model.
-   */
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-}
-/**
- * The protected API for SliderStyle
- */
-export interface SliderStyleProtected {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Width of the description to the side of the control.
-   */
-  description_width: string;
-}
-/**
- * The protected API for _IntRange
- */
-export interface _IntRangeProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Tuple of (lower, upper) bounds
-   */
-  value: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for FloatProgress
- */
-export interface FloatProgressProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  bar_style: ('success' | 'info' | 'warning' | 'danger' | '') | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Float value
-   */
-  value: number;
-}
-/**
  * The protected API for Axis
  */
 export interface AxisProtected {
@@ -3879,67 +3437,6 @@ export interface AxisProtected {
    * The value of the axis.
    */
   value: number;
-}
-/**
- * The protected API for Output
- */
-export interface OutputProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Parent message id of messages to capture
-   */
-  msg_id: string;
-  /**
-   * The output messages synced from the frontend.
-   */
-  outputs: {
-    [k: string]: unknown;
-  }[];
-}
-/**
- * The protected API for HTML
- */
-export interface HTMLProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
 }
 /**
  * The protected API for SelectMultiple
@@ -3993,9 +3490,116 @@ export interface SelectMultipleProtected {
   value: unknown[];
 }
 /**
- * The protected API for DescriptionStyle
+ * The protected API for HTML
  */
-export interface DescriptionStyleProtected {
+export interface HTMLProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
+}
+/**
+ * The protected API for CoreWidget
+ */
+export interface CoreWidgetProtected {
+  _model_module: string;
+  _model_module_version: string;
+  /**
+   * Name of the model.
+   */
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+}
+/**
+ * The protected API for ToggleButtonsStyle
+ */
+export interface ToggleButtonsStyleProtected {
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * The width of each button.
+   */
+  button_width: string;
+  /**
+   * Width of the description to the side of the control.
+   */
+  description_width: string;
+  /**
+   * Text font weight of each button.
+   */
+  font_weight: string;
+}
+/**
+ * The protected API for _IntRange
+ */
+export interface _IntRangeProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The protected API for SliderStyle
+ */
+export interface SliderStyleProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -4010,6 +3614,87 @@ export interface DescriptionStyleProtected {
    * Width of the description to the side of the control.
    */
   description_width: string;
+}
+/**
+ * The protected API for FloatProgress
+ */
+export interface FloatProgressProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  bar_style: ('success' | 'info' | 'warning' | 'danger' | '') | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Float value
+   */
+  value: number;
+}
+/**
+ * The protected API for Text
+ */
+export interface TextProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
 }
 /**
  * The protected API for IntSlider
@@ -4068,9 +3753,9 @@ export interface IntSliderProtected {
   value: number;
 }
 /**
- * The protected API for VBox
+ * The protected API for Audio
  */
-export interface VBoxProtected {
+export interface AudioProtected {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -4086,18 +3771,26 @@ export interface VBoxProtected {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Use a predefined styling for the box.
+   * When true, the audio starts when it's displayed
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  autoplay: boolean;
   /**
-   * List of widget children
+   * Specifies that audio controls should be displayed (such as a play/pause button etc)
    */
-  children: unknown[];
+  controls: boolean;
+  /**
+   * The format of the audio.
+   */
+  format: string;
+  /**
+   * When true, the audio will start from the beginning after finishing
+   */
+  loop: boolean;
 }
 /**
- * The protected API for ToggleButtonsStyle
+ * The protected API for DescriptionStyle
  */
-export interface ToggleButtonsStyleProtected {
+export interface DescriptionStyleProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -4108,37 +3801,10 @@ export interface ToggleButtonsStyleProtected {
   _view_module: string;
   _view_module_version: string;
   _view_name: string;
-  /**
-   * The width of each button.
-   */
-  button_width: string;
   /**
    * Width of the description to the side of the control.
    */
   description_width: string;
-  /**
-   * Text font weight of each button.
-   */
-  font_weight: string;
-}
-/**
- * The protected API for ButtonStyle
- */
-export interface ButtonStyleProtected {
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Button text font weight.
-   */
-  font_weight: string;
 }
 /**
  * The protected API for _Float
@@ -4229,9 +3895,9 @@ export interface PlayProtected {
   value: number;
 }
 /**
- * The protected API for Audio
+ * The protected API for VBox
  */
-export interface AudioProtected {
+export interface VBoxProtected {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -4247,30 +3913,18 @@ export interface AudioProtected {
   _view_module_version: string;
   _view_name: string;
   /**
-   * When true, the audio starts when it's displayed
+   * Use a predefined styling for the box.
    */
-  autoplay: boolean;
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
   /**
-   * Specifies that audio controls should be displayed (such as a play/pause button etc)
+   * List of widget children
    */
-  controls: boolean;
-  /**
-   * The format of the audio.
-   */
-  format: string;
-  /**
-   * When true, the audio will start from the beginning after finishing
-   */
-  loop: boolean;
+  children: unknown[];
 }
 /**
- * The protected API for Text
+ * The protected API for ButtonStyle
  */
-export interface TextProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
+export interface ButtonStyleProtected {
   _model_module: string;
   _model_module_version: string;
   _model_name: string;
@@ -4282,174 +3936,9 @@ export interface TextProtected {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   * Button text font weight.
    */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Placeholder text to display when nothing has been typed
-   */
-  placeholder: string;
-  /**
-   * String value
-   */
-  value: string;
-}
-/**
- * The protected API for BoundedIntText
- */
-export interface BoundedIntTextProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Int value
-   */
-  value: number;
-}
-/**
- * The protected API for ToggleButton
- */
-export interface ToggleButtonProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Use a predefined styling for the button.
-   */
-  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes.
-   */
-  disabled: boolean;
-  /**
-   * Font-awesome icon.
-   */
-  icon: string;
-  /**
-   * Tooltip caption of the toggle button.
-   */
-  tooltip: string;
-  /**
-   * Bool value
-   */
-  value: boolean;
-}
-/**
- * The protected API for FloatSlider
- */
-export interface FloatSliderProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string;
-  /**
-   * Update the value of the widget as the user is holding the slider.
-   */
-  continuous_update: boolean;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Max value
-   */
-  max: number;
-  /**
-   * Min value
-   */
-  min: number;
-  /**
-   * Vertical or horizontal.
-   */
-  orientation: 'horizontal' | 'vertical';
-  /**
-   * Display the current value of the slider next to it.
-   */
-  readout: boolean;
-  /**
-   * Minimum step to increment the value
-   */
-  step: number;
-  /**
-   * Float value
-   */
-  value: number;
+  font_weight: string;
 }
 /**
  * The protected API for Image
@@ -4481,53 +3970,6 @@ export interface ImageProtected {
    * Width of the image in pixels. Use layout.width for styling the widget.
    */
   width: string;
-}
-/**
- * The protected API for _MultipleSelection
- */
-export interface _MultipleSelectionProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  /**
-   * The labels for the options.
-   */
-  _options_labels: string[];
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
-  /**
-   * Description of the control.
-   */
-  description: string;
-  description_tooltip: string | null;
-  /**
-   * Enable or disable user changes
-   */
-  disabled: boolean;
-  /**
-   * Selected indices
-   */
-  index: number[];
-  /**
-   * Selected labels
-   */
-  label: string[];
-  options: {
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Selected values
-   */
-  value: unknown[];
 }
 /**
  * The protected API for Password
@@ -4634,9 +4076,9 @@ export interface FileUploadProtected {
   };
 }
 /**
- * The protected API for HBox
+ * The protected API for BoundedIntText
  */
-export interface HBoxProtected {
+export interface BoundedIntTextProtected {
   /**
    * CSS classes applied to widget DOM element
    */
@@ -4652,37 +4094,18 @@ export interface HBoxProtected {
   _view_module_version: string;
   _view_name: string;
   /**
-   * Use a predefined styling for the box.
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
    */
-  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
-  /**
-   * List of widget children
-   */
-  children: unknown[];
-}
-/**
- * The protected API for _BoundedFloat
- */
-export interface _BoundedFloatProtected {
-  /**
-   * CSS classes applied to widget DOM element
-   */
-  _dom_classes: string[];
-  _model_module: string;
-  _model_module_version: string;
-  _model_name: string;
-  _states_to_send: {
-    [k: string]: unknown;
-  }[];
-  _view_count: number | null;
-  _view_module: string;
-  _view_module_version: string;
-  _view_name: string | null;
+  continuous_update: boolean;
   /**
    * Description of the control.
    */
   description: string;
   description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
   /**
    * Max value
    */
@@ -4692,7 +4115,11 @@ export interface _BoundedFloatProtected {
    */
   min: number;
   /**
-   * Float value
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Int value
    */
   value: number;
 }
@@ -4723,6 +4150,106 @@ export interface DOMWidgetProtected {
    */
   _view_module_version: string;
   _view_name: string | null;
+}
+/**
+ * The protected API for FloatSlider
+ */
+export interface FloatSliderProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value of the widget as the user is holding the slider.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Vertical or horizontal.
+   */
+  orientation: 'horizontal' | 'vertical';
+  /**
+   * Display the current value of the slider next to it.
+   */
+  readout: boolean;
+  /**
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Float value
+   */
+  value: number;
+}
+/**
+ * The protected API for ToggleButton
+ */
+export interface ToggleButtonProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the button.
+   */
+  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Font-awesome icon.
+   */
+  icon: string;
+  /**
+   * Tooltip caption of the toggle button.
+   */
+  tooltip: string;
+  /**
+   * Bool value
+   */
+  value: boolean;
 }
 /**
  * The protected API for Combobox
@@ -4771,4 +4298,501 @@ export interface ComboboxProtected {
    * String value
    */
   value: string;
+}
+/**
+ * The protected API for HBox
+ */
+export interface HBoxProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the box.
+   */
+  box_style: 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * List of widget children
+   */
+  children: unknown[];
+}
+/**
+ * The protected API for HTMLMath
+ */
+export interface HTMLMathProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
+}
+/**
+ * The protected API for _BoundedFloat
+ */
+export interface _BoundedFloatProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Float value
+   */
+  value: number;
+}
+/**
+ * The protected API for _FloatRange
+ */
+export interface _FloatRangeProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The protected API for Button
+ */
+export interface ButtonProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Use a predefined styling for the button.
+   */
+  button_style: 'primary' | 'success' | 'info' | 'warning' | 'danger' | '';
+  /**
+   * Button label.
+   */
+  description: string;
+  /**
+   * Enable or disable user changes.
+   */
+  disabled: boolean;
+  /**
+   * Font-awesome icon name, without the 'fa-' prefix.
+   */
+  icon: string;
+  /**
+   * Tooltip caption of the button.
+   */
+  tooltip: string;
+}
+/**
+ * The protected API for _MultipleSelection
+ */
+export interface _MultipleSelectionProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  /**
+   * The labels for the options.
+   */
+  _options_labels: string[];
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Selected indices
+   */
+  index: number[];
+  /**
+   * Selected labels
+   */
+  label: string[];
+  options: {
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Selected values
+   */
+  value: unknown[];
+}
+/**
+ * The protected API for Style
+ */
+export interface StyleProtected {
+  /**
+   * The namespace for the model.
+   */
+  _model_module: string;
+  /**
+   * A semver requirement for namespace version containing the model.
+   */
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+}
+/**
+ * The protected API for IntText
+ */
+export interface IntTextProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+   */
+  continuous_update: boolean;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Enable or disable user changes
+   */
+  disabled: boolean;
+  /**
+   * Minimum step to increment the value
+   */
+  step: number;
+  /**
+   * Int value
+   */
+  value: number;
+}
+/**
+ * The protected API for Label
+ */
+export interface LabelProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Placeholder text to display when nothing has been typed
+   */
+  placeholder: string;
+  /**
+   * String value
+   */
+  value: string;
+}
+/**
+ * The protected API for Video
+ */
+export interface VideoProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * When true, the video starts when it's displayed
+   */
+  autoplay: boolean;
+  /**
+   * Specifies that video controls should be displayed (such as a play/pause button etc)
+   */
+  controls: boolean;
+  /**
+   * The format of the video.
+   */
+  format: string;
+  /**
+   * Height of the video in pixels.
+   */
+  height: string;
+  /**
+   * When true, the video will start from the beginning after finishing
+   */
+  loop: boolean;
+  /**
+   * Width of the video in pixels.
+   */
+  width: string;
+}
+/**
+ * The protected API for DescriptionWidget
+ */
+export interface DescriptionWidgetProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+}
+/**
+ * The protected API for ProgressStyle
+ */
+export interface ProgressStyleProtected {
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string;
+  /**
+   * Width of the description to the side of the control.
+   */
+  description_width: string;
+}
+/**
+ * The protected API for Widget
+ */
+export interface WidgetProtected {
+  /**
+   * The namespace for the model.
+   */
+  _model_module: string;
+  /**
+   * A semver requirement for namespace version containing the model.
+   */
+  _model_module_version: string;
+  /**
+   * Name of the model.
+   */
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string | null;
+  /**
+   * A semver requirement for the namespace version containing the view.
+   */
+  _view_module_version: string;
+  _view_name: string | null;
+}
+/**
+ * The protected API for _BoundedFloatRange
+ */
+export interface _BoundedFloatRangeProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Minimum step that the value can take (ignored by some views)
+   */
+  step: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
+}
+/**
+ * The protected API for _BoundedIntRange
+ */
+export interface _BoundedIntRangeProtected {
+  /**
+   * CSS classes applied to widget DOM element
+   */
+  _dom_classes: string[];
+  _model_module: string;
+  _model_module_version: string;
+  _model_name: string;
+  _states_to_send: {
+    [k: string]: unknown;
+  }[];
+  _view_count: number | null;
+  _view_module: string;
+  _view_module_version: string;
+  _view_name: string | null;
+  /**
+   * Description of the control.
+   */
+  description: string;
+  description_tooltip: string | null;
+  /**
+   * Max value
+   */
+  max: number;
+  /**
+   * Min value
+   */
+  min: number;
+  /**
+   * Tuple of (lower, upper) bounds
+   */
+  value: {
+    [k: string]: unknown;
+  }[];
 }
