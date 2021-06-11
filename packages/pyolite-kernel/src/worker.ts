@@ -30,10 +30,11 @@ async function loadPyodideAndPackages() {
  * Recursively convert a Map to a JavaScript object
  * @param The Map object to convert
  */
-function mapToObject(map: any) {
-  const out: any = {};
-  map.forEach((value: any, key: string) => {
-    out[key] = value instanceof Map ? mapToObject(value) : value;
+function mapToObject(obj: any) {
+  const out: any = obj instanceof Array ? [] : {};
+  obj.forEach((value: any, key: string) => {
+    out[key] =
+      value instanceof Map || value instanceof Array ? mapToObject(value) : value;
   });
   return out;
 }
