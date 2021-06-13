@@ -22,17 +22,23 @@ class LiteManager(LoggingConfigurable):
 
     def initialize(self):
         # TODO: finish initialization
-        self.log.debug("TODO: finish initialization")
+        self.log.debug("[lite] loading addons ...")
+        self.log.debug(f"[lite] OK loaded {len(self.addons)} addon")
 
     @default("addons")
     def _default_addons(self):
         """initialize addons from entry_points"""
         addons = {}
         for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
+            self.log.debug(f"[lite] [{name}] addon init {addon}...")
             try:
-                addons[name] = addon.load()
+                addon_inst = addon.load()(manager=self)
+                addons[name] = addon_inst
+                self.log.debug(f"[lite] [{name}]    {type(addon_inst)}")
+                self.log.debug(f"[lite] [{name}]    is: {addon_inst.__all__}")
+                self.log.debug(f"[lite] [{name}] addon init OK")
             except Exception as err:
-                self.log.warning(f"Failed to load addon: {name} {err}")
+                self.log.warning(f"[lite] Failed to load addon: {name}", exc_info=err)
         return addons
 
     @default("lite_dir")
@@ -44,17 +50,30 @@ class LiteManager(LoggingConfigurable):
         return {}
 
     async def _run_addon_hook(self, hook):
+        self.log.debug(f"[lite] [{hook}] ...")
         for stage in ["pre_", "", "_post"]:
-            attr = f"{stage}_{hook}"
+            attr = f"{stage}{hook}"
+            self.log.debug(f"[lite] [{hook}] [{stage}] ...")
             for name, addon in self.addons.items():
-                if hasattr(addon, attr):
+                self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] []...")
+                if attr in addon.__all__:
                     try:
+                        self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] [RUN] ...")
                         await getattr(addon, attr)(self)
                     except Exception as err:
-                        self.log.warning(f"[{attr}] Error in {name}: {err}")
+                        self.log.error(
+                            f"[lite] [{hook}] [{stage}] [{name}] [ERR] {err}"
+                        )
+                else:
+                    self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] NO")
+
+            self.log.debug(f"[lite] [{hook}] [{stage}] OK")
+        self.log.debug(f"[lite] [{hook}] OK")
 
     async def init(self):
+        self.log.debug("[lite] [init] ...")
         await self._run_addon_hook("init")
+        self.log.debug("[lite] [init] OK")
 
     async def validate(self):
         await self._run_addon_hook("validate")

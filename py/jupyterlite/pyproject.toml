@@ -28,3 +28,6 @@ watch = [
 nbconvert = [
     "nbconvert >=6",
 ]
+
+[tool.flit.entrypoints."jupyterlite.addon.v0"]
+jupyterlab = "jupyterlite.addons.jupyterlab:JupyterLabAddon"

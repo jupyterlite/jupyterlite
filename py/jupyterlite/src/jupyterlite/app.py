@@ -2,7 +2,7 @@ from pathlib import Path
 from traitlets import Instance, default, Unicode
 from tornado import ioloop
 
-from jupyter_core.application import JupyterApp
+from jupyter_core.application import JupyterApp, base_aliases, base_flags
 
 from . import __version__
 from .manager import LiteManager
@@ -22,6 +22,8 @@ class ManagedApp(BaseApp):
     lite_manager = Instance(LiteManager)
     lite_dir = Unicode().tag(config=True)
     io_loop = Instance(ioloop.IOLoop)
+
+    aliases = dict(**base_aliases, **{"lite-dir": "ManagedApp.lite_dir"})
 
     @default("io_loop")
     def _default_io_loop(self):
@@ -47,9 +49,9 @@ class InitApp(ManagedApp):
     """initialize a JupyterLite folder"""
 
     async def start_async(self):
-        self.lite_manager.log.error("TODO: actually init")
+        await self.lite_manager.init()
         self.stop()
-        self.lite_manager.log.error("TODO: stopped")
+        self.lite_manager.log.error("TODO: stopped init-ing")
 
 
 class BuildApp(ManagedApp):
