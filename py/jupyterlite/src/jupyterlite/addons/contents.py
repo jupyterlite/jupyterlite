@@ -13,11 +13,12 @@ class ContentsAddon(BaseAddon):
         files_dir = manager.lite_dir / "files"
 
         if not files_dir.is_dir():
-            self.log.info(
+            self.log.debug(
                 f"""[lite] [contents] No files found in {files_dir}, skipping...
-
-            💡 Add some files there, and they will be visible in the _File Manager_
             """
+            )
+            self.log.info(
+                """<💡/files/**/*> Add some files in {file_dir}, and they will be visible in the _File Manager_"""
             )
             return
 

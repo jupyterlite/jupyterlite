@@ -33,3 +33,4 @@ nbconvert = [
 jupyterlab = "jupyterlite.addons.jupyterlab:JupyterLabAddon"
 contents = "jupyterlite.addons.contents:ContentsAddon"
 federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
+overrides = "jupyterlite.addons.overrides:OverridesAddon"

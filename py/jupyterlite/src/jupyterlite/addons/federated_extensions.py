@@ -22,10 +22,10 @@ class FederatedExtensionAddon(BaseAddon):
         CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
 
         if CACHED_LAB_EXTENSIONS.exists():
-            self.log.info(f"... Cleaning {CACHED_LAB_EXTENSIONS}...")
+            self.log.debug(f"... Cleaning {CACHED_LAB_EXTENSIONS}...")
             shutil.rmtree(CACHED_LAB_EXTENSIONS)
 
-        self.log.info(f"... Copying {ENV_EXTENSIONS} to {CACHED_LAB_EXTENSIONS}...")
+        self.log.debug(f"... Copying {ENV_EXTENSIONS} to {CACHED_LAB_EXTENSIONS}...")
         shutil.copytree(ENV_EXTENSIONS, CACHED_LAB_EXTENSIONS)
 
         extensions = []
@@ -41,7 +41,7 @@ class FederatedExtensionAddon(BaseAddon):
         ]
 
         for pkg_json in all_package_json:
-            self.log.info(
+            self.log.debug(
                 f"... adding {pkg_json.parent.relative_to(CACHED_LAB_EXTENSIONS)}..."
             )
             pkg_data = json.loads(pkg_json.read_text(encoding="utf-8"))
@@ -50,23 +50,23 @@ class FederatedExtensionAddon(BaseAddon):
             ]
             for app_theme in app_themes:
                 for theme in pkg_json.parent.glob("themes/*"):
-                    self.log.info(
+                    self.log.debug(
                         f"... copying theme {theme.relative_to(CACHED_LAB_EXTENSIONS)}"
                     )
 
                     if not app_theme.exists():
-                        app_theme.mkdir(parents=True)
-                    self.log.info(f"... ... to {app_theme}")
+                        app_theme.mkdir(parents=True, exist_ok=True)
+                    self.log.debug(f"... ... to {app_theme}")
                     shutil.copytree(theme, app_theme / theme.name)
 
         APP_JUPYTERLITE_JSON = manager.lite_dir / "jupyter-lite.json"
         PATCHED_JUPYTERLITE_JSON = APP_JUPYTERLITE_JSON
-        print(f"... Patching {APP_JUPYTERLITE_JSON}...")
+        self.log.debug(f"... Patching {APP_JUPYTERLITE_JSON}...")
         config = json.loads(APP_JUPYTERLITE_JSON.read_text(encoding="utf-8"))
-        print(f"... ... {len(extensions)} federated extensions...")
+        self.log.debug(f"... ... {len(extensions)} federated extensions...")
         config["jupyter-config-data"]["federated_extensions"] = extensions
 
-        print(f"... writing {PATCHED_JUPYTERLITE_JSON}")
+        self.log.debug(f"... writing {PATCHED_JUPYTERLITE_JSON}")
         PATCHED_JUPYTERLITE_JSON.write_text(
             textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
         )
