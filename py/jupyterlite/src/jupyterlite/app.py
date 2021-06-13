@@ -49,18 +49,20 @@ class InitApp(ManagedApp):
     """initialize a JupyterLite folder"""
 
     async def start_async(self):
-        await self.lite_manager.init()
-        self.stop()
-        self.lite_manager.log.error("TODO: stopped init-ing")
+        try:
+            await self.lite_manager.init()
+        finally:
+            self.stop()
 
 
 class BuildApp(ManagedApp):
     """build a JupyterLite folder"""
 
     async def start_async(self):
-        self.lite_manager.log.error("TODO: actually build")
-        self.stop()
-        self.lite_manager.log.error("TODO: stopped building")
+        try:
+            await self.lite_manager.build()
+        finally:
+            self.stop()
 
 
 class CheckApp(ManagedApp):

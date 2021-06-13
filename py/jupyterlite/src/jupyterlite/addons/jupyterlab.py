@@ -1,6 +1,4 @@
 """a jupyterlite addon for jupyterlab core"""
-
-
 from pathlib import Path
 import tarfile
 import tempfile
@@ -8,23 +6,18 @@ import shutil
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
 
+from . import BaseAddon
+
 MAX_WORKERS = 4
 
 ROOT = Path(__file__).parent.parent
 APP_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
 
 
-class JupyterLabAddon:
+class JupyterLabAddon(BaseAddon):
     executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
     __all__ = ["pre_init"]
-
-    def __init__(self, manager):
-        self.manager = manager
-
-    @property
-    def log(self):
-        return self.manager.log
 
     @run_on_executor
     def unpack(self):

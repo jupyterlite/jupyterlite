@@ -30,13 +30,13 @@ class LiteManager(LoggingConfigurable):
         """initialize addons from entry_points"""
         addons = {}
         for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
-            self.log.debug(f"[lite] [{name}] addon init {addon}...")
+            self.log.debug(f"[lite] [{name}] addon init ...")
             try:
                 addon_inst = addon.load()(manager=self)
                 addons[name] = addon_inst
-                self.log.debug(f"[lite] [{name}]    {type(addon_inst)}")
-                self.log.debug(f"[lite] [{name}]    is: {addon_inst.__all__}")
-                self.log.debug(f"[lite] [{name}] addon init OK")
+                self.log.debug(
+                    f"""[lite] [{name}] {addon_inst.__class__.__name__} will {", ".join(addon_inst.__all__)}"""
+                )
             except Exception as err:
                 self.log.warning(f"[lite] Failed to load addon: {name}", exc_info=err)
         return addons
@@ -51,7 +51,7 @@ class LiteManager(LoggingConfigurable):
 
     async def _run_addon_hook(self, hook):
         self.log.debug(f"[lite] [{hook}] ...")
-        for stage in ["pre_", "", "_post"]:
+        for stage in ["pre_", "", "post_"]:
             attr = f"{stage}{hook}"
             self.log.debug(f"[lite] [{hook}] [{stage}] ...")
             for name, addon in self.addons.items():

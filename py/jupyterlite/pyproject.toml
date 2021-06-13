@@ -31,3 +31,4 @@ nbconvert = [
 
 [tool.flit.entrypoints."jupyterlite.addon.v0"]
 jupyterlab = "jupyterlite.addons.jupyterlab:JupyterLabAddon"
+contents = "jupyterlite.addons.contents:ContentsAddon"
