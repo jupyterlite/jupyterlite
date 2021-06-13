@@ -3,9 +3,7 @@ import textwrap
 import json
 
 from . import BaseAddon
-
-OVERRIDES_JSON = "overrides.json"
-JUPYTERLITE_JSON = "jupyter-lite.json"
+from ..constants import OVERRIDES_JSON, JUPYTERLITE_JSON
 
 
 class OverridesAddon(BaseAddon):

@@ -5,10 +5,11 @@ import shutil
 import textwrap
 import json
 
+from ..constants import JUPYTERLITE_JSON
+
 from . import BaseAddon
 
 # TODO: improve this
-
 ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
 
@@ -59,7 +60,7 @@ class FederatedExtensionAddon(BaseAddon):
                     self.log.debug(f"... ... to {app_theme}")
                     shutil.copytree(theme, app_theme / theme.name)
 
-        APP_JUPYTERLITE_JSON = manager.lite_dir / "jupyter-lite.json"
+        APP_JUPYTERLITE_JSON = manager.lite_dir / JUPYTERLITE_JSON
         PATCHED_JUPYTERLITE_JSON = APP_JUPYTERLITE_JSON
         self.log.debug(f"... Patching {APP_JUPYTERLITE_JSON}...")
         config = json.loads(APP_JUPYTERLITE_JSON.read_text(encoding="utf-8"))
