@@ -28,15 +28,17 @@ class JupyterLabAddon(BaseAddon):
         ),
     ).tag(config=True)
 
-    __all__ = ["pre_init"]
+    __all__ = ["pre_init", "init"]
 
     @default("lite_tarball")
     def _default_lite_tarball(self):
-        return Path(os.environ.get("JUPYTERLITE_APP_TARBALL") or LITE_TARBALL)
+        tarball = os.environ.get("JUPYTERLITE_APP_TARBALL") or LITE_TARBALL
+        self.log.debug(f"[lite] [jupyterlab] Tarball {tarball}")
+        return Path(tarball)
 
     @run_on_executor
     def unpack(self):
-        lite_dir = Path(self.manager.lite_dir)
+        output_dir = self.manager.output_dir
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
@@ -44,7 +46,7 @@ class JupyterLabAddon(BaseAddon):
                 tar.extractall(td)
                 for child in sorted((tdp / "package").glob("*")):
                     self.log.debug(f"[lite] [jupyterlab] copying {child}")
-                    dest = lite_dir / child.name
+                    dest = output_dir / child.name
                     if not dest.parent.exists():
                         dest.parent.mkdir(exist_ok=True, parents=True)
                     try:
@@ -56,7 +58,11 @@ class JupyterLabAddon(BaseAddon):
                         self.log.error(f"ERR copying {child} to {dest}: {err}")
 
     async def pre_init(self, manager):
+        if manager.output_dir.exists():
+            shutil.rmtree(manager.output_dir)
+        manager.output_dir.mkdir(parents=True)
+
+    async def init(self, manager):
         """copy the files into the directory"""
-        self.log.error(f"[lab] [jupyterlab] {self.lite_tarball}")
         unpacked = await self.unpack()
         manager.log.debug(f"UNPACKED: {unpacked}")

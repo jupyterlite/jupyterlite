@@ -3,17 +3,19 @@
 from traitlets.config import LoggingConfigurable
 import entrypoints
 from pathlib import Path
+import os
 
 from traitlets import Dict, default, Instance
 
-from .constants import ADDON_ENTRYPOINT
+from .constants import ADDON_ENTRYPOINT, OUTPUT_DIR
 
 
 class LiteManager(LoggingConfigurable):
     """a manager for building jupyterlite"""
 
     addons = Dict()
-    lite_dir = Instance(Path)
+    lite_dir = Instance(Path, help=("""The root folder of a JupyterLite project"""))
+    output_dir = Instance(Path, help=("""Where to build the JupyterLite site"""))
     config = Dict()
 
     @property
@@ -40,6 +42,12 @@ class LiteManager(LoggingConfigurable):
             except Exception as err:
                 self.log.warning(f"[lite] Failed to load addon: {name}", exc_info=err)
         return addons
+
+    @default("output_dir")
+    def _default_output_dir(self):
+        return Path(
+            os.environ.get("JUPYTERLITE_OUTPUT_DIR") or self.lite_dir / OUTPUT_DIR
+        )
 
     @default("lite_dir")
     def _default_lite_dir(self):

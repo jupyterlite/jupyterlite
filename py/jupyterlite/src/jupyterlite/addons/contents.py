@@ -2,13 +2,25 @@
 from . import BaseAddon
 import json
 import datetime
+import shutil
 
 
 class ContentsAddon(BaseAddon):
     __all__ = ["post_build"]
 
     async def post_build(self, manager):
-        from jupyter_server.services.contents.filemanager import FileContentsManager
+        """A lazy reuse of a `jupyter_server` Contents API generator
+
+        Ideally we'd have a fallback, schema-verified generator, which we could
+        later port to e.g. JS
+        """
+        try:
+            from jupyter_server.services.contents.filemanager import FileContentsManager
+        except ImportError as err:
+            self.log.warn(
+                "[lite] [contents] `jupyter_server` was not importable, cannot index contents"
+            )
+            return
 
         files_dir = manager.lite_dir / "files"
 
@@ -22,15 +34,20 @@ class ContentsAddon(BaseAddon):
             )
             return
 
-        outdir = manager.lite_dir
+        output_dir = manager.output_dir
 
         fm = FileContentsManager(root_dir=str(files_dir), parent=manager)
+
+        shutil.copytree(files_dir, output_dir / "files")
 
         for file_dir in [files_dir, *files_dir.rglob("*")]:
             if not file_dir.is_dir():
                 continue
             all_json = (
-                outdir / "api/contents" / file_dir.relative_to(files_dir) / "all.json"
+                output_dir
+                / "api/contents"
+                / file_dir.relative_to(files_dir)
+                / "all.json"
             )
             all_json.parent.mkdir(parents=True, exist_ok=True)
             listing_path = str(file_dir.relative_to(files_dir).as_posix())

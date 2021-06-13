@@ -19,7 +19,7 @@ class FederatedExtensionAddon(BaseAddon):
     __all__ = ["pre_build"]
 
     async def pre_build(self, manager):
-        PATCHED_STATIC = manager.lite_dir
+        PATCHED_STATIC = manager.output_dir
         CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
 
         if CACHED_LAB_EXTENSIONS.exists():
@@ -60,7 +60,7 @@ class FederatedExtensionAddon(BaseAddon):
                     self.log.debug(f"... ... to {app_theme}")
                     shutil.copytree(theme, app_theme / theme.name)
 
-        APP_JUPYTERLITE_JSON = manager.lite_dir / JUPYTERLITE_JSON
+        APP_JUPYTERLITE_JSON = manager.output_dir / JUPYTERLITE_JSON
         PATCHED_JUPYTERLITE_JSON = APP_JUPYTERLITE_JSON
         self.log.debug(f"... Patching {APP_JUPYTERLITE_JSON}...")
         config = json.loads(APP_JUPYTERLITE_JSON.read_text(encoding="utf-8"))
