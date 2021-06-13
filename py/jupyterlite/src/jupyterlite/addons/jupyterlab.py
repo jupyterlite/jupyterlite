@@ -3,21 +3,36 @@ from pathlib import Path
 import tarfile
 import tempfile
 import shutil
+import os
 from tornado.concurrent import run_on_executor
 from concurrent.futures import ThreadPoolExecutor
+from traitlets import Instance, default
 
 from . import BaseAddon
 
 MAX_WORKERS = 4
 
 ROOT = Path(__file__).parent.parent
-APP_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
+LITE_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
 
 
 class JupyterLabAddon(BaseAddon):
     executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
+    lite_tarball = Instance(
+        Path,
+        help=(
+            """The path to a custom npm-style tarball (e.g. with `package/package.json`). """
+            """This may alternately be specified with the `$JUPYTERLITE_APP_TARBALL` """
+            """environment variable."""
+        ),
+    ).tag(config=True)
+
     __all__ = ["pre_init"]
+
+    @default("lite_tarball")
+    def _default_lite_tarball(self):
+        return Path(os.environ.get("JUPYTERLITE_APP_TARBALL") or LITE_TARBALL)
 
     @run_on_executor
     def unpack(self):
@@ -25,7 +40,7 @@ class JupyterLabAddon(BaseAddon):
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with tarfile.open(str(APP_TARBALL), "r:gz") as tar:
+            with tarfile.open(str(self.lite_tarball), "r:gz") as tar:
                 tar.extractall(td)
                 for child in sorted((tdp / "package").glob("*")):
                     self.log.debug(f"[lite] [jupyterlab] copying {child}")
@@ -42,7 +57,6 @@ class JupyterLabAddon(BaseAddon):
 
     async def pre_init(self, manager):
         """copy the files into the directory"""
-        self.log.error(f"[lab] [jupyterlab] {APP_TARBALL}")
+        self.log.error(f"[lab] [jupyterlab] {self.lite_tarball}")
         unpacked = await self.unpack()
-        manager.log.error(f"UNPACKED: {unpacked}")
-        manager.log.error(f"TODO: unpack the files tarball to {manager.lite_dir}")
+        manager.log.debug(f"UNPACKED: {unpacked}")
