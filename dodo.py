@@ -205,7 +205,7 @@ def task_build():
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
         wheel = py_pkg / f"dist/{py_name}-{C.VERSION}-py3-none-any.whl"
-        sdist = py_pkg / f"dist/{py_name}-{C.VERSION}.tar.gz"
+        sdist = py_pkg / f"""dist/{py_name.replace("-", "_")}-{C.VERSION}.tar.gz"""
 
         args = ["python", "setup.py", "sdist", "bdist_wheel"]
 
@@ -217,6 +217,16 @@ def task_build():
 
         pyproj_toml = py_pkg / "pyproject.toml"
 
+        actions = [U.do(*args, cwd=py_pkg)]
+
+        if py_name == "jupyterlite":
+            dest = py_pkg / "src" / py_name, B.APP_PACK.name
+            actions = [
+                lambda: [dest.exists() and dest.unlink(), None][-1],
+                (shutil.copy2, [B.APP_PACK, dest]),
+                *actions,
+            ]
+
         if pyproj_toml.exists():
             args = ["python", "-m", "flit", "build"]
             file_dep += [pyproj_toml]
@@ -225,7 +235,7 @@ def task_build():
             name=f"py:{py_name}",
             doc=f"build the {py_name} python package",
             file_dep=file_dep,
-            actions=[U.do(*args, cwd=py_pkg)],
+            actions=actions,
             targets=[wheel, sdist],
         )
 
