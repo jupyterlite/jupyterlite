@@ -23,12 +23,11 @@ const disabled = [
   '@jupyterlab/apputils-extension:themes',
   '@jupyterlab/apputils-extension:workspaces',
   '@jupyterlab/application-extension:logo',
+  '@jupyterlab/application-extension:main',
   '@jupyterlab/application-extension:tree-resolver',
-  // TODO: improve/replace resolver and main to avoid redirect issues
-  // @see https://github.com/jtpio/jupyterlite/issues/22
   '@jupyterlab/apputils-extension:resolver',
   '@jupyterlab/docmanager-extension:download',
-  '@jupyterlab/application-extension:main'
+  '@jupyterlab/help-extension:about'
 ];
 
 async function createModule(scope, module) {
@@ -174,15 +173,16 @@ async function main() {
     mimeExtensions,
     serviceManager
   });
+  lab.name = 'JupyterLite';
 
   lab.registerPluginModules(pluginsToRegister);
 
   /* eslint-disable no-console */
   console.log('Starting app');
   await lab.start();
-  console.log('JupyterLite started, waiting for restore');
+  console.log(`${lab.name} started, waiting for restore`);
   await lab.restored;
-  console.log('JupyterLite restored');
+  console.log(`${lab.name} restored`);
 }
 
 main();

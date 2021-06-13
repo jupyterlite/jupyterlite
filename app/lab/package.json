@@ -54,6 +54,7 @@
     "@jupyterlab/mathjax2-extension": "^3.1.0-alpha.11",
     "@jupyterlab/notebook": "^3.1.0-alpha.11",
     "@jupyterlab/notebook-extension": "^3.1.0-alpha.11",
+    "@jupyterlab/outputarea": "^3.1.0-alpha.11",
     "@jupyterlab/rendermime": "^3.1.0-alpha.11",
     "@jupyterlab/rendermime-extension": "^3.1.0-alpha.11",
     "@jupyterlab/rendermime-interfaces": "^3.1.0-alpha.11",
@@ -84,7 +85,6 @@
     "@jupyterlite/server": "^0.1.0-alpha.0",
     "@jupyterlite/server-extension": "^0.1.0-alpha.0",
     "@jupyterlite/theme-extension": "^0.1.0-alpha.0",
-    "@jupyterlite/ui-components": "^0.1.0-alpha.0",
     "@lumino/algorithm": "^1.6.0",
     "@lumino/application": "^1.20.0",
     "@lumino/commands": "^1.15.0",
@@ -142,6 +142,7 @@
     "@jupyterlite/server": "^0.1.0-alpha.0",
     "@jupyterlite/server-extension": "^0.1.0-alpha.0",
     "@jupyterlite/theme-extension": "^0.1.0-alpha.0",
+    "@jupyterlite/ui-components": "^0.1.0-alpha.0",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
