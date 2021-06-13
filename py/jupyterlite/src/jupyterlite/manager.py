@@ -11,14 +11,14 @@ from .constants import ADDON_ENTRYPOINT
 
 class LiteManager(LoggingConfigurable):
     """a manager for building jupyterlite"""
+
     addons = Dict()
     lite_dir = Instance(Path)
     config = Dict()
 
     @default("addons")
     def _default_addons(self):
-        """initialize addons from entry_points
-        """
+        """initialize addons from entry_points"""
         addons = {}
         for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
             try:

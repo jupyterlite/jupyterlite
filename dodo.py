@@ -153,7 +153,7 @@ def task_build():
         wheel = py_pkg / f"dist/{name}-0.1.0-py3-none-any.whl"
         wheels += [wheel]
         yield dict(
-            name=f"py:{name}",
+            name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[U.do("flit", "build", cwd=py_pkg)],
@@ -201,6 +201,33 @@ def task_build():
         ],
         targets=[B.APP_PACK],
     )
+
+    for py_name, setup_py in P.PY_SETUP_PY.items():
+        py_pkg = setup_py.parent
+        wheel = py_pkg / f"dist/{py_name}-{C.VERSION}-py3-none-any.whl"
+        sdist = py_pkg / f"dist/{py_name}-{C.VERSION}.tar.gz"
+
+        args = ["python", "setup.py", "sdist", "bdist_wheel"]
+
+        file_dep = [
+            *P.PY_SETUP_DEPS[py_name](),
+            *py_pkg.rglob("*.py"),
+            setup_py,
+        ]
+
+        pyproj_toml = py_pkg / "pyproject.toml"
+
+        if pyproj_toml.exists():
+            args = ["python", "-m", "flit", "build"]
+            file_dep += [pyproj_toml]
+
+        yield dict(
+            name=f"py:{py_name}",
+            doc=f"build the {py_name} python package",
+            file_dep=file_dep,
+            actions=[U.do(*args, cwd=py_pkg)],
+            targets=[wheel, sdist],
+        )
 
 
 def task_docs():
@@ -332,6 +359,7 @@ def task_test():
 
 class C:
     NAME = "jupyterlite"
+    VERSION = "0.1.0"
     APPS = ["retro", "lab"]
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
@@ -372,6 +400,13 @@ class P:
     LAB_FAVICON = APP / "lab/favicon.ico"
     LITE_ICON = UI_COMPONENTS_ICONS / "liteIcon.svg"
     LITE_WORDMARK = UI_COMPONENTS_ICONS / "liteWordmark.svg"
+
+    # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
+    PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
+    PY_SETUP_DEPS = {
+        "jupyterlite": lambda: [B.APP_PACK],
+        "jupyterlite-labextension": lambda: [],
+    }
 
     # docs
     README = ROOT / "README.md"
@@ -463,6 +498,7 @@ class L:
         *P.DOCS_PY,
         P.DODO,
         *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], []),
+        *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
     )
 
 
