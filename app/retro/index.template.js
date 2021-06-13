@@ -48,11 +48,6 @@ async function main() {
 
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
-  // create a RetroLab frontend
-  const { RetroApp } = require('@retrolab/application');
-  const app = new RetroApp({ serviceManager, mimeExtensions });
-  app.name = 'RetroLite';
-
   let mods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
@@ -213,6 +208,18 @@ async function main() {
     }
   }
 
+  // Add the federated mime extensions.
+  const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);
+  federatedMimeExtensions.forEach(p => {
+    if (p.status === "fulfilled") {
+      for (let plugin of activePlugins(p.value)) {
+        mimeExtensions.push(plugin);
+      }
+    } else {
+      console.error(p.reason);
+    }
+  });
+
   // Add the federated extensions.
   const federatedExtensions = await Promise.allSettled(federatedExtensionPromises);
   federatedExtensions.forEach(p => {
@@ -224,6 +231,12 @@ async function main() {
       console.error(p.reason);
     }
   });
+
+  // create a RetroLab frontend
+  const { RetroApp } = require('@retrolab/application');
+  const app = new RetroApp({ serviceManager, mimeExtensions });
+
+  app.name = 'RetroLite';
 
   app.registerPluginModules(mods);
 
