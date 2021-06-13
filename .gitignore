@@ -132,3 +132,7 @@ app/lab/extensions
 docs/api/ts
 docs/jupyter_execute
 .vercel
+*.tgz
+*.whl
+*.tar.gz
+*.bz2

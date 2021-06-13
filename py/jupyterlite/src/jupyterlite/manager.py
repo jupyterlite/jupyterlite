@@ -16,6 +16,14 @@ class LiteManager(LoggingConfigurable):
     lite_dir = Instance(Path)
     config = Dict()
 
+    @property
+    def log(self):
+        return self.parent.log
+
+    def initialize(self):
+        # TODO: finish initialization
+        self.log.debug("TODO: finish initialization")
+
     @default("addons")
     def _default_addons(self):
         """initialize addons from entry_points"""

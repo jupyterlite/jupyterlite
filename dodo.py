@@ -220,10 +220,10 @@ def task_build():
         actions = [U.do(*args, cwd=py_pkg)]
 
         if py_name == "jupyterlite":
-            dest = py_pkg / "src" / py_name, B.APP_PACK.name
+            dest = py_pkg / "src" / py_name / B.APP_PACK.name
             actions = [
                 lambda: [dest.exists() and dest.unlink(), None][-1],
-                (shutil.copy2, [B.APP_PACK, dest]),
+                lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
                 *actions,
             ]
 
@@ -238,6 +238,16 @@ def task_build():
             actions=actions,
             targets=[wheel, sdist],
         )
+
+
+def task_dev():
+    """setup up local packages for interactive development"""
+    py_pkg = P.PY_SETUP_PY["jupyterlite"].parent
+    yield dict(
+        name="py:jupyterlite",
+        actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
+        file_dep=[py_pkg / f"""dist/jupyterlite-{C.VERSION}.tar.gz"""],
+    )
 
 
 def task_docs():

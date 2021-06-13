@@ -3,6 +3,7 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.1,<4"]
 
 [tool.flit.metadata]
+dist-name = "jupyterlite"
 module = "jupyterlite"
 author = "JupyterLite Contributors"
 home-page = "https://github.com/jtpio/jupyterlite"
