@@ -260,8 +260,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const file = await contents.get(item.path);
-            downloadContent(file.content, item.path);
+            const file = await contents.get(item.path, { content: true });
+            downloadContent(JSON.stringify(file.content), item.path);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
