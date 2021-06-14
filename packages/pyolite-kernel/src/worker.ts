@@ -59,14 +59,10 @@ function formatResult(res: any): any {
 // @ts-ignore: breaks typedoc
 const pyodideReadyPromise = loadPyodideAndPackages();
 
-self.onmessage = async (event: MessageEvent): Promise<void> => {
-  await pyodideReadyPromise;
-  const data = event.data;
-  console.log('Inside worker', data);
-
+async function execute(content: any) {
   const stdoutCallback = (stdout: string): void => {
     postMessage({
-      parentHeader: data.parentHeader,
+      parentHeader: content.parentHeader,
       stdout,
       type: 'stdout'
     });
@@ -74,7 +70,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   const stderrCallback = (stderr: string): void => {
     postMessage({
-      parentHeader: data.parentHeader,
+      parentHeader: content.parentHeader,
       stderr,
       type: 'stderr'
     });
@@ -84,7 +80,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   const displayCallback = (res: any): void => {
     const bundle = formatResult(res);
     postMessage({
-      parentHeader: data.parentHeader,
+      parentHeader: content.parentHeader,
       bundle,
       type: 'display'
     });
@@ -96,10 +92,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   let res;
   try {
-    res = await interpreter.run(data.code);
+    res = await interpreter.run(content.code);
   } catch (error) {
     postMessage({
-      parentheader: data.parentheader,
+      parentheader: content.parentheader,
       type: 'error',
       error
     });
@@ -107,7 +103,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const reply = {
-    parentheader: data.parentheader,
+    parentheader: content.parentheader,
     type: 'results'
   };
 
@@ -124,5 +120,43 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
     });
   } catch (e) {
     postMessage(reply);
+  }
+}
+
+async function complete(content: any) {
+  const res = interpreter.complete(content.code.substring(0, content.cursor_pos));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results: {
+      matches: results[0],
+      cursor_start: results[1],
+      cursor_end: content.cursor_pos,
+      status: 'ok'
+    }
+  };
+
+  postMessage(reply);
+}
+
+self.onmessage = async (event: MessageEvent): Promise<void> => {
+  await pyodideReadyPromise;
+  const data = event.data;
+  console.log('Inside worker', data);
+
+  const messageType = data.type;
+  const messageContent = data.data;
+
+  switch (messageType) {
+    case 'execute-request':
+      return execute(messageContent);
+
+    case 'complete-request':
+      return complete(messageContent);
+
+    default:
+      break;
   }
 };

@@ -160,8 +160,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteResultMsg['content']> {
-    const { code } = content;
-    const result = await this._eval(code);
+    const result = await this._sendWorkerMessage('execute-request', content);
     if (result.name) {
       throw result;
     }
@@ -180,14 +179,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async completeRequest(
     content: KernelMessage.ICompleteRequestMsg['content']
   ): Promise<KernelMessage.ICompleteReplyMsg['content']> {
-    // TODO
-    return {
-      matches: [],
-      cursor_start: 0,
-      cursor_end: 0,
-      metadata: {},
-      status: 'ok'
-    };
+    return await this._sendWorkerMessage('complete-request', content);
   }
 
   /**
@@ -243,21 +235,13 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   /**
    * Send a message to the web worker
    *
-   * @param msg The message to send to the worker.
+   * @param type The message type to send to the worker.
+   * @param data The message to send to the worker.
    */
-  private async _sendWorkerMessage(msg: any): Promise<any> {
+  private async _sendWorkerMessage(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
-    this._worker.postMessage(msg);
+    this._worker.postMessage({ type, data });
     return await this._executeDelegate.promise;
-  }
-
-  /**
-   * Send code to be executed in the web worker
-   *
-   * @param code The code to execute.
-   */
-  private async _eval(code: string): Promise<any> {
-    return this._sendWorkerMessage({ code });
   }
 
   private _executeDelegate = new PromiseDelegate<any>();
