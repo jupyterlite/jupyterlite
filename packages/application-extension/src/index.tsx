@@ -265,7 +265,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
               file.type === 'notebook' || file.mimetype.indexOf('json') !== -1
                 ? JSON.stringify(file.content, null, 2)
                 : file.content;
-            downloadContent(formatted, item.path);
+            downloadContent(formatted, item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
