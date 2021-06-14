@@ -212,6 +212,25 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Send a `comm` message to the client.
+   *
+   * @param .
+   */
+  protected sendComm(type: string, content: any, metadata: any, buffers: any): void {
+    const message = KernelMessage.createMessage<any>({
+      channel: 'iopub',
+      msgType: type,
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content,
+      metadata,
+      buffers
+    });
+    this._sendMessage(message);
+  }
+
+  /**
    * Send an 'idle' status message.
    *
    * @param parent The parent message

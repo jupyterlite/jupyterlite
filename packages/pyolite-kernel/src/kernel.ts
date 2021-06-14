@@ -8,6 +8,9 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
+import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
+import nbformat from '../py/nbformat/dist/nbformat-4.2.0-py3-none-any.whl';
+import ipykernel from '../py/ipykernel/dist/ipykernel-5.5.5-py3-none-any.whl';
 import pyolite from '../py/pyolite/dist/pyolite-0.1.0-py3-none-any.whl';
 
 /**
@@ -22,14 +25,31 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   constructor(options: PyoliteKernel.IOptions) {
     super(options);
     const { pyodideUrl } = options;
+
+    const widgetsnbextensionWheel = (widgetsnbextension as unknown) as string;
+    const widgetsnbextensionWheelUrl = URLExt.join(
+      window.location.origin,
+      widgetsnbextensionWheel
+    );
+
+    const nbformatWheel = (nbformat as unknown) as string;
+    const nbformatWheelUrl = URLExt.join(window.location.origin, nbformatWheel);
+
+    const ipykernelWheel = (ipykernel as unknown) as string;
+    const ipykernelWheelUrl = URLExt.join(window.location.origin, ipykernelWheel);
+
     const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
     const pyoliteWheelUrl = URLExt.join(window.location.origin, pyoliteWheel);
+
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
     const blob = new Blob([
       [
         `importScripts("${pyodideUrl}");`,
         `var indexURL = "${indexUrl}";`,
-        `var _pyoliteWheelUrl = '${pyoliteWheelUrl}'`,
+        `var _widgetsnbextensionWheelUrl = '${widgetsnbextensionWheelUrl}';`,
+        `var _nbformatWheelUrl = '${nbformatWheelUrl}';`,
+        `var _ipykernelWheelUrl = '${ipykernelWheelUrl}';`,
+        `var _pyoliteWheelUrl = '${pyoliteWheelUrl}';`,
         worker
       ].join('\n')
     ]);
@@ -109,6 +129,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'display': {
         const bundle = msg.bundle ?? { data: {}, metadata: {} };
         this.displayData(bundle);
+        break;
+      }
+      case 'comm_msg':
+      case 'comm_open':
+      case 'comm_close': {
+        this.sendComm(msg.type, msg.content, msg.metadata, msg.buffers);
         break;
       }
       default:

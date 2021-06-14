@@ -64,9 +64,12 @@
     "access": "public"
   },
   "pyolite": {
-    "packages": [
-      "py/pyolite"
-    ]
+    "packages": {
+      "py/pyolite": "0.1.0",
+      "py/ipykernel": "5.5.5",
+      "py/nbformat": "4.2.0",
+      "py/widgetsnbextension": "3.5.0"
+    }
   },
   "styleModule": "style/index.js"
 }

@@ -17,11 +17,22 @@ async function loadPyodideAndPackages() {
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install('${_pyoliteWheelUrl}')
+    # Doing it in two times is important, otherwise ipywidgets doesn't pick our mocks
+    await micropip.install([
+      'traitlets',
+      '${_widgetsnbextensionWheelUrl}',
+      '${_nbformatWheelUrl}',
+      '${_ipykernelWheelUrl}'
+    ])
+    await micropip.install([
+      'ipywidgets',
+      '${_pyoliteWheelUrl}'
+    ]);
     import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
   interpreter = kernel.interpreter;
+  interpreter.send_comm = sendComm;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
 }
@@ -51,13 +62,37 @@ function formatResult(res: any): any {
   // TODO: this is a bit brittle
   const m = res.toJs();
   const results = mapToObject(m);
-  console.log('results', results);
   return results;
 }
 
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 const pyodideReadyPromise = loadPyodideAndPackages();
+
+/**
+ * Send a comm message to the front-end.
+ *
+ * @param type The type of the comm message.
+ * @param content The content.
+ * @param metadata The metadata.
+ * @param ident The ident.
+ * @param buffers The binary buffers.
+ */
+async function sendComm(
+  type: string,
+  content: any,
+  metadata: any,
+  ident: any,
+  buffers: any
+) {
+  postMessage({
+    type: type,
+    content: formatResult(content),
+    metadata: formatResult(metadata),
+    ident: formatResult(ident),
+    buffers: formatResult(buffers)
+  });
+}
 
 /**
  * Execute code with the interpreter.

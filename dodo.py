@@ -148,9 +148,9 @@ def task_build():
 
     wheels = []
 
-    for py_pkg in P.PYOLITE_PACKAGES:
+    for py_pkg, version in P.PYOLITE_PACKAGES.items():
         name = py_pkg.name
-        wheel = py_pkg / f"dist/{name}-0.1.0-py3-none-any.whl"
+        wheel = py_pkg / f"dist/{name}-{version}-py3-none-any.whl"
         wheels += [wheel]
         yield dict(
             name=f"py:{name}",
@@ -359,7 +359,7 @@ class P:
     ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
     # set later
-    PYOLITE_PACKAGES = []
+    PYOLITE_PACKAGES = {}
 
     APP = ROOT / "app"
     APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
@@ -418,11 +418,11 @@ class D:
     ]
 
 
-P.PYOLITE_PACKAGES = [
-    P.PACKAGES / pkg / pyp
+P.PYOLITE_PACKAGES = {
+    P.PACKAGES / pkg / pyp: pyp_version
     for pkg, pkg_data in D.PACKAGE_JSONS.items()
-    for pyp in pkg_data.get("pyolite", {}).get("packages", [])
-]
+    for pyp, pyp_version in pkg_data.get("pyolite", {}).get("packages", {}).items()
+}
 
 
 def _clean_paths(*paths_or_globs):
@@ -462,7 +462,7 @@ class L:
     ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
         P.DODO,
-        *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES], []),
+        *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES.keys()], []),
     )
 
 
