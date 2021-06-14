@@ -27,6 +27,7 @@ const disabled = [
   '@jupyterlab/application-extension:tree-resolver',
   '@jupyterlab/apputils-extension:resolver',
   '@jupyterlab/docmanager-extension:download',
+  '@jupyterlab/filebrowser-extension:download',
   '@jupyterlab/help-extension:about'
 ];
 

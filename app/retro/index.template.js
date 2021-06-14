@@ -108,7 +108,6 @@ async function main() {
         require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
           [
             '@jupyterlab/filebrowser-extension:browser',
-            '@jupyterlab/filebrowser-extension:download',
             '@jupyterlab/filebrowser-extension:factory',
             '@jupyterlab/filebrowser-extension:file-upload-status',
             '@jupyterlab/filebrowser-extension:open-with',

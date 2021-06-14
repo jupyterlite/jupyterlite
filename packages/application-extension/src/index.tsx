@@ -19,11 +19,19 @@ import {
   ProviderMock
 } from '@jupyterlab/docprovider';
 
+import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+
 import { IMainMenu } from '@jupyterlab/mainmenu';
+
+import { Contents } from '@jupyterlab/services';
 
 import { ITranslator, TranslationManager } from '@jupyterlab/translation';
 
+import { downloadIcon } from '@jupyterlab/ui-components';
+
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
+
+import { toArray } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
 
@@ -57,7 +65,9 @@ class WebSocketProvider extends WebsocketProvider implements IDocumentProvider {
 namespace CommandIDs {
   export const about = 'application:about';
 
-  export const download = 'docmanager:download';
+  export const docmanagerDownload = 'docmanager:download';
+
+  export const filebrowserDownload = 'filebrowser:download';
 }
 
 /**
@@ -177,56 +187,92 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:download',
   autoStart: true,
   requires: [ITranslator, IDocumentManager],
-  optional: [ICommandPalette, IMainMenu],
+  optional: [ICommandPalette, IFileBrowserFactory, IMainMenu],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
+    factory: IFileBrowserFactory | null,
     mainMenu: IMainMenu | null
   ) => {
     const trans = translator.load('jupyterlab');
-    const { commands, shell } = app;
+    const { commands, contextMenu, serviceManager, shell } = app;
     const isEnabled = () => {
       const { currentWidget } = shell;
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
     };
-    commands.addCommand(CommandIDs.download, {
+
+    const downloadContent = (content: string, path: string) => {
+      const element = document.createElement('a');
+      element.href = `data:text/json;charset=utf-8,${encodeURIComponent(content)}`;
+      element.download = path;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    };
+
+    commands.addCommand(CommandIDs.docmanagerDownload, {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
       isEnabled,
       execute: () => {
         // Checks that shell.currentWidget is valid:
         const current = shell.currentWidget;
-        if (isEnabled() && current) {
-          const context = docManager.contextForWidget(current);
-          if (!context) {
-            return showDialog({
-              title: trans.__('Cannot Download'),
-              body: trans.__('No context found for current widget!'),
-              buttons: [Dialog.okButton({ label: trans.__('OK') })]
-            });
-          }
-          const element = document.createElement('a');
-          element.href = `data:text/json;charset=utf-8,${encodeURIComponent(
-            context.model.toString()
-          )}`;
-          element.download = context.path;
-          document.body.appendChild(element);
-          element.click();
-          document.body.removeChild(element);
+        if (!isEnabled() || !current) {
+          return;
         }
+        const context = docManager.contextForWidget(current);
+        if (!context) {
+          return showDialog({
+            title: trans.__('Cannot Download'),
+            body: trans.__('No context found for current widget!'),
+            buttons: [Dialog.okButton({ label: trans.__('OK') })]
+          });
+        }
+        downloadContent(context.model.toString(), context.path);
       }
     });
 
     const category = trans.__('File Operations');
 
     if (palette) {
-      palette.addItem({ command: CommandIDs.download, category });
+      palette.addItem({ command: CommandIDs.docmanagerDownload, category });
     }
 
     if (mainMenu) {
-      mainMenu.fileMenu.addGroup([{ command: CommandIDs.download }], 6);
+      mainMenu.fileMenu.addGroup([{ command: CommandIDs.docmanagerDownload }], 6);
+    }
+
+    if (factory) {
+      const { tracker } = factory;
+      const { contents } = serviceManager;
+
+      commands.addCommand(CommandIDs.filebrowserDownload, {
+        execute: async () => {
+          const widget = tracker.currentWidget;
+
+          if (!widget) {
+            return;
+          }
+          const selected = toArray(widget.selectedItems());
+          selected.forEach(async (item: Contents.IModel) => {
+            if (item.type === 'directory') {
+              return;
+            }
+            const file = await contents.get(item.path);
+            downloadContent(file.content, item.path);
+          });
+        },
+        icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
+        label: trans.__('Download')
+      });
+
+      contextMenu.addItem({
+        command: CommandIDs.filebrowserDownload,
+        selector: '.jp-DirListing-item[data-isdir="false"]',
+        rank: 9
+      });
     }
   }
 };
