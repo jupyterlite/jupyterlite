@@ -9,10 +9,16 @@ INDEX_HTML = "index.html"
 # $PREFIX/share/jupyter/lab/
 OVERRIDES_JSON = "overrides.json"
 
+# the generally-used listing of pip requirements
+REQUIREMENTS_TXT = "requirements.txt"
+
 # output equivalent to `sha256sum *` for providing a local bill-of-data
 SHA256SUMS = "SHA256SUMS"
 
 ### jupyterlite "well-known" paths
+
+# similar to `.binder`, this signals a minimum build environment with predictable names
+JUPYTERLITE_PATH = ".jupyter-lite"
 
 # our schema
 JUPYTERLITE_SCHEMA = "jupyterlite.schema.v0.json"

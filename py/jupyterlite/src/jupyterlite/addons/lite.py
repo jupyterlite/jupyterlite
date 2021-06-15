@@ -5,17 +5,23 @@ from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA
 
 
 class LiteAddon(BaseAddon):
-    __all__ = ["build", "check"]
+    __all__ = ["build", "check", "status"]
+
+    def status(self, manager):
+        yield dict(
+            name=JUPYTERLITE_JSON,
+            actions=[
+                lambda: print(
+                    f"""    {JUPYTERLITE_JSON}: {len(self.lite_jsons)} files"""
+                )
+            ],
+        )
 
     def build(self, manager):
         lite_dir = manager.lite_dir
         output_dir = manager.output_dir
 
-        lite_jsons = [
-            p
-            for p in lite_dir.rglob(JUPYTERLITE_JSON)
-            if not str(p).startswith(str(output_dir))
-        ]
+        lite_jsons = self.lite_jsons
         for jupyterlite_json in lite_jsons:
             rel = jupyterlite_json.relative_to(lite_dir)
             dest = output_dir / rel
@@ -38,6 +44,14 @@ class LiteAddon(BaseAddon):
                 file_dep=[schema, lite_json],
                 actions=[(self.validate_one_json_file, [validator, lite_json])],
             )
+
+    @property
+    def lite_jsons(self):
+        return [
+            p
+            for p in self.manager.lite_dir.rglob(JUPYTERLITE_JSON)
+            if not str(p).startswith(str(self.manager.output_dir))
+        ]
 
     def merge_one_jupyterlite(self, out_path, in_paths):
         config = {}

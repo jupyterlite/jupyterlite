@@ -8,7 +8,7 @@ from .manager import LiteManager
 
 
 class BaseApp(JupyterApp):
-    """An undescribed app"""
+    """TODO: An undescribed app"""
 
     version = __version__
 
@@ -29,6 +29,14 @@ class ManagedApp(BaseApp):
 
     def start(self):
         self.lite_manager.initialize()
+
+
+class StatusApp(ManagedApp):
+    """report about what a JupyterLite build _might_ do"""
+
+    def start(self):
+        super().start()
+        self.lite_manager.status()
 
 
 class ListApp(ManagedApp):
@@ -69,6 +77,7 @@ class LiteApp(BaseApp):
     name = "lite"
 
     subcommands = dict(
+        status=(StatusApp, ListApp.__doc__.splitlines()[0]),
         list=(ListApp, ListApp.__doc__.splitlines()[0]),
         init=(InitApp, InitApp.__doc__.splitlines()[0]),
         build=(BuildApp, BuildApp.__doc__.splitlines()[0]),

@@ -13,12 +13,12 @@ from .constants import ADDON_ENTRYPOINT, OUTPUT_DIR
 
 strict = True
 
-HOOKS = ["init", "build", "check", "publish"]
+HOOKS = ["status", "init", "build", "check", "publish"]
 PHASE = ["pre_", "", "post_"]
 
 
 class LiteManager(LoggingConfigurable):
-    """a manager for building jupyterlite"""
+    """a manager for building jupyterlite sites"""
 
     addons = Dict(
         help=(
@@ -66,8 +66,7 @@ class LiteManager(LoggingConfigurable):
             for phase in PHASE:
                 attr = f"{phase}{hook}"
                 self._tasks[f"task_{attr}"] = self._gather_tasks(attr, prev_attr)
-                prev_attr = attr  # todo: something with this
-        self.log.debug(f"[lite] tasks {self._tasks}")
+                prev_attr = attr
 
     def doit_run(self, cmd, *args):
         loader = doit.cmd_base.ModuleTaskLoader(self._tasks)
@@ -112,6 +111,12 @@ class LiteManager(LoggingConfigurable):
     def _default_config(self):
         return {}
 
+    def list(self):
+        self.doit_run("list", "--all", "--status")
+
+    def status(self):
+        self.doit_run("post_status")
+
     def init(self):
         self.doit_run("post_init")
 
@@ -123,9 +128,6 @@ class LiteManager(LoggingConfigurable):
 
     def publish(self):
         self.doit_run("post_publish")
-
-    def list(self):
-        self.doit_run("list", "--all", "--status")
 
     def _gather_tasks(self, attr, prev_attr):
         # early up-front doit stuff

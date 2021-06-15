@@ -27,7 +27,19 @@ class StaticAddon(BaseAddon):
         ),
     ).tag(config=True)
 
-    __all__ = ["pre_init", "init"]
+    __all__ = ["pre_init", "init", "pre_status"]
+
+    def pre_status(self, manager):
+        yield dict(
+            name=JUPYTERLITE_JSON,
+            actions=[
+                lambda: print(
+                    f"""    tarball:  {self.lite_tarball.name} {int(self.lite_tarball.stat().st_size / (1024 * 1024))}MB"""
+                ),
+                lambda: print(f"""    output:   {self.manager.output_dir}"""),
+                lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
+            ],
+        )
 
     def pre_init(self, manager):
         """well before anything else, we need to ensure that the output_dir exists

@@ -6,7 +6,13 @@ from ..constants import ALL_JSON, API_CONTENTS
 
 
 class ContentsAddon(BaseAddon):
-    __all__ = ["build", "post_build", "check"]
+    __all__ = ["build", "post_build", "check", "status"]
+
+    def status(self, manager):
+        yield dict(
+            name="contents",
+            actions=[lambda: print(f"""    contents: {len(self.files)} files""")],
+        )
 
     def build(self, manager):
         for src_file, dest_file in zip(self.files, self.file_targets):
