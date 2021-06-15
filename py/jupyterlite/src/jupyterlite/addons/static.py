@@ -15,7 +15,7 @@ ROOT = Path(__file__).parent.parent
 LITE_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
 
 
-class JupyterLabAddon(BaseAddon):
+class StaticAddon(BaseAddon):
 
     lite_tarball = Instance(
         Path,

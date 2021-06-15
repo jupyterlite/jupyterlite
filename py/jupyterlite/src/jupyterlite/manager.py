@@ -77,6 +77,7 @@ class LiteManager(LoggingConfigurable):
                 GLOBAL={
                     "dep_file": ".jupyterlite.doit.db",
                     "backend": "sqlite3",
+                    "verbosity": 2,
                 }
             ),
         ).run([cmd, *args])

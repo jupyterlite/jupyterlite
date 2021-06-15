@@ -7,6 +7,9 @@ ADDON_ENTRYPOINT = "jupyterlite.addon.v0"
 # $PREFIX/share/jupyter/lab/
 OVERRIDES_JSON = "overrides.json"
 
+# output equivalent to `sha256sum *` for providing a local bill-of-data
+SHA256SUMS = "SHA256SUMS"
+
 # Needs a better canonical location
 OUTPUT_DIR = "_output"
 

@@ -1,12 +1,11 @@
-"""a jupyterlite addon for supporting federated_extensions"""
-import textwrap
+"""a jupyterlite addon for supporting extension settings"""
 import json
 
 from .base import BaseAddon
 from ..constants import OVERRIDES_JSON, JUPYTERLITE_JSON
 
 
-class OverridesAddon(BaseAddon):
+class SettingsAddon(BaseAddon):
     """sync the as-installed `overrides.json` and update `jupyter-lite.json`"""
 
     __all__ = ["pre_build", "post_build"]

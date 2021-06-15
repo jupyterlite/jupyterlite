@@ -7,7 +7,7 @@ from ..constants import ALL_JSON, API_CONTENTS
 
 
 class ContentsAddon(BaseAddon):
-    __all__ = ["pre_build"]
+    __all__ = ["pre_build", "post_build"]
 
     def pre_build(self, manager):
         for src_file, dest_file in zip(self.files, self.file_targets):
@@ -21,14 +21,17 @@ class ContentsAddon(BaseAddon):
             )
 
     def post_build(self, manager):
-        for output_file_dir in sorted(set({p.parent for p in self.output_files})):
+        output_file_dirs = [
+            d for d in self.output_files_dir.rglob("*") if d.is_dir()
+        ] + [self.output_files_dir]
+        for output_file_dir in output_file_dirs:
             stem = output_file_dir.relative_to(self.output_files_dir)
             api_path = self.manager.output_dir / API_CONTENTS / stem / ALL_JSON
 
             yield dict(
                 name=f"contents:{stem}",
                 doc=f"create a Jupyter Contents API response for {stem}",
-                action=[(self.one_contents_path, [output_file_dir, api_path])],
+                actions=[(self.one_contents_path, [output_file_dir, api_path])],
                 file_dep=[p for p in output_file_dir.rglob("*") if not p.is_dir()],
                 targets=[api_path],
             )
