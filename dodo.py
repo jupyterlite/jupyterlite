@@ -3,13 +3,13 @@ import os
 import re
 import shutil
 import subprocess
-from pathlib import Path
-import jsonschema
 import sys
 import textwrap
+from collections import defaultdict
+from pathlib import Path
 
 import doit
-from collections import defaultdict
+import jsonschema
 
 
 def task_env():
@@ -74,7 +74,10 @@ def task_lint():
         name="black",
         doc="format python files with black",
         file_dep=L.ALL_BLACK,
-        actions=[U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK)],
+        actions=[
+            U.do("isort", *L.ALL_BLACK),
+            U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
+        ],
     )
 
 

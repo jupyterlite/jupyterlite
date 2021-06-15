@@ -1,19 +1,19 @@
 """Manager for JupyterLite
 """
-from traitlets.config import LoggingConfigurable
-import entrypoints
-from pathlib import Path
 import os
-import doit
+from pathlib import Path
 
-from traitlets import Dict, default, Instance, Tuple, Bool
+import doit
+import entrypoints
+from traitlets import Bool, Dict, Instance, Tuple, default
+from traitlets.config import LoggingConfigurable
 
 from .constants import (
     ADDON_ENTRYPOINT,
-    DEFAULT_OUTPUT_DIR,
     DEFAULT_APP_ARCHIVE,
-    HOOKS,
+    DEFAULT_OUTPUT_DIR,
     HOOK_PARENTS,
+    HOOKS,
     JUPYTERLITE_JSON,
     PHASES,
 )

@@ -1,8 +1,8 @@
 """a jupyterlite addon for generating hashes"""
 from hashlib import sha256
 
-from .base import BaseAddon
 from ..constants import SHA256SUMS
+from .base import BaseAddon
 
 
 class ReportAddon(BaseAddon):

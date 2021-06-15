@@ -1,7 +1,7 @@
 from pathlib import Path
-from traitlets import Instance, default, Unicode, Tuple
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
+from traitlets import Instance, Tuple, Unicode, default
 
 from . import __version__
 from .manager import LiteManager

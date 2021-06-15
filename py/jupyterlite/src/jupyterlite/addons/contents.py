@@ -1,8 +1,8 @@
 """a jupyterlite addon for jupyter contents"""
-import pprint
-import json
-import re
 import datetime
+import json
+import pprint
+import re
 from pathlib import Path
 
 from ..constants import ALL_JSON, API_CONTENTS

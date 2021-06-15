@@ -3,6 +3,7 @@
 __version__ = "0.1.0"
 
 import sys
+
 from .patches import ensure_matplotlib_patch
 
 # Set the recursion limit, needed for altair
@@ -13,6 +14,7 @@ sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 ensure_matplotlib_patch()
 
 import pyolite
+
 from .kernel import Pyolite
 
 # TODO: until we have a proper display module

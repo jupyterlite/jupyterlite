@@ -9,6 +9,12 @@
 - `--lite-dir` (default: working directory) configuration and content for the site
 - `--output-dir` (default: `_output`) where the hostable site will be created
 - `--app-archive` (default: bundled) an alternate site to base off of
+- `--files` (default: `files`) directory to copy to `_output/files/` and available as
+  _Contents_
+- `--ignore-files` (default: [`untitled*`, `.ipynb_checkpoints`, `.git`]) patterns that
+  should _never_ be included in `/files/` (even if found in `lite-dir`).
+
+> the default
 
 ### Status
 
@@ -35,7 +41,7 @@ This will perform the minimum build of the site skeleton into `--output-dir` (de
 jupyter lite list
 ```
 
-See a detailed listing of all of the currently-known tasks.
+See a detailed listing of all currently-known tasks.
 
 ### Build
 
@@ -43,7 +49,8 @@ See a detailed listing of all of the currently-known tasks.
 jupyter lite build
 ```
 
-Do the full build.
+Do the full build. By default, no content will be included in the site. `--files` can be
+given multiple times to include.
 
 ### Check
 

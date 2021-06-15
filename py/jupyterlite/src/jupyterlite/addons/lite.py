@@ -1,7 +1,7 @@
 """a jupyterlite addon for jupyterlite-specific tasks"""
 
-from .base import BaseAddon
 from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA
+from .base import BaseAddon
 
 
 class LiteAddon(BaseAddon):

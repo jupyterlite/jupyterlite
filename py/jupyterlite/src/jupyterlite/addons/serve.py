@@ -1,10 +1,11 @@
 """a jupyterlite addon for serving"""
 import sys
-from traitlets import Bool, default, Int
-import doit
 
-from .base import BaseAddon
+import doit
+from traitlets import Bool, Int, default
+
 from ..constants import ALL_JSON, API_CONTENTS
+from .base import BaseAddon
 
 
 class ServeAddon(BaseAddon):
@@ -56,7 +57,7 @@ class ServeAddon(BaseAddon):
         yield task
 
     def _serve_tornado(self):
-        from tornado import web, ioloop
+        from tornado import ioloop, web
 
         class Handler(web.StaticFileHandler):
             def parse_url_path(self, url_path):

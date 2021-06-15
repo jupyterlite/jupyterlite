@@ -1,15 +1,15 @@
 """a jupyterlite addon for jupyterlab core"""
-from pathlib import Path
+import os
+import shutil
 import tarfile
 import tempfile
-import shutil
-import os
-import doit
+from pathlib import Path
 
+import doit
 from traitlets import Instance, default
 
-from .base import BaseAddon
 from ..constants import JUPYTERLITE_JSON
+from .base import BaseAddon
 
 
 class StaticAddon(BaseAddon):

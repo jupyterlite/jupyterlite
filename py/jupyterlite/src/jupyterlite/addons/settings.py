@@ -1,8 +1,8 @@
 """a jupyterlite addon for supporting extension settings"""
 import json
 
+from ..constants import JUPYTERLITE_JSON, OVERRIDES_JSON
 from .base import BaseAddon
-from ..constants import OVERRIDES_JSON, JUPYTERLITE_JSON
 
 
 class SettingsAddon(BaseAddon):

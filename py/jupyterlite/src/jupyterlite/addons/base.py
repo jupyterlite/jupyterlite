@@ -1,9 +1,9 @@
-import shutil
 import json
-import jsonschema
+import shutil
 
-from traitlets.config import LoggingConfigurable
+import jsonschema
 from traitlets import Instance
+from traitlets.config import LoggingConfigurable
 
 from ..manager import LiteManager
 

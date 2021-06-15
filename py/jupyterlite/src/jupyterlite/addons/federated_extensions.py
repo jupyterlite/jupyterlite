@@ -1,10 +1,9 @@
 """a jupyterlite addon for supporting federated_extensions"""
-from pathlib import Path
-import sys
 import json
+import sys
+from pathlib import Path
 
 from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS
-
 from .base import BaseAddon
 
 # TODO: improve this

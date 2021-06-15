@@ -1,14 +1,14 @@
 """documentation for jupyterlite"""
-import os
-import json
 import datetime
+import json
+import os
 import re
 import shutil
 import subprocess
-from jupyter_server.services.contents.filemanager import FileContentsManager
 from pathlib import Path
-from sphinx.application import Sphinx
 
+from jupyter_server.services.contents.filemanager import FileContentsManager
+from sphinx.application import Sphinx
 
 HERE = Path(__file__).parent
 ROOT = HERE.parent
