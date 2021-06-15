@@ -289,8 +289,9 @@ def task_docs():
     )
 
     yield dict(
-        name="site",
+        name="app",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
+        task_dep=["dev:py:jupyterlite"],
         actions=[U.docs_app],
         file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
         targets=[B.DOCS_APP_SHA256SUMS],
