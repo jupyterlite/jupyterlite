@@ -3,20 +3,50 @@
 from traitlets.config import LoggingConfigurable
 import entrypoints
 from pathlib import Path
+import shutil
 import os
+import doit
 
-from traitlets import Dict, default, Instance
+from traitlets import Dict, default, Instance, Tuple
 
 from .constants import ADDON_ENTRYPOINT, OUTPUT_DIR
+
+strict = True
+
+HOOKS = ["init", "build", "check", "publish"]
+PHASE = ["pre_", "", "post_"]
 
 
 class LiteManager(LoggingConfigurable):
     """a manager for building jupyterlite"""
 
-    addons = Dict()
+    addons = Dict(
+        help=(
+            """addons that yield iterables of doit tasks at different lifecycle stages
+
+        These are advertised with the `__all__` member, which may include
+        `init`, `build`, `check`, `publish` (to be executed in order)
+        and each may include `pre_` and `post_` modifiers.
+
+        Each method then is an iterable of doit tasks, of the form:
+
+        dict(
+            file_dep=["a-file", Path("another-file")],
+            task_dep=["a:full:task:name"],
+            targets=["an-output-file"],
+            actions=[["things", "to", "do"]]
+        )
+
+        The top-level tasks have `create_after` configured.
+        """
+        )
+    )
     lite_dir = Instance(Path, help=("""The root folder of a JupyterLite project"""))
     output_dir = Instance(Path, help=("""Where to build the JupyterLite site"""))
     config = Dict()
+    apps = Tuple(("lab", "retro")).tag(config=True)
+
+    _tasks = None
 
     @property
     def log(self):
@@ -26,6 +56,30 @@ class LiteManager(LoggingConfigurable):
         # TODO: finish initialization
         self.log.debug("[lite] loading addons ...")
         self.log.debug(f"[lite] OK loaded {len(self.addons)} addon")
+        self.initialize_tasks()
+
+    def initialize_tasks(self):
+        self._tasks = {}
+        prev_attr = None
+
+        for hook in HOOKS:
+            for phase in PHASE:
+                attr = f"{phase}{hook}"
+                self._tasks[f"task_{attr}"] = self._gather_tasks(attr, prev_attr)
+                prev_attr = attr  # todo: something with this
+        self.log.debug(f"[lite] tasks {self._tasks}")
+
+    def doit_run(self, cmd, *args):
+        loader = doit.cmd_base.ModuleTaskLoader(
+            {
+                **self._tasks,
+                "DOIT_CONFIG": {
+                    "db_file": ".doit.jupyterlite.db",
+                    "backend": "sqlite3",
+                },
+            }
+        )
+        doit.doit_cmd.DoitMain(task_loader=loader).run([cmd, *args])
 
     @default("addons")
     def _default_addons(self):
@@ -57,40 +111,55 @@ class LiteManager(LoggingConfigurable):
     def _default_config(self):
         return {}
 
-    async def _run_addon_hook(self, hook):
-        self.log.debug(f"[lite] [{hook}] ...")
-        for stage in ["pre_", "", "post_"]:
-            attr = f"{stage}{hook}"
-            self.log.debug(f"[lite] [{hook}] [{stage}] ...")
+    def init(self):
+        self.doit_run("post_init")
+
+    def build(self):
+        self.doit_run("post_build")
+
+    def check(self):
+        self.doit_run("post_check")
+
+    def publish(self):
+        self.doit_run("post_publish")
+
+    def _gather_tasks(self, attr, prev_attr):
+        # early up-front doit stuff
+        def _gather():
             for name, addon in self.addons.items():
-                self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] []...")
                 if attr in addon.__all__:
                     try:
-                        self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] [RUN] ...")
-                        await getattr(addon, attr)(self)
+                        for task in getattr(addon, attr)(self):
+                            patched_task = {**task}
+                            patched_task["name"] = f"""{name}:{task["name"]}"""
+                            yield patched_task
                     except Exception as err:
-                        self.log.error(
-                            f"[lite] [{hook}] [{stage}] [{name}] [ERR] {err}"
-                        )
-                else:
-                    self.log.debug(f"[lite] [{hook}] [{stage}] [{name}] NO")
+                        self.log.error(f"[lite] [{attr}] [{name}] [ERR] {err}")
+                        if strict:
+                            raise err
 
-            self.log.debug(f"[lite] [{hook}] [{stage}] OK")
-        self.log.debug(f"[lite] [{hook}] OK")
+        if not prev_attr:
+            return _gather
 
-    async def init(self):
-        self.log.debug("[lite] [init] ...")
-        await self._run_addon_hook("init")
-        self.log.debug("[lite] [init] OK")
+        @doit.create_after(prev_attr)
+        def _delayed_gather():
+            for task in _gather():
+                yield task
 
-    async def validate(self):
-        await self._run_addon_hook("validate")
+        return _delayed_gather
 
-    async def build(self):
-        await self._run_addon_hook("build")
+    # common utilities for addons
+    def copy_one(self, src, dest):
+        """copy one Path (a file or folder)"""
+        if not dest.parent.exists():
+            dest.mkdir(parents=True)
 
-    async def check(self):
-        await self._run_addon_hook("check")
+        if dest.is_dir():
+            shutil.rmtree(dest)
+        elif dest.exists():
+            dest.unlink()
 
-    async def publish(self):
-        await self._run_addon_hook("publish")
+        if src.is_dir():
+            shutil.copytree(src, dest)
+        else:
+            shutil.copy2(src, dest)

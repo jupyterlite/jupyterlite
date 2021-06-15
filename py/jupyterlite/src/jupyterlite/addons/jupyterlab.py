@@ -4,20 +4,18 @@ import tarfile
 import tempfile
 import shutil
 import os
-from tornado.concurrent import run_on_executor
-from concurrent.futures import ThreadPoolExecutor
+import doit
+
 from traitlets import Instance, default
 
-from . import BaseAddon
-
-MAX_WORKERS = 4
+from .base import BaseAddon
+from ..constants import JUPYTERLITE_JSON
 
 ROOT = Path(__file__).parent.parent
 LITE_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
 
 
 class JupyterLabAddon(BaseAddon):
-    executor = ThreadPoolExecutor(max_workers=MAX_WORKERS)
 
     lite_tarball = Instance(
         Path,
@@ -30,14 +28,38 @@ class JupyterLabAddon(BaseAddon):
 
     __all__ = ["pre_init", "init"]
 
+    def pre_init(self, manager):
+        """well before anything else, we need to ensure that the output_dir exists
+        and is empty (if the baseline tarball has changed)
+        """
+        output_dir = manager.output_dir
+
+        yield dict(
+            name="output_dir",
+            doc="clean out the lite directory",
+            file_dep=[self.lite_tarball],
+            actions=[
+                lambda: [output_dir.exists() and shutil.rmtree(output_dir), None][-1],
+                (doit.tools.create_folder, [output_dir]),
+            ],
+        )
+
+    def init(self, manager):
+        """unpack and copy the tarball files into the output_dir"""
+        yield dict(
+            name="unpack",
+            actions=[(self._unpack, [])],
+            file_dep=[self.lite_tarball],
+            targets=[manager.output_dir / JUPYTERLITE_JSON],
+        )
+
     @default("lite_tarball")
     def _default_lite_tarball(self):
         tarball = os.environ.get("JUPYTERLITE_APP_TARBALL") or LITE_TARBALL
         self.log.debug(f"[lite] [jupyterlab] Tarball {tarball}")
         return Path(tarball)
 
-    @run_on_executor
-    def unpack(self):
+    def _unpack(self):
         output_dir = self.manager.output_dir
 
         with tempfile.TemporaryDirectory() as td:
@@ -56,13 +78,3 @@ class JupyterLabAddon(BaseAddon):
                             shutil.copy2(child, dest)
                     except Exception as err:
                         self.log.error(f"ERR copying {child} to {dest}: {err}")
-
-    async def pre_init(self, manager):
-        if manager.output_dir.exists():
-            shutil.rmtree(manager.output_dir)
-        manager.output_dir.mkdir(parents=True)
-
-    async def init(self, manager):
-        """copy the files into the directory"""
-        unpacked = await self.unpack()
-        manager.log.debug(f"UNPACKED: {unpacked}")

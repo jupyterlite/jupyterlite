@@ -1,13 +1,15 @@
 """a jupyterlite addon for supporting federated_extensions"""
+from json import encoder
 from pathlib import Path
+from re import M
 import sys
 import shutil
 import textwrap
 import json
 
-from ..constants import JUPYTERLITE_JSON
+from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS
 
-from . import BaseAddon
+from .base import BaseAddon
 
 # TODO: improve this
 ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
@@ -16,58 +18,80 @@ ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 class FederatedExtensionAddon(BaseAddon):
     """sync the as-installed federated_extensions and update `jupyter-lite.json`"""
 
-    __all__ = ["pre_build"]
+    __all__ = ["pre_build", "post_build"]
 
-    async def pre_build(self, manager):
-        PATCHED_STATIC = manager.output_dir
-        CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
-
-        if CACHED_LAB_EXTENSIONS.exists():
-            self.log.debug(f"... Cleaning {CACHED_LAB_EXTENSIONS}...")
-            shutil.rmtree(CACHED_LAB_EXTENSIONS)
-
-        self.log.debug(f"... Copying {ENV_EXTENSIONS} to {CACHED_LAB_EXTENSIONS}...")
-        shutil.copytree(ENV_EXTENSIONS, CACHED_LAB_EXTENSIONS)
-
-        extensions = []
-
-        all_package_json = [
-            *CACHED_LAB_EXTENSIONS.glob("*/package.json"),
-            *CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
+    @property
+    def env_extensions(self):
+        return [
+            *ENV_EXTENSIONS.glob("*/package.json"),
+            *ENV_EXTENSIONS.glob("@*/*/package.json"),
         ]
 
-        # we might find themes, and need to put them in both apps
-        app_themes = [
-            PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "retro"]
-        ]
+    @property
+    def output_env_extensions_dir(self):
+        return self.manager.output_dir / LAB_EXTENSIONS
 
-        for pkg_json in all_package_json:
-            self.log.debug(
-                f"... adding {pkg_json.parent.relative_to(CACHED_LAB_EXTENSIONS)}..."
+    @property
+    def output_env_extensions(self):
+        for p in self.env_extensions:
+            stem = p.relative_to(ENV_EXTENSIONS)
+            yield self.output_env_extensions_dir / stem
+
+    def pre_build(self, manager):
+        """yield a doit task for each federated extension (and/or theme per app)"""
+
+        for pkg_json in self.env_extensions:
+            pkg = pkg_json.parent
+            dest = self.output_env_extensions_dir / pkg.relative_to(ENV_EXTENSIONS)
+            file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
+            targets = [dest / p.relative_to(pkg) for p in file_dep]
+            yield dict(
+                name=f"extension:copy:{dest}",
+                file_dep=file_dep,
+                targets=targets,
+                actions=[(manager.copy_one, [pkg, dest])],
             )
+
+        for app in self.manager.apps:
+            app_themes = manager.output_dir / app / "build/themes"
+            for theme_dir in pkg.parent.glob("themes/*"):
+                pkg = theme_dir.parent.relative_to(ENV_EXTENSIONS)
+                file_dep = [p for p in theme_dir.rglob("*") if not p.is_dir()]
+                targets = [
+                    app_themes / pkg / p.relative_to(theme_dir) for p in file_dep
+                ]
+                yield dict(
+                    name=f"theme:{app}:copy:{pkg}",
+                    file_dep=file_dep,
+                    targets=targets,
+                    actions=[manager.copy_one, [theme_dir, app_themes / pkg]],
+                )
+
+    def post_build(self, manager):
+        """yields a single task to update the root jupyter-lite.json"""
+        jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
+
+        yield dict(
+            name="patch",
+            doc=f"ensure {JUPYTERLITE_JSON} includes the federated_extensions",
+            file_dep=[*self.env_extensions, jupyterlite_json],
+            actions=[(self.patch_jupyterlite_json, [jupyterlite_json])],
+        )
+
+    def patch_jupyterlite_json(self, jupyterlite_json):
+        """add the federated_extensions to jupyter-lite.json"""
+        config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
+
+        extensions = config["jupyter-config-data"].get("federated_extensions", [])
+
+        for pkg_json in self.env_extensions:
             pkg_data = json.loads(pkg_json.read_text(encoding="utf-8"))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
-            for app_theme in app_themes:
-                for theme in pkg_json.parent.glob("themes/*"):
-                    self.log.debug(
-                        f"... copying theme {theme.relative_to(CACHED_LAB_EXTENSIONS)}"
-                    )
 
-                    if not app_theme.exists():
-                        app_theme.mkdir(parents=True, exist_ok=True)
-                    self.log.debug(f"... ... to {app_theme}")
-                    shutil.copytree(theme, app_theme / theme.name)
-
-        APP_JUPYTERLITE_JSON = manager.output_dir / JUPYTERLITE_JSON
-        PATCHED_JUPYTERLITE_JSON = APP_JUPYTERLITE_JSON
-        self.log.debug(f"... Patching {APP_JUPYTERLITE_JSON}...")
-        config = json.loads(APP_JUPYTERLITE_JSON.read_text(encoding="utf-8"))
-        self.log.debug(f"... ... {len(extensions)} federated extensions...")
-        config["jupyter-config-data"]["federated_extensions"] = extensions
-
-        self.log.debug(f"... writing {PATCHED_JUPYTERLITE_JSON}")
-        PATCHED_JUPYTERLITE_JSON.write_text(
-            textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
+        config["jupyter-config-data"]["federated_extensions"] = sorted(
+            extensions, key=lambda ext: ext["name"]
         )
+
+        jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))

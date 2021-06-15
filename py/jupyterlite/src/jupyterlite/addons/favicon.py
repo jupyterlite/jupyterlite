@@ -1,2 +1,6 @@
-"""a jupyterlite addon for jupyterlab core"""
-"""a jupyterlite addon for customizing favicons"""
+"""a jupyterlite addon for customizing favicons
+
+TODO:
+  - this should do some best-effort image conversions.
+  - may also impact `serviceworker.py`
+"""
