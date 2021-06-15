@@ -2,12 +2,11 @@
 from .base import BaseAddon
 import json
 import datetime
-import shutil
 from ..constants import ALL_JSON, API_CONTENTS
 
 
 class ContentsAddon(BaseAddon):
-    __all__ = ["pre_build", "post_build"]
+    __all__ = ["pre_build", "post_build", "check"]
 
     def pre_build(self, manager):
         for src_file, dest_file in zip(self.files, self.file_targets):
@@ -17,7 +16,7 @@ class ContentsAddon(BaseAddon):
                 doc=f"copy {stem} to be distributed as files",
                 file_dep=[src_file],
                 targets=[dest_file],
-                actions=[(manager.copy_one, [src_file, dest_file])],
+                actions=[(self.copy_one, [src_file, dest_file])],
             )
 
     def post_build(self, manager):
@@ -26,7 +25,7 @@ class ContentsAddon(BaseAddon):
         ] + [self.output_files_dir]
         for output_file_dir in output_file_dirs:
             stem = output_file_dir.relative_to(self.output_files_dir)
-            api_path = self.manager.output_dir / API_CONTENTS / stem / ALL_JSON
+            api_path = self.api_dir / stem / ALL_JSON
 
             yield dict(
                 name=f"contents:{stem}",
@@ -35,6 +34,20 @@ class ContentsAddon(BaseAddon):
                 file_dep=[p for p in output_file_dir.rglob("*") if not p.is_dir()],
                 targets=[api_path],
             )
+
+    def check(self, manager):
+        for all_json in self.api_dir.rglob(ALL_JSON):
+            stem = all_json.relative_to(self.api_dir)
+            yield dict(
+                name=f"validate:{stem}",
+                doc=f"(eventually) validate {stem} with the Jupyter Contents API",
+                file_dep=[all_json],
+                actions=[(self.validate_one_json_file, [None, all_json])],
+            )
+
+    @property
+    def api_dir(self):
+        return self.manager.output_dir / API_CONTENTS
 
     @property
     def files_dir(self):

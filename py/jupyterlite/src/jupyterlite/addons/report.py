@@ -5,13 +5,18 @@ from .base import BaseAddon
 from ..constants import SHA256SUMS
 
 
-class HashAddon(BaseAddon):
-    """update hashes based on the site contents"""
+class ReportAddon(BaseAddon):
+    """update static listings of the site contents in various formats
+
+    having these in various formats down the line can be handy for various publishing
+    tasks
+    """
 
     __all__ = ["post_build"]
 
     def post_build(self, manager):
         sha256sums = manager.output_dir / SHA256SUMS
+
         file_dep = [
             p
             for p in manager.output_dir.rglob("*")

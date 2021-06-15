@@ -31,6 +31,14 @@ class ManagedApp(BaseApp):
         self.lite_manager.initialize()
 
 
+class ListApp(ManagedApp):
+    """describe a JupyterLite folder"""
+
+    def start(self):
+        super().start()
+        self.lite_manager.list()
+
+
 class InitApp(ManagedApp):
     """initialize a JupyterLite folder"""
 
@@ -61,6 +69,7 @@ class LiteApp(BaseApp):
     name = "lite"
 
     subcommands = dict(
+        list=(ListApp, ListApp.__doc__.splitlines()[0]),
         init=(InitApp, InitApp.__doc__.splitlines()[0]),
         build=(BuildApp, BuildApp.__doc__.splitlines()[0]),
         check=(CheckApp, CheckApp.__doc__.splitlines()[0]),

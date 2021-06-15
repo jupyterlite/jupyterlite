@@ -32,6 +32,7 @@ nbconvert = [
 [tool.flit.entrypoints."jupyterlite.addon.v0"]
 contents = "jupyterlite.addons.contents:ContentsAddon"
 federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
-hash = "jupyterlite.addons.hash:HashAddon"
+report = "jupyterlite.addons.report:ReportAddon"
 settings = "jupyterlite.addons.settings:SettingsAddon"
 static = "jupyterlite.addons.static:StaticAddon"
+lite = "jupyterlite.addons.lite:LiteAddon"

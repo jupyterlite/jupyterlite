@@ -16,6 +16,7 @@ LITE_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
 
 
 class StaticAddon(BaseAddon):
+    """Copy the core "gold master" artifacts into the output folder"""
 
     lite_tarball = Instance(
         Path,
@@ -48,6 +49,7 @@ class StaticAddon(BaseAddon):
         """unpack and copy the tarball files into the output_dir"""
         yield dict(
             name="unpack",
+            doc=f"unpack a 'gold master' JupyterLite from {self.lite_tarball.name}",
             actions=[(self._unpack, [])],
             file_dep=[self.lite_tarball],
             targets=[manager.output_dir / JUPYTERLITE_JSON],

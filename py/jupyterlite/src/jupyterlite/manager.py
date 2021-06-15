@@ -124,6 +124,9 @@ class LiteManager(LoggingConfigurable):
     def publish(self):
         self.doit_run("post_publish")
 
+    def list(self):
+        self.doit_run("list", "--all", "--status")
+
     def _gather_tasks(self, attr, prev_attr):
         # early up-front doit stuff
         def _gather():
@@ -148,19 +151,3 @@ class LiteManager(LoggingConfigurable):
                 yield task
 
         return _delayed_gather
-
-    # common utilities for addons
-    def copy_one(self, src, dest):
-        """copy one Path (a file or folder)"""
-        if not dest.parent.exists():
-            dest.mkdir(parents=True)
-
-        if dest.is_dir():
-            shutil.rmtree(dest)
-        elif dest.exists():
-            dest.unlink()
-
-        if src.is_dir():
-            shutil.copytree(src, dest)
-        else:
-            shutil.copy2(src, dest)

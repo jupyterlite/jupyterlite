@@ -1,10 +1,6 @@
 """a jupyterlite addon for supporting federated_extensions"""
-from json import encoder
 from pathlib import Path
-from re import M
 import sys
-import shutil
-import textwrap
 import json
 
 from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS
@@ -42,14 +38,15 @@ class FederatedExtensionAddon(BaseAddon):
 
         for pkg_json in self.env_extensions:
             pkg = pkg_json.parent
-            dest = self.output_env_extensions_dir / pkg.relative_to(ENV_EXTENSIONS)
+            stem = pkg.relative_to(ENV_EXTENSIONS)
+            dest = self.output_env_extensions_dir / stem
             file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
             targets = [dest / p.relative_to(pkg) for p in file_dep]
             yield dict(
-                name=f"extension:copy:{dest}",
+                name=f"lab:copy:ext:{stem}",
                 file_dep=file_dep,
                 targets=targets,
-                actions=[(manager.copy_one, [pkg, dest])],
+                actions=[(self.copy_one, [pkg, dest])],
             )
 
         for app in self.manager.apps:
@@ -61,10 +58,11 @@ class FederatedExtensionAddon(BaseAddon):
                     app_themes / pkg / p.relative_to(theme_dir) for p in file_dep
                 ]
                 yield dict(
-                    name=f"theme:{app}:copy:{pkg}",
+                    name=f"{app}:copy:theme:{pkg}",
+                    doc=f"copy theme asset to {app} for {pkg}",
                     file_dep=file_dep,
                     targets=targets,
-                    actions=[manager.copy_one, [theme_dir, app_themes / pkg]],
+                    actions=[self.copy_one, [theme_dir, app_themes / pkg]],
                 )
 
     def post_build(self, manager):

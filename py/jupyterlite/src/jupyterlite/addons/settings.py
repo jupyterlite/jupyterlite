@@ -22,7 +22,7 @@ class SettingsAddon(BaseAddon):
                 name=f"copy:{app}/",
                 file_dep=[overrides_json],
                 targets=[dest],
-                actions=[(manager.copy_one, [overrides_json, dest])],
+                actions=[(self.copy_one, [overrides_json, dest])],
             )
 
     def post_build(self, manager):
