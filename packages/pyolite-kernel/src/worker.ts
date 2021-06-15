@@ -59,6 +59,11 @@ function formatResult(res: any): any {
 // @ts-ignore: breaks typedoc
 const pyodideReadyPromise = loadPyodideAndPackages();
 
+/**
+ * Execute code with the interpreter.
+ *
+ * @param content The incoming message with the code to execute.
+ */
 async function execute(content: any) {
   const stdoutCallback = (stdout: string): void => {
     postMessage({
@@ -123,7 +128,12 @@ async function execute(content: any) {
   }
 }
 
-async function complete(content: any) {
+/**
+ * Complete the code submitted by a user.
+ *
+ * @param content The incoming message with the code to complete.
+ */
+function complete(content: any) {
   const res = interpreter.complete(content.code.substring(0, content.cursor_pos));
   const results = formatResult(res);
 
@@ -141,6 +151,11 @@ async function complete(content: any) {
   postMessage(reply);
 }
 
+/**
+ * Process a message sent to the worker.
+ *
+ * @param event The message event to process
+ */
 self.onmessage = async (event: MessageEvent): Promise<void> => {
   await pyodideReadyPromise;
   const data = event.data;
