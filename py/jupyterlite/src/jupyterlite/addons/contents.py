@@ -120,7 +120,8 @@ class ContentsAddon(BaseAddon):
             from jupyter_server.services.contents.filemanager import FileContentsManager
         except ImportError as err:
             self.log.warning(
-                "[lite] [contents] `jupyter_server` was not importable, cannot index contents"
+                f"[lite] [contents] `jupyter_server` was not importable, "
+                f"cannot index contents {err}"
             )
             return
 

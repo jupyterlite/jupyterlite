@@ -10,6 +10,7 @@ from .display import Image, display
 
 def ensure_matplotlib_patch():
     _old_show = matplotlib.pyplot.show
+    assert _old_show
 
     def show():
         buf = BytesIO()

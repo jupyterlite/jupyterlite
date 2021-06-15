@@ -76,7 +76,7 @@ class LiteManager(LoggingConfigurable):
         # TODO: finish initialization
         self.log.debug("[lite] [addon] loading ...")
         self.log.debug(f"[lite] [addon] ... OK {len(self.addons)} addons")
-        self.log.debug(f"[lite] [tasks] loading ...")
+        self.log.debug("[lite] [tasks] loading ...")
         self.log.debug(f"[lite] [tasks] ... OK {len(self._doit_tasks)} tasks")
 
     def doit_run(self, cmd, *args):

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from jupyter_core.application import JupyterApp, base_aliases, base_flags
+from jupyter_core.application import JupyterApp, base_aliases
 from traitlets import Instance, Tuple, Unicode, default
 
 from . import __version__

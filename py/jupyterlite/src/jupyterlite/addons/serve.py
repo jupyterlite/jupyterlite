@@ -4,7 +4,6 @@ import sys
 import doit
 from traitlets import Bool, Int, default
 
-from ..constants import ALL_JSON, API_CONTENTS
 from .base import BaseAddon
 
 
@@ -17,10 +16,10 @@ class ServeAddon(BaseAddon):
     @default("has_tornado")
     def _default_has_tornado(self):
         try:
-            import tornado
+            __import__("tornado")
 
             return True
-        except ImportError:
+        except (ImportError, AttributeError):
             return False
 
     def status(self, manager):

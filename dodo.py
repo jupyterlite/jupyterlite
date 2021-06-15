@@ -80,6 +80,14 @@ def task_lint():
         ],
     )
 
+    yield U.ok(
+        B.OK_PYFLAKES,
+        name="pyflakes",
+        doc="ensure python code style with pyflakes",
+        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
+        actions=[U.do("pyflakes", *L.ALL_BLACK)],
+    )
+
 
 def task_build():
     """build code and intermediate packages"""
@@ -560,10 +568,11 @@ class B:
     ]
 
     OK = BUILD / "ok"
-    OK_PRETTIER = OK / "prettier"
-    OK_ESLINT = OK / "eslint"
     OK_BLACK = OK / "black"
+    OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
+    OK_PRETTIER = OK / "prettier"
+    OK_PYFLAKES = OK / "pyflakes"
 
 
 class U:

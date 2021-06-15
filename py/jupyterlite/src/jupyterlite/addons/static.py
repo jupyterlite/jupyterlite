@@ -1,5 +1,4 @@
 """a jupyterlite addon for jupyterlab core"""
-import os
 import shutil
 import tarfile
 import tempfile
