@@ -44,3 +44,10 @@ ALL_JSON = "all.json"
 # the Jupyter API route for Contents API
 API_CONTENTS = "api/contents"
 LAB_EXTENSIONS = "lab/extensions"
+
+# our doit task-based plugin system
+HOOKS = ["status", "init", "build", "check", "publish", "serve"]
+HOOK_PARENTS = dict(
+    build="post_init", check="post_build", publish="post_build", serve="post_build"
+)
+PHASES = ["pre_", "", "post_"]

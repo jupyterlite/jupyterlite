@@ -11,8 +11,8 @@ from ..constants import ALL_JSON, API_CONTENTS
 class ServeAddon(BaseAddon):
     __all__ = ["status", "serve"]
 
-    has_tornado = Bool()
-    port = Int(8000)
+    has_tornado: bool = Bool()
+    port: int = Int(8000)
 
     @default("has_tornado")
     def _default_has_tornado(self):
@@ -61,8 +61,22 @@ class ServeAddon(BaseAddon):
                     url_path = url_path + "index.html"
                 return url_path
 
-        app = web.Application(
-            [("/(.*)", Handler, {"path": str(self.manager.output_dir)})], debug=True
+        path = str(self.manager.output_dir)
+        routes = [("/(.*)", Handler, {"path": path})]
+        app = web.Application(routes, debug=True)
+        self.log.warning(
+            f"""
+
+        Serving JupyterLite from:
+            {path}
+        on:
+            http://localhost:{self.port}/
+
+        *** Press Ctrl+C to exit **
+        """
         )
         app.listen(self.port)
-        ioloop.IOLoop.instance().start()
+        try:
+            ioloop.IOLoop.instance().start()
+        except KeyboardInterrupt:
+            self.log.warning(f"""Stopping http://localhost:{self.port}...""")
