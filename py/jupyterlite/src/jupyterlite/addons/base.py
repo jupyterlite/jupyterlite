@@ -22,13 +22,14 @@ class BaseAddon(LoggingConfigurable):
 
     def copy_one(self, src, dest):
         """copy one Path (a file or folder)"""
-        if not dest.parent.exists():
-            dest.mkdir(parents=True)
-
         if dest.is_dir():
             shutil.rmtree(dest)
         elif dest.exists():
             dest.unlink()
+
+        if not dest.parent.exists():
+            self.log.debug(f"creating folder {dest.parent}")
+            dest.parent.mkdir(parents=True)
 
         if src.is_dir():
             shutil.copytree(src, dest)

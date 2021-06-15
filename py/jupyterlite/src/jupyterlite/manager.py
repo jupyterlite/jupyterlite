@@ -43,11 +43,9 @@ class LiteManager(LoggingConfigurable):
         """
         )
     )
-    lite_dir: Path = Instance(
-        Path, help=("""The root folder of a JupyterLite project""")
-    )
-    app_archive: Path = Instance(Path, help=("""The app archive to use."""))
-    output_dir: Path = Instance(Path, help=("""Where to build the JupyterLite site"""))
+    lite_dir: Path = Instance(Path)
+    app_archive: Path = Instance(Path)
+    output_dir: Path = Instance(Path)
     config = Dict()
     apps = Tuple(
         ("lab", "retro"),

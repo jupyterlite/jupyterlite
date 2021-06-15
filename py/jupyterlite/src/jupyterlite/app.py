@@ -1,5 +1,5 @@
 from pathlib import Path
-from traitlets import Instance, default, Unicode
+from traitlets import Instance, default, Unicode, Tuple
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
 
@@ -19,25 +19,46 @@ class BaseApp(JupyterApp):
 
 class ManagedApp(BaseApp):
     lite_manager = Instance(LiteManager)
-    lite_dir = Unicode().tag(config=True)
-    app_archive = Unicode(allow_none=True).tag(config=True)
+    lite_dir = Unicode(
+        allow_none=True, help=("""The root folder of a JupyterLite project""")
+    ).tag(config=True)
+    app_archive = Unicode(allow_none=True, help=("""The app archive to use.""")).tag(
+        config=True
+    )
+    output_dir = Unicode(
+        allow_none=True, help=("""Where to build the JupyterLite site""")
+    ).tag(config=True)
+    files = Tuple(allow_none=True).tag(config=True)
+    ignore_files = Tuple(
+        allow_none=True, help="Path patterns that should never be included"
+    ).tag(config=True)
     aliases = dict(
         **base_aliases,
         **{
             "lite-dir": "ManagedApp.lite_dir",
             "app-archive": "ManagedApp.app_archive",
+            "files": "ManagedApp.files",
+            "ignore-files": "ManagedApp.ignore_files",
         }
     )
 
     @default("lite_manager")
     def _default_manager(self):
-        kwargs = {}
-        if self.app_archive:
-            kwargs.update(app_archive=Path(self.app_archive))
-
-        return LiteManager(
-            parent=self, lite_dir=Path(self.lite_dir).resolve(), **kwargs
+        kwargs = dict(
+            parent=self,
         )
+        if self.lite_dir:
+            kwargs["lite_dir"] = Path(self.lite_dir).resolve()
+        if self.app_archive:
+            kwargs["app_archive"] = Path(self.app_archive)
+        if self.output_dir:
+            kwargs["output_dir"] = Path(self.output_dir)
+        if self.files:
+            kwargs["files"] = [Path(p) for p in self.files]
+        if self.ignore_files:
+            kwargs["ignore_files"] = self.ignore_files
+
+        return LiteManager(**kwargs)
 
     def start(self):
         self.lite_manager.initialize()

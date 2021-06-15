@@ -22,7 +22,8 @@ class ContentsAddon(BaseAddon):
 
     def build(self, manager):
         """perform the main user build of pre-populating `/files/`"""
-        for src_file, dest_file in self.file_src_dest:
+        files = sorted(self.file_src_dest)
+        for src_file, dest_file in files:
             stem = dest_file.relative_to(self.output_files_dir)
             yield dict(
                 name=f"copy:/files/{stem}",
@@ -73,8 +74,13 @@ class ContentsAddon(BaseAddon):
     def file_src_dest(self):
         for mgr_file in self.manager.files:
             path = Path(mgr_file)
+            if path.is_dir():
+                parent = path.resolve()
+            else:
+                parent = path.parent.resolve()
             for from_path in self.maybe_add_one_file(path):
-                to_path = self.output_files_dir / from_path.relative_to(path)
+                stem = from_path.relative_to(parent)
+                to_path = self.output_files_dir / stem
                 yield from_path, to_path
 
     def maybe_add_one_file(self, path):
@@ -89,7 +95,7 @@ class ContentsAddon(BaseAddon):
                 for from_child in self.maybe_add_one_file(child):
                     yield from_child
         else:
-            yield path
+            yield path.resolve()
 
     def one_contents_path(self, output_file_dir, api_path):
         """A lazy reuse of a `jupyter_server` Contents API generator
