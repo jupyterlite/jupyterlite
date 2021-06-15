@@ -9,6 +9,8 @@ dependencies:
   # build stuff
   - black
   - flit >=3.1
+  - isort
+  - pyflakes
   # demo stuff
   - jupyter-server-proxy
   - jupyterlab >=3.1.0a11,<4

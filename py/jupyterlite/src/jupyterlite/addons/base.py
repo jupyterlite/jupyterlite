@@ -11,7 +11,7 @@ from ..manager import LiteManager
 class BaseAddon(LoggingConfigurable):
     """A base class for addons to the JupyterLite build chain
 
-    Subclassing this is optional, but provides some useful guidelines
+    Subclassing this is optional, but provides some useful utilities
     """
 
     manager: LiteManager = Instance(LiteManager)

@@ -1,8 +1,12 @@
+"""a jupyterlite addon for jupyterlite-specific tasks"""
+
 from .base import BaseAddon
 from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA
 
 
 class LiteAddon(BaseAddon):
+    """ensure jupyterlite files have been merged, and validate them"""
+
     __all__ = ["build", "check", "status"]
 
     def status(self, manager):
@@ -16,6 +20,7 @@ class LiteAddon(BaseAddon):
         )
 
     def build(self, manager):
+        """merge jupyter-lite.json into the output_dir"""
         lite_dir = manager.lite_dir
         output_dir = manager.output_dir
 
@@ -32,6 +37,7 @@ class LiteAddon(BaseAddon):
             )
 
     def check(self, manager):
+        """apply schema validation to all `jupyter-lite.json` in the `output_dir`"""
         schema = manager.output_dir / JUPYTERLITE_SCHEMA
         validator = self.get_validator(schema)
 
@@ -45,6 +51,7 @@ class LiteAddon(BaseAddon):
 
     @property
     def lite_jsons(self):
+        """all the source `jupyter-lite.json` files"""
         return [
             p
             for p in self.manager.lite_dir.rglob(JUPYTERLITE_JSON)

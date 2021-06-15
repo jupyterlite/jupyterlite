@@ -18,6 +18,7 @@ class FederatedExtensionAddon(BaseAddon):
 
     @property
     def env_extensions(self):
+        """a list of all federated extensions"""
         return [
             *ENV_EXTENSIONS.glob("*/package.json"),
             *ENV_EXTENSIONS.glob("@*/*/package.json"),
@@ -25,10 +26,12 @@ class FederatedExtensionAddon(BaseAddon):
 
     @property
     def output_env_extensions_dir(self):
+        """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
 
     @property
     def output_env_extensions(self):
+        """all the output labextensions"""
         for p in self.env_extensions:
             stem = p.relative_to(ENV_EXTENSIONS)
             yield self.output_env_extensions_dir / stem
