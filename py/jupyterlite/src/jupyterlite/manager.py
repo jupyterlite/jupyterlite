@@ -70,16 +70,16 @@ class LiteManager(LoggingConfigurable):
         self.log.debug(f"[lite] tasks {self._tasks}")
 
     def doit_run(self, cmd, *args):
-        loader = doit.cmd_base.ModuleTaskLoader(
-            {
-                **self._tasks,
-                "DOIT_CONFIG": {
-                    "db_file": ".doit.jupyterlite.db",
+        loader = doit.cmd_base.ModuleTaskLoader(self._tasks)
+        doit.doit_cmd.DoitMain(
+            task_loader=loader,
+            extra_config=dict(
+                GLOBAL={
+                    "dep_file": ".jupyterlite.doit.db",
                     "backend": "sqlite3",
-                },
-            }
-        )
-        doit.doit_cmd.DoitMain(task_loader=loader).run([cmd, *args])
+                }
+            ),
+        ).run([cmd, *args])
 
     @default("addons")
     def _default_addons(self):
