@@ -46,3 +46,29 @@ class BaseAddon(LoggingConfigurable):
     def get_validator(self, schema_path, klass=jsonschema.Draft7Validator):
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         return klass(schema)
+
+    def merge_one_jupyterlite(self, out_path, in_paths):
+        """write the out_path with all of the in_paths, where all are valid
+        jupyter-lite.json files.
+
+        TODO: notebooks
+        """
+        config = {}
+
+        for in_path in in_paths:
+            in_config = json.loads(in_path.read_text(encoding="utf-8"))
+
+            for k, v in in_config.items():
+                if k in ["disabledExtensions", "federated_extensions"]:
+                    config[k] = [*config.get("k", []), *v]
+                elif k in ["settingsOverrides"]:
+                    config[k] = config.get(k, {})
+                    for pkg, pkg_config in v.items():
+                        config[k][pkg] = config[k].get(pkg, {})
+                        config[k][pkg].update(pkg_config)
+                else:
+                    config[k] = v
+
+        out_path.write_text(
+            json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
+        )

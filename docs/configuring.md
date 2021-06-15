@@ -1,5 +1,58 @@
 # Configuring
 
+## The JupyterLite CLI
+
+> TBD: \_Install with `pip`, `mamba`, or `conda`
+
+### Common Parameters
+
+- `--lite-dir` (default: working directory) configuration and content for the site
+- `--output-dir` (default: `_output`) where the hostable site will be created
+- `--app-archive` (default: bundled) an alternate site to base off of
+
+### Status
+
+You can see what kind of JupyterLite site is currently build-able:
+
+```bash
+jupyter lite status
+```
+
+### Init
+
+```bash
+jupyter lite init
+```
+
+This will perform the minimum build of the site skeleton into `--output-dir` (default:
+`_output`). Optionally, specify a custom app tarball, such as is built during
+[development](./contributing.md), with `--app-archive` or by setting
+`$JUPYTERLITE_APP_ARCHIVE`.
+
+### List
+
+```bash
+jupyter lite list
+```
+
+See a detailed listing of all of the currently-known tasks.
+
+### Build
+
+```bash
+jupyter lite build
+```
+
+Do the full build.
+
+### Check
+
+```bash
+jupyter lite check
+```
+
+Perform checks about the validity of the site, including JSON schema conformance, etc.
+
 ## Configuration Files
 
 The configuration of your JupyterLite can be controlled by creating specially-named
