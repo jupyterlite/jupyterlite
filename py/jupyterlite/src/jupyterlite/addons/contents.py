@@ -1,14 +1,17 @@
 """a jupyterlite addon for jupyter contents"""
-from .base import BaseAddon
-from pathlib import Path
 import pprint
 import json
 import re
 import datetime
+from pathlib import Path
+
 from ..constants import ALL_JSON, API_CONTENTS
+from .base import BaseAddon
 
 
 class ContentsAddon(BaseAddon):
+    """Adds contents from the `lite_dir` to the `output_dir` creates API output"""
+
     __all__ = ["build", "post_build", "check", "status"]
 
     def status(self, manager):
