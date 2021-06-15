@@ -4,7 +4,6 @@ import re
 import shutil
 import subprocess
 import sys
-import textwrap
 from collections import defaultdict
 from pathlib import Path
 
@@ -290,11 +289,11 @@ def task_docs():
     )
 
     yield dict(
-        name="extensions",
-        doc="cache extensions from share/jupyter/labextensions",
-        actions=[U.extend_docs],
-        file_dep=[P.APP_JUPYTERLITE_JSON, P.DOCS_OVERRIDES],
-        targets=[B.PATCHED_JUPYTERLITE_JSON],
+        name="site",
+        doc="use the jupyterlite CLI to (pre-)build the docs app",
+        actions=[U.docs_app],
+        file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
+        targets=[B.DOCS_APP_SHA256SUMS],
     )
 
     yield dict(
@@ -305,7 +304,7 @@ def task_docs():
             *P.DOCS_MD,
             *P.DOCS_PY,
             B.APP_PACK,
-            B.PATCHED_JUPYTERLITE_JSON,
+            B.DOCS_APP_SHA256SUMS,
         ],
         actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
@@ -420,6 +419,9 @@ class P:
     YARN_LOCK = ROOT / "yarn.lock"
 
     ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
+
+    EXAMPLES = ROOT / "examples"
+    ALL_EXAMPLES = [p for p in EXAMPLES.rglob("*") if p.is_dir()]
 
     # set later
     PYOLITE_PACKAGES = []
@@ -549,12 +551,10 @@ class B:
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
+    DOCS_STATIC = DOCS / "_static"
+    DOCS_APP = BUILD / "docs-app"
+    DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
-    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
-
-    PATCHED_STATIC = BUILD / "env-extensions"
-    CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
-    PATCHED_JUPYTERLITE_JSON = PATCHED_STATIC / "jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -749,65 +749,10 @@ class U:
         return not errors
 
     @staticmethod
-    def extend_docs():
-        """before sphinx ensure a build directory of the lab extensions/themes and patch JSON"""
-        if B.PATCHED_STATIC.exists():
-            print(f"... Cleaning {B.PATCHED_STATIC}...")
-            shutil.rmtree(B.PATCHED_STATIC)
-
-        B.PATCHED_STATIC.mkdir(parents=True)
-
-        print(f"... Copying {P.ENV_EXTENSIONS} to {B.CACHED_LAB_EXTENSIONS}...")
-        shutil.copytree(P.ENV_EXTENSIONS, B.CACHED_LAB_EXTENSIONS)
-
-        extensions = []
-        all_package_json = [
-            *B.CACHED_LAB_EXTENSIONS.glob("*/package.json"),
-            *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
-        ]
-        # we might find themes
-        app_themes = [
-            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "retro"]
-        ]
-
-        for pkg_json in all_package_json:
-            print(
-                f"... adding {pkg_json.parent.relative_to(B.CACHED_LAB_EXTENSIONS)}..."
-            )
-            pkg_data = json.loads(pkg_json.read_text(**C.ENC))
-            extensions += [
-                dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
-            ]
-            for app_theme in app_themes:
-                for theme in pkg_json.parent.glob("themes/*"):
-                    print(
-                        f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}"
-                    )
-
-                    if not app_theme.exists():
-                        app_theme.mkdir(parents=True)
-                    print(f"... ... to {app_theme}")
-                    shutil.copytree(theme, app_theme / theme.name)
-
-        print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
-        config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
-        print(f"... ... {len(extensions)} federated extensions...")
-        config["jupyter-config-data"]["federated_extensions"] = extensions
-
-        # add settings from `overrides.json`
-        overrides = json.loads(P.DOCS_OVERRIDES.read_text(**C.ENC))
-        print(f"... ... {len(overrides.keys())} settings overrides")
-        config["jupyter-config-data"]["settingsOverrides"] = overrides
-
-        # disable some extensions
-        config["jupyter-config-data"].setdefault("disabledExtensions", []).extend(
-            C.DOCS_DISABLED_EXT
-        )
-
-        print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
-        B.PATCHED_JUPYTERLITE_JSON.write_text(
-            textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
-        )
+    def docs_app():
+        """before sphinx ensure a custom build of JupyterLite"""
+        args = ["jupyter", "lite", "build", "--files", ".", "--output-dir", B.DOCS_APP]
+        subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
 
 # environment overloads

@@ -126,7 +126,7 @@ app/lab/extensions
 
 *.log
 
-.doit*
+*.doit*
 
 # generated
 docs/api/ts

@@ -36,6 +36,7 @@ class ManagedApp(BaseApp):
         **base_aliases,
         **{
             "lite-dir": "ManagedApp.lite_dir",
+            "output-dir": "ManagedApp.output_dir",
             "app-archive": "ManagedApp.app_archive",
             "files": "ManagedApp.files",
             "ignore-files": "ManagedApp.ignore_files",

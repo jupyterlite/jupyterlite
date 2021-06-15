@@ -259,7 +259,7 @@ The following generated configuration powers the Demo, and is generated prior to
 building the docs site, copied in during the build, and fetched by browsers from
 `/_static/jupyter-lite.json`.
 
-```{include} ../build/env-extensions/jupyter-lite.json
+```{include} ../build/docs-app/jupyter-lite.json
 
 ```
 
