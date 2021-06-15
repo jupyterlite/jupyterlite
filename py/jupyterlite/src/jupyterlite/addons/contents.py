@@ -1,6 +1,8 @@
 """a jupyterlite addon for jupyter contents"""
 from .base import BaseAddon
+from pathlib import Path
 import json
+import re
 import datetime
 from ..constants import ALL_JSON, API_CONTENTS
 
@@ -11,14 +13,19 @@ class ContentsAddon(BaseAddon):
     def status(self, manager):
         yield dict(
             name="contents",
-            actions=[lambda: print(f"""    contents: {len(self.files)} files""")],
+            actions=[
+                lambda: print(
+                    f"""    contents: {len(list(self.file_src_dest))} files"""
+                )
+            ],
         )
 
     def build(self, manager):
-        for src_file, dest_file in zip(self.files, self.file_targets):
-            stem = src_file.relative_to(self.files_dir)
+        """perform the main user build of pre-populating `/files/`"""
+        for src_file, dest_file in self.file_src_dest:
+            stem = dest_file.relative_to(self.output_files_dir)
             yield dict(
-                name=f"copy:{stem}",
+                name=f"copy:/files/{stem}",
                 doc=f"copy {stem} to be distributed as files",
                 file_dep=[src_file],
                 targets=[dest_file],
@@ -26,6 +33,8 @@ class ContentsAddon(BaseAddon):
             )
 
     def post_build(self, manager):
+        """create a Contents API index for everything in `/files/`"""
+
         output_file_dirs = [
             d for d in self.output_files_dir.rglob("*") if d.is_dir()
         ] + [self.output_files_dir]
@@ -42,6 +51,7 @@ class ContentsAddon(BaseAddon):
             )
 
     def check(self, manager):
+        """verify that all Contents API is valid (sorta)"""
         for all_json in self.api_dir.rglob(ALL_JSON):
             stem = all_json.relative_to(self.api_dir)
             yield dict(
@@ -56,21 +66,30 @@ class ContentsAddon(BaseAddon):
         return self.manager.output_dir / API_CONTENTS
 
     @property
-    def files_dir(self):
-        return self.manager.lite_dir / "files"
-
-    @property
     def output_files_dir(self):
         return self.manager.output_dir / "files"
 
     @property
-    def files(self):
-        return [p for p in self.files_dir.rglob("*") if not p.is_dir()]
+    def file_src_dest(self):
+        for mgr_file in self.manager.files:
+            path = Path(mgr_file)
+            for from_path in self.maybe_add_one_file(path):
+                to_path = self.output_files_dir / from_path.relative_to(path)
+                yield from_path, to_path
 
-    @property
-    def file_targets(self):
-        for dep in self.files:
-            yield self.output_files_dir / dep.relative_to(self.files_dir)
+    def maybe_add_one_file(self, path):
+        p_path = str(path.resolve().as_posix())
+
+        for ignore in self.manager.ignore_files:
+            if re.findall(ignore, p_path):
+                return
+
+        if path.is_dir():
+            for child in path.glob("*"):
+                for from_child in self.maybe_add_one_file(child):
+                    yield from_child
+        else:
+            yield path
 
     def one_contents_path(self, output_file_dir, api_path):
         """A lazy reuse of a `jupyter_server` Contents API generator

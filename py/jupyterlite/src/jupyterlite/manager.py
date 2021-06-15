@@ -61,6 +61,13 @@ class LiteManager(LoggingConfigurable):
         True, help=("if `True`, stop the current workflow on the first error")
     ).tag(config=True)
 
+    files = Tuple(allow_none=True, help="Paths to be included in /files/").tag(
+        config=True
+    )
+    ignore_files = Tuple(help="Path patterns that should never be included").tag(
+        config=True
+    )
+
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
 
@@ -132,6 +139,29 @@ class LiteManager(LoggingConfigurable):
     @default("lite_dir")
     def _default_lite_dir(self):
         return Path.cwd()
+
+    @default("files")
+    def _default_files(self):
+        lite_files = self.lite_dir / "files"
+
+        if lite_files.is_dir():
+            return [lite_files]
+
+        return []
+
+    @default("ignore_files")
+    def _default_ignore_files(self):
+        return [
+            ".*\.pyc" "/\.git/",
+            "/\.gitignore",
+            "/\.ipynb_checkpoints/",
+            "/build/",
+            "/lib/",
+            "/dist/",
+            "untitled.*",
+            "Untitled.*",
+            f"/{self.output_dir.name}/",
+        ]
 
     @default("app_archive")
     def _default_app_archive(self):

@@ -1,7 +1,6 @@
 """a jupyterlite addon for serving"""
 import sys
 from traitlets import Bool, default, Int
-import subprocess
 import doit
 
 from .base import BaseAddon
@@ -44,11 +43,15 @@ class ServeAddon(BaseAddon):
             task["actions"] = [(self._serve_tornado, [])]
         else:
             task["actions"] = [
+                lambda: self.log.info(
+                    "Using python's built-in http.server: "
+                    "install tornado for a snappier experience"
+                ),
                 doit.tools.Interactive(
                     [sys.executable, "-m", "http.server", "-b", "localhost"],
                     cwd=str(self.manager.output_dir),
                     shell=False,
-                )
+                ),
             ]
         yield task
 

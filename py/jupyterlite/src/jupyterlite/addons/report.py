@@ -15,19 +15,17 @@ class ReportAddon(BaseAddon):
     __all__ = ["post_build"]
 
     def post_build(self, manager):
-        sha256sums = manager.output_dir / SHA256SUMS
+        sha256sums = self.sha256sums
 
-        file_dep = [
-            p
-            for p in manager.output_dir.rglob("*")
-            if not p.is_dir() and p != sha256sums
-        ]
+        all_output_files = self.all_output_files
 
         yield dict(
             name=SHA256SUMS,
             doc="hash all of the files",
-            actions=[(self.hash_all, [sha256sums, manager.output_dir, file_dep])],
-            file_dep=file_dep,
+            actions=[
+                (self.hash_all, [sha256sums, manager.output_dir, all_output_files]),
+            ],
+            file_dep=all_output_files,
             targets=[sha256sums],
         )
 
@@ -39,3 +37,15 @@ class ReportAddon(BaseAddon):
             for p in sorted(paths)
         ]
         hashfile.write_text("\n".join(lines))
+
+    @property
+    def sha256sums(self):
+        return self.manager.output_dir / SHA256SUMS
+
+    @property
+    def all_output_files(self):
+        return [
+            p
+            for p in sorted(self.manager.output_dir.rglob("*"))
+            if not p.is_dir() and p != self.sha256sums
+        ]
