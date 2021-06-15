@@ -228,7 +228,7 @@ def task_build():
                 lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
                 *actions,
             ]
-            file_dep += [B.APP_PACK]
+            file_dep += [B.APP_PACK, pyproj_toml]
             targets += [dest]
 
         if pyproj_toml.exists():

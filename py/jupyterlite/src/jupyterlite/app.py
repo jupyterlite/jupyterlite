@@ -83,6 +83,14 @@ class CheckApp(ManagedApp):
         self.lite_manager.check()
 
 
+class ServeApp(ManagedApp):
+    """verify a JupyterLite folder"""
+
+    def start(self):
+        super().start()
+        self.lite_manager.serve()
+
+
 class LiteApp(BaseApp):
     """build ready-to-serve JupyterLite sites"""
 
@@ -94,6 +102,7 @@ class LiteApp(BaseApp):
         init=(InitApp, InitApp.__doc__.splitlines()[0]),
         build=(BuildApp, BuildApp.__doc__.splitlines()[0]),
         check=(CheckApp, CheckApp.__doc__.splitlines()[0]),
+        serve=(ServeApp, ServeApp.__doc__.splitlines()[0]),
     )
 
 

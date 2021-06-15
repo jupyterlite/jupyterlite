@@ -69,6 +69,8 @@ class LiteManager(LoggingConfigurable):
                 self._tasks[f"task_{attr}"] = self._gather_tasks(attr, prev_attr)
                 prev_attr = attr
 
+        self._tasks["task_serve"] = self._gather_tasks("serve", "post_build")
+
     def doit_run(self, cmd, *args):
         loader = doit.cmd_base.ModuleTaskLoader(self._tasks)
         doit.doit_cmd.DoitMain(
@@ -134,6 +136,9 @@ class LiteManager(LoggingConfigurable):
 
     def publish(self):
         self.doit_run("post_publish")
+
+    def serve(self):
+        self.doit_run("serve")
 
     def _gather_tasks(self, attr, prev_attr):
         # early up-front doit stuff
