@@ -189,6 +189,7 @@ def task_build():
         doc="build the JupyterLite distribution",
         file_dep=[
             *all_app_wheels,
+            P.APP_SCHEMA,
             *P.APP.glob("*/*/index.html"),
             *P.APP.glob("*/build/bundle.js"),
             B.META_BUILDINFO,
@@ -218,6 +219,7 @@ def task_build():
         pyproj_toml = py_pkg / "pyproject.toml"
 
         actions = [U.do(*args, cwd=py_pkg)]
+        targets = [wheel, sdist]
 
         if py_name == "jupyterlite":
             dest = py_pkg / "src" / py_name / B.APP_PACK.name
@@ -226,6 +228,8 @@ def task_build():
                 lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
                 *actions,
             ]
+            file_dep += [B.APP_PACK]
+            targets += [dest]
 
         if pyproj_toml.exists():
             args = ["python", "-m", "flit", "build"]
@@ -236,7 +240,7 @@ def task_build():
             doc=f"build the {py_name} python package",
             file_dep=file_dep,
             actions=actions,
-            targets=[wheel, sdist],
+            targets=targets,
         )
 
 

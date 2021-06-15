@@ -28,12 +28,14 @@ class LiteAddon(BaseAddon):
             )
 
     def check(self, manager):
-        validator = self.get_validator(manager.output_dir / JUPYTERLITE_SCHEMA)
+        schema = manager.output_dir / JUPYTERLITE_SCHEMA
+        validator = self.get_validator(schema)
 
         for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
             stem = lite_json.relative_to(manager.output_dir)
             yield dict(
                 name=f"validate:{stem}",
+                file_dep=[schema, lite_json],
                 actions=[(self.validate_one_json_file, [validator, lite_json])],
             )
 
