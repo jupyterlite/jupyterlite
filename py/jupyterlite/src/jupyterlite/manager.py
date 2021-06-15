@@ -14,6 +14,7 @@ from .constants import (
     DEFAULT_APP_ARCHIVE,
     HOOKS,
     HOOK_PARENTS,
+    JUPYTERLITE_JSON,
     PHASES,
 )
 
@@ -62,9 +63,7 @@ class LiteManager(LoggingConfigurable):
     files = Tuple(allow_none=True, help="Paths to be included in /files/").tag(
         config=True
     )
-    ignore_files = Tuple(help="Path patterns that should never be included").tag(
-        config=True
-    )
+    ignore_files = Tuple().tag(config=True)
 
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
@@ -156,6 +155,12 @@ class LiteManager(LoggingConfigurable):
             "/build/",
             "/lib/",
             "/dist/",
+            ".*doit.db",
+            "/node_modules/",
+            "/envs/",
+            "/venvs/",
+            "/\.env",
+            JUPYTERLITE_JSON.replace(".", "\\."),
             "untitled.*",
             "Untitled.*",
             f"/{self.output_dir.name}/",

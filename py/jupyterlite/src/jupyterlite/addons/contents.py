@@ -1,6 +1,7 @@
 """a jupyterlite addon for jupyter contents"""
 from .base import BaseAddon
 from pathlib import Path
+import pprint
 import json
 import re
 import datetime
@@ -14,9 +15,18 @@ class ContentsAddon(BaseAddon):
         yield dict(
             name="contents",
             actions=[
+                lambda: self.log.debug(
+                    "[lite] [contents] All Files %s",
+                    pprint.pformat(
+                        [
+                            str(p[0].relative_to(manager.lite_dir))
+                            for p in self.file_src_dest
+                        ]
+                    ),
+                ),
                 lambda: print(
                     f"""    contents: {len(list(self.file_src_dest))} files"""
-                )
+                ),
             ],
         )
 
