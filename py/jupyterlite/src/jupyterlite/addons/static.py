@@ -11,18 +11,15 @@ from traitlets import Instance, default
 from .base import BaseAddon
 from ..constants import JUPYTERLITE_JSON
 
-ROOT = Path(__file__).parent.parent
-LITE_TARBALL = next(ROOT.glob("jupyterlite-app-*.tgz"))
-
 
 class StaticAddon(BaseAddon):
     """Copy the core "gold master" artifacts into the output folder"""
 
-    lite_tarball = Instance(
+    app_archive = Instance(
         Path,
         help=(
             """The path to a custom npm-style tarball (e.g. with `package/package.json`). """
-            """This may alternately be specified with the `$JUPYTERLITE_APP_TARBALL` """
+            """This may alternately be specified with the `$JUPYTERLITE_APP_ARCHIVE` """
             """environment variable."""
         ),
     ).tag(config=True)
@@ -34,7 +31,7 @@ class StaticAddon(BaseAddon):
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(
-                    f"""    tarball:  {self.lite_tarball.name} {int(self.lite_tarball.stat().st_size / (1024 * 1024))}MB"""
+                    f"""    tarball:  {self.app_archive.name} {int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
                 ),
                 lambda: print(f"""    output:   {self.manager.output_dir}"""),
                 lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
@@ -50,7 +47,7 @@ class StaticAddon(BaseAddon):
         yield dict(
             name="output_dir",
             doc="clean out the lite directory",
-            file_dep=[self.lite_tarball],
+            file_dep=[self.app_archive],
             actions=[
                 lambda: [output_dir.exists() and shutil.rmtree(output_dir), None][-1],
                 (doit.tools.create_folder, [output_dir]),
@@ -61,24 +58,22 @@ class StaticAddon(BaseAddon):
         """unpack and copy the tarball files into the output_dir"""
         yield dict(
             name="unpack",
-            doc=f"unpack a 'gold master' JupyterLite from {self.lite_tarball.name}",
+            doc=f"unpack a 'gold master' JupyterLite from {self.app_archive.name}",
             actions=[(self._unpack, [])],
-            file_dep=[self.lite_tarball],
+            file_dep=[self.app_archive],
             targets=[manager.output_dir / JUPYTERLITE_JSON],
         )
 
-    @default("lite_tarball")
-    def _default_lite_tarball(self):
-        tarball = os.environ.get("JUPYTERLITE_APP_TARBALL") or LITE_TARBALL
-        self.log.debug(f"[lite] [jupyterlab] Tarball {tarball}")
-        return Path(tarball)
+    @default("app_archive")
+    def _default_app_archive(self):
+        return self.manager.app_archive
 
     def _unpack(self):
         output_dir = self.manager.output_dir
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with tarfile.open(str(self.lite_tarball), "r:gz") as tar:
+            with tarfile.open(str(self.app_archive), "r:gz") as tar:
                 tar.extractall(td)
                 for child in sorted((tdp / "package").glob("*")):
                     self.log.debug(f"[lite] [jupyterlab] copying {child}")

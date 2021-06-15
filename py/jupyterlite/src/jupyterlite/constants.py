@@ -1,3 +1,8 @@
+from pathlib import Path
+
+ROOT = Path(__file__).parent
+DEFAULT_APP_ARCHIVE = next(ROOT.glob("jupyterlite-app-*.tgz"))
+
 # the extension point for addons, including core
 ADDON_ENTRYPOINT = "jupyterlite.addon.v0"
 
@@ -28,7 +33,7 @@ JUPYTERLITE_JSON = "jupyter-lite.json"
 # TODO: the notebook opinions
 
 # Needs a better canonical location
-OUTPUT_DIR = "_output"
+DEFAULT_OUTPUT_DIR = "_output"
 
 
 # commonly-used filename for response fixtures, e.g. settings

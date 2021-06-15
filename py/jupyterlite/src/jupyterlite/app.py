@@ -20,12 +20,24 @@ class BaseApp(JupyterApp):
 class ManagedApp(BaseApp):
     lite_manager = Instance(LiteManager)
     lite_dir = Unicode().tag(config=True)
-
-    aliases = dict(**base_aliases, **{"lite-dir": "ManagedApp.lite_dir"})
+    app_archive = Unicode(allow_none=True).tag(config=True)
+    aliases = dict(
+        **base_aliases,
+        **{
+            "lite-dir": "ManagedApp.lite_dir",
+            "app-archive": "ManagedApp.app_archive",
+        }
+    )
 
     @default("lite_manager")
     def _default_manager(self):
-        return LiteManager(parent=self, lite_dir=Path(self.lite_dir).resolve())
+        kwargs = {}
+        if self.app_archive:
+            kwargs.update(app_archive=Path(self.app_archive))
+
+        return LiteManager(
+            parent=self, lite_dir=Path(self.lite_dir).resolve(), **kwargs
+        )
 
     def start(self):
         self.lite_manager.initialize()

@@ -9,7 +9,7 @@ import doit
 
 from traitlets import Dict, default, Instance, Tuple
 
-from .constants import ADDON_ENTRYPOINT, OUTPUT_DIR
+from .constants import ADDON_ENTRYPOINT, DEFAULT_OUTPUT_DIR, DEFAULT_APP_ARCHIVE
 
 strict = True
 
@@ -42,6 +42,7 @@ class LiteManager(LoggingConfigurable):
         )
     )
     lite_dir = Instance(Path, help=("""The root folder of a JupyterLite project"""))
+    app_archive = Instance(Path, help=("""The app archive to use."""))
     output_dir = Instance(Path, help=("""Where to build the JupyterLite site"""))
     config = Dict()
     apps = Tuple(("lab", "retro")).tag(config=True)
@@ -100,12 +101,17 @@ class LiteManager(LoggingConfigurable):
     @default("output_dir")
     def _default_output_dir(self):
         return Path(
-            os.environ.get("JUPYTERLITE_OUTPUT_DIR") or self.lite_dir / OUTPUT_DIR
+            os.environ.get("JUPYTERLITE_OUTPUT_DIR")
+            or self.lite_dir / DEFAULT_OUTPUT_DIR
         )
 
     @default("lite_dir")
     def _default_lite_dir(self):
         return Path.cwd()
+
+    @default("app_archive")
+    def _default_app_archive(self):
+        return Path(os.environ.get("JUPYTERLITE_APP_ARCHIVE") or DEFAULT_APP_ARCHIVE)
 
     @default("config")
     def _default_config(self):
