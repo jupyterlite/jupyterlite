@@ -6,7 +6,7 @@ from pathlib import Path
 import os
 import doit
 
-from traitlets import Dict, default, Instance, Tuple
+from traitlets import Dict, default, Instance, Tuple, Bool
 
 from .constants import (
     ADDON_ENTRYPOINT,
@@ -16,8 +16,6 @@ from .constants import (
     HOOK_PARENTS,
     PHASES,
 )
-
-strict = True
 
 
 class LiteManager(LoggingConfigurable):
@@ -59,6 +57,10 @@ class LiteManager(LoggingConfigurable):
         ),
     ).tag(config=True)
 
+    strict = Bool(
+        True, help=("if `True`, stop the current workflow on the first error")
+    ).tag(config=True)
+
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
 
@@ -68,9 +70,9 @@ class LiteManager(LoggingConfigurable):
 
     def initialize(self):
         # TODO: finish initialization
-        self.log.debug("[lite] [addons] loading ...")
-        self.log.debug(f"[lite] [addons] ... OK {len(self.addons)} addons")
-        self.log.debug(f"[lite] [tasks] ...")
+        self.log.debug("[lite] [addon] loading ...")
+        self.log.debug(f"[lite] [addon] ... OK {len(self.addons)} addons")
+        self.log.debug(f"[lite] [tasks] loading ...")
         self.log.debug(f"[lite] [tasks] ... OK {len(self._doit_tasks)} tasks")
 
     def doit_run(self, cmd, *args):
@@ -85,15 +87,14 @@ class LiteManager(LoggingConfigurable):
         """initialize addons from entry_points"""
         addons = {}
         for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
-            self.log.debug(f"[lite] [{name}] addon init ...")
+            self.log.debug(f"[lite] [addon] [{name}] load ...")
             try:
                 addon_inst = addon.load()(manager=self)
                 addons[name] = addon_inst
-                self.log.debug(
-                    f"""[lite] [{name}] {addon_inst.__class__.__name__} will {", ".join(addon_inst.__all__)}"""
-                )
+                for one in sorted(addon_inst.__all__):
+                    self.log.debug(f"""[lite] [addon] [{name}] ... will {one}""")
             except Exception as err:
-                self.log.warning(f"[lite] Failed to load addon: {name}", exc_info=err)
+                self.log.warning(f"[lite] [addon] [{name}] FAIL", exc_info=err)
         return addons
 
     @default("_doit_config")
@@ -173,7 +174,7 @@ class LiteManager(LoggingConfigurable):
                             yield patched_task
                     except Exception as err:
                         self.log.error(f"[lite] [{attr}] [{name}] [ERR] {err}")
-                        if strict:
+                        if self.strict:
                             raise err
 
         if not prev_attr:
