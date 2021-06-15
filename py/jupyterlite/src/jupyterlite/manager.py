@@ -15,8 +15,8 @@ from .constants import (
     HOOK_PARENTS,
     HOOKS,
     JUPYTERLITE_JSON,
-    PHASES,
     OVERRIDES_JSON,
+    PHASES,
 )
 
 
@@ -155,7 +155,6 @@ class LiteManager(LoggingConfigurable):
             overrides_json = app_dir / OVERRIDES_JSON
             if overrides_json.exists():
                 yield overrides_json
-
 
     @default("ignore_files")
     def _default_ignore_files(self):

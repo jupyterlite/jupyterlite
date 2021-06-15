@@ -43,9 +43,9 @@ class ManagedApp(BaseApp):
             "overrides": "ManagedApp.overrides",
         }
     )
-    overrides = Tuple(allow_none=True, help=(
-        "Specific overrides.json to include"
-    )).tag(config=True)
+    overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
+        config=True
+    )
 
     @default("lite_manager")
     def _default_manager(self):

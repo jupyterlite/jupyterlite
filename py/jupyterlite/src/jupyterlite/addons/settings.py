@@ -1,8 +1,7 @@
 """a jupyterlite addon for supporting extension settings"""
 import json
-import jsonschema
 
-from ..constants import JUPYTERLITE_JSON, OVERRIDES_JSON, LAB_EXTENSIONS
+from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS, OVERRIDES_JSON
 from .base import BaseAddon
 
 
@@ -22,9 +21,7 @@ class SettingsAddon(BaseAddon):
 
         yield dict(
             name="overrides",
-            actions=[
-                lambda: print(f"""    overrides.json: {len(apps)}""")
-            ]
+            actions=[lambda: print(f"""    overrides.json: {len(apps)}""")],
         )
 
     def pre_build(self, manager):
@@ -64,12 +61,16 @@ class SettingsAddon(BaseAddon):
 
         for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
             config = json.loads(lite_json.read_text(encoding="utf-8"))
-            overrides = config.get("jupyter-config-data", {}).get("settingsOverrides", {})
+            overrides = config.get("jupyter-config-data", {}).get(
+                "settingsOverrides", {}
+            )
             for plugin_id, defaults in overrides.items():
                 ext, plugin = plugin_id.split(":")
                 schema = lab_extensions / ext / "schemas" / ext / f"{plugin}.json"
                 if not schema.exists():
-                    self.log.debug(f"[lite] [settings] Missing {schema} (probably in `all.json`)")
+                    self.log.debug(
+                        f"[lite] [settings] Missing {schema} (probably in `all.json`)"
+                    )
                     continue
 
                 validator = self.get_validator(schema)
@@ -77,7 +78,9 @@ class SettingsAddon(BaseAddon):
                 yield dict(
                     name=f"overrides:{plugin_id}",
                     file_dep=[lite_json, schema],
-                    actions=[(self.validate_one_json_file, [validator, None, defaults])],
+                    actions=[
+                        (self.validate_one_json_file, [validator, None, defaults])
+                    ],
                 )
 
     def patch_one_overrides(self, jupyterlite_json, overrides_json):
@@ -99,8 +102,7 @@ class SettingsAddon(BaseAddon):
         config["jupyter-config-data"]["settingsOverrides"] = overrides
 
         jupyterlite_json.write_text(
-            json.dumps(config, indent=2, sort_keys=True),
-            encoding="utf-8"
+            json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
 
     @property

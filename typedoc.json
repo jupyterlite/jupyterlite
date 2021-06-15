@@ -1,6 +1,6 @@
 {
   "entryPoints": [
-    "packages/application-extension/src/index.ts",
+    "packages/application-extension/src/index.tsx",
     "packages/contents/src/index.ts",
     "packages/iframe-extension/src/index.ts",
     "packages/javascript-kernel/src/index.ts",

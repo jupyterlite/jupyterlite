@@ -447,7 +447,7 @@ class P:
     DOCS = ROOT / "docs"
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
-    DOCS_OVERRIDES = DOCS / "overrides.json"
+    EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
@@ -747,11 +747,7 @@ class U:
     def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
         for task in ["status", lite_task]:
-            args = [
-                "jupyter", "lite", task,
-                "--files", ".",
-                "--output-dir", B.DOCS_APP
-            ]
+            args = ["jupyter", "lite", task, "--files", ".", "--output-dir", B.DOCS_APP]
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
 
