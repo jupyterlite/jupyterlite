@@ -6,9 +6,9 @@ from ..constants import ALL_JSON, API_CONTENTS
 
 
 class ContentsAddon(BaseAddon):
-    __all__ = ["pre_build", "post_build", "check"]
+    __all__ = ["build", "post_build", "check"]
 
-    def pre_build(self, manager):
+    def build(self, manager):
         for src_file, dest_file in zip(self.files, self.file_targets):
             stem = src_file.relative_to(self.files_dir)
             yield dict(
