@@ -36,8 +36,11 @@ class BaseAddon(LoggingConfigurable):
         else:
             shutil.copy2(src, dest)
 
-    def validate_one_json_file(self, validator, path):
-        loaded = json.loads(path.read_text(encoding="utf-8"))
+    def validate_one_json_file(self, validator, path=None, data=None):
+        if path:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+        else:
+            loaded = data
 
         if validator is None:
             return True

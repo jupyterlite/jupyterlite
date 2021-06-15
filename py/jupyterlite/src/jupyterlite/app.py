@@ -35,13 +35,17 @@ class ManagedApp(BaseApp):
     aliases = dict(
         **base_aliases,
         **{
-            "lite-dir": "ManagedApp.lite_dir",
-            "output-dir": "ManagedApp.output_dir",
             "app-archive": "ManagedApp.app_archive",
             "files": "ManagedApp.files",
             "ignore-files": "ManagedApp.ignore_files",
+            "lite-dir": "ManagedApp.lite_dir",
+            "output-dir": "ManagedApp.output_dir",
+            "overrides": "ManagedApp.overrides",
         }
     )
+    overrides = Tuple(allow_none=True, help=(
+        "Specific overrides.json to include"
+    )).tag(config=True)
 
     @default("lite_manager")
     def _default_manager(self):
@@ -58,6 +62,8 @@ class ManagedApp(BaseApp):
             kwargs["files"] = [Path(p) for p in self.files]
         if self.ignore_files:
             kwargs["ignore_files"] = self.ignore_files
+        if self.overrides:
+            kwargs["overrides"] = [Path(p) for p in self.overrides]
 
         return LiteManager(**kwargs)
 

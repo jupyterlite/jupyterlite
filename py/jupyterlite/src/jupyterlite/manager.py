@@ -16,6 +16,7 @@ from .constants import (
     HOOKS,
     JUPYTERLITE_JSON,
     PHASES,
+    OVERRIDES_JSON,
 )
 
 
@@ -64,6 +65,7 @@ class LiteManager(LoggingConfigurable):
         config=True
     )
     ignore_files = Tuple().tag(config=True)
+    overrides = Tuple().tag(config=True)
 
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
@@ -145,6 +147,15 @@ class LiteManager(LoggingConfigurable):
             return [lite_files]
 
         return []
+
+    @default("overrides")
+    def _default_overrides(self):
+        for app in [None, *self.apps]:
+            app_dir = self.lite_dir / app if app else self.lite_dir
+            overrides_json = app_dir / OVERRIDES_JSON
+            if overrides_json.exists():
+                yield overrides_json
+
 
     @default("ignore_files")
     def _default_ignore_files(self):

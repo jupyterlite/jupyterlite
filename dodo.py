@@ -292,7 +292,7 @@ def task_docs():
         name="app",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=["dev:py:jupyterlite"],
-        actions=[U.docs_app],
+        actions=[(U.docs_app, [])],
         file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
         targets=[B.DOCS_APP_SHA256SUMS],
     )
@@ -347,19 +347,13 @@ def task_check():
         ],
     )
 
-    config = json.loads(B.PATCHED_JUPYTERLITE_JSON.read_text(**C.ENC))
-    overrides = config.get("jupyter-config-data", {}).get("settingsOverrides", {})
-    for plugin_id, defaults in overrides.items():
-        ext, plugin = plugin_id.split(":")
-        schema_file = B.DOCS_LAB_EXTENSIONS / ext / "schemas" / ext / f"{plugin}.json"
-        if not schema_file.exists():
-            # this is probably in all.json
-            continue
-        yield dict(
-            name=f"overrides:{plugin_id}",
-            file_dep=[B.PATCHED_JUPYTERLITE_JSON, schema_file],
-            actions=[(U.validate, [schema_file, None, defaults])],
-        )
+    yield dict(
+        name="app",
+        doc="use the jupyterlite CLI to check the docs app",
+        task_dep=["dev:py:jupyterlite"],
+        actions=[(U.docs_app, ["check"])],
+        file_dep=[B.DOCS_APP_SHA256SUMS],
+    )
 
 
 def task_watch():
@@ -750,10 +744,15 @@ class U:
         return not errors
 
     @staticmethod
-    def docs_app():
+    def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
-        args = ["jupyter", "lite", "build", "--files", ".", "--output-dir", B.DOCS_APP]
-        subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
+        for task in ["status", lite_task]:
+            args = [
+                "jupyter", "lite", task,
+                "--files", ".",
+                "--output-dir", B.DOCS_APP
+            ]
+            subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
 
 # environment overloads
