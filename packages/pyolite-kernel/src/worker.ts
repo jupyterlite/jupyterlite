@@ -208,6 +208,60 @@ function commInfo(content: any) {
 }
 
 /**
+ * Respond to the commOpen.
+ *
+ * @param content The incoming message with the comm open.
+ */
+function commOpen(content: any) {
+  const res = kernel.comm_manager.comm_open(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
+ * Respond to the commMsg.
+ *
+ * @param content The incoming message with the comm msg.
+ */
+function commMsg(content: any) {
+  const res = kernel.comm_manager.comm_msg(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
+ * Respond to the commClose.
+ *
+ * @param content The incoming message with the comm close.
+ */
+function commClose(content: any) {
+  const res = kernel.comm_manager.comm_close(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
  * Process a message sent to the worker.
  *
  * @param event The message event to process
@@ -227,8 +281,17 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
     case 'complete-request':
       return complete(messageContent);
 
-      case 'comm-info-request':
-        return commInfo(messageContent);
+    case 'comm-info-request':
+      return commInfo(messageContent);
+
+    case 'comm-open':
+      return commOpen(messageContent);
+
+    case 'comm-msg':
+      return commMsg(messageContent);
+
+    case 'comm-close':
+      return commClose(messageContent);
 
     default:
       break;

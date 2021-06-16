@@ -183,7 +183,7 @@ class CommManager:
             pass
 
     # Message handlers
-    def comm_open(self, stream, ident, msg):
+    def comm_open(self, msg):
         """Handler for comm_open messages"""
         content = msg["content"]
         comm_id = content["comm_id"]
@@ -198,7 +198,7 @@ class CommManager:
         if f is not None:
             f(comm, msg)
 
-    def comm_msg(self, stream, ident, msg):
+    def comm_msg(self, msg):
         """Handler for comm_msg messages"""
         content = msg["content"]
         comm_id = content["comm_id"]
@@ -208,7 +208,7 @@ class CommManager:
 
         comm.handle_msg(msg)
 
-    def comm_close(self, stream, ident, msg):
+    def comm_close(self, msg):
         """Handler for comm_close messages"""
         content = msg["content"]
         comm_id = content["comm_id"]

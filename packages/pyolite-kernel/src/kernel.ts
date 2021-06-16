@@ -134,7 +134,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'comm_msg':
       case 'comm_open':
       case 'comm_close': {
-        this.sendComm(msg.type, msg.content, msg.metadata, msg.buffers);
+        this.handleComm(msg.type, msg.content, msg.metadata, msg.buffers);
         break;
       }
       default:
@@ -256,6 +256,33 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     content: KernelMessage.IInputRequestMsg['content']
   ): Promise<void> {
     throw new Error('Not implemented');
+  }
+
+  /**
+   * Send an `comm_open` message.
+   *
+   * @param msg - The comm_open message.
+   */
+  async commOpen(msg: KernelMessage.ICommOpenMsg): Promise<void> {
+    return await this._sendWorkerMessage('comm-open', msg);
+  }
+
+  /**
+   * Send an `comm_msg` message.
+   *
+   * @param msg - The comm_msg message.
+   */
+  async commMsg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
+    return await this._sendWorkerMessage('comm-msg', msg);
+  }
+
+  /**
+   * Send an `comm_close` message.
+   *
+   * @param close - The comm_close message.
+   */
+  async commClose(msg: KernelMessage.ICommCloseMsg): Promise<void> {
+    return await this._sendWorkerMessage('comm-close', msg);
   }
 
   /**
