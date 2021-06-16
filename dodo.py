@@ -503,10 +503,12 @@ P.PYOLITE_PACKAGES = [
 def _clean_paths(*paths_or_globs):
     final_paths = []
     for pg in paths_or_globs:
-        if isinstance(pg, Path):
+        if pg is None:
+            continue
+        elif isinstance(pg, Path):
             paths = [pg]
         else:
-            paths = sorted(pg)
+            paths = set(pg)
         for path in paths:
             if "node_modules" in str(path) or ".ipynb_checkpoints" in str(path):
                 continue
