@@ -244,7 +244,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async commInfoRequest(
     content: KernelMessage.ICommInfoRequestMsg['content']
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('comm-info-request', content);
   }
 
   /**

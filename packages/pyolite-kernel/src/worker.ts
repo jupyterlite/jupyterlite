@@ -187,6 +187,27 @@ function complete(content: any) {
 }
 
 /**
+ * Respond to the commInfoRequest.
+ *
+ * @param content The incoming message with the comm target name.
+ */
+function commInfo(content: any) {
+  const res = kernel.comm_info(content.target_name);
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results: {
+      comms: results,
+      status: 'ok'
+    }
+  };
+
+  postMessage(reply);
+}
+
+/**
  * Process a message sent to the worker.
  *
  * @param event The message event to process
@@ -205,6 +226,9 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'complete-request':
       return complete(messageContent);
+
+      case 'comm-info-request':
+        return commInfo(messageContent);
 
     default:
       break;
