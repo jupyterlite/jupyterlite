@@ -4,7 +4,33 @@ from jupyter_core.application import JupyterApp, base_aliases
 from traitlets import Instance, Tuple, Unicode, default
 
 from . import __version__
+from .constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED
 from .manager import LiteManager
+
+"""
+
+
+    def list(self):
+        self.doit_run("list", "--all", "--status")
+
+    def status(self):
+        self.doit_run("post_status")
+
+    def init(self):
+        self.doit_run("post_init")
+
+    def build(self):
+        self.doit_run("post_build")
+
+    def check(self):
+        self.doit_run("post_check")
+
+    def publish(self):
+        self.doit_run("post_publish")
+
+    def serve(self):
+        self.doit_run("serve")
+"""
 
 
 class BaseApp(JupyterApp):
@@ -19,6 +45,13 @@ class BaseApp(JupyterApp):
 
 class ManagedApp(BaseApp):
     lite_manager = Instance(LiteManager)
+    apps = Tuple(
+        allow_none=True,
+        help=(
+            f"""the Lite apps: currently {JUPYTERLITE_APPS}. """
+            f"""Required: {JUPYTERLITE_APPS_REQUIRED}"""
+        ),
+    ).tag(config=True)
     lite_dir = Unicode(
         allow_none=True, help=("""The root folder of a JupyterLite project""")
     ).tag(config=True)
@@ -36,12 +69,13 @@ class ManagedApp(BaseApp):
         **base_aliases,
         **{
             "app-archive": "ManagedApp.app_archive",
+            "apps": "ManagedApp.apps",
             "files": "ManagedApp.files",
             "ignore-files": "ManagedApp.ignore_files",
             "lite-dir": "ManagedApp.lite_dir",
             "output-dir": "ManagedApp.output_dir",
             "overrides": "ManagedApp.overrides",
-        }
+        },
     )
     overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
         config=True
@@ -64,6 +98,8 @@ class ManagedApp(BaseApp):
             kwargs["ignore_files"] = self.ignore_files
         if self.overrides:
             kwargs["overrides"] = [Path(p) for p in self.overrides]
+        if self.apps:
+            kwargs["apps"] = self.apps
 
         return LiteManager(**kwargs)
 
@@ -71,52 +107,54 @@ class ManagedApp(BaseApp):
         self.lite_manager.initialize()
 
 
-class StatusApp(ManagedApp):
+class DoitApp(ManagedApp):
+    _doit_cmd = None
+
+    def start(self):
+        super().start()
+        self.lite_manager.doit_run(*self._doit_cmd)
+
+
+class StatusApp(DoitApp):
     """report about what a JupyterLite build _might_ do"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.status()
+    _doit_cmd = ["post_status"]
 
 
-class ListApp(ManagedApp):
+class ListApp(DoitApp):
     """describe a JupyterLite folder"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.list()
+    _doit_cmd = ["list", "--all", "--status"]
 
 
-class InitApp(ManagedApp):
+class InitApp(DoitApp):
     """initialize a JupyterLite folder"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.init()
+    _doit_cmd = ["post_init"]
 
 
-class BuildApp(ManagedApp):
+class BuildApp(DoitApp):
     """build a JupyterLite folder"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.build()
+    _doit_cmd = ["post_build"]
 
 
-class CheckApp(ManagedApp):
+class CheckApp(DoitApp):
     """verify a JupyterLite folder"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.check()
+    _doit_cmd = ["post_check"]
 
 
-class ServeApp(ManagedApp):
+class ServeApp(DoitApp):
     """verify a JupyterLite folder"""
 
-    def start(self):
-        super().start()
-        self.lite_manager.serve()
+    _doit_cmd = ["post_serve"]
+
+
+class ArchiveApp(DoitApp):
+    """build a JupyterLite app archive"""
+
+    _doit_cmd = ["post_archive"]
 
 
 class LiteApp(BaseApp):
@@ -131,6 +169,7 @@ class LiteApp(BaseApp):
         build=(BuildApp, BuildApp.__doc__.splitlines()[0]),
         check=(CheckApp, CheckApp.__doc__.splitlines()[0]),
         serve=(ServeApp, ServeApp.__doc__.splitlines()[0]),
+        archive=(ArchiveApp, ArchiveApp.__doc__.splitlines()[0]),
     )
 
 

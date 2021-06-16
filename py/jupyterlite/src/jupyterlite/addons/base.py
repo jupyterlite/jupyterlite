@@ -37,6 +37,13 @@ class BaseAddon(LoggingConfigurable):
         else:
             shutil.copy2(src, dest)
 
+    def delete_one(self, src):
+        """delete... something"""
+        if src.is_dir():
+            shutil.rmtree(src)
+        elif src.exists():
+            src.unlink()
+
     def validate_one_json_file(self, validator, path=None, data=None):
         if path:
             loaded = json.loads(path.read_text(encoding="utf-8"))

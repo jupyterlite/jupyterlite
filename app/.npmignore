@@ -1,3 +1,4 @@
+**/node_modules/*
 */test/**
 babel.config.*
 jest-setup.js

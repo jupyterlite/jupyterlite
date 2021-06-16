@@ -34,6 +34,10 @@ JUPYTERLITE_PATH = ".jupyter-lite"
 # our schema
 JUPYTERLITE_SCHEMA = "jupyterlite.schema.v0.json"
 
+# a set of apps we currently know _might_ be in an app archive
+JUPYTERLITE_APPS = ["lab", "retro"]
+JUPYTERLITE_APPS_REQUIRED = ["lab"]
+
 # our configuration file
 JUPYTERLITE_JSON = "jupyter-lite.json"
 # TODO: the notebook opinions
@@ -52,8 +56,12 @@ API_CONTENTS = "api/contents"
 LAB_EXTENSIONS = "lab/extensions"
 
 # our doit task-based plugin system
-HOOKS = ["status", "init", "build", "check", "publish", "serve"]
+HOOKS = ["status", "init", "build", "check", "publish", "serve", "archive"]
 HOOK_PARENTS = dict(
-    build="post_init", check="post_build", publish="post_build", serve="post_build"
+    build="post_init",
+    check="post_build",
+    publish="post_build",
+    serve="post_build",
+    archive="post_build",
 )
 PHASES = ["pre_", "", "post_"]

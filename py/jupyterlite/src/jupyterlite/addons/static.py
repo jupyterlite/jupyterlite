@@ -7,7 +7,7 @@ from pathlib import Path
 import doit
 from traitlets import Instance, default
 
-from ..constants import JUPYTERLITE_JSON
+from ..constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED, JUPYTERLITE_JSON
 from .base import BaseAddon
 
 
@@ -23,7 +23,7 @@ class StaticAddon(BaseAddon):
         ),
     ).tag(config=True)
 
-    __all__ = ["pre_init", "init", "pre_status"]
+    __all__ = ["pre_init", "init", "post_init", "pre_status"]
 
     def pre_status(self, manager):
         yield dict(
@@ -34,6 +34,7 @@ class StaticAddon(BaseAddon):
                 ),
                 lambda: print(f"""    output:   {self.manager.output_dir}"""),
                 lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
+                lambda: print(f"""    apps:     {self.manager.apps}"""),
             ],
         )
 
@@ -47,6 +48,7 @@ class StaticAddon(BaseAddon):
             name="output_dir",
             doc="clean out the lite directory",
             file_dep=[self.app_archive],
+            uptodate=[doit.tools.config_changed(dict(apps=self.manager.apps))],
             actions=[
                 lambda: [output_dir.exists() and shutil.rmtree(output_dir), None][-1],
                 (doit.tools.create_folder, [output_dir]),
@@ -62,6 +64,18 @@ class StaticAddon(BaseAddon):
             file_dep=[self.app_archive],
             targets=[manager.output_dir / JUPYTERLITE_JSON],
         )
+
+    def post_init(self, manager):
+        """remove static assets if the app is not installed"""
+        output_dir = manager.output_dir
+        all_apps = set(JUPYTERLITE_APPS)
+        req_apps = set(JUPYTERLITE_APPS_REQUIRED)
+        mgr_apps = set(manager.apps)
+
+        for to_remove in (all_apps - mgr_apps) - req_apps:
+            app = output_dir / to_remove
+            if app.exists():
+                yield dict(name=f"prune:{app}", actions=[(self.delete_one, [app])])
 
     @default("app_archive")
     def _default_app_archive(self):

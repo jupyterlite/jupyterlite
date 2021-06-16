@@ -184,27 +184,6 @@ class LiteManager(LoggingConfigurable):
     def _default_config(self):
         return {}
 
-    def list(self):
-        self.doit_run("list", "--all", "--status")
-
-    def status(self):
-        self.doit_run("post_status")
-
-    def init(self):
-        self.doit_run("post_init")
-
-    def build(self):
-        self.doit_run("post_build")
-
-    def check(self):
-        self.doit_run("post_check")
-
-    def publish(self):
-        self.doit_run("post_publish")
-
-    def serve(self):
-        self.doit_run("serve")
-
     def _gather_tasks(self, attr, prev_attr):
         # early up-front doit stuff
         def _gather():
