@@ -28,7 +28,6 @@ dependencies:
   - ipywidgets
   - bqplot
   - ipydatagrid
-  - ipygany
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
   - jupyterlab-fasta >=3,<4

@@ -17,7 +17,6 @@ async function loadPyodideAndPackages() {
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
-    # Doing it in two times is important, otherwise ipywidgets doesn't pick our mocks
     await micropip.install([
       'traitlets',
       '${_widgetsnbextensionWheelUrl}',
@@ -25,7 +24,6 @@ async function loadPyodideAndPackages() {
       '${_ipykernelWheelUrl}'
     ])
     await micropip.install([
-      'ipywidgets',
       '${_pyoliteWheelUrl}'
     ]);
     import pyolite
