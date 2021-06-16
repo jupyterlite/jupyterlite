@@ -160,7 +160,7 @@ def task_build():
 
     for py_pkg in P.PYOLITE_PACKAGES:
         name = py_pkg.name
-        wheel = py_pkg / f"dist/{name}-0.1.0-py3-none-any.whl"
+        wheel = py_pkg / f"dist/{name}-0.1.0-{C.NOARCH_WHL}"
         wheels += [wheel]
         yield dict(
             name=f"js:py:{name}",
@@ -215,8 +215,11 @@ def task_build():
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
-        wheel = py_pkg / f"dist/{py_name}-{C.VERSION}-py3-none-any.whl"
-        sdist = py_pkg / f"""dist/{py_name.replace("-", "_")}-{C.VERSION}.tar.gz"""
+        wheel = (
+            py_pkg
+            / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+        )
+        sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
         args = ["python", "setup.py", "sdist", "bdist_wheel"]
 
@@ -228,9 +231,17 @@ def task_build():
 
         pyproj_toml = py_pkg / "pyproject.toml"
 
-        actions = [U.do(*args, cwd=py_pkg)]
         targets = [wheel, sdist]
 
+        # we might tweak the args
+        if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
+            args = ["flit", "build"]
+            file_dep += [pyproj_toml]
+
+        # make "the" action
+        actions = [U.do(*args, cwd=py_pkg)]
+
+        # may do some setup steps: TODO: refactor into separate task
         if py_name == "jupyterlite":
             dest = py_pkg / "src" / py_name / B.APP_PACK.name
             actions = [
@@ -240,10 +251,6 @@ def task_build():
             ]
             file_dep += [B.APP_PACK, pyproj_toml]
             targets += [dest]
-
-        if pyproj_toml.exists():
-            args = ["python", "-m", "flit", "build"]
-            file_dep += [pyproj_toml]
 
         yield dict(
             name=f"py:{py_name}",
@@ -257,10 +264,14 @@ def task_build():
 def task_dev():
     """setup up local packages for interactive development"""
     py_pkg = P.PY_SETUP_PY["jupyterlite"].parent
+
+    # TODO: probably name this file
+    dest = py_pkg / "src" / "jupyterlite" / B.APP_PACK.name
+
     yield dict(
         name="py:jupyterlite",
         actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
-        file_dep=[py_pkg / f"""dist/jupyterlite-{C.VERSION}.tar.gz"""],
+        file_dep=[dest],
     )
 
 
@@ -396,8 +407,8 @@ def task_test():
 
 class C:
     NAME = "jupyterlite"
-    VERSION = "0.1.0"
     APPS = ["retro", "lab"]
+    NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
@@ -477,6 +488,10 @@ class P:
 class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
+
+    # derive the PEP-compatible version
+    PY_VERSION = APP["version"].replace("-alpha.", "a")
+
     PACKAGE_JSONS = {
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
     }

@@ -1,42 +1,33 @@
+"""the JupyterLite CLI App(s)"""
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases
-from traitlets import Instance, Tuple, Unicode, default
+from traitlets import Instance, default
 
 from . import __version__
-from .constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED
+from .config import LiteBuildConfig
 from .manager import LiteManager
 
-"""
 
-
-    def list(self):
-        self.doit_run("list", "--all", "--status")
-
-    def status(self):
-        self.doit_run("post_status")
-
-    def init(self):
-        self.doit_run("post_init")
-
-    def build(self):
-        self.doit_run("post_build")
-
-    def check(self):
-        self.doit_run("post_check")
-
-    def publish(self):
-        self.doit_run("post_publish")
-
-    def serve(self):
-        self.doit_run("serve")
-"""
-
-
-class BaseApp(JupyterApp):
+class BaseApp(JupyterApp, LiteBuildConfig):
     """TODO: An undescribed app"""
 
     version = __version__
+
+    # traitlets app stuff
+    aliases = dict(
+        **base_aliases,
+        **{
+            "app-archive": "LiteBuildConfig.app_archive",
+            "apps": "LiteBuildConfig.apps",
+            "files": "LiteBuildConfig.files",
+            "ignore-files": "LiteBuildConfig.ignore_files",
+            "lite-dir": "LiteBuildConfig.lite_dir",
+            "output-dir": "LiteBuildConfig.output_dir",
+            "output-archive": "LiteBuildConfig.output_archive",
+            "overrides": "LiteBuildConfig.overrides",
+        },
+    )
 
     @property
     def description(self):
@@ -45,43 +36,6 @@ class BaseApp(JupyterApp):
 
 class ManagedApp(BaseApp):
     lite_manager = Instance(LiteManager)
-    apps = Tuple(
-        allow_none=True,
-        help=(
-            f"""the Lite apps: currently {JUPYTERLITE_APPS}. """
-            f"""Required: {JUPYTERLITE_APPS_REQUIRED}"""
-        ),
-    ).tag(config=True)
-    lite_dir = Unicode(
-        allow_none=True, help=("""The root folder of a JupyterLite project""")
-    ).tag(config=True)
-    app_archive = Unicode(allow_none=True, help=("""The app archive to use.""")).tag(
-        config=True
-    )
-    output_dir = Unicode(
-        allow_none=True, help=("""Where to build the JupyterLite site""")
-    ).tag(config=True)
-    files = Tuple(allow_none=True).tag(config=True)
-    ignore_files = Tuple(
-        allow_none=True, help="Path patterns that should never be included"
-    ).tag(config=True)
-    aliases = dict(
-        **base_aliases,
-        **{
-            "app-archive": "ManagedApp.app_archive",
-            "apps": "ManagedApp.apps",
-            "files": "ManagedApp.files",
-            "ignore-files": "ManagedApp.ignore_files",
-            "lite-dir": "ManagedApp.lite_dir",
-            "output-dir": "ManagedApp.output_dir",
-            "output-archive": "ManagedApp.output_archive",
-            "overrides": "ManagedApp.overrides",
-        },
-    )
-    overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
-        config=True
-    )
-    output_archive = Unicode(allow_none=True, help="Archive to create").tag(config=True)
 
     @default("lite_manager")
     def _default_manager(self):
@@ -104,6 +58,8 @@ class ManagedApp(BaseApp):
             kwargs["apps"] = self.apps
         if self.output_archive:
             kwargs["output_archive"] = Path(self.output_archive)
+        if self.disable_addons:
+            kwargs["disable_addons"] = self.disable_addons
 
         return LiteManager(**kwargs)
 

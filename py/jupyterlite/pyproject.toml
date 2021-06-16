@@ -3,15 +3,13 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.1,<4"]
 
 [tool.flit.metadata]
-dist-name = "jupyterlite"
 module = "jupyterlite"
 author = "JupyterLite Contributors"
 home-page = "https://github.com/jtpio/jupyterlite"
 requires-python = ">=3.7"
 requires = [
     "entrypoints",
-    "jupyter_core >=4.7",
-    "tornado >=6.1",
+    "jupyter_core >=4.7"
 ]
 
 [tool.flit.scripts]
@@ -21,12 +19,19 @@ jupyter-lite = "jupyterlite.app:main"
 test = [
     "pytest",
     "pytest-cov",
+    "hypothesis-jsonschema"
 ]
 watch = [
     "watchgod",
 ]
+serve = [
+    "tornado >=6.1",
+]
 nbconvert = [
     "nbconvert >=6",
+]
+sphinx = [
+    "sphinx >=3",
 ]
 
 [tool.flit.entrypoints."jupyterlite.addon.v0"]

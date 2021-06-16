@@ -1,2 +1,3 @@
-"""a command line tool for building JupyterLite sites"""
-__version__ = "0.1.0"
+"""tools for building JupyterLite sites
+"""
+__version__ = "0.1.0a0"
