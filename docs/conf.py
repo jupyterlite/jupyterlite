@@ -117,13 +117,17 @@ def after_build(app: Sphinx, error):
         new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
         if text != new_text:
             schema_html.write_text(new_text, encoding="utf-8")
+    subprocess.check_call(
+        ["doit", "-s", "docs:app:pack", "docs:app:build"],
+        cwd=str(ROOT),
+    )
 
 
 def before_rtd_build(app: Sphinx, error):
     """this performs the full frontend build, and ensures the typedoc"""
     print("jupyterlite: Ensuring built application...", flush=True)
     subprocess.check_call(
-        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:app"],
+        ["doit", "-n4", "build", "docs:typedoc:mystify"],
         cwd=str(ROOT),
     )
 

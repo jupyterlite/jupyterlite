@@ -289,12 +289,20 @@ def task_docs():
     )
 
     yield dict(
-        name="app",
+        name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=["dev:py:jupyterlite"],
         actions=[(U.docs_app, [])],
         file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
         targets=[B.DOCS_APP_SHA256SUMS],
+    )
+
+    yield dict(
+        name="app:pack",
+        doc="build the as-deployed app archive",
+        file_dep=[B.DOCS_APP_SHA256SUMS],
+        actions=[(U.docs_app, ["archive"])],
+        targets=[B.DOCS_APP_ARCHIVE],
     )
 
     yield dict(
@@ -544,12 +552,15 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
+
+    DOCS_APP = BUILD / "docs-app"
+    DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
+    DOCS_APP_ARCHIVE = DOCS_APP / "docs-jupyterlite-0.1.0.tgz"
+
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
     DOCS_STATIC = DOCS / "_static"
-    DOCS_APP = BUILD / "docs-app"
-    DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
-    DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
+    DOCS_JUPYTERLITE_JSON = DOCS / "jupyter-lite.json"
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -757,6 +768,8 @@ class U:
                 B.DOCS_APP,
                 "--app-archive",
                 B.APP_PACK,
+                "--output-archive",
+                B.DOCS_APP_ARCHIVE,
             ]
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 

@@ -47,5 +47,6 @@ class ReportAddon(BaseAddon):
         return [
             p
             for p in sorted(self.manager.output_dir.rglob("*"))
-            if not p.is_dir() and p != self.sha256sums
+            if not p.is_dir()
+            and p not in [self.sha256sums, self.manager.output_archive]
         ]

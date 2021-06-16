@@ -66,6 +66,7 @@ class LiteManager(LoggingConfigurable):
     )
     ignore_files = Tuple().tag(config=True)
     overrides = Tuple().tag(config=True)
+    output_archive: Path = Instance(Path, allow_none=True).tag(config=True)
 
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
@@ -179,6 +180,13 @@ class LiteManager(LoggingConfigurable):
     @default("app_archive")
     def _default_app_archive(self):
         return Path(os.environ.get("JUPYTERLITE_APP_ARCHIVE") or DEFAULT_APP_ARCHIVE)
+
+    @default("output_archive")
+    def _default_output_archive(self):
+        return Path(
+            os.environ.get("JUPYTERLITE_OUTPUT_ARCHIVE")
+            or self.output_dir / f"{self.lite_dir.name}-jupyterlite.tgz"
+        )
 
     @default("config")
     def _default_config(self):

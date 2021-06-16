@@ -74,12 +74,14 @@ class ManagedApp(BaseApp):
             "ignore-files": "ManagedApp.ignore_files",
             "lite-dir": "ManagedApp.lite_dir",
             "output-dir": "ManagedApp.output_dir",
+            "output-archive": "ManagedApp.output_archive",
             "overrides": "ManagedApp.overrides",
         },
     )
     overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
         config=True
     )
+    output_archive = Unicode(allow_none=True, help="Archive to create").tag(config=True)
 
     @default("lite_manager")
     def _default_manager(self):
@@ -100,6 +102,8 @@ class ManagedApp(BaseApp):
             kwargs["overrides"] = [Path(p) for p in self.overrides]
         if self.apps:
             kwargs["apps"] = self.apps
+        if self.output_archive:
+            kwargs["output_archive"] = Path(self.output_archive)
 
         return LiteManager(**kwargs)
 

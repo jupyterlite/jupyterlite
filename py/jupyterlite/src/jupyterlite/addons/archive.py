@@ -12,15 +12,14 @@ class ArchiveAddon(BaseAddon):
     def archive(self, manager):
         output_dir = manager.output_dir
 
-        # TODO: parametrize
-        tarball = output_dir / "my-jupyterlite.tgz"
+        tarball = self.manager.output_archive
 
         file_dep = [
             p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]
         ]
 
         yield dict(
-            name="archive",
+            name=f"archive:{tarball.name}",
             doc="generate a new app archive",
             file_dep=file_dep,
             actions=[(self.make_archive, [tarball, output_dir, file_dep])],
@@ -32,4 +31,11 @@ class ArchiveAddon(BaseAddon):
             tarball.unlink()
 
         with tarfile.open(str(tarball), "w:gz") as tf:
-            tf.add(root, filter=lambda x: [print(x), x][-1])
+            tf.add(
+                root,
+                "package",
+                filter=lambda x: [print(".", end="", flush=True), x][-1],
+            )
+        print("", flush=True)
+        size = int(tarball.stat().st_size / (1024 * 1024))
+        self.log.info(f"[lite] [archive] {tarball} {size}Mb")

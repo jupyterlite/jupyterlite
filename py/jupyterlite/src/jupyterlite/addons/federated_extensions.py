@@ -1,7 +1,4 @@
-"""a jupyterlite addon for supporting federated_extensions
-
-
-"""
+"""a jupyterlite addon for supporting federated_extensions"""
 import json
 import sys
 from pathlib import Path
