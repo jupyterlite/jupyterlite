@@ -5,10 +5,11 @@
 import os
 from pathlib import Path
 
-from traitlets import Instance, Tuple, default
+from traitlets import Tuple, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
+from .trait_types import CPath
 
 
 class LiteBuildConfig(LoggingConfigurable):
@@ -37,32 +38,39 @@ class LiteBuildConfig(LoggingConfigurable):
         ),
     ).tag(config=True)
 
-    app_archive: Path = Instance(
-        Path, help=(f"""The app archive to use, default: {C.DEFAULT_APP_ARCHIVE}""")
+    # a bunch of paths
+    app_archive: Path = CPath(
+        help=(f"""The app archive to use, default: {C.DEFAULT_APP_ARCHIVE}""")
     ).tag(config=True)
 
-    lite_dir: Path = Instance(
-        Path, help=("""The root folder of a JupyterLite project""")
-    ).tag(config=True)
+    lite_dir: Path = CPath(help=("""The root folder of a JupyterLite project""")).tag(
+        config=True
+    )
 
-    output_dir: Path = Instance(
-        Path, help=("""Where to build the JupyterLite site""")
-    ).tag(config=True)
+    output_dir: Path = CPath(help=("""Where to build the JupyterLite site""")).tag(
+        config=True
+    )
 
-    output_archive: Path = Instance(Path, help="Archive to create").tag(config=True)
+    output_archive: Path = CPath(help="Archive to create").tag(config=True)
 
+    # actually some more paths
     files = Tuple(allow_none=True).tag(config=True)
-
-    ignore_files = Tuple(
-        allow_none=True, help="Path patterns that should never be included"
-    ).tag(config=True)
 
     overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
         config=True
     )
 
+    # patterns
+    ignore_files = Tuple(
+        allow_none=True, help="Path patterns that should never be included"
+    ).tag(config=True)
+
+    @default("apps")
+    def _default_apps(self):
+        return C.JUPYTERLITE_APPS
+
     @default("disable_addons")
-    def _default(self):
+    def _default_disable_addons(self):
         """the addons that are disabled by default."""
         return []
 
