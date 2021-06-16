@@ -747,7 +747,17 @@ class U:
     def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
         for task in ["status", lite_task]:
-            args = ["jupyter", "lite", task, "--files", ".", "--output-dir", B.DOCS_APP]
+            args = [
+                "jupyter",
+                "lite",
+                task,
+                "--files",
+                ".",
+                "--output-dir",
+                B.DOCS_APP,
+                "--app-archive",
+                B.APP_PACK,
+            ]
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
 

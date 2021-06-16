@@ -1,7 +1,13 @@
 """a jupyterlite addon for supporting extension settings"""
 import json
 
-from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS, OVERRIDES_JSON
+from ..constants import (
+    JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_JSON,
+    LAB_EXTENSIONS,
+    OVERRIDES_JSON,
+    SETTINGS_OVERRIDES,
+)
 from .base import BaseAddon
 
 
@@ -21,7 +27,7 @@ class SettingsAddon(BaseAddon):
 
         yield dict(
             name="overrides",
-            actions=[lambda: print(f"""    overrides.json: {len(apps)}""")],
+            actions=[lambda: print(f"""    {OVERRIDES_JSON}: {len(apps)}""")],
         )
 
     def pre_build(self, manager):
@@ -61,9 +67,7 @@ class SettingsAddon(BaseAddon):
 
         for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
             config = json.loads(lite_json.read_text(encoding="utf-8"))
-            overrides = config.get("jupyter-config-data", {}).get(
-                "settingsOverrides", {}
-            )
+            overrides = config.get(JUPYTER_CONFIG_DATA, {}).get(SETTINGS_OVERRIDES, {})
             for plugin_id, defaults in overrides.items():
                 ext, plugin = plugin_id.split(":")
                 schema = lab_extensions / ext / "schemas" / ext / f"{plugin}.json"
@@ -88,9 +92,9 @@ class SettingsAddon(BaseAddon):
         try:
             config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
         except:
-            config = {"jupyter-config-data": {}}
+            config = {JUPYTER_CONFIG_DATA: {}}
 
-        overrides = config["jupyter-config-data"].get("settingsOverrides", {})
+        overrides = config[JUPYTER_CONFIG_DATA].get(SETTINGS_OVERRIDES, {})
 
         from_json = json.loads(overrides_json.read_text(encoding="utf-8"))
         for k, v in from_json.items():
@@ -99,7 +103,7 @@ class SettingsAddon(BaseAddon):
             else:
                 overrides[k] = v
 
-        config["jupyter-config-data"]["settingsOverrides"] = overrides
+        config[JUPYTER_CONFIG_DATA][SETTINGS_OVERRIDES] = overrides
 
         jupyterlite_json.write_text(
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"

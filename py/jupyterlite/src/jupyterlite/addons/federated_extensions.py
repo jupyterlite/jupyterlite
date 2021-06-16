@@ -1,9 +1,17 @@
-"""a jupyterlite addon for supporting federated_extensions"""
+"""a jupyterlite addon for supporting federated_extensions
+
+
+"""
 import json
 import sys
 from pathlib import Path
 
-from ..constants import JUPYTERLITE_JSON, LAB_EXTENSIONS
+from ..constants import (
+    FEDERATED_EXTENSIONS,
+    JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_JSON,
+    LAB_EXTENSIONS,
+)
 from .base import BaseAddon
 
 # TODO: improve this
@@ -68,20 +76,23 @@ class FederatedExtensionAddon(BaseAddon):
             actions=[(self.patch_jupyterlite_json, [jupyterlite_json])],
         )
 
-        lab_extensions_root = manager.output_dir / "lab/extensions"
+        lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
         lab_extensions = [
             *lab_extensions_root.glob("*/package.json"),
             *lab_extensions_root.glob("@*/*/package.json"),
         ]
         stems = [p.parent.relative_to(lab_extensions_root) for p in lab_extensions]
         for app in self.manager.apps:
+            # this is _not_ hoisted to a global, as is hard-coded in webpack.config.js
+            # but _could_ be changed
             app_themes = manager.output_dir / app / "build/themes"
             for stem in stems:
                 pkg = lab_extensions_root / stem
+                # this pattern appears to be canonical
                 theme_dir = pkg / "themes" / stem
                 if not theme_dir.is_dir():
                     continue
-                # this may be a package or an org... same result
+                # this may be a package or an @org/package... same result
                 file_dep = sorted([p for p in theme_dir.rglob("*") if not p.is_dir()])
                 targets = [app_themes / p.relative_to(theme_dir) for p in file_dep]
                 dest = app_themes / stem
@@ -94,10 +105,14 @@ class FederatedExtensionAddon(BaseAddon):
                 )
 
     def patch_jupyterlite_json(self, jupyterlite_json):
-        """add the federated_extensions to jupyter-lite.json"""
+        """add the federated_extensions to jupyter-lite.json
+
+        TODO: it _really_ doesn't like duplicate ids, probably need to catch it
+            earlier... not possible with "pure" schema (but perhaps SHACL?)
+        """
         config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
 
-        extensions = config["jupyter-config-data"].get("federated_extensions", [])
+        extensions = config[JUPYTER_CONFIG_DATA].get(FEDERATED_EXTENSIONS, [])
 
         for pkg_json in self.env_extensions:
             pkg_data = json.loads(pkg_json.read_text(encoding="utf-8"))
@@ -105,7 +120,7 @@ class FederatedExtensionAddon(BaseAddon):
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
 
-        config["jupyter-config-data"]["federated_extensions"] = sorted(
+        config[JUPYTER_CONFIG_DATA][FEDERATED_EXTENSIONS] = sorted(
             extensions, key=lambda ext: ext["name"]
         )
 

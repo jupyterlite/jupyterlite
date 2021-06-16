@@ -20,6 +20,12 @@ REQUIREMENTS_TXT = "requirements.txt"
 # output equivalent to `sha256sum *` for providing a local bill-of-data
 SHA256SUMS = "SHA256SUMS"
 
+# a script DOM ID on most jupyter pages
+JUPYTER_CONFIG_DATA = "jupyter-config-data"
+FEDERATED_EXTENSIONS = "federated_extensions"
+DISABLED_EXTENSIONS = "disabledExtensions"
+SETTINGS_OVERRIDES = "settingsOverrides"
+
 ### jupyterlite "well-known" paths
 
 # similar to `.binder`, this signals a minimum build environment with predictable names

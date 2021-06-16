@@ -5,6 +5,7 @@ import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
+from ..constants import DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS, SETTINGS_OVERRIDES
 from ..manager import LiteManager
 
 
@@ -63,9 +64,9 @@ class BaseAddon(LoggingConfigurable):
             in_config = json.loads(in_path.read_text(encoding="utf-8"))
 
             for k, v in in_config.items():
-                if k in ["disabledExtensions", "federated_extensions"]:
+                if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
                     config[k] = [*config.get("k", []), *v]
-                elif k in ["settingsOverrides"]:
+                elif k in [SETTINGS_OVERRIDES]:
                     config[k] = config.get(k, {})
                     for pkg, pkg_config in v.items():
                         config[k][pkg] = config[k].get(pkg, {})
