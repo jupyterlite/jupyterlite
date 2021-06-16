@@ -36,7 +36,7 @@ class FederatedExtensionAddon(BaseAddon):
             yield self.output_env_extensions_dir / stem
 
     def pre_build(self, manager):
-        """yield a doit task for each federated extension (and/or theme per app)"""
+        """yield a doit task to copy each federated extension into the output_dir"""
 
         for pkg_json in self.env_extensions:
             pkg = pkg_json.parent
@@ -44,31 +44,21 @@ class FederatedExtensionAddon(BaseAddon):
             dest = self.output_env_extensions_dir / stem
             file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
             targets = [dest / p.relative_to(pkg) for p in file_dep]
+
             yield dict(
-                name=f"lab:copy:ext:{stem}",
+                name=f"copy:ext:{stem}",
                 file_dep=file_dep,
                 targets=targets,
                 actions=[(self.copy_one, [pkg, dest])],
             )
 
-        for app in self.manager.apps:
-            app_themes = manager.output_dir / app / "build/themes"
-            for theme_dir in pkg.parent.glob("themes/*"):
-                pkg = theme_dir.parent.relative_to(ENV_EXTENSIONS)
-                file_dep = [p for p in theme_dir.rglob("*") if not p.is_dir()]
-                targets = [
-                    app_themes / pkg / p.relative_to(theme_dir) for p in file_dep
-                ]
-                yield dict(
-                    name=f"{app}:copy:theme:{pkg}",
-                    doc=f"copy theme asset to {app} for {pkg}",
-                    file_dep=file_dep,
-                    targets=targets,
-                    actions=[self.copy_one, [theme_dir, app_themes / pkg]],
-                )
-
     def post_build(self, manager):
-        """yields a single task to update the root jupyter-lite.json"""
+        """update the root jupyter-lite.json, and copy each output theme to each app
+
+        TODO: the latter per-app steps should be at least cut in half, if not
+            avoided altogether.
+            See https://github.com/jtpio/jupyterlite/issues/118
+        """
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
 
         yield dict(
@@ -77,6 +67,31 @@ class FederatedExtensionAddon(BaseAddon):
             file_dep=[*self.env_extensions, jupyterlite_json],
             actions=[(self.patch_jupyterlite_json, [jupyterlite_json])],
         )
+
+        lab_extensions_root = manager.output_dir / "lab/extensions"
+        lab_extensions = [
+            *lab_extensions_root.glob("*/package.json"),
+            *lab_extensions_root.glob("@*/*/package.json"),
+        ]
+        stems = [p.parent.relative_to(lab_extensions_root) for p in lab_extensions]
+        for app in self.manager.apps:
+            app_themes = manager.output_dir / app / "build/themes"
+            for stem in stems:
+                pkg = lab_extensions_root / stem
+                theme_dir = pkg / "themes" / stem
+                if not theme_dir.is_dir():
+                    continue
+                # this may be a package or an org... same result
+                file_dep = sorted([p for p in theme_dir.rglob("*") if not p.is_dir()])
+                targets = [app_themes / p.relative_to(theme_dir) for p in file_dep]
+                dest = app_themes / stem
+                yield dict(
+                    name=f"copy:theme:{app}:{stem}",
+                    doc=f"copy theme asset to {app} for {pkg}",
+                    file_dep=file_dep,
+                    targets=targets,
+                    actions=[(self.copy_one, [theme_dir, dest])],
+                )
 
     def patch_jupyterlite_json(self, jupyterlite_json):
         """add the federated_extensions to jupyter-lite.json"""

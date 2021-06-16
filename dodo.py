@@ -609,7 +609,7 @@ class U:
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
             [
-                str((p.parent / "src/index.ts").relative_to(P.ROOT).as_posix())
+                str(next(p.parent.glob("src/index.ts*")).relative_to(P.ROOT).as_posix())
                 for p in P.PACKAGE_JSONS
                 if p.parent.name not in C.NO_TYPEDOC
             ]
