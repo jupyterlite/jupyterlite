@@ -73,3 +73,18 @@ def test_cli_check(an_empty_lite_dir, script_runner, lite_hook):
         duration_2 = time.time() - restarted
         assert rereturned_status.success
         assert duration_1 > duration_2
+
+        # force
+        forced_status = script_runner.run(
+            "jupyter", "lite", lite_hook, "--force", cwd=an_empty_lite_dir
+        )
+        assert forced_status.success
+
+
+@pytest.mark.script_launch_mode("subprocess")
+def test_cli_raw_doit(an_empty_lite_dir, script_runner):
+    returned_status = script_runner.run(
+        "jupyter", "lite", "doit", "--", "--help", cwd=an_empty_lite_dir
+    )
+    assert returned_status.success
+    assert "http://pydoit.org" in returned_status.stdout
