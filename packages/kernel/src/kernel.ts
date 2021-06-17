@@ -102,6 +102,15 @@ export abstract class BaseKernel implements IKernel {
       case 'history_request':
         await this._historyRequest(msg);
         break;
+      case 'comm_open':
+        await this.commOpen(msg as KernelMessage.ICommOpenMsg);
+        break;
+      case 'comm_msg':
+        await this.commMsg(msg as KernelMessage.ICommMsgMsg);
+        break;
+      case 'comm_close':
+        await this.commClose(msg as KernelMessage.ICommCloseMsg);
+        break;
       default:
         break;
     }
@@ -177,6 +186,27 @@ export abstract class BaseKernel implements IKernel {
   ): Promise<void>;
 
   /**
+   * Send an `comm_open` message.
+   *
+   * @param msg - The comm_open message.
+   */
+  abstract commOpen(msg: KernelMessage.ICommOpenMsg): Promise<void>;
+
+  /**
+   * Send an `comm_msg` message.
+   *
+   * @param msg - The comm_msg message.
+   */
+  abstract commMsg(msg: KernelMessage.ICommMsgMsg): Promise<void>;
+
+  /**
+   * Send an `comm_close` message.
+   *
+   * @param close - The comm_close message.
+   */
+  abstract commClose(msg: KernelMessage.ICommCloseMsg): Promise<void>;
+
+  /**
    * Stream an event from the kernel
    *
    * @param parentHeader The parent header.
@@ -207,6 +237,25 @@ export abstract class BaseKernel implements IKernel {
       session: this._parentHeader?.session ?? '',
       parentHeader: this._parentHeader,
       content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `comm` message to the client.
+   *
+   * @param .
+   */
+  protected handleComm(type: string, content: any, metadata: any, buffers: any): void {
+    const message = KernelMessage.createMessage<any>({
+      channel: 'iopub',
+      msgType: type,
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content,
+      metadata,
+      buffers
     });
     this._sendMessage(message);
   }
