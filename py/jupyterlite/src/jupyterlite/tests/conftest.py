@@ -1,0 +1,1 @@
+"""pytest configuration for jupyterlite"""
