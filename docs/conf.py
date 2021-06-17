@@ -123,7 +123,7 @@ def before_rtd_build(app: Sphinx, error):
     """this performs the full frontend build, and ensures the typedoc"""
     print("jupyterlite: Ensuring built application...", flush=True)
     subprocess.check_call(
-        ["doit", "-n4", "build", "docs:typedoc:mystify", "app:pack"],
+        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:app:pack"],
         cwd=str(ROOT),
     )
 
