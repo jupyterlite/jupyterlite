@@ -16,6 +16,7 @@ coverage
 *.bundle.js
 docs/_build
 app/lab/extensions/
+packages/kernel/src/_*.ts
 
 # jetbrains IDE stuff
 .idea/

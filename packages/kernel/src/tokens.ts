@@ -59,6 +59,11 @@ export interface IKernel extends IObservableDisposable {
   readonly ready: Promise<void>;
 
   /**
+   * A comm manager.
+   */
+  readonly comm_manager: ICommManager;
+
+  /**
    * Handle an incoming message from the client.
    *
    * @param msg The message to handle
@@ -158,6 +163,11 @@ export namespace IKernel {
      * The method to send messages back to the server.
      */
     sendMessage: SendMessage;
+
+    /*
+     * The comm manager.
+     */
+    comm_manager?: ICommManager;
   }
 }
 
@@ -188,4 +198,76 @@ export interface IKernelSpecs {
    * @param options The kernel spec options.
    */
   register: (options: KernelSpecs.IKernelOptions) => void;
+}
+
+export interface ICommManager {
+  /** kernel = Instance('ipykernel.kernelbase.Kernel') */
+  kernel: IKernel;
+  /** comms = Dict() */
+  comms: Map<string, ICommManager.IComm>;
+  /** targets = Dict() */
+  targets: Map<string, ICommManager.ITarget>;
+  /** register_target(self, target_name, f): */
+  register_target(target_name: string, f: ICommManager.ITarget): void;
+  /** unregister_target(self, target_name, f): */
+  unregister_target(
+    target_name: string,
+    f: ICommManager.ITarget
+  ): ICommManager.ITarget | null;
+  /** register_comm(self, comm): */
+  register_comm(comm: ICommManager.IComm): string;
+  /** unregister_comm(self, comm):  */
+  unregister_comm(comm: ICommManager.IComm): void;
+  /** get_comm(self, comm_id): */
+  get_comm(comm_id: string): ICommManager.IComm;
+  /** comm_open(self, stream, ident, msg): */
+  comm_open(msg: any): Promise<void>;
+  /** comm_msg(self, stream, ident, msg):  */
+  comm_msg(msg: any): Promise<void>;
+  /** comm_close(self, stream, ident, msg): */
+  comm_close(msg: any): Promise<void>;
+}
+
+export namespace ICommManager {
+  export interface IOptions {
+    /** kernel = Instance('ipykernel.kernelbase.Kernel') */
+    kernel: IKernel;
+    sendMessage: IKernel.SendMessage;
+  }
+
+  export interface IComm {
+    comm_id: string;
+    /** kernel = Instance('ipykernel.kernelbase.Kernel') */
+    kernel: IKernel;
+    primary: boolean;
+    /** open(self, data=None, metadata=None, buffers=None): */
+    open(data?: any, metdata?: any, buffers?: any): Promise<void>;
+    /** close(self, data=None, metadata=None, buffers=None, deleting=False): */
+    close(data?: any, metadata?: any, buffers?: any, deleting?: boolean): Promise<void>;
+    /** send(self, data=None, metadata=None, buffers=None): */
+    send(data?: any, metadata?: any, buffers?: any): Promise<void>;
+    on_close(callback: (msg: any) => Promise<void>): void;
+    on_msg(callback: (msg: any) => Promise<void>): void;
+    handle_close(msg: any): Promise<void>;
+    handle_msg(msg: any): Promise<void>;
+    _closed: boolean;
+  }
+
+  export interface ICommOptions {
+    sendMessage: IKernel.SendMessage;
+    kernel: IKernel;
+    comm_id: string;
+    primary: boolean;
+    target_name: string;
+    topic?: string;
+    data?: any;
+    metadata?: any;
+    buffers?: any;
+  }
+
+  export interface ITarget {
+    (comm: IComm, msg: any): Promise<void>;
+  }
+
+  export class APINotImplemented extends Error {}
 }

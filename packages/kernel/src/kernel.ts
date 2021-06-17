@@ -1,8 +1,9 @@
 import { KernelMessage } from '@jupyterlab/services';
 
 import { ISignal, Signal } from '@lumino/signaling';
+import { createDefaultCommManager } from './comm_manager';
 
-import { IKernel } from './tokens';
+import { IKernel, ICommManager } from './tokens';
 
 /**
  * A base kernel class handling basic kernel messaging.
@@ -18,6 +19,31 @@ export abstract class BaseKernel implements IKernel {
     this._id = id;
     this._name = name;
     this._sendMessage = sendMessage;
+    this._comm_manager =
+      options.comm_manager || createDefaultCommManager({ kernel: this, sendMessage });
+    this.attemptWidgets().catch(console.error);
+  }
+
+  /**
+   * Provide a widget implementation on this kernel. It's still up to the
+   * kernel to provide guest-language access to this object on `self` (or `this`).
+   *
+   * In pyodide, this might need to be achieved with `comlink` or similar,
+   * but may belong at the comm_manager level.
+   */
+  protected async attemptWidgets(): Promise<void> {
+    let widgets = await import('./proto_widgets');
+
+    // these widgets are generated _en masse_, and should either all work or fail
+    try {
+      const schemaWidgets = await import('./_proto_wrappers');
+      widgets = { ...widgets, ...schemaWidgets.ALL };
+    } catch (err) {
+      console.log('attemptWidgts error', err);
+    }
+
+    (this as any).widgets = widgets;
+    widgets._Widget._kernel = this;
   }
 
   /**
@@ -53,6 +79,13 @@ export abstract class BaseKernel implements IKernel {
    */
   get name(): string {
     return this._name;
+  }
+
+  /**
+   * Get the comm manager
+   */
+  get comm_manager(): ICommManager {
+    return this._comm_manager;
   }
 
   /**
@@ -101,6 +134,15 @@ export abstract class BaseKernel implements IKernel {
         break;
       case 'history_request':
         await this._historyRequest(msg);
+        break;
+      case 'comm_open':
+        await this._comm_manager.comm_open(msg);
+        break;
+      case 'comm_msg':
+        await this._comm_manager.comm_msg(msg);
+        break;
+      case 'comm_close':
+        await this._comm_manager.comm_close(msg);
         break;
       default:
         break;
@@ -446,4 +488,5 @@ export abstract class BaseKernel implements IKernel {
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
+  private _comm_manager: ICommManager;
 }

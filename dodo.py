@@ -617,6 +617,12 @@ class U:
                 flags=re.M | re.S,
             )
             out_text = re.sub(
+                r"^#### Parameters",
+                r"### Parameters",
+                out_text,
+                flags=re.M | re.S,
+            )
+            out_text = re.sub(
                 r"^((Implementation of|Overrides|Inherited from):)",
                 "_\\1_",
                 out_text,
@@ -740,7 +746,7 @@ class U:
 
 # environment overloads
 os.environ.update(
-    NODE_OPTS="--max-old-space-size=4096",
+    NODE_OPTIONS="--max-old-space-size=8192",
     PYTHONIOENCODING=C.ENC["encoding"],
     PIP_DISABLE_PIP_VERSION_CHECK="1",
 )
