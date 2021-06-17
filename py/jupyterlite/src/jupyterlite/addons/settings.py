@@ -70,12 +70,17 @@ class SettingsAddon(BaseAddon):
             overrides = config.get(JUPYTER_CONFIG_DATA, {}).get(SETTINGS_OVERRIDES, {})
             for plugin_id, defaults in overrides.items():
                 ext, plugin = plugin_id.split(":")
-                schema = lab_extensions / ext / "schemas" / ext / f"{plugin}.json"
+                plugin_stem = f"schemas/{ext}/{plugin}.json"
+                schema = lab_extensions / ext / plugin_stem
                 if not schema.exists():
-                    self.log.debug(
-                        f"[lite] [settings] Missing {schema} (probably in `all.json`)"
-                    )
-                    continue
+                    core_schema = manager.output_dir / "lab/build" / plugin_stem
+                    if core_schema.exists():
+                        schema = core_schema
+                    else:
+                        self.log.debug(
+                            f"[lite] [settings] Missing {schema} (probably in `all.json`)"
+                        )
+                        continue
 
                 validator = self.get_validator(schema)
 

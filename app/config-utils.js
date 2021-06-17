@@ -100,7 +100,15 @@ async function jupyterConfigData() {
 
   const configs = (await Promise.all(promises)).flat();
 
-  return (_JUPYTER_CONFIG = configs.reduce(mergeOneConfig));
+  let finalConfig = configs.reduce(mergeOneConfig);
+
+  // apply any final patches
+  finalConfig = dedupFederatedExtensions(finalConfig);
+
+  // hoist to cache
+  _JUPYTER_CONFIG = finalConfig;
+
+  return finalConfig;
 }
 
 /**
@@ -128,6 +136,17 @@ function mergeOneConfig(memo, config) {
     }
   }
   return memo;
+}
+
+function dedupFederatedExtensions(config) {
+  const originalList = Object.keys(config || {})['federated_extensions'] || [];
+  const named = {};
+  for (const ext of originalList) {
+    named[ext.name] = ext;
+  }
+  let allExtensions = [...Object.values(named)];
+  allExtensions.sort((a, b) => a.name.localeCompare(b.name));
+  return config;
 }
 
 /**

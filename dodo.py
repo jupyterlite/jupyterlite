@@ -173,13 +173,20 @@ def task_build():
         )
 
     app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
-    all_app_wheels = []
+    all_app_targets = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
         app_data = json.loads(app_json.read_text(**C.ENC))
-        app_wheels = [app / f"build/{w.name}" for w in wheels]
-        all_app_wheels += app_wheels
+        app_build = app / "build"
+        app_targets = [
+            app_build / "bundle.js",
+            app_build / "index.js",
+            app_build / "style.js",
+        ]
+        app_targets += [app_build / w.name for w in wheels]
+        all_app_targets += app_targets
+
         yield dict(
             name=f"js:app:{app.name}",
             doc=f"build JupyterLite {app.name.title()} with webpack",
@@ -192,17 +199,19 @@ def task_build():
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
-            targets=[app / "build/bundle.js", *app_wheels],
+            targets=[*app_targets],
         )
 
     yield dict(
         name="js:pack",
         doc="build the JupyterLite distribution",
         file_dep=[
-            *all_app_wheels,
+            *all_app_targets,
             P.APP_SCHEMA,
             *P.APP.glob("*/*/index.html"),
-            *P.APP.glob("*/build/bundle.js"),
+            *P.APP.glob("*/build/schemas/**/.json"),
+            *P.APP.glob("*.js"),
+            *P.APP.glob("*.json"),
             B.META_BUILDINFO,
             P.APP / "index.html",
             P.APP_NPM_IGNORE,
