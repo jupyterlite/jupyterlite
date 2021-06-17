@@ -1,9 +1,18 @@
 # minimum needed to build jupyterlite docs... in addition to nodejs and yarn
 # see .binder/ and docs/ for full development/docs environments
 -r requirements.txt
-myst-nb
-pydata-sphinx-theme
-pytest-check-links
+
+# build
 sphinx
 sphinx-jsonschema
 sphinxext-rediraffe
+myst-nb
+pydata-sphinx-theme
+
+# check
+pytest-check-links
+
+# test
+hypothesis-jsonschema
+pytest-console-scripts
+pytest-cov

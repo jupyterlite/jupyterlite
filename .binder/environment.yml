@@ -32,10 +32,15 @@ dependencies:
   # docs
   - myst-nb
   - pydata-sphinx-theme
-  - pytest-check-links
   - sphinx
   - sphinx-jsonschema
   - sphinxext-rediraffe
+  # check
+  - pytest-check-links
+  # test
+  - hypothesis-jsonschema
+  - pytest-console-scripts
+  - pytest-cov
   # list of federated extensions for the demo site
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
