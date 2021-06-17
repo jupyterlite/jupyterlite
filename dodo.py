@@ -320,11 +320,10 @@ def task_docs():
         name="sphinx",
         doc="build the documentation site with sphinx",
         file_dep=[
-            B.DOCS_TS_MYST_INDEX,
             *P.DOCS_MD,
             *P.DOCS_PY,
-            B.APP_PACK,
-            B.DOCS_APP_SHA256SUMS,
+            B.DOCS_APP_ARCHIVE,
+            B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO],
