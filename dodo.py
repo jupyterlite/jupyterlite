@@ -404,6 +404,44 @@ def task_test():
         actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
 
+    pytest_args = [
+        "pytest",
+        "--cov-fail-under",
+        "100",
+        "--cov-report",
+        "term-missing:skip-covered",
+    ]
+
+    for py_name, setup_py in P.PY_SETUP_PY.items():
+        if py_name != "jupyterlite":
+            # TODO: we'll get there
+            continue
+
+        py_mod = py_name.replace("-", "_")
+        cov_path = B.BUILD / f"htmlcov/{py_name}"
+        cov_index = cov_path / "index.html"
+
+        yield U.ok(
+            B.OK_LITE_PYTEST,
+            name=f"py:{py_name}",
+            doc=f"run pytest for {py_name}",
+            task_dep=[f"dev:py:{py_name}"],
+            # TODO: investigate further
+            file_dep=[],
+            # should generate
+            targets=[cov_index],
+            actions=[
+                U.do(
+                    *pytest_args,
+                    "--cov",
+                    py_mod,
+                    "--cov-report",
+                    f"html:{cov_path}",
+                    cwd=setup_py.parent,
+                )
+            ],
+        )
+
 
 class C:
     NAME = "jupyterlite"
@@ -596,6 +634,7 @@ class B:
     OK_JEST = OK / "jest"
     OK_PRETTIER = OK / "prettier"
     OK_PYFLAKES = OK / "pyflakes"
+    OK_LITE_PYTEST = OK / "jupyterlite.pytest"
 
 
 class U:
