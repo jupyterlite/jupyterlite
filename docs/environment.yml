@@ -27,7 +27,6 @@ dependencies:
   # list of federated extensions for the demo site
   - ipywidgets
   - bqplot
-  - ipydatagrid
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
   - jupyterlab-fasta >=3,<4
