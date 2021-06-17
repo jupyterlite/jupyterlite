@@ -1,18 +1,23 @@
 """the JupyterLite CLI App(s)"""
 from pathlib import Path
 
-from jupyter_core.application import JupyterApp, base_aliases
-from traitlets import Instance, default
+from jupyter_core.application import JupyterApp, base_aliases, base_flags
+from traitlets import Bool, Instance, default
 
 from . import __version__
 from .config import LiteBuildConfig
+from .constants import PHASES
 from .manager import LiteManager
 
 
-class BaseApp(JupyterApp, LiteBuildConfig):
+class BaseLiteApp(JupyterApp, LiteBuildConfig):
     """TODO: An undescribed app"""
 
     version = __version__
+
+    force = Bool(
+        False, help="forget previous runs of task and re-run from the beginning"
+    ).tag(config=True)
 
     # traitlets app stuff
     aliases = dict(
@@ -29,12 +34,24 @@ class BaseApp(JupyterApp, LiteBuildConfig):
         },
     )
 
+    flags = dict(
+        **base_flags,
+        **{
+            "force": (
+                {"BaseLiteApp": {"force": True}},
+                force.help,
+            ),
+        },
+    )
+
     @property
     def description(self):
         return self.__doc__.splitlines()[0].strip()
 
 
-class ManagedApp(BaseApp):
+class ManagedApp(BaseLiteApp):
+    """An app with a LiteManager that can do some config fixing"""
+
     lite_manager = Instance(LiteManager)
 
     @default("lite_manager")
@@ -67,69 +84,90 @@ class ManagedApp(BaseApp):
         self.lite_manager.initialize()
 
 
-class DoitApp(ManagedApp):
+# doit stuff
+class LiteDoitApp(ManagedApp):
+    """Run the doit command"""
+
     _doit_cmd = None
 
     def start(self):
         super().start()
+        if self.force:
+            self._forget()
         self.lite_manager.doit_run(*self._doit_cmd)
 
-
-class StatusApp(DoitApp):
-    """report about what a JupyterLite build _might_ do"""
-
-    _doit_cmd = ["post_status"]
+    def _forget(self):
+        self.lite_manager.doit_run("forget", *self._doit_cmd)
 
 
-class ListApp(DoitApp):
+# list is a little special
+class LiteListApp(LiteDoitApp):
     """describe a JupyterLite folder"""
 
     _doit_cmd = ["list", "--all", "--status"]
 
 
-class InitApp(DoitApp):
+class LiteTaskApp(LiteDoitApp):
+    _doit_task = None
+
+    @property
+    def _doit_cmd(self):
+        return [f"{phase}{self._doit_task}" for phase in PHASES]
+
+    def _forget(self):
+        for phase in PHASES:
+            self.lite_manager.doit_run("forget", f"{phase}{self._doit_task}")
+
+
+class LiteStatusApp(LiteTaskApp):
+    """report about what a JupyterLite build _might_ do"""
+
+    _doit_task = "status"
+
+
+class LiteInitApp(LiteTaskApp):
     """initialize a JupyterLite folder"""
 
-    _doit_cmd = ["post_init"]
+    _doit_task = "init"
 
 
-class BuildApp(DoitApp):
+class LiteBuildApp(LiteTaskApp):
     """build a JupyterLite folder"""
 
-    _doit_cmd = ["post_build"]
+    _doit_task = "build"
 
 
-class CheckApp(DoitApp):
+class LiteCheckApp(LiteTaskApp):
     """verify a JupyterLite folder"""
 
-    _doit_cmd = ["post_check"]
+    _doit_task = "check"
 
 
-class ServeApp(DoitApp):
+class LiteServeApp(LiteTaskApp):
     """verify a JupyterLite folder"""
 
-    _doit_cmd = ["post_serve"]
+    _doit_task = "serve"
 
 
-class ArchiveApp(DoitApp):
+class LiteArchiveApp(LiteTaskApp):
     """build a JupyterLite app archive"""
 
-    _doit_cmd = ["post_archive"]
+    _doit_task = "archive"
 
 
-class LiteApp(BaseApp):
+class LiteApp(BaseLiteApp):
     """build ready-to-serve JupyterLite sites"""
 
     name = "lite"
 
     subcommands = dict(
-        status=(StatusApp, ListApp.__doc__.splitlines()[0]),
-        list=(ListApp, ListApp.__doc__.splitlines()[0]),
-        init=(InitApp, InitApp.__doc__.splitlines()[0]),
-        build=(BuildApp, BuildApp.__doc__.splitlines()[0]),
-        check=(CheckApp, CheckApp.__doc__.splitlines()[0]),
-        serve=(ServeApp, ServeApp.__doc__.splitlines()[0]),
-        archive=(ArchiveApp, ArchiveApp.__doc__.splitlines()[0]),
+        status=(LiteStatusApp, LiteStatusApp.__doc__.splitlines()[0]),
+        list=(LiteListApp, LiteListApp.__doc__.splitlines()[0]),
+        init=(LiteInitApp, LiteInitApp.__doc__.splitlines()[0]),
+        build=(LiteBuildApp, LiteBuildApp.__doc__.splitlines()[0]),
+        check=(LiteCheckApp, LiteCheckApp.__doc__.splitlines()[0]),
+        serve=(LiteServeApp, LiteServeApp.__doc__.splitlines()[0]),
+        archive=(LiteArchiveApp, LiteArchiveApp.__doc__.splitlines()[0]),
     )
 
 
