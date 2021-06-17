@@ -779,6 +779,7 @@ class U:
                 "jupyter",
                 "lite",
                 task,
+                "--debug",
                 "--files",
                 ".",
                 "--output-dir",

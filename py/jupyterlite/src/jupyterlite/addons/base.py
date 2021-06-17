@@ -72,7 +72,7 @@ class BaseAddon(LoggingConfigurable):
 
             for k, v in in_config.items():
                 if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
-                    config[k] = [*config.get("k", []), *v]
+                    config[k] = sorted({*config.get(k, []), *v})
                 elif k in [SETTINGS_OVERRIDES]:
                     config[k] = config.get(k, {})
                     for pkg, pkg_config in v.items():
@@ -81,6 +81,23 @@ class BaseAddon(LoggingConfigurable):
                 else:
                     config[k] = v
 
+        self.dedupe_federated_extensions(config)
+
         out_path.write_text(
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
+
+    def dedupe_federated_extensions(self, config):
+        """update a federated_extension list in-place, ensuring unique names.
+
+        TODO: best we can do, for now.
+        """
+        if FEDERATED_EXTENSIONS not in config:
+            return
+
+        named = {}
+
+        for ext in config[FEDERATED_EXTENSIONS]:
+            named[ext["name"]] = ext
+
+        config[FEDERATED_EXTENSIONS] = sorted(named.values(), key=lambda x: x["name"])

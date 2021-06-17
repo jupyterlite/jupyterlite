@@ -117,8 +117,6 @@ class FederatedExtensionAddon(BaseAddon):
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]
 
-        config[JUPYTER_CONFIG_DATA][FEDERATED_EXTENSIONS] = sorted(
-            extensions, key=lambda ext: ext["name"]
-        )
+        self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
         jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
