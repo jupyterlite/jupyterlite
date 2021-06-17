@@ -410,6 +410,7 @@ def task_test():
         "100",
         "--cov-report",
         "term-missing:skip-covered",
+        "--no-cov-on-fail",
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
