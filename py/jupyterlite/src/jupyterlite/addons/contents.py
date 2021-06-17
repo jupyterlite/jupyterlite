@@ -5,6 +5,8 @@ import pprint
 import re
 from pathlib import Path
 
+import doit
+
 from ..constants import ALL_JSON, API_CONTENTS
 from .base import BaseAddon
 
@@ -59,7 +61,10 @@ class ContentsAddon(BaseAddon):
             yield dict(
                 name=f"contents:{stem}",
                 doc=f"create a Jupyter Contents API response for {stem}",
-                actions=[(self.one_contents_path, [output_file_dir, api_path])],
+                actions=[
+                    (doit.tools.create_folder, [output_file_dir]),
+                    (self.one_contents_path, [output_file_dir, api_path]),
+                ],
                 file_dep=[p for p in output_file_dir.rglob("*") if not p.is_dir()],
                 targets=[api_path],
             )

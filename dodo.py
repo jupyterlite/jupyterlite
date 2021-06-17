@@ -406,11 +406,14 @@ def task_test():
 
     pytest_args = [
         "pytest",
+        "-vv",
         "--cov-fail-under",
-        "100",
+        "80",
         "--cov-report",
         "term-missing:skip-covered",
         "--no-cov-on-fail",
+        "--durations",
+        "5",
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
@@ -428,7 +431,10 @@ def task_test():
             doc=f"run pytest for {py_name}",
             task_dep=[f"dev:py:{py_name}"],
             # TODO: investigate further
-            file_dep=[],
+            file_dep=[
+                *setup_py.parent.rglob("*.py"),
+                setup_py.parent / "pyproject.toml",
+            ],
             # should generate
             targets=[cov_index],
             actions=[

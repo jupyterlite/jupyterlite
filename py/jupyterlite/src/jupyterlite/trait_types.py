@@ -4,7 +4,7 @@ from traitlets import TraitType
 
 
 class CPath(TraitType):
-    """A trait for casting to a Path"""
+    """A trait for casting to a Path. It might not actually exist yet"""
 
     def validate(self, obj, value) -> Path:
         if isinstance(value, Path):
