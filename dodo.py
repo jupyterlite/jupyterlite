@@ -160,7 +160,8 @@ def task_build():
 
     for py_pkg in P.PYOLITE_PACKAGES:
         name = py_pkg.name
-        wheel = py_pkg / f"dist/{name}-0.1.0-{C.NOARCH_WHL}"
+        # TODO: source these versions better
+        wheel = py_pkg / f"dist/{name}-{D.PY_VERSION}-{C.NOARCH_WHL}"
         wheels += [wheel]
         yield dict(
             name=f"js:py:{name}",
@@ -242,7 +243,7 @@ def task_build():
         actions = [U.do(*args, cwd=py_pkg)]
 
         # may do some setup steps: TODO: refactor into separate task
-        if py_name == "jupyterlite":
+        if py_name == C.NAME:
             dest = py_pkg / "src" / py_name / B.APP_PACK.name
             actions = [
                 lambda: [dest.exists() and dest.unlink(), None][-1],
@@ -263,13 +264,13 @@ def task_build():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    py_pkg = P.PY_SETUP_PY["jupyterlite"].parent
+    py_pkg = P.PY_SETUP_PY[C.NAME].parent
 
     # TODO: probably name this file
-    dest = py_pkg / "src" / "jupyterlite" / B.APP_PACK.name
+    dest = py_pkg / "src" / C.NAME / B.APP_PACK.name
 
     yield dict(
-        name="py:jupyterlite",
+        name=f"py:{C.NAME}",
         actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
         file_dep=[dest],
     )
@@ -302,7 +303,7 @@ def task_docs():
     yield dict(
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
-        task_dep=["dev:py:jupyterlite"],
+        task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
         file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
         targets=[B.DOCS_APP_SHA256SUMS],
@@ -326,7 +327,7 @@ def task_docs():
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO],
+        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
 
 
@@ -368,7 +369,7 @@ def task_check():
     yield dict(
         name="app",
         doc="use the jupyterlite CLI to check the docs app",
-        task_dep=["dev:py:jupyterlite"],
+        task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, ["check"])],
         file_dep=[B.DOCS_APP_SHA256SUMS],
     )
@@ -416,7 +417,7 @@ def task_test():
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
-        if py_name != "jupyterlite":
+        if py_name != C.NAME:
             # TODO: we'll get there
             continue
 
@@ -499,8 +500,8 @@ class P:
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
     PY_SETUP_DEPS = {
-        "jupyterlite": lambda: [B.APP_PACK],
-        "jupyterlite-labextension": lambda: [],
+        C.NAME: lambda: [B.APP_PACK],
+        f"{C.NAME}-labextension": lambda: [],
     }
 
     # docs
@@ -532,7 +533,7 @@ class P:
 class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
-
+    APP_VERSION = APP["version"]
     # derive the PEP-compatible version
     PY_VERSION = APP["version"].replace("-alpha.", "a")
 
@@ -612,16 +613,16 @@ class B:
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
-    APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
+    APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
 
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
-    DOCS_APP_ARCHIVE = DOCS_APP / "docs-jupyterlite-0.1.0.tgz"
+    DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
     DOCS_STATIC = DOCS / "_static"
-    DOCS_JUPYTERLITE_JSON = DOCS / "jupyter-lite.json"
+    DOCS_STATIC_APP = DOCS_STATIC / DOCS_APP_ARCHIVE.name
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"

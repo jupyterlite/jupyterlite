@@ -8,7 +8,8 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0-py3-none-any.whl';
+// TODO: sync this version with the npm version
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0a0-py3-none-any.whl';
 
 /**
  * A kernel that executes Python code with Pyodide.
