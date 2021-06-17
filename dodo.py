@@ -314,7 +314,12 @@ def task_docs():
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
-        file_dep=[B.APP_PACK, *P.ALL_EXAMPLES],
+        file_dep=[
+            B.APP_PACK,
+            *P.ALL_EXAMPLES,
+            # NOTE: these won't always trigger a rebuild because of the inner dodo
+            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        ],
         targets=[B.DOCS_APP_SHA256SUMS],
     )
 
@@ -380,7 +385,11 @@ def task_check():
         doc="use the jupyterlite CLI to check the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, ["check"])],
-        file_dep=[B.DOCS_APP_SHA256SUMS],
+        file_dep=[
+            B.DOCS_APP_SHA256SUMS,
+            # NOTE: these won't always trigger a rebuild because of the inner dodo
+            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        ],
     )
 
 

@@ -39,7 +39,7 @@ class SettingsAddon(BaseAddon):
                 continue
             dest = app_output_dir / overrides_json.name
             yield dict(
-                name=f"copy:{app}/",
+                name=f"""copy:{app or "root"}/""",
                 file_dep=[overrides_json],
                 targets=[dest],
                 actions=[(self.copy_one, [overrides_json, dest])],
@@ -78,7 +78,7 @@ class SettingsAddon(BaseAddon):
                         schema = core_schema
                     else:
                         self.log.debug(
-                            f"[lite] [settings] Missing {schema} (probably in `all.json`)"
+                            f"[lite] [settings] Missing {plugin} (probably harmless)"
                         )
                         continue
 
