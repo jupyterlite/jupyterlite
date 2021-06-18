@@ -267,13 +267,13 @@ function commClose(content: any) {
 self.onmessage = async (event: MessageEvent): Promise<void> => {
   await pyodideReadyPromise;
   const data = event.data;
-  console.log('Inside worker', data);
 
   const messageType = data.type;
   const messageContent = data.data;
 
   switch (messageType) {
     case 'execute-request':
+      console.log('Perform execution inside worker', data);
       return execute(messageContent);
 
     case 'complete-request':
