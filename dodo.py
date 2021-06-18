@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 from collections import defaultdict
+from hashlib import sha256
 from pathlib import Path
 
 import doit
@@ -269,6 +270,32 @@ def task_build():
             actions=actions,
             targets=targets,
         )
+
+@doit.create_after("build")
+def task_dist():
+    """fix up the state of the distribution directory"""
+
+    dests = []
+    for dist in B.DISTRIBUTIONS:
+        dest = B.DIST / dist.name
+        dests += [dest]
+        yield dict(
+            name=f"copy:{dist.name}",
+            actions=[
+                (U.copy_one, [dist, dest])
+            ],
+            file_dep=[dist],
+            targets=[dest]
+        )
+
+    yield dict(
+        name="hash",
+        file_dep=dests,
+        actions=[
+            (U.hashfile, [B.DIST])
+        ],
+        targets=[B.DIST / "SHA256SUMS"]
+    )
 
 
 def task_dev():
@@ -662,6 +689,11 @@ class B:
     OK_PRETTIER = OK / "prettier"
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
+    DISTRIBUTIONS = [
+        *P.ROOT.glob("py/*/dist/*.whl"),
+        *P.ROOT.glob("py/*/dist/*.tar.gz"),
+    ]
+    DIST_HASH_INPUTS = sorted([*DISTRIBUTIONS, APP_PACK])
 
 
 class U:
@@ -856,6 +888,36 @@ class U:
                 B.DOCS_APP_ARCHIVE,
             ]
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
+
+    @staticmethod
+    def hashfile(path):
+        shasums = path / "SHA256SUMS"
+        lines = []
+
+        for p in path.glob("*"):
+            if p.name == "SHA256SUMS":
+                continue
+            lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
+
+        output = "\n".join(lines)
+        print(output)
+        shasums.write_text(output)
+
+    @staticmethod
+    def copy_one(src, dest):
+        if not src.exists():
+            return False
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True)
+        if dest.exists():
+            if dest.is_dir():
+                shutil.rmtree(dest)
+            else:
+                dest.unlink()
+        if src.is_dir():
+            shutil.copytree(src, dest)
+        else:
+            shutil.copy2(src, dest)
 
 
 # environment overloads
