@@ -161,7 +161,7 @@ def task_build():
 
     for py_pkg, version in P.PYOLITE_PACKAGES.items():
         name = py_pkg.name
-        wheel = py_pkg / f"dist/{name}-{version}-py3-none-any.whl"
+        wheel = py_pkg / f"dist/{name}-{version}-{C.NOARCH_WHL}"
         wheels += [wheel]
         yield dict(
             name=f"js:py:{name}",

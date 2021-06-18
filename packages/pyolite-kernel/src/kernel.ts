@@ -9,7 +9,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 import worker from './worker?raw';
 
 // TODO: see https://github.com/jtpio/jupyterlite/issues/151
-// TODO: sync this version with the npm version
+// TODO: sync this version with the npm version (despite version mangling)
 import pyolite from '../py/pyolite/dist/pyolite-0.1.0a0-py3-none-any.whl';
 
 // TODO: sync this version with the pypi version
