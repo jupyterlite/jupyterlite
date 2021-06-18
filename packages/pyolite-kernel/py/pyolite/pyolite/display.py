@@ -24,7 +24,10 @@ display_publisher = DisplayPublisher()
 
 
 def display(obj, raw=False):
-    display_publisher.publish(obj, raw)
+    if hasattr(obj, "_ipython_display_"):
+        obj._ipython_display_()
+    else:
+        display_publisher.publish(obj, raw)
 
 
 def format_result(result, raw=False):
@@ -40,6 +43,11 @@ def format_result(result, raw=False):
             data[mimetype] = getattr(result, method)()
     bundle = {"data": data, "metadata": metadata}
     return bundle
+
+
+# TODO Implement the clear_output
+def clear_output(*args, **kwargs):
+    pass
 
 
 class DisplayObject:

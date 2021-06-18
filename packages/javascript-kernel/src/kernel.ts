@@ -184,6 +184,33 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
+   * Send an `comm_open` message.
+   *
+   * @param msg - The comm_open message.
+   */
+  async commOpen(msg: KernelMessage.ICommOpenMsg): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Send an `comm_msg` message.
+   *
+   * @param msg - The comm_msg message.
+   */
+  async commMsg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Send an `comm_close` message.
+   *
+   * @param close - The comm_close message.
+   */
+  async commClose(msg: KernelMessage.ICommCloseMsg): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  /**
    * Execute code in the kernel IFrame.
    *
    * @param code The code to execute.

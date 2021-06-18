@@ -17,11 +17,20 @@ async function loadPyodideAndPackages() {
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install('${_pyoliteWheelUrl}')
+    await micropip.install([
+      'traitlets',
+      '${_widgetsnbextensionWheelUrl}',
+      '${_nbformatWheelUrl}',
+      '${_ipykernelWheelUrl}'
+    ])
+    await micropip.install([
+      '${_pyoliteWheelUrl}'
+    ]);
     import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
   interpreter = kernel.interpreter;
+  interpreter.send_comm = sendComm;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
 }
@@ -51,13 +60,37 @@ function formatResult(res: any): any {
   // TODO: this is a bit brittle
   const m = res.toJs();
   const results = mapToObject(m);
-  console.log('results', results);
   return results;
 }
 
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 const pyodideReadyPromise = loadPyodideAndPackages();
+
+/**
+ * Send a comm message to the front-end.
+ *
+ * @param type The type of the comm message.
+ * @param content The content.
+ * @param metadata The metadata.
+ * @param ident The ident.
+ * @param buffers The binary buffers.
+ */
+async function sendComm(
+  type: string,
+  content: any,
+  metadata: any,
+  ident: any,
+  buffers: any
+) {
+  postMessage({
+    type: type,
+    content: formatResult(content),
+    metadata: formatResult(metadata),
+    ident: formatResult(ident),
+    buffers: formatResult(buffers)
+  });
+}
 
 /**
  * Execute code with the interpreter.
@@ -152,6 +185,81 @@ function complete(content: any) {
 }
 
 /**
+ * Respond to the commInfoRequest.
+ *
+ * @param content The incoming message with the comm target name.
+ */
+function commInfo(content: any) {
+  const res = kernel.comm_info(content.target_name);
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results: {
+      comms: results,
+      status: 'ok'
+    }
+  };
+
+  postMessage(reply);
+}
+
+/**
+ * Respond to the commOpen.
+ *
+ * @param content The incoming message with the comm open.
+ */
+function commOpen(content: any) {
+  const res = kernel.comm_manager.comm_open(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
+ * Respond to the commMsg.
+ *
+ * @param content The incoming message with the comm msg.
+ */
+function commMsg(content: any) {
+  const res = kernel.comm_manager.comm_msg(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
+ * Respond to the commClose.
+ *
+ * @param content The incoming message with the comm close.
+ */
+function commClose(content: any) {
+  const res = kernel.comm_manager.comm_close(pyodide.toPy(content));
+  const results = formatResult(res);
+
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'results',
+    results
+  };
+
+  postMessage(reply);
+}
+
+/**
  * Process a message sent to the worker.
  *
  * @param event The message event to process
@@ -170,6 +278,18 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'complete-request':
       return complete(messageContent);
+
+    case 'comm-info-request':
+      return commInfo(messageContent);
+
+    case 'comm-open':
+      return commOpen(messageContent);
+
+    case 'comm-msg':
+      return commMsg(messageContent);
+
+    case 'comm-close':
+      return commClose(messageContent);
 
     default:
       break;

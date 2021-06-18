@@ -2,7 +2,7 @@ from asyncio import ensure_future
 
 from pyodide.console import _InteractiveConsole
 
-from .display import display, format_result
+from .display import display
 
 __all__ = ["Interpreter", "display", "format_result"]
 
@@ -24,4 +24,4 @@ class Interpreter(_InteractiveConsole):
         )
         result = await self.run_complete
         if result is not None:
-            return format_result(result)
+            display(result)
