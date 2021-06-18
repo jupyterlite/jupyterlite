@@ -270,6 +270,7 @@ def task_build():
             targets=targets,
         )
 
+
 @doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
@@ -280,20 +281,16 @@ def task_dist():
         dests += [dest]
         yield dict(
             name=f"copy:{dist.name}",
-            actions=[
-                (U.copy_one, [dist, dest])
-            ],
+            actions=[(U.copy_one, [dist, dest])],
             file_dep=[dist],
-            targets=[dest]
+            targets=[dest],
         )
 
     yield dict(
         name="hash",
         file_dep=dests,
-        actions=[
-            (U.hashfile, [B.DIST])
-        ],
-        targets=[B.DIST / "SHA256SUMS"]
+        actions=[(U.hashfile, [B.DIST])],
+        targets=[B.DIST / "SHA256SUMS"],
     )
 
 
