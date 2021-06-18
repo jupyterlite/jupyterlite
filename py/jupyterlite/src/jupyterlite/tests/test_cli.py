@@ -1,3 +1,5 @@
+"""integration tests for overall CLI functionality"""
+import pprint
 import time
 
 import pytest
@@ -22,6 +24,12 @@ A_GOOD_BUILD = [
 
 FAST_HOOKS = ["list", "status"]
 NOT_SERVE_HOOK = [h for h in HOOKS if h != "serve"]
+
+A_FEDERATED_EXTENSION = """{ "jupyter-config-data": { "federated_extensions": [ {
+    "extension": "./extension",
+    "load": "static/remoteEntry.abc123.js",
+    "name": "@org/pkg"
+} ] } }"""
 
 
 @pytest.mark.parametrize("lite_args", LITE_INVOCATIONS)
@@ -62,7 +70,10 @@ def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
 @pytest.mark.script_launch_mode("subprocess")
 @pytest.mark.parametrize("lite_hook", NOT_SERVE_HOOK)
 def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
-    """does all the hooks basically work"""
+    """does all the hooks basically work
+
+    TODO: this should be broken up into a hypothesis state machine, perhaps
+    """
     expected_files = TRASH if lite_hook in FAST_HOOKS else A_GOOD_BUILD
     started = time.time()
     returned_status = script_runner.run(
@@ -87,12 +98,23 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     assert rereturned_status.success
     assert duration_1 > duration_2
 
-    # force, detect files
+    # force, detect a root file
     readme = an_empty_lite_dir / "README.md"
     readme.write_text("# hello world", encoding="utf-8")
 
+    # ... and a nested file
+    details = an_empty_lite_dir / "details/README.md"
+    details.parent.mkdir()
+    details.write_text("# more details", encoding="utf-8")
+
+    # some root overrides
     overrides = an_empty_lite_dir / "overrides.json"
-    overrides.write_text("{}", encoding="utf-8")
+    overrides.write_text(A_FEDERATED_EXTENSION, encoding="utf-8")
+
+    # ... and app overrides
+    app_overrides = an_empty_lite_dir / "lab/overrides.json"
+    app_overrides.parent.mkdir()
+    app_overrides.write_text(A_FEDERATED_EXTENSION, encoding="utf-8")
 
     forced_status = script_runner.run(
         "jupyter",
@@ -101,15 +123,34 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
         "--force",
         "--files",
         readme,
+        "--files",
+        details,
         "--overrides",
         overrides,
         cwd=an_empty_lite_dir,
     )
 
     if A_GOOD_BUILD[-1] in expected_files and lite_hook not in ["init"]:
-        print(sorted(an_empty_lite_dir.rglob("_output")))
-        assert (an_empty_lite_dir / "_output/files/README.md").exists()
-        assert forced_status.success
+        # TODO: ugly debugging, sure, but helpful with `-s`
+        out = an_empty_lite_dir / "_output"
+        pprint.pprint(sorted(out.rglob("*")))
+
+        # did the files make it...
+        expected_readme = out / "files/README.md"
+        assert "world" in expected_readme.read_text()
+        expected_details = out / "files/details/README.md"
+        assert "details" in expected_details.read_text()
+
+        # ...and get indexed
+        missed = 0
+        for path in ["", "details"]:
+            contents = (out / f"api/contents/{path}/all.json").read_text()
+            print("contents of", path, contents)
+            if "README" not in contents:
+                missed += 1
+        assert not missed, "some contents were not indexed"
+
+    assert forced_status.success
 
 
 @pytest.mark.script_launch_mode("subprocess")

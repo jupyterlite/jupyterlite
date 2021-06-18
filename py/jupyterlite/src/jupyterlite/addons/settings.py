@@ -55,7 +55,7 @@ class SettingsAddon(BaseAddon):
                 continue
 
             yield dict(
-                name="patch",
+                name=f"patch:overrides:{app}",
                 file_dep=[overrides_json, jupyterlite_json],
                 actions=[
                     (self.patch_one_overrides, [jupyterlite_json, overrides_json])

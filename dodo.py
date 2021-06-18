@@ -458,6 +458,7 @@ def task_test():
             actions=[
                 U.do(
                     *pytest_args,
+                    *(C.PYTEST_ARGS or []),
                     "--cov",
                     py_mod,
                     "--cov-report",
@@ -475,6 +476,7 @@ class C:
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
+    PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
@@ -673,7 +675,7 @@ class U:
             or shutil.which(f"{cmd}.cmd")
             or shutil.which(f"{cmd}.bat")
         ).resolve()
-        return doit.tools.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        return doit.tools.LongRunning([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):

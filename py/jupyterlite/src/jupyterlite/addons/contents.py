@@ -92,12 +92,8 @@ class ContentsAddon(BaseAddon):
     def file_src_dest(self):
         for mgr_file in self.manager.files:
             path = Path(mgr_file)
-            if path.is_dir():
-                parent = path.resolve()
-            else:
-                parent = path.parent.resolve()
             for from_path in self.maybe_add_one_file(path):
-                stem = from_path.relative_to(parent)
+                stem = from_path.relative_to(self.manager.lite_dir)
                 to_path = self.output_files_dir / stem
                 yield from_path, to_path
 
