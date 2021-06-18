@@ -503,11 +503,6 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    DOCS_DISABLED_EXT = [
-        "nbdime-jupyterlab",
-        "@jupyterlab/server-proxy",
-        "jupyterlab-server-proxy",
-    ]
 
 
 class P:
@@ -523,7 +518,7 @@ class P:
     ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
     EXAMPLES = ROOT / "examples"
-    ALL_EXAMPLES = [p for p in EXAMPLES.rglob("*") if p.is_dir()]
+    ALL_EXAMPLES = [p for p in EXAMPLES.rglob("*") if not p.is_dir()]
 
     # set later
     PYOLITE_PACKAGES = {}
