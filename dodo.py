@@ -364,7 +364,7 @@ def task_docs():
             B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
-        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
+        actions=[U.do("sphinx-build", "-W", "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
 
