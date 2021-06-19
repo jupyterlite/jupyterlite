@@ -97,6 +97,7 @@ class SettingsAddon(BaseAddon):
         try:
             config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
         except:
+            self.log.debug(f"[lite] [settings] Initializing {jupyterlite_json}")
             config = {JUPYTER_CONFIG_DATA: {}}
 
         overrides = config[JUPYTER_CONFIG_DATA].get(SETTINGS_OVERRIDES, {})
@@ -115,6 +116,7 @@ class SettingsAddon(BaseAddon):
         )
 
         self.maybe_timestamp(jupyterlite_json)
+        self.log.debug(f"[lite] [settings] Updated {jupyterlite_json}")
 
     @property
     def output_env_extensions_dir(self):

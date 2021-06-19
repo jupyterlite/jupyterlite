@@ -19,9 +19,7 @@ An HTTPS-capable server is recommended for all but the simplest `localhost` case
 Use of the CLI is optional, but **recommended**. It offers substantially better integration with other Jupyter tools.
 ```
 
-To get the [Python CLI](./cli.ipynb) from [PyPI]:
-
-> - _TBD: ...and [API](#)_
+To get the [Python CLI](./cli.ipynb) and [API](./api/index.md) from [PyPI]:
 
 ```bash
 pip install jupyterlite

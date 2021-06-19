@@ -129,6 +129,7 @@ app/lab/extensions
 *.doit*
 
 # generated
+docs/.jupyter_cache
 docs/api/ts
 docs/jupyter_execute
 .vercel

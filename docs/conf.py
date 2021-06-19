@@ -76,11 +76,12 @@ exclude_patterns = [
     "jest-setup.js",
     "jest.config.js",
     "jupyter_execute",
+    ".jupyter_cache",
     "test/",
     "tsconfig.*",
     "webpack.config.*",
 ]
-jupyter_execute_notebooks = "force"
+jupyter_execute_notebooks = "cache"
 
 execution_excludepatterns = [
     "_static/**/*",

@@ -6,7 +6,12 @@ import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
-from ..constants import DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS, SETTINGS_OVERRIDES
+from ..constants import (
+    DISABLED_EXTENSIONS,
+    FEDERATED_EXTENSIONS,
+    JUPYTER_CONFIG_DATA,
+    SETTINGS_OVERRIDES,
+)
 from ..manager import LiteManager
 
 
@@ -96,29 +101,53 @@ class BaseAddon(LoggingConfigurable):
 
         TODO: notebooks
         """
-        config = {}
+        self.log.debug(f"[lite][config][merge] {out_path}")
+        config = None
 
         for in_path in in_paths:
+            self.log.debug(f"[lite][config][merge] . {in_path}")
             in_config = json.loads(in_path.read_text(encoding="utf-8"))
+            if config is None:
+                config = in_config
+                continue
 
             for k, v in in_config.items():
-                if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
-                    config[k] = sorted({*config.get(k, []), *v})
-                elif k in [SETTINGS_OVERRIDES]:
-                    config[k] = config.get(k, {})
-                    for pkg, pkg_config in v.items():
-                        config[k][pkg] = config[k].get(pkg, {})
-                        config[k][pkg].update(pkg_config)
+                self.log.debug(f"""[lite][config] ... updating {k} => {v}?""")
+                if k == JUPYTER_CONFIG_DATA:
+                    config[k] = self.merge_jupyter_config_data(config.get(k) or {}, v)
                 else:
-                    config[k] = v
+                    if config.get(k) != v:
+                        self.log.debug(f"""[lite][config] ..... {k} updated""")
+                        config[k] = v
 
-        self.dedupe_federated_extensions(config)
+        self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
         out_path.write_text(
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
 
         self.maybe_timestamp(out_path)
+
+        self.log.debug(config)
+
+    def merge_jupyter_config_data(self, config, in_config):
+        self.log.debug(f"""[lite][config][merge] ..... {config} {in_config}""")
+
+        config = config or {}
+        in_config = config or {}
+
+        for k, v in in_config.items():
+            if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
+                config[k] = {*config.get(k, []), *v}
+            elif k in [SETTINGS_OVERRIDES]:
+                config[k] = config.get(k, {})
+                for pkg, pkg_config in v.items():
+                    config[k][pkg] = config[k].get(pkg, {})
+                    config[k][pkg].update(pkg_config)
+            else:
+                config[k] = v
+        self.log.debug(f"""[lite][config][merge] ..... {config}""")
+        return config
 
     def dedupe_federated_extensions(self, config):
         """update a federated_extension list in-place, ensuring unique names.
