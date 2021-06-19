@@ -145,4 +145,5 @@ class LiteBuildConfig(LoggingConfigurable):
     def _default_source_date_epoch(self):
         if C.SOURCE_DATE_EPOCH not in os.environ:
             return None
-        return int(os.environ[C.SOURCE_DATE_EPOCH])
+        sde = int(os.environ[C.SOURCE_DATE_EPOCH])
+        return sde

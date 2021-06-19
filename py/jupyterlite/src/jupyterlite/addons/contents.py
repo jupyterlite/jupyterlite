@@ -38,7 +38,9 @@ class ContentsAddon(BaseAddon):
     def build(self, manager):
         """perform the main user build of pre-populating `/files/`"""
         files = sorted(self.file_src_dest)
+        all_dest_files = []
         for src_file, dest_file in files:
+            all_dest_files += [dest_file]
             stem = dest_file.relative_to(self.output_files_dir)
             yield dict(
                 name=f"copy:/files/{stem}",
@@ -46,6 +48,16 @@ class ContentsAddon(BaseAddon):
                 file_dep=[src_file],
                 targets=[dest_file],
                 actions=[(self.copy_one, [src_file, dest_file])],
+            )
+
+        if manager.source_date_epoch is not None:
+            yield dict(
+                name="timestamp",
+                file_dep=all_dest_files,
+                actions=[
+                    (doit.tools.create_folder, [self.output_files_dir]),
+                    (self.maybe_timestamp, [self.output_files_dir]),
+                ],
             )
 
     def post_build(self, manager):
@@ -128,9 +140,12 @@ class ContentsAddon(BaseAddon):
             )
             return
 
+        self.maybe_timestamp(self.output_files_dir)
+
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
         api_path.parent.mkdir(parents=True, exist_ok=True)
+
         listing_path = str(
             output_file_dir.relative_to(self.output_files_dir).as_posix()
         )

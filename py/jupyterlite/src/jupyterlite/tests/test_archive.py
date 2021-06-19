@@ -4,23 +4,26 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
+# use the generally-documented invocation
+LITE_ARGS = "jupyter", "lite"
+
 
 def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_epoch):
     """do we build reproducible artifacts?"""
     # TODO: handle macro-scale reproducibility in CI
-    args = "jupyter", "lite", "archive", "--debug", "--output-archive"
+    extra_args = "--debug", "--source-date-epoch", source_date_epoch
+    archive_args = (*LITE_ARGS, "archive", *extra_args)
     cwd = dict(cwd=an_empty_lite_dir)
 
-    before = an_empty_lite_dir.parent / "v1.tgz"
-    initial = script_runner.run(*args, before, **cwd)
+    before = an_empty_lite_dir / "v1.tgz"
+    initial = script_runner.run(*archive_args, "--output-archive", before, **cwd)
     assert initial.success, "failed to build the first tarball"
 
     # reset
-    shutil.rmtree(an_empty_lite_dir)
-    an_empty_lite_dir.mkdir()
+    _reset_a_lite_dir(an_empty_lite_dir, before)
 
-    after = an_empty_lite_dir.parent / "v2.tgz"
-    subsequent = script_runner.run(*args, after, **cwd)
+    after = an_empty_lite_dir / "v2.tgz"
+    subsequent = script_runner.run(*archive_args, "--output-archive", after, **cwd)
     assert subsequent.success, "failed to build the second tarball"
 
     _assert_same_tarball(
@@ -29,20 +32,32 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
 
 
 def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epoch):
-    args = "jupyter", "lite", "archive", "--debug", "--output-archive"
+    extra_args = "--debug", "--source-date-epoch", source_date_epoch
+    archive_args = (*LITE_ARGS, "archive", *extra_args)
     cwd = dict(cwd=an_empty_lite_dir)
 
-    before = an_empty_lite_dir.parent / "v1.tgz"
-    initial = script_runner.run(*args, before, **cwd)
+    before = an_empty_lite_dir / "v1.tgz"
+    initial = script_runner.run(*archive_args, "--output-archive", before, **cwd)
     assert initial.success, "failed to build the first tarball"
 
-    after = an_empty_lite_dir.parent / "v2.tgz"
-    subsequent = script_runner.run(*args, after, "--app-archive", before, **cwd)
+    after = an_empty_lite_dir / "v2.tgz"
+    subsequent = script_runner.run(
+        *archive_args, "--app-archive", before, "--output-archive", after, **cwd
+    )
     assert subsequent.success, "failed to build the second tarball"
 
     _assert_same_tarball(
         "a build repeated should be the same", script_runner, before, after
     )
+
+
+def _reset_a_lite_dir(lite_dir, *skip):
+    """clean out a lite dir, except for the named files"""
+    for path in lite_dir.glob("*"):
+        if path in skip or path.is_dir():
+            continue
+        else:
+            path.unlink()
 
 
 def _assert_same_tarball(message, script_runner, before, after):

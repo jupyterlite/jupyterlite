@@ -448,7 +448,7 @@ def task_test():
     pytest_args = [
         "pytest",
         "--script-launch-mode=subprocess",
-        "-n=auto",
+        "-n=4",
         "-vv",
         "--cov-fail-under=80",
         "--cov-report=term-missing:skip-covered",

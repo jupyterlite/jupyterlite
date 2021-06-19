@@ -43,13 +43,23 @@ class ArchiveAddon(BaseAddon):
             doc="generate a new app archive",
             file_dep=file_dep,
             actions=[
-                (self.make_archive, [tarball, output_dir, file_dep]),
+                (self.make_archive_stdlib, [tarball, output_dir, file_dep]),
                 (self.log_archive, [tarball, "[lite] [archive] "]),
             ],
             targets=[tarball],
         )
 
-    def make_archive(self, tarball, root, members):
+    def make_archive_stdlib(self, tarball, root, members):
+        """actually build the archive. This takes longer than any other hooks
+
+        At present, and potentially into the future, an npm-compatible `.tgz`
+        is the only supported format, as this is compatible with the upstream
+        `webpack` build and its native packaged format.
+
+        Furthermore, while this pure-python implementation needs to be maintained,
+        a `libarchive`-based build might be preferrable for e.g. CI performance.
+        """
+
         if tarball.exists():
             tarball.unlink()
 
