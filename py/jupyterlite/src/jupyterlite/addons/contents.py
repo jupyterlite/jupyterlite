@@ -152,7 +152,6 @@ class ContentsAddon(BaseAddon):
 
     def patch_listing_timestamps(self, listing, sde=None):
         sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
-
         if isinstance(listing, dict):
             for field in ["created"]:
                 if field not in listing:

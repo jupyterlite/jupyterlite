@@ -38,6 +38,7 @@ dependencies:
   # check
   - pytest-check-links
   # test
+  - ansi2html
   - hypothesis-jsonschema
   - pytest-console-scripts
   - pytest-cov

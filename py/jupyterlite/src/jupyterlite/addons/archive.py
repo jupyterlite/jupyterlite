@@ -83,14 +83,14 @@ class ArchiveAddon(BaseAddon):
     def log_archive(self, tarball, prefix=""):
         sde = self.manager.source_date_epoch
         if sde is not None:
-            self.log.info(f"SOURCE_DATE_EPOCH: {sde}")
+            self.log.info(f"{prefix}SOURCE_DATE_EPOCH: {sde}")
         if not tarball.exists():
             self.log.info(f"{prefix}No archive (yet): {tarball.name}")
         else:
             stat = tarball.stat()
             size = stat.st_size / (1024 * 1024)
-            shasum = sha256(tarball.read_bytes()).hexdigest()
             self.log.info(f"{prefix}filename:   {tarball.name}")
+            shasum = sha256(tarball.read_bytes()).hexdigest()
             self.log.info(f"{prefix}size:       {size} Mb")
             # extra details, for the curious
             self.log.debug(f"{prefix}created:  {stat.st_mtime}")

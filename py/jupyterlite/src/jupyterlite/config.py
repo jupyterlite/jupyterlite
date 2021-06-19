@@ -67,7 +67,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     source_date_epoch = CInt(
         allow_none=True,
-        min=0,
+        min=1,
         help="Trigger reproducible builds, clamping timestamps to this value",
     ).tag(config=True)
 

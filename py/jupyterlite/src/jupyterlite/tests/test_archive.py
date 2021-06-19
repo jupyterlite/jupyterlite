@@ -13,7 +13,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
 
     before = an_empty_lite_dir.parent / "v1.tgz"
     initial = script_runner.run(*args, before, **cwd)
-    assert initial.success
+    assert initial.success, "failed to build the first tarball"
 
     # reset
     shutil.rmtree(an_empty_lite_dir)
@@ -21,7 +21,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
 
     after = an_empty_lite_dir.parent / "v2.tgz"
     subsequent = script_runner.run(*args, after, **cwd)
-    assert subsequent.success
+    assert subsequent.success, "failed to build the second tarball"
 
     _assert_same_tarball(
         "two successive builds should be the same", script_runner, before, after
@@ -34,11 +34,11 @@ def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epo
 
     before = an_empty_lite_dir.parent / "v1.tgz"
     initial = script_runner.run(*args, before, **cwd)
-    assert initial.success
+    assert initial.success, "failed to build the first tarball"
 
     after = an_empty_lite_dir.parent / "v2.tgz"
     subsequent = script_runner.run(*args, after, "--app-archive", before, **cwd)
-    assert subsequent.success
+    assert subsequent.success, "failed to build the second tarball"
 
     _assert_same_tarball(
         "a build repeated should be the same", script_runner, before, after
@@ -80,4 +80,4 @@ def _assert_same_tarball(message, script_runner, before, after):
     else:
         print("on unix platforms, install diffoscope for **MUCH** clearer output")
 
-    assert not fails, message
+    assert not fails, f"tarballs were not the same: {message} {fails}"
