@@ -1,7 +1,9 @@
+**/_output
 **/lib
 **/node_modules
 **/package.json
 **/static
+
 build
 docs/_build
 node_modules

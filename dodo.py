@@ -447,10 +447,11 @@ def task_test():
 
     pytest_args = [
         "pytest",
+        "--ff",
         "--script-launch-mode=subprocess",
         "-n=4",
         "-vv",
-        "--cov-fail-under=80",
+        f"--cov-fail-under={C.COV_THRESHOLD}",
         "--cov-report=term-missing:skip-covered",
         "--no-cov-on-fail",
         "--durations=5",
@@ -503,6 +504,7 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
+    COV_THRESHOLD = 85
 
 
 class P:
@@ -557,7 +559,7 @@ class P:
         [p for p in DOCS.rglob("*.md") if "docs/api/ts" not in str(p.as_posix())]
     )
     DOCS_ENV = DOCS / "environment.yml"
-    DOCS_PY = sorted([*DOCS.rglob("*.py")])
+    DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
 
     # demo
