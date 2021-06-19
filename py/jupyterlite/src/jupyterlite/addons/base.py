@@ -138,7 +138,7 @@ class BaseAddon(LoggingConfigurable):
 
         for k, v in in_config.items():
             if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
-                config[k] = {*config.get(k, []), *v}
+                config[k] = [*config.get(k, []), *v]
             elif k in [SETTINGS_OVERRIDES]:
                 config[k] = config.get(k, {})
                 for pkg, pkg_config in v.items():
