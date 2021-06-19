@@ -131,10 +131,11 @@ class BaseAddon(LoggingConfigurable):
         self.log.debug(config)
 
     def merge_jupyter_config_data(self, config, in_config):
-        self.log.debug(f"""[lite][config][merge] ..... {config} {in_config}""")
+        self.log.debug(f"""[lite][config][merge] ..... {config}""")
+        self.log.debug(f"""[lite][config][merge] ..... {in_config}""")
 
         config = config or {}
-        in_config = config or {}
+        in_config = in_config or {}
 
         for k, v in in_config.items():
             if k in [DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS]:
