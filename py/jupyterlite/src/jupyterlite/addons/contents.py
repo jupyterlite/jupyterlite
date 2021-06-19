@@ -1,14 +1,13 @@
 """a jupyterlite addon for jupyter contents"""
 import datetime
 import json
-import os
 import pprint
 import re
 from pathlib import Path
 
 import doit
 
-from ..constants import ALL_JSON, API_CONTENTS, SOURCE_DATE_EPOCH
+from ..constants import ALL_JSON, API_CONTENTS
 from .base import BaseAddon
 
 
@@ -141,7 +140,7 @@ class ContentsAddon(BaseAddon):
 
         listing = fm.get(listing_path)
 
-        if SOURCE_DATE_EPOCH in os.environ:
+        if self.manager.source_date_epoch is not None:
             listing = self.patch_listing_timestamps(listing)
 
         api_path.write_text(
@@ -152,7 +151,7 @@ class ContentsAddon(BaseAddon):
         self.maybe_timestamp(api_path.parent)
 
     def patch_listing_timestamps(self, listing, sde=None):
-        sde = datetime.datetime.utcfromtimestamp(int(os.environ[SOURCE_DATE_EPOCH]))
+        sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
 
         if isinstance(listing, dict):
             for field in ["created"]:

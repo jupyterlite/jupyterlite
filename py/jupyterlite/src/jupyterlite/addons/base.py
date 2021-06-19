@@ -6,12 +6,7 @@ import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
-from ..constants import (
-    DISABLED_EXTENSIONS,
-    FEDERATED_EXTENSIONS,
-    SETTINGS_OVERRIDES,
-    SOURCE_DATE_EPOCH,
-)
+from ..constants import DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS, SETTINGS_OVERRIDES
 from ..manager import LiteManager
 
 
@@ -48,7 +43,7 @@ class BaseAddon(LoggingConfigurable):
         self.maybe_timestamp(dest)
 
     def maybe_timestamp(self, path):
-        if SOURCE_DATE_EPOCH not in os.environ:
+        if self.manager.source_date_epoch is None:
             return
 
         if path.is_dir():
@@ -58,16 +53,16 @@ class BaseAddon(LoggingConfigurable):
         self.timestamp_one(path)
 
     def timestamp_one(self, path):
-        """adjust the timestamp to be SOURCE_DATE_EPOCH for files newer than then
+        """adjust the timestamp to be --source-date-epoch for files newer than then
 
         see https://reproducible-builds.org/specs/source-date-epoch
         """
         stat = path.stat()
-        sde = int(os.environ[SOURCE_DATE_EPOCH])
+        sde = self.manager.source_date_epoch
         if stat.st_mtime > sde:
             cls = self.__class__.__name__
             self.log.debug(
-                f"[lite][base] <{cls}> set time to SOURCE_DATE_EPOCH {sde} on {path}"
+                f"[lite][base] <{cls}> set time to source_date_epoch {sde} on {path}"
             )
             os.utime(path, (sde, sde))
             return

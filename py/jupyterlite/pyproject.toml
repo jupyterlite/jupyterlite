@@ -17,21 +17,23 @@ jupyter-lite = "jupyterlite.app:main"
 
 [tool.flit.metadata.requires-extra]
 test = [
-    "pytest",
+    "hypothesis-jsonschema",
     "pytest-cov",
-    "hypothesis-jsonschema"
+    "pytest-html",
+    "pytest-xdist",
+    "pytest",
+]
+lab = [
+    "jupyterlab >=3.0,<4",
+]
+contents = [
+    "jupyter_server",
 ]
 watch = [
     "watchgod",
 ]
 serve = [
     "tornado >=6.1",
-]
-nbconvert = [
-    "nbconvert >=6",
-]
-sphinx = [
-    "sphinx >=3",
 ]
 
 [tool.flit.entrypoints."jupyterlite.addon.v0"]

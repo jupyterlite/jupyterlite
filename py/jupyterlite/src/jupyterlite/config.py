@@ -5,7 +5,7 @@
 import os
 from pathlib import Path
 
-from traitlets import Tuple, default
+from traitlets import CInt, Tuple, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
@@ -63,6 +63,12 @@ class LiteBuildConfig(LoggingConfigurable):
     # patterns
     ignore_files = Tuple(
         allow_none=True, help="Path patterns that should never be included"
+    ).tag(config=True)
+
+    source_date_epoch = CInt(
+        allow_none=True,
+        min=0,
+        help="Trigger reproducible builds, clamping timestamps to this value",
     ).tag(config=True)
 
     @default("apps")
@@ -134,3 +140,9 @@ class LiteBuildConfig(LoggingConfigurable):
             os.environ.get("JUPYTERLITE_OUTPUT_ARCHIVE")
             or self.output_dir / f"{self.lite_dir.name}-jupyterlite.tgz"
         )
+
+    @default("source_date_epoch")
+    def _default_source_date_epoch(self):
+        if C.SOURCE_DATE_EPOCH not in os.environ:
+            return None
+        return int(os.environ[C.SOURCE_DATE_EPOCH])

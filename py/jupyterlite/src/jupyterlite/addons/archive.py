@@ -11,9 +11,22 @@ from .base import BaseAddon
 
 
 class ArchiveAddon(BaseAddon):
-    """Adds contents from the `lite_dir` to the `output_dir` creates API output"""
+    """Adds contents from the `lite_dir` to the `output_dir` creates API output
 
-    __all__ = ["archive"]
+    If `--source-date-epoch` (SDE) is set, a number of features
+    will be enabled to improve reproducibility of the final artifact. In addition
+    to timestamps newer than SDE being "clamped" to SDE, this will also adjust some
+    permissions inside the tarball
+    """
+
+    __all__ = ["archive", "status"]
+
+    def status(self, manager):
+        tarball = manager.output_archive
+        yield dict(
+            name="archive",
+            actions=[(self.log_archive, [tarball])],
+        )
 
     def archive(self, manager):
         """add all files created prior to `pre_archive` to an archive"""
@@ -29,7 +42,10 @@ class ArchiveAddon(BaseAddon):
             name=f"archive:{tarball.name}",
             doc="generate a new app archive",
             file_dep=file_dep,
-            actions=[(self.make_archive, [tarball, output_dir, file_dep])],
+            actions=[
+                (self.make_archive, [tarball, output_dir, file_dep]),
+                (self.log_archive, [tarball, "[lite] [archive] "]),
+            ],
             targets=[tarball],
         )
 
@@ -38,9 +54,10 @@ class ArchiveAddon(BaseAddon):
             tarball.unlink()
 
         def _filter(tarinfo):
-            tarinfo.uid = 0
-            tarinfo.gid = 0
+            tarinfo.uid = tarinfo.gid = 0
             tarinfo.uname = tarinfo.gname = JOVYAN
+            if self.manager.source_date_epoch is not None:
+                tarinfo.mtime = self.manager.source_date_epoch
             return tarinfo
 
         with tempfile.TemporaryDirectory() as td:
@@ -63,10 +80,19 @@ class ArchiveAddon(BaseAddon):
 
             self.copy_one(temp_ball, tarball)
 
-        stat = tarball.stat()
-        size = stat.st_size / (1024 * 1024)
-        shasum = sha256(tarball.read_bytes()).hexdigest()
-        self.log.info(f"[lite] [archive] {tarball} created:  {stat.st_mtime}")
-        self.log.info(f"[lite] [archive] {tarball} modified: {stat.st_mtime}")
-        self.log.info(f"[lite] [archive] {tarball} SHA256:   {shasum}")
-        self.log.info(f"[lite] [archive] {tarball} size:     {size} Mb")
+    def log_archive(self, tarball, prefix=""):
+        sde = self.manager.source_date_epoch
+        if sde is not None:
+            self.log.info(f"SOURCE_DATE_EPOCH: {sde}")
+        if not tarball.exists():
+            self.log.info(f"{prefix}No archive (yet): {tarball.name}")
+        else:
+            stat = tarball.stat()
+            size = stat.st_size / (1024 * 1024)
+            shasum = sha256(tarball.read_bytes()).hexdigest()
+            self.log.info(f"{prefix}filename:   {tarball.name}")
+            self.log.info(f"{prefix}size:       {size} Mb")
+            # extra details, for the curious
+            self.log.debug(f"{prefix}created:  {stat.st_mtime}")
+            self.log.debug(f"{prefix}modified: {stat.st_mtime}")
+            self.log.debug(f"{prefix}SHA256:   {shasum}")

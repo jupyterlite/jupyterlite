@@ -9,16 +9,39 @@ Serving some of the [kernels](./kernels/index.md) requires that your web server 
 serving `application/wasm` files with the correct headers
 ```
 
-## Start with an Empty Site
+```{hint}
+An HTTPS-capable server is recommended for all but the simplest `localhost` cases.
+```
 
-You can get an empty JupyterLite by:
+## Get an Empty JupyterLite Site
 
-- _TBD: downloading a release archive from [GitHub Releases][releases]_
-- _TBD: using `cookiecutter-jupyterlite`_
-- _TBD: installing `jupyterlite` from [PyPI]_
-- _TBD: installing `@jupyterlite/builder` from `npmjs.com`_
-- downloading nightly/work-in-progress builds from [GitHub actions]
-- cloning/forking the repository and doing a [development build](../contributing.md)
+```{hint}
+Use of the CLI is optional, but **recommended**. It offers substantially better integration with other Jupyter tools.
+```
+
+To get the [Python CLI](./cli.ipynb) from [PyPI]:
+
+> - _TBD: ...and [API](#)_
+
+```bash
+pip install jupyterlite
+```
+
+> - _TBD: `[lab], [all]`_
+
+```bash
+jupyter lite init
+```
+
+> - _TBD: `# or mamba install jupyterlite`_
+
+### Static Site: The Hard Way
+
+- download a release archive from [GitHub Releases][releases]
+- download nightly/work-in-progress builds from [GitHub actions]
+- clone/fork the [repository] and do a [development build](../contributing.md)
+- _TBD: use `cookiecutter-jupyterlite`_
+- _TBD: `yarn add @jupyterlite/builder` from `npmjs.com`_
 
 [github actions]: https://github.com/jtpio/jupyterlite/actions
 [releases]: https://github.com/jtpio/jupyterlite/releases

@@ -27,6 +27,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             "output-dir": "LiteBuildConfig.output_dir",
             "output-archive": "LiteBuildConfig.output_archive",
             "overrides": "LiteBuildConfig.overrides",
+            "source-date-epoch": "LiteBuildConfig.source_date_epoch",
         },
     )
 
@@ -63,6 +64,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["output_archive"] = Path(self.output_archive)
         if self.disable_addons:
             kwargs["disable_addons"] = self.disable_addons
+        if self.source_date_epoch is not None:
+            kwargs["source_date_epoch"] = self.source_date_epoch
 
         return LiteManager(**kwargs)
 

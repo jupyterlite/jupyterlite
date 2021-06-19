@@ -1,5 +1,6 @@
 """a jupyterlite addon for jupyterlite-specific tasks"""
 
+
 from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA
 from .base import BaseAddon
 
@@ -39,7 +40,13 @@ class LiteAddon(BaseAddon):
     def check(self, manager):
         """apply schema validation to all `jupyter-lite.json` in the `output_dir`"""
         schema = manager.output_dir / JUPYTERLITE_SCHEMA
+        file_dep = []
+
+        if not schema.exists():
+            return
+
         validator = self.get_validator(schema)
+        file_dep += [schema]
 
         for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
             stem = lite_json.relative_to(manager.output_dir)
