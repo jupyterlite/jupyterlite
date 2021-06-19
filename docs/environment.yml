@@ -42,5 +42,8 @@ dependencies:
   - theme-darcula
   ### DOCS ENV ###
 
+  # this is a UNIX-only dependency, so we don't hoist it to the more-portable binder environment
+  - diffoscope
+
   - pip:
       - plotly==5.0.0rc1

@@ -82,7 +82,7 @@ class ArchiveAddon(BaseAddon):
                         for i, path in enumerate(members):
                             if path.is_dir():
                                 continue
-                            if not (i % 10):
+                            if not (i % 100):
                                 self.log.info(
                                     f"[lite] [archive] Adding {i+1} of {len_members}"
                                 )

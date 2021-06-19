@@ -360,6 +360,7 @@ def task_docs():
         file_dep=[
             *P.DOCS_MD,
             *P.DOCS_PY,
+            *P.DOCS_IPYNB,
             B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
@@ -561,6 +562,7 @@ class P:
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
+    DOCS_IPYNB = sorted(DOCS.glob("*.ipynb"))
 
     # demo
     BINDER = ROOT / ".binder"

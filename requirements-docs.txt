@@ -14,6 +14,7 @@ pytest-check-links
 
 # test
 ansi2html
+diffoscope
 hypothesis-jsonschema
 pytest-console-scripts
 pytest-cov
