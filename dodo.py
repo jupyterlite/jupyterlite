@@ -448,6 +448,7 @@ def task_test():
     pytest_args = [
         "pytest",
         "--script-launch-mode=subprocess",
+        "-n=auto",
         "-vv",
         "--cov-fail-under=80",
         "--cov-report=term-missing:skip-covered",
@@ -463,19 +464,18 @@ def task_test():
         py_mod = py_name.replace("-", "_")
         cov_path = B.BUILD / f"htmlcov/{py_name}"
         cov_index = cov_path / "index.html"
+        html_index = B.BUILD / f"pytest/{py_name}/index.html"
 
         yield U.ok(
             B.OK_LITE_PYTEST,
             name=f"py:{py_name}",
             doc=f"run pytest for {py_name}",
             task_dep=[f"dev:py:{py_name}"],
-            # TODO: investigate further
             file_dep=[
                 *setup_py.parent.rglob("*.py"),
                 setup_py.parent / "pyproject.toml",
             ],
-            # should generate
-            targets=[cov_index],
+            targets=[cov_index, html_index],
             actions=[
                 U.do(
                     *pytest_args,
@@ -484,6 +484,8 @@ def task_test():
                     py_mod,
                     "--cov-report",
                     f"html:{cov_path}",
+                    f"--html={html_index}",
+                    "--self-contained-html",
                     cwd=setup_py.parent,
                 )
             ],

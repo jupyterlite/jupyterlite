@@ -29,6 +29,8 @@ dependencies:
   - hypothesis-jsonschema
   - pytest-console-scripts
   - pytest-cov
+  - pytest-html
+  - pytest-xdist
   # list of federated extensions for the demo site
   - ipywidgets
   - bqplot
