@@ -2,7 +2,7 @@
 import pprint
 import time
 
-import pytest
+from pytest import mark
 
 from jupyterlite import __version__
 from jupyterlite.constants import HOOKS
@@ -13,8 +13,10 @@ LITE_INVOCATIONS = [
     ["jupyter", "lite"],
 ]
 
+# nothing we can do about this, at present
 TRASH = [".jupyterlite.doit.db"]
 
+# some files we expect to exist after a full build
 A_GOOD_BUILD = [
     *TRASH,
     "_output/package.json",
@@ -22,9 +24,13 @@ A_GOOD_BUILD = [
     "_output/index.html",
 ]
 
+# these hooks will not generate a build
 FAST_HOOKS = ["list", "status"]
+
+# serve is handled separately
 NOT_SERVE_HOOK = [h for h in HOOKS if h != "serve"]
 
+# a simple jupyter-lite.json describing a remote entry
 A_FEDERATED_EXTENSION = """{ "jupyter-config-data": { "federated_extensions": [ {
     "extension": "./extension",
     "load": "static/remoteEntry.abc123.js",
@@ -32,8 +38,7 @@ A_FEDERATED_EXTENSION = """{ "jupyter-config-data": { "federated_extensions": [ 
 } ] } }"""
 
 
-@pytest.mark.parametrize("lite_args", LITE_INVOCATIONS)
-@pytest.mark.script_launch_mode("subprocess")
+@mark.parametrize("lite_args", LITE_INVOCATIONS)
 def test_cli_version(lite_args, script_runner):
     """do various invocations work"""
     returned_version = script_runner.run(*lite_args, "--version")
@@ -42,9 +47,8 @@ def test_cli_version(lite_args, script_runner):
     assert returned_version.stderr == ""
 
 
-@pytest.mark.parametrize("lite_args", LITE_INVOCATIONS)
-@pytest.mark.parametrize("help", ["-h", "--help"])
-@pytest.mark.script_launch_mode("subprocess")
+@mark.parametrize("lite_args", LITE_INVOCATIONS)
+@mark.parametrize("help", ["-h", "--help"])
 def test_cli_help(lite_args, help, script_runner):
     """does help work"""
     returned_version = script_runner.run(*lite_args, help)
@@ -52,8 +56,7 @@ def test_cli_help(lite_args, help, script_runner):
     assert returned_version.stderr == ""
 
 
-@pytest.mark.script_launch_mode("subprocess")
-@pytest.mark.parametrize("lite_hook", ["list", "status"])
+@mark.parametrize("lite_hook", ["list", "status"])
 def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
     """do the "side-effect-free" commands create exactly one file?"""
     returned_status = script_runner.run(
@@ -67,8 +70,7 @@ def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
     assert files == {dododb}
 
 
-@pytest.mark.script_launch_mode("subprocess")
-@pytest.mark.parametrize("lite_hook", NOT_SERVE_HOOK)
+@mark.parametrize("lite_hook", NOT_SERVE_HOOK)
 def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     """does all the hooks basically work
 
@@ -153,7 +155,6 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     assert forced_status.success
 
 
-@pytest.mark.script_launch_mode("subprocess")
 def test_cli_raw_doit(an_empty_lite_dir, script_runner):
     """does raw doit work"""
     returned_status = script_runner.run(

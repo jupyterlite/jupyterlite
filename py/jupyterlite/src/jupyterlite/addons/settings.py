@@ -114,6 +114,8 @@ class SettingsAddon(BaseAddon):
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
 
+        self.maybe_timestamp(jupyterlite_json)
+
     @property
     def output_env_extensions_dir(self):
         """where labextensions will go in the output folder"""

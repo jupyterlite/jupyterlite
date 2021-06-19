@@ -12,9 +12,19 @@ class ReportAddon(BaseAddon):
     tasks
     """
 
-    __all__ = ["post_build"]
+    __all__ = ["pre_archive"]
 
-    def post_build(self, manager):
+    def pre_archive(self, manager):
+        """generate a hash file of all files in the distribution.
+
+        As this is relatively expensive for hundreds of files, this is performed
+        as late as possible, while still providing some useful publishing / QA
+        features.
+
+        TODO: develop some contract with the frontend in relation to this file,
+              or a derivative, as it has precisely the right information for certain
+              cache tasks.
+        """
         sha256sums = self.sha256sums
 
         all_output_files = self.all_output_files
@@ -38,8 +48,11 @@ class ReportAddon(BaseAddon):
         ]
         hashfile.write_text("\n".join(lines))
 
+        self.maybe_timestamp(hashfile.parent)
+
     @property
     def sha256sums(self):
+        """The location of the hashfile."""
         return self.manager.output_dir / SHA256SUMS
 
     @property

@@ -1,13 +1,14 @@
 """a jupyterlite addon for jupyter contents"""
 import datetime
 import json
+import os
 import pprint
 import re
 from pathlib import Path
 
 import doit
 
-from ..constants import ALL_JSON, API_CONTENTS
+from ..constants import ALL_JSON, API_CONTENTS, SOURCE_DATE_EPOCH
 from .base import BaseAddon
 
 
@@ -63,7 +64,9 @@ class ContentsAddon(BaseAddon):
                 doc=f"create a Jupyter Contents API response for {stem}",
                 actions=[
                     (doit.tools.create_folder, [output_file_dir]),
+                    (self.maybe_timestamp, [output_file_dir]),
                     (self.one_contents_path, [output_file_dir, api_path]),
+                    (self.maybe_timestamp, [api_path]),
                 ],
                 file_dep=[p for p in output_file_dir.rglob("*") if not p.is_dir()],
                 targets=[api_path],
@@ -128,29 +131,57 @@ class ContentsAddon(BaseAddon):
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
-        all_json = (
-            self.manager.output_dir
-            / API_CONTENTS
-            / output_file_dir.relative_to(self.output_files_dir)
-            / ALL_JSON
-        )
-        all_json.parent.mkdir(parents=True, exist_ok=True)
+        api_path.parent.mkdir(parents=True, exist_ok=True)
         listing_path = str(
             output_file_dir.relative_to(self.output_files_dir).as_posix()
         )
+
         if listing_path.startswith("."):
             listing_path = listing_path[1:]
-        all_json.write_text(
-            json.dumps(
-                fm.get(listing_path), indent=2, sort_keys=True, cls=DateTimeEncoder
-            ),
+
+        listing = fm.get(listing_path)
+
+        if SOURCE_DATE_EPOCH in os.environ:
+            listing = self.patch_listing_timestamps(listing)
+
+        api_path.write_text(
+            json.dumps(listing, indent=2, sort_keys=True, cls=DateTimeEncoder),
             encoding="utf-8",
         )
+
+        self.maybe_timestamp(api_path.parent)
+
+    def patch_listing_timestamps(self, listing, sde=None):
+        sde = datetime.datetime.utcfromtimestamp(int(os.environ[SOURCE_DATE_EPOCH]))
+
+        if isinstance(listing, dict):
+            for field in ["created"]:
+                if field not in listing:
+                    continue
+                value = listing[field]
+                print(value, field)
+                if isoformat(value) > isoformat(sde):
+                    self.log.info(
+                        f"""[lite][contents][patch] {field} on {listing["name"]}"""
+                    )
+                    listing[field] = sde
+            for child in listing.get("children", []):
+                self.patch_listing_timestamps(child, sde)
+
+        else:
+            self.log.error(f"[lite][contents] Don't know how to patch {listing}")
+            return None
+
+        return listing
 
 
 class DateTimeEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, datetime.datetime):
-            return o.isoformat()
+            return isoformat(o)
 
         return json.JSONEncoder.default(self, o)
+
+
+def isoformat(dt):
+    return dt.isoformat().replace("+00:00", "Z")

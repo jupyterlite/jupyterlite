@@ -447,14 +447,12 @@ def task_test():
 
     pytest_args = [
         "pytest",
+        "--script-launch-mode=subprocess",
         "-vv",
-        "--cov-fail-under",
-        "80",
-        "--cov-report",
-        "term-missing:skip-covered",
+        "--cov-fail-under=80",
+        "--cov-report=term-missing:skip-covered",
         "--no-cov-on-fail",
-        "--durations",
-        "5",
+        "--durations=5",
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
@@ -698,7 +696,7 @@ class U:
             or shutil.which(f"{cmd}.cmd")
             or shutil.which(f"{cmd}.bat")
         ).resolve()
-        return doit.tools.LongRunning([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        return doit.tools.Interactive([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):

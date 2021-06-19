@@ -120,3 +120,5 @@ class FederatedExtensionAddon(BaseAddon):
         self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
         jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+
+        self.maybe_timestamp(jupyterlite_json)

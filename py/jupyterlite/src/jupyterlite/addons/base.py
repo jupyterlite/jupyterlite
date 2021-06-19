@@ -1,11 +1,17 @@
 import json
+import os
 import shutil
 
 import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
-from ..constants import DISABLED_EXTENSIONS, FEDERATED_EXTENSIONS, SETTINGS_OVERRIDES
+from ..constants import (
+    DISABLED_EXTENSIONS,
+    FEDERATED_EXTENSIONS,
+    SETTINGS_OVERRIDES,
+    SOURCE_DATE_EPOCH,
+)
 from ..manager import LiteManager
 
 
@@ -32,10 +38,40 @@ class BaseAddon(LoggingConfigurable):
             self.log.debug(f"creating folder {dest.parent}")
             dest.parent.mkdir(parents=True)
 
+        self.maybe_timestamp(dest.parent)
+
         if src.is_dir():
             shutil.copytree(src, dest)
         else:
             shutil.copy2(src, dest)
+
+        self.maybe_timestamp(dest)
+
+    def maybe_timestamp(self, path):
+        if SOURCE_DATE_EPOCH not in os.environ:
+            return
+
+        if path.is_dir():
+            for p in path.rglob("*"):
+                self.timestamp_one(p)
+
+        self.timestamp_one(path)
+
+    def timestamp_one(self, path):
+        """adjust the timestamp to be SOURCE_DATE_EPOCH for files newer than then
+
+        see https://reproducible-builds.org/specs/source-date-epoch
+        """
+        stat = path.stat()
+        sde = int(os.environ[SOURCE_DATE_EPOCH])
+        if stat.st_mtime > sde:
+            cls = self.__class__.__name__
+            self.log.debug(
+                f"[lite][base] <{cls}> set time to SOURCE_DATE_EPOCH {sde} on {path}"
+            )
+            os.utime(path, (sde, sde))
+            return
+        return
 
     def delete_one(self, src):
         """delete... something"""
@@ -86,6 +122,8 @@ class BaseAddon(LoggingConfigurable):
         out_path.write_text(
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
+
+        self.maybe_timestamp(out_path)
 
     def dedupe_federated_extensions(self, config):
         """update a federated_extension list in-place, ensuring unique names.

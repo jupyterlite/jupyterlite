@@ -49,6 +49,14 @@ DEFAULT_OUTPUT_DIR = "_output"
 # commonly-used filename for response fixtures, e.g. settings
 ALL_JSON = "all.json"
 
+### Environment Variables
+
+# a canonical environment variable for triggering reproducible builds
+SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
+
+# the unofficial mascot user of jupyter
+JOVYAN = "jovyan"
+
 ### URLs
 
 # the Jupyter API route for Contents API

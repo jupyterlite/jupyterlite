@@ -60,7 +60,7 @@ class StaticAddon(BaseAddon):
         yield dict(
             name="unpack",
             doc=f"unpack a 'gold master' JupyterLite from {self.app_archive.name}",
-            actions=[(self._unpack, [])],
+            actions=[(self._unpack_stdlib, [])],
             file_dep=[self.app_archive],
             targets=[manager.output_dir / JUPYTERLITE_JSON],
         )
@@ -81,7 +81,11 @@ class StaticAddon(BaseAddon):
     def _default_app_archive(self):
         return self.manager.app_archive
 
-    def _unpack(self):
+    def _unpack_stdlib(self):
+        """use bog-standard python tarfiles.
+
+        TODO: a libarchive-based backend, which is already ported to WASM
+        """
         output_dir = self.manager.output_dir
 
         with tempfile.TemporaryDirectory() as td:
@@ -98,5 +102,8 @@ class StaticAddon(BaseAddon):
                             shutil.copytree(child, dest)
                         else:
                             shutil.copy2(child, dest)
+                        self.maybe_timestamp(dest)
                     except Exception as err:
                         self.log.error(f"ERR copying {child} to {dest}: {err}")
+
+        self.maybe_timestamp(output_dir)
