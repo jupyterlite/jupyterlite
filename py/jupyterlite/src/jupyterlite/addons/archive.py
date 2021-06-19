@@ -77,16 +77,21 @@ class ArchiveAddon(BaseAddon):
             ) as tar_gz:
                 with gzip.GzipFile("wb", fileobj=tar_gz, mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:
-                        for path in sorted(root.rglob("*")):
+                        members = sorted(root.rglob("*"))
+                        len_members = len(members)
+                        for i, path in enumerate(members):
                             if path.is_dir():
                                 continue
+                            if not (i % 10):
+                                self.log.info(
+                                    f"[lite] [archive] Adding {i+1} of {len_members}"
+                                )
                             tar.add(
                                 path,
                                 arcname=f"package/{path.relative_to(root)}",
                                 filter=_filter,
                                 recursive=False,
                             )
-                            print(".", end="", flush=True)
 
             self.copy_one(temp_ball, tarball)
 

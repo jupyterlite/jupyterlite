@@ -13,6 +13,7 @@
 
 kernels/index
 deploying
+cli
 configuring
 api/index
 contributing
