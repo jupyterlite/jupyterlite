@@ -17,6 +17,7 @@ class ContentsAddon(BaseAddon):
     __all__ = ["build", "post_build", "check", "status"]
 
     def status(self, manager):
+        """yield some status information about the state of contentss"""
         yield dict(
             name="contents",
             actions=[
@@ -47,7 +48,10 @@ class ContentsAddon(BaseAddon):
                 doc=f"copy {stem} to be distributed as files",
                 file_dep=[src_file],
                 targets=[dest_file],
-                actions=[(self.copy_one, [src_file, dest_file])],
+                actions=[
+                    (doit.tools.create_folder, [self.output_files_dir]),
+                    (self.copy_one, [src_file, dest_file]),
+                ],
             )
 
         if manager.source_date_epoch is not None:
@@ -55,13 +59,14 @@ class ContentsAddon(BaseAddon):
                 name="timestamp",
                 file_dep=all_dest_files,
                 actions=[
-                    (doit.tools.create_folder, [self.output_files_dir]),
                     (self.maybe_timestamp, [self.output_files_dir]),
                 ],
             )
 
     def post_build(self, manager):
-        """create a Contents API index for everything in `/files/`"""
+        """create a Contents API index for each subdirectory in `/files/`"""
+        if not self.output_files_dir.exists():
+            return
 
         output_file_dirs = [
             d for d in self.output_files_dir.rglob("*") if d.is_dir()
@@ -74,8 +79,6 @@ class ContentsAddon(BaseAddon):
                 name=f"contents:{stem}",
                 doc=f"create a Jupyter Contents API response for {stem}",
                 actions=[
-                    (doit.tools.create_folder, [output_file_dir]),
-                    (self.maybe_timestamp, [output_file_dir]),
                     (self.one_contents_path, [output_file_dir, api_path]),
                     (self.maybe_timestamp, [api_path]),
                 ],
@@ -140,11 +143,12 @@ class ContentsAddon(BaseAddon):
             )
             return
 
+        if not self.output_files_dir.exists():
+            return
+
         self.maybe_timestamp(self.output_files_dir)
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
-
-        api_path.parent.mkdir(parents=True, exist_ok=True)
 
         listing_path = str(
             output_file_dir.relative_to(self.output_files_dir).as_posix()
@@ -157,6 +161,8 @@ class ContentsAddon(BaseAddon):
 
         if self.manager.source_date_epoch is not None:
             listing = self.patch_listing_timestamps(listing)
+
+        api_path.parent.mkdir(parents=True, exist_ok=True)
 
         api_path.write_text(
             json.dumps(listing, indent=2, sort_keys=True, cls=DateTimeEncoder),

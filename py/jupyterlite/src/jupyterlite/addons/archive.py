@@ -1,14 +1,15 @@
 """a jupyterlite addon for generating app archives which can be used as input"""
+import contextlib
 import gzip
+import locale
 import os
 import tarfile
 import tempfile
 from hashlib import sha256
 from pathlib import Path
 
+from ..constants import C_LOCALE, NPM_SOURCE_DATE_EPOCH
 from .base import BaseAddon
-
-from ..constants import NPM_SOURCE_DATE_EPOCH
 
 
 class ArchiveAddon(BaseAddon):
@@ -50,28 +51,49 @@ class ArchiveAddon(BaseAddon):
             targets=[tarball],
         )
 
+    def filter_tarinfo(self, tarinfo):
+        """apply best-effort entropy fixes to give more reproducible archives"""
+        tarinfo.uid = tarinfo.gid = 0
+        tarinfo.uname = tarinfo.gname = "root"
+
+        if "package/files/" not in str(Path(tarinfo.name).as_posix()):
+            tarinfo.mtime = NPM_SOURCE_DATE_EPOCH
+        elif self.manager.source_date_epoch is not None:
+            tarinfo.mtime = self.manager.source_date_epoch
+
+        return tarinfo
+
+    @contextlib.contextmanager
+    def setlocale(self, name):
+        """Context manager for changing the current locale"""
+        saved_locale = locale.setlocale(locale.LC_ALL)
+        try:
+            yield locale.setlocale(locale.LC_ALL, name)
+        finally:
+            locale.setlocale(locale.LC_ALL, saved_locale)
+
     def make_archive_stdlib(self, tarball, root, members):
-        """actually build the archive. This takes longer than any other hooks
+        """actually build the archive.
 
-        At present, and potentially into the future, an npm-compatible `.tgz`
-        is the only supported format, as this is compatible with the upstream
-        `webpack` build and its native packaged format.
+        Notes:
 
-        Furthermore, while this pure-python implementation needs to be maintained,
-        a `libarchive`-based build might be preferrable for e.g. CI performance.
+        - this takes longer than any other hook
+          - while this pure-python implementation needs to be maintained,
+            a `libarchive`-based build might be preferrable for e.g. CI performance.
+        - an npm-compatible `.tgz` is the only supported archive format, as this
+          is compatible with the upstream `webpack` build and its native packaged format.
         """
 
+        # if the command fails, but this still exists, it can cause problems
         if tarball.exists():
             tarball.unlink()
 
-        def _filter(tarinfo):
-            tarinfo.uid = tarinfo.gid = 0
-            tarinfo.uname = tarinfo.gname = 0
-            if "package/files/" not in str(Path(tarinfo.name).as_posix()):
-                tarinfo.mtime = NPM_SOURCE_DATE_EPOCH
-            elif self.manager.source_date_epoch is not None:
-                tarinfo.mtime = self.manager.source_date_epoch
-            return tarinfo
+        # best-effort stable sorting
+        with self.setlocale(C_LOCALE):
+            members = sorted(root.rglob("*"), key=lambda p: locale.strxfrm(str(p)))
+
+        len_members = str(len(members))
+        rjust = len(len_members)
 
         with tempfile.TemporaryDirectory() as td:
             temp_ball = Path(td) / tarball.name
@@ -80,19 +102,24 @@ class ArchiveAddon(BaseAddon):
             ) as tar_gz:
                 with gzip.GzipFile("wb", fileobj=tar_gz, mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:
-                        members = sorted(root.rglob("*"))
-                        len_members = len(members)
+
                         for i, path in enumerate(members):
                             if path.is_dir():
                                 continue
+                            if i == 0:
+                                self.log.info(
+                                    f"""[lite] [archive] files: {len_members}"""
+                                )
                             if not (i % 100):
                                 self.log.info(
-                                    f"[lite] [archive] Adding {i+1} of {len_members}"
+                                    """[lite] [archive] """
+                                    f"""... {str(i + 1).rjust(rjust)} """
+                                    f"""of {len_members}"""
                                 )
                             tar.add(
                                 path,
                                 arcname=f"package/{path.relative_to(root)}",
-                                filter=_filter,
+                                filter=self.filter_tarinfo,
                                 recursive=False,
                             )
 
@@ -111,6 +138,6 @@ class ArchiveAddon(BaseAddon):
             shasum = sha256(tarball.read_bytes()).hexdigest()
             self.log.info(f"{prefix}size:       {size} Mb")
             # extra details, for the curious
-            self.log.debug(f"{prefix}created:  {stat.st_mtime}")
-            self.log.debug(f"{prefix}modified: {stat.st_mtime}")
+            self.log.debug(f"{prefix}created:  {int(stat.st_mtime)}")
+            self.log.debug(f"{prefix}modified: {int(stat.st_mtime)}")
             self.log.debug(f"{prefix}SHA256:   {shasum}")

@@ -1,11 +1,32 @@
 """feature tests of generated artifacts"""
+import pprint
 import shutil
+import tarfile
 import tempfile
 from hashlib import sha256
 from pathlib import Path
 
 # use the generally-documented invocation
 LITE_ARGS = "jupyter", "lite"
+
+
+def test_archive_input(a_lite_app_archive, the_npm_source_date_epoch):
+    """validate some assumptions about the structure of our baseline tarball"""
+    expected = dict(gid=0, uid=0, mtime=the_npm_source_date_epoch)
+    unexpected = []
+
+    with tarfile.open(a_lite_app_archive) as tar:
+        for member in tar.getmembers():
+            for expected_key, expected_value in expected.items():
+                observed_value = getattr(member, expected_key)
+                if observed_value == expected_value:
+                    continue
+                unexpected += [
+                    [expected_key, expected_value, observed_value, member.name]
+                ]
+
+    pprint.pprint(unexpected)
+    assert not unexpected, f"{a_lite_app_archive} does not work the way we expect"
 
 
 def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_epoch):

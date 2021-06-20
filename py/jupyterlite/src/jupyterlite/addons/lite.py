@@ -33,7 +33,8 @@ class LiteAddon(BaseAddon):
                 name=f"patch:{rel}",
                 file_dep=[jupyterlite_json, dest],
                 actions=[
-                    (self.merge_one_jupyterlite, [dest, [dest, jupyterlite_json]])
+                    (self.merge_one_jupyterlite, [dest, [dest, jupyterlite_json]]),
+                    (self.maybe_timestamp, [dest]),
                 ],
             )
 

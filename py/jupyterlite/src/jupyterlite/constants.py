@@ -1,7 +1,15 @@
 from pathlib import Path
 
+# a locale for reproducible file sorting
+C_LOCALE = "C"
+
 ROOT = Path(__file__).parent
-DEFAULT_APP_ARCHIVE = next(ROOT.glob("jupyterlite-app-*.tgz"))
+
+# all of the archives
+ALL_APP_ARCHIVES = sorted(ROOT.glob("jupyterlite-app-*.tgz"))
+
+# our baseline archive.
+DEFAULT_APP_ARCHIVE = ALL_APP_ARCHIVES[-1]
 
 # the extension point for addons, including core
 ADDON_ENTRYPOINT = "jupyterlite.addon.v0"

@@ -48,7 +48,7 @@ class BaseAddon(LoggingConfigurable):
         self.maybe_timestamp(dest)
 
     def maybe_timestamp(self, path):
-        if self.manager.source_date_epoch is None:
+        if not path.exists() or self.manager.source_date_epoch is None:
             return
 
         if path.is_dir():
@@ -125,10 +125,6 @@ class BaseAddon(LoggingConfigurable):
         out_path.write_text(
             json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
         )
-
-        self.maybe_timestamp(out_path)
-
-        self.log.debug(config)
 
     def merge_jupyter_config_data(self, config, in_config):
         self.log.debug(f"""[lite][config][merge] ..... {config}""")
