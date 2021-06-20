@@ -136,7 +136,7 @@ class ContentsAddon(BaseAddon):
         """
         try:
             from jupyter_server.services.contents.filemanager import FileContentsManager
-        except ImportError as err:
+        except ImportError as err:  # pragma: no cover
             self.log.warning(
                 f"[lite] [contents] `jupyter_server` was not importable, "
                 f"cannot index contents {err}"
@@ -172,20 +172,22 @@ class ContentsAddon(BaseAddon):
         self.maybe_timestamp(api_path.parent)
 
     def patch_listing_timestamps(self, listing, sde=None):
+        """clamp a contents listing's times to SOURCE_DATE_EPOCH"""
         sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
+
         if isinstance(listing, dict):
-            for field in ["created"]:
+            for field in ["created", "last_modified"]:
                 if field not in listing:
                     continue
                 value = listing[field]
-                print(value, field)
                 if isoformat(value) > isoformat(sde):
                     self.log.info(
                         f"""[lite][contents][patch] {field} on {listing["name"]}"""
                     )
                     listing[field] = sde
-            for child in listing.get("children", []):
-                self.patch_listing_timestamps(child, sde)
+            if listing["type"] == "directory":
+                for child in listing.get("content") or []:
+                    self.patch_listing_timestamps(child, sde)
 
         else:
             self.log.error(f"[lite][contents] Don't know how to patch {listing}")

@@ -36,17 +36,25 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
     archive_args = (*LITE_ARGS, "archive", *extra_args)
     cwd = dict(cwd=an_empty_lite_dir)
 
+    # put some content in
+    readme = an_empty_lite_dir / "files/nested/README.md"
+    readme.parent.mkdir(parents=True)
+    readme.write_text("# Hello world\n", encoding="utf-8")
+
+    # build once for initial tarball
     before = an_empty_lite_dir / "v1.tgz"
     initial = script_runner.run(*archive_args, "--output-archive", before, **cwd)
     assert initial.success, "failed to build the first tarball"
 
     # reset
-    _reset_a_lite_dir(an_empty_lite_dir, before)
+    _reset_a_lite_dir(an_empty_lite_dir, before, readme)
 
+    # build another tarball
     after = an_empty_lite_dir / "v2.tgz"
     subsequent = script_runner.run(*archive_args, "--output-archive", after, **cwd)
     assert subsequent.success, "failed to build the second tarball"
 
+    # check them
     _assert_same_tarball(
         "two successive builds should be the same", script_runner, before, after
     )
@@ -57,16 +65,19 @@ def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epo
     archive_args = (*LITE_ARGS, "archive", *extra_args)
     cwd = dict(cwd=an_empty_lite_dir)
 
+    # build once for initial tarball
     before = an_empty_lite_dir / "v1.tgz"
     initial = script_runner.run(*archive_args, "--output-archive", before, **cwd)
     assert initial.success, "failed to build the first tarball"
 
+    # build another tarball
     after = an_empty_lite_dir / "v2.tgz"
     subsequent = script_runner.run(
         *archive_args, "--app-archive", before, "--output-archive", after, **cwd
     )
     assert subsequent.success, "failed to build the second tarball"
 
+    # check them
     _assert_same_tarball(
         "a build repeated should be the same", script_runner, before, after
     )

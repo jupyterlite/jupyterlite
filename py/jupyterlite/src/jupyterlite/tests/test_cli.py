@@ -30,12 +30,26 @@ FAST_HOOKS = ["list", "status"]
 # serve is handled separately
 NOT_SERVE_HOOK = [h for h in HOOKS if h != "serve"]
 
+# a simple overrides.json
+AN_OVERRIDES = """{
+  "@jupyterlab/docmanager-extension:plugin": {
+    "nameFileOnSave": false
+  }
+}
+"""
+
 # a simple jupyter-lite.json describing a remote entry
-A_FEDERATED_EXTENSION = """{ "jupyter-config-data": { "federated_extensions": [ {
-    "extension": "./extension",
-    "load": "static/remoteEntry.abc123.js",
-    "name": "@org/pkg"
-} ] } }"""
+A_SIMPLE_JUPYTERLITE_JSON = """{ "jupyter-config-data": {
+    "federated_extensions": [
+        {
+            "extension": "./extension",
+            "load": "static/remoteEntry.abc123.js",
+            "name": "@org/pkg"
+        }
+    ],
+    "disabledExtensions": ["@org/pkg"],
+    "settingsOverrides": {}
+} }"""
 
 
 @mark.parametrize("lite_args", LITE_INVOCATIONS)
@@ -109,14 +123,14 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     details.parent.mkdir()
     details.write_text("# more details", encoding="utf-8")
 
-    # some root overrides
-    overrides = an_empty_lite_dir / "overrides.json"
-    overrides.write_text(A_FEDERATED_EXTENSION, encoding="utf-8")
+    # some federated stuff
+    lite_json = an_empty_lite_dir / "jupyter-lite.json"
+    lite_json.write_text(A_SIMPLE_JUPYTERLITE_JSON, encoding="utf-8")
 
     # ... and app overrides
     app_overrides = an_empty_lite_dir / "lab/overrides.json"
     app_overrides.parent.mkdir()
-    app_overrides.write_text(A_FEDERATED_EXTENSION, encoding="utf-8")
+    app_overrides.write_text(AN_OVERRIDES, encoding="utf-8")
 
     forced_status = script_runner.run(
         "jupyter",
@@ -127,8 +141,6 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
         readme,
         "--files",
         details,
-        "--overrides",
-        overrides,
         cwd=an_empty_lite_dir,
     )
 
