@@ -1,68 +1,8 @@
 # Configuring
 
-## The JupyterLite CLI
+## Runtime Configuration Files
 
-> TBD: \_Install with `pip`, `mamba`, or `conda`
-
-### Common Parameters
-
-- `--lite-dir` (default: working directory) configuration and content for the site
-- `--output-dir` (default: `_output`) where the hostable site will be created
-- `--app-archive` (default: bundled) an alternate site to base off of
-- `--files` (default: `files`) directory to copy to `_output/files/` and available as
-  _Contents_
-- `--ignore-files` (default: [`untitled*`, `.ipynb_checkpoints`, `.git`]) patterns that
-  should _never_ be included in `/files/` (even if found in `lite-dir`).
-
-> the default
-
-### Status
-
-You can see what kind of JupyterLite site is currently build-able:
-
-```bash
-jupyter lite status
-```
-
-### Init
-
-```bash
-jupyter lite init
-```
-
-This will perform the minimum build of the site skeleton into `--output-dir` (default:
-`_output`). Optionally, specify a custom app tarball, such as is built during
-[development](./contributing.md), with `--app-archive` or by setting
-`$JUPYTERLITE_APP_ARCHIVE`.
-
-### List
-
-```bash
-jupyter lite list
-```
-
-See a detailed listing of all currently-known tasks.
-
-### Build
-
-```bash
-jupyter lite build
-```
-
-Do the full build. By default, no content will be included in the site. `--files` can be
-given multiple times to include.
-
-### Check
-
-```bash
-jupyter lite check
-```
-
-Perform checks about the validity of the site, including JSON schema conformance, etc.
-
-## Configuration Files
-
-The configuration of your JupyterLite can be controlled by creating specially-named
+The behavior JupyterLite in the browser can be controlled by creating specially-named
 files at any level of the file tree. It is expected each file conforms to the
 [schema](#schema). For an example, see the [demo configuration](#demo-configuration).
 
