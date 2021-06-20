@@ -1,4 +1,4 @@
-"""a jupyterlite addon for customizing favicons
+"""a JupyterLite addon for customizing favicons
 
 TODO:
   - this should do some best-effort image conversions.

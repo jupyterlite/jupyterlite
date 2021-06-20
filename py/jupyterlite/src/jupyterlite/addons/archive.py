@@ -1,4 +1,4 @@
-"""a jupyterlite addon for generating app archives which can be used as input"""
+"""a JupyterLite addon for generating app archives which can be used as input"""
 import contextlib
 import gzip
 import locale

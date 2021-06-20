@@ -1,4 +1,4 @@
-"""a jupyterlite addon for jupyterlite-specific tasks"""
+"""a JupyterLite addon for jupyterlite-specific tasks"""
 
 
 from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA

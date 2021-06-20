@@ -1,4 +1,4 @@
-"""a jupyterlite addon for serving"""
+"""a JupyterLite addon for serving"""
 import sys
 
 import doit

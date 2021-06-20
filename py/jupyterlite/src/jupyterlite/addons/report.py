@@ -1,4 +1,4 @@
-"""a jupyterlite addon for generating hashes"""
+"""a JupyterLite addon for generating hashes"""
 from hashlib import sha256
 
 from ..constants import SHA256SUMS

@@ -1,4 +1,4 @@
-"""a jupyterlite addon for enabling serviceworker support
+"""a JupyterLite addon for enabling serviceworker support
 
 TODO: this would prepare the Web Manifest, and likely update some configurations
 

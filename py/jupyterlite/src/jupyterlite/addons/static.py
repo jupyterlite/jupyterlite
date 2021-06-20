@@ -1,4 +1,4 @@
-"""a jupyterlite addon for jupyterlab core"""
+"""a JupyterLite addon for jupyterlab core"""
 import shutil
 import tarfile
 import tempfile

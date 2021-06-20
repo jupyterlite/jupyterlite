@@ -1,4 +1,4 @@
-"""a jupyterlite addon for jupyter contents"""
+"""a JupyterLite addon for Jupyter Server-compatible contents"""
 import datetime
 import json
 import pprint
@@ -107,14 +107,16 @@ class ContentsAddon(BaseAddon):
 
     @property
     def file_src_dest(self):
+        """the paits of files that will be copied"""
         for mgr_file in self.manager.files:
             path = Path(mgr_file)
-            for from_path in self.maybe_add_one_file(path):
+            for from_path in self.maybe_add_one_path(path):
                 stem = from_path.relative_to(self.manager.lite_dir)
                 to_path = self.output_files_dir / stem
                 yield from_path, to_path
 
-    def maybe_add_one_file(self, path):
+    def maybe_add_one_path(self, path):
+        """add a folder or directory (if not ignored)"""
         p_path = str(path.resolve().as_posix())
 
         for ignore in self.manager.ignore_files:
@@ -123,7 +125,7 @@ class ContentsAddon(BaseAddon):
 
         if path.is_dir():
             for child in path.glob("*"):
-                for from_child in self.maybe_add_one_file(child):
+                for from_child in self.maybe_add_one_path(child):
                     yield from_child
         else:
             yield path.resolve()
@@ -172,12 +174,15 @@ class ContentsAddon(BaseAddon):
         self.maybe_timestamp(api_path.parent)
 
     def patch_listing_timestamps(self, listing, sde=None):
-        """clamp a contents listing's times to SOURCE_DATE_EPOCH"""
+        """clamp a contents listing's times to SOURCE_DATE_EPOCH
+
+        TODO: pre-validated this structure with the `jupyter_server` API spec
+        """
         sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
 
         if isinstance(listing, dict):
             for field in ["created", "last_modified"]:
-                if field not in listing:
+                if field not in listing:  # pragma: no cover
                     continue
                 value = listing[field]
                 if isoformat(value) > isoformat(sde):
@@ -189,7 +194,7 @@ class ContentsAddon(BaseAddon):
                 for child in listing.get("content") or []:
                     self.patch_listing_timestamps(child, sde)
 
-        else:
+        else:  # pragma: no cover
             self.log.error(f"[lite][contents] Don't know how to patch {listing}")
             return None
 
