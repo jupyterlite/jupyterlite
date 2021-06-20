@@ -8,6 +8,7 @@ sphinx-jsonschema
 sphinxext-rediraffe
 myst-nb
 pydata-sphinx-theme
+sphinx-autodoc-typehints
 
 # check
 pytest-check-links

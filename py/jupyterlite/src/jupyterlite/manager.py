@@ -12,13 +12,18 @@ from .constants import ADDON_ENTRYPOINT, HOOK_PARENTS, HOOKS, PHASES
 class LiteManager(LiteBuildConfig):
     """a manager for building jupyterlite sites
 
-    > TODO: verify the following documentation snippets in test
+    .. todo::
 
-    This primarily handles the business of mapping _addons_ to `doit` _tasks_,
-    and then calling the `doit` API.
+        verify the following documentation snippets in test
 
-    ### Packaging an Addon
-    An Addon is advertised via `entry_points` e.g. in `pyproject.toml`:
+    This primarily handles the business of mapping _addons_ to ``doit`` _tasks_,
+    and then calling the ``doit`` API.
+
+    **Packaging an Addon**
+
+    An Addon is advertised via ``entry_points`` e.g. in ``pyproject.toml``:
+
+    .. code-block: toml
 
         [tool.flit.entrypoints."jupyterlite.addon.v0"]
         static = "jupyterlite.addons.static:StaticAddon"
@@ -30,8 +35,11 @@ class LiteManager(LiteBuildConfig):
         serve = "jupyterlite.addons.serve:ServeAddon"
         archive = "jupyterlite.addons.archive:ArchiveAddon"
 
-    ### Structure of an Addon
+    **Structure of an Addon**
+
     An Addon is initialized with a signature like:
+
+    .. code-block: python
 
         def my_addon(manager):
             return {
@@ -41,21 +49,23 @@ class LiteManager(LiteBuildConfig):
                 ]
             }
 
-    > A convenience class, `jupyterlite.addons.base.BaseAddon` provides a number
-    > of useful features
+    A convenience class, ``jupyterlite.addons.base.BaseAddon`` provides a number
+    of useful features
 
-    The `__all__` member list _hooks_. Hooks may also be prefixed with `pre_`
-    and `post_` _phase_ which go in roughly logical order. Of note:
+    The ``__all__`` member list `hooks`. Hooks may also be prefixed with `pre_`
+    and ``post_`` `phase` which go in roughly logical order. Of note:
 
-    - The `init` phase is mostly reserved for "gold master" content
-    - The `build` is mostly reserved for user-authored content
-    - A `status` method to give one-line reporting, and should have no side-effects
+    * The ``init`` phase is mostly reserved for "gold master" content
+    * The ``build`` is mostly reserved for user-authored content
+    * A ``status`` method to give one-line reporting, and should have no side-effects
 
-    > See the existing examples in this directory for other hook implementations.
+    `See the existing examples in this directory for other hook implementations.`
 
-    ### The Task Generator
+    **The Task Generator**
 
-    Each method is expected to return an iterable of doit tasks, of the minimal form:
+    Each method is expected to return an iterable of ``doit`` tasks, of the minimal form:
+
+    .. code-block: python
 
         def post_build(manager):
             yield dict(
@@ -65,9 +75,9 @@ class LiteManager(LiteBuildConfig):
                 targets=["an-output-file"],
             )
 
-    The top-level tasks usually have `doit.create_after` configured based on their
-    _hook parent_, which means a task can _confidently_ rely on files from that
-    parent (by _any_ addons) would already exist.
+    The top-level tasks usually have ``doit.create_after`` configured based on their
+    `hook parent`, which means a task can `confidently` rely on files from that
+    parent (by `any` addons) would already exist.
     """
 
     strict = Bool(

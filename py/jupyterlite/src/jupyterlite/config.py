@@ -1,6 +1,9 @@
 """an observable configuration object for the JupyterLite lifecycle
 
-> TODO: Move to a canonical JSON schema
+.. todo::
+
+    Move to a canonical JSON schema?
+
 """
 import os
 from pathlib import Path

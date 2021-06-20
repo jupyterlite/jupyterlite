@@ -39,11 +39,19 @@ version = ".".join(release.rsplit(".", 1))
 
 # sphinx config
 extensions = [
+    # first-party sphinx extensions
+    "sphinx.ext.todo",
     "sphinx.ext.autosectionlabel",
+    # for routing
     "sphinxext.rediraffe",
-    "sphinx.ext.autodoc",
+    # for pretty schema
     "sphinx-jsonschema",
+    # mostly markdown (some ipynb)
     "myst_nb",
+    # autodoc-related stuff must be in order
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+    "sphinx_autodoc_typehints",
 ]
 
 autosectionlabel_prefix_document = True

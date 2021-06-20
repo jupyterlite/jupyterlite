@@ -21,6 +21,7 @@ dependencies:
   - myst-nb
   - pydata-sphinx-theme
   - sphinx
+  - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe
   # check
