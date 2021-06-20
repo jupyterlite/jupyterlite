@@ -54,8 +54,8 @@ ALL_JSON = "all.json"
 # a canonical environment variable for triggering reproducible builds
 SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 
-# the unofficial mascot user of jupyter
-JOVYAN = "jovyan"
+# this is arrived at by inspection
+NPM_SOURCE_DATE_EPOCH = 499162500
 
 ### URLs
 

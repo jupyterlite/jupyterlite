@@ -6,8 +6,9 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-from ..constants import JOVYAN
 from .base import BaseAddon
+
+from ..constants import NPM_SOURCE_DATE_EPOCH
 
 
 class ArchiveAddon(BaseAddon):
@@ -65,8 +66,10 @@ class ArchiveAddon(BaseAddon):
 
         def _filter(tarinfo):
             tarinfo.uid = tarinfo.gid = 0
-            tarinfo.uname = tarinfo.gname = JOVYAN
-            if self.manager.source_date_epoch is not None:
+            tarinfo.uname = tarinfo.gname = 0
+            if "package/files/" not in str(Path(tarinfo.name).as_posix()):
+                tarinfo.mtime = NPM_SOURCE_DATE_EPOCH
+            elif self.manager.source_date_epoch is not None:
                 tarinfo.mtime = self.manager.source_date_epoch
             return tarinfo
 
