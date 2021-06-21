@@ -34,13 +34,15 @@ class FederatedExtensionAddon(BaseAddon):
 
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
-        root = self.manager.lite_dir / LAB_EXTENSIONS
+        root = ENV_EXTENSIONS
 
         for pkg_json in self.env_extensions(root):
             yield self.copy_one_extension(pkg_json, root)
 
     def build(self, manager):
         """yield a doit task to copy each local extension into the output_dir"""
+        root = self.manager.lite_dir / LAB_EXTENSIONS
+
         for pkg_json in self.env_extensions(ENV_EXTENSIONS):
             yield self.copy_one_extension(pkg_json, ENV_EXTENSIONS)
 
