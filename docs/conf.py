@@ -93,7 +93,7 @@ exclude_patterns = [
     "tsconfig.*",
     "webpack.config.*",
 ]
-jupyter_execute_notebooks = "cache"
+jupyter_execute_notebooks = "auto"
 
 execution_excludepatterns = [
     "_static/**/*",
