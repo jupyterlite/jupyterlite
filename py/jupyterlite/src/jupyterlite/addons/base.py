@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+from pathlib import Path
 
 import jsonschema
 from traitlets import Instance
@@ -10,6 +11,8 @@ from ..constants import (
     DISABLED_EXTENSIONS,
     FEDERATED_EXTENSIONS,
     JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_IPYNB,
+    JUPYTERLITE_METADATA,
     SETTINGS_OVERRIDES,
 )
 from ..manager import LiteManager
@@ -80,16 +83,25 @@ class BaseAddon(LoggingConfigurable):
         elif src.exists():
             src.unlink()
 
-    def validate_one_json_file(self, validator, path=None, data=None):
+    def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
         if path:
             loaded = json.loads(path.read_text(encoding="utf-8"))
         else:
             loaded = data
 
+        if selector:
+            for sel in selector:
+                selected = loaded.get(sel, {})
+        else:
+            selected = loaded
+
         if validator is None:
             return True
 
-        validator.validate(loaded)
+        if isinstance(validator, Path):
+            validator = self.get_validator(validator)
+
+        validator.validate(selected)
 
     def get_validator(self, schema_path, klass=jsonschema.Draft7Validator):
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -97,7 +109,7 @@ class BaseAddon(LoggingConfigurable):
 
     def merge_one_jupyterlite(self, out_path, in_paths):
         """write the ``out_path`` with the merge content of ``in_paths``, where
-        all are valid ``jupyter-lite.json`` files.
+        all are valid ``jupyter-lite.*`` files.
 
         .. todo::
 
@@ -108,8 +120,18 @@ class BaseAddon(LoggingConfigurable):
 
         for in_path in in_paths:
             self.log.debug(f"[lite][config][merge] . {in_path}")
-            in_config = json.loads(in_path.read_text(encoding="utf-8"))
-            if config is None:
+            in_config = None
+            try:
+                in_config = json.loads(in_path.read_text(encoding="utf-8"))
+                if out_path.name == JUPYTERLITE_IPYNB:
+                    in_config = in_config["metadata"].get(JUPYTERLITE_METADATA)
+            except:
+                pass
+
+            if not in_config:
+                continue
+
+            if not config:
                 config = in_config
                 continue
 
@@ -122,11 +144,29 @@ class BaseAddon(LoggingConfigurable):
                         self.log.debug(f"""[lite][config] ..... {k} updated""")
                         config[k] = v
 
-        self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
+        if config and JUPYTER_CONFIG_DATA in config:
+            self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
-        out_path.write_text(
-            json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
-        )
+        if out_path.name == JUPYTERLITE_IPYNB:
+            if out_path.exists():
+                doc_path = out_path
+            else:
+                for in_path in in_paths:
+                    if in_path.name == JUPYTERLITE_IPYNB and in_path.exists():
+                        doc_path = in_path
+                        break
+
+            doc = json.loads(doc_path.read_text(encoding="utf-8"))
+
+            doc["metadata"][JUPYTERLITE_METADATA] = config
+
+            out_path.write_text(
+                json.dumps(doc, indent=2, sort_keys=True), encoding="utf-8"
+            )
+        else:
+            out_path.write_text(
+                json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
+            )
 
     def merge_jupyter_config_data(self, config, in_config):
         """merge well-known ``jupyter-config-data`` fields"""

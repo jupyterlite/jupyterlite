@@ -37,9 +37,6 @@ SETTINGS_OVERRIDES = "settingsOverrides"
 
 ### jupyterlite "well-known" paths
 
-#: similar to `.binder`, this signals a minimum build environment with predictable names
-JUPYTERLITE_PATH = ".jupyter-lite"
-
 #: our schema
 JUPYTERLITE_SCHEMA = "jupyterlite.schema.v0.json"
 
@@ -49,7 +46,10 @@ JUPYTERLITE_APPS_REQUIRED = ["lab"]
 
 #: our configuration file
 JUPYTERLITE_JSON = "jupyter-lite.json"
-#: TODO: the notebook opinions
+
+#: our configuration file
+JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
+JUPYTERLITE_METADATA = "jupyter-lite"
 
 #: Needs a better canonical location
 DEFAULT_OUTPUT_DIR = "_output"

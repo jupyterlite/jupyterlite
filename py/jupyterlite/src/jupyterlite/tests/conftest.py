@@ -35,3 +35,27 @@ def a_lite_app_archive(request):
 @pytest.fixture
 def the_npm_source_date_epoch():
     return NPM_SOURCE_DATE_EPOCH
+
+
+@pytest.fixture
+def a_simple_lite_ipynb():
+    from nbformat.v4 import new_notebook, writes
+
+    nb = new_notebook(
+        metadata={
+            "jupyter-lite": {
+                "jupyter-config-data": {
+                    "federated_extensions": [
+                        {
+                            "extension": "./extension",
+                            "load": "static/remoteEntry.abc123.js",
+                            "name": "@org/pkg",
+                        }
+                    ],
+                    "disabledExtensions": ["@org/pkg"],
+                    "settingsOverrides": {},
+                }
+            }
+        }
+    )
+    return writes(nb)

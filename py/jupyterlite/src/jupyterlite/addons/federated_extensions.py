@@ -33,13 +33,6 @@ class FederatedExtensionAddon(BaseAddon):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
 
-    @property
-    def output_env_extensions(self):
-        """all the output labextensions"""
-        for p in self.env_extensions:
-            stem = p.relative_to(ENV_EXTENSIONS)
-            yield self.output_env_extensions_dir / stem
-
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
 

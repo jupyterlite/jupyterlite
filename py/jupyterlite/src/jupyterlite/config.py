@@ -128,6 +128,7 @@ class LiteBuildConfig(LoggingConfigurable):
             "/venvs/",
             "/\.env",
             C.JUPYTERLITE_JSON.replace(".", "\\."),
+            C.JUPYTERLITE_IPYNB.replace(".", "\\."),
             "untitled.*",
             "Untitled.*",
             f"/{self.output_dir.name}/",

@@ -3,7 +3,9 @@ import json
 
 from ..constants import (
     JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_IPYNB,
     JUPYTERLITE_JSON,
+    JUPYTERLITE_METADATA,
     LAB_EXTENSIONS,
     OVERRIDES_JSON,
     SETTINGS_OVERRIDES,
@@ -63,34 +65,42 @@ class SettingsAddon(BaseAddon):
             )
 
     def check(self, manager):
-        lab_extensions = self.output_env_extensions_dir
+        for lite_file in [
+            *manager.output_dir.rglob(JUPYTERLITE_JSON),
+            *manager.output_dir.rglob(JUPYTERLITE_IPYNB),
+        ]:
+            for task in self.check_one_lite_file(lite_file):
+                yield task
 
-        for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
-            config = json.loads(lite_json.read_text(encoding="utf-8"))
-            overrides = config.get(JUPYTER_CONFIG_DATA, {}).get(SETTINGS_OVERRIDES, {})
-            for plugin_id, defaults in overrides.items():
-                ext, plugin = plugin_id.split(":")
-                plugin_stem = f"schemas/{ext}/{plugin}.json"
-                schema = lab_extensions / ext / plugin_stem
-                if not schema.exists():
-                    core_schema = manager.output_dir / "lab/build" / plugin_stem
-                    if core_schema.exists():
-                        schema = core_schema
-                    else:
-                        self.log.debug(
-                            f"[lite] [settings] Missing {plugin} (probably harmless)"
-                        )
-                        continue
+    def check_one_lite_file(self, lite_file):
+        config = json.loads(lite_file.read_text(encoding="utf-8"))
 
-                validator = self.get_validator(schema)
+        if lite_file.name == JUPYTERLITE_IPYNB:
+            config = config["metadata"][JUPYTERLITE_METADATA]
 
-                yield dict(
-                    name=f"overrides:{plugin_id}",
-                    file_dep=[lite_json, schema],
-                    actions=[
-                        (self.validate_one_json_file, [validator, None, defaults])
-                    ],
-                )
+        overrides = config.get(JUPYTER_CONFIG_DATA, {}).get(SETTINGS_OVERRIDES, {})
+
+        for plugin_id, defaults in overrides.items():
+            ext, plugin = plugin_id.split(":")
+            plugin_stem = f"schemas/{ext}/{plugin}.json"
+            schema = self.output_env_extensions_dir / ext / plugin_stem
+            if not schema.exists():
+                core_schema = self.output_dir / "lab/build" / plugin_stem
+                if core_schema.exists():
+                    schema = core_schema
+                else:
+                    self.log.debug(
+                        f"[lite] [settings] Missing {plugin} (probably harmless)"
+                    )
+                    continue
+
+            validator = self.get_validator(schema)
+
+            yield dict(
+                name=f"overrides:{plugin_id}",
+                file_dep=[lite_file, schema],
+                actions=[(self.validate_one_json_file, [validator, None, defaults])],
+            )
 
     def patch_one_overrides(self, jupyterlite_json, overrides_json):
         """update and normalize settingsOverrides"""

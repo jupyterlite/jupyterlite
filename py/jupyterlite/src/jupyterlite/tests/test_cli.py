@@ -1,5 +1,4 @@
 """integration tests for overall CLI functionality"""
-import pprint
 import time
 
 from pytest import mark
@@ -85,7 +84,7 @@ def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
 
 
 @mark.parametrize("lite_hook", NOT_SERVE_HOOK)
-def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
+def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite_ipynb):
     """does all the hooks basically work
 
     TODO: this should be broken up into a hypothesis state machine, perhaps
@@ -127,6 +126,9 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     lite_json = an_empty_lite_dir / "jupyter-lite.json"
     lite_json.write_text(A_SIMPLE_JUPYTERLITE_JSON, encoding="utf-8")
 
+    lite_ipynb = an_empty_lite_dir / "jupyter-lite.ipynb"
+    lite_ipynb.write_text(a_simple_lite_ipynb, encoding="utf-8")
+
     # ... and app overrides
     app_overrides = an_empty_lite_dir / "lab/overrides.json"
     app_overrides.parent.mkdir()
@@ -147,7 +149,6 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
     if A_GOOD_BUILD[-1] in expected_files and lite_hook not in ["init"]:
         # TODO: ugly debugging, sure, but helpful with `-s`
         out = an_empty_lite_dir / "_output"
-        pprint.pprint(sorted(out.rglob("*")))
 
         # did the files make it...
         expected_readme = out / "files/README.md"
@@ -160,7 +161,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner):
         for path in ["", "details"]:
             contents = (out / f"api/contents/{path}/all.json").read_text()
             print("contents of", path, contents)
-            if "README" not in contents:
+            if "README" not in contents:  # pragma: no cover
                 missed += 1
         assert not missed, "some contents were not indexed"
 

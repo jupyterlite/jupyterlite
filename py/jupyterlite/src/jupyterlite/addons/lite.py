@@ -1,7 +1,12 @@
 """a JupyterLite addon for jupyterlite-specific tasks"""
 
 
-from ..constants import JUPYTERLITE_JSON, JUPYTERLITE_SCHEMA
+from ..constants import (
+    JUPYTERLITE_IPYNB,
+    JUPYTERLITE_JSON,
+    JUPYTERLITE_METADATA,
+    JUPYTERLITE_SCHEMA,
+)
 from .base import BaseAddon
 
 
@@ -14,9 +19,12 @@ class LiteAddon(BaseAddon):
         yield dict(
             name=JUPYTERLITE_JSON,
             actions=[
-                lambda: print(
-                    f"""    {JUPYTERLITE_JSON}: {len(self.lite_jsons)} files"""
-                )
+                lambda: self.log.debug(
+                    f"""    jupyter-lite.(json|ipynb): {self.lite_files}"""
+                ),
+                lambda: self.log.info(
+                    f"""    jupyter-lite.(json|ipynb): {len(self.lite_files)} files"""
+                ),
             ],
         )
 
@@ -25,15 +33,14 @@ class LiteAddon(BaseAddon):
         lite_dir = manager.lite_dir
         output_dir = manager.output_dir
 
-        lite_jsons = self.lite_jsons
-        for jupyterlite_json in lite_jsons:
-            rel = jupyterlite_json.relative_to(lite_dir)
+        for jupyterlite_file in self.lite_files:
+            rel = jupyterlite_file.relative_to(lite_dir)
             dest = output_dir / rel
             yield dict(
                 name=f"patch:{rel}",
-                file_dep=[jupyterlite_json, dest],
+                file_dep=[jupyterlite_file],
                 actions=[
-                    (self.merge_one_jupyterlite, [dest, [dest, jupyterlite_json]]),
+                    (self.merge_one_jupyterlite, [dest, [dest, jupyterlite_file]]),
                     (self.maybe_timestamp, [dest]),
                 ],
             )
@@ -46,22 +53,39 @@ class LiteAddon(BaseAddon):
         if not schema.exists():
             return
 
-        validator = self.get_validator(schema)
         file_dep += [schema]
 
-        for lite_json in manager.output_dir.rglob(JUPYTERLITE_JSON):
-            stem = lite_json.relative_to(manager.output_dir)
+        for lite_file in [
+            *manager.output_dir.rglob(JUPYTERLITE_JSON),
+            *manager.output_dir.rglob(JUPYTERLITE_IPYNB),
+        ]:
+            stem = lite_file.relative_to(manager.output_dir)
+            selector = (
+                None
+                if lite_file.name == JUPYTERLITE_JSON
+                else ["metadata", JUPYTERLITE_METADATA]
+            )
             yield dict(
                 name=f"validate:{stem}",
-                file_dep=[schema, lite_json],
-                actions=[(self.validate_one_json_file, [validator, lite_json])],
+                file_dep=[schema, lite_file],
+                actions=[
+                    (
+                        self.validate_one_json_file,
+                        [schema, lite_file, None, selector],
+                    )
+                ],
             )
 
     @property
-    def lite_jsons(self):
-        """all the source `jupyter-lite.json` files"""
+    def lite_files(self):
+        """all the source `jupyter-lite.*` files"""
+        lite_dir = self.manager.lite_dir
+        all_lite_files = [
+            *lite_dir.rglob(JUPYTERLITE_JSON),
+            *lite_dir.rglob(JUPYTERLITE_IPYNB),
+        ]
         return [
             p
-            for p in self.manager.lite_dir.rglob(JUPYTERLITE_JSON)
+            for p in all_lite_files
             if not str(p).startswith(str(self.manager.output_dir))
         ]
