@@ -364,7 +364,7 @@ def task_docs():
             B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
-        actions=[U.do("sphinx-build", "-W", "-b", "html", P.DOCS, B.DOCS)],
+        actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
 
@@ -432,7 +432,14 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", "-a", "-j8", P.DOCS, B.DOCS)],
+            actions=[
+                U.do(
+                    "sphinx-autobuild",
+                    *(C.SPHINX_ARGS or ["-a", "-j8"]),
+                    P.DOCS,
+                    B.DOCS,
+                )
+            ],
         )
 
 
@@ -502,6 +509,7 @@ class C:
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]

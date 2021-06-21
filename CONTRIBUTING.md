@@ -200,6 +200,13 @@ using the [doit](#doit) tools are recommended.
 doit docs
 ```
 
+> Extra `sphinx-build` arguments are set by the `SPHINX_ARGS` environment variable. For
+> example to fail on all warnings (the configuration for the ReadTheDocs build):
+
+> ```bash
+> SPHINX_ARGS='["-W"]' doit docs
+> ```
+
 #### Watch Documentation
 
 ```bash

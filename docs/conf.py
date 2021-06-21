@@ -4,6 +4,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 from sphinx.application import Sphinx
@@ -25,6 +26,9 @@ EXAMPLE_FILES = [
         and "__pycache__" not in str(example)
     ],
 ]
+
+# this is _not_ the way
+sys.path += [str(ROOT / "py/jupyterlite/src")]
 
 # metadata
 author = APP_DATA["author"]

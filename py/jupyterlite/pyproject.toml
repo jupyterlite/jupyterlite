@@ -29,9 +29,6 @@ lab = [
 contents = [
     "jupyter_server",
 ]
-watch = [
-    "watchgod",
-]
 serve = [
     "tornado >=6.1",
 ]
