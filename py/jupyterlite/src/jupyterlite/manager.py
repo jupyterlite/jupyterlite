@@ -50,7 +50,7 @@ class LiteManager(LiteBuildConfig):
             }
 
     A convenience class, ``jupyterlite.addons.base.BaseAddon`` provides a number
-    of useful features
+    of useful features.
 
     The ``__all__`` member list `hooks`. Hooks may also be prefixed with `pre_`
     and ``post_`` `phase` which go in roughly logical order. Of note:
@@ -98,10 +98,11 @@ class LiteManager(LiteBuildConfig):
 
     @property
     def log(self):
+        """a convenience wrapper for the parent log"""
         return self.parent.log
 
     def initialize(self):
-        # TODO: finish initialization
+        """perform one-time inialization of the manager"""
         self.log.debug("[lite] [addon] loading ...")
         self.log.debug(f"[lite] [addon] ... OK {len(self._addons)} addons")
         self.log.debug("[lite] [tasks] loading ...")
@@ -118,7 +119,7 @@ class LiteManager(LiteBuildConfig):
     def _default_addons(self):
         """initialize addons from entry_points
 
-        if populated, `disable_addons` will be consulted
+        if populated, ``disable_addons`` will be consulted
         """
         addons = {}
         for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
@@ -137,7 +138,7 @@ class LiteManager(LiteBuildConfig):
 
     @default("_doit_config")
     def _default_doit_config(self):
-        """our hardcoded DOIT_CONFIG"""
+        """our hardcoded ``DOIT_CONFIG``"""
         return {
             "dep_file": ".jupyterlite.doit.db",
             "backend": "sqlite3",
@@ -153,7 +154,8 @@ class LiteManager(LiteBuildConfig):
         for hook in HOOKS:
             for phase in PHASES:
                 if phase == "pre_":
-                    prev_attr = HOOK_PARENTS.get(hook)
+                    if hook in HOOK_PARENTS:
+                        prev_attr = f"""{self.task_prefix}post_{HOOK_PARENTS[hook]}"""
                 attr = f"{self.task_prefix}{phase}{hook}"
                 tasks[f"task_{self.task_prefix}{attr}"] = self._gather_tasks(
                     attr, prev_attr
@@ -163,7 +165,8 @@ class LiteManager(LiteBuildConfig):
         return tasks
 
     def _gather_tasks(self, attr, prev_attr):
-        # early up-front doit stuff
+        """early up-front ``doit`` work"""
+
         def _gather():
             for name, addon in self._addons.items():
                 if attr in addon.__all__:

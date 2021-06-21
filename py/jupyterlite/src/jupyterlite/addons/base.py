@@ -129,7 +129,7 @@ class BaseAddon(LoggingConfigurable):
         )
 
     def merge_jupyter_config_data(self, config, in_config):
-        """merge well-known ``jupyter-config-data` fields"""
+        """merge well-known ``jupyter-config-data`` fields"""
         self.log.debug(f"""[lite][config][merge] ..... {config}""")
         self.log.debug(f"""[lite][config][merge] ..... {in_config}""")
 
