@@ -73,17 +73,30 @@ _might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
 
 ### Extensions with the CLI
 
-When you `jupyter lite build`
+#### Environment Extensions
 
-All federated extensons in `{sys.prefix}/share/jupyter/labextensions` will be:
+When you `jupyter lite build`, all federated extensions in your JupyterLab environment,
+e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
 - copied to `{output-dir}/lab/extensions`
-- have its theme information copied to `{output-dir}/{app?}/theme/`
+- have its theme information copied to `{output-dir}/{app/?}theme/`
 
 #### Extensions for a Specific App
 
 Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
 federated extensions will only be avaialable for pages within that file tree.
+
+#### Custom Extensions
+
+By placing extensions under `{lite-dir}/lab/extensions/{org/?}{package}/`, these will
+also be copied into the `output-dir` _after_ any environment extensions, and all will be
+added to `{output-dir}/jupyter-lite.json#jupyter-config-data/federated_extensions`.
+
+```{hint}
+For example, after building a lab extension, you can copy the contents of
+`packages.json#/jupyterlab/outputDir` right into the `lite-dir` to preview your
+extension.
+```
 
 ## Customizing Settings
 
