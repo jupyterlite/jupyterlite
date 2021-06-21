@@ -15,23 +15,26 @@ An HTTPS-capable server is recommended for all but the simplest `localhost` case
 
 ## Get an Empty JupyterLite Site
 
+The minimum deployable site contains enough to run JupyterLab and RetroLab, but no
+content.
+
 ```{hint}
-Use of the CLI is optional, but **recommended**. It offers substantially better integration with other Jupyter tools.
+Use of the CLI is optional, but **recommended**. It offers substantially better
+integration with other Jupyter tools.
 ```
 
 To get the [Python CLI](./cli.ipynb) and [API](./api/index.md) from [PyPI]:
 
 ```bash
 pip install jupyterlite
+# TODO: mamba install jupyterlite
 ```
 
-> - _TBD: `[lab], [all]`_
+To build an empty site (just the JupyterLite static assets):
 
 ```bash
 jupyter lite init
 ```
-
-> - _TBD: `# or mamba install jupyterlite`_
 
 ### Static Site: The Hard Way
 
@@ -51,6 +54,9 @@ for what you can configure in your JupyterLite.
 ```
 
 ## Build Tools
+
+While the JupyterLite CLI will create the correct assets for JupyterLite, it might not
+be enough to deploy along with the rest of your content.
 
 ### WebPack
 
@@ -85,7 +91,7 @@ The composite directory will end up in `docs/_build/_static`.
 ```{hint}
 See the JupyterLite [conf.py] for an example approach, though it's likely a good
 deal more complicated than you will need, because it needs to build _itself_ first!
-This complexity is managed in [dodo.py]
+This complexity is managed in [dodo.py].
 ```
 
 ### `html_extra_path`

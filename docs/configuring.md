@@ -17,9 +17,12 @@ Each can be omitted from the file tree, and will result in a harmless (though no
 
 ```{hint}
 Configuration cascades _down_, such that the closest, most-user-editable file
-to the `index.html` being served takes highest precedence. Like-named keys will be _replaced_  by higher-priority files, with the notable exceptions of:
-- the `federated_extensions` and `disabledExtensions` lists which are appended
-- `settingsOverrides` dictionary will be merged at the top-level of each plugin
+to the `index.html` being served takes highest precedence. Like-named keys will
+be _replaced_  by higher-priority files, with the notable exceptions of:
+
+- the `federated_extensions` and `disabledExtensions` lists are appended and
+  deduplicated
+- the `settingsOverrides` dictionary will be merged at the top level of each plugin
 ```
 
 ### Schema
@@ -43,12 +46,88 @@ schema-v0
 
 ## Adding Content
 
-### _Content, The Hard Way_
+### Content with the CLI
 
-```{warning}
-This is a heavily work-in-progress procedure, and will hopefully soon be improved
-with convenience tools in (at least) python and JavaScript.
+With the [CLI](./cli.ipynb) installed, run
+
+```bash
+jupyter lite build
 ```
+
+...any contents of `{lite-dir}/files/` (and any added `--files`) will be:
+
+- copied to the built site under `{output-dir}/files/`
+  - may have timestamps changed if `--source-date-epoch` is provided.
+- indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
+
+## Adding Extensions
+
+JupyterLab 3 [federated extensions] allow for adding new capabilities to JupyterLite
+without rebuilding the entire web application. A good starting point for extensions that
+_might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
+(#9461)][#9461]_. Additionally, this site demonstrates a few
+[extensions](#demo-extension-notes).
+
+[#9461]: https://github.com/jupyterlab/jupyterlab/issues/9461
+[federated extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
+
+### Extensions with the CLI
+
+When you `jupyter lite build`
+
+All federated extensons in `{sys.prefix}/share/jupyter/labextensions` will be:
+
+- copied to `{output-dir}/lab/extensions`
+- have its theme information copied to `{output-dir}/{app?}/theme/`
+
+#### Extensions for a Specific App
+
+Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
+federated extensions will only be avaialable for pages within that file tree.
+
+## Customizing Settings
+
+With the [CLI](./cli.ipynb), if you create an `overrides.json` in either the root, or a
+specific `app` directory, these will be:
+
+- merged into
+  `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
+
+## About the Demo
+
+This documentation site contains the JupyterLite Demo (the **Try** buttons on the top of
+the screen) and uses a number of techniques described on this page.
+
+### Demo Configuration
+
+The following generated configuration powers the Demo, and is generated prior to
+building the docs site, copied in during the build, and fetched by browsers from
+`/_static/jupyter-lite.json`.
+
+```{include} ../build/docs-app/jupyter-lite.json
+
+```
+
+### Demo Extension Notes
+
+The `federated_extensions` above are copied from the documentation environment prior to
+building this site with [Sphinx](deploying.md#sphinx), and are meant to exercise
+different kinds of extensions, including themes, MIME renderers, and Widgets. Some
+transient dependencies _also_ include labextensions, but don't work entirely correctly.
+
+| extension                             | notes                        | working issue |
+| ------------------------------------- | ---------------------------- | ------------- |
+| `@jupyter-widgets/jupyterlab-manager` | needs [Jupyter Kernel Comms] | [#18]         |
+| `@jupyterlab/server-proxy`            | needs server extension       |               |
+| `nbdime`                              | needs server extension       |               |
+
+[#18]: https://github.com/jtpio/jupyterlite/issues/18
+[jupyter kernel comms]:
+  https://jupyter-client.readthedocs.io/en/stable/messaging.html?highlight=comms#custom-messages
+
+## The Hard Way
+
+### Content, The Hard Way
 
 Assuming:
 
@@ -97,17 +176,6 @@ Open a browser:
 Now, when the app reloads, these files will appear in the File Browser _if_ there isn't
 an existing file of that name in browser storage. If a user _has_ created such a file,
 and is deleted, the original server-backed file will become visible.
-
-## Adding Extensions
-
-JupyterLab 3 [federated extensions] allow for adding new capabilities to JupyterLite
-without rebuilding the entire web application. A good starting point for extensions that
-_might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
-(#9461)][#9461]_. Additionally, this site demonstrates a few
-[extensions](#demo-extension-notes).
-
-[#9461]: https://github.com/jupyterlab/jupyterlab/issues/9461
-[federated extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ### Extensions, The Hard Way
 
@@ -178,44 +246,3 @@ Update your `/app/jupyter-lite.json` like so:
 ```{hint}
 Some extensions also include a `style` key, and may look _off_ if omitted.
 ```
-
-#### Extensions for a Specific App
-
-Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
-federated extensions will only be avaialable for pages within that file tree.
-
-## Customizing Settings
-
-> _TBD_
-
-## About the Demo
-
-This documentation site contains the JupyterLite Demo (the **Try** buttons on the top of
-the screen) and use a number of techniques described on this page.
-
-### Demo Configuration
-
-The following generated configuration powers the Demo, and is generated prior to
-building the docs site, copied in during the build, and fetched by browsers from
-`/_static/jupyter-lite.json`.
-
-```{include} ../build/docs-app/jupyter-lite.json
-
-```
-
-### Demo Extension Notes
-
-The `federated_extensions` above are copied from the documentation environment prior to
-building this site with [Sphinx](deploying.md#sphinx), and are meant to exercise
-different kinds of extensions, including themes and MIME renderers. Some transient
-dependencies _also_ include labextensions, but don't work entirely correctly.
-
-| extension                             | notes                        | working issue |
-| ------------------------------------- | ---------------------------- | ------------- |
-| `@jupyter-widgets/jupyterlab-manager` | needs [Jupyter Kernel Comms] | [#18]         |
-| `@jupyterlab/server-proxy`            | needs server extension       |               |
-| `nbdime`                              | needs server extension       |               |
-
-[#18]: https://github.com/jtpio/jupyterlite/issues/18
-[jupyter kernel comms]:
-  https://jupyter-client.readthedocs.io/en/stable/messaging.html?highlight=comms#custom-messages
