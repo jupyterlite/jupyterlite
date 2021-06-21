@@ -13,9 +13,9 @@ from .base import BaseAddon
 
 
 class ArchiveAddon(BaseAddon):
-    """Adds contents from the `lite_dir` to the `output_dir` creates API output
+    """Adds contents from the ``lite_dir`` to the ``output_dir``, creates API output
 
-    If `--source-date-epoch` (SDE) is set, a number of features
+    If ``--source-date-epoch`` (SDE) is set, a number of features
     will be enabled to improve reproducibility of the final artifact. In addition
     to timestamps newer than SDE being "clamped" to SDE, this will also adjust some
     permissions inside the tarball
@@ -31,7 +31,7 @@ class ArchiveAddon(BaseAddon):
         )
 
     def archive(self, manager):
-        """add all files created prior to `pre_archive` to an archive"""
+        """add all files created prior to ``pre_archive`` to an archive"""
         output_dir = manager.output_dir
 
         tarball = self.manager.output_archive
@@ -75,13 +75,11 @@ class ArchiveAddon(BaseAddon):
     def make_archive_stdlib(self, tarball, root, members):
         """actually build the archive.
 
-        Notes:
-
-        - this takes longer than any other hook
-          - while this pure-python implementation needs to be maintained,
-            a `libarchive`-based build might be preferrable for e.g. CI performance.
-        - an npm-compatible `.tgz` is the only supported archive format, as this
-          is compatible with the upstream `webpack` build and its native packaged format.
+        * this takes longer than any other hook
+            * while this pure-python implementation needs to be maintained,
+              a ``libarchive``-based build might be preferrable for e.g. CI performance.
+        * an npm-compatible ``.tgz`` is the only supported archive format, as this
+          is compatible with the upstream ``webpack`` build and its native packaged format.
         """
 
         # if the command fails, but this still exists, it can cause problems
@@ -126,6 +124,7 @@ class ArchiveAddon(BaseAddon):
             self.copy_one(temp_ball, tarball)
 
     def log_archive(self, tarball, prefix=""):
+        """print some information about an archive"""
         sde = self.manager.source_date_epoch
         if sde is not None:
             self.log.info(f"{prefix}SOURCE_DATE_EPOCH: {sde}")

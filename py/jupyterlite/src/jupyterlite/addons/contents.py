@@ -12,7 +12,7 @@ from .base import BaseAddon
 
 
 class ContentsAddon(BaseAddon):
-    """Adds contents from the `lite_dir` to the `output_dir` creates API output"""
+    """Adds contents from the ``lite_dir`` to the ``output_dir``, creates API output"""
 
     __all__ = ["build", "post_build", "check", "status"]
 
@@ -37,7 +37,7 @@ class ContentsAddon(BaseAddon):
         )
 
     def build(self, manager):
-        """perform the main user build of pre-populating `/files/`"""
+        """perform the main user build of pre-populating ``/files/``"""
         files = sorted(self.file_src_dest)
         all_dest_files = []
         for src_file, dest_file in files:
@@ -64,7 +64,7 @@ class ContentsAddon(BaseAddon):
             )
 
     def post_build(self, manager):
-        """create a Contents API index for each subdirectory in `/files/`"""
+        """create a Contents API index for each subdirectory in ``/files/``"""
         if not self.output_files_dir.exists():
             return
 
@@ -131,10 +131,12 @@ class ContentsAddon(BaseAddon):
             yield path.resolve()
 
     def one_contents_path(self, output_file_dir, api_path):
-        """A lazy reuse of a `jupyter_server` Contents API generator
+        """A lazy reuse of a ``jupyter_server`` Contents API generator
 
-        Ideally we'd have a fallback, schema-verified generator, which we could
-        later port to e.g. JS
+        .. todo::
+
+            Ideally we'd have a fallback, schema-verified generator, which we could
+            later port to e.g. JS
         """
         try:
             from jupyter_server.services.contents.filemanager import FileContentsManager
@@ -174,9 +176,11 @@ class ContentsAddon(BaseAddon):
         self.maybe_timestamp(api_path.parent)
 
     def patch_listing_timestamps(self, listing, sde=None):
-        """clamp a contents listing's times to SOURCE_DATE_EPOCH
+        """clamp a contents listing's times to ``SOURCE_DATE_EPOCH``
 
-        TODO: pre-validated this structure with the `jupyter_server` API spec
+        .. todo::
+
+            pre-validated this structure with the ``jupyter_server`` API spec
         """
         sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
 
@@ -202,6 +206,8 @@ class ContentsAddon(BaseAddon):
 
 
 class DateTimeEncoder(json.JSONEncoder):
+    """A custom date-aware JSON encoder"""
+
     def default(self, o):
         if isinstance(o, datetime.datetime):
             return isoformat(o)
@@ -210,4 +216,5 @@ class DateTimeEncoder(json.JSONEncoder):
 
 
 def isoformat(dt):
+    """a small helper to user ``Z`` for UTC ISO strings"""
     return dt.isoformat().replace("+00:00", "Z")

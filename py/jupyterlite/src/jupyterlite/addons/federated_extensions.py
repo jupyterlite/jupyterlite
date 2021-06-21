@@ -60,7 +60,9 @@ class FederatedExtensionAddon(BaseAddon):
     def post_build(self, manager):
         """update the root jupyter-lite.json, and copy each output theme to each app
 
-        TODO: the latter per-app steps should be at least cut in half, if not
+        .. todo::
+
+            the latter per-app steps should be at least cut in half, if not
             avoided altogether.
             See https://github.com/jtpio/jupyterlite/issues/118
         """
@@ -104,7 +106,10 @@ class FederatedExtensionAddon(BaseAddon):
     def patch_jupyterlite_json(self, jupyterlite_json):
         """add the federated_extensions to jupyter-lite.json
 
-        TODO: it _really_ doesn't like duplicate ids, probably need to catch it
+
+        .. todo::
+
+            it _really_ doesn't like duplicate ids, probably need to catch it
             earlier... not possible with "pure" schema (but perhaps SHACL?)
         """
         config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))

@@ -96,10 +96,12 @@ class BaseAddon(LoggingConfigurable):
         return klass(schema)
 
     def merge_one_jupyterlite(self, out_path, in_paths):
-        """write the out_path with all of the in_paths, where all are valid
-        jupyter-lite.json files.
+        """write the ``out_path`` with the merge content of ``in_paths``, where
+        all are valid ``jupyter-lite.json`` files.
 
-        TODO: notebooks
+        .. todo::
+
+            Notebooks
         """
         self.log.debug(f"[lite][config][merge] {out_path}")
         config = None
@@ -127,6 +129,7 @@ class BaseAddon(LoggingConfigurable):
         )
 
     def merge_jupyter_config_data(self, config, in_config):
+        """merge well-known ``jupyter-config-data` fields"""
         self.log.debug(f"""[lite][config][merge] ..... {config}""")
         self.log.debug(f"""[lite][config][merge] ..... {in_config}""")
 
@@ -149,7 +152,9 @@ class BaseAddon(LoggingConfigurable):
     def dedupe_federated_extensions(self, config):
         """update a federated_extension list in-place, ensuring unique names.
 
-        TODO: best we can do, for now.
+        .. todo::
+
+            best we can do, for now.
         """
         if FEDERATED_EXTENSIONS not in config:
             return
