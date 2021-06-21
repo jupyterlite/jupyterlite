@@ -513,7 +513,7 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 90
+    COV_THRESHOLD = 88
 
 
 class P:

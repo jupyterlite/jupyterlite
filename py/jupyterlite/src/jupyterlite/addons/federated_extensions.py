@@ -20,12 +20,11 @@ class FederatedExtensionAddon(BaseAddon):
 
     __all__ = ["pre_build", "post_build"]
 
-    @property
-    def env_extensions(self):
+    def env_extensions(self, root):
         """a list of all federated extensions"""
         return [
-            *ENV_EXTENSIONS.glob("*/package.json"),
-            *ENV_EXTENSIONS.glob("@*/*/package.json"),
+            *root.glob("*/package.json"),
+            *root.glob("@*/*/package.json"),
         ]
 
     @property
@@ -35,20 +34,30 @@ class FederatedExtensionAddon(BaseAddon):
 
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
+        root = self.manager.lite_dir / LAB_EXTENSIONS
 
-        for pkg_json in self.env_extensions:
-            pkg = pkg_json.parent
-            stem = pkg.relative_to(ENV_EXTENSIONS)
-            dest = self.output_env_extensions_dir / stem
-            file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
-            targets = [dest / p.relative_to(pkg) for p in file_dep]
+        for pkg_json in self.env_extensions(root):
+            yield self.copy_one_extension(pkg_json, root)
 
-            yield dict(
-                name=f"copy:ext:{stem}",
-                file_dep=file_dep,
-                targets=targets,
-                actions=[(self.copy_one, [pkg, dest])],
-            )
+    def build(self, manager):
+        """yield a doit task to copy each local extension into the output_dir"""
+        root = manager.lite_dir / LAB_EXTENSIONS
+        for pkg_json in self.env_extensions(root):
+            yield self.copy_one_extension(pkg_json, root)
+
+    def copy_one_extension(self, pkg_json, root):
+        pkg = pkg_json.parent
+        stem = pkg.relative_to(root)
+        dest = self.output_env_extensions_dir / stem
+        file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
+        targets = [dest / p.relative_to(pkg) for p in file_dep]
+
+        return dict(
+            name=f"copy:ext:{stem}",
+            file_dep=file_dep,
+            targets=targets,
+            actions=[(self.copy_one, [pkg, dest])],
+        )
 
     def post_build(self, manager):
         """update the root jupyter-lite.json, and copy each output theme to each app
@@ -60,20 +69,18 @@ class FederatedExtensionAddon(BaseAddon):
             See https://github.com/jtpio/jupyterlite/issues/118
         """
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
+        lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
+        lab_extensions = self.env_extensions(lab_extensions_root)
 
         yield dict(
             name="patch",
             doc=f"ensure {JUPYTERLITE_JSON} includes the federated_extensions",
-            file_dep=[*self.env_extensions, jupyterlite_json],
+            file_dep=[*lab_extensions, jupyterlite_json],
             actions=[(self.patch_jupyterlite_json, [jupyterlite_json])],
         )
 
-        lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
-        lab_extensions = [
-            *lab_extensions_root.glob("*/package.json"),
-            *lab_extensions_root.glob("@*/*/package.json"),
-        ]
         stems = [p.parent.relative_to(lab_extensions_root) for p in lab_extensions]
+
         for app in self.manager.apps:
             # this is _not_ hoisted to a global, as is hard-coded in webpack.config.js
             # but _could_ be changed
@@ -99,7 +106,6 @@ class FederatedExtensionAddon(BaseAddon):
     def patch_jupyterlite_json(self, jupyterlite_json):
         """add the federated_extensions to jupyter-lite.json
 
-
         .. todo::
 
             it _really_ doesn't like duplicate ids, probably need to catch it
@@ -108,8 +114,9 @@ class FederatedExtensionAddon(BaseAddon):
         config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
 
         extensions = config[JUPYTER_CONFIG_DATA].get(FEDERATED_EXTENSIONS, [])
+        lab_extensions_root = self.manager.output_dir / LAB_EXTENSIONS
 
-        for pkg_json in self.env_extensions:
+        for pkg_json in self.env_extensions(lab_extensions_root):
             pkg_data = json.loads(pkg_json.read_text(encoding="utf-8"))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])

@@ -29,6 +29,8 @@ dependencies:
   - wheel
   - jsonschema >=3
   - yarn <2
+  # cli
+  - wheel
   # docs
   - myst-nb
   - pydata-sphinx-theme
