@@ -169,7 +169,10 @@ def task_build():
             name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[U.do("flit", "--debug", "build", cwd=py_pkg)],
+            actions=[
+                U.do(*C.FLIT_GIT, cwd=py_pkg),
+                U.do("flit", "--debug", "build", cwd=py_pkg),
+            ],
             # TODO: get version
             targets=[wheel],
         )
@@ -516,6 +519,7 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
+    FLIT_GIT = ["git", "ls-files", "--deleted", "--others", "--exclude-standard", "-z"]
 
 
 class P:
