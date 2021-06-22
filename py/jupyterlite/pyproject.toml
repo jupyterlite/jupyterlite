@@ -8,9 +8,11 @@ author = "JupyterLite Contributors"
 home-page = "https://github.com/jtpio/jupyterlite"
 requires-python = ">=3.7"
 requires = [
+    "doit",
     "entrypoints",
     "jupyter_core >=4.7",
-    "wheel",
+    # TODO: support wheels https://github.com/jtpio/jupyterlite/issues/151
+    # "wheel",
 ]
 
 [tool.flit.scripts]

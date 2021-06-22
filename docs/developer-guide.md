@@ -9,6 +9,7 @@ configuring
 cli
 deploying
 api/index
+doit
 contributing
 ```
 

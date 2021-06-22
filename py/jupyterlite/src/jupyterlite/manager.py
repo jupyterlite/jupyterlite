@@ -1,6 +1,8 @@
 """Manager for JupyterLite
 """
 
+from logging import getLogger
+
 import doit
 import entrypoints
 from traitlets import Bool, Dict, Unicode, default
@@ -96,11 +98,6 @@ class LiteManager(LiteBuildConfig):
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
 
-    @property
-    def log(self):
-        """a convenience wrapper for the parent log"""
-        return self.parent.log
-
     def initialize(self):
         """perform one-time inialization of the manager"""
         self.log.debug("[lite] [addon] loading ...")
@@ -114,6 +111,11 @@ class LiteManager(LiteBuildConfig):
         config = dict(GLOBAL=self._doit_config)
         runner = doit.doit_cmd.DoitMain(task_loader=loader, extra_config=config)
         runner.run([task, *args])
+
+    @default("log")
+    def _default_log(self):
+        """prefer the parent application's log, or create a new one"""
+        return self.parent.log if self.parent else getLogger(__name__)
 
     @default("_addons")
     def _default_addons(self):
@@ -155,8 +157,8 @@ class LiteManager(LiteBuildConfig):
             for phase in PHASES:
                 if phase == "pre_":
                     if hook in HOOK_PARENTS:
-                        prev_attr = f"""{self.task_prefix}post_{HOOK_PARENTS[hook]}"""
-                attr = f"{self.task_prefix}{phase}{hook}"
+                        prev_attr = f"""post_{HOOK_PARENTS[hook]}"""
+                attr = f"{phase}{hook}"
                 tasks[f"task_{self.task_prefix}{attr}"] = self._gather_tasks(
                     attr, prev_attr
                 )
@@ -173,7 +175,10 @@ class LiteManager(LiteBuildConfig):
                     try:
                         for task in getattr(addon, attr)(self):
                             patched_task = {**task}
-                            patched_task["name"] = f"""{name}:{task["name"]}"""
+                            patched_task[
+                                "name"
+                            ] = f"""{self.task_prefix}{name}:{task["name"]}"""
+                            print(patched_task["name"])
                             yield patched_task
                     except Exception as err:
                         self.log.error(f"[lite] [{attr}] [{name}] [ERR] {err}")
@@ -183,7 +188,7 @@ class LiteManager(LiteBuildConfig):
         if not prev_attr:
             return _gather
 
-        @doit.create_after(prev_attr)
+        @doit.create_after(f"{self.task_prefix}{prev_attr}")
         def _delayed_gather():
             for task in _gather():
                 yield task
