@@ -1,0 +1,47 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = ["flit_core >=3.1,<4"]
+
+[tool.flit.metadata]
+module = "jupyterlite"
+author = "JupyterLite Contributors"
+home-page = "https://github.com/jtpio/jupyterlite"
+requires-python = ">=3.7"
+requires = [
+    "doit",
+    "entrypoints",
+    "jupyter_core >=4.7",
+    # TODO: support wheels https://github.com/jtpio/jupyterlite/issues/151
+    # "wheel",
+]
+
+[tool.flit.scripts]
+jupyter-lite = "jupyterlite.app:main"
+
+[tool.flit.metadata.requires-extra]
+test = [
+    "hypothesis-jsonschema",
+    "pytest-cov",
+    "pytest-html",
+    "pytest-xdist",
+    "pytest",
+]
+lab = [
+    "jupyterlab >=3.0,<4",
+]
+contents = [
+    "jupyter_server",
+]
+serve = [
+    "tornado >=6.1",
+]
+
+[tool.flit.entrypoints."jupyterlite.addon.v0"]
+static = "jupyterlite.addons.static:StaticAddon"
+federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
+settings = "jupyterlite.addons.settings:SettingsAddon"
+contents = "jupyterlite.addons.contents:ContentsAddon"
+lite = "jupyterlite.addons.lite:LiteAddon"
+report = "jupyterlite.addons.report:ReportAddon"
+serve = "jupyterlite.addons.serve:ServeAddon"
+archive = "jupyterlite.addons.archive:ArchiveAddon"

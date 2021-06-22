@@ -4,6 +4,8 @@ from pyodide.console import _InteractiveConsole
 
 from .display import display
 
+__all__ = ["Interpreter", "display"]
+
 
 class Interpreter(_InteractiveConsole):
     def __init__(self):

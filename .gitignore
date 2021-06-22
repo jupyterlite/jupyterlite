@@ -126,9 +126,14 @@ app/lab/extensions
 
 *.log
 
-.doit*
+*.doit*
 
 # generated
+docs/.jupyter_cache
 docs/api/ts
 docs/jupyter_execute
 .vercel
+*.tgz
+*.whl
+*.tar.gz
+*.bz2

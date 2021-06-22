@@ -9,12 +9,9 @@
 ## Documentation Contents
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: 2
 
-kernels/index
-deploying
-configuring
-api/index
-contributing
+user-guide
+developer-guide
 changelog
 ```

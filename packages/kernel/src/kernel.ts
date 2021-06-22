@@ -246,7 +246,12 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param .
    */
-  protected handleComm(type: string, content: any, metadata: any, buffers: any): void {
+  protected handleComm(
+    type: 'comm_close' | 'comm_msg' | 'comm_open',
+    content: KernelMessage.ICommMsgMsg['content'],
+    metadata: KernelMessage.ICommMsgMsg['metadata'],
+    buffers: KernelMessage.ICommMsgMsg['buffers']
+  ): void {
     const message = KernelMessage.createMessage<any>({
       channel: 'iopub',
       msgType: type,

@@ -9,16 +9,40 @@ Serving some of the [kernels](./kernels/index.md) requires that your web server 
 serving `application/wasm` files with the correct headers
 ```
 
-## Start with an Empty Site
+```{hint}
+An HTTPS-capable server is recommended for all but the simplest `localhost` cases.
+```
 
-You can get an empty JupyterLite by:
+## Get an Empty JupyterLite Site
 
-- _TBD: downloading a release archive from [GitHub Releases][releases]_
-- _TBD: using `cookiecutter-jupyterlite`_
-- _TBD: installing `jupyterlite` from [PyPI]_
-- _TBD: installing `@jupyterlite/builder` from `npmjs.com`_
-- downloading nightly/work-in-progress builds from [GitHub actions]
-- cloning/forking the repository and doing a [development build](../contributing.md)
+The minimum deployable site contains enough to run JupyterLab and RetroLab, but no
+content.
+
+```{hint}
+Use of the CLI is optional, but **recommended**. It offers substantially better
+integration with other Jupyter tools.
+```
+
+To get the [Python CLI](./cli.ipynb) and [API](./api/index.md) from [PyPI]:
+
+```bash
+pip install jupyterlite
+# TODO: mamba install jupyterlite
+```
+
+To build an empty site (just the JupyterLite static assets):
+
+```bash
+jupyter lite init
+```
+
+### Static Site: The Hard Way
+
+- download a release archive from [GitHub Releases][releases]
+- download nightly/work-in-progress builds from [GitHub actions]
+- clone/fork the [repository] and do a [development build](../contributing.md)
+- _TBD: use `cookiecutter-jupyterlite`_
+- _TBD: `yarn add @jupyterlite/builder` from `npmjs.com`_
 
 [github actions]: https://github.com/jtpio/jupyterlite/actions
 [releases]: https://github.com/jtpio/jupyterlite/releases
@@ -30,6 +54,9 @@ for what you can configure in your JupyterLite.
 ```
 
 ## Build Tools
+
+While the JupyterLite CLI will create the correct assets for JupyterLite, it might not
+be enough to deploy along with the rest of your content.
 
 ### WebPack
 
@@ -64,7 +91,7 @@ The composite directory will end up in `docs/_build/_static`.
 ```{hint}
 See the JupyterLite [conf.py] for an example approach, though it's likely a good
 deal more complicated than you will need, because it needs to build _itself_ first!
-This complexity is managed in [dodo.py]
+This complexity is managed in [dodo.py].
 ```
 
 ### `html_extra_path`

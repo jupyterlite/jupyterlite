@@ -114,12 +114,17 @@
     "federated-extension": {
       "title": "A Federated Extension",
       "type": "object",
-      "required": ["extension", "name", "load"],
+      "required": ["name", "load"],
       "properties": {
         "extension": {
           "type": "string",
           "format": "uri",
           "description": "path to the extension module to load, relative to the extension's `package.json`"
+        },
+        "mimeExtension": {
+          "type": "string",
+          "format": "uri",
+          "description": "path to the mime extension module to load, relative to the extension's `package.json`"
         },
         "load": {
           "type": "string",

@@ -3,13 +3,13 @@ import os
 import re
 import shutil
 import subprocess
-from pathlib import Path
-import jsonschema
 import sys
-import textwrap
+from collections import defaultdict
+from hashlib import sha256
+from pathlib import Path
 
 import doit
-from collections import defaultdict
+import jsonschema
 
 
 def task_env():
@@ -74,7 +74,18 @@ def task_lint():
         name="black",
         doc="format python files with black",
         file_dep=L.ALL_BLACK,
-        actions=[U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK)],
+        actions=[
+            U.do("isort", *L.ALL_BLACK),
+            U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
+        ],
+    )
+
+    yield U.ok(
+        B.OK_PYFLAKES,
+        name="pyflakes",
+        doc="ensure python code style with pyflakes",
+        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
+        actions=[U.do("pyflakes", *L.ALL_BLACK)],
     )
 
 
@@ -150,10 +161,10 @@ def task_build():
 
     for py_pkg, version in P.PYOLITE_PACKAGES.items():
         name = py_pkg.name
-        wheel = py_pkg / f"dist/{name}-{version}-py3-none-any.whl"
+        wheel = py_pkg / f"dist/{name}-{version}-{C.NOARCH_WHL}"
         wheels += [wheel]
         yield dict(
-            name=f"py:{name}",
+            name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[U.do("flit", "build", cwd=py_pkg)],
@@ -162,13 +173,20 @@ def task_build():
         )
 
     app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
-    all_app_wheels = []
+    all_app_targets = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
         app_data = json.loads(app_json.read_text(**C.ENC))
-        app_wheels = [app / f"build/{w.name}" for w in wheels]
-        all_app_wheels += app_wheels
+        app_build = app / "build"
+        app_targets = [
+            app_build / "bundle.js",
+            app_build / "index.js",
+            app_build / "style.js",
+        ]
+        app_targets += [app_build / w.name for w in wheels]
+        all_app_targets += app_targets
+
         yield dict(
             name=f"js:app:{app.name}",
             doc=f"build JupyterLite {app.name.title()} with webpack",
@@ -181,16 +199,19 @@ def task_build():
             actions=[
                 U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
             ],
-            targets=[app / "build/bundle.js", *app_wheels],
+            targets=[*app_targets],
         )
 
     yield dict(
         name="js:pack",
         doc="build the JupyterLite distribution",
         file_dep=[
-            *all_app_wheels,
+            *all_app_targets,
+            P.APP_SCHEMA,
             *P.APP.glob("*/*/index.html"),
-            *P.APP.glob("*/build/bundle.js"),
+            *P.APP.glob("*/build/schemas/**/.json"),
+            *P.APP.glob("*.js"),
+            *P.APP.glob("*.json"),
             B.META_BUILDINFO,
             P.APP / "index.html",
             P.APP_NPM_IGNORE,
@@ -200,6 +221,90 @@ def task_build():
             U.do("npm", "pack", "../app", cwd=B.DIST),
         ],
         targets=[B.APP_PACK],
+    )
+
+    for py_name, setup_py in P.PY_SETUP_PY.items():
+        py_pkg = setup_py.parent
+        wheel = (
+            py_pkg
+            / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+        )
+        sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
+
+        args = ["python", "setup.py", "sdist", "bdist_wheel"]
+
+        file_dep = [
+            *P.PY_SETUP_DEPS[py_name](),
+            *py_pkg.rglob("*.py"),
+            setup_py,
+        ]
+
+        pyproj_toml = py_pkg / "pyproject.toml"
+
+        targets = [wheel, sdist]
+
+        # we might tweak the args
+        if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
+            args = ["flit", "build"]
+            file_dep += [pyproj_toml]
+
+        # make "the" action
+        actions = [U.do(*args, cwd=py_pkg)]
+
+        # may do some setup steps: TODO: refactor into separate task
+        if py_name == C.NAME:
+            dest = py_pkg / "src" / py_name / B.APP_PACK.name
+            actions = [
+                lambda: [dest.exists() and dest.unlink(), None][-1],
+                lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
+                *actions,
+            ]
+            file_dep += [B.APP_PACK, pyproj_toml]
+            targets += [dest]
+
+        yield dict(
+            name=f"py:{py_name}",
+            doc=f"build the {py_name} python package",
+            file_dep=file_dep,
+            actions=actions,
+            targets=targets,
+        )
+
+
+@doit.create_after("build")
+def task_dist():
+    """fix up the state of the distribution directory"""
+
+    dests = []
+    for dist in B.DISTRIBUTIONS:
+        dest = B.DIST / dist.name
+        dests += [dest]
+        yield dict(
+            name=f"copy:{dist.name}",
+            actions=[(U.copy_one, [dist, dest])],
+            file_dep=[dist],
+            targets=[dest],
+        )
+
+    yield dict(
+        name="hash",
+        file_dep=dests,
+        actions=[(U.hashfile, [B.DIST])],
+        targets=[B.DIST / "SHA256SUMS"],
+    )
+
+
+def task_dev():
+    """setup up local packages for interactive development"""
+    py_pkg = P.PY_SETUP_PY[C.NAME].parent
+
+    # TODO: probably name this file
+    dest = py_pkg / "src" / C.NAME / B.APP_PACK.name
+
+    yield dict(
+        name=f"py:{C.NAME}",
+        actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
+        file_dep=[dest],
     )
 
 
@@ -228,25 +333,39 @@ def task_docs():
     )
 
     yield dict(
-        name="extensions",
-        doc="cache extensions from share/jupyter/labextensions",
-        actions=[U.extend_docs],
-        file_dep=[P.APP_JUPYTERLITE_JSON, P.DOCS_OVERRIDES],
-        targets=[B.PATCHED_JUPYTERLITE_JSON],
+        name="app:build",
+        doc="use the jupyterlite CLI to (pre-)build the docs app",
+        task_dep=[f"dev:py:{C.NAME}"],
+        actions=[(U.docs_app, [])],
+        file_dep=[
+            B.APP_PACK,
+            *P.ALL_EXAMPLES,
+            # NOTE: these won't always trigger a rebuild because of the inner dodo
+            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        ],
+        targets=[B.DOCS_APP_SHA256SUMS],
+    )
+
+    yield dict(
+        name="app:pack",
+        doc="build the as-deployed app archive",
+        file_dep=[B.DOCS_APP_SHA256SUMS],
+        actions=[(U.docs_app, ["archive"])],
+        targets=[B.DOCS_APP_ARCHIVE],
     )
 
     yield dict(
         name="sphinx",
         doc="build the documentation site with sphinx",
         file_dep=[
-            B.DOCS_TS_MYST_INDEX,
             *P.DOCS_MD,
             *P.DOCS_PY,
-            B.APP_PACK,
-            B.PATCHED_JUPYTERLITE_JSON,
+            *P.DOCS_IPYNB,
+            B.DOCS_APP_ARCHIVE,
+            B.DOCS_TS_MYST_INDEX,
         ],
-        actions=[U.do("sphinx-build", "-j8", "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO],
+        actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
+        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
 
 
@@ -285,19 +404,17 @@ def task_check():
         ],
     )
 
-    config = json.loads(B.PATCHED_JUPYTERLITE_JSON.read_text(**C.ENC))
-    overrides = config.get("jupyter-config-data", {}).get("settingsOverrides", {})
-    for plugin_id, defaults in overrides.items():
-        ext, plugin = plugin_id.split(":")
-        schema_file = B.DOCS_LAB_EXTENSIONS / ext / "schemas" / ext / f"{plugin}.json"
-        if not schema_file.exists():
-            # this is probably in all.json
-            continue
-        yield dict(
-            name=f"overrides:{plugin_id}",
-            file_dep=[B.PATCHED_JUPYTERLITE_JSON, schema_file],
-            actions=[(U.validate, [schema_file, None, defaults])],
-        )
+    yield dict(
+        name="app",
+        doc="use the jupyterlite CLI to check the docs app",
+        task_dep=[f"dev:py:{C.NAME}"],
+        actions=[(U.docs_app, ["check"])],
+        file_dep=[
+            B.DOCS_APP_SHA256SUMS,
+            # NOTE: these won't always trigger a rebuild because of the inner dodo
+            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        ],
+    )
 
 
 def task_watch():
@@ -315,7 +432,14 @@ def task_watch():
             doc="watch .md sources and rebuild the documentation",
             uptodate=[lambda: False],
             file_dep=[*P.DOCS_MD, *P.DOCS_PY, B.APP_PACK],
-            actions=[U.do("sphinx-autobuild", "-a", "-j8", P.DOCS, B.DOCS)],
+            actions=[
+                U.do(
+                    "sphinx-autobuild",
+                    *(C.SPHINX_ARGS or ["-a", "-j8"]),
+                    P.DOCS,
+                    B.DOCS,
+                )
+            ],
         )
 
 
@@ -329,21 +453,67 @@ def task_test():
         actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
 
+    pytest_args = [
+        "pytest",
+        "--ff",
+        "--script-launch-mode=subprocess",
+        "-n=4",
+        "-vv",
+        f"--cov-fail-under={C.COV_THRESHOLD}",
+        "--cov-report=term-missing:skip-covered",
+        "--no-cov-on-fail",
+        "--durations=5",
+    ]
+
+    for py_name, setup_py in P.PY_SETUP_PY.items():
+        if py_name != C.NAME:
+            # TODO: we'll get there
+            continue
+
+        py_mod = py_name.replace("-", "_")
+        cov_path = B.BUILD / f"htmlcov/{py_name}"
+        cov_index = cov_path / "index.html"
+        html_index = B.BUILD / f"pytest/{py_name}/index.html"
+
+        yield U.ok(
+            B.OK_LITE_PYTEST,
+            name=f"py:{py_name}",
+            doc=f"run pytest for {py_name}",
+            task_dep=[f"dev:py:{py_name}"],
+            file_dep=[
+                *setup_py.parent.rglob("*.py"),
+                setup_py.parent / "pyproject.toml",
+            ],
+            targets=[cov_index, html_index],
+            actions=[
+                U.do(
+                    *pytest_args,
+                    *(C.PYTEST_ARGS or []),
+                    "--cov",
+                    py_mod,
+                    "--cov-report",
+                    f"html:{cov_path}",
+                    f"--html={html_index}",
+                    "--self-contained-html",
+                    cwd=setup_py.parent,
+                )
+            ],
+        )
+
 
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
+    NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
+    PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    DOCS_DISABLED_EXT = [
-        "nbdime-jupyterlab",
-        "@jupyterlab/server-proxy",
-        "jupyterlab-server-proxy",
-    ]
+    COV_THRESHOLD = 88
 
 
 class P:
@@ -357,6 +527,9 @@ class P:
     YARN_LOCK = ROOT / "yarn.lock"
 
     ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
+
+    EXAMPLES = ROOT / "examples"
+    ALL_EXAMPLES = [p for p in EXAMPLES.rglob("*") if not p.is_dir()]
 
     # set later
     PYOLITE_PACKAGES = {}
@@ -373,6 +546,12 @@ class P:
     LITE_ICON = UI_COMPONENTS_ICONS / "liteIcon.svg"
     LITE_WORDMARK = UI_COMPONENTS_ICONS / "liteWordmark.svg"
 
+    # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
+    PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
+    PY_SETUP_DEPS = {
+        C.NAME: lambda: [B.APP_PACK],
+    }
+
     # docs
     README = ROOT / "README.md"
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
@@ -380,7 +559,7 @@ class P:
     DOCS = ROOT / "docs"
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
-    DOCS_OVERRIDES = DOCS / "overrides.json"
+    EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
@@ -388,8 +567,9 @@ class P:
         [p for p in DOCS.rglob("*.md") if "docs/api/ts" not in str(p.as_posix())]
     )
     DOCS_ENV = DOCS / "environment.yml"
-    DOCS_PY = sorted([*DOCS.rglob("*.py")])
+    DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
+    DOCS_IPYNB = sorted(DOCS.glob("*.ipynb"))
 
     # demo
     BINDER = ROOT / ".binder"
@@ -402,6 +582,10 @@ class P:
 class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
+    APP_VERSION = APP["version"]
+    # derive the PEP-compatible version
+    PY_VERSION = APP["version"].replace("-alpha.", "a")
+
     PACKAGE_JSONS = {
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
     }
@@ -428,10 +612,12 @@ P.PYOLITE_PACKAGES = {
 def _clean_paths(*paths_or_globs):
     final_paths = []
     for pg in paths_or_globs:
-        if isinstance(pg, Path):
+        if pg is None:
+            continue
+        elif isinstance(pg, Path):
             paths = [pg]
         else:
-            paths = sorted(pg)
+            paths = set(pg)
         for path in paths:
             if "node_modules" in str(path) or ".ipynb_checkpoints" in str(path):
                 continue
@@ -462,6 +648,7 @@ class L:
     ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
         P.DODO,
+        *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
         *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES.keys()], []),
     )
 
@@ -475,15 +662,16 @@ class B:
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
-    APP_PACK = DIST / f"""jupyterlite-app-{D.APP["version"]}.tgz"""
+    APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
+
+    DOCS_APP = BUILD / "docs-app"
+    DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
+    DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
+
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
-    DOCS_JUPYTERLITE_JSON = DOCS / "_static/jupyter-lite.json"
-    DOCS_LAB_EXTENSIONS = DOCS / "_static/lab/extensions"
-
-    PATCHED_STATIC = BUILD / "env-extensions"
-    CACHED_LAB_EXTENSIONS = PATCHED_STATIC / "lab/extensions"
-    PATCHED_JUPYTERLITE_JSON = PATCHED_STATIC / "jupyter-lite.json"
+    DOCS_STATIC = DOCS / "_static"
+    DOCS_STATIC_APP = DOCS_STATIC / DOCS_APP_ARCHIVE.name
 
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
@@ -497,10 +685,17 @@ class B:
     ]
 
     OK = BUILD / "ok"
-    OK_PRETTIER = OK / "prettier"
-    OK_ESLINT = OK / "eslint"
     OK_BLACK = OK / "black"
+    OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
+    OK_PRETTIER = OK / "prettier"
+    OK_PYFLAKES = OK / "pyflakes"
+    OK_LITE_PYTEST = OK / "jupyterlite.pytest"
+    DISTRIBUTIONS = [
+        *P.ROOT.glob("py/*/dist/*.whl"),
+        *P.ROOT.glob("py/*/dist/*.tar.gz"),
+    ]
+    DIST_HASH_INPUTS = sorted([*DISTRIBUTIONS, APP_PACK])
 
 
 class U:
@@ -514,7 +709,7 @@ class U:
             or shutil.which(f"{cmd}.cmd")
             or shutil.which(f"{cmd}.bat")
         ).resolve()
-        return doit.tools.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        return doit.tools.Interactive([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):
@@ -542,7 +737,7 @@ class U:
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
             [
-                str((p.parent / "src/index.ts").relative_to(P.ROOT).as_posix())
+                str(next(p.parent.glob("src/index.ts*")).relative_to(P.ROOT).as_posix())
                 for p in P.PACKAGE_JSONS
                 if p.parent.name not in C.NO_TYPEDOC
             ]
@@ -677,65 +872,54 @@ class U:
         return not errors
 
     @staticmethod
-    def extend_docs():
-        """before sphinx ensure a build directory of the lab extensions/themes and patch JSON"""
-        if B.PATCHED_STATIC.exists():
-            print(f"... Cleaning {B.PATCHED_STATIC}...")
-            shutil.rmtree(B.PATCHED_STATIC)
-
-        B.PATCHED_STATIC.mkdir(parents=True)
-
-        print(f"... Copying {P.ENV_EXTENSIONS} to {B.CACHED_LAB_EXTENSIONS}...")
-        shutil.copytree(P.ENV_EXTENSIONS, B.CACHED_LAB_EXTENSIONS)
-
-        extensions = []
-        all_package_json = [
-            *B.CACHED_LAB_EXTENSIONS.glob("*/package.json"),
-            *B.CACHED_LAB_EXTENSIONS.glob("@*/*/package.json"),
-        ]
-        # we might find themes
-        app_themes = [
-            B.PATCHED_STATIC / f"{app}/build/themes" for app in ["lab", "retro"]
-        ]
-
-        for pkg_json in all_package_json:
-            print(
-                f"... adding {pkg_json.parent.relative_to(B.CACHED_LAB_EXTENSIONS)}..."
-            )
-            pkg_data = json.loads(pkg_json.read_text(**C.ENC))
-            extensions += [
-                dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
+    def docs_app(lite_task="build"):
+        """before sphinx ensure a custom build of JupyterLite"""
+        for task in ["status", lite_task]:
+            args = [
+                "jupyter",
+                "lite",
+                task,
+                "--debug",
+                "--files",
+                ".",
+                "--output-dir",
+                B.DOCS_APP,
+                "--app-archive",
+                B.APP_PACK,
+                "--output-archive",
+                B.DOCS_APP_ARCHIVE,
             ]
-            for app_theme in app_themes:
-                for theme in pkg_json.parent.glob("themes/*"):
-                    print(
-                        f"... copying theme {theme.relative_to(B.CACHED_LAB_EXTENSIONS)}"
-                    )
+            subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
-                    if not app_theme.exists():
-                        app_theme.mkdir(parents=True)
-                    print(f"... ... to {app_theme}")
-                    shutil.copytree(theme, app_theme / theme.name)
+    @staticmethod
+    def hashfile(path):
+        shasums = path / "SHA256SUMS"
+        lines = []
 
-        print(f"... Patching {P.APP_JUPYTERLITE_JSON}...")
-        config = json.loads(P.APP_JUPYTERLITE_JSON.read_text(**C.ENC))
-        print(f"... ... {len(extensions)} federated extensions...")
-        config["jupyter-config-data"]["federated_extensions"] = extensions
+        for p in path.glob("*"):
+            if p.name == "SHA256SUMS":
+                continue
+            lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
 
-        # add settings from `overrides.json`
-        overrides = json.loads(P.DOCS_OVERRIDES.read_text(**C.ENC))
-        print(f"... ... {len(overrides.keys())} settings overrides")
-        config["jupyter-config-data"]["settingsOverrides"] = overrides
+        output = "\n".join(lines)
+        print(output)
+        shasums.write_text(output)
 
-        # disable some extensions
-        config["jupyter-config-data"].setdefault("disabledExtensions", []).extend(
-            C.DOCS_DISABLED_EXT
-        )
-
-        print(f"... writing {B.PATCHED_JUPYTERLITE_JSON}")
-        B.PATCHED_JUPYTERLITE_JSON.write_text(
-            textwrap.indent(json.dumps(config, indent=2, sort_keys=True), " " * 4)
-        )
+    @staticmethod
+    def copy_one(src, dest):
+        if not src.exists():
+            return False
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True)
+        if dest.exists():
+            if dest.is_dir():
+                shutil.rmtree(dest)
+            else:
+                dest.unlink()
+        if src.is_dir():
+            shutil.copytree(src, dest)
+        else:
+            shutil.copy2(src, dest)
 
 
 # environment overloads

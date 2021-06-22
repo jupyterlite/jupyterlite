@@ -3,5 +3,11 @@
 ```{toctree}
 :caption: TypeScript API
 :maxdepth: 2
-ts/index.md
+ts/index
+```
+
+```{toctree}
+:caption: Python API
+:maxdepth: 2
+py/jupyterlite
 ```

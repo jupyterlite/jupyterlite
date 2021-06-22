@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eux
 
-doit build
+doit build dev
 
 # enable the proxy
 for app in notebook server; do

@@ -1,6 +1,5 @@
 import base64
 
-
 MIMETYPES = [
     ("text/html", "_repr_html_"),
     ("text/markdown", "_repr_markdown_"),

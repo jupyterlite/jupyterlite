@@ -61,10 +61,9 @@ jobs:
       - name: Build
         run: |
           doit build
-      - name: Build checksum file
+      - name: Dist
         run: |
-          cd dist
-          sha256sum * | tee SHA256SUMS
+          doit dist
       - name: Upload (dist)
         uses: actions/upload-artifact@v2
         with:

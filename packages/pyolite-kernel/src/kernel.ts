@@ -8,10 +8,14 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
+// TODO: see https://github.com/jtpio/jupyterlite/issues/151
+// TODO: sync this version with the npm version (despite version mangling)
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0a0-py3-none-any.whl';
+
+// TODO: sync this version with the pypi version
 import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
 import nbformat from '../py/nbformat/dist/nbformat-4.2.0-py3-none-any.whl';
 import ipykernel from '../py/ipykernel/dist/ipykernel-5.5.5-py3-none-any.whl';
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0-py3-none-any.whl';
 
 /**
  * A kernel that executes Python code with Pyodide.

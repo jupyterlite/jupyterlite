@@ -70,7 +70,24 @@ doit lint build
 doit run lint build
 ```
 
-### JavaScript development
+### Core JavaScript development
+
+The JupyterLite core JS development workflow builds:
+
+- a ready-to-serve, empty website with:
+  - a `lab/index.html` and supporting assets
+  - a `retro/*/index.html` and supporting assets (for `tree`, `editor`, etc)
+  - common configuration tools
+- `typedoc` documentation
+  > - _TBD: a set of component tarballs distributed on `npmjs.com`_
+
+from:
+
+- a set of `packages` in the `@jupyterlite` namespace, , written in TypeScript
+- some `buildutils`
+- some `webpack` configuration
+- some un-compiled JS for very early loading utilities
+  - > TODO: fix this, perhaps with typedoc tags
 
 While most of the scripts below will be run (in the correct order based on changes) by
 `doit`, the following _scripts_ (defined in `package.json`) are worth highlighting.
@@ -143,17 +160,52 @@ yarn build:test
 yarn test
 ```
 
+### Lab Extension development
+
+> _TBD: describe how the `@jupyterlite/labextension` works with e.g. **real**
+> serverextension_
+
+### (Browser) Python Development
+
+> _TBD: describe successor to `pyolite`, patches, etc._
+
+### (Server) Python Development
+
+After all the `yarn`-related work has finished, the terminal-compatible python uses the
+`npm`-compatible tarball of `app` to build new sites combined with **original user
+content**.
+
+#### On testing
+
+Extra `PYTEST_ARGS` can be passed as a (gross) JSON string:
+
+```bash
+PYTEST_ARGS='["-s", "-x", "--ff"]' doit test:py:jupyterlite
+```
+
+Several tasks invoke the `jupyter lite` CLI, which is further described in the main docs
+site.
+
 ### Documentation
 
-The documentation site, served on readthedocs.io, uses information from different parts
-of the software lifecycle (e.g. contains a copy of the built `app` directory), so using
-the [doit](#doit) tools are recommended.
+The documentation site, served on [jupyterlite.rtfd.io], uses information from different
+parts of the software lifecycle (e.g. contains a copy of the built `app` directory), so
+using the [doit](#doit) tools are recommended.
+
+[jupyterlite.rtfd.io]: https://jupyterlite.rtfd.io
 
 #### Build Documentation
 
 ```bash
 doit docs
 ```
+
+> Extra `sphinx-build` arguments are set by the `SPHINX_ARGS` environment variable. For
+> example to fail on all warnings (the configuration for the ReadTheDocs build):
+
+> ```bash
+> SPHINX_ARGS='["-W"]' doit docs
+> ```
 
 #### Watch Documentation
 

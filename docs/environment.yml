@@ -17,13 +17,24 @@ dependencies:
   - wheel
   - jsonschema >=3
   - yarn <2
+  # cli
+  - wheel
   # docs
   - myst-nb
   - pydata-sphinx-theme
-  - pytest-check-links
   - sphinx
+  - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe
+  # check
+  - pytest-check-links
+  # test
+  - ansi2html
+  - hypothesis-jsonschema
+  - pytest-console-scripts
+  - pytest-cov
+  - pytest-html
+  - pytest-xdist
   # list of federated extensions for the demo site
   - ipywidgets
   - bqplot
@@ -35,6 +46,9 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - theme-darcula
   ### DOCS ENV ###
+
+  # this is a UNIX-only dependency, so we don't hoist it to the more-portable binder environment
+  - diffoscope
 
   - pip:
       - plotly==5.0.0rc1

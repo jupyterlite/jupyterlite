@@ -1,6 +1,6 @@
 """A Python kernel backed by Pyodide"""
 
-__version__ = "0.1.0"
+__version__ = "0.1.0a0"
 
 import sys
 import types
@@ -15,6 +15,7 @@ sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 ensure_matplotlib_patch()
 
 import pyolite
+
 from .kernel import Pyolite
 
 kernel_instance = Pyolite()

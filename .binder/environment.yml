@@ -9,6 +9,8 @@ dependencies:
   # build stuff
   - black
   - flit >=3.1
+  - isort
+  - pyflakes
   # demo stuff
   - jupyter-server-proxy
   - jupyterlab >=3.1.0a11,<4
@@ -27,14 +29,29 @@ dependencies:
   - wheel
   - jsonschema >=3
   - yarn <2
+  # cli
+  - wheel
   # docs
   - myst-nb
   - pydata-sphinx-theme
-  - pytest-check-links
   - sphinx
+  - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe
+  # check
+  - pytest-check-links
+  # test
+  - ansi2html
+  - hypothesis-jsonschema
+  - pytest-console-scripts
+  - pytest-cov
+  - pytest-html
+  - pytest-xdist
   # list of federated extensions for the demo site
+  - ipywidgets
+  - bqplot
+  - ipyleaflet
+  - ipycanvas
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
   - jupyterlab-fasta >=3,<4
