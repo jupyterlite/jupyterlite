@@ -550,7 +550,6 @@ class P:
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
     PY_SETUP_DEPS = {
         C.NAME: lambda: [B.APP_PACK],
-        f"{C.NAME}-labextension": lambda: [],
     }
 
     # docs
