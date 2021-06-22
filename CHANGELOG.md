@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v0.1.0a1 (Unreleased)
+## 0.1.0a1 (Unreleased)
 
 ### `jupyter lite` CLI
 
@@ -15,7 +15,7 @@
 [#145]: https://github.com/jtpio/jupyterlite/pull/145
 [#147]: https://github.com/jtpio/jupyterlite/pull/147
 
-## [v0.1.0a0](https://github.com/jtpio/jupyterlite/releases/tag/v0.1.0a0)
+## 0.1.0a0
 
 ([full changelog](https://github.com/jtpio/jupyterlite/compare/20c89112b481d520946608f3dcd17c09b5bbe372...v0.1.0a0))
 
