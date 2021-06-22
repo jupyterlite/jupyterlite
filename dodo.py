@@ -519,7 +519,7 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
-    FLIT_GIT = ["git", "ls-files", "--deleted", "--others", "--exclude-standard", "-z"]
+    FLIT_GIT = ["git", "ls-files", "--deleted", "--others", "--exclude-standard"]
 
 
 class P:
