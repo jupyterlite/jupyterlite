@@ -37,7 +37,15 @@ ip = types.ModuleType("IPython")
 ip.get_ipython = lambda: ip_mock
 ip.InteractiveShell = InteractiveShellMock
 
+pt = types.ModuleType("pylabtools")
+pt.backend2gui = {}
+
+core = types.ModuleType("core")
+core.pylabtools = pt
+
 sys.modules["IPython.display"] = pyolite.display
 sys.modules["IPython"] = ip
+sys.modules["IPython.core"] = core
 sys.modules["IPython.core.getipython"] = ip
 sys.modules["IPython.core.interactiveshell"] = ip
+sys.modules["IPython.core.pylabtools"] = pt
