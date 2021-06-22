@@ -167,7 +167,7 @@ def task_build():
             name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[U.do("flit", "build", "--debug", cwd=py_pkg)],
+            actions=[U.do("flit", "--debug", "build", cwd=py_pkg)],
             # TODO: get version
             targets=[wheel],
         )
@@ -245,7 +245,7 @@ def task_build():
 
         # we might tweak the args
         if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
-            args = ["flit", "build", "--debug"]
+            args = ["flit", "--debug", "build"]
             file_dep += [pyproj_toml]
 
         # make "the" action
