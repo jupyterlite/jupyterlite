@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: Suggest something to add to JupyterLite
-labels: type:Enhancement
+labels: enhancement
 ---
 
 <!--
