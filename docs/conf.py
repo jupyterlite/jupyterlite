@@ -31,10 +31,6 @@ EXAMPLE_FILES = [
 # tasks that won't have been run prior to building the docs on RTD
 RTD_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
 
-# files rtd changes that we want to restore
-RTD_ENV_YML = HERE / "environment.yml"
-RTD_CHECKOUT_FILES = [CONF_PY, RTD_ENV_YML]
-
 # this is _not_ the way
 sys.path += [str(ROOT / "py/jupyterlite/src")]
 
@@ -143,7 +139,7 @@ def after_build(app: Sphinx, error):
 def before_rtd_build(app: Sphinx, error):
     """ensure doit docs:sphinx precursors have been met on RTD"""
     print("[jupyterlite-docs] Restoring files changed by RTD...", flush=True)
-    subprocess.call(["git", "checkout", "--", *RTD_CHECKOUT_FILES], cwd=str(ROOT))
+    subprocess.call(["git", "reset", "--hard", "HEAD"], cwd=str(ROOT))
     task_rcs = []
     print("[jupyterlite-docs] Ensuring built application...", flush=True)
     for task in RTD_TASKS:
