@@ -929,12 +929,18 @@ class U:
 
     @staticmethod
     def build_one_flit(py_pkg):
+        print(f"[{py_pkg.name}] trying in-tree build..", flush=True)
         args = ["flit", "--debug", "build"]
 
         try:
-            subprocess.call(args, cwd=str(py_pkg))
-        except subprocess.CalledProcessError:
-            print(f"[{py_pkg.name}] In-tree build failed, trying build in tempdir...")
+            subprocess.check_call(args, cwd=str(py_pkg))
+        except subprocess.CalledProcessError as err:
+            if not C.RTD:
+                return False
+            print(
+                f"[{py_pkg.name}] ... in-tree build failed, trying build in tempdir...",
+                flush=True
+            )
             py_dist = py_pkg / "dist"
             if py_dist.exists():
                 shutil.rmtree(py_dist)
