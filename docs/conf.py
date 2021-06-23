@@ -138,8 +138,8 @@ def after_build(app: Sphinx, error):
 
 def before_rtd_build(app: Sphinx, error):
     """ensure doit docs:sphinx precursors have been met on RTD"""
-    print("[jupyterlite-docs] Restoring files changed by RTD...", flush=True)
-    subprocess.call(["git", "reset", "--hard", "HEAD"], cwd=str(ROOT))
+    print("[jupyterlite-docs] Staging files changed by RTD...", flush=True)
+    subprocess.call(["git", "add", "."], cwd=str(ROOT))
     task_rcs = []
     print("[jupyterlite-docs] Ensuring built application...", flush=True)
     for task in RTD_TASKS:
