@@ -4,6 +4,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
@@ -169,9 +170,7 @@ def task_build():
             name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[
-                U.do("flit", "--debug", "build", cwd=py_pkg),
-            ],
+            actions=[(U.build_one_flit, [py_pkg])],
             # TODO: get version
             targets=[wheel],
         )
@@ -927,6 +926,25 @@ class U:
             shutil.copytree(src, dest)
         else:
             shutil.copy2(src, dest)
+
+    @staticmethod
+    def build_one_flit(py_pkg):
+        args = ["flit", "--debug", "build"]
+
+        try:
+            subprocess.call(args, cwd=str(py_pkg))
+        except subprocess.CalledProcessError:
+            print(f"[{py_pkg.name}] In-tree build failed, trying build in tempdir...")
+            py_dist = py_pkg / "dist"
+            if py_dist.exists():
+                shutil.rmtree(py_dist)
+
+            with tempfile.TemporaryDirectory() as td:
+                tdp = Path(td)
+                py_tmp = tdp / py_pkg.name
+                shutil.copytree(py_pkg, py_tmp)
+                subprocess.call(args, cwd=str(py_tmp))
+                shutil.copytree(py_tmp / "dist", py_dist)
 
 
 # environment overloads
