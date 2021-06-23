@@ -234,7 +234,7 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        args = ["python", "setup.py", "sdist", "bdist_wheel"]
+        actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
 
         file_dep = [
             *P.PY_SETUP_DEPS[py_name](),
@@ -248,11 +248,8 @@ def task_build():
 
         # we might tweak the args
         if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
-            args = ["flit", "--debug", "build"]
+            actions = [(U.build_one_flit, [py_pkg])]
             file_dep += [pyproj_toml]
-
-        # make "the" action
-        actions = [U.do(*args, cwd=py_pkg)]
 
         # may do some setup steps: TODO: refactor into separate task
         if py_name == C.NAME:
@@ -929,17 +926,20 @@ class U:
 
     @staticmethod
     def build_one_flit(py_pkg):
+        """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
+
         print(f"[{py_pkg.name}] trying in-tree build..", flush=True)
         args = ["flit", "--debug", "build"]
 
         try:
             subprocess.check_call(args, cwd=str(py_pkg))
-        except subprocess.CalledProcessError as err:
+        except subprocess.CalledProcessError:
             if not C.RTD:
+                print(f"[{py_pkg.name}] ... in-tree build failed, not on ReadTheDocs")
                 return False
             print(
                 f"[{py_pkg.name}] ... in-tree build failed, trying build in tempdir...",
-                flush=True
+                flush=True,
             )
             py_dist = py_pkg / "dist"
             if py_dist.exists():
