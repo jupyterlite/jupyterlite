@@ -9,7 +9,8 @@ from pathlib import Path
 
 from sphinx.application import Sphinx
 
-HERE = Path(__file__).parent
+CONF_PY = Path(__file__)
+HERE = CONF_PY.parent
 ROOT = HERE.parent
 APP_PKG = ROOT / "app/package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
@@ -26,6 +27,9 @@ EXAMPLE_FILES = [
         and "__pycache__" not in str(example)
     ],
 ]
+
+# tasks that won't have been run prior to building the docs on RTD
+RTD_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
 
 # this is _not_ the way
 sys.path += [str(ROOT / "py/jupyterlite/src")]
@@ -133,12 +137,21 @@ def after_build(app: Sphinx, error):
 
 
 def before_rtd_build(app: Sphinx, error):
-    """this performs the full frontend build, and ensures the typedoc"""
-    print("jupyterlite: Ensuring built application...", flush=True)
-    subprocess.check_call(
-        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:app:pack"],
-        cwd=str(ROOT),
-    )
+    """ensure doit docs:sphinx precursors have been met on RTD"""
+    print("[jupyterlite-docs] Staging files changed by RTD...", flush=True)
+    subprocess.call(["git", "add", "."], cwd=str(ROOT))
+    task_rcs = []
+    print("[jupyterlite-docs] Ensuring built application...", flush=True)
+    for task in RTD_TASKS:
+        print(f"[jupyterlite-docs] running {task}", flush=True)
+        subprocess.call(["git", "diff", str(ROOT)], cwd=str(ROOT))
+        rc = subprocess.call(["doit", task], cwd=str(ROOT))
+        print(f"[jupyterlite-docs] ... ran {task}: returned {rc}", flush=True)
+        task_rcs += [rc]
+
+    if max(task_rcs) > 0:
+        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
+    print("[jupyterlite-docs] ... OK", flush=True)
 
 
 def setup(app):

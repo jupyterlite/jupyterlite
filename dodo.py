@@ -4,6 +4,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
@@ -92,35 +93,37 @@ def task_lint():
 def task_build():
     """build code and intermediate packages"""
 
-    yield dict(
-        name="favicon",
-        doc="rebuild favicons from svg source, requires imagemagick",
-        file_dep=[P.DOCS_ICON],
-        targets=[P.LAB_FAVICON],
-        actions=[["echo", "... `convert` not found, install imagemagick"]]
-        if not shutil.which("convert")
-        else [
-            lambda: [
-                subprocess.call(
-                    [
-                        "convert",
-                        "-verbose",
-                        "-density",
-                        "256x256",
-                        "-background",
-                        "transparent",
-                        P.DOCS_ICON,
-                        "-define",
-                        "icon:auto-resize",
-                        "-colors",
-                        "256",
-                        P.LAB_FAVICON,
-                    ]
-                ),
-                None,
-            ][-1]
-        ],
-    )
+    # this doesn't appear to be reproducible vs. whatever is on RTD, making flit angry
+    if not C.RTD:
+        yield dict(
+            name="favicon",
+            doc="rebuild favicons from svg source, requires imagemagick",
+            file_dep=[P.DOCS_ICON],
+            targets=[P.LAB_FAVICON],
+            actions=[["echo", "... `convert` not found, install imagemagick"]]
+            if not shutil.which("convert")
+            else [
+                lambda: [
+                    subprocess.call(
+                        [
+                            "convert",
+                            "-verbose",
+                            "-density",
+                            "256x256",
+                            "-background",
+                            "transparent",
+                            P.DOCS_ICON,
+                            "-define",
+                            "icon:auto-resize",
+                            "-colors",
+                            "256",
+                            P.LAB_FAVICON,
+                        ]
+                    ),
+                    None,
+                ][-1]
+            ],
+        )
 
     yield dict(
         name="ui-components",
@@ -167,7 +170,7 @@ def task_build():
             name=f"js:py:{name}",
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[U.do("flit", "build", cwd=py_pkg)],
+            actions=[(U.build_one_flit, [py_pkg])],
             # TODO: get version
             targets=[wheel],
         )
@@ -231,7 +234,7 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        args = ["python", "setup.py", "sdist", "bdist_wheel"]
+        actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
 
         file_dep = [
             *P.PY_SETUP_DEPS[py_name](),
@@ -245,11 +248,8 @@ def task_build():
 
         # we might tweak the args
         if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
-            args = ["flit", "build"]
+            actions = [(U.build_one_flit, [py_pkg])]
             file_dep += [pyproj_toml]
-
-        # make "the" action
-        actions = [U.do(*args, cwd=py_pkg)]
 
         # may do some setup steps: TODO: refactor into separate task
         if py_name == C.NAME:
@@ -709,7 +709,10 @@ class U:
             or shutil.which(f"{cmd}.cmd")
             or shutil.which(f"{cmd}.bat")
         ).resolve()
-        return doit.tools.Interactive([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        cmd_class = doit.tools.Interactive
+        if C.RTD:
+            cmd_class = doit.action.CmdAction
+        return cmd_class([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):
@@ -920,6 +923,34 @@ class U:
             shutil.copytree(src, dest)
         else:
             shutil.copy2(src, dest)
+
+    @staticmethod
+    def build_one_flit(py_pkg):
+        """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
+
+        print(f"[{py_pkg.name}] trying in-tree build..", flush=True)
+        args = ["flit", "--debug", "build"]
+
+        try:
+            subprocess.check_call(args, cwd=str(py_pkg))
+        except subprocess.CalledProcessError:
+            if not C.RTD:
+                print(f"[{py_pkg.name}] ... in-tree build failed, not on ReadTheDocs")
+                return False
+            print(
+                f"[{py_pkg.name}] ... in-tree build failed, trying build in tempdir...",
+                flush=True,
+            )
+            py_dist = py_pkg / "dist"
+            if py_dist.exists():
+                shutil.rmtree(py_dist)
+
+            with tempfile.TemporaryDirectory() as td:
+                tdp = Path(td)
+                py_tmp = tdp / py_pkg.name
+                shutil.copytree(py_pkg, py_tmp)
+                subprocess.call(args, cwd=str(py_tmp))
+                shutil.copytree(py_tmp / "dist", py_dist)
 
 
 # environment overloads

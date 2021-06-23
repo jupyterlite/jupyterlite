@@ -85,7 +85,7 @@ class SettingsAddon(BaseAddon):
             plugin_stem = f"schemas/{ext}/{plugin}.json"
             schema = self.output_env_extensions_dir / ext / plugin_stem
             if not schema.exists():
-                core_schema = self.output_dir / "lab/build" / plugin_stem
+                core_schema = self.manager.output_dir / "lab/build" / plugin_stem
                 if core_schema.exists():
                     schema = core_schema
                 else:
