@@ -170,7 +170,6 @@ def task_build():
             doc=f"build the {name} python package for the brower with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[
-                U.do(*C.FLIT_GIT, cwd=py_pkg),
                 U.do("flit", "--debug", "build", cwd=py_pkg),
             ],
             # TODO: get version
@@ -519,7 +518,6 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
-    FLIT_GIT = ["git", "diff", Path(__file__).parent]
 
 
 class P:
@@ -715,7 +713,10 @@ class U:
             or shutil.which(f"{cmd}.cmd")
             or shutil.which(f"{cmd}.bat")
         ).resolve()
-        return doit.tools.Interactive([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        cmd_class = doit.tools.Interactive
+        if C.RTD:
+            cmd_class = doit.action.CmdAction
+        return cmd_class([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):

@@ -27,6 +27,9 @@ EXAMPLE_FILES = [
     ],
 ]
 
+# tasks that won't have been run prior to building the docs on RTD
+RTD_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
+
 # this is _not_ the way
 sys.path += [str(ROOT / "py/jupyterlite/src")]
 
@@ -133,12 +136,20 @@ def after_build(app: Sphinx, error):
 
 
 def before_rtd_build(app: Sphinx, error):
-    """this performs the full frontend build, and ensures the typedoc"""
-    print("jupyterlite: Ensuring built application...", flush=True)
-    subprocess.check_call(
-        ["doit", "-n4", "build", "docs:typedoc:mystify", "docs:app:pack"],
-        cwd=str(ROOT),
-    )
+    """ensure doit docs:sphinx precursors have been met on RTD"""
+    print("[jupyterlite-docs] Ensuring built application...", flush=True)
+
+    task_rcs = []
+    for task in RTD_TASKS:
+        print(f"[jupyterlite-docs] running {task}", flush=True)
+        subprocess.call(["git", "diff", str(ROOT)], cwd=str(ROOT))
+        rc = subprocess.call(["doit", task], cwd=str(ROOT))
+        print(f"[jupyterlite-docs] ... ran {task}: returned {rc}", flush=True)
+        task_rcs += [rc]
+
+    if max(task_rcs) > 0:
+        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
+    print("[jupyterlite-docs] ... OK", flush=True)
 
 
 def setup(app):
