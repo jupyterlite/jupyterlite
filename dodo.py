@@ -272,8 +272,7 @@ def task_build():
         if py_name == C.NAME:
             dest = py_pkg / "src" / py_name / B.APP_PACK.name
             actions = [
-                lambda: [dest.exists() and dest.unlink(), None][-1],
-                lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
+                (U.copy_one, [B.APP_PACK, dest]),
                 *actions,
             ]
             file_dep += [B.APP_PACK, pyproj_toml]
@@ -959,7 +958,7 @@ class U:
     def build_one_flit(py_pkg):
         """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
 
-        print(f"[{py_pkg.name}] trying in-tree build..", flush=True)
+        print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
         args = ["flit", "--debug", "build"]
 
         try:
