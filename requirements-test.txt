@@ -1,0 +1,10 @@
+# minimum needed to test jupyterlite
+# see .binder/ and docs/ for full development/docs environments
+-r requirements-build.txt
+
+ansi2html
+hypothesis-jsonschema
+pytest-console-scripts
+pytest-cov
+pytest-html
+pytest-xdist
