@@ -533,7 +533,7 @@ class C:
     COV_THRESHOLD = 88
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
-    DOCS_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
+    DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
 
