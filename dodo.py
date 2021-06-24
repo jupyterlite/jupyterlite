@@ -88,7 +88,7 @@ def task_lint():
         name="pyflakes",
         doc="ensure python code style with pyflakes",
         file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-        actions=[U.do("pyflakes", *L.ALL_BLACK)],
+        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
     )
 
     yield dict(
@@ -511,7 +511,6 @@ def task_test():
             actions=[
                 U.do(
                     *pytest_args,
-                    *pkg_args,
                     *(C.PYTEST_ARGS or []),
                     "--cov",
                     py_mod,
@@ -519,6 +518,7 @@ def task_test():
                     f"html:{cov_path}",
                     f"--html={html_index}",
                     "--self-contained-html",
+                    *pkg_args,
                     cwd=cwd,
                 )
             ],
