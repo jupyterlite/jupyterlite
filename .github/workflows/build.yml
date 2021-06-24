@@ -58,7 +58,7 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
       - name: Build
-        run: doit build
+        run: doit -n4 build || doit build
       - name: Dist
         run: doit dist
       - name: Upload (dist)
