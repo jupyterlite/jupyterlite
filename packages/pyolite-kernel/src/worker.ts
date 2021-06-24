@@ -26,10 +26,8 @@ async function loadPyodideAndPackages() {
     await micropip.install([
       '${_pyoliteWheelUrl}'
     ]);
-    import pyolite
-  `);
-  await pyodide.runPythonAsync(`
     await micropip.install('ipython');
+    import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
   interpreter = kernel.interpreter;
