@@ -10,7 +10,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-import jsonschema
 
 
 def task_env():
@@ -851,6 +850,8 @@ class U:
 
     @staticmethod
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
+        import jsonschema
+
         schema = json.loads(schema_path.read_text(**C.ENC))
         if ref:
             schema["$ref"] = ref
