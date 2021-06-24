@@ -459,7 +459,7 @@ def task_watch():
 
 def task_test():
     """test jupyterlite"""
-    if C.LINTING_IN_CI or C.DOCS_IN_CI or C.BUILDING_IN_CI:
+    if C.DOCS_IN_CI or C.BUILDING_IN_CI:
         return
 
     yield U.ok(
@@ -469,6 +469,9 @@ def task_test():
         file_dep=[B.YARN_INTEGRITY, B.META_BUILDINFO],
         actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
+
+    if C.LINTING_IN_CI:
+        return
 
     pytest_args = [
         "pytest",
