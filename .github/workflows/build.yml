@@ -120,6 +120,13 @@ jobs:
         run: doit test:js
       - name: Lint
         run: doit lint
+      - name: Docs (typedoc)
+        run: doit typedoc:mystify
+      - name: Upload (typedoc)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite typedoc ${{ github.run_number }}
+          path: ./build/typedoc
 
   test:
     needs: [build]
@@ -155,7 +162,8 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (test)
         run: pip install -r requirements-test.txt
-      - uses: actions/download-artifact@v2
+      - name: Download (dist)
+        uses: actions/download-artifact@v2
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -163,13 +171,23 @@ jobs:
         run: doit test:py:*
 
   docs:
-    needs: [build]
+    needs: [build, lint-js-test]
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Download (dist)
+        uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
+      - name: Download (typedoc)
+        uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite typedoc ${{ github.run_number }}
+          path: ./typedoc
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
@@ -185,36 +203,8 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (docs)
         run: pip install -r requirements-docs.txt
-      - uses: actions/download-artifact@v2
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
-      - name: Install node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 14.x
-      - name: Cache (node_modules)
-        uses: actions/cache@v2
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache (.yarn-packages)
-        uses: actions/cache@v2
-        id: cache-yarn-packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        with:
-          path: .yarn-packages
-          key: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-
-      - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: doit setup:js
       - name: Docs
-        run: doit docs
+        run: doit docs:sphinx
       - name: Check Built Artifacts
         run: doit check
       - name: Upload Sphinx Logs
@@ -229,7 +219,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v2
+      - name: Download (dist)
+        uses: actions/download-artifact@v2
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
