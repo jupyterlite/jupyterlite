@@ -25,6 +25,9 @@ def task_env():
 
 def task_setup():
     """perform initial non-python setup"""
+    if C.TESTING_IN_CI:
+        return
+
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
 
     if C.CI:
@@ -50,7 +53,7 @@ def task_setup():
 
 def task_lint():
     """format and ensure style of code, docs, etc."""
-    if C.RTD:
+    if C.RTD or C.BUILDING_IN_CI or C.DOCS_IN_CI:
         return
 
     yield U.ok(
@@ -88,9 +91,24 @@ def task_lint():
         actions=[U.do("pyflakes", *L.ALL_BLACK)],
     )
 
+    yield dict(
+        name="schema:self",
+        file_dep=[P.APP_SCHEMA],
+        actions=[(U.validate, [P.APP_SCHEMA])],
+    )
+
+    for config in D.APP_CONFIGS:
+        yield dict(
+            name=f"schema:validate:{config.relative_to(P.ROOT)}",
+            file_dep=[P.APP_SCHEMA, config],
+            actions=[(U.validate, (P.APP_SCHEMA, config))],
+        )
+
 
 def task_build():
     """build code and intermediate packages"""
+    if C.TESTING_IN_CI or C.DOCS_IN_CI:
+        return
 
     # this doesn't appear to be reproducible vs. whatever is on RTD, making flit angry
     if not C.RTD:
@@ -273,6 +291,8 @@ def task_build():
 @doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
+    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+        return
 
     dests = []
     for dist in B.DISTRIBUTIONS:
@@ -309,6 +329,9 @@ def task_dev():
 
 def task_docs():
     """build documentation"""
+    if C.LINTING_IN_CI or C.TESTING_IN_CI or C.BUILDING_IN_CI:
+        return
+
     yield dict(
         name="typedoc:ensure",
         file_dep=[*P.PACKAGE_JSONS],
@@ -366,20 +389,6 @@ def task_docs():
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
-
-
-def task_schema():
-    """update, validate the schema and instance documents"""
-    yield dict(
-        name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
-    )
-
-    for config in D.APP_CONFIGS:
-        yield dict(
-            name=f"validate:{config.relative_to(P.ROOT)}",
-            file_dep=[P.APP_SCHEMA, config],
-            actions=[(U.validate, (P.APP_SCHEMA, config))],
-        )
 
 
 @doit.create_after("docs")
@@ -513,6 +522,11 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
+
+    BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
+    DOCS_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
+    LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
+    TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
 
 
 class P:

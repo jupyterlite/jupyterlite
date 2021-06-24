@@ -14,6 +14,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BUILDING_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -68,6 +70,8 @@ jobs:
   lint:
     needs: [build]
     runs-on: ubuntu-latest
+    env:
+      LINTING_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -111,14 +115,14 @@ jobs:
         run: doit setup:js
       - name: Lint
         run: doit lint
-      - name: Schema
-        run: doit schema
       - name: Test (js)
         run: doit test:js
 
   test:
     needs: [build]
     runs-on: ${{ matrix.os }}-latest
+    env:
+      TESTING_IN_CI: 1
     strategy:
       matrix:
         os: [ubuntu, windows, macos]
@@ -159,6 +163,8 @@ jobs:
   docs:
     needs: [build]
     runs-on: ubuntu-latest
+    env:
+      DOCS_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
