@@ -493,7 +493,7 @@ def task_test():
 
         if C.CI:
             cwd = B.DIST
-            pkg_args = ["-m", py_mod]
+            pkg_args = ["--pyargs", py_mod]
         else:
             cwd = setup_py.parent
             pkg_args = []
