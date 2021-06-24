@@ -18,9 +18,13 @@ requires = [
 [tool.flit.scripts]
 jupyter-lite = "jupyterlite.app:main"
 
+[tool.flit.sdist]
+include = [
+    "src/jupyterlite/jupyterlite-*.tgz",
+]
+
 [tool.flit.metadata.requires-extra]
 test = [
-    "hypothesis-jsonschema",
     "pytest-cov",
     "pytest-html",
     "pytest-xdist",

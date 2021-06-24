@@ -7,7 +7,7 @@ C_LOCALE = "C"
 ROOT = Path(__file__).parent
 
 #: all of the archives
-ALL_APP_ARCHIVES = sorted(ROOT.glob("jupyterlite-app-*.tgz"))
+ALL_APP_ARCHIVES = sorted(ROOT.glob("jupyterlite-*.tgz"))
 
 #: our baseline archive.
 DEFAULT_APP_ARCHIVE = ALL_APP_ARCHIVES[-1]

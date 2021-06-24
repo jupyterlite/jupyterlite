@@ -10,7 +10,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-import jsonschema
 
 
 def task_env():
@@ -26,6 +25,9 @@ def task_env():
 
 def task_setup():
     """perform initial non-python setup"""
+    if C.TESTING_IN_CI:
+        return
+
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
 
     if C.CI:
@@ -51,7 +53,7 @@ def task_setup():
 
 def task_lint():
     """format and ensure style of code, docs, etc."""
-    if C.RTD:
+    if C.RTD or C.BUILDING_IN_CI or C.DOCS_IN_CI:
         return
 
     yield U.ok(
@@ -76,8 +78,8 @@ def task_lint():
         doc="format python files with black",
         file_dep=L.ALL_BLACK,
         actions=[
-            U.do("isort", *L.ALL_BLACK),
-            U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
+            U.do(*C.PYM, "isort", *L.ALL_BLACK),
+            U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
         ],
     )
 
@@ -86,17 +88,31 @@ def task_lint():
         name="pyflakes",
         doc="ensure python code style with pyflakes",
         file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-        actions=[U.do("pyflakes", *L.ALL_BLACK)],
+        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
     )
+
+    yield dict(
+        name="schema:self",
+        file_dep=[P.APP_SCHEMA],
+        actions=[(U.validate, [P.APP_SCHEMA])],
+    )
+
+    for config in D.APP_CONFIGS:
+        yield dict(
+            name=f"schema:validate:{config.relative_to(P.ROOT)}",
+            file_dep=[P.APP_SCHEMA, config],
+            actions=[(U.validate, (P.APP_SCHEMA, config))],
+        )
 
 
 def task_build():
     """build code and intermediate packages"""
+    if C.TESTING_IN_CI or C.DOCS_IN_CI:
+        return
 
-    # this doesn't appear to be reproducible vs. whatever is on RTD, making flit angry
-    if not C.RTD:
+    if not (C.RTD or C.CI):
         yield dict(
-            name="favicon",
+            name="docs:favicon",
             doc="rebuild favicons from svg source, requires imagemagick",
             file_dep=[P.DOCS_ICON],
             targets=[P.LAB_FAVICON],
@@ -126,7 +142,7 @@ def task_build():
         )
 
     yield dict(
-        name="ui-components",
+        name="js:ui-components",
         doc="copy the icon and wordmark to the ui-components package",
         file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_INTEGRITY],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
@@ -226,6 +242,13 @@ def task_build():
         targets=[B.APP_PACK],
     )
 
+    yield dict(
+        name=f"py:{C.NAME}:pre",
+        file_dep=[B.APP_PACK],
+        targets=[B.PY_APP_PACK],
+        actions=[(U.copy_one, [B.APP_PACK, B.PY_APP_PACK])],
+    )
+
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
         wheel = (
@@ -247,20 +270,9 @@ def task_build():
         targets = [wheel, sdist]
 
         # we might tweak the args
-        if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
+        if pyproj_toml.exists() and "flit_core" in pyproj_toml.read_text(**C.ENC):
             actions = [(U.build_one_flit, [py_pkg])]
             file_dep += [pyproj_toml]
-
-        # may do some setup steps: TODO: refactor into separate task
-        if py_name == C.NAME:
-            dest = py_pkg / "src" / py_name / B.APP_PACK.name
-            actions = [
-                lambda: [dest.exists() and dest.unlink(), None][-1],
-                lambda: [shutil.copy2(B.APP_PACK, dest), None][-1],
-                *actions,
-            ]
-            file_dep += [B.APP_PACK, pyproj_toml]
-            targets += [dest]
 
         yield dict(
             name=f"py:{py_name}",
@@ -274,6 +286,8 @@ def task_build():
 @doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
+    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+        return
 
     dests = []
     for dist in B.DISTRIBUTIONS:
@@ -296,41 +310,51 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    py_pkg = P.PY_SETUP_PY[C.NAME].parent
-
-    # TODO: probably name this file
-    dest = py_pkg / "src" / C.NAME / B.APP_PACK.name
+    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+        cwd = P.ROOT
+        file_dep = [
+            B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+        ]
+        args = [*C.PYM, "pip", "install", "--find-links", B.DIST, C.NAME]
+    else:
+        cwd = P.PY_SETUP_PY[C.NAME].parent
+        file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
+        args = [*C.FLIT, "install", "--pth-file"]
 
     yield dict(
         name=f"py:{C.NAME}",
-        actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
-        file_dep=[dest],
+        actions=[U.do(*args, cwd=cwd)],
+        file_dep=file_dep,
     )
 
 
 def task_docs():
     """build documentation"""
-    yield dict(
-        name="typedoc:ensure",
-        file_dep=[*P.PACKAGE_JSONS],
-        actions=[U.typedoc_conf],
-        targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
-    )
-    yield dict(
-        name="typedoc:build",
-        doc="build the TS API documentation with typedoc",
-        file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
-        actions=[U.do("yarn", "docs")],
-        targets=[B.DOCS_RAW_TYPEDOC_README],
-    )
+    if C.TESTING_IN_CI or C.BUILDING_IN_CI:
+        return
 
-    yield dict(
-        name="typedoc:mystify",
-        doc="transform raw typedoc into myst markdown",
-        file_dep=[B.DOCS_RAW_TYPEDOC_README],
-        targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
-        actions=[U.mystify, U.do("yarn", "prettier")],
-    )
+    if not C.DOCS_IN_CI:
+        yield dict(
+            name="typedoc:ensure",
+            file_dep=[*P.PACKAGE_JSONS],
+            actions=[U.typedoc_conf],
+            targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
+        )
+        yield dict(
+            name="typedoc:build",
+            doc="build the TS API documentation with typedoc",
+            file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
+            actions=[U.do("yarn", "docs")],
+            targets=[B.DOCS_RAW_TYPEDOC_README],
+        )
+
+        yield dict(
+            name="typedoc:mystify",
+            doc="transform raw typedoc into myst markdown",
+            file_dep=[B.DOCS_RAW_TYPEDOC_README],
+            targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
+            actions=[U.mystify, U.do("yarn", "prettier")],
+        )
 
     yield dict(
         name="app:build",
@@ -338,7 +362,7 @@ def task_docs():
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
         file_dep=[
-            B.APP_PACK,
+            *([] if C.CI else [B.PY_APP_PACK]),
             *P.ALL_EXAMPLES,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
@@ -367,20 +391,6 @@ def task_docs():
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
     )
-
-
-def task_schema():
-    """update, validate the schema and instance documents"""
-    yield dict(
-        name="self", file_dep=[P.APP_SCHEMA], actions=[(U.validate, [P.APP_SCHEMA])]
-    )
-
-    for config in D.APP_CONFIGS:
-        yield dict(
-            name=f"validate:{config.relative_to(P.ROOT)}",
-            file_dep=[P.APP_SCHEMA, config],
-            actions=[(U.validate, (P.APP_SCHEMA, config))],
-        )
 
 
 @doit.create_after("docs")
@@ -445,6 +455,9 @@ def task_watch():
 
 def task_test():
     """test jupyterlite"""
+    if C.DOCS_IN_CI or C.BUILDING_IN_CI:
+        return
+
     yield U.ok(
         B.OK_JEST,
         name="js",
@@ -453,7 +466,11 @@ def task_test():
         actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
     )
 
+    if C.LINTING_IN_CI:
+        return
+
     pytest_args = [
+        *C.PYM,
         "pytest",
         "--ff",
         "--script-launch-mode=subprocess",
@@ -475,6 +492,13 @@ def task_test():
         cov_index = cov_path / "index.html"
         html_index = B.BUILD / f"pytest/{py_name}/index.html"
 
+        if C.CI:
+            cwd = B.DIST
+            pkg_args = ["--pyargs", py_mod]
+        else:
+            cwd = setup_py.parent
+            pkg_args = []
+
         yield U.ok(
             B.OK_LITE_PYTEST,
             name=f"py:{py_name}",
@@ -495,7 +519,8 @@ def task_test():
                     f"html:{cov_path}",
                     f"--html={html_index}",
                     "--self-contained-html",
-                    cwd=setup_py.parent,
+                    *pkg_args,
+                    cwd=cwd,
                 )
             ],
         )
@@ -514,6 +539,19 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
+
+    BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
+    DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
+    LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
+    TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
+
+    PYM = [sys.executable, "-m"]
+    FLIT = [*PYM, "flit"]
+    SOURCE_DATE_EPOCH = (
+        subprocess.check_output(["git", "log", "-1", "--format=%ct"])
+        .decode("utf-8")
+        .strip()
+    )
 
 
 class P:
@@ -549,7 +587,7 @@ class P:
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
     PY_SETUP_DEPS = {
-        C.NAME: lambda: [B.APP_PACK],
+        C.NAME: lambda: [B.PY_APP_PACK],
     }
 
     # docs
@@ -663,6 +701,7 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
+    PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
 
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
@@ -703,12 +742,16 @@ class U:
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency"""
         cmd = args[0]
-        cmd = Path(
-            shutil.which(cmd)
-            or shutil.which(f"{cmd}.exe")
-            or shutil.which(f"{cmd}.cmd")
-            or shutil.which(f"{cmd}.bat")
-        ).resolve()
+        try:
+            cmd = Path(
+                shutil.which(cmd)
+                or shutil.which(f"{cmd}.exe")
+                or shutil.which(f"{cmd}.cmd")
+                or shutil.which(f"{cmd}.bat")
+            ).resolve()
+        except Exception:
+            print(cmd, "is not available (this might not be a problem)")
+            return ["echo", f"{cmd} not available"]
         cmd_class = doit.tools.Interactive
         if C.RTD:
             cmd_class = doit.action.CmdAction
@@ -851,6 +894,8 @@ class U:
 
     @staticmethod
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
+        import jsonschema
+
         schema = json.loads(schema_path.read_text(**C.ENC))
         if ref:
             schema["$ref"] = ref
@@ -887,11 +932,14 @@ class U:
                 ".",
                 "--output-dir",
                 B.DOCS_APP,
-                "--app-archive",
-                B.APP_PACK,
                 "--output-archive",
                 B.DOCS_APP_ARCHIVE,
             ]
+
+            # prefer the shipped archive in CI
+            if not C.CI:
+                args += ["--app-archive", B.APP_PACK]
+
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
     @staticmethod
@@ -902,6 +950,7 @@ class U:
         for p in path.glob("*"):
             if p.name == "SHA256SUMS":
                 continue
+            print(p.stat().st_size / (1024 * 1024), "Mb", p.name)
             lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
 
         output = "\n".join(lines)
@@ -928,11 +977,12 @@ class U:
     def build_one_flit(py_pkg):
         """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
 
-        print(f"[{py_pkg.name}] trying in-tree build..", flush=True)
-        args = ["flit", "--debug", "build"]
+        print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
+        args = [*C.FLIT, "--debug", "build"]
+        env = os.environ.update(SOURCE_DATE_EPOCH=C.SOURCE_DATE_EPOCH)
 
         try:
-            subprocess.check_call(args, cwd=str(py_pkg))
+            subprocess.check_call(args, cwd=str(py_pkg), env=env)
         except subprocess.CalledProcessError:
             if not C.RTD:
                 print(f"[{py_pkg.name}] ... in-tree build failed, not on ReadTheDocs")
@@ -949,7 +999,7 @@ class U:
                 tdp = Path(td)
                 py_tmp = tdp / py_pkg.name
                 shutil.copytree(py_pkg, py_tmp)
-                subprocess.call(args, cwd=str(py_tmp))
+                subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
 
