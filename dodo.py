@@ -333,27 +333,28 @@ def task_docs():
     if C.TESTING_IN_CI or C.BUILDING_IN_CI:
         return
 
-    yield dict(
-        name="typedoc:ensure",
-        file_dep=[*P.PACKAGE_JSONS],
-        actions=[U.typedoc_conf],
-        targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
-    )
-    yield dict(
-        name="typedoc:build",
-        doc="build the TS API documentation with typedoc",
-        file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
-        actions=[U.do("yarn", "docs")],
-        targets=[B.DOCS_RAW_TYPEDOC_README],
-    )
+    if not C.DOCS_IN_CI:
+        yield dict(
+            name="typedoc:ensure",
+            file_dep=[*P.PACKAGE_JSONS],
+            actions=[U.typedoc_conf],
+            targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
+        )
+        yield dict(
+            name="typedoc:build",
+            doc="build the TS API documentation with typedoc",
+            file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
+            actions=[U.do("yarn", "docs")],
+            targets=[B.DOCS_RAW_TYPEDOC_README],
+        )
 
-    yield dict(
-        name="typedoc:mystify",
-        doc="transform raw typedoc into myst markdown",
-        file_dep=[B.DOCS_RAW_TYPEDOC_README],
-        targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
-        actions=[U.mystify, U.do("yarn", "prettier")],
-    )
+        yield dict(
+            name="typedoc:mystify",
+            doc="transform raw typedoc into myst markdown",
+            file_dep=[B.DOCS_RAW_TYPEDOC_README],
+            targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
+            actions=[U.mystify, U.do("yarn", "prettier")],
+        )
 
     yield dict(
         name="app:build",
