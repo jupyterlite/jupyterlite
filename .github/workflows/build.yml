@@ -126,7 +126,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
-          path: ./build/typedoc
+          path: ./docs/api/ts
 
   test:
     needs: [build]
@@ -187,7 +187,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
-          path: ./build/typedoc
+          path: ./docs/api/ts
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
