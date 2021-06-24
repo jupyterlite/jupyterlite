@@ -547,6 +547,11 @@ class C:
 
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
+    SOURCE_DATE_EPOCH = (
+        subprocess.check_output(["git", "log", "-1", "--format=%ct"])
+        .decode("utf-8")
+        .strip()
+    )
 
 
 class P:
@@ -974,9 +979,10 @@ class U:
 
         print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
         args = [*C.FLIT, "--debug", "build"]
+        env = os.environ.update(SOURCE_DATE_EPOCH=C.SOURCE_DATE_EPOCH)
 
         try:
-            subprocess.check_call(args, cwd=str(py_pkg))
+            subprocess.check_call(args, cwd=str(py_pkg), env=env)
         except subprocess.CalledProcessError:
             if not C.RTD:
                 print(f"[{py_pkg.name}] ... in-tree build failed, not on ReadTheDocs")
@@ -993,7 +999,7 @@ class U:
                 tdp = Path(td)
                 py_tmp = tdp / py_pkg.name
                 shutil.copytree(py_pkg, py_tmp)
-                subprocess.call(args, cwd=str(py_tmp))
+                subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
 
