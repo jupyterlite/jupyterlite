@@ -70,7 +70,7 @@ jobs:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
 
-  lint:
+  lint-js-test:
     runs-on: ubuntu-latest
     env:
       LINTING_IN_CI: 1
@@ -116,10 +116,10 @@ jobs:
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
-      - name: Lint
-        run: doit lint
       - name: Test (js)
         run: doit test:js
+      - name: Lint
+        run: doit lint
 
   test:
     needs: [build]
