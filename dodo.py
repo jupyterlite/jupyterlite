@@ -107,7 +107,7 @@ def task_lint():
 
 def task_build():
     """build code and intermediate packages"""
-    if C.TESTING_IN_CI or C.DOCS_IN_CI:
+    if C.TESTING_IN_CI:
         return
 
     if not (C.RTD or C.CI):
@@ -193,6 +193,9 @@ def task_build():
 
     app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
     all_app_targets = []
+
+    if C.DOCS_IN_CI:
+        return
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
