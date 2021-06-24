@@ -24,7 +24,8 @@ jobs:
           python-version: 3.8
       - name: Setup pip (base)
         run: pip install -U pip setuptools wheel
-      - uses: actions/cache@v2
+      - name: Cache (pip)
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: |
@@ -37,14 +38,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - name: Cache node modules
+      - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
         with:
           path: node_modules/
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache yarn packages
+      - name: Cache (.yarn-packages)
         uses: actions/cache@v2
         id: cache-yarn-packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -81,7 +82,8 @@ jobs:
           python-version: 3.8
       - name: Setup pip (base)
         run: pip install -U pip setuptools wheel
-      - uses: actions/cache@v2
+      - name: Cache (pip)
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: |
@@ -94,14 +96,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - name: Cache node modules
+      - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
         with:
           path: node_modules/
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache yarn packages
+      - name: Cache (.yarn-packages)
         uses: actions/cache@v2
         id: cache-yarn-packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -143,7 +145,8 @@ jobs:
       - name: Setup pip (base)
         run: |
           pip install -U pip setuptools wheel
-      - uses: actions/cache@v2
+      - name: Cache (pip)
+        uses: actions/cache@v2
         with:
           path: ${{ matrix.pip-cache }}
           key: |
@@ -172,7 +175,8 @@ jobs:
           python-version: 3.8
       - name: Setup pip (base)
         run: pip install -U pip setuptools wheel
-      - uses: actions/cache@v2
+      - name: Cache (pip)
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
           key: |
@@ -189,14 +193,14 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - name: Cache node modules
+      - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
         with:
           path: node_modules/
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache yarn packages
+      - name: Cache (.yarn-packages)
         uses: actions/cache@v2
         id: cache-yarn-packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
