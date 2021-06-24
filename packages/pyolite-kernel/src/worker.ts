@@ -28,6 +28,9 @@ async function loadPyodideAndPackages() {
     ]);
     import pyolite
   `);
+  await pyodide.runPythonAsync(`
+    await micropip.install('ipython');
+  `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;

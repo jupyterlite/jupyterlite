@@ -14,38 +14,16 @@ sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 # apply patches for available modules
 ensure_matplotlib_patch()
 
-import pyolite
-
 from .kernel import Pyolite
 
 kernel_instance = Pyolite()
 
+termios_mock = types.ModuleType("termios")
+termios_mock.TCSAFLUSH = 2
 
-# TODO: Make an ipython module mock
-class IPMock:
-    def __init__(self, kernel):
-        self.kernel = kernel
+fcntl_mock = types.ModuleType("fcntl")
+resource_mock = types.ModuleType("resource")
 
-
-class InteractiveShellMock:
-    pass
-
-
-ip_mock = IPMock(kernel_instance)
-
-ip = types.ModuleType("IPython")
-ip.get_ipython = lambda: ip_mock
-ip.InteractiveShell = InteractiveShellMock
-
-pt = types.ModuleType("pylabtools")
-pt.backend2gui = {}
-
-core = types.ModuleType("core")
-core.pylabtools = pt
-
-sys.modules["IPython.display"] = pyolite.display
-sys.modules["IPython"] = ip
-sys.modules["IPython.core"] = core
-sys.modules["IPython.core.getipython"] = ip
-sys.modules["IPython.core.interactiveshell"] = ip
-sys.modules["IPython.core.pylabtools"] = pt
+sys.modules["termios"] = termios_mock
+sys.modules["fcntl"] = fcntl_mock
+sys.modules["resource"] = resource_mock
