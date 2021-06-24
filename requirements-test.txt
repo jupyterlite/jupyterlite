@@ -8,3 +8,6 @@ pytest-console-scripts
 pytest-cov
 pytest-html
 pytest-xdist
+
+# extras
+jupyter_server

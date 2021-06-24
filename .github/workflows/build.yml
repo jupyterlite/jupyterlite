@@ -139,8 +139,6 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: Cache yarn packages
-        uses: actions/cache@v2
       - name: Setup pip (base)
         run: |
           pip install -U pip setuptools wheel

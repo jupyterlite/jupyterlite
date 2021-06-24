@@ -315,15 +315,21 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    py_pkg = P.PY_SETUP_PY[C.NAME].parent
-
-    # TODO: probably name this file
-    dest = py_pkg / "src" / C.NAME / B.APP_PACK.name
+    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+        cwd = P.ROOT
+        file_dep = [
+            B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+        ]
+        args = ["python", "-m", "pip", "install", "--find-links", B.DIST, C.NAME]
+    else:
+        cwd = P.PY_SETUP_PY[C.NAME].parent
+        file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
+        args = ["flit", "install", "--pth-file"]
 
     yield dict(
         name=f"py:{C.NAME}",
-        actions=[U.do("flit", "install", "--pth-file", cwd=py_pkg)],
-        file_dep=[dest],
+        actions=[U.do(*args, cwd=cwd)],
+        file_dep=file_dep,
     )
 
 
@@ -453,6 +459,9 @@ def task_watch():
 
 def task_test():
     """test jupyterlite"""
+    if C.LINTING_IN_CI or C.DOCS_IN_CI or C.BUILDING_IN_CI:
+        return
+
     yield U.ok(
         B.OK_JEST,
         name="js",
@@ -723,7 +732,7 @@ class U:
                 or shutil.which(f"{cmd}.cmd")
                 or shutil.which(f"{cmd}.bat")
             ).resolve()
-        except Exception as err:
+        except Exception:
             print(cmd, "is not available (this might not be a problem)")
             return ["echo", f"{cmd} not available"]
         cmd_class = doit.tools.Interactive
