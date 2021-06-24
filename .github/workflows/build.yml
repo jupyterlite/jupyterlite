@@ -169,6 +169,13 @@ jobs:
           path: ./dist
       - name: Test (py)
         run: doit test:py:*
+      - name: Upload (reports)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite reports ${{ github.run_number }} ${{ matrix.os }}
+          path: |
+            build/htmlcov
+            build/pytest
 
   docs:
     needs: [build, lint-js-test]
