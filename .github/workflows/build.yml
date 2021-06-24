@@ -57,8 +57,10 @@ jobs:
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
-      - name: Build
-        run: doit -n4 build || doit build
+      - name: Build (js)
+        run: doit -n4 build:js* || doit build:js*
+      - name: Build (py)
+        run: doit -n4 build:py*
       - name: Dist
         run: doit dist
       - name: Upload (dist)

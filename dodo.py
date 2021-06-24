@@ -110,10 +110,9 @@ def task_build():
     if C.TESTING_IN_CI or C.DOCS_IN_CI:
         return
 
-    # this doesn't appear to be reproducible vs. whatever is on RTD, making flit angry
-    if not C.RTD:
+    if not (C.RTD or C.CI):
         yield dict(
-            name="favicon",
+            name="docs:favicon",
             doc="rebuild favicons from svg source, requires imagemagick",
             file_dep=[P.DOCS_ICON],
             targets=[P.LAB_FAVICON],
@@ -143,7 +142,7 @@ def task_build():
         )
 
     yield dict(
-        name="ui-components",
+        name="js:ui-components",
         doc="copy the icon and wordmark to the ui-components package",
         file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_INTEGRITY],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
