@@ -361,7 +361,7 @@ def task_docs():
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
         file_dep=[
-            B.PY_APP_PACK,
+            *([] if C.CI else [B.PY_APP_PACK]),
             *P.ALL_EXAMPLES,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
