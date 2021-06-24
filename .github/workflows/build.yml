@@ -108,7 +108,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
-      - name: Setup pip (build)
+      - name: Setup pip (lint)
         run: pip install -r requirements-lint.txt
       - name: Install
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
