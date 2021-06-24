@@ -936,6 +936,7 @@ class U:
         for p in path.glob("*"):
             if p.name == "SHA256SUMS":
                 continue
+            print(p.stat().st_size / (1024 * 1024), "Mb", p.name)
             lines += ["  ".join([sha256(p.read_bytes()).hexdigest(), p.name])]
 
         output = "\n".join(lines)
