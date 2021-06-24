@@ -716,12 +716,16 @@ class U:
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency"""
         cmd = args[0]
-        cmd = Path(
-            shutil.which(cmd)
-            or shutil.which(f"{cmd}.exe")
-            or shutil.which(f"{cmd}.cmd")
-            or shutil.which(f"{cmd}.bat")
-        ).resolve()
+        try:
+            cmd = Path(
+                shutil.which(cmd)
+                or shutil.which(f"{cmd}.exe")
+                or shutil.which(f"{cmd}.cmd")
+                or shutil.which(f"{cmd}.bat")
+            ).resolve()
+        except Exception as err:
+            print(cmd, "is not available (this might not be a problem)")
+            return ["echo", f"{cmd} not available"]
         cmd_class = doit.tools.Interactive
         if C.RTD:
             cmd_class = doit.action.CmdAction
