@@ -78,8 +78,8 @@ def task_lint():
         doc="format python files with black",
         file_dep=L.ALL_BLACK,
         actions=[
-            U.do("isort", *L.ALL_BLACK),
-            U.do("black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
+            U.do(*C.PYM, "isort", *L.ALL_BLACK),
+            U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
         ],
     )
 
@@ -243,6 +243,13 @@ def task_build():
         targets=[B.APP_PACK],
     )
 
+    yield dict(
+        name=f"py:{C.NAME}:pre",
+        file_dep=[B.APP_PACK],
+        targets=[B.PY_APP_PACK],
+        actions=[(U.copy_one, [B.APP_PACK, B.PY_APP_PACK])],
+    )
+
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
         wheel = (
@@ -264,19 +271,9 @@ def task_build():
         targets = [wheel, sdist]
 
         # we might tweak the args
-        if pyproj_toml.exists() and "flit" in pyproj_toml.read_text(encoding="utf-8"):
+        if pyproj_toml.exists() and "flit_core" in pyproj_toml.read_text(**C.ENC):
             actions = [(U.build_one_flit, [py_pkg])]
             file_dep += [pyproj_toml]
-
-        # may do some setup steps: TODO: refactor into separate task
-        if py_name == C.NAME:
-            dest = py_pkg / "src" / py_name / B.APP_PACK.name
-            actions = [
-                (U.copy_one, [B.APP_PACK, dest]),
-                *actions,
-            ]
-            file_dep += [B.APP_PACK, pyproj_toml]
-            targets += [dest]
 
         yield dict(
             name=f"py:{py_name}",
@@ -319,11 +316,11 @@ def task_dev():
         file_dep = [
             B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         ]
-        args = ["python", "-m", "pip", "install", "--find-links", B.DIST, C.NAME]
+        args = [*C.PYM, "pip", "install", "--find-links", B.DIST, C.NAME]
     else:
         cwd = P.PY_SETUP_PY[C.NAME].parent
         file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
-        args = ["flit", "install", "--pth-file"]
+        args = [*C.FLIT, "install", "--pth-file"]
 
     yield dict(
         name=f"py:{C.NAME}",
@@ -365,7 +362,7 @@ def task_docs():
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
         file_dep=[
-            B.APP_PACK,
+            B.PY_APP_PACK,
             *P.ALL_EXAMPLES,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
@@ -539,6 +536,9 @@ class C:
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
 
+    PYM = [sys.executable, "-m"]
+    FLIT = [*PYM, "flit"]
+
 
 class P:
     DODO = Path(__file__)
@@ -573,7 +573,7 @@ class P:
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
     PY_SETUP_DEPS = {
-        C.NAME: lambda: [B.APP_PACK],
+        C.NAME: lambda: [B.PY_APP_PACK],
     }
 
     # docs
@@ -687,6 +687,7 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
+    PY_APP_PACK = P.ROOT / C.NAME / "src" / C.NAME / APP_PACK.name
 
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
@@ -917,11 +918,14 @@ class U:
                 ".",
                 "--output-dir",
                 B.DOCS_APP,
-                "--app-archive",
-                B.APP_PACK,
                 "--output-archive",
                 B.DOCS_APP_ARCHIVE,
             ]
+
+            # prefer the shipped archive in CI
+            if not C.CI:
+                args += ["--app-archive", B.APP_PACK]
+
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
     @staticmethod
@@ -959,7 +963,7 @@ class U:
         """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
 
         print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
-        args = ["flit", "--debug", "build"]
+        args = [*C.FLIT, "--debug", "build"]
 
         try:
             subprocess.check_call(args, cwd=str(py_pkg))
