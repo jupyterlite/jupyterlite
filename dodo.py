@@ -469,6 +469,7 @@ def task_test():
         return
 
     pytest_args = [
+        *C.PYM,
         "pytest",
         "--ff",
         "--script-launch-mode=subprocess",
@@ -490,6 +491,13 @@ def task_test():
         cov_index = cov_path / "index.html"
         html_index = B.BUILD / f"pytest/{py_name}/index.html"
 
+        if C.CI:
+            cwd = B.DIST
+            pkg_args = ["-m", py_mod]
+        else:
+            cwd = setup_py.parent
+            pkg_args = []
+
         yield U.ok(
             B.OK_LITE_PYTEST,
             name=f"py:{py_name}",
@@ -503,6 +511,7 @@ def task_test():
             actions=[
                 U.do(
                     *pytest_args,
+                    *pkg_args,
                     *(C.PYTEST_ARGS or []),
                     "--cov",
                     py_mod,
@@ -510,7 +519,7 @@ def task_test():
                     f"html:{cov_path}",
                     f"--html={html_index}",
                     "--self-contained-html",
-                    cwd=setup_py.parent,
+                    cwd=cwd,
                 )
             ],
         )
