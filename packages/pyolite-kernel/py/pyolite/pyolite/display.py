@@ -58,26 +58,6 @@ class DisplayObject:
         return self.data
 
 
-class HTML(DisplayObject):
-    def _repr_html_(self):
-        return self.data
-
-
-class Markdown(DisplayObject):
-    def _repr_markdown_(self):
-        return self.data
-
-
-class Latex(DisplayObject):
-    def _repr_latex_(self):
-        return self.data
-
-
-class JSON(DisplayObject):
-    def _repr_json_(self):
-        return self.data
-
-
 class Image:
     def __init__(self, data):
         self.data = base64.b64encode(data).decode()
