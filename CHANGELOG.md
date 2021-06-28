@@ -2,7 +2,134 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-## 0.1.0a0
+## v0.1.0a1
+
+([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a0...da6f39fa9e15bc1d842faa096edded9f57579661))
+
+### New features added
+
+- Try ipycanvas in Pyolite [#159](https://github.com/jtpio/jupyterlite/pull/159)
+  ([@martinRenou](https://github.com/martinRenou))
+- Try ipyleaflet [#156](https://github.com/jtpio/jupyterlite/pull/156)
+  ([@martinRenou](https://github.com/martinRenou))
+- Start python CLI package (alternate)
+  [#147](https://github.com/jtpio/jupyterlite/pull/147)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Support for Comms in the pyolite kernel
+  [#145](https://github.com/jtpio/jupyterlite/pull/145)
+  ([@martinRenou](https://github.com/martinRenou))
+- Support for Completion in the pyolite kernel
+  [#142](https://github.com/jtpio/jupyterlite/pull/142)
+  ([@martinRenou](https://github.com/martinRenou))
+- example notebook - folium interactive map package
+  [#133](https://github.com/jtpio/jupyterlite/pull/133)
+  ([@psychemedia](https://github.com/psychemedia))
+- Add plotly [#129](https://github.com/jtpio/jupyterlite/pull/129)
+  ([@jtpio](https://github.com/jtpio))
+
+### Enhancements made
+
+- Update to Plotly 5.0.0 final on the demo site
+  [#164](https://github.com/jtpio/jupyterlite/pull/164)
+  ([@jtpio](https://github.com/jtpio))
+- Try ipycanvas in Pyolite [#159](https://github.com/jtpio/jupyterlite/pull/159)
+  ([@martinRenou](https://github.com/martinRenou))
+- Try ipyleaflet [#156](https://github.com/jtpio/jupyterlite/pull/156)
+  ([@martinRenou](https://github.com/martinRenou))
+- Start python CLI package (alternate)
+  [#147](https://github.com/jtpio/jupyterlite/pull/147)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Support for Comms in the pyolite kernel
+  [#145](https://github.com/jtpio/jupyterlite/pull/145)
+  ([@martinRenou](https://github.com/martinRenou))
+- Support for Completion in the pyolite kernel
+  [#142](https://github.com/jtpio/jupyterlite/pull/142)
+  ([@martinRenou](https://github.com/martinRenou))
+- Add a JupyterLite About Dialog [#140](https://github.com/jtpio/jupyterlite/pull/140)
+  ([@jtpio](https://github.com/jtpio))
+- example notebook - folium interactive map package
+  [#133](https://github.com/jtpio/jupyterlite/pull/133)
+  ([@psychemedia](https://github.com/psychemedia))
+- Add plotly [#129](https://github.com/jtpio/jupyterlite/pull/129)
+  ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- fix up copy, rename, delete for directories
+  [#173](https://github.com/jtpio/jupyterlite/pull/173)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Pyolite: Fix Matplotlib [#162](https://github.com/jtpio/jupyterlite/pull/162)
+  ([@martinRenou](https://github.com/martinRenou))
+- Fix downloading from the filebrowser
+  [#143](https://github.com/jtpio/jupyterlite/pull/143)
+  ([@jtpio](https://github.com/jtpio))
+- Disable `nameFileOnSave` on the demo site
+  [#136](https://github.com/jtpio/jupyterlite/pull/136)
+  ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Make the Changelog compatible with Jupyter Releaser
+  [#179](https://github.com/jtpio/jupyterlite/pull/179)
+  ([@jtpio](https://github.com/jtpio))
+- Add name to the top-level `package.json`
+  [#177](https://github.com/jtpio/jupyterlite/pull/177)
+  ([@jtpio](https://github.com/jtpio))
+- add --user for initial pip install in CI
+  [#175](https://github.com/jtpio/jupyterlite/pull/175)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Split up CI into multiple jobs, test on more platforms
+  [#172](https://github.com/jtpio/jupyterlite/pull/172)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Investigate RTD build issues [#170](https://github.com/jtpio/jupyterlite/pull/170)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Update labels used in the template issues
+  [#166](https://github.com/jtpio/jupyterlite/pull/166)
+  ([@jtpio](https://github.com/jtpio))
+- Move console.log inside worker [#157](https://github.com/jtpio/jupyterlite/pull/157)
+  ([@martinRenou](https://github.com/martinRenou))
+- Add docstrings to the worker [#144](https://github.com/jtpio/jupyterlite/pull/144)
+  ([@jtpio](https://github.com/jtpio))
+- add chunkHashname with contenthash in webpack
+  [#138](https://github.com/jtpio/jupyterlite/pull/138)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Fix typos/broken link in example notebook
+  [#135](https://github.com/jtpio/jupyterlite/pull/135)
+  ([@psychemedia](https://github.com/psychemedia))
+- Format the folium example [#134](https://github.com/jtpio/jupyterlite/pull/134)
+  ([@jtpio](https://github.com/jtpio))
+- Add ui-components package [#130](https://github.com/jtpio/jupyterlite/pull/130)
+  ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab alpha 11 packages
+  [#128](https://github.com/jtpio/jupyterlite/pull/128)
+  ([@jtpio](https://github.com/jtpio))
+- Build checksums [#126](https://github.com/jtpio/jupyterlite/pull/126)
+  ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add changelog for `v0.1.0a0` [#169](https://github.com/jtpio/jupyterlite/pull/169)
+  ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jtpio/jupyterlite/graphs/contributors?from=2021-06-02&to=2021-06-28&type=c))
+
+[@benbovy](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abenbovy+updated%3A2021-06-02..2021-06-28&type=Issues)
+|
+[@bollwyvl](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-06-02..2021-06-28&type=Issues)
+|
+[@davidbrochart](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Adavidbrochart+updated%3A2021-06-02..2021-06-28&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-06-02..2021-06-28&type=Issues)
+|
+[@martinRenou](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-06-02..2021-06-28&type=Issues)
+|
+[@psychemedia](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Apsychemedia+updated%3A2021-06-02..2021-06-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## v0.1.0a0
 
 ([full changelog](https://github.com/jtpio/jupyterlite/compare/20c89112b481d520946608f3dcd17c09b5bbe372...v0.1.0a0))
 
@@ -189,5 +316,3 @@
 [@RichardScottOZ](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3ARichardScottOZ+updated%3A2021-03-27..2021-06-02&type=Issues)
 |
 [@vercel](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Avercel+updated%3A2021-03-27..2021-06-02&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
