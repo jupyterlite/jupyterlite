@@ -7,13 +7,16 @@ let kernel: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let interpreter: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let pyodide: any;
 
 /**
  * Load Pyodided and initialize the interpreter.
  */
 async function loadPyodideAndPackages() {
   // new in 0.17.0 indexURL must be provided
-  await loadPyodide({ indexURL });
+  pyodide = await loadPyodide({ indexURL });
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
