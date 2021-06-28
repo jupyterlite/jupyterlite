@@ -1,15 +1,25 @@
-from asyncio import ensure_future
-
-from pyodide.console import _InteractiveConsole
+from IPython.core.history import HistoryManager
+from IPython.core.interactiveshell import InteractiveShell
+from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
 from .display import display
 
 __all__ = ["Interpreter", "display"]
 
 
-class Interpreter(_InteractiveConsole):
+class CustomHistoryManager(HistoryManager):
+    def __init__(self, shell=None, config=None, **traits):
+        self.enabled = False
+        super().__init__(shell=shell, config=config, **traits)
+
+
+class Interpreter(InteractiveShell):
     def __init__(self):
-        super().__init__(persistent_stream_redirection=False)
+        super().__init__()
+
+    def init_history(self):
+        self.history_manager = CustomHistoryManager(shell=self, parent=self)
+        self.configurables.append(self.history_manager)
 
     def display(self, result):
         """
@@ -19,9 +29,8 @@ class Interpreter(_InteractiveConsole):
         return
 
     async def run(self, code):
-        self.run_complete = ensure_future(
-            self.load_packages_and_run(self.run_complete, code)
-        )
-        result = await self.run_complete
-        if result is not None:
-            display(result)
+        exec_code = self.transform_cell(code)
+        await _load_packages_from_imports(exec_code)
+        self.result = self.run_cell(code)
+        if self.result is not None:
+            display(self.result)
