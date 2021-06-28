@@ -1,4 +1,5 @@
 {
+  "name": "@jupyterlite/root",
   "private": true,
   "homepage": "https://github.com/jtpio/jupyterlite",
   "bugs": {
