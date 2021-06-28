@@ -10,7 +10,7 @@ import worker from './worker?raw';
 
 // TODO: see https://github.com/jtpio/jupyterlite/issues/151
 // TODO: sync this version with the npm version (despite version mangling)
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0a0-py3-none-any.whl';
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0a1-py3-none-any.whl';
 
 // TODO: sync this version with the pypi version
 import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
