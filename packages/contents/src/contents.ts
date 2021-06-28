@@ -149,13 +149,13 @@ export class Contents implements IContents {
     let name = PathExt.basename(path);
     toDir = toDir === '' ? '' : `${toDir.slice(1)}/`;
     // TODO: better handle naming collisions with existing files
-    while (await this._storage.getItem(`${toDir}${name}`)) {
+    while (await this.get(`${toDir}${name}`, { content: true })) {
       const ext = PathExt.extname(name);
       const base = name.replace(ext, '');
       name = `${base} (copy)${ext}`;
     }
     const toPath = `${toDir}${name}`;
-    let item = (await this._storage.getItem(path)) as ServerContents.IModel;
+    let item = await this.get(path, { content: true });
     item = {
       ...item,
       name,
@@ -400,11 +400,10 @@ export class Contents implements IContents {
     newLocalPath: string
   ): Promise<ServerContents.IModel> {
     const path = decodeURIComponent(oldLocalPath);
-    const item = await this._storage.getItem(path);
-    if (!item) {
+    const file = await this.get(path, { content: true });
+    if (!file) {
       throw Error(`Could not find file with path ${path}`);
     }
-    const file = (item as unknown) as ServerContents.IModel;
     const modified = new Date().toISOString();
     const name = PathExt.basename(newLocalPath);
     const newFile = {
@@ -418,6 +417,17 @@ export class Contents implements IContents {
     await this._storage.removeItem(path);
     // remove the corresponding checkpoint
     await this._checkpoints.removeItem(path);
+    // if a directory, recurse through all children
+    if (file.type === 'directory') {
+      let child: ServerContents.IModel;
+      for (child of file.content) {
+        await this.rename(
+          URLExt.join(oldLocalPath, child.name),
+          URLExt.join(newLocalPath, child.name)
+        );
+      }
+    }
+
     return newFile;
   }
 
@@ -473,7 +483,7 @@ export class Contents implements IContents {
     const toDelete: string[] = [];
     // handle deleting directories recursively
     await this._storage.iterate((item, key) => {
-      if (key.startsWith(path)) {
+      if (key === path || key.startsWith(`${path}/`)) {
         toDelete.push(key);
       }
     });
@@ -496,8 +506,7 @@ export class Contents implements IContents {
    *   checkpoint is created.
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
-    const item = ((await this._storage.getItem(path)) ||
-      (await this.getServerContents(path))) as ServerContents.IModel;
+    const item = await this.get(path, { content: true });
     const copies = (
       ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? []
     ).filter(item => !!item);
