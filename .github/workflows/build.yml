@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install -U pip==22.1.2 setuptools wheel
+        run: pip install -U pip==21.1.2 setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -81,7 +81,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install -U pip==22.1.2 setuptools wheel
+        run: pip install -U pip==21.1.2 setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -151,7 +151,7 @@ jobs:
           python-version: 3.8
       - name: Setup pip (base)
         run: |
-          pip install -U pip==22.1.2 setuptools wheel
+          pip install -U pip==21.1.2 setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -199,7 +199,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install -U pip==22.1.2 setuptools wheel
+        run: pip install -U pip==21.1.2 setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
