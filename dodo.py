@@ -308,6 +308,17 @@ def task_dist():
     )
 
 
+@doit.create_after("dist")
+def task_distcheck():
+    for dist in [*B.DIST.glob("*.whl"), *B.DIST.glob("*.tar.gz")]:
+        yield dict(
+            name=f"twine:{dist.name}",
+            doc=f"use twine to validate {dist.name}",
+            file_dep=[dist],
+            actions=[["twine", "check", dist]],
+        )
+
+
 def task_dev():
     """setup up local packages for interactive development"""
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:

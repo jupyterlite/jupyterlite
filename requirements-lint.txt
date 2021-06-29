@@ -6,3 +6,4 @@ black
 isort
 jsonschema >=3
 pyflakes
+twine
