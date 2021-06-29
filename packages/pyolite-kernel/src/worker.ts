@@ -136,8 +136,9 @@ async function execute(content: any) {
   interpreter.stderr_callback = stderrCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
+  let res;
   try {
-    return await interpreter.run(content.code);
+    res = await interpreter.run(content.code);
   } catch (error) {
     postMessage({
       parentheader: content.parentheader,
@@ -146,8 +147,27 @@ async function execute(content: any) {
     });
     return;
   }
-}
 
+  const reply = {
+    parentheader: content.parentheader,
+    type: 'reply'
+  };
+
+  if (!res) {
+    postMessage(reply);
+    return;
+  }
+
+  try {
+    const results = formatResult(res);
+    postMessage({
+      ...reply,
+      results
+    });
+  } catch (e) {
+    postMessage(reply);
+  }
+}
 /**
  * Complete the code submitted by a user.
  *
@@ -159,7 +179,7 @@ function complete(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results: {
       matches: results[0],
       cursor_start: results[1],
@@ -182,7 +202,7 @@ function commInfo(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results: {
       comms: results,
       status: 'ok'
@@ -203,7 +223,7 @@ function commOpen(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 
@@ -221,7 +241,7 @@ function commMsg(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 
@@ -239,7 +259,7 @@ function commClose(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 
