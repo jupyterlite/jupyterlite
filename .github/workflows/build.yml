@@ -172,6 +172,10 @@ jobs:
       - name: Prepare smoke test folder
         shell: bash
         run: mkdir -p build/smoke-test
+      - name: Get SOURCE_DATE_EPOCH
+        id: source-date
+        run: |
+          echo "::set-output name=epoch::$(git log -1 --format=%ct)"
       - name: Test (CLI)
         run: |
           cd build/smoke-test
@@ -181,9 +185,9 @@ jobs:
           jupyter lite status || exit 1
           jupyter lite build || exit 1
           jupyter lite check || exit 1
-          jupyter lite archive || exit 1
-          jupyter lite status || exit 1
+          jupyter lite archive --source-date-epoch ${{ steps.source-date.outputs.epoch }} || exit 1
           jupyter lite list || exit 1
+          jupyter lite status --debug || exit 1
       - name: Setup pip (test)
         run: python3 -m pip install -r requirements-test.txt
       - name: Test (py)
