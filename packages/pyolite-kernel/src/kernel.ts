@@ -135,7 +135,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         this.executeResult(bundle);
         this._executeDelegate.resolve({
           result: 'ok',
-          execution_count: bundle['execution_count']
+          payload: [],
+          user_expressions: {}
         });
         break;
       }
