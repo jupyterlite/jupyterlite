@@ -157,23 +157,6 @@ jobs:
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
-      - name: Install (py)
-        run: python3 -m pip install --find-links dist jupyterlite
-      - name: Prepare smoke test folder
-        shell: bash
-        run: mkdir -p build/smoke-test
-      - name: Test (CLI)
-        run: |
-          cd build/smoke-test
-          jupyter lite --version
-          jupyter lite --help
-          jupyter lite list
-          jupyter lite status
-          jupyter lite build
-          jupyter lite check
-          jupyter lite archive
-          jupyter lite status
-          jupyter lite list
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -182,6 +165,25 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - name: Install (py)
+        run: |
+          python3 -m pip install entrypoints doit jupyter_core
+          python3 -m pip install --find-links dist --no-index-url --ignore-installed jupyterlite
+      - name: Prepare smoke test folder
+        shell: bash
+        run: mkdir -p build/smoke-test
+      - name: Test (CLI)
+        run: |
+          cd build/smoke-test
+          jupyter lite --version || exit 1
+          jupyter lite --help || exit 1
+          jupyter lite list || exit 1
+          jupyter lite status || exit 1
+          jupyter lite build || exit 1
+          jupyter lite check || exit 1
+          jupyter lite archive || exit 1
+          jupyter lite status || exit 1
+          jupyter lite list || exit 1
       - name: Setup pip (test)
         run: pip install -r requirements-test.txt
       - name: Test (py)
