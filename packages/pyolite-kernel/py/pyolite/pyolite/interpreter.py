@@ -10,12 +10,13 @@ __all__ = ["Interpreter", "display"]
 class CustomHistoryManager(HistoryManager):
     def __init__(self, shell=None, config=None, **traits):
         self.enabled = False
-        super().__init__(shell=shell, config=config, **traits)
+        super(CustomHistoryManager, self).__init__(shell=shell, config=config, **traits)
 
 
 class Interpreter(InteractiveShell):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, kernel, *args, **kwargs):
+        self.kernel = kernel
+        super(Interpreter, self).__init__(*args, **kwargs)
 
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)
@@ -32,5 +33,3 @@ class Interpreter(InteractiveShell):
         exec_code = self.transform_cell(code)
         await _load_packages_from_imports(exec_code)
         self.result = self.run_cell(code)
-        if self.result is not None:
-            display(self.result)

@@ -242,6 +242,23 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Send a `execute_result` message to the client.
+   *
+   * @param content The execute_result content.
+   */
+  protected executeResult(content: KernelMessage.IExecuteResultMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
+      channel: 'iopub',
+      msgType: 'execute_result',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
    * Send a `comm` message to the client.
    *
    * @param .

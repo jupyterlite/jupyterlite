@@ -116,22 +116,39 @@ async function execute(content: any) {
   };
 
   // TODO: support multiple
-  const displayCallback = (res: any): void => {
-    const bundle = formatResult(res);
+  // const displayCallback = (res: any): void => {
+  //   const bundle = formatResult(res);
+  //   postMessage({
+  //     parentHeader: content.parentHeader,
+  //     bundle,
+  //     type: 'display'
+  //   });
+  // };
+
+  const publishExecutionResult = (
+    prompt_count: any,
+    data: any,
+    metadata: any
+  ): void => {
+    const bundle = {
+      execution_count: formatResult(prompt_count),
+      data: formatResult(data),
+      metadata: formatResult(metadata)
+    };
     postMessage({
       parentHeader: content.parentHeader,
       bundle,
-      type: 'display'
+      type: 'execute_result'
     });
   };
 
   interpreter.stdout_callback = stdoutCallback;
   interpreter.stderr_callback = stderrCallback;
-  kernel.display_publisher.display_callback = displayCallback;
+  // kernel.display_publisher.display_callback = displayCallback;
+  interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  let res;
   try {
-    res = await interpreter.run(content.code);
+    return await interpreter.run(content.code);
   } catch (error) {
     postMessage({
       parentheader: content.parentheader,
@@ -139,26 +156,6 @@ async function execute(content: any) {
       error
     });
     return;
-  }
-
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'results'
-  };
-
-  if (!res) {
-    postMessage(reply);
-    return;
-  }
-
-  try {
-    const results = formatResult(res);
-    postMessage({
-      ...reply,
-      results
-    });
-  } catch (e) {
-    postMessage(reply);
   }
 }
 

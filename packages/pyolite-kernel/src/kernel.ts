@@ -112,11 +112,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         this.stream(content);
         break;
       }
-      case 'results': {
-        const bundle = msg.results ?? { data: {}, metadata: {} };
-        this._executeDelegate.resolve(bundle);
-        break;
-      }
+      // case 'results': {
+      //   const bundle = msg.results ?? { data: {}, metadata: {} };
+      //   this._executeDelegate.resolve(bundle);
+      //   break;
+      // }
       case 'error': {
         const { name, stack, message } = msg.error;
         const error = {
@@ -133,6 +133,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'display': {
         const bundle = msg.bundle ?? { data: {}, metadata: {} };
         this.displayData(bundle);
+        break;
+      }
+      case 'execute_result': {
+        const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
+        this.executeResult(bundle);
         break;
       }
       case 'comm_msg':

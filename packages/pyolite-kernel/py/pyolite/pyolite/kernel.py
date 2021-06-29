@@ -3,11 +3,11 @@ from ipykernel import CommManager
 
 from .display import display_publisher
 from .interpreter import Interpreter
-
+from .custom_display import XDisplayHook
 
 class Pyolite:
     def __init__(self):
-        self.interpreter = Interpreter()
+        self.interpreter = Interpreter(kernel=self, displayhook_class=XDisplayHook)
         self.display_publisher = display_publisher
         self.comm_manager = CommManager(kernel=self)
 
