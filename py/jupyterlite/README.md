@@ -34,7 +34,7 @@ Install `jupyterlite` from PyPI, which comes with the CLI and a pre-built, empty
 archive.
 
 ```bash
-python3 -m pip install --pre jupyterlite
+python -m pip install --pre jupyterlite
 ```
 
 Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a [reproducible],

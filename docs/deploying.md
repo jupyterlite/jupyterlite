@@ -26,7 +26,7 @@ integration with other Jupyter tools.
 To get the [Python CLI](./cli.ipynb) and [API](./api/index.md) from [PyPI]:
 
 ```bash
-python3 -m pip install --pre jupyterlite
+python -m pip install --pre jupyterlite
 # TODO: mamba install jupyterlite
 ```
 
