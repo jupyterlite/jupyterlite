@@ -28,6 +28,32 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 [retro-screenshot]:
   https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png
 
+## 🏗️ Build your own JupyterLite 🏗️
+
+Install `jupyterlite` from PyPI, which comes with the CLI and a pre-built, empty site
+archive.
+
+```bash
+python -m pip install --pre jupyterlite
+```
+
+Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a [reproducible],
+remixable `archive` of your site, then [publish] your built site to any static host,
+such as GitHub Pages or ReadTheDocs.
+
+| `jupyter lite` | description                                         | extras                                |
+| -------------: | --------------------------------------------------- | ------------------------------------- |
+|         `init` | build an empty site from the bundled app archive    |                                       |
+|        `build` | add your own notebooks, labextensions, and settings | `jupyter_server` for indexing content |
+|        `serve` | try out your site locally                           | `tornado` for snappier serving        |
+|        `check` | check your site's metadata                          | `jsonschema` for schema validation    |
+|      `archive` | create a single-file archive                        |                                       |
+
+[cli]: https://jupyterlite.readthedocs.io/en/latest/cli.html
+[publish]: https://jupyterlite.readthedocs.io/en/latest/deploying.html
+[reproducible]:
+  https://jupyterlite.readthedocs.io/en/latest/cli.html#reproducible-archives
+
 ## Features
 
 > For more details, see the [JupyterLite documentation](https://jupyterlite.rtfd.io).
@@ -35,21 +61,27 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 ### Browser-based Interactive Computing
 
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-- JavaScript kernel running in an `IFrame`
-- Combine Offline Notebook storage in browser `localStorage` or `IndexDB` with example
-  files
+  - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
+    `ipywidgets`, `matplotlib`, and `plotly`
+- JavaScript and [P5.js] kernels running in an `IFrame`
+- View hosted example Notebooks and other files, then edit, save, and download from the
+  browser's `IndexDB` (or `localStorage`)
 - Support for saving settings for JupyterLab/Lite core and federated extensions
 - Basic session and kernel management to have multiple kernels running at the same time
 - Support for
   [Code Consoles](https://jupyterlab.readthedocs.io/en/stable/user/code_console.html)
-- Initial support for visualization libraries such as `matplotlib` and `altair`
+
+[p5.js]: https://p5js.org/
 
 ### Ease of Deployment
 
-- Served via well-cacheable, static HTTP(S), works on most static web hosts, and locally
+- Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained configurability of page settings, including reuse of federated extensions
+- Fine-grained [configurability] of page settings, including reuse of federated
+  extensions
+
+[configurability]: https://jupyterlite.readthedocs.io/en/latest/configuring.html
 
 ## Status
 

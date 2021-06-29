@@ -5,6 +5,8 @@ requires = ["flit_core >=3.1,<4"]
 [tool.flit.metadata]
 module = "jupyterlite"
 author = "JupyterLite Contributors"
+description-file = "README.md"
+license = "BSD-3-Clause"
 home-page = "https://github.com/jtpio/jupyterlite"
 requires-python = ">=3.7"
 requires = [
@@ -13,6 +15,22 @@ requires = [
     "jupyter_core >=4.7",
     # TODO: support wheels https://github.com/jtpio/jupyterlite/issues/151
     # "wheel",
+]
+keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Jupyter",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Pre-processors",
+    "Topic :: Text Processing :: Markup :: HTML",
 ]
 
 [tool.flit.scripts]
@@ -38,6 +56,9 @@ contents = [
 ]
 serve = [
     "tornado >=6.1",
+]
+check = [
+    "jsonschema >=3"
 ]
 
 [tool.flit.entrypoints."jupyterlite.addon.v0"]
