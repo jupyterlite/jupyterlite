@@ -233,14 +233,23 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt
-      - name: Docs
+      - name: Docs (app archive)
+        run: doit docs:app:pack
+      - name: Upload (docs app archive)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite docs archive ${{ github.run_number }}
+          path: |
+            build/docs-app/jupyterlite-docs-*.tgz
+      - name: Docs (sphinx)
         run: doit docs:sphinx
       - name: Check Built Artifacts
         run: doit check
-      - name: Upload Sphinx Logs
+      - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v2
         with:
+          name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
           path: /tmp/sphinx-*.log
 
