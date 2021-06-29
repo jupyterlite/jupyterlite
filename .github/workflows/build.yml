@@ -151,7 +151,29 @@ jobs:
           python-version: 3.8
       - name: Setup pip (base)
         run: |
-          pip install --user -U pip setuptools wheel
+          python3 -m pip install --user -U pip setuptools wheel
+      - name: Download (dist)
+        uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
+      - name: Install (py)
+        run: python3 -m pip install --find-links dist jupyterlite
+      - name: Prepare smoke test folder
+        shell: bash
+        run: mkdir -p build/smoke-test
+      - name: Test (CLI)
+        run: |
+          cd build/smoke-test
+          jupyter lite --version
+          jupyter lite --help
+          jupyter lite list
+          jupyter lite status
+          jupyter lite build
+          jupyter lite check
+          jupyter lite archive
+          jupyter lite status
+          jupyter lite list
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -162,11 +184,6 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (test)
         run: pip install -r requirements-test.txt
-      - name: Download (dist)
-        uses: actions/download-artifact@v2
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
       - name: Test (py)
         run: doit test:py:*
       - name: Upload (reports)
