@@ -94,8 +94,8 @@ class FederatedExtensionAddon(BaseAddon):
                     continue
                 # this may be a package or an @org/package... same result
                 file_dep = sorted([p for p in theme_dir.rglob("*") if not p.is_dir()])
-                targets = [app_themes / p.relative_to(theme_dir) for p in file_dep]
                 dest = app_themes / stem
+                targets = [dest / p.relative_to(theme_dir) for p in file_dep]
                 yield dict(
                     name=f"copy:theme:{app}:{stem}",
                     doc=f"copy theme asset to {app} for {pkg}",
