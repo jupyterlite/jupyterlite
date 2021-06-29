@@ -229,7 +229,15 @@ automatically get a preview link when opening a new pull request:
 
 ### GitHub Pages
 
-> TBD
+JupyterLite can easily be deployed on GitHub Pages, using the `jupyterlite` CLI to add
+content and extensions.
+
+```{hint}
+See the [github pages demo] for an example. That repository is a GitHub template repository
+which makes it convenient to generate a new JupyterLite site with a single click.
+```
+
+[github pages demo]: https://github.com/jtpio/jupyterlite-demo
 
 ### GitLab Pages
 
