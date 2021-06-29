@@ -115,16 +115,6 @@ async function execute(content: any) {
     });
   };
 
-  // TODO: support multiple
-  // const displayCallback = (res: any): void => {
-  //   const bundle = formatResult(res);
-  //   postMessage({
-  //     parentHeader: content.parentHeader,
-  //     bundle,
-  //     type: 'display'
-  //   });
-  // };
-
   const publishExecutionResult = (
     prompt_count: any,
     data: any,
