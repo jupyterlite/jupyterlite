@@ -134,7 +134,6 @@ async function execute(content: any) {
 
   interpreter.stdout_callback = stdoutCallback;
   interpreter.stderr_callback = stderrCallback;
-  // kernel.display_publisher.display_callback = displayCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
   try {

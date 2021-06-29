@@ -133,6 +133,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'execute_result': {
         const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
         this.executeResult(bundle);
+        this._executeDelegate.resolve({
+          result: 'ok',
+          execution_count: bundle['execution_count']
+        });
         break;
       }
       case 'comm_msg':
