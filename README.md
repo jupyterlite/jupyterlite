@@ -37,20 +37,22 @@ archive.
 python3 -m pip install --pre jupyterlite
 ```
 
-Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a reproducible,
-remixable `archive` of your site, then [deploy] your built site to any static host, such
-as GitHub Pages or ReadTheDocs.
+Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a [reproducible],
+remixable `archive` of your site, then [publish] your built site to any static host,
+such as GitHub Pages or ReadTheDocs.
 
 | `jupyter lite` | description                                         | extras                                |
 | -------------: | --------------------------------------------------- | ------------------------------------- |
 |         `init` | build an empty site from the bundled app archive    |                                       |
 |        `build` | add your own notebooks, labextensions, and settings | `jupyter_server` for indexing content |
-|        `serve` | try out your site locally                           |                                       |
+|        `serve` | try out your site locally                           | `tornado` for snappier serving        |
 |        `check` | check your site's metadata                          | `jsonschema` for schema validation    |
 |      `archive` | create a single-file archive                        |                                       |
 
 [cli]: https://jupyterlite.readthedocs.io/en/latest/cli.html
-[deploy]: https://jupyterlite.readthedocs.io/en/latest/deploying.html
+[publish]: https://jupyterlite.readthedocs.io/en/latest/deploying.html
+[reproducible]:
+  https://jupyterlite.readthedocs.io/en/latest/cli.html#reproducible-archives
 
 ## Features
 
@@ -59,22 +61,27 @@ as GitHub Pages or ReadTheDocs.
 ### Browser-based Interactive Computing
 
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-- JavaScript kernel running in an `IFrame`
-- Combine Offline Notebook storage in browser `localStorage` or `IndexDB` with example
-  files
+  - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
+    `ipywidgets`, `matplotlib`, and `plotly`
+- JavaScript and [P5.js] kernels running in an `IFrame`
+- View hosted example Notebooks and other files, then edit, save, and download from the
+  browser's `IndexDB` (or `localStorage`)
 - Support for saving settings for JupyterLab/Lite core and federated extensions
 - Basic session and kernel management to have multiple kernels running at the same time
 - Support for
   [Code Consoles](https://jupyterlab.readthedocs.io/en/stable/user/code_console.html)
-- Initial support for interactive visualization libraries such as `altair`, `bqplot`,
-  `ipywidgets`, `matplotlib`, and `plotly`
+
+[p5.js]: https://p5js.org/
 
 ### Ease of Deployment
 
-- Served via well-cacheable, static HTTP(S), works on most static web hosts, and locally
+- Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained configurability of page settings, including reuse of federated extensions
+- Fine-grained [configurability] of page settings, including reuse of federated
+  extensions
+
+[configurability]: https://jupyterlite.readthedocs.io/en/latest/configuring.html
 
 ## Status
 
@@ -109,7 +116,3 @@ See also:
   literal notebooks
 - [Basthon](https://basthon.fr/about.html): A Jupyter notebook implementation using
   Pyodide
-
-```
-
-```
