@@ -243,10 +243,19 @@ def task_build():
     )
 
     yield dict(
-        name=f"py:{C.NAME}:pre",
+        name=f"py:{C.NAME}:pre:readme",
+        file_dep=[P.README],
+        targets=[P.PY_README],
+        actions=[(U.copy_one, [P.README, P.PY_README])],
+    )
+
+    yield dict(
+        name=f"py:{C.NAME}:pre:app",
         file_dep=[B.APP_PACK],
         targets=[B.PY_APP_PACK],
-        actions=[(U.copy_one, [B.APP_PACK, B.PY_APP_PACK])],
+        actions=[
+            (U.copy_one, [B.APP_PACK, B.PY_APP_PACK]),
+        ],
     )
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
@@ -261,7 +270,8 @@ def task_build():
 
         file_dep = [
             *P.PY_SETUP_DEPS[py_name](),
-            *py_pkg.rglob("*.py"),
+            *py_pkg.rglob("src/*.py"),
+            *py_pkg.glob("*.md"),
             setup_py,
         ]
 
@@ -603,6 +613,7 @@ class P:
 
     # docs
     README = ROOT / "README.md"
+    PY_README = ROOT / f"py/{C.NAME}/README.md"
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"

@@ -1,9 +1,9 @@
 import json
 import os
 import shutil
+import warnings
 from pathlib import Path
 
-import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
@@ -96,14 +96,27 @@ class BaseAddon(LoggingConfigurable):
             selected = loaded
 
         if validator is None:
+            # just checking if the JSON is well-formed
             return True
 
         if isinstance(validator, Path):
             validator = self.get_validator(validator)
+            if validator is None:
+                return True
 
         validator.validate(selected)
 
-    def get_validator(self, schema_path, klass=jsonschema.Draft7Validator):
+    def get_validator(self, schema_path, klass=None):
+        if klass is None:
+            try:
+                from jsonschema import Draft7Validator
+            except ImportError:  # pragma: no cover
+                warnings.warn(
+                    "jsonschema >=3 not installed: only checking JSON well-formedness"
+                )
+                return None
+            klass = Draft7Validator
+
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         return klass(schema)
 

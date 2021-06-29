@@ -28,6 +28,30 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 [retro-screenshot]:
   https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png
 
+## 🏗️ Build your own JupyterLite 🏗️
+
+Install `jupyterlite` from PyPI, which comes with the CLI and a pre-built, empty site
+archive.
+
+```bash
+pip install --pre jupyterlite
+```
+
+Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a reproducible,
+remixable `archive` of your site, then [deploy] your built site to any static host, such
+as GitHub Pages or ReadTheDocs.
+
+| `jupyter lite` | description                                         | extras                                |
+| -------------: | --------------------------------------------------- | ------------------------------------- |
+|         `init` | build an empty site from the bundled app archive    |                                       |
+|        `build` | add your own notebooks, labextensions, and settings | `jupyter_server` for indexing content |
+|        `serve` | try out your site locally                           |                                       |
+|        `check` | check your site's metadata                          | `jsonschema` for schema validation    |
+|      `archive` | create a single-file archive                        |                                       |
+
+[cli]: https://jupyterlite.readthedocs.io/en/latest/cli.html
+[deploy]: https://jupyterlite.readthedocs.io/en/latest/deploying.html
+
 ## Features
 
 > For more details, see the [JupyterLite documentation](https://jupyterlite.rtfd.io).
@@ -42,7 +66,8 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 - Basic session and kernel management to have multiple kernels running at the same time
 - Support for
   [Code Consoles](https://jupyterlab.readthedocs.io/en/stable/user/code_console.html)
-- Initial support for visualization libraries such as `matplotlib` and `altair`
+- Initial support for interactive visualization libraries such as `altair`, `bqplot`,
+  `ipywidgets`, `matplotlib`, and `plotly`
 
 ### Ease of Deployment
 
@@ -84,3 +109,7 @@ See also:
   literal notebooks
 - [Basthon](https://basthon.fr/about.html): A Jupyter notebook implementation using
   Pyodide
+
+```
+
+```
