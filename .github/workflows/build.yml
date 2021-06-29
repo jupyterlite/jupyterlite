@@ -118,8 +118,6 @@ jobs:
         run: doit setup:js
       - name: Test (js)
         run: doit -n4 test:js
-      - name: Check distributions
-        run: doit distcheck
       - name: Lint
         run: doit lint
       - name: Docs (typedoc)

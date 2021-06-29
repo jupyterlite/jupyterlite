@@ -307,9 +307,6 @@ def task_dist():
         targets=[B.DIST / "SHA256SUMS"],
     )
 
-
-@doit.create_after("dist")
-def task_distcheck():
     for dist in [*B.DIST.glob("*.whl"), *B.DIST.glob("*.tar.gz")]:
         yield dict(
             name=f"twine:{dist.name}",
