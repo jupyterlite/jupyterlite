@@ -50,3 +50,5 @@ dependencies:
 
   # this is a UNIX-only dependency, so we don't hoist it to the more-portable binder environment
   - diffoscope
+  - pip:
+    - jupyterlab-kernelspy
