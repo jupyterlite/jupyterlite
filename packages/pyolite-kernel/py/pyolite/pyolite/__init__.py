@@ -24,6 +24,9 @@ from .patches import ensure_matplotlib_patch
 # apply patches for available modules
 ensure_matplotlib_patch()
 
-from .kernel import Pyolite
+from .interpreter import XPythonShellApp
 
-kernel_instance = Pyolite()
+m_ipython_shell_app = XPythonShellApp()
+m_ipython_shell_app.initialize()
+m_ipython_shell = m_ipython_shell_app.shell
+kernel_instance = m_ipython_shell.kernel
