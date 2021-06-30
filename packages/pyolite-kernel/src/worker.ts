@@ -132,8 +132,52 @@ async function execute(content: any) {
     });
   };
 
+  const clearOutputCallback = (wait: boolean): void => {
+    const bundle = {
+      wait: formatResult(wait)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'clear_output'
+    });
+  };
+
+  const displayDataCallback = (data: any, metadata: any, transient: any): void => {
+    const bundle = {
+      data: formatResult(data),
+      metadata: formatResult(metadata),
+      transient: formatResult(transient)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'display_data'
+    });
+  };
+
+  const updateDisplayDataCallback = (
+    data: any,
+    metadata: any,
+    transient: any
+  ): void => {
+    const bundle = {
+      data: formatResult(data),
+      metadata: formatResult(metadata),
+      transient: formatResult(transient)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'update_display_data'
+    });
+  };
+
   interpreter.stdout_callback = stdoutCallback;
   interpreter.stderr_callback = stderrCallback;
+  interpreter.display_pub.clear_output_callback = clearOutputCallback;
+  interpreter.display_pub.display_data_callback = displayDataCallback;
+  interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
   let res;

@@ -242,6 +242,42 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Send a `update_display_data` message to the client.
+   *
+   * @param content The update_display_data content.
+   */
+  protected updateDisplayData(
+    content: KernelMessage.IUpdateDisplayDataMsg['content']
+  ): void {
+    const message = KernelMessage.createMessage<KernelMessage.IUpdateDisplayDataMsg>({
+      channel: 'iopub',
+      msgType: 'update_display_data',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `clear_output` message to the client.
+   *
+   * @param content The clear_output content.
+   */
+  protected clearOutput(content: KernelMessage.IClearOutputMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IClearOutputMsg>({
+      channel: 'iopub',
+      msgType: 'clear_output',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
    * Send a `execute_result` message to the client.
    *
    * @param content The execute_result content.

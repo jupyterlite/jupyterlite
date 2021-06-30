@@ -2,9 +2,7 @@ from IPython.core.history import HistoryManager
 from IPython.core.interactiveshell import InteractiveShell
 from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
-from .display import display
-
-__all__ = ["Interpreter", "display"]
+__all__ = ["Interpreter"]
 
 
 class CustomHistoryManager(HistoryManager):
@@ -21,13 +19,6 @@ class Interpreter(InteractiveShell):
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)
         self.configurables.append(self.history_manager)
-
-    def display(self, result):
-        """
-        Called with the result when code has finished executing.
-        Override to prevent the default behavior
-        """
-        return
 
     async def run(self, code):
         exec_code = self.transform_cell(code)

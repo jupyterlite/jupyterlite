@@ -3,6 +3,34 @@ import sys
 from IPython.core.displayhook import DisplayHook
 from IPython.core.displaypub import DisplayPublisher
 
+
+class XDisplayPublisher(DisplayPublisher):
+    def __init__(self, shell=None, *args, **kwargs):
+        super(XDisplayPublisher, self).__init__(shell, *args, **kwargs)
+        self.clear_output_callback = None
+        self.update_display_data_callback = None
+        self.display_data_callback = None
+
+    def publish(
+        self,
+        data,
+        metadata=None,
+        source=None,
+        *,
+        transient=None,
+        update=False,
+        **kwargs
+    ) -> None:
+        if update and self.update_display_data_callback:
+            self.update_display_data_callback(data, metadata, transient)
+        elif self.display_data_callback:
+            self.display_data_callback(data, metadata, transient)
+
+    def clear_output(self, wait=False):
+        if self.clear_output_callback:
+            self.clear_output_callback(wait)
+
+
 class XDisplayHook(DisplayHook):
     def __init__(self, *args, **kwargs):
         super(XDisplayHook, self).__init__(*args, **kwargs)
@@ -18,7 +46,7 @@ class XDisplayHook(DisplayHook):
     def write_format_data(self, format_dict, md_dict=None):
         self.data = format_dict
         self.metadata = md_dict
-    
+
     def finish_displayhook(self):
         sys.stdout.flush()
         sys.stderr.flush()

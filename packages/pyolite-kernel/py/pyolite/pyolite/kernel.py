@@ -1,14 +1,17 @@
 # This is our ipykernel mock
 from ipykernel import CommManager
 
-from .display import display_publisher
+from .custom_display import XDisplayHook, XDisplayPublisher
 from .interpreter import Interpreter
-from .custom_display import XDisplayHook
+
 
 class Pyolite:
     def __init__(self):
-        self.interpreter = Interpreter(kernel=self, displayhook_class=XDisplayHook)
-        self.display_publisher = display_publisher
+        self.interpreter = Interpreter(
+            kernel=self,
+            displayhook_class=XDisplayHook,
+            display_pub_class=XDisplayPublisher,
+        )
         self.comm_manager = CommManager(kernel=self)
 
     def comm_info(self, target_name=""):

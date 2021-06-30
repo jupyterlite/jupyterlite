@@ -130,9 +130,19 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         });
         break;
       }
-      case 'display': {
-        const bundle = msg.bundle ?? { data: {}, metadata: {} };
+      case 'display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
         this.displayData(bundle);
+        break;
+      }
+      case 'update_display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.updateDisplayData(bundle);
+        break;
+      }
+      case 'clear_output': {
+        const bundle = msg.bundle ?? { wait: false };
+        this.clearOutput(bundle);
         break;
       }
       case 'execute_result': {
