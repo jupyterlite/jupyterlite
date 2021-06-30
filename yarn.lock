@@ -3671,7 +3671,7 @@
     vega-lite "^4.0.2"
 
 "@jupyterlite/application-extension@file:packages/application-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/application" "^3.1.0-alpha.11"
     "@jupyterlab/apputils" "^3.1.0-alpha.11"
@@ -3679,11 +3679,11 @@
     "@jupyterlab/docprovider" "^3.1.0-alpha.11"
     "@jupyterlab/mainmenu" "^3.1.0-alpha.11"
     "@jupyterlab/translation" "^3.1.0-alpha.11"
-    "@jupyterlite/ui-components" "^0.1.0-alpha.1"
+    "@jupyterlite/ui-components" "^0.1.0-alpha.2"
     "@lumino/widgets" "^1.23.0"
 
 "@jupyterlite/contents@file:packages/contents":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/nbformat" "^3.1.0-alpha.11"
     "@jupyterlab/services" "^6.1.0-alpha.11"
@@ -3692,26 +3692,26 @@
     localforage "^1.9.0"
 
 "@jupyterlite/iframe-extension@file:packages/iframe-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/rendermime-interfaces" "^3.1.0-alpha.11"
     "@lumino/coreutils" "^1.8.0"
     "@lumino/widgets" "^1.19.0"
 
 "@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/javascript-kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/server" "^0.1.0-alpha.1"
+    "@jupyterlite/javascript-kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/server" "^0.1.0-alpha.2"
 
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
 
 "@jupyterlite/kernel@file:packages/kernel":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/observables" "^3.1.0-alpha.11"
     "@jupyterlab/services" "^6.1.0-alpha.11"
@@ -3722,32 +3722,32 @@
     mock-socket "^9.0.3"
 
 "@jupyterlite/p5-kernel-extension@file:packages/p5-kernel-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/p5-kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/server" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/p5-kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/server" "^0.1.0-alpha.2"
 
 "@jupyterlite/p5-kernel@file:packages/p5-kernel":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
 
 "@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/coreutils" "^5.1.0-alpha.11"
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/pyolite-kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/server" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/pyolite-kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/server" "^0.1.0-alpha.2"
 
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
 
 "@jupyterlite/retro-application-extension@file:packages/retro-application-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/application" "^3.1.0-alpha.11"
     "@jupyterlab/coreutils" "^5.1.0-alpha.11"
@@ -3755,23 +3755,23 @@
     "@jupyterlab/services" "^6.1.0-alpha.11"
 
 "@jupyterlite/server@file:packages/server-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
-    "@jupyterlite/server" "^0.1.0-alpha.1"
-    "@jupyterlite/session" "^0.1.0-alpha.1"
-    "@jupyterlite/settings" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
+    "@jupyterlite/server" "^0.1.0-alpha.2"
+    "@jupyterlite/session" "^0.1.0-alpha.2"
+    "@jupyterlite/settings" "^0.1.0-alpha.2"
 
 "@jupyterlite/session@file:packages/session":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/services" "^5.1.0-alpha.11"
-    "@jupyterlite/kernel" "^0.1.0-alpha.1"
+    "@jupyterlite/kernel" "^0.1.0-alpha.2"
     "@lumino/algorithm" "^1.6.0"
     "@lumino/coreutils" "^1.8.0"
 
 "@jupyterlite/settings@file:packages/settings":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/coreutils" "^5.1.0-alpha.11"
     "@jupyterlab/settingregistry" "^3.1.0-alpha.11"
@@ -3780,22 +3780,22 @@
     localforage "^1.9.0"
 
 "@jupyterlite/theme-extension@file:packages/theme-extension":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/application" "^3.1.0-alpha.11"
     "@jupyterlab/apputils" "^3.1.0-alpha.11"
     "@jupyterlab/coreutils" "^5.1.0-alpha.11"
     "@jupyterlab/settingregistry" "^3.1.0-alpha.11"
-    "@jupyterlite/theme" "^0.1.0-alpha.1"
+    "@jupyterlite/theme" "^0.1.0-alpha.2"
 
 "@jupyterlite/theme@file:packages/theme":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/apputils" "^3.1.0-alpha.11"
     "@jupyterlab/coreutils" "^5.1.0-alpha.11"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
-  version "0.1.0-alpha.1"
+  version "0.1.0-alpha.2"
   dependencies:
     "@jupyterlab/ui-components" "^3.0.0"
 
