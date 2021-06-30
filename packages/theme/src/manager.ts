@@ -36,19 +36,10 @@ export class ThemeManager extends LabThemeManager {
         reject(`Stylesheet failed to load: ${href}`);
       });
 
-      this._link = link;
-      this._unloadCSS();
       document.body.appendChild(link);
+      this['_links'].push(link);
     });
   }
 
-  /**
-   * Unload the previous theme.
-   */
-  private _unloadCSS(): void {
-    this._link?.parentElement?.removeChild(this._link);
-  }
-
-  private _link: HTMLLinkElement | undefined = undefined;
   private _themesUrl = '';
 }
