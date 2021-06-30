@@ -2,11 +2,11 @@ import { ObservableMap } from '@jupyterlab/observables';
 
 import { Kernel, KernelMessage } from '@jupyterlab/services';
 
-import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
-
 import { UUID } from '@lumino/coreutils';
 
 import { Server as WebSocketServer, WebSocket } from 'mock-socket';
+
+import { KernelSocket } from './socket';
 
 import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
@@ -47,7 +47,7 @@ export class Kernels implements IKernels {
     const mutex = new Mutex();
 
     // hook a new client to a kernel
-    const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
+    const hook = (kernelId: string, clientId: string, socket: KernelSocket): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
@@ -65,17 +65,9 @@ export class Kernels implements IKernels {
 
       socket.on(
         'message',
-        async (message: string | ArrayBuffer | Blob | ArrayBufferView) => {
-          let msg;
-          if (message instanceof ArrayBuffer) {
-            message = new Uint8Array(message).buffer;
-            msg = deserialize(message);
-          } else if (typeof message === 'string') {
-            msg = deserialize(message);
-          } else {
-            return;
-          }
-          void processMsg(msg);
+        // TODO Use type KernelMessage.IMessage
+        async (message: any) => {
+          void processMsg(message);
         }
       );
 
@@ -114,16 +106,15 @@ export class Kernels implements IKernels {
         return;
       }
 
-      const message = serialize(msg);
       // process iopub messages
       if (msg.channel === 'iopub') {
         const clients = this._kernelClients.get(kernelId);
         clients?.forEach(id => {
-          this._clients.get(id)?.send(message);
+          this._clients.get(id)?.sendMessage(msg);
         });
         return;
       }
-      socket.send(message);
+      socket.sendMessage(msg);
     };
 
     const kernel = await factory({
@@ -139,7 +130,7 @@ export class Kernels implements IKernels {
 
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
-    wsServer.on('connection', (socket: WebSocket): void => {
+    wsServer.on('connection', (socket: any): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
       hook(kernelId, clientId, socket);
@@ -194,7 +185,7 @@ export class Kernels implements IKernels {
   }
 
   private _kernels = new ObservableMap<IKernel>();
-  private _clients = new ObservableMap<WebSocket>();
+  private _clients = new ObservableMap<KernelSocket>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
 }

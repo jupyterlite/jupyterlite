@@ -93,6 +93,7 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The message to handle
    */
   async handleMessage(msg: KernelMessage.IMessage): Promise<void> {
+    console.log('received msg', msg)
     this._busy(msg);
 
     this._parent = msg;
