@@ -2,6 +2,51 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## v0.1.0a2
+
+([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a1...c8cbb818598435d5fb101ac0cfda29e135388fe4))
+
+### Enhancements made
+
+- Add JupyterLab Miami Nights theme to the demo site, fix theme unloading
+  [#180](https://github.com/jtpio/jupyterlite/pull/180)
+  ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Handle copying multiple themes [#190](https://github.com/jtpio/jupyterlite/pull/190)
+  ([@jtpio](https://github.com/jtpio))
+- Add JupyterLab Miami Nights theme to the demo site, fix theme unloading
+  [#180](https://github.com/jtpio/jupyterlite/pull/180)
+  ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update doit default tasks, upload demo app, contributing docs
+  [#188](https://github.com/jtpio/jupyterlite/pull/188)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- improve python distribution artifacts
+  [#184](https://github.com/jtpio/jupyterlite/pull/184)
+  ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Add screencasts to the README [#191](https://github.com/jtpio/jupyterlite/pull/191)
+  ([@jtpio](https://github.com/jtpio))
+- Add link to the demo GitHub Pages repo
+  [#189](https://github.com/jtpio/jupyterlite/pull/189)
+  ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jtpio/jupyterlite/graphs/contributors?from=2021-06-28&to=2021-06-30&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-06-28..2021-06-30&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-06-28..2021-06-30&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a1
 
 ([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a0...da6f39fa9e15bc1d842faa096edded9f57579661))
@@ -126,8 +171,6 @@
 [@martinRenou](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-06-02..2021-06-28&type=Issues)
 |
 [@psychemedia](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Apsychemedia+updated%3A2021-06-02..2021-06-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a0
 
