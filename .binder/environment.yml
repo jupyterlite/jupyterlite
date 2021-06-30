@@ -60,3 +60,6 @@ dependencies:
   - plotly >=5,<6
   - theme-darcula
   ### DOCS ENV ###
+
+  - pip:
+      - jupyterlab-kernelspy
