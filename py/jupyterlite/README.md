@@ -83,9 +83,27 @@ such as GitHub Pages or ReadTheDocs.
 
 [configurability]: https://jupyterlite.readthedocs.io/en/latest/configuring.html
 
-## Status
+## Showcase
 
-⚠️ Currently in active development ⚠️
+### Jupyter Interactive Widgets
+
+![widgets](https://user-images.githubusercontent.com/591645/123929339-086f6180-d98f-11eb-8ab0-c7f9661ff41e.gif)
+
+### JupyterLab Mimerender Extensions
+
+![image](https://user-images.githubusercontent.com/591645/123927543-3d7ab480-d98d-11eb-9e7e-eb47baf76bc0.png)
+
+### Matplotlib Figures
+
+![image](https://user-images.githubusercontent.com/591645/123927611-4d929400-d98d-11eb-9201-c46dd47b9047.png)
+
+### Altair
+
+![altair](https://user-images.githubusercontent.com/591645/123929321-04dbda80-d98f-11eb-9d5f-c5429d7aeb51.gif)
+
+### Plotly
+
+![plotly](https://user-images.githubusercontent.com/591645/123929332-06a59e00-d98f-11eb-8c51-4a094859c128.gif)
 
 ## Development install
 
