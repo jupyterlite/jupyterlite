@@ -34,7 +34,10 @@ class Interpreter(InteractiveShell):
     async def run(self, code):
         exec_code = self.transform_cell(code)
         await _load_packages_from_imports(exec_code)
-        self.result = self.run_cell(code)
+        if self.should_run_async(code):
+            self.result = await self.run_cell_async(code)
+        else:
+            self.result = self.run_cell(code)
 
 
 class XPythonShellApp(BaseIPythonApplication, InteractiveShellApp):
