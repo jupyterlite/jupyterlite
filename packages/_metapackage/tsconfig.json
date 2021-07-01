@@ -20,8 +20,6 @@
     { "path": "../server-extension" },
     { "path": "../session" },
     { "path": "../settings" },
-    { "path": "../theme" },
-    { "path": "../theme-extension" },
     { "path": "../ui-components" }
   ]
 }

@@ -15,8 +15,6 @@
     "packages/server/src/index.ts",
     "packages/session/src/index.ts",
     "packages/settings/src/index.ts",
-    "packages/theme-extension/src/index.ts",
-    "packages/theme/src/index.ts",
     "packages/ui-components/src/index.ts"
   ],
   "exclude": ["*.spec.ts", "**/node_modules/**", "**/test/**", "**/lib/**"],
