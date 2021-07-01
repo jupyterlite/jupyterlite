@@ -241,7 +241,14 @@ which makes it convenient to generate a new JupyterLite site with a single click
 
 ### GitLab Pages
 
-> TBD
+JupyterLite can easily be deployed on GitLab Pages, using the `jupyterlite` CLI and
+setting the `output_path` to the `public` folder in your `.gitlab-ci.yml` file.
+
+```{hint}
+See the [gitlab pages template] for an example.
+```
+
+[gitlab pages template]: https://gitlab.com/benabel/jupyterlite-template
 
 ### Heroku
 
