@@ -55,9 +55,6 @@
       "path": "./packages/settings"
     },
     {
-      "path": "./packages/theme"
-    },
-    {
       "path": "./packages/ui-components"
     }
   ]
