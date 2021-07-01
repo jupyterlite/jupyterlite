@@ -13,6 +13,22 @@ class Image:
         return self.data
 
 
+class XStream:
+    def __init__(self, name):
+        self.name = name
+        self.publish_stream_callback = None
+
+    def write(self, text):
+        if self.publish_stream_callback:
+            self.publish_stream_callback(self.name, text)
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+
 class XDisplayPublisher(DisplayPublisher):
     def __init__(self, shell=None, *args, **kwargs):
         super(XDisplayPublisher, self).__init__(shell, *args, **kwargs)

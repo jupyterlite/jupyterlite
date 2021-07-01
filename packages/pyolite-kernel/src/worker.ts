@@ -7,7 +7,12 @@ let kernel: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let interpreter: any;
-
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let stdout_stream: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let stderr_stream: any;
 /**
  * Load Pyodided and initialize the interpreter.
  */
@@ -30,6 +35,8 @@ async function loadPyodideAndPackages() {
     import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
+  stdout_stream = pyodide.globals.get('pyolite').stdout_stream;
+  stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;
   const version = pyodide.globals.get('pyolite').__version__;
@@ -99,22 +106,6 @@ async function sendComm(
  * @param content The incoming message with the code to execute.
  */
 async function execute(content: any) {
-  const stdoutCallback = (stdout: string): void => {
-    postMessage({
-      parentHeader: content.parentHeader,
-      stdout,
-      type: 'stdout'
-    });
-  };
-
-  const stderrCallback = (stderr: string): void => {
-    postMessage({
-      parentHeader: content.parentHeader,
-      stderr,
-      type: 'stderr'
-    });
-  };
-
   const publishExecutionResult = (
     prompt_count: any,
     data: any,
@@ -173,8 +164,20 @@ async function execute(content: any) {
     });
   };
 
-  interpreter.stdout_callback = stdoutCallback;
-  interpreter.stderr_callback = stderrCallback;
+  const publishStreamCallback = (name: any, text: any): void => {
+    const bundle = {
+      name: formatResult(name),
+      text: formatResult(text)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'stream'
+    });
+  };
+
+  stdout_stream.publish_stream_callback = publishStreamCallback;
+  stderr_stream.publish_stream_callback = publishStreamCallback;
   interpreter.display_pub.clear_output_callback = clearOutputCallback;
   interpreter.display_pub.display_data_callback = displayDataCallback;
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;

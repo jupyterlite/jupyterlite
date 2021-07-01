@@ -91,25 +91,9 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   private _processWorkerMessage(msg: any): void {
     const parentHeader = this.parentHeader;
     switch (msg.type) {
-      case 'stdout': {
-        const content = {
-          event: 'stream',
-          name: 'stdout',
-          parentHeader,
-          text: msg.stdout
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
-        break;
-      }
-      case 'stderr': {
-        const { message } = msg.stderr;
-        const content = {
-          event: 'stream',
-          name: 'stderr',
-          parentHeader,
-          text: message ?? msg.stderr
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
+      case 'stream': {
+        const bundle = msg.bundle ?? { name: 'stdout', text: '' };
+        this.stream(bundle);
         break;
       }
       case 'reply': {
