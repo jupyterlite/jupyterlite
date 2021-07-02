@@ -47,11 +47,11 @@ class ManagedApp(BaseLiteApp):
             parent=self,
         )
         if self.lite_dir:
-            kwargs["lite_dir"] = Path(self.lite_dir).resolve()
+            kwargs["lite_dir"] = self.lite_dir
         if self.app_archive:
-            kwargs["app_archive"] = Path(self.app_archive)
+            kwargs["app_archive"] = self.app_archive
         if self.output_dir:
-            kwargs["output_dir"] = Path(self.output_dir).resolve()
+            kwargs["output_dir"] = self.output_dir
         if self.files:
             kwargs["files"] = [Path(p) for p in self.files]
         if self.ignore_files:

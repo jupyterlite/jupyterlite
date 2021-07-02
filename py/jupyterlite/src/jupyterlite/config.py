@@ -7,12 +7,15 @@
 """
 import os
 from pathlib import Path
+from typing import Optional as _Optional
+from typing import Text as _Text
+from typing import Tuple as _Tuple
 
-from traitlets import CInt, Tuple, default
+from traitlets import CInt, Tuple, Unicode, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
-from .trait_types import CPath
+from .trait_types import CPath, TypedTuple
 
 
 class LiteBuildConfig(LoggingConfigurable):
@@ -29,19 +32,19 @@ class LiteBuildConfig(LoggingConfigurable):
     loader paths
     """
 
-    disable_addons = Tuple(
-        allow_none=True,
+    disable_addons: _Tuple[_Text] = TypedTuple(
+        Unicode(),
         help=("skip loading `entry_point` for these addons. TODO: should be a dict"),
     ).tag(config=True)
 
-    apps = Tuple(
+    apps: _Tuple[_Text] = TypedTuple(
+        Unicode(),
         help=(
             f"""the Lite apps: currently {C.JUPYTERLITE_APPS}. """
             f"""Required: {C.JUPYTERLITE_APPS_REQUIRED}"""
         ),
     ).tag(config=True)
 
-    # a bunch of paths
     app_archive: Path = CPath(
         help=(f"""The app archive to use, default: {C.DEFAULT_APP_ARCHIVE}""")
     ).tag(config=True)
@@ -56,19 +59,20 @@ class LiteBuildConfig(LoggingConfigurable):
 
     output_archive: Path = CPath(help="Archive to create").tag(config=True)
 
-    # actually some more paths
-    files = Tuple(allow_none=True).tag(config=True)
-
-    overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
-        config=True
-    )
-
-    # patterns
-    ignore_files = Tuple(
-        allow_none=True, help="Path patterns that should never be included"
+    files: _Tuple[Path] = TypedTuple(
+        CPath(), help="Files to add and index as Jupyter Contents"
     ).tag(config=True)
 
-    source_date_epoch = CInt(
+    overrides: _Tuple[_Text] = TypedTuple(
+        CPath(), help=("Specific overrides.json to include")
+    ).tag(config=True)
+
+    # patterns
+    ignore_files: _Tuple[_Text] = Tuple(
+        help="Path patterns that should never be included"
+    ).tag(config=True)
+
+    source_date_epoch: _Optional[int] = CInt(
         allow_none=True,
         min=1,
         help="Trigger reproducible builds, clamping timestamps to this value",
