@@ -22,6 +22,7 @@ class Interpreter(InteractiveShell):
     def __init__(self, *args, **kwargs):
         super(Interpreter, self).__init__(*args, **kwargs)
         self.kernel = Pyolite(interpreter=self)
+        self._last_traceback = None
 
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)
@@ -31,13 +32,31 @@ class Interpreter(InteractiveShell):
         """Not implemented yet."""
         pass
 
+    def showtraceback(
+        self,
+        exc_tuple=None,
+        filename=None,
+        tb_offset=None,
+        exception_only=False,
+        running_compiled_code=False,
+    ):
+        try:
+            etype, value, tb = self._get_exc_info(exc_tuple)
+        except ValueError:
+            print("No traceback available to show.", file=sys.stderr)
+            return
+
+        self._last_traceback = {"ename": etype, "evalue": value, "traceback": tb}
+
     async def run(self, code):
+        self._last_traceback = None
         exec_code = self.transform_cell(code)
         await _load_packages_from_imports(exec_code)
         if self.should_run_async(code):
             self.result = await self.run_cell_async(code)
         else:
             self.result = self.run_cell(code)
+        return self.result
 
 
 class XPythonShellApp(BaseIPythonApplication, InteractiveShellApp):

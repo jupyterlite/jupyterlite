@@ -183,37 +183,39 @@ async function execute(content: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  let res;
-  try {
-    res = await interpreter.run(content.code);
-  } catch (error) {
-    postMessage({
-      parentheader: content.parentheader,
-      type: 'error',
-      error
-    });
-    return;
+  const res = await interpreter.run(content.code);
+  console.log(res);
+  const reply_content: any = {};
+
+  reply_content['payload'] = interpreter.payload_manager.read_payload();
+  interpreter.payload_manager.clear_payload();
+
+  if (typeof interpreter._last_traceback === 'undefined') {
+    reply_content['status'] = 'ok';
+    // TODO: set reply_content['user_expressions']
+  } else {
+    console.log(interpreter._last_traceback);
+    const last_traceback = formatResult(interpreter._last_traceback);
+    console.log(last_traceback);
+    reply_content['status'] = 'error';
+    reply_content['ename'] = last_traceback['ename'];
+    reply_content['evalue'] = last_traceback['evalue'];
+    reply_content['traceback'] = last_traceback['traceback'];
   }
+
+  // if ('traceback' in reply_content) {
+  //   const traceback = reply_content['traceback'].join('\n');
+  //   console.log(`Exception in execute request:\n${traceback}"`);
+  // }
+
+  console.log(reply_content);
 
   const reply = {
     parentheader: content.parentheader,
     type: 'reply'
   };
 
-  if (!res) {
-    postMessage(reply);
-    return;
-  }
-
-  try {
-    const results = formatResult(res);
-    postMessage({
-      ...reply,
-      results
-    });
-  } catch (e) {
-    postMessage(reply);
-  }
+  postMessage(reply);
 }
 /**
  * Complete the code submitted by a user.
