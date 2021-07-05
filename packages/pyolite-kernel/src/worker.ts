@@ -129,8 +129,6 @@ async function execute(content: any) {
       evalue: evalue,
       traceback: traceback
     };
-    console.log('from publish error');
-    console.log(bundle);
     postMessage({
       parentHeader: content.parentHeader,
       bundle,
@@ -216,9 +214,6 @@ async function execute(content: any) {
 
     publishExecutionError(results['ename'], results['evalue'], results['traceback']);
   }
-
-  console.log('from execute');
-  console.log(results);
 
   const reply = {
     parentheader: content.parentheader,
