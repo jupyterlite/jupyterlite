@@ -69,9 +69,9 @@ class LiteBuildConfig(LoggingConfigurable):
 
     # serving
     port: int = CInt(
-        8000, help="[serve] the port to (insecurely) expose on http://127.0.0.1"
+        help="[serve] the port to (insecurely) expose on http://127.0.0.1"
     ).tag(config=True)
-    base_url: int = Unicode("/", help="[serve] the prefix to use").tag(config=True)
+    base_url: int = Unicode(help="[serve] the prefix to use").tag(config=True)
 
     # patterns
     ignore_files: _Tuple[_Text] = Tuple(
@@ -161,3 +161,11 @@ class LiteBuildConfig(LoggingConfigurable):
             return None
         sde = int(os.environ[C.SOURCE_DATE_EPOCH])
         return sde
+
+    @default("port")
+    def _default_port(self):
+        return int(os.environ.get("JUPYTERLITE_PORT", 8000))
+
+    @default("base_url")
+    def _default_base_url(self):
+        return os.environ.get("JUPYTERLITE_BASE_URL", "/")
