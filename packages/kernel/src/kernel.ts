@@ -242,6 +242,23 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Send a `error` message to the client.
+   *
+   * @param content The error content.
+   */
+  protected executeError(content: KernelMessage.IErrorMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
+      channel: 'iopub',
+      msgType: 'error',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
    * Send a `update_display_data` message to the client.
    *
    * @param content The update_display_data content.

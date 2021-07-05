@@ -89,7 +89,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg The worker message to process.
    */
   private _processWorkerMessage(msg: any): void {
-    const parentHeader = this.parentHeader;
     switch (msg.type) {
       case 'stream': {
         const bundle = msg.bundle ?? { name: 'stdout', text: '' };
@@ -97,21 +96,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         break;
       }
       case 'reply': {
-        const bundle = msg.results ?? { data: {}, metadata: {} };
+        const bundle = msg.results;
         this._executeDelegate.resolve(bundle);
-        break;
-      }
-      case 'error': {
-        const { name, stack, message } = msg.error;
-        const error = {
-          name,
-          stack,
-          message
-        };
-        this._executeDelegate.resolve({
-          ...error,
-          parentHeader
-        });
         break;
       }
       case 'display_data': {
@@ -132,6 +118,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'execute_result': {
         const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
         this.executeResult(bundle);
+        break;
+      }
+      case 'execute_error': {
+        const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
+        this.executeError(bundle);
         break;
       }
       case 'comm_msg':

@@ -32,21 +32,8 @@ class Interpreter(InteractiveShell):
         """Not implemented yet."""
         pass
 
-    def showtraceback(
-        self,
-        exc_tuple=None,
-        filename=None,
-        tb_offset=None,
-        exception_only=False,
-        running_compiled_code=False,
-    ):
-        try:
-            etype, value, tb = self._get_exc_info(exc_tuple)
-        except ValueError:
-            print("No traceback available to show.", file=sys.stderr)
-            return
-
-        self._last_traceback = {"ename": etype, "evalue": value, "traceback": tb}
+    def _showtraceback(self, etype, evalue, stb):
+        self._last_traceback = {"ename": etype, "evalue": evalue, "traceback": stb}
 
     async def run(self, code):
         self._last_traceback = None
