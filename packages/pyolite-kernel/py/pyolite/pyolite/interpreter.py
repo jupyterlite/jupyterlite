@@ -33,7 +33,11 @@ class Interpreter(InteractiveShell):
         pass
 
     def _showtraceback(self, etype, evalue, stb):
-        self._last_traceback = {"ename": etype, "evalue": evalue, "traceback": stb}
+        self._last_traceback = {
+            "ename": str(etype),
+            "evalue": str(evalue),
+            "traceback": stb,
+        }
 
     async def run(self, code):
         self._last_traceback = None
