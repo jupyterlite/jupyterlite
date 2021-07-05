@@ -46,18 +46,20 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     app_archive: Path = CPath(
-        help=(f"""The app archive to use, default: {C.DEFAULT_APP_ARCHIVE}""")
+        help=("The app archive to use. env: JUPYTERLITE_APP_ARCHIVE")
     ).tag(config=True)
 
-    lite_dir: Path = CPath(help=("""The root folder of a JupyterLite project""")).tag(
-        config=True
-    )
+    lite_dir: Path = CPath(
+        help=("The root folder of a JupyterLite project. env: JUPYTERLITE_DIR")
+    ).tag(config=True)
 
-    output_dir: Path = CPath(help=("""Where to build the JupyterLite site""")).tag(
-        config=True
-    )
+    output_dir: Path = CPath(
+        help=("Where to build the JupyterLite site. env: JUPYTERLITE_OUTPUT_DIR")
+    ).tag(config=True)
 
-    output_archive: Path = CPath(help="Archive to create").tag(config=True)
+    output_archive: Path = CPath(
+        help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")
+    ).tag(config=True)
 
     files: _Tuple[Path] = TypedTuple(
         CPath(), help="Files to add and index as Jupyter Contents"
@@ -65,6 +67,17 @@ class LiteBuildConfig(LoggingConfigurable):
 
     overrides: _Tuple[_Text] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
+    ).tag(config=True)
+
+    # serving
+    port: int = CInt(
+        help=(
+            "[serve] the port to (insecurely) expose on http://127.0.0.1."
+            " env: JUPYTERLITE_PORT"
+        )
+    ).tag(config=True)
+    base_url: str = Unicode(
+        help=("[serve] the prefix to use." " env: JUPYTERLITE_BASE_URL")
     ).tag(config=True)
 
     # patterns
@@ -96,7 +109,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("lite_dir")
     def _default_lite_dir(self):
-        return Path.cwd()
+        return Path(os.environ.get("JUPYTERLITE_DIR", Path.cwd()))
 
     @default("files")
     def _default_files(self):
@@ -120,7 +133,8 @@ class LiteBuildConfig(LoggingConfigurable):
     @default("ignore_files")
     def _default_ignore_files(self):
         return [
-            ".*\.pyc" "/\.git/",
+            ".*\.pyc",
+            "/\.git/",
             "/\.gitignore",
             "/\.ipynb_checkpoints/",
             "/build/",
@@ -155,3 +169,11 @@ class LiteBuildConfig(LoggingConfigurable):
             return None
         sde = int(os.environ[C.SOURCE_DATE_EPOCH])
         return sde
+
+    @default("port")
+    def _default_port(self):
+        return int(os.environ.get("JUPYTERLITE_PORT", 8000))
+
+    @default("base_url")
+    def _default_base_url(self):
+        return os.environ.get("JUPYTERLITE_BASE_URL", "/")

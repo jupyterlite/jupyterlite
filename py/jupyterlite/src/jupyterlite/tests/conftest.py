@@ -2,6 +2,7 @@
 
 import shutil
 import time
+import warnings
 
 import pytest
 
@@ -13,7 +14,10 @@ def an_empty_lite_dir(tmp_path):
     lite_dir = tmp_path / "a_lite_dir"
     lite_dir.mkdir()
     yield lite_dir
-    shutil.rmtree(lite_dir)
+    try:
+        shutil.rmtree(lite_dir)
+    except Exception as err:
+        warnings.warn(f"failed to clean up {lite_dir}: {err}")
 
 
 @pytest.fixture
