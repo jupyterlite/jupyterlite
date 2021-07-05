@@ -411,7 +411,7 @@ export abstract class BaseKernel implements IKernel {
         this._history.push([0, 0, content.code]);
       }
       // send the execute result only if there is a result
-      if (Object.keys(result.data).length > 0) {
+      if (result.data && Object.keys(result.data).length > 0) {
         this._executeResult(msg, result);
       }
       this._executeReply(msg, {
