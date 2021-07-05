@@ -25,16 +25,16 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, port):
     url = f"http://127.0.0.1:{port}{base_url}"
 
     server = subprocess.Popen(args, cwd=an_empty_lite_dir)
+    time.sleep(2)
 
-    app_urls = [
-        "",
-        "lab/",
-        "lab/index.html",
-        "retro/",
-        "retro/index.html",
-        "retro/tree/",
-        "retro/tree/index.html",
-    ]
+    app_urls = [""]
+    for app in ["lab", "retro"]:
+        app_urls += [
+            f"{app}/",
+            f"{app}/index.html",
+        ]
+        if app == "retro":
+            app_urls += [f"{app}/tree/", f"{app}/tree/index.html"]
 
     maybe_errors = [_fetch_without_errors(f"{url}{frag}") for frag in app_urls]
 
@@ -44,6 +44,7 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, port):
         assert not errors
     finally:
         server.terminate()
+        server.wait(timeout=10)
 
 
 def _fetch_without_errors(url, retries=10):
