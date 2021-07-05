@@ -28,6 +28,9 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             "output-archive": "LiteBuildConfig.output_archive",
             "overrides": "LiteBuildConfig.overrides",
             "source-date-epoch": "LiteBuildConfig.source_date_epoch",
+            # addon-specific things
+            "port": "LiteBuildConfig.port",
+            "base-url": "LiteBuildConfig.base_url",
         },
     )
 
@@ -66,6 +69,10 @@ class ManagedApp(BaseLiteApp):
             kwargs["disable_addons"] = self.disable_addons
         if self.source_date_epoch is not None:
             kwargs["source_date_epoch"] = self.source_date_epoch
+        if self.port is not None:
+            kwargs["port"] = self.port
+        if self.base_url is not None:
+            kwargs["base_url"] = self.base_url
 
         return LiteManager(**kwargs)
 

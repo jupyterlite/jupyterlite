@@ -67,6 +67,12 @@ class LiteBuildConfig(LoggingConfigurable):
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
+    # serving
+    port: int = CInt(
+        8000, help="[serve] the port to (insecurely) expose on http://127.0.0.1"
+    ).tag(config=True)
+    base_url: int = Unicode("/", help="[serve] the prefix to use").tag(config=True)
+
     # patterns
     ignore_files: _Tuple[_Text] = Tuple(
         help="Path patterns that should never be included"
