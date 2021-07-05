@@ -13,7 +13,7 @@ class Image:
         return self.data
 
 
-class XStream:
+class LiteStream:
     def __init__(self, name):
         self.name = name
         self.publish_stream_callback = None
@@ -29,9 +29,9 @@ class XStream:
         return False
 
 
-class XDisplayPublisher(DisplayPublisher):
+class LiteDisplayPublisher(DisplayPublisher):
     def __init__(self, shell=None, *args, **kwargs):
-        super(XDisplayPublisher, self).__init__(shell, *args, **kwargs)
+        super(LiteDisplayPublisher, self).__init__(shell, *args, **kwargs)
         self.clear_output_callback = None
         self.update_display_data_callback = None
         self.display_data_callback = None
@@ -56,9 +56,9 @@ class XDisplayPublisher(DisplayPublisher):
             self.clear_output_callback(wait)
 
 
-class XDisplayHook(DisplayHook):
+class LiteDisplayHook(DisplayHook):
     def __init__(self, *args, **kwargs):
-        super(XDisplayHook, self).__init__(*args, **kwargs)
+        super(LiteDisplayHook, self).__init__(*args, **kwargs)
         self.publish_execution_result = None
 
     def start_displayhook(self):

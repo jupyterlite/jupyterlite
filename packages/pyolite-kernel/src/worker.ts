@@ -230,18 +230,12 @@ async function execute(content: any) {
  * @param content The incoming message with the code to complete.
  */
 function complete(content: any) {
-  const res = interpreter.complete(content.code.substring(0, content.cursor_pos));
+  const res = interpreter.do_complete(content.code, content.cursor_pos);
   const results = formatResult(res);
-
   const reply = {
     parentheader: content.parentheader,
     type: 'reply',
-    results: {
-      matches: results[0],
-      cursor_start: results[1],
-      cursor_end: content.cursor_pos,
-      status: 'ok'
-    }
+    results
   };
 
   postMessage(reply);

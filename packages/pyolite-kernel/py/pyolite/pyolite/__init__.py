@@ -24,13 +24,13 @@ from .patches import ensure_matplotlib_patch
 # apply patches for available modules
 ensure_matplotlib_patch()
 
-from .display import XStream
-from .interpreter import XPythonShellApp
+from .display import LiteStream
+from .interpreter import LitePythonShellApp
 
-stdout_stream = XStream("stdout")
-stderr_stream = XStream("stderr")
+stdout_stream = LiteStream("stdout")
+stderr_stream = LiteStream("stderr")
 
-m_ipython_shell_app = XPythonShellApp()
+m_ipython_shell_app = LitePythonShellApp()
 m_ipython_shell_app.initialize()
 m_ipython_shell = m_ipython_shell_app.shell
 kernel_instance = m_ipython_shell.kernel

@@ -4,9 +4,10 @@ from IPython.core.application import BaseIPythonApplication
 from IPython.core.history import HistoryManager
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.shellapp import InteractiveShellApp
+from IPython.utils.tokenutil import line_at_cursor
 from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
-from .display import XDisplayHook, XDisplayPublisher
+from .display import LiteDisplayHook, LiteDisplayPublisher
 from .kernel import Pyolite
 
 __all__ = ["Interpreter"]
@@ -39,6 +40,21 @@ class Interpreter(InteractiveShell):
             "traceback": stb,
         }
 
+    def do_complete(self, code, cursor_pos):
+        if cursor_pos is None:
+            cursor_pos = len(code)
+        line, offset = line_at_cursor(code, cursor_pos)
+        line_cursor = cursor_pos - offset
+
+        txt, matches = self.complete("", line, line_cursor)
+        return {
+            "matches": matches,
+            "cursor_end": cursor_pos,
+            "cursor_start": cursor_pos - len(txt),
+            "metadata": {},
+            "status": "ok",
+        }
+
     async def run(self, code):
         self._last_traceback = None
         exec_code = self.transform_cell(code)
@@ -50,9 +66,9 @@ class Interpreter(InteractiveShell):
         return self.result
 
 
-class XPythonShellApp(BaseIPythonApplication, InteractiveShellApp):
+class LitePythonShellApp(BaseIPythonApplication, InteractiveShellApp):
     def initialize(self, argv=None):
-        super(XPythonShellApp, self).initialize(argv)
+        super(LitePythonShellApp, self).initialize(argv)
         self.user_ns = {}
         self.init_path()
         self.init_shell()
@@ -63,8 +79,8 @@ class XPythonShellApp(BaseIPythonApplication, InteractiveShellApp):
 
     def init_shell(self):
         self.shell = Interpreter.instance(
-            displayhook_class=XDisplayHook,
-            display_pub_class=XDisplayPublisher,
+            displayhook_class=LiteDisplayHook,
+            display_pub_class=LiteDisplayPublisher,
             user_ns=self.user_ns,
         )
 
