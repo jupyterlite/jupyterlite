@@ -58,7 +58,7 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     output_archive: Path = CPath(
-        help=("Archive to create." " env: JUPYTERLITE_OUTPUT_ARCHIVE")
+        help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")
     ).tag(config=True)
 
     files: _Tuple[Path] = TypedTuple(
@@ -133,7 +133,8 @@ class LiteBuildConfig(LoggingConfigurable):
     @default("ignore_files")
     def _default_ignore_files(self):
         return [
-            ".*\.pyc" "/\.git/",
+            ".*\.pyc",
+            "/\.git/",
             "/\.gitignore",
             "/\.ipynb_checkpoints/",
             "/build/",
