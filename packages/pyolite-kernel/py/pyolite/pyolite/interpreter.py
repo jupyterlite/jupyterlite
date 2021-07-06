@@ -60,9 +60,9 @@ class Interpreter(InteractiveShell):
         exec_code = self.transform_cell(code)
         await _load_packages_from_imports(exec_code)
         if self.should_run_async(code):
-            self.result = await self.run_cell_async(code)
+            self.result = await self.run_cell_async(code, store_history=True)
         else:
-            self.result = self.run_cell(code)
+            self.result = self.run_cell(code, store_history=True)
         return self.result
 
 

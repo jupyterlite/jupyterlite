@@ -112,7 +112,7 @@ async function execute(content: any) {
     metadata: any
   ): void => {
     const bundle = {
-      execution_count: formatResult(prompt_count),
+      execution_count: prompt_count,
       data: formatResult(data),
       metadata: formatResult(metadata)
     };
