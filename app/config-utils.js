@@ -206,7 +206,12 @@ export function fixRelativeUrls(url, config) {
   let urlBase = new URL(url || here()).pathname;
   for (const [k, v] of Object.entries(config)) {
     if (k.endsWith('Url') && v.startsWith('./')) {
-      config[k] = `${urlBase}${v.slice(2)}`;
+      // themesUrl is already joined with baseUrl
+      if (v !== 'themesUrl') {
+        config[k] = `${urlBase}${v.slice(2)}`;
+      } else {
+        config[k] = v.slice(2);
+      }
     }
   }
   return config;
