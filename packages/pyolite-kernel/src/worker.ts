@@ -7,7 +7,12 @@ let kernel: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let interpreter: any;
-
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let stdout_stream: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let stderr_stream: any;
 /**
  * Load Pyodided and initialize the interpreter.
  */
@@ -26,9 +31,12 @@ async function loadPyodideAndPackages() {
     await micropip.install([
       '${_pyoliteWheelUrl}'
     ]);
+    await micropip.install('ipython');
     import pyolite
   `);
   kernel = pyodide.globals.get('pyolite').kernel_instance;
+  stdout_stream = pyodide.globals.get('pyolite').stdout_stream;
+  stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;
   const version = pyodide.globals.get('pyolite').__version__;
@@ -98,87 +106,136 @@ async function sendComm(
  * @param content The incoming message with the code to execute.
  */
 async function execute(content: any) {
-  const stdoutCallback = (stdout: string): void => {
-    postMessage({
-      parentHeader: content.parentHeader,
-      stdout,
-      type: 'stdout'
-    });
-  };
-
-  const stderrCallback = (stderr: string): void => {
-    postMessage({
-      parentHeader: content.parentHeader,
-      stderr,
-      type: 'stderr'
-    });
-  };
-
-  // TODO: support multiple
-  const displayCallback = (res: any): void => {
-    const bundle = formatResult(res);
+  const publishExecutionResult = (
+    prompt_count: any,
+    data: any,
+    metadata: any
+  ): void => {
+    const bundle = {
+      execution_count: prompt_count,
+      data: formatResult(data),
+      metadata: formatResult(metadata)
+    };
     postMessage({
       parentHeader: content.parentHeader,
       bundle,
-      type: 'display'
+      type: 'execute_result'
     });
   };
 
-  interpreter.stdout_callback = stdoutCallback;
-  interpreter.stderr_callback = stderrCallback;
-  kernel.display_publisher.display_callback = displayCallback;
-
-  let res;
-  try {
-    res = await interpreter.run(content.code);
-  } catch (error) {
+  const publishExecutionError = (ename: any, evalue: any, traceback: any): void => {
+    const bundle = {
+      ename: ename,
+      evalue: evalue,
+      traceback: traceback
+    };
     postMessage({
-      parentheader: content.parentheader,
-      type: 'error',
-      error
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'execute_error'
     });
-    return;
+  };
+
+  const clearOutputCallback = (wait: boolean): void => {
+    const bundle = {
+      wait: formatResult(wait)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'clear_output'
+    });
+  };
+
+  const displayDataCallback = (data: any, metadata: any, transient: any): void => {
+    const bundle = {
+      data: formatResult(data),
+      metadata: formatResult(metadata),
+      transient: formatResult(transient)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'display_data'
+    });
+  };
+
+  const updateDisplayDataCallback = (
+    data: any,
+    metadata: any,
+    transient: any
+  ): void => {
+    const bundle = {
+      data: formatResult(data),
+      metadata: formatResult(metadata),
+      transient: formatResult(transient)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'update_display_data'
+    });
+  };
+
+  const publishStreamCallback = (name: any, text: any): void => {
+    const bundle = {
+      name: formatResult(name),
+      text: formatResult(text)
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'stream'
+    });
+  };
+
+  stdout_stream.publish_stream_callback = publishStreamCallback;
+  stderr_stream.publish_stream_callback = publishStreamCallback;
+  interpreter.display_pub.clear_output_callback = clearOutputCallback;
+  interpreter.display_pub.display_data_callback = displayDataCallback;
+  interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
+  interpreter.displayhook.publish_execution_result = publishExecutionResult;
+
+  await interpreter.run(content.code);
+  const results: any = {};
+
+  results['payload'] = formatResult(interpreter.payload_manager.read_payload());
+  interpreter.payload_manager.clear_payload();
+
+  if (typeof interpreter._last_traceback === 'undefined') {
+    results['status'] = 'ok';
+    // TODO: set results['user_expressions']
+  } else {
+    const last_traceback = formatResult(interpreter._last_traceback);
+    results['status'] = 'error';
+    results['ename'] = last_traceback['ename'];
+    results['evalue'] = last_traceback['evalue'];
+    results['traceback'] = last_traceback['traceback'];
+
+    publishExecutionError(results['ename'], results['evalue'], results['traceback']);
   }
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results'
+    results,
+    type: 'reply'
   };
 
-  if (!res) {
-    postMessage(reply);
-    return;
-  }
-
-  try {
-    const results = formatResult(res);
-    postMessage({
-      ...reply,
-      results
-    });
-  } catch (e) {
-    postMessage(reply);
-  }
+  postMessage(reply);
+  return results;
 }
-
 /**
  * Complete the code submitted by a user.
  *
  * @param content The incoming message with the code to complete.
  */
 function complete(content: any) {
-  const res = interpreter.complete(content.code.substring(0, content.cursor_pos));
+  const res = interpreter.do_complete(content.code, content.cursor_pos);
   const results = formatResult(res);
-
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
-    results: {
-      matches: results[0],
-      cursor_start: results[1],
-      cursor_end: content.cursor_pos,
-      status: 'ok'
-    }
+    type: 'reply',
+    results
   };
 
   postMessage(reply);
@@ -195,7 +252,7 @@ function commInfo(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results: {
       comms: results,
       status: 'ok'
@@ -216,7 +273,7 @@ function commOpen(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 
@@ -234,7 +291,7 @@ function commMsg(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 
@@ -252,7 +309,7 @@ function commClose(content: any) {
 
   const reply = {
     parentheader: content.parentheader,
-    type: 'results',
+    type: 'reply',
     results
   };
 

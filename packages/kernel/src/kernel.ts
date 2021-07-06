@@ -242,6 +242,76 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Send a `error` message to the client.
+   *
+   * @param content The error content.
+   */
+  protected executeError(content: KernelMessage.IErrorMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
+      channel: 'iopub',
+      msgType: 'error',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `update_display_data` message to the client.
+   *
+   * @param content The update_display_data content.
+   */
+  protected updateDisplayData(
+    content: KernelMessage.IUpdateDisplayDataMsg['content']
+  ): void {
+    const message = KernelMessage.createMessage<KernelMessage.IUpdateDisplayDataMsg>({
+      channel: 'iopub',
+      msgType: 'update_display_data',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `clear_output` message to the client.
+   *
+   * @param content The clear_output content.
+   */
+  protected clearOutput(content: KernelMessage.IClearOutputMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IClearOutputMsg>({
+      channel: 'iopub',
+      msgType: 'clear_output',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `execute_result` message to the client.
+   *
+   * @param content The execute_result content.
+   */
+  protected executeResult(content: KernelMessage.IExecuteResultMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
+      channel: 'iopub',
+      msgType: 'execute_result',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
    * Send a `comm` message to the client.
    *
    * @param .
@@ -341,7 +411,7 @@ export abstract class BaseKernel implements IKernel {
         this._history.push([0, 0, content.code]);
       }
       // send the execute result only if there is a result
-      if (Object.keys(result.data).length > 0) {
+      if (result.data && Object.keys(result.data).length > 0) {
         this._executeResult(msg, result);
       }
       this._executeReply(msg, {

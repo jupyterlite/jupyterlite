@@ -1,14 +1,10 @@
 # This is our ipykernel mock
 from ipykernel import CommManager
 
-from .display import display_publisher
-from .interpreter import Interpreter
-
 
 class Pyolite:
-    def __init__(self):
-        self.interpreter = Interpreter()
-        self.display_publisher = display_publisher
+    def __init__(self, interpreter):
+        self.interpreter = interpreter
         self.comm_manager = CommManager(kernel=self)
 
     def comm_info(self, target_name=""):

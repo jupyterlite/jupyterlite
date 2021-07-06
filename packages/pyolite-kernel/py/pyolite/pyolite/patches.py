@@ -4,8 +4,9 @@ from io import BytesIO
 os.environ["MPLBACKEND"] = "AGG"
 
 import matplotlib.pyplot
+from IPython.display import display
 
-from .display import Image, display
+from .display import Image
 
 
 def ensure_matplotlib_patch():

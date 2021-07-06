@@ -5,47 +5,35 @@ __version__ = "0.1.0a2"
 import sys
 import types
 
-from .patches import ensure_matplotlib_patch
-
 # Set the recursion limit, needed for altair
 # for more details, see: https://github.com/jtpio/jupyterlite/pull/113#issuecomment-851072065
 sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 
+termios_mock = types.ModuleType("termios")
+termios_mock.TCSAFLUSH = 2
+
+fcntl_mock = types.ModuleType("fcntl")
+resource_mock = types.ModuleType("resource")
+
+sys.modules["termios"] = termios_mock
+sys.modules["fcntl"] = fcntl_mock
+sys.modules["resource"] = resource_mock
+
+from .patches import ensure_matplotlib_patch
+
 # apply patches for available modules
 ensure_matplotlib_patch()
 
-import pyolite
+from .display import LiteStream
+from .interpreter import LitePythonShellApp
 
-from .kernel import Pyolite
+stdout_stream = LiteStream("stdout")
+stderr_stream = LiteStream("stderr")
 
-kernel_instance = Pyolite()
+m_ipython_shell_app = LitePythonShellApp()
+m_ipython_shell_app.initialize()
+m_ipython_shell = m_ipython_shell_app.shell
+kernel_instance = m_ipython_shell.kernel
 
-
-# TODO: Make an ipython module mock
-class IPMock:
-    def __init__(self, kernel):
-        self.kernel = kernel
-
-
-class InteractiveShellMock:
-    pass
-
-
-ip_mock = IPMock(kernel_instance)
-
-ip = types.ModuleType("IPython")
-ip.get_ipython = lambda: ip_mock
-ip.InteractiveShell = InteractiveShellMock
-
-pt = types.ModuleType("pylabtools")
-pt.backend2gui = {}
-
-core = types.ModuleType("core")
-core.pylabtools = pt
-
-sys.modules["IPython.display"] = pyolite.display
-sys.modules["IPython"] = ip
-sys.modules["IPython.core"] = core
-sys.modules["IPython.core.getipython"] = ip
-sys.modules["IPython.core.interactiveshell"] = ip
-sys.modules["IPython.core.pylabtools"] = pt
+sys.stdout = stdout_stream
+sys.stderr = stderr_stream

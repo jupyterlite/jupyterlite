@@ -1,81 +1,8 @@
 import base64
+import sys
 
-MIMETYPES = [
-    ("text/html", "_repr_html_"),
-    ("text/markdown", "_repr_markdown_"),
-    ("text/latex", "_repr_latex_"),
-    ("image/svg+xml", "_repr_svg_"),
-    ("image/png", "_repr_png_"),
-    ("application/json", "_repr_json_"),
-]
-
-
-class DisplayPublisher:
-    def __init__(self):
-        self.display_callback = None
-
-    def publish(self, obj, raw=False):
-        if self.display_callback:
-            formatted = format_result(obj, raw)
-            self.display_callback(formatted)
-
-
-display_publisher = DisplayPublisher()
-
-
-def display(obj, raw=False):
-    if hasattr(obj, "_ipython_display_"):
-        obj._ipython_display_()
-    else:
-        display_publisher.publish(obj, raw)
-
-
-def format_result(result, raw=False):
-    if raw:
-        return {"data": result, "metadata": {}}
-    if hasattr(result, "_repr_mimebundle_"):
-        return {"data": result._repr_mimebundle_(), "metadata": {}}
-    data = {"text/plain": repr(result)}
-    metadata = {}
-    for mimetype, method in MIMETYPES:
-        if hasattr(result, method):
-            # TODO: repr methods should return data and metadata
-            data[mimetype] = getattr(result, method)()
-    bundle = {"data": data, "metadata": metadata}
-    return bundle
-
-
-# TODO Implement the clear_output
-def clear_output(*args, **kwargs):
-    pass
-
-
-class DisplayObject:
-    def __init__(self, data):
-        self.data = data
-
-    def _repr_(self):
-        return self.data
-
-
-class HTML(DisplayObject):
-    def _repr_html_(self):
-        return self.data
-
-
-class Markdown(DisplayObject):
-    def _repr_markdown_(self):
-        return self.data
-
-
-class Latex(DisplayObject):
-    def _repr_latex_(self):
-        return self.data
-
-
-class JSON(DisplayObject):
-    def _repr_json_(self):
-        return self.data
+from IPython.core.displayhook import DisplayHook
+from IPython.core.displaypub import DisplayPublisher
 
 
 class Image:
@@ -84,3 +11,73 @@ class Image:
 
     def _repr_png_(self):
         return self.data
+
+
+class LiteStream:
+    def __init__(self, name):
+        self.name = name
+        self.publish_stream_callback = None
+
+    def write(self, text):
+        if self.publish_stream_callback:
+            self.publish_stream_callback(self.name, text)
+
+    def flush(self):
+        pass
+
+    def isatty(self):
+        return False
+
+
+class LiteDisplayPublisher(DisplayPublisher):
+    def __init__(self, shell=None, *args, **kwargs):
+        super(LiteDisplayPublisher, self).__init__(shell, *args, **kwargs)
+        self.clear_output_callback = None
+        self.update_display_data_callback = None
+        self.display_data_callback = None
+
+    def publish(
+        self,
+        data,
+        metadata=None,
+        source=None,
+        *,
+        transient=None,
+        update=False,
+        **kwargs
+    ) -> None:
+        if update and self.update_display_data_callback:
+            self.update_display_data_callback(data, metadata, transient)
+        elif self.display_data_callback:
+            self.display_data_callback(data, metadata, transient)
+
+    def clear_output(self, wait=False):
+        if self.clear_output_callback:
+            self.clear_output_callback(wait)
+
+
+class LiteDisplayHook(DisplayHook):
+    def __init__(self, *args, **kwargs):
+        super(LiteDisplayHook, self).__init__(*args, **kwargs)
+        self.publish_execution_result = None
+
+    def start_displayhook(self):
+        self.data = {}
+        self.metadata = {}
+
+    def write_output_prompt(self):
+        pass
+
+    def write_format_data(self, format_dict, md_dict=None):
+        self.data = format_dict
+        self.metadata = md_dict
+
+    def finish_displayhook(self):
+        sys.stdout.flush()
+        sys.stderr.flush()
+
+        if self.publish_execution_result:
+            self.publish_execution_result(self.prompt_count, self.data, self.metadata)
+
+        self.data = {}
+        self.metadata = {}

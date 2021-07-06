@@ -89,50 +89,40 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg The worker message to process.
    */
   private _processWorkerMessage(msg: any): void {
-    const parentHeader = this.parentHeader;
     switch (msg.type) {
-      case 'stdout': {
-        const content = {
-          event: 'stream',
-          name: 'stdout',
-          parentHeader,
-          text: msg.stdout
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
+      case 'stream': {
+        const bundle = msg.bundle ?? { name: 'stdout', text: '' };
+        this.stream(bundle);
         break;
       }
-      case 'stderr': {
-        const { message } = msg.stderr;
-        const content = {
-          event: 'stream',
-          name: 'stderr',
-          parentHeader,
-          text: message ?? msg.stderr
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
-        break;
-      }
-      case 'results': {
-        const bundle = msg.results ?? { data: {}, metadata: {} };
+      case 'reply': {
+        const bundle = msg.results;
         this._executeDelegate.resolve(bundle);
         break;
       }
-      case 'error': {
-        const { name, stack, message } = msg.error;
-        const error = {
-          name,
-          stack,
-          message
-        };
-        this._executeDelegate.resolve({
-          ...error,
-          parentHeader
-        });
+      case 'display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.displayData(bundle);
         break;
       }
-      case 'display': {
-        const bundle = msg.bundle ?? { data: {}, metadata: {} };
-        this.displayData(bundle);
+      case 'update_display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.updateDisplayData(bundle);
+        break;
+      }
+      case 'clear_output': {
+        const bundle = msg.bundle ?? { wait: false };
+        this.clearOutput(bundle);
+        break;
+      }
+      case 'execute_result': {
+        const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
+        this.executeResult(bundle);
+        break;
+      }
+      case 'execute_error': {
+        const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
+        this.executeError(bundle);
         break;
       }
       case 'comm_msg':
