@@ -12,12 +12,12 @@ sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 termios_mock = types.ModuleType("termios")
 termios_mock.TCSAFLUSH = 2
 
-fcntl_mock = types.ModuleType("fcntl")
-resource_mock = types.ModuleType("resource")
-
 sys.modules["termios"] = termios_mock
-sys.modules["fcntl"] = fcntl_mock
-sys.modules["resource"] = resource_mock
+sys.modules["fcntl"] = types.ModuleType("fcntl")
+sys.modules["resource"] = types.ModuleType("resource")
+
+# This is needed for some Matplotlib backends (webagg, ipympl)
+sys.modules["tornado"] = types.ModuleType("tornados")
 
 from .patches import ensure_matplotlib_patch
 
@@ -30,10 +30,10 @@ from .interpreter import LitePythonShellApp
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
 
-m_ipython_shell_app = LitePythonShellApp()
-m_ipython_shell_app.initialize()
-m_ipython_shell = m_ipython_shell_app.shell
-kernel_instance = m_ipython_shell.kernel
+ipython_shell_app = LitePythonShellApp()
+ipython_shell_app.initialize()
+ipython_shell = ipython_shell_app.shell
+kernel_instance = ipython_shell.kernel
 
 sys.stdout = stdout_stream
 sys.stderr = stderr_stream
