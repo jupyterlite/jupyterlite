@@ -94,7 +94,7 @@ export abstract class BaseKernel implements IKernel {
         await this._kernelInfo(msg);
         break;
       case 'execute_request':
-        await this._executeRequest(msg);
+        await this._execute(msg);
         break;
       case 'complete_request':
         await this._complete(msg);
@@ -132,7 +132,7 @@ export abstract class BaseKernel implements IKernel {
    */
   abstract executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']>;
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']>;
 
   /**
    * Handle a `complete_request` message.
@@ -242,11 +242,30 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
-   * Send a `error` message to the client.
+   * Send an `execute_result` message.
+   *
+   * @param content The execut result content.
+   */
+  protected publishExecuteResult(
+    content: KernelMessage.IExecuteResultMsg['content']
+  ): void {
+    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
+      channel: 'iopub',
+      msgType: 'execute_result',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send an `error` message to the client.
    *
    * @param content The error content.
    */
-  protected executeError(content: KernelMessage.IErrorMsg['content']): void {
+  protected publishExecuteError(content: KernelMessage.IErrorMsg['content']): void {
     const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
       channel: 'iopub',
       msgType: 'error',
@@ -286,23 +305,6 @@ export abstract class BaseKernel implements IKernel {
     const message = KernelMessage.createMessage<KernelMessage.IClearOutputMsg>({
       channel: 'iopub',
       msgType: 'clear_output',
-      // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
-      content
-    });
-    this._sendMessage(message);
-  }
-
-  /**
-   * Send a `execute_result` message to the client.
-   *
-   * @param content The execute_result content.
-   */
-  protected executeResult(content: KernelMessage.IExecuteResultMsg['content']): void {
-    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
-      channel: 'iopub',
-      msgType: 'execute_result',
       // TODO: better handle this
       session: this._parentHeader?.session ?? '',
       parentHeader: this._parentHeader,
@@ -391,52 +393,6 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
-   * Handle an `execute_request` message
-   *
-   * @param msg The parent message.
-   */
-  private async _executeRequest(msg: KernelMessage.IMessage): Promise<void> {
-    const executeMsg = msg as KernelMessage.IExecuteRequestMsg;
-    const content = executeMsg.content;
-    this._executionCount++;
-
-    // TODO: handle differently
-    this._parentHeader = msg.header;
-
-    this._executeInput(msg);
-    try {
-      const result = await this.executeRequest(content);
-      // do not store magics in the history
-      if (!content.code.startsWith('%')) {
-        this._history.push([0, 0, content.code]);
-      }
-      // send the execute result only if there is a result
-      if (result.data && Object.keys(result.data).length > 0) {
-        this._executeResult(msg, result);
-      }
-      this._executeReply(msg, {
-        execution_count: this._executionCount,
-        status: 'ok',
-        user_expressions: {},
-        payload: []
-      });
-    } catch (e) {
-      const { name, stack, message } = e;
-      const error = {
-        ename: name,
-        evalue: message,
-        traceback: [stack]
-      };
-      this._error(msg, error);
-      this._executeReply(msg, {
-        execution_count: this._executionCount,
-        status: 'error',
-        ...error
-      });
-    }
-  }
-
-  /**
    * Handle a `history_request` message
    *
    * @param msg The parent message.
@@ -478,66 +434,31 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
-   * Send an `execute_result` message.
+   * Handle an execute_request message.
    *
    * @param msg The parent message.
-   * @param content The execut result content.
    */
-  private _executeResult(
-    msg: KernelMessage.IMessage,
-    content: Pick<KernelMessage.IExecuteResultMsg['content'], 'data' | 'metadata'>
-  ): void {
-    const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
-      msgType: 'execute_result',
-      parentHeader: msg.header,
-      channel: 'iopub',
-      session: msg.header.session,
-      content: {
-        ...content,
-        execution_count: this._executionCount
-      }
-    });
-    this._sendMessage(message);
-  }
+  private async _execute(msg: KernelMessage.IMessage): Promise<void> {
+    const executeMsg = msg as KernelMessage.IExecuteRequestMsg;
+    const content = executeMsg.content;
+    this._executionCount++;
 
-  /**
-   * Send an `execute_reply` message.
-   *
-   * @param msg The parent message.
-   * @param content The content for the execute reply.
-   */
-  private _executeReply(
-    msg: KernelMessage.IMessage,
-    content: KernelMessage.IExecuteReplyMsg['content']
-  ): void {
-    const parent = msg as KernelMessage.IExecuteRequestMsg;
+    // TODO: handle differently
+    this._parentHeader = executeMsg.header;
+
+    this._executeInput(executeMsg);
+
+    this._history.push([0, 0, content.code]);
+
+    const reply = await this.executeRequest(executeMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
       msgType: 'execute_reply',
       channel: 'shell',
-      parentHeader: parent.header,
+      parentHeader: executeMsg.header,
       session: msg.header.session,
-      content
+      content: reply
     });
-    this._sendMessage(message);
-  }
 
-  /**
-   * Send an `error` message.
-   *
-   * @param msg The parent message.
-   * @param content The content for the execution error response.
-   */
-  private _error(
-    msg: KernelMessage.IMessage,
-    content: KernelMessage.IErrorMsg['content']
-  ): void {
-    const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
-      msgType: 'error',
-      parentHeader: msg.header,
-      channel: 'iopub',
-      session: msg.header.session,
-      content
-    });
     this._sendMessage(message);
   }
 

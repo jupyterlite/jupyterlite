@@ -117,12 +117,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       }
       case 'execute_result': {
         const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
-        this.executeResult(bundle);
+        this.publishExecuteResult(bundle);
         break;
       }
       case 'execute_error': {
         const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
-        this.executeError(bundle);
+        this.publishExecuteError(bundle);
         break;
       }
       case 'comm_msg':
@@ -179,12 +179,9 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']> {
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
     const result = await this._sendWorkerMessage('execute-request', content);
-    if (result.name) {
-      throw result;
-    }
-    // TODO: move executeResult and executeError here
+
     return {
       execution_count: this.executionCount,
       ...result

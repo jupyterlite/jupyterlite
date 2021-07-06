@@ -82,16 +82,24 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
    */
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']> {
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
     const { code } = content;
     if (code.startsWith('%')) {
       const res = await this._magics(code);
       if (res) {
-        return res;
+        this.publishExecuteResult(res);
+
+        return {
+          status: 'ok',
+          execution_count: this.executionCount,
+          user_expressions: {}
+        };
       }
     }
+
     const res = super.executeRequest(content);
     this._inputs.push(code);
+
     return res;
   }
 
