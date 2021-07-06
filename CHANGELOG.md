@@ -2,6 +2,30 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0-alpha.4
+
+([Full Changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a3...5853f64f339b63cd022a2e1bc4bba2370331f5b2))
+
+### Enhancements made
+
+- Refactor the kernel implementation [#214](https://github.com/jtpio/jupyterlite/pull/214) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Skip serve tests on MacOS CI [#217](https://github.com/jtpio/jupyterlite/pull/217) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Cleanup the Plotly example [#220](https://github.com/jtpio/jupyterlite/pull/220) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jtpio/jupyterlite/graphs/contributors?from=2021-07-06&to=2021-07-06&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-06..2021-07-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-06..2021-07-06&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-06..2021-07-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a3
 
 ([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a2...2ff4cf17d57a514704b68a51fe05695ff888ac12))
@@ -49,8 +73,6 @@
 [@madhur-tandon](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-06-30..2021-07-06&type=Issues)
 |
 [@martinRenou](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-06-30..2021-07-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a2
 
