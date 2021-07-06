@@ -34,7 +34,7 @@ class Pyolite:
         }
 
     async def run(self, code):
-        self._last_traceback = None
+        self.interpreter._last_traceback = None
         exec_code = self.interpreter.transform_cell(code)
         await _load_packages_from_imports(exec_code)
         if self.interpreter.should_run_async(code):
