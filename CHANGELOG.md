@@ -2,6 +2,56 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## v0.1.0a3
+
+([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a2...2ff4cf17d57a514704b68a51fe05695ff888ac12))
+
+### Enhancements made
+
+- Hoist port and base_url to CLI [#212](https://github.com/jtpio/jupyterlite/pull/212)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Add `jupyterlab-kernelspy` to the demo site
+  [#198](https://github.com/jtpio/jupyterlite/pull/198)
+  ([@jtpio](https://github.com/jtpio))
+- Use IPython in Pyolite kernel [#171](https://github.com/jtpio/jupyterlite/pull/171)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+
+### Bugs fixed
+
+- Resolve absolute path of `out_dir`
+  [#200](https://github.com/jtpio/jupyterlite/pull/200)
+  ([@benabel](https://github.com/benabel))
+
+### Maintenance and upkeep improvements
+
+- move more path logic to traitlets
+  [#206](https://github.com/jtpio/jupyterlite/pull/206)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Add tbump configuration to bump the jupyterlite Python package
+  [#204](https://github.com/jtpio/jupyterlite/pull/204)
+  ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- DOC Deploy to gitlab pages [#203](https://github.com/jtpio/jupyterlite/pull/203)
+  ([@benabel](https://github.com/benabel))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jtpio/jupyterlite/graphs/contributors?from=2021-06-30&to=2021-07-06&type=c))
+
+[@benabel](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abenabel+updated%3A2021-06-30..2021-07-06&type=Issues)
+|
+[@bollwyvl](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-06-30..2021-07-06&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-06-30..2021-07-06&type=Issues)
+|
+[@madhur-tandon](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-06-30..2021-07-06&type=Issues)
+|
+[@martinRenou](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-06-30..2021-07-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a2
 
 ([full changelog](https://github.com/jtpio/jupyterlite/compare/v0.1.0a1...c8cbb818598435d5fb101ac0cfda29e135388fe4))
@@ -44,8 +94,6 @@
 [@bollwyvl](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-06-28..2021-06-30&type=Issues)
 |
 [@jtpio](https://github.com/search?q=repo%3Ajtpio%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-06-28..2021-06-30&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a1
 
