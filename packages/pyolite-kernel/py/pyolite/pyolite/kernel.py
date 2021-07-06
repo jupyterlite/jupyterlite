@@ -1,5 +1,7 @@
 # This is our ipykernel mock
 from ipykernel import CommManager
+from IPython.utils.tokenutil import line_at_cursor
+from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
 
 class Pyolite:
@@ -15,3 +17,30 @@ class Pyolite:
                 comms[comm_id] = dict(target_name=comm.target_name)
 
         return comms
+
+    def do_complete(self, code, cursor_pos):
+        if cursor_pos is None:
+            cursor_pos = len(code)
+        line, offset = line_at_cursor(code, cursor_pos)
+        line_cursor = cursor_pos - offset
+
+        txt, matches = self.interpreter.complete("", line, line_cursor)
+        return {
+            "matches": matches,
+            "cursor_end": cursor_pos,
+            "cursor_start": cursor_pos - len(txt),
+            "metadata": {},
+            "status": "ok",
+        }
+
+    async def run(self, code):
+        self._last_traceback = None
+        exec_code = self.interpreter.transform_cell(code)
+        await _load_packages_from_imports(exec_code)
+        if self.interpreter.should_run_async(code):
+            self.result = await self.interpreter.run_cell_async(
+                code, store_history=True
+            )
+        else:
+            self.result = self.interpreter.run_cell(code, store_history=True)
+        return self.result

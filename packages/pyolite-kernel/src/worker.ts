@@ -196,7 +196,7 @@ async function execute(content: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  await interpreter.run(content.code);
+  await kernel.run(content.code);
   const results: any = {};
 
   results['payload'] = formatResult(interpreter.payload_manager.read_payload());
@@ -230,7 +230,7 @@ async function execute(content: any) {
  * @param content The incoming message with the code to complete.
  */
 function complete(content: any) {
-  const res = interpreter.do_complete(content.code, content.cursor_pos);
+  const res = kernel.do_complete(content.code, content.cursor_pos);
   const results = formatResult(res);
   const reply = {
     parentheader: content.parentheader,
