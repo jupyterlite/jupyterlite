@@ -8,12 +8,12 @@ import time
 import pytest
 from tornado import httpclient
 
-if os.environ.get("CI", None) and sys.platform.startswith("darwin"):
+if os.environ.get("CI", None) and sys.platform.startswith("darwin"):  # pragma: no cover
     pytest.skip("skipping flaky MacOS tests", allow_module_level=True)
 
 
 @pytest.mark.parametrize("base_url,port", [[None, None], ["/@foo/", 8001]])
-def test_serve(an_empty_lite_dir, script_runner, base_url, port):
+def test_serve(an_empty_lite_dir, script_runner, base_url, port):  # pragma: no cover
     """verify that serving kinda works"""
     args = ["jupyter", "lite", "serve"]
 
@@ -52,7 +52,7 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, port):
         server.wait(timeout=10)
 
 
-def _fetch_without_errors(url, retries=10):
+def _fetch_without_errors(url, retries=10):  # pragma: no cover
     retries = 10
     last_error = None
 
@@ -64,7 +64,7 @@ def _fetch_without_errors(url, retries=10):
             r = client.fetch(url)
             assert b"jupyter-config-data" in r.body
             break
-        except Exception as err:
+        except Exception as err:  # pragma: no cover
             print(f"{err}: {retries} retries left...")
             time.sleep(0.5)
             last_error = err
