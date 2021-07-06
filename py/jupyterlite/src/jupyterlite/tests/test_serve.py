@@ -1,5 +1,6 @@
 """Test that various serving options work"""
 
+import os
 import subprocess
 import sys
 import time
@@ -7,8 +8,8 @@ import time
 import pytest
 from tornado import httpclient
 
-if not sys.platform.startswith("darwin"):
-    pytest.skip("skipping flaky osx tests", allow_module_level=True)
+if os.environ.get("CI", None) and sys.platform.startswith("darwin"):
+    pytest.skip("skipping flaky MacOS tests", allow_module_level=True)
 
 
 @pytest.mark.parametrize("base_url,port", [[None, None], ["/@foo/", 8001]])
