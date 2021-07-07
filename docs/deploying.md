@@ -225,7 +225,7 @@ automatically get a preview link when opening a new pull request:
 
 ### Netlify
 
-[Netlify](https://www.netlify.com/) makes it easy and convenient to host static website
+[Netlify](https://www.netlify.com/) makes it easy and convenient to host static websites
 from existing git repositories, and make them widely available via their CDN.
 
 To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
