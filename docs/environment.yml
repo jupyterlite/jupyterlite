@@ -38,6 +38,7 @@ dependencies:
   - ipywidgets
   - bqplot
   - ipyleaflet
+  - ipympl
   - ipycanvas
   - jupyterlab-drawio
   - jupyterlab-tour >=3.1.0
