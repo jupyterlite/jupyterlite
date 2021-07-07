@@ -223,6 +223,26 @@ automatically get a preview link when opening a new pull request:
 [autobuild documentation for pull requests]:
   https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
 
+### Netlify
+
+[Netlify](https://www.netlify.com/) makes it easy and convenient to host static website
+from existing git repositories, and make them widely available via their CDN.
+
+To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
+generating a new repository from the template.
+
+Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
+dependency.
+
+Finally specify `jupyter lite build --output-dir dist` as the "Build Command", and
+`dist` as "Published Directory":
+
+![netlify-build](https://user-images.githubusercontent.com/591645/124728917-4846c380-df10-11eb-8256-65e60dd3f258.png)
+
+You might also want to specify the `--debug` flag to get extra log messages:
+
+![deploy-logs](https://user-images.githubusercontent.com/591645/124779931-79d88280-df42-11eb-8f94-93d5715c18bc.png)
+
 ### Vercel
 
 > TBD
@@ -233,11 +253,9 @@ JupyterLite can easily be deployed on GitHub Pages, using the `jupyterlite` CLI 
 content and extensions.
 
 ```{hint}
-See the [github pages demo] for an example. That repository is a GitHub template repository
+See the [JupyterLite Demo] for an example. That repository is a GitHub template repository
 which makes it convenient to generate a new JupyterLite site with a single click.
 ```
-
-[github pages demo]: https://github.com/jtpio/jupyterlite-demo
 
 ### GitLab Pages
 
@@ -272,3 +290,5 @@ See the [gitlab pages template] for a more involved example.
 ### Heroku
 
 > TBD
+
+[jupyterlite demo]: https://github.com/jupyterlite/demo
