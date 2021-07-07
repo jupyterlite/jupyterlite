@@ -19,10 +19,11 @@ sys.modules["termios"] = termios_mock
 sys.modules["fcntl"] = fcntl_mock
 sys.modules["resource"] = resource_mock
 
-from .patches import ensure_matplotlib_patch
+from .patches import ensure_matplotlib_patch, ensure_pil_patch
 
 # apply patches for available modules
 ensure_matplotlib_patch()
+ensure_pil_patch()
 
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
