@@ -2,32 +2,49 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
-## 0.1.0-alpha.4
+## v0.1.0a4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a3...b984c7528204a1d6506464de7dd62363d29ba830))
 
 ### Enhancements made
 
-- Add ipympl example [#219](https://github.com/jupyterlite/jupyterlite/pull/219) ([@martinRenou](https://github.com/martinRenou))
-- Refactor the kernel implementation [#214](https://github.com/jupyterlite/jupyterlite/pull/214) ([@martinRenou](https://github.com/martinRenou))
+- Add ipympl example [#219](https://github.com/jupyterlite/jupyterlite/pull/219)
+  ([@martinRenou](https://github.com/martinRenou))
+- Refactor the kernel implementation
+  [#214](https://github.com/jupyterlite/jupyterlite/pull/214)
+  ([@martinRenou](https://github.com/martinRenou))
 
 ### Maintenance and upkeep improvements
 
-- Skip serve tests on MacOS CI [#217](https://github.com/jupyterlite/jupyterlite/pull/217) ([@bollwyvl](https://github.com/bollwyvl))
+- Skip serve tests on MacOS CI
+  [#217](https://github.com/jupyterlite/jupyterlite/pull/217)
+  ([@bollwyvl](https://github.com/bollwyvl))
 
 ### Documentation improvements
 
-- Update links to point to the organization [#231](https://github.com/jupyterlite/jupyterlite/pull/231) ([@jtpio](https://github.com/jtpio))
-- Add status section to the README [#230](https://github.com/jupyterlite/jupyterlite/pull/230) ([@jtpio](https://github.com/jtpio))
-- Add docs to deploy on Netlify [#228](https://github.com/jupyterlite/jupyterlite/pull/228) ([@jtpio](https://github.com/jtpio))
-- Cleanup the Plotly example [#220](https://github.com/jupyterlite/jupyterlite/pull/220) ([@jtpio](https://github.com/jtpio))
-- Add ipympl example [#219](https://github.com/jupyterlite/jupyterlite/pull/219) ([@martinRenou](https://github.com/martinRenou))
+- Update links to point to the organization
+  [#231](https://github.com/jupyterlite/jupyterlite/pull/231)
+  ([@jtpio](https://github.com/jtpio))
+- Add status section to the README
+  [#230](https://github.com/jupyterlite/jupyterlite/pull/230)
+  ([@jtpio](https://github.com/jtpio))
+- Add docs to deploy on Netlify
+  [#228](https://github.com/jupyterlite/jupyterlite/pull/228)
+  ([@jtpio](https://github.com/jtpio))
+- Cleanup the Plotly example [#220](https://github.com/jupyterlite/jupyterlite/pull/220)
+  ([@jtpio](https://github.com/jtpio))
+- Add ipympl example [#219](https://github.com/jupyterlite/jupyterlite/pull/219)
+  ([@martinRenou](https://github.com/martinRenou))
 
 ### Contributors to this release
 
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-07-06&to=2021-07-08&type=c))
 
-[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-06..2021-07-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-06..2021-07-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-06..2021-07-08&type=Issues)
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-06..2021-07-08&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-06..2021-07-08&type=Issues)
+|
+[@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-06..2021-07-08&type=Issues)
 
 <!-- <END NEW CHANGELOG ENTRY> -->
 
