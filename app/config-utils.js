@@ -77,7 +77,7 @@ const IS_ROOT = HERE == FULL_LITE_ROOT;
 /**
  * Paths that are joined with baseUrl to derive full URLs
  */
-const UNPREFIXED_PATHS = ['licensesUrl' 'themesUrl'];
+const UNPREFIXED_PATHS = ['licensesUrl', 'themesUrl'];
 
 /* a DOM parser for reading html files */
 const parser = new DOMParser();
