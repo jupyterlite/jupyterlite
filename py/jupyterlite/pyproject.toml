@@ -7,13 +7,13 @@ module = "jupyterlite"
 author = "JupyterLite Contributors"
 description-file = "README.md"
 license = "BSD-3-Clause"
-home-page = "https://github.com/jtpio/jupyterlite"
+home-page = "https://github.com/jupyterlite/jupyterlite"
 requires-python = ">=3.7"
 requires = [
     "doit",
     "entrypoints",
     "jupyter_core >=4.7",
-    # TODO: support wheels https://github.com/jtpio/jupyterlite/issues/151
+    # TODO: support wheels https://github.com/jupyterlite/jupyterlite/issues/151
     # "wheel",
 ]
 keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"

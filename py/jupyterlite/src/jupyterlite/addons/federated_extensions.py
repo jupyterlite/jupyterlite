@@ -67,7 +67,7 @@ class FederatedExtensionAddon(BaseAddon):
 
             the latter per-app steps should be at least cut in half, if not
             avoided altogether.
-            See https://github.com/jtpio/jupyterlite/issues/118
+            See https://github.com/jupyterlite/jupyterlite/issues/118
         """
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
         lab_extensions_root = manager.output_dir / LAB_EXTENSIONS

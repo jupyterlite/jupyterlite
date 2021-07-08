@@ -78,7 +78,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       help_links: [
         {
           text: 'JavaScript Kernel',
-          url: 'https://github.com/jtpio/jupyterlite'
+          url: 'https://github.com/jupyterlite/jupyterlite'
         }
       ]
     };

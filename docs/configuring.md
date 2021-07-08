@@ -40,7 +40,7 @@ schema-v0
 ```
 
 [nbformat]: https://nbformat.readthedocs.io/en/latest/format_description.html
-[releases]: https://github.com/jtpio/jupyterlite/releases
+[releases]: https://github.com/jupyterlite/jupyterlite/releases
 [pypi]: https://pypi.org/project/jupyterlite
 [npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
 
@@ -134,7 +134,7 @@ transient dependencies _also_ include labextensions, but don't work entirely cor
 | `@jupyterlab/server-proxy`            | needs server extension       |               |
 | `nbdime`                              | needs server extension       |               |
 
-[#18]: https://github.com/jtpio/jupyterlite/issues/18
+[#18]: https://github.com/jupyterlite/jupyterlite/issues/18
 [jupyter kernel comms]:
   https://jupyter-client.readthedocs.io/en/stable/messaging.html?highlight=comms#custom-messages
 

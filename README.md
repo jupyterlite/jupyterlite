@@ -2,10 +2,10 @@
 
 [![ci-badge]][ci] [![binder-badge]][binder] [![docs-badge]][docs]
 
-[ci-badge]: https://github.com/jtpio/jupyterlite/workflows/Build/badge.svg
-[ci]: https://github.com/jtpio/jupyterlite/actions?query=branch%3Amain
+[ci-badge]: https://github.com/jupyterlite/jupyterlite/workflows/Build/badge.svg
+[ci]: https://github.com/jupyterlite/jupyterlite/actions?query=branch%3Amain
 [binder-badge]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jtpio/jupyterlite/main?urlpath=lab
+[binder]: https://mybinder.org/v2/gh/jupyterlite/jupyterlite/main?urlpath=lab
 [docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=latest
 [docs]: https://jupyterlite.readthedocs.io/en/latest/?badge=latest
 
@@ -120,7 +120,7 @@ such as GitHub Pages or ReadTheDocs.
 ## Development install
 
 See the
-[contributing guide](https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md) for
+[contributing guide](https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md) for
 a development installation.
 
 ## Related

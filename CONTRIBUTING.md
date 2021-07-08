@@ -10,7 +10,7 @@ Thanks for contributing to JupyterLite!
 ### Get the Code
 
 ```bash
-git clone https://github.com/jtpio/jupyterlite
+git clone https://github.com/jupyterlite/jupyterlite
 ```
 
 > if you don't have `git` yet, you might be able to use the instructions below to get it
@@ -109,7 +109,7 @@ from:
 While most of the scripts below will be run (in the correct order based on changes) by
 `doit`, the following _scripts_ (defined in `package.json`) are worth highlighting.
 
-[#7]: https://github.com/jtpio/jupyterlite/issues/7
+[#7]: https://github.com/jupyterlite/jupyterlite/issues/7
 
 #### Quick start
 
@@ -187,7 +187,7 @@ yarn test
 
 > _TBD: describe successor to `pyolite`, patches, etc. See [#151]._
 
-[#151]: https://github.com/jtpio/jupyterlite/issues/151
+[#151]: https://github.com/jupyterlite/jupyterlite/issues/151
 
 ### (Server) Python Development
 
@@ -291,16 +291,16 @@ page, including:
 
 > You must be logged in to GitHub to download these.
 
-[actions]: https://github.com/jtpio/jupyterlite/actions
+[actions]: https://github.com/jupyterlite/jupyterlite/actions
 
 ### Releasing
 
 > TBD: See [#121].
 
-[#121]: https://github.com/jtpio/jupyterlite/issues/121
-[issues]: https://github.com/jtpio/jupyterlite/issues
-[new issue]: https://github.com/jtpio/jupyterlite/issues/new
-[pull requests]: https://github.com/jtpio/jupyterlite/pulls
-[repo]: https://github.com/jtpio/jupyterlite
+[#121]: https://github.com/jupyterlite/jupyterlite/issues/121
+[issues]: https://github.com/jupyterlite/jupyterlite/issues
+[new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
+[pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
+[repo]: https://github.com/jupyterlite/jupyterlite
 [coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
 [mambaforge]: https://github.com/conda-forge/miniforge
