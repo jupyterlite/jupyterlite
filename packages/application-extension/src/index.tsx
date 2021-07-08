@@ -198,8 +198,10 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
     const urlParams = new URLSearchParams(window.location.search);
     // default to a random id to not collaborate with others by default
-    const room = urlParams.get('room') || UUID.uuid4();
-    const collaborative = PageConfig.getOption('collaborative') === 'true';
+    const roomName = urlParams.get('room');
+    const room = roomName || UUID.uuid4();
+    // enable if both the page config option (deployment wide) and the room name (user) are defined
+    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       return collaborative
         ? new WebRtcProvider({
