@@ -72,7 +72,7 @@ serve = "jupyterlite.addons.serve:ServeAddon"
 archive = "jupyterlite.addons.archive:ArchiveAddon"
 
 [tool.tbump.version]
-current = "0.1.0a3"
+current = "0.1.0a4"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
