@@ -13,6 +13,4 @@ import '@jupyterlite/server';
 import '@jupyterlite/server-extension';
 import '@jupyterlite/session';
 import '@jupyterlite/settings';
-import '@jupyterlite/theme-extension';
-import '@jupyterlite/theme';
 import '@jupyterlite/ui-components';

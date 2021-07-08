@@ -84,7 +84,6 @@
     "@jupyterlite/pyolite-kernel-extension": "^0.1.0-alpha.4",
     "@jupyterlite/server": "^0.1.0-alpha.4",
     "@jupyterlite/server-extension": "^0.1.0-alpha.4",
-    "@jupyterlite/theme-extension": "^0.1.0-alpha.4",
     "@lumino/algorithm": "^1.6.0",
     "@lumino/application": "^1.20.0",
     "@lumino/commands": "^1.15.0",
@@ -141,7 +140,6 @@
     "@jupyterlite/pyolite-kernel-extension": "^0.1.0-alpha.4",
     "@jupyterlite/server": "^0.1.0-alpha.4",
     "@jupyterlite/server-extension": "^0.1.0-alpha.4",
-    "@jupyterlite/theme-extension": "^0.1.0-alpha.4",
     "@jupyterlite/ui-components": "^0.1.0-alpha.4",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
@@ -178,7 +176,6 @@
   "jupyterlab": {
     "extensions": [
       "@jupyterlite/application-extension",
-      "@jupyterlite/theme-extension",
       "@jupyterlite/iframe-extension",
       "@jupyterlab/application-extension",
       "@jupyterlab/apputils-extension",

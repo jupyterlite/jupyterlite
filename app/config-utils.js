@@ -79,8 +79,7 @@ const IS_ROOT = HERE == FULL_LITE_ROOT;
  */
 const UNPREFIXED_PATHS = [
   'licensesUrl'
-  // TODO: https://github.com/jupyterlite/jupyterlite/pull/205
-  // 'themesUrl',
+  'themesUrl',
 ];
 
 /* a DOM parser for reading html files */

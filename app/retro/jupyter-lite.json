@@ -3,6 +3,6 @@
   "jupyter-config-data": {
     "fullStaticUrl": "./build",
     "settingsUrl": "./build/schemas",
-    "themesUrl": "./build/themes"
+    "themesUrl": "./retro/build/themes"
   }
 }
