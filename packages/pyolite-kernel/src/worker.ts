@@ -123,18 +123,18 @@ async function execute(content: any) {
     });
   };
 
-  // const publishExecutionError = (ename: any, evalue: any, traceback: any): void => {
-  //   const bundle = {
-  //     ename: ename,
-  //     evalue: evalue,
-  //     traceback: traceback
-  //   };
-  //   postMessage({
-  //     parentHeader: content.parentHeader,
-  //     bundle,
-  //     type: 'execute_error'
-  //   });
-  // };
+  const publishExecutionError = (ename: any, evalue: any, traceback: any): void => {
+    const bundle = {
+      ename: ename,
+      evalue: evalue,
+      traceback: traceback
+    };
+    postMessage({
+      parentHeader: content.parentHeader,
+      bundle,
+      type: 'execute_error'
+    });
+  };
 
   const clearOutputCallback = (wait: boolean): void => {
     const bundle = {
@@ -197,32 +197,19 @@ async function execute(content: any) {
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
   kernel._parent_header = content.parentheader;
-  const results = await kernel.run(content.code);
+  const res = await kernel.run(content.code);
+  const reply = formatResult(res);
 
-  console.log(results);
-  console.log(formatResult(results));
+  if (reply['results']['status'] === 'error') {
+    publishExecutionError(
+      reply['results']['ename'],
+      reply['results']['evalue'],
+      reply['results']['traceback']
+    );
+  }
 
-  // if (typeof interpreter._last_traceback === 'undefined') {
-  //   results['status'] = 'ok';
-  //   // TODO: set results['user_expressions']
-  // } else {
-  //   const last_traceback = formatResult(interpreter._last_traceback);
-  //   results['status'] = 'error';
-  //   results['ename'] = last_traceback['ename'];
-  //   results['evalue'] = last_traceback['evalue'];
-  //   results['traceback'] = last_traceback['traceback'];
-
-  //   publishExecutionError(results['ename'], results['evalue'], results['traceback']);
-  // }
-
-  // const reply = {
-  //   parentheader: content.parentheader,
-  //   results,
-  //   type: 'reply'
-  // };
-
-  postMessage(formatResult(results));
-  return results;
+  postMessage(reply);
+  return reply;
 }
 /**
  * Complete the code submitted by a user.

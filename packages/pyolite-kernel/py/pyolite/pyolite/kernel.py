@@ -53,7 +53,7 @@ class Pyolite:
         results["payload"] = self.interpreter.payload_manager.read_payload()
         self.interpreter.payload_manager.clear_payload()
 
-        if self.interpreter._last_traceback is not None:
+        if self.interpreter._last_traceback is None:
             results["status"] = "ok"
         else:
             last_traceback = self.interpreter._last_traceback
