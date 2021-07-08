@@ -19,10 +19,11 @@ sys.modules["resource"] = types.ModuleType("resource")
 # This is needed for some Matplotlib backends (webagg, ipympl)
 sys.modules["tornado"] = types.ModuleType("tornados")
 
-from .patches import ensure_matplotlib_patch
+from .patches import ensure_matplotlib_patch, ensure_pil_patch
 
 # apply patches for available modules
 ensure_matplotlib_patch()
+ensure_pil_patch()
 
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
