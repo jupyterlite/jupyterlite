@@ -107,9 +107,9 @@ const about: JupyterFrontEndPlugin<void> = {
         );
 
         // Create the body of the about dialog
-        const jupyterliteURL = 'https://github.com/jtpio/jupyterlite';
+        const jupyterliteURL = 'https://github.com/jupyterlite/jupyterlite';
         const contributorsURL =
-          'https://github.com/jtpio/jupyterlite/graphs/contributors';
+          'https://github.com/jupyterlite/jupyterlite/graphs/contributors';
         const externalLinks = (
           <span className="jp-About-externalLinks">
             <a

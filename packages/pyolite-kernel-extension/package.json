@@ -2,13 +2,13 @@
   "name": "@jupyterlite/pyolite-kernel-extension",
   "version": "0.1.0-alpha.3",
   "description": "JupyterLite - Pyolite Kernel Extension",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",

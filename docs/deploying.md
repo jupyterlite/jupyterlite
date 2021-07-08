@@ -44,8 +44,8 @@ jupyter lite init
 - _TBD: use `cookiecutter-jupyterlite`_
 - _TBD: `yarn add @jupyterlite/builder` from `npmjs.com`_
 
-[github actions]: https://github.com/jtpio/jupyterlite/actions
-[releases]: https://github.com/jtpio/jupyterlite/releases
+[github actions]: https://github.com/jupyterlite/jupyterlite/actions
+[releases]: https://github.com/jupyterlite/jupyterlite/releases
 [pypi]: https://pypi.org/project/jupyterlite/
 
 ```{hint}
@@ -115,8 +115,8 @@ will immediately redirect to `appUrl` as defined in the [schema].
   https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_extra_path
 [sphinx]: https://www.sphinx-doc.org
 [myst-nb]: https://github.com/executablebooks/MyST-NB
-[conf.py]: https://github.com/jtpio/jupyterlite/blob/main/docs/conf.py
-[dodo.py]: https://github.com/jtpio/jupyterlite/blob/main/dodo.py
+[conf.py]: https://github.com/jupyterlite/jupyterlite/blob/main/docs/conf.py
+[dodo.py]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
 [schema]: ./schema-v0.rst
 
 ## Standalone Servers
@@ -200,7 +200,7 @@ preview.
 See the JupyterLite [binder configuration] for an example.
 ```
 
-[binder configuration]: https://github.com/jtpio/jupyterlite/tree/main/.binder
+[binder configuration]: https://github.com/jupyterlite/jupyterlite/tree/main/.binder
 
 ### ReadTheDocs
 
@@ -219,7 +219,8 @@ automatically get a preview link when opening a new pull request:
 ![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
 ```
 
-[.readthedocs.yml]: https://github.com/jtpio/jupyterlite/blob/main/.readthedocs.yml
+[.readthedocs.yml]:
+  https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml
 [autobuild documentation for pull requests]:
   https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
 

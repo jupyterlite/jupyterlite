@@ -6,7 +6,7 @@ import sys
 import types
 
 # Set the recursion limit, needed for altair
-# for more details, see: https://github.com/jtpio/jupyterlite/pull/113#issuecomment-851072065
+# for more details, see: https://github.com/jupyterlite/jupyterlite/pull/113#issuecomment-851072065
 sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
 
 termios_mock = types.ModuleType("termios")

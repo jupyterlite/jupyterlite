@@ -68,7 +68,7 @@ export class P5Kernel extends JavaScriptKernel implements IKernel {
       help_links: [
         {
           text: 'p5.js Kernel',
-          url: 'https://github.com/jtpio/jupyterlite'
+          url: 'https://github.com/jupyterlite/jupyterlite'
         }
       ]
     };

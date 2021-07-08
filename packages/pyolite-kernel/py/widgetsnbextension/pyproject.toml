@@ -5,5 +5,5 @@ build-backend = "flit_core.buildapi"
 [tool.flit.metadata]
 module = "widgetsnbextension"
 author = "JupyterLite Contributors"
-home-page = "https://github.com/jtpio/jupyterlite"
+home-page = "https://github.com/jupyterlite/jupyterlite"
 requires-python = ">=3.6"
