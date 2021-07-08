@@ -33,7 +33,7 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { toArray } from '@lumino/algorithm';
 
-import { UUID } from '@lumino/coreutils';
+import { UUID, PromiseDelegate } from '@lumino/coreutils';
 
 import { Widget } from '@lumino/widgets';
 
@@ -46,18 +46,41 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
     super(`${options.room}${options.guid}`, options.ymodel.ydoc);
     this.awareness = options.ymodel.awareness;
   }
+
   requestInitialContent(): Promise<boolean> {
-    return Promise.resolve(false);
+    if (this._initialRequest) {
+      return this._initialRequest.promise;
+    }
+    let resolved = false;
+    this._initialRequest = new PromiseDelegate<boolean>();
+    this.on('synced', (event: any) => {
+      if (this._initialRequest) {
+        this._initialRequest.resolve(event.synced);
+        resolved = true;
+      }
+    });
+    // similar logic as in the upstream plugin
+    setTimeout(() => {
+      if (!resolved && this._initialRequest) {
+        this._initialRequest.resolve(false);
+      }
+    }, 1000);
+    return this._initialRequest.promise;
   }
+
   putInitializedState(): void {
     // no-op
   }
+
   acquireLock(): Promise<number> {
     return Promise.resolve(0);
   }
+
   releaseLock(lock: number): void {
     // no-op
   }
+
+  private _initialRequest: PromiseDelegate<boolean> | null = null;
 }
 
 /**
