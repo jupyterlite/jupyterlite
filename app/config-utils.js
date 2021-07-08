@@ -74,6 +74,15 @@ const FULL_LITE_ROOT = new URL(RAW_LITE_ROOT, HERE).toString();
  */
 const IS_ROOT = HERE == FULL_LITE_ROOT;
 
+/**
+ * Paths that are joined with baseUrl to derive full URLs
+ */
+const UNPREFIXED_PATHS = [
+  'licensesUrl'
+  // TODO: https://github.com/jupyterlite/jupyterlite/pull/205
+  // 'themesUrl',
+];
+
 /* a DOM parser for reading html files */
 const parser = new DOMParser();
 
@@ -206,6 +215,9 @@ export function fixRelativeUrls(url, config) {
   let urlBase = new URL(url || here()).pathname;
   for (const [k, v] of Object.entries(config)) {
     if (k.endsWith('Url') && v.startsWith('./')) {
+      if (UNPREFIXED_PATHS.includes(k)) {
+        continue;
+      }
       config[k] = `${urlBase}${v.slice(2)}`;
     }
   }
