@@ -219,7 +219,8 @@ automatically get a preview link when opening a new pull request:
 ![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
 ```
 
-[.readthedocs.yml]: https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml
+[.readthedocs.yml]:
+  https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml
 [autobuild documentation for pull requests]:
   https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
 
