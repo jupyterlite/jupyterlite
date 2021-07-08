@@ -123,18 +123,18 @@ async function execute(content: any) {
     });
   };
 
-  const publishExecutionError = (ename: any, evalue: any, traceback: any): void => {
-    const bundle = {
-      ename: ename,
-      evalue: evalue,
-      traceback: traceback
-    };
-    postMessage({
-      parentHeader: content.parentHeader,
-      bundle,
-      type: 'execute_error'
-    });
-  };
+  // const publishExecutionError = (ename: any, evalue: any, traceback: any): void => {
+  //   const bundle = {
+  //     ename: ename,
+  //     evalue: evalue,
+  //     traceback: traceback
+  //   };
+  //   postMessage({
+  //     parentHeader: content.parentHeader,
+  //     bundle,
+  //     type: 'execute_error'
+  //   });
+  // };
 
   const clearOutputCallback = (wait: boolean): void => {
     const bundle = {
@@ -196,32 +196,32 @@ async function execute(content: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  await kernel.run(content.code);
-  const results: any = {};
+  kernel._parent_header = content.parentheader;
+  const results = await kernel.run(content.code);
 
-  results['payload'] = formatResult(interpreter.payload_manager.read_payload());
-  interpreter.payload_manager.clear_payload();
+  console.log(results);
+  console.log(formatResult(results));
 
-  if (typeof interpreter._last_traceback === 'undefined') {
-    results['status'] = 'ok';
-    // TODO: set results['user_expressions']
-  } else {
-    const last_traceback = formatResult(interpreter._last_traceback);
-    results['status'] = 'error';
-    results['ename'] = last_traceback['ename'];
-    results['evalue'] = last_traceback['evalue'];
-    results['traceback'] = last_traceback['traceback'];
+  // if (typeof interpreter._last_traceback === 'undefined') {
+  //   results['status'] = 'ok';
+  //   // TODO: set results['user_expressions']
+  // } else {
+  //   const last_traceback = formatResult(interpreter._last_traceback);
+  //   results['status'] = 'error';
+  //   results['ename'] = last_traceback['ename'];
+  //   results['evalue'] = last_traceback['evalue'];
+  //   results['traceback'] = last_traceback['traceback'];
 
-    publishExecutionError(results['ename'], results['evalue'], results['traceback']);
-  }
+  //   publishExecutionError(results['ename'], results['evalue'], results['traceback']);
+  // }
 
-  const reply = {
-    parentheader: content.parentheader,
-    results,
-    type: 'reply'
-  };
+  // const reply = {
+  //   parentheader: content.parentheader,
+  //   results,
+  //   type: 'reply'
+  // };
 
-  postMessage(reply);
+  postMessage(formatResult(results));
   return results;
 }
 /**
@@ -230,14 +230,9 @@ async function execute(content: any) {
  * @param content The incoming message with the code to complete.
  */
 function complete(content: any) {
-  const res = kernel.do_complete(content.code, content.cursor_pos);
-  const results = formatResult(res);
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results
-  };
-
+  kernel._parent_header = content.parentheader;
+  const res = kernel.complete(content.code, content.cursor_pos);
+  const reply = formatResult(res);
   postMessage(reply);
 }
 

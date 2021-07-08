@@ -8,6 +8,7 @@ class Pyolite:
     def __init__(self, interpreter):
         self.interpreter = interpreter
         self.comm_manager = CommManager(kernel=self)
+        self._parent_header = None
 
     def comm_info(self, target_name=""):
         comms = {}
@@ -18,7 +19,7 @@ class Pyolite:
 
         return comms
 
-    def do_complete(self, code, cursor_pos):
+    def complete(self, code, cursor_pos):
         if cursor_pos is None:
             cursor_pos = len(code)
         line, offset = line_at_cursor(code, cursor_pos)
@@ -26,11 +27,15 @@ class Pyolite:
 
         txt, matches = self.interpreter.complete("", line, line_cursor)
         return {
-            "matches": matches,
-            "cursor_end": cursor_pos,
-            "cursor_start": cursor_pos - len(txt),
-            "metadata": {},
-            "status": "ok",
+            "parentheader": self._parent_header,
+            "type": "reply",
+            "results": {
+                "matches": matches,
+                "cursor_end": cursor_pos,
+                "cursor_start": cursor_pos - len(txt),
+                "metadata": {},
+                "status": "ok",
+            },
         }
 
     async def run(self, code):
@@ -43,4 +48,22 @@ class Pyolite:
             )
         else:
             self.result = self.interpreter.run_cell(code, store_history=True)
-        return self.result
+
+        results = {}
+        results["payload"] = self.interpreter.payload_manager.read_payload()
+        self.interpreter.payload_manager.clear_payload()
+
+        if self.interpreter._last_traceback is not None:
+            results["status"] = "ok"
+        else:
+            last_traceback = self.interpreter._last_traceback
+            results["status"] = "error"
+            results["ename"] = last_traceback["ename"]
+            results["evalue"] = last_traceback["evalue"]
+            results["traceback"] = last_traceback["traceback"]
+
+        return {
+            "parentheader": self._parent_header,
+            "type": "reply",
+            "results": results,
+        }
