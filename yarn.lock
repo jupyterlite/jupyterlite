@@ -3677,9 +3677,14 @@
     "@jupyterlab/apputils" "^3.1.0-alpha.11"
     "@jupyterlab/docmanager" "^3.1.0-alpha.11"
     "@jupyterlab/docprovider" "^3.1.0-alpha.11"
+    "@jupyterlab/filebrowser" "^3.1.0-alpha.11"
+    "@jupyterlab/help-extension" "^3.1.0-alpha.11"
     "@jupyterlab/mainmenu" "^3.1.0-alpha.11"
+    "@jupyterlab/services" "^6.1.0-alpha.11"
     "@jupyterlab/translation" "^3.1.0-alpha.11"
+    "@jupyterlab/ui-components" "^3.1.0-alpha.11"
     "@jupyterlite/ui-components" "^0.1.0-alpha.4"
+    "@lumino/algorithm" "^1.6.0"
     "@lumino/widgets" "^1.23.0"
 
 "@jupyterlite/contents@file:packages/contents":
@@ -3778,21 +3783,6 @@
     "@lumino/coreutils" "^1.8.0"
     json5 "^2.2.0"
     localforage "^1.9.0"
-
-"@jupyterlite/theme-extension@file:packages/theme-extension":
-  version "0.1.0-alpha.4"
-  dependencies:
-    "@jupyterlab/application" "^3.1.0-alpha.11"
-    "@jupyterlab/apputils" "^3.1.0-alpha.11"
-    "@jupyterlab/coreutils" "^5.1.0-alpha.11"
-    "@jupyterlab/settingregistry" "^3.1.0-alpha.11"
-    "@jupyterlite/theme" "^0.1.0-alpha.4"
-
-"@jupyterlite/theme@file:packages/theme":
-  version "0.1.0-alpha.4"
-  dependencies:
-    "@jupyterlab/apputils" "^3.1.0-alpha.11"
-    "@jupyterlab/coreutils" "^5.1.0-alpha.11"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
   version "0.1.0-alpha.4"
