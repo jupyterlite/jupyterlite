@@ -120,8 +120,8 @@ such as GitHub Pages or ReadTheDocs.
 ## Development install
 
 See the
-[contributing guide](https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md) for
-a development installation.
+[contributing guide](https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md)
+for a development installation.
 
 ## Related
 
