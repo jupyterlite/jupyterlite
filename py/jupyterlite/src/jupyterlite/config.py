@@ -47,15 +47,17 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     app_archive: Path = CPath(
-        help=("The app archive to use. env: JUPYTERLITE_APP_ARCHIVE")
+        help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE"
     ).tag(config=True)
 
     lite_dir: Path = CPath(
-        help=("The root folder of a JupyterLite project. env: JUPYTERLITE_DIR")
+        help="The root folder of a JupyterLite project. env: JUPYTERLITE_DIR"
     ).tag(config=True)
 
+    cache_dir: Path = CPath(help="A cache folder").tag(config=True)
+
     output_dir: Path = CPath(
-        help=("Where to build the JupyterLite site. env: JUPYTERLITE_OUTPUT_DIR")
+        help="Where to build the JupyterLite site. env: JUPYTERLITE_OUTPUT_DIR"
     ).tag(config=True)
 
     output_archive: Path = CPath(
@@ -117,6 +119,10 @@ class LiteBuildConfig(LoggingConfigurable):
             or self.lite_dir / C.DEFAULT_OUTPUT_DIR
         )
 
+    @default("cache_dir")
+    def _default_cache_dir(self):
+        return Path(os.environ.get("JUPYTERLITE_CACHE_DIR") or self.lite_dir / ".cache")
+
     @default("lite_dir")
     def _default_lite_dir(self):
         return Path(os.environ.get("JUPYTERLITE_DIR", Path.cwd()))
@@ -142,10 +148,12 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("ignore_files")
     def _default_ignore_files(self):
+        output_dir = self.output_dir.name.replace(".", "\\.")
         return [
             ".*\.pyc",
             "/\.git/",
             "/\.gitignore",
+            "/\.cache/",
             "/\.ipynb_checkpoints/",
             "/build/",
             "/lib/",
@@ -159,7 +167,7 @@ class LiteBuildConfig(LoggingConfigurable):
             C.JUPYTERLITE_IPYNB.replace(".", "\\."),
             "untitled.*",
             "Untitled.*",
-            f"/{self.output_dir.name}/",
+            f"""/{output_dir}/""",
         ]
 
     @default("app_archive")

@@ -1,8 +1,9 @@
 """a JupyterLite addon for supporting federated_extensions"""
 import json
-import shutil
+import re
 import sys
 import tempfile
+import urllib.parse
 import zipfile
 from pathlib import Path
 
@@ -24,7 +25,7 @@ ENV_EXTENSIONS = Path(sys.prefix) / SHARE_LABEXTENSIONS
 class FederatedExtensionAddon(BaseAddon):
     """sync the as-installed federated_extensions and update `jupyter-lite.json`"""
 
-    __all__ = ["pre_build", "post_build"]
+    __all__ = ["pre_build", "post_build", "post_init"]
 
     def env_extensions(self, root):
         """a list of all federated extensions"""
@@ -38,6 +39,11 @@ class FederatedExtensionAddon(BaseAddon):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
 
+    def post_init(self, manager):
+        """handle downloading of federated extensions"""
+        for path_or_url in manager.federated_extensions:
+            yield from self.resolve_one_extension(path_or_url, init=True)
+
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
         root = ENV_EXTENSIONS
@@ -47,7 +53,7 @@ class FederatedExtensionAddon(BaseAddon):
                 yield from self.copy_one_extension(pkg_json)
 
         for path_or_url in manager.federated_extensions:
-            yield from self.resolve_one_extension(path_or_url)
+            yield from self.resolve_one_extension(path_or_url, init=False)
 
     def build(self, manager):
         """yield a doit task to copy each local extension into the output_dir"""
@@ -75,27 +81,42 @@ class FederatedExtensionAddon(BaseAddon):
             actions=[(self.copy_one, [pkg_path, dest])],
         )
 
-    def resolve_one_extension(self, path_or_url):
-        """try to resolve one URL or local folder/archive as a federated_extension"""
-        local_path = None
-
-        try:
-            local_path = (self.manager.lite_dir / path_or_url).resolve()
-        except Exception:
-            pass
-
-        if local_path is not None:
-            if local_path.is_dir():
-                yield from self.copy_one_folder_extension(path_or_url)
+    def resolve_one_extension(self, path_or_url, init):
+        """try to resolve one URL or local folder/archive as a (set of) federated_extension(s)"""
+        if re.findall(r"^https?://", path_or_url):
+            url = urllib.parse.urlparse(path_or_url)
+            name = url.path.split("/")[-1]
+            dest = self.manager.cache_dir / name
+            if init:
+                if not dest.exists():
+                    yield dict(
+                        name=f"fetch:{name}",
+                        actions=[(self.fetch_one, [path_or_url, dest])],
+                        targets=[dest],
+                    )
                 return
+            # if not initializing, assume path is now local
+            path_or_url = dest.resolve()
+
+        if init:
+            # nothing to do for local files during this phase
+            return
+
+        local_path = (self.manager.lite_dir / path_or_url).resolve()
+
+        if local_path.is_dir():
+            yield from self.copy_one_folder_extension(local_path)
+        elif local_path.exists():
             suffix = local_path.suffix
+
             if suffix == ".whl":
-                yield from self.copy_one_wheel_extension(path_or_url)
+                yield from self.copy_one_wheel_extension(local_path)
             elif suffix == ".bz2":
                 raise NotImplementedError("no conda for you")
-            else:
+            else:  # pragma: no cover
                 raise NotImplementedError(f"unknown archive {suffix}")
-            return
+        else:  # pragma: no cover
+            raise FileNotFoundError(path_or_url)
 
     def copy_one_folder_extension(self, path):
         """copy one extension from the given path"""
@@ -138,16 +159,8 @@ class FederatedExtensionAddon(BaseAddon):
         def _extract():
             with tempfile.TemporaryDirectory() as td:
                 with zipfile.ZipFile(wheel) as zf:
-                    if dest.exists():
-                        if dest.is_dir():
-                            shutil.rmtree(dest)
-                        else:
-                            dest.unlink()
-                    if not dest.parent.exists():
-                        dest.parent.mkdir(parents=True)
-
                     zf.extractall(td, members)
-                shutil.copytree(Path(td) / pkg_root_with_slash, dest)
+                self.copy_one(Path(td) / pkg_root_with_slash, dest)
 
         yield dict(
             name=f"extract:wheel:{stem}",

@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import urllib.request
 import warnings
 from pathlib import Path
 
@@ -49,6 +50,19 @@ class BaseAddon(LoggingConfigurable):
             shutil.copy2(src, dest)
 
         self.maybe_timestamp(dest)
+
+    def fetch_one(self, url, dest):
+        """fetch one file
+
+        TODO: enable other backends, auth, etc.
+        """
+        if dest.exists():
+            self.log.info(f"[lite] already downloaded {dest.name}, skipping...")
+            return
+
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True)
+        urllib.request.urlretrieve(url, dest)
 
     def maybe_timestamp(self, path):
         if not path.exists() or self.manager.source_date_epoch is None:
