@@ -198,7 +198,7 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
-    const roomName = getParam('--room', '');
+    const roomName = getParam('--room', '').trim();
     const host = window.location.host;
     // enable if both the page config option (deployment wide) and the room name (user) are defined
     const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
