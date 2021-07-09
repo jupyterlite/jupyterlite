@@ -284,7 +284,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   switch (messageType) {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
-      results = execute(messageContent);
+      results = await execute(messageContent);
       break;
 
     case 'complete-request':
