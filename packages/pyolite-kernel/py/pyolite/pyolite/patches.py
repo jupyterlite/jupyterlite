@@ -9,9 +9,11 @@ from IPython.display import display
 from .display import Image
 
 import micropip
+
 await micropip.install("importhook")
 
 import importhook
+
 
 def register_patch(module_name, path, method_name, function):
     @importhook.on_import(module_name)
@@ -38,5 +40,5 @@ def image_repr_png(self):
 
 
 def register_patches():
-    register_patch('PIL.Image', "Image", "_repr_png_", image_repr_png)
-    register_patch('matplotlib', "pyplot", "show", matplotlib_show)
+    register_patch("PIL.Image", "Image", "_repr_png_", image_repr_png)
+    register_patch("matplotlib", "pyplot", "show", matplotlib_show)
