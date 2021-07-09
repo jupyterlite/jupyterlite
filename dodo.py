@@ -354,7 +354,7 @@ def task_dev():
     else:
         cwd = P.PY_SETUP_PY[C.NAME].parent
         file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
-        args = [*C.FLIT, "install", "--pth-file"]
+        args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
 
     yield dict(
         name=f"py:{C.NAME}",
