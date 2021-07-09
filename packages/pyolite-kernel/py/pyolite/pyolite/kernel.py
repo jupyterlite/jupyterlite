@@ -10,6 +10,11 @@ class Pyolite:
         self.comm_manager = CommManager(kernel=self)
         self._parent_header = None
 
+    def get_parent(self):
+        # TODO mimick ipykernel's get_parent signature
+        # (take a channel parameter)
+        return self._parent_header
+
     def comm_info(self, target_name=""):
         comms = {}
 

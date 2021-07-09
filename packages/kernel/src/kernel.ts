@@ -70,6 +70,13 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Get the last parent message (mimick ipykernel's get_parent)
+   */
+  get parent(): KernelMessage.IMessage {
+    return this._parent;
+  }
+
+  /**
    * Dispose the kernel.
    */
   dispose(): void {
@@ -87,6 +94,8 @@ export abstract class BaseKernel implements IKernel {
    */
   async handleMessage(msg: KernelMessage.IMessage): Promise<void> {
     this._busy(msg);
+
+    this._parent = msg;
 
     const msgType = msg.header.msg_type;
     switch (msgType) {
@@ -491,4 +500,5 @@ export abstract class BaseKernel implements IKernel {
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
+  private _parent: KernelMessage.IMessage;
 }
