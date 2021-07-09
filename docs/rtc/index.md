@@ -29,8 +29,7 @@ time collaboration is an opt-in feature.
 
 In addition to the `collaborative` flag, end users must specify the `room` query
 parameter in the URL. An example of such URL is as follows:
-
-[https://jupyterlite.readthedocs.io/en/latest/\_static/lab/index.html?room=my-custom-room](https://jupyterlite.readthedocs.io/en/latest/_static/lab/index.html?room=my-custom-room)
+`you-lite-deployment.example.com/lab/index.html?room=4869637241`
 
 Users are grouped together in rooms using a combination of:
 
