@@ -23,5 +23,25 @@ The main differences compared to JupyterLab are:
 
 ## Enabling RTC in JupyterLite
 
+To enable RTC in JupyterLite, you need to set the `collaborative` flag in the
+`jupyter-config-data`. This follows the same behavior as in JupyterLab 3.1 where real
+time collaboration is an opt-in feature.
+
+In addition to the `collaborative` flag, end users must specify the `room` query
+parameter in the URL. An example of such URL is as follows:
+
+[https://jupyterlite.readthedocs.io/en/latest/\_static/lab/index.html?room=my-custom-room](https://jupyterlite.readthedocs.io/en/latest/_static/lab/index.html?room=my-custom-room)
+
+Users are grouped together in rooms using a combination of:
+
+- the host, for example `jupyterlite.example.com` or `myserver:5000`
+- the name of the room parsed from the query string parameter, for example
+  `my-custom-room`
+
+Currently both `collaborative` and `room` must exist for RTC to be enabled. When this is
+the case, users can collaborate on documents together:
+
+TODO: add screencast
+
 See the [configuring](../configuring.md) section of the docs for more details on how to
 configure `jupyter-lite.json`.
