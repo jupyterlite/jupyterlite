@@ -43,10 +43,12 @@ include = [
 
 [tool.flit.metadata.requires-extra]
 test = [
+    "ansi2html",
+    "diffoscope; sys_platform != 'win32'",
+    "pytest-console-scripts",
     "pytest-cov",
     "pytest-html",
     "pytest-xdist",
-    "pytest",
 ]
 lab = [
     "jupyterlab >=3.0,<4",

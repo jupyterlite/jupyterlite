@@ -6,9 +6,6 @@ channels:
   - nodefaults
 
 dependencies:
-  # this is a UNIX-only dependency, so we don't hoist it to the more-portable binder environment
-  - diffoscope
-
   # the chunk below gets copied to ../.binder/environment.yml
   ### DOCS ENV ###
   # runtimes
