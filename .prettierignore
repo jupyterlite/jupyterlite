@@ -4,6 +4,7 @@
 **/package.json
 **/static
 
+.yarn-packages
 build
 docs/_build
 node_modules
