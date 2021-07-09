@@ -4,33 +4,39 @@ from io import BytesIO
 
 os.environ["MPLBACKEND"] = "AGG"
 
-import matplotlib.pyplot
-from PIL import Image as PILImage
 from IPython.display import display
 
 from .display import Image
 
+import micropip
+await micropip.install("importhook")
 
-def ensure_matplotlib_patch():
-    _old_show = matplotlib.pyplot.show
-    assert _old_show
+import importhook
 
-    def show():
-        buf = BytesIO()
-        matplotlib.pyplot.savefig(buf, format="png")
-        buf.seek(0)
-        display(Image(buf.read()))
-        matplotlib.pyplot.clf()
+def register_patch(module_name, path, method_name, function):
+    @importhook.on_import(module_name)
+    def on_pil_import(module):
+        new_module = importhook.copy_module(module)
+        obj = new_module
+        for item in path.split("."):
+            obj = getattr(obj, item)
+        setattr(obj, method_name, function)
+        return new_module
 
-    matplotlib.pyplot.show = show
+
+def matplotlib_show(self):
+    buf = BytesIO()
+    self.savefig(buf, format="png")
+    buf.seek(0)
+    display(Image(buf.read()))
+    self.clf()
 
 
-def ensure_pil_patch():
-    _old_repr_png = PILImage.Image._repr_png_
-    assert _old_repr_png
+def image_repr_png(self):
+    byte = _old_repr_png(self)
+    return base64.b64encode(byte).decode("utf-8")
 
-    def _repr_png_(self):
-        byte = _old_repr_png(self)
-        return base64.b64encode(byte).decode("utf-8")
 
-    PILImage.Image._repr_png_ = _repr_png_
+def register_patches():
+    register_patch('PIL.Image', "Image", "_repr_png_", image_repr_png)
+    register_patch('matplotlib', "pyplot", "show", matplotlib_show)
