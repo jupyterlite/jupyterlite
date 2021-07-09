@@ -37,6 +37,8 @@ import { UUID, PromiseDelegate } from '@lumino/coreutils';
 
 import { Widget } from '@lumino/widgets';
 
+import { getParam } from 'lib0/environment';
+
 import { WebrtcProvider } from 'y-webrtc';
 
 import React from 'react';
@@ -196,12 +198,12 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
-    const urlParams = new URLSearchParams(window.location.search);
-    // default to a random id to not collaborate with others by default
-    const roomName = urlParams.get('room');
-    const room = roomName || UUID.uuid4();
+    const roomName = getParam('--room', '');
+    const host = window.location.host;
     // enable if both the page config option (deployment wide) and the room name (user) are defined
     const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
+    // default to a random id to not collaborate with others by default
+    const room = `${host}-${roomName || UUID.uuid4()}`;
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       return collaborative
         ? new WebRtcProvider({
