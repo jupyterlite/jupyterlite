@@ -18,7 +18,10 @@ def register_patch(module_name, path, method_name, function):
         obj = new_module
         if path:
             for item in path.split("."):
-                obj = getattr(obj, item)
+                if hasattr(obj, item):
+                    obj = getattr(obj, item)
+                else:
+                    return None
         original = getattr(obj, method_name)
         setattr(obj, "__wrapped__", original)
         setattr(obj, method_name, function)
