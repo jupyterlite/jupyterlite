@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-import urllib.request
 import warnings
 from pathlib import Path
 
@@ -56,13 +55,24 @@ class BaseAddon(LoggingConfigurable):
 
         TODO: enable other backends, auth, etc.
         """
+        import urllib.request
+
         if dest.exists():
-            self.log.info(f"[lite] already downloaded {dest.name}, skipping...")
+            self.log.info(f"[lite][fetch] already downloaded {dest.name}, skipping...")
             return
 
         if not dest.parent.exists():
             dest.parent.mkdir(parents=True)
-        urllib.request.urlretrieve(url, dest)
+
+        if "anaconda.org/" in url:
+            self.log.error(
+                f"[lite][fetch] cannot reliably download from anaconda.org {url}"
+            )
+            return False
+
+        with urllib.request.urlopen(url) as response:
+            with dest.open("wb") as fd:
+                shutil.copyfileobj(response, fd)
 
     def maybe_timestamp(self, path):
         if not path.exists() or self.manager.source_date_epoch is None:

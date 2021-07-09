@@ -4,7 +4,6 @@ import re
 import sys
 import tempfile
 import urllib.parse
-import zipfile
 from pathlib import Path
 
 from ..constants import (
@@ -110,9 +109,9 @@ class FederatedExtensionAddon(BaseAddon):
             suffix = local_path.suffix
 
             if suffix == ".whl":
-                yield from self.copy_one_wheel_extension(local_path)
+                yield from self.copy_wheel_extensions(local_path)
             elif suffix == ".bz2":
-                raise NotImplementedError("no conda for you")
+                yield from self.copy_conda_extensions(local_path)
             else:  # pragma: no cover
                 raise NotImplementedError(f"unknown archive {suffix}")
         else:  # pragma: no cover
@@ -127,10 +126,9 @@ class FederatedExtensionAddon(BaseAddon):
 
         yield from self.copy_one_extension(pkg_json)
 
-    def copy_one_wheel_extension(self, wheel):
-        """copy the contents of a local wheel
-
-        Each wheel might contain (several copies of) several extensions"""
+    def copy_wheel_extensions(self, wheel):
+        """copy the labextensions from a local wheel"""
+        import zipfile
 
         with zipfile.ZipFile(wheel) as zf:
             infos = [*zf.infolist()]
@@ -145,6 +143,9 @@ class FederatedExtensionAddon(BaseAddon):
                     yield from self.extract_one_wheel_extension(wheel, info, infos)
 
     def extract_one_wheel_extension(self, wheel, pkg_json_info, all_infos):
+        """extract one labextension from a wheel"""
+        import zipfile
+
         pkg_root_with_slash = pkg_json_info.filename.split(PACKAGE_JSON)[0]
         prefix = len(pkg_root_with_slash)
         stem = pkg_root_with_slash.split(SHARE_LABEXTENSIONS)[1][1:-1]
@@ -165,6 +166,51 @@ class FederatedExtensionAddon(BaseAddon):
         yield dict(
             name=f"extract:wheel:{stem}",
             file_dep=[wheel],
+            targets=targets,
+            actions=[_extract],
+        )
+
+    def copy_conda_extensions(self, conda_pkg):
+        """copy the labextensions from a local conda package"""
+        import tarfile
+
+        with tarfile.open(conda_pkg, "r:bz2") as zf:
+            infos = [*zf.getmembers()]
+
+            for info in infos:
+                filename = info.name
+                if filename.startswith(SHARE_LABEXTENSIONS) and filename.endswith(
+                    PACKAGE_JSON
+                ):
+                    yield from self.extract_one_conda_extension(conda_pkg, info, infos)
+
+    def extract_one_conda_extension(self, conda_pkg, pkg_json_info, all_infos):
+        """extract one labextension from a conda package"""
+        import tarfile
+
+        pkg_root_with_slash = pkg_json_info.name.split(PACKAGE_JSON)[0]
+        prefix = len(pkg_root_with_slash)
+        stem = pkg_root_with_slash.split(SHARE_LABEXTENSIONS)[1][1:-1]
+        dest = self.output_extensions / stem
+
+        def _filter_members(infos):
+            return [
+                p
+                for p in infos
+                if not p.isdir() and p.name.startswith(pkg_root_with_slash)
+            ]
+
+        targets = [dest / m.name[prefix:] for m in _filter_members(all_infos)]
+
+        def _extract():
+            with tempfile.TemporaryDirectory() as td:
+                with tarfile.open(conda_pkg, "r:bz2") as zf:
+                    zf.extractall(td, _filter_members(zf.getmembers()))
+                self.copy_one(Path(td) / pkg_root_with_slash, dest)
+
+        yield dict(
+            name=f"extract:conda:{stem}",
+            file_dep=[conda_pkg],
             targets=targets,
             actions=[_extract],
         )
