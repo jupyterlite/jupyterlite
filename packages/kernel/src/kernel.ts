@@ -72,7 +72,7 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Get the last parent message (mimick ipykernel's get_parent)
    */
-  get parent(): KernelMessage.IMessage {
+  get parent(): KernelMessage.IMessage | undefined {
     return this._parent;
   }
 
@@ -500,5 +500,5 @@ export abstract class BaseKernel implements IKernel {
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
-  private _parent: KernelMessage.IMessage;
+  private _parent: KernelMessage.IMessage | undefined = undefined;
 }
