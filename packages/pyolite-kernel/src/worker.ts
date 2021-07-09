@@ -117,7 +117,7 @@ async function execute(content: any) {
       metadata: formatResult(metadata)
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'execute_result'
     });
@@ -130,7 +130,7 @@ async function execute(content: any) {
       traceback: traceback
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'execute_error'
     });
@@ -141,7 +141,7 @@ async function execute(content: any) {
       wait: formatResult(wait)
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'clear_output'
     });
@@ -154,7 +154,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'display_data'
     });
@@ -171,7 +171,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'update_display_data'
     });
@@ -183,7 +183,7 @@ async function execute(content: any) {
       text: formatResult(text)
     };
     postMessage({
-      parentHeader: kernel._parent_header,
+      parentHeader: formatResult(kernel._parent_header),
       bundle,
       type: 'stream'
     });
@@ -279,7 +279,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   let results;
   const messageType = data.type;
   const messageContent = data.data;
-  kernel._parent_header = data.parentHeader;
+  kernel._parent_header = pyodide.toPy(data.parentHeader);
 
   switch (messageType) {
     case 'execute-request':
@@ -312,7 +312,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const reply = {
-    parentHeader: kernel._parent_header,
+    parentHeader: data.parentHeader,
     type: 'reply',
     results
   };
