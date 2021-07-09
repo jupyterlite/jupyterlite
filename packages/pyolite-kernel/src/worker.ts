@@ -105,7 +105,7 @@ async function sendComm(
  *
  * @param content The incoming message with the code to execute.
  */
-async function execute(content: any, parentHeader: any) {
+async function execute(content: any) {
   const publishExecutionResult = (
     prompt_count: any,
     data: any,
@@ -117,7 +117,7 @@ async function execute(content: any, parentHeader: any) {
       metadata: formatResult(metadata)
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'execute_result'
     });
@@ -130,7 +130,7 @@ async function execute(content: any, parentHeader: any) {
       traceback: traceback
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'execute_error'
     });
@@ -141,7 +141,7 @@ async function execute(content: any, parentHeader: any) {
       wait: formatResult(wait)
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'clear_output'
     });
@@ -154,7 +154,7 @@ async function execute(content: any, parentHeader: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'display_data'
     });
@@ -171,7 +171,7 @@ async function execute(content: any, parentHeader: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'update_display_data'
     });
@@ -183,7 +183,7 @@ async function execute(content: any, parentHeader: any) {
       text: formatResult(text)
     };
     postMessage({
-      parentHeader,
+      parentHeader: kernel._parent_header,
       bundle,
       type: 'stream'
     });
@@ -196,7 +196,6 @@ async function execute(content: any, parentHeader: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  kernel._parent_header = parentHeader;
   const res = await kernel.run(content.code);
   const reply = formatResult(res);
 
@@ -208,7 +207,6 @@ async function execute(content: any, parentHeader: any) {
     );
   }
 
-  postMessage(reply);
   return reply;
 }
 /**
@@ -216,11 +214,10 @@ async function execute(content: any, parentHeader: any) {
  *
  * @param content The incoming message with the code to complete.
  */
-function complete(content: any, parentHeader: any) {
-  kernel._parent_header = parentHeader;
+function complete(content: any) {
   const res = kernel.complete(content.code, content.cursor_pos);
   const reply = formatResult(res);
-  postMessage(reply);
+  return reply;
 }
 
 /**
@@ -228,12 +225,12 @@ function complete(content: any, parentHeader: any) {
  *
  * @param content The incoming message with the comm target name.
  */
-function commInfo(content: any, parentHeader: any) {
+function commInfo(content: any) {
   const res = kernel.comm_info(content.target_name);
   const results = formatResult(res);
 
   const reply = {
-    parentHeader,
+    parentHeader: kernel._parent_header,
     type: 'reply',
     results: {
       comms: results,
@@ -241,7 +238,7 @@ function commInfo(content: any, parentHeader: any) {
     }
   };
 
-  postMessage(reply);
+  return reply;
 }
 
 /**
@@ -249,17 +246,17 @@ function commInfo(content: any, parentHeader: any) {
  *
  * @param content The incoming message with the comm open.
  */
-function commOpen(content: any, parentHeader: any) {
+function commOpen(content: any) {
   const res = kernel.comm_manager.comm_open(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentHeader,
+    parentHeader: kernel._parent_header,
     type: 'reply',
     results
   };
 
-  postMessage(reply);
+  return reply;
 }
 
 /**
@@ -267,17 +264,17 @@ function commOpen(content: any, parentHeader: any) {
  *
  * @param content The incoming message with the comm msg.
  */
-function commMsg(content: any, parentHeader: any) {
+function commMsg(content: any) {
   const res = kernel.comm_manager.comm_msg(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentHeader,
+    parentHeader: kernel._parent_header,
     type: 'reply',
     results
   };
 
-  postMessage(reply);
+  return reply;
 }
 
 /**
@@ -285,17 +282,17 @@ function commMsg(content: any, parentHeader: any) {
  *
  * @param content The incoming message with the comm close.
  */
-function commClose(content: any, parentHeader: any) {
+function commClose(content: any) {
   const res = kernel.comm_manager.comm_close(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentHeader,
+    parentHeader: kernel._parent_header,
     type: 'reply',
     results
   };
 
-  postMessage(reply);
+  return reply;
 }
 
 /**
@@ -307,31 +304,39 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   await pyodideReadyPromise;
   const data = event.data;
 
+  let reply;
   const messageType = data.type;
   const messageContent = data.data;
-  const parentHeader = data.parentHeader;
+  kernel._parent_header = data.parentHeader;
 
   switch (messageType) {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
-      return execute(messageContent, parentHeader);
+      reply = execute(messageContent);
+      break;
 
     case 'complete-request':
-      return complete(messageContent, parentHeader);
+      reply = complete(messageContent);
+      break;
 
     case 'comm-info-request':
-      return commInfo(messageContent, parentHeader);
+      reply = commInfo(messageContent);
+      break;
 
     case 'comm-open':
-      return commOpen(messageContent, parentHeader);
+      reply = commOpen(messageContent);
+      break;
 
     case 'comm-msg':
-      return commMsg(messageContent, parentHeader);
+      reply = commMsg(messageContent);
+      break;
 
     case 'comm-close':
-      return commClose(messageContent, parentHeader);
+      reply = commClose(messageContent);
+      break;
 
     default:
+      postMessage(reply);
       break;
   }
 };
