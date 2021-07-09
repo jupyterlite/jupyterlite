@@ -22,6 +22,8 @@ def register_patch(module_name, path, method_name, function):
         obj = new_module
         for item in path.split("."):
             obj = getattr(obj, item)
+        original = getattr(obj, method_name)
+        setattr(obj, "__wrapped__", original)
         setattr(obj, method_name, function)
         return new_module
 
@@ -35,7 +37,7 @@ def matplotlib_show(self):
 
 
 def image_repr_png(self):
-    byte = _old_repr_png(self)
+    byte = self.__wrapped__()
     return base64.b64encode(byte).decode("utf-8")
 
 
