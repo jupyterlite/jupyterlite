@@ -24,6 +24,7 @@ async function loadPyodideAndPackages() {
     import micropip
     await micropip.install([
       'traitlets',
+      'importhook',
       '${_widgetsnbextensionWheelUrl}',
       '${_nbformatWheelUrl}',
       '${_ipykernelWheelUrl}'

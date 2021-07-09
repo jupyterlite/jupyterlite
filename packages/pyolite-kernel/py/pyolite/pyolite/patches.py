@@ -8,10 +8,6 @@ from IPython.display import display
 
 from .display import Image
 
-import micropip
-
-await micropip.install("importhook")
-
 import importhook
 
 
