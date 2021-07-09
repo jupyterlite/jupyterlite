@@ -16,8 +16,9 @@ def register_patch(module_name, path, method_name, function):
     def on_pil_import(module):
         new_module = importhook.copy_module(module)
         obj = new_module
-        for item in path.split("."):
-            obj = getattr(obj, item)
+        if path:
+            for item in path.split("."):
+                obj = getattr(obj, item)
         original = getattr(obj, method_name)
         setattr(obj, "__wrapped__", original)
         setattr(obj, method_name, function)
