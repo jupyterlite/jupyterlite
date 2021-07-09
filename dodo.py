@@ -17,10 +17,24 @@ def task_env():
 
     yield dict(
         name="binder",
+        doc="update binder environment with docs environment",
         file_dep=[P.DOCS_ENV],
         targets=[P.BINDER_ENV],
         actions=[(U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER])],
     )
+
+    if C.IN_CONDA:
+        yield dict(
+            name="lite:extensions",
+            doc="update jupyter-lite.json from the conda env",
+            file_dep=[P.BINDER_ENV],
+            actions=[
+                (
+                    U.sync_lite_config,
+                    [P.BINDER_ENV, P.EXAMPLE_LITE_BUILD_CONFIG, C.FED_EXT_MARKER],
+                )
+            ],
+        )
 
 
 def task_setup():
@@ -554,9 +568,13 @@ class C:
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
+    IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
+    FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
+    RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
+    CONDA_FORGE_RELEASE = "https://github.com/conda-forge/releases/releases/download"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 88
@@ -620,6 +638,8 @@ class P:
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
+    EXAMPLE_JUPYTERLITE_JSON = EXAMPLES / "jupyter-lite.json"
+    EXAMPLE_LITE_BUILD_CONFIG = EXAMPLES / "jupyter_config.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
@@ -792,12 +812,43 @@ class U:
 
     @staticmethod
     def sync_env(from_env, to_env, marker):
+        """update an environment from another environment, based on marker pairs"""
         from_chunks = from_env.read_text(**C.ENC).split(marker)
         to_chunks = to_env.read_text(**C.ENC).split(marker)
         to_env.write_text(
             "".join([to_chunks[0], marker, from_chunks[1], marker, to_chunks[2]]),
             **C.ENC,
         )
+
+    @staticmethod
+    def sync_lite_config(from_env, to_json, marker):
+        """use conda list to derive tarball names"""
+        raw_lock = subprocess.check_output(["conda", "list", "--explicit"])
+        ext_packages = [
+            p.strip().split(" ")[0]
+            for p in from_env.read_text(**C.ENC).split(marker)[1].split(" - ")
+            if p.strip()
+        ]
+        tarball_urls = []
+        for raw_url in raw_lock.decode("utf-8").splitlines():
+            try:
+                label, subdir, pkg = re.findall(C.RE_CONDA_FORGE_URL, raw_url)[0]
+            except IndexError:
+                continue
+
+            if label:
+                # TODO: haven't looked into this
+                continue
+
+            for ext in ext_packages:
+                if pkg.startswith(ext):
+                    tarball_urls += [
+                        "/".join([C.CONDA_FORGE_RELEASE, subdir, pkg, pkg])
+                    ]
+
+        config = json.loads(to_json.read_text(**C.ENC))
+        config["LiteBuildConfig"]["federated_extensions"] = sorted(tarball_urls)
+        to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
 
     @staticmethod
     def typedoc_conf():
@@ -950,10 +1001,6 @@ class U:
                 "lite",
                 task,
                 "--debug",
-                "--files",
-                ".",
-                "--output-dir",
-                B.DOCS_APP,
                 "--output-archive",
                 B.DOCS_APP_ARCHIVE,
             ]

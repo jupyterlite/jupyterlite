@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import tempfile
 import warnings
 from pathlib import Path
 
@@ -70,9 +71,13 @@ class BaseAddon(LoggingConfigurable):
             )
             return False
 
-        with urllib.request.urlopen(url) as response:
-            with dest.open("wb") as fd:
-                shutil.copyfileobj(response, fd)
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td)
+            with urllib.request.urlopen(url) as response:
+                tmp_dest = tdp / dest.name
+                with tmp_dest.open("wb") as fd:
+                    shutil.copyfileobj(response, fd)
+            shutil.copy2(tmp_dest, dest)
 
     def maybe_timestamp(self, path):
         if not path.exists() or self.manager.source_date_epoch is None:
