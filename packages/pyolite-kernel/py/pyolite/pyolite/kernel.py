@@ -27,15 +27,11 @@ class Pyolite:
 
         txt, matches = self.interpreter.complete("", line, line_cursor)
         return {
-            "parentheader": self._parent_header,
-            "type": "reply",
-            "results": {
-                "matches": matches,
-                "cursor_end": cursor_pos,
-                "cursor_start": cursor_pos - len(txt),
-                "metadata": {},
-                "status": "ok",
-            },
+            "matches": matches,
+            "cursor_end": cursor_pos,
+            "cursor_start": cursor_pos - len(txt),
+            "metadata": {},
+            "status": "ok"
         }
 
     async def run(self, code):
@@ -62,8 +58,4 @@ class Pyolite:
             results["evalue"] = last_traceback["evalue"]
             results["traceback"] = last_traceback["traceback"]
 
-        return {
-            "parentheader": self._parent_header,
-            "type": "reply",
-            "results": results,
-        }
+        return results

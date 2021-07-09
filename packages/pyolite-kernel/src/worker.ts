@@ -197,15 +197,17 @@ async function execute(content: any) {
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
   const res = await kernel.run(content.code);
-  const reply = formatResult(res);
+  const results = formatResult(res);
 
-  if (reply['results']['status'] === 'error') {
-    publishExecutionError(
-      reply['results']['ename'],
-      reply['results']['evalue'],
-      reply['results']['traceback']
-    );
+  if (results['status'] === 'error') {
+    publishExecutionError(results['ename'], results['evalue'], results['traceback']);
   }
+
+  const reply = {
+    parentHeader: kernel._parent_header,
+    type: 'reply',
+    results
+  };
 
   return reply;
 }
@@ -216,7 +218,12 @@ async function execute(content: any) {
  */
 function complete(content: any) {
   const res = kernel.complete(content.code, content.cursor_pos);
-  const reply = formatResult(res);
+  const results = formatResult(res);
+  const reply = {
+    parentHeader: kernel._parent_header,
+    type: 'reply',
+    results
+  };
   return reply;
 }
 
