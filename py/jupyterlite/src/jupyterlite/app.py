@@ -34,6 +34,16 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
         },
     )
 
+    flags = dict(
+        **base_flags,
+        **{
+            "ignore-sys-prefix": (
+                {"LiteBuildConfig": {"ignore_sys_prefix": True}},
+                "Do not copy any extensions from sys.prefix",
+            )
+        },
+    )
+
     @property
     def description(self):
         return self.__doc__.splitlines()[0].strip()
@@ -73,6 +83,10 @@ class ManagedApp(BaseLiteApp):
             kwargs["port"] = self.port
         if self.base_url is not None:
             kwargs["base_url"] = self.base_url
+        if self.federated_extensions is not None:
+            kwargs["federated_extensions"] = self.federated_extensions
+        if self.ignore_sys_prefix is not None:
+            kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
 
         return LiteManager(**kwargs)
 

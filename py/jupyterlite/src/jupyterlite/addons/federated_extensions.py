@@ -1,6 +1,9 @@
 """a JupyterLite addon for supporting federated_extensions"""
 import json
+import shutil
 import sys
+import tempfile
+import zipfile
 from pathlib import Path
 
 from ..constants import (
@@ -8,11 +11,14 @@ from ..constants import (
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
+    PACKAGE_JSON,
+    SHARE_LABEXTENSIONS,
+    UTF8,
 )
 from .base import BaseAddon
 
 # TODO: improve this
-ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
+ENV_EXTENSIONS = Path(sys.prefix) / SHARE_LABEXTENSIONS
 
 
 class FederatedExtensionAddon(BaseAddon):
@@ -23,12 +29,12 @@ class FederatedExtensionAddon(BaseAddon):
     def env_extensions(self, root):
         """a list of all federated extensions"""
         return [
-            *root.glob("*/package.json"),
-            *root.glob("@*/*/package.json"),
+            *root.glob(f"*/{PACKAGE_JSON}"),
+            *root.glob(f"@*/*/{PACKAGE_JSON}"),
         ]
 
     @property
-    def output_env_extensions_dir(self):
+    def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
 
@@ -36,28 +42,118 @@ class FederatedExtensionAddon(BaseAddon):
         """yield a doit task to copy each federated extension into the output_dir"""
         root = ENV_EXTENSIONS
 
-        for pkg_json in self.env_extensions(root):
-            yield self.copy_one_extension(pkg_json, root)
+        if not manager.ignore_sys_prefix:
+            for pkg_json in self.env_extensions(root):
+                yield from self.copy_one_extension(pkg_json)
+
+        for path_or_url in manager.federated_extensions:
+            yield from self.resolve_one_extension(path_or_url)
 
     def build(self, manager):
         """yield a doit task to copy each local extension into the output_dir"""
         root = self.manager.lite_dir / LAB_EXTENSIONS
 
         for pkg_json in self.env_extensions(root):
-            yield self.copy_one_extension(pkg_json, root)
+            yield self.copy_one_extension(pkg_json)
 
-    def copy_one_extension(self, pkg_json, root):
-        pkg = pkg_json.parent
-        stem = pkg.relative_to(root)
-        dest = self.output_env_extensions_dir / stem
-        file_dep = [p for p in pkg.rglob("*") if not p.is_dir()]
-        targets = [dest / p.relative_to(pkg) for p in file_dep]
+    def copy_one_env_extension(self, pkg_json):
+        """copy one unpacked on-disk extension from sys.prefix into the output dir"""
+        yield from self.copy_one_extension(pkg_json)
 
-        return dict(
+    def copy_one_extension(self, pkg_json):
+        """copy one unpacked on-disk extension from anywhere into the output dir"""
+        pkg_path = pkg_json.parent
+        stem = json.loads(pkg_json.read_text(**UTF8))["name"]
+        dest = self.output_extensions / stem
+        file_dep = [p for p in pkg_path.rglob("*") if not p.is_dir()]
+        targets = [dest / p.relative_to(pkg_path) for p in file_dep]
+
+        yield dict(
             name=f"copy:ext:{stem}",
             file_dep=file_dep,
             targets=targets,
-            actions=[(self.copy_one, [pkg, dest])],
+            actions=[(self.copy_one, [pkg_path, dest])],
+        )
+
+    def resolve_one_extension(self, path_or_url):
+        """try to resolve one URL or local folder/archive as a federated_extension"""
+        local_path = None
+
+        try:
+            local_path = (self.manager.lite_dir / path_or_url).resolve()
+        except Exception:
+            pass
+
+        if local_path is not None:
+            if local_path.is_dir():
+                yield from self.copy_one_folder_extension(path_or_url)
+                return
+            suffix = local_path.suffix
+            if suffix == ".whl":
+                yield from self.copy_one_wheel_extension(path_or_url)
+            elif suffix == ".bz2":
+                raise NotImplementedError("no conda for you")
+            else:
+                raise NotImplementedError(f"unknown archive {suffix}")
+            return
+
+    def copy_one_folder_extension(self, path):
+        """copy one extension from the given path"""
+        pkg_json = path / PACKAGE_JSON
+
+        if not pkg_json.exists():
+            raise ValueError(f"[lite][federated_extensions] No package.json in {path}")
+
+        yield from self.copy_one_extension(pkg_json)
+
+    def copy_one_wheel_extension(self, wheel):
+        """copy the contents of a local wheel
+
+        Each wheel might contain (several copies of) several extensions"""
+
+        with zipfile.ZipFile(wheel) as zf:
+            infos = [*zf.infolist()]
+
+            for info in infos:
+                filename = info.filename
+                if (
+                    filename.split("/")[0].endswith(".data")
+                    and SHARE_LABEXTENSIONS in filename
+                    and filename.endswith(PACKAGE_JSON)
+                ):
+                    yield from self.extract_one_wheel_extension(wheel, info, infos)
+
+    def extract_one_wheel_extension(self, wheel, pkg_json_info, all_infos):
+        pkg_root_with_slash = pkg_json_info.filename.split(PACKAGE_JSON)[0]
+        prefix = len(pkg_root_with_slash)
+        stem = pkg_root_with_slash.split(SHARE_LABEXTENSIONS)[1][1:-1]
+        dest = self.output_extensions / stem
+        members = [
+            p.filename
+            for p in all_infos
+            if not p.is_dir() and p.filename.startswith(pkg_root_with_slash)
+        ]
+        targets = [dest / m[prefix:] for m in members]
+
+        def _extract():
+            with tempfile.TemporaryDirectory() as td:
+                with zipfile.ZipFile(wheel) as zf:
+                    if dest.exists():
+                        if dest.is_dir():
+                            shutil.rmtree(dest)
+                        else:
+                            dest.unlink()
+                    if not dest.parent.exists():
+                        dest.parent.mkdir(parents=True)
+
+                    zf.extractall(td, members)
+                shutil.copytree(Path(td) / pkg_root_with_slash, dest)
+
+        yield dict(
+            name=f"extract:wheel:{stem}",
+            file_dep=[wheel],
+            targets=targets,
+            actions=[_extract],
         )
 
     def post_build(self, manager):
@@ -112,13 +208,13 @@ class FederatedExtensionAddon(BaseAddon):
             it _really_ doesn't like duplicate ids, probably need to catch it
             earlier... not possible with "pure" schema (but perhaps SHACL?)
         """
-        config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
+        config = json.loads(jupyterlite_json.read_text(**UTF8))
 
         extensions = config[JUPYTER_CONFIG_DATA].get(FEDERATED_EXTENSIONS, [])
         lab_extensions_root = self.manager.output_dir / LAB_EXTENSIONS
 
         for pkg_json in self.env_extensions(lab_extensions_root):
-            pkg_data = json.loads(pkg_json.read_text(encoding="utf-8"))
+            pkg_data = json.loads(pkg_json.read_text(**UTF8))
             extensions += [
                 dict(name=pkg_data["name"], **pkg_data["jupyterlab"]["_build"])
             ]

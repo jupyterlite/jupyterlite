@@ -13,6 +13,7 @@ from typing import Tuple as _Tuple
 
 from traitlets import CInt, Tuple, Unicode, default
 from traitlets.config import LoggingConfigurable
+from traitlets.traitlets import Bool
 
 from . import constants as C
 from .trait_types import CPath, TypedTuple
@@ -63,6 +64,15 @@ class LiteBuildConfig(LoggingConfigurable):
 
     files: _Tuple[Path] = TypedTuple(
         CPath(), help="Files to add and index as Jupyter Contents"
+    ).tag(config=True)
+
+    ignore_sys_prefix: bool = Bool(
+        False,
+        help="ignore lab components from sys.prefix, such as federated_extensions",
+    ).tag(config=True)
+
+    federated_extensions: _Tuple[str] = TypedTuple(
+        Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
     overrides: _Tuple[_Text] = TypedTuple(
