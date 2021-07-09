@@ -31,7 +31,7 @@ class Pyolite:
             "cursor_end": cursor_pos,
             "cursor_start": cursor_pos - len(txt),
             "metadata": {},
-            "status": "ok"
+            "status": "ok",
         }
 
     async def run(self, code):
