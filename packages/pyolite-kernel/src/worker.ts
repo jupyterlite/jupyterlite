@@ -105,7 +105,7 @@ async function sendComm(
  *
  * @param content The incoming message with the code to execute.
  */
-async function execute(content: any) {
+async function execute(content: any, parentHeader: any) {
   const publishExecutionResult = (
     prompt_count: any,
     data: any,
@@ -117,7 +117,7 @@ async function execute(content: any) {
       metadata: formatResult(metadata)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'execute_result'
     });
@@ -130,7 +130,7 @@ async function execute(content: any) {
       traceback: traceback
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'execute_error'
     });
@@ -141,7 +141,7 @@ async function execute(content: any) {
       wait: formatResult(wait)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'clear_output'
     });
@@ -154,7 +154,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'display_data'
     });
@@ -171,7 +171,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'update_display_data'
     });
@@ -183,7 +183,7 @@ async function execute(content: any) {
       text: formatResult(text)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader,
       bundle,
       type: 'stream'
     });
@@ -196,7 +196,7 @@ async function execute(content: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  kernel._parent_header = content.parentheader;
+  kernel._parent_header = parentHeader;
   const res = await kernel.run(content.code);
   const reply = formatResult(res);
 
@@ -216,8 +216,8 @@ async function execute(content: any) {
  *
  * @param content The incoming message with the code to complete.
  */
-function complete(content: any) {
-  kernel._parent_header = content.parentheader;
+function complete(content: any, parentHeader: any) {
+  kernel._parent_header = parentHeader;
   const res = kernel.complete(content.code, content.cursor_pos);
   const reply = formatResult(res);
   postMessage(reply);
@@ -228,12 +228,12 @@ function complete(content: any) {
  *
  * @param content The incoming message with the comm target name.
  */
-function commInfo(content: any) {
+function commInfo(content: any, parentHeader: any) {
   const res = kernel.comm_info(content.target_name);
   const results = formatResult(res);
 
   const reply = {
-    parentheader: content.parentheader,
+    parentHeader,
     type: 'reply',
     results: {
       comms: results,
@@ -249,12 +249,12 @@ function commInfo(content: any) {
  *
  * @param content The incoming message with the comm open.
  */
-function commOpen(content: any) {
+function commOpen(content: any, parentHeader: any) {
   const res = kernel.comm_manager.comm_open(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentheader: content.parentheader,
+    parentHeader,
     type: 'reply',
     results
   };
@@ -267,12 +267,12 @@ function commOpen(content: any) {
  *
  * @param content The incoming message with the comm msg.
  */
-function commMsg(content: any) {
+function commMsg(content: any, parentHeader: any) {
   const res = kernel.comm_manager.comm_msg(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentheader: content.parentheader,
+    parentHeader,
     type: 'reply',
     results
   };
@@ -285,12 +285,12 @@ function commMsg(content: any) {
  *
  * @param content The incoming message with the comm close.
  */
-function commClose(content: any) {
+function commClose(content: any, parentHeader: any) {
   const res = kernel.comm_manager.comm_close(pyodide.toPy(content));
   const results = formatResult(res);
 
   const reply = {
-    parentheader: content.parentheader,
+    parentHeader,
     type: 'reply',
     results
   };
@@ -309,26 +309,27 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   const messageType = data.type;
   const messageContent = data.data;
+  const parentHeader = data.parentHeader;
 
   switch (messageType) {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
-      return execute(messageContent);
+      return execute(messageContent, parentHeader);
 
     case 'complete-request':
-      return complete(messageContent);
+      return complete(messageContent, parentHeader);
 
     case 'comm-info-request':
-      return commInfo(messageContent);
+      return commInfo(messageContent, parentHeader);
 
     case 'comm-open':
-      return commOpen(messageContent);
+      return commOpen(messageContent, parentHeader);
 
     case 'comm-msg':
-      return commMsg(messageContent);
+      return commMsg(messageContent, parentHeader);
 
     case 'comm-close':
-      return commClose(messageContent);
+      return commClose(messageContent, parentHeader);
 
     default:
       break;
