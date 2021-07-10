@@ -14,7 +14,7 @@ import importhook
 
 def register_patch(module_name, path, method_name, function):
     @importhook.on_import(module_name)
-    def on_pil_import(module):
+    def on_import(module):
         new_module = importhook.copy_module(module)
         obj = new_module
         if path:
@@ -22,7 +22,10 @@ def register_patch(module_name, path, method_name, function):
                 obj = getattr(obj, item)
         original = getattr(obj, method_name)
         # Save the original, in case we need it
-        setattr(function, "__wrapped__", original)
+        try:
+            setattr(function, "__wrapped__", original)
+        except Exception:
+            pass
         # Set the new function/method:
         if isinstance(original, types.FunctionType):
             setattr(obj, method_name, function)
