@@ -21,21 +21,28 @@ def register_patch(module_name, path, method_name, function):
             for item in path.split("."):
                 obj = getattr(obj, item)
         original = getattr(obj, method_name)
-        setattr(obj, "__wrapped__", types.MethodType(original, obj))
-        setattr(obj, method_name, types.MethodType(function, obj))
+        # Save the original, in case we need it
+        setattr(function, "__wrapped__", original)
+        # Set the new function/method:
+        if isinstance(original, types.FunctionType):
+            setattr(obj, method_name, function)
+        else:
+            setattr(obj, method_name, types.MethodType(function, obj))
         return new_module
 
 
-def matplotlib_show(self):
+def matplotlib_show(*args, **kwargs):
+    from matplotlib import pyplot
+
     buf = BytesIO()
-    self.savefig(buf, format="png")
+    pyplot.savefig(buf, format="png")
     buf.seek(0)
     display(Image(buf.read()))
-    self.clf()
+    pyplot.clf()
 
 
 def image_repr_png(self):
-    byte = self.__wrapped__()
+    byte = image_repr_png.__wrapped__(self)
     return base64.b64encode(byte).decode("utf-8")
 
 
