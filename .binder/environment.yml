@@ -19,7 +19,7 @@ dependencies:
   # extra docs tools
   - sphinx-autobuild
 
-  # the chunk below populates `../examples/jupyter_config.json`,
+  # the chunk below populates `../examples/jupyter_lite_config.json`,
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
   - bqplot

@@ -15,6 +15,8 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
 
     version = __version__
 
+    name = "jupyter_lite"
+
     # traitlets app stuff
     aliases = dict(
         **base_aliases,

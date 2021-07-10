@@ -639,7 +639,7 @@ class P:
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
     EXAMPLE_JUPYTERLITE_JSON = EXAMPLES / "jupyter-lite.json"
-    EXAMPLE_LITE_BUILD_CONFIG = EXAMPLES / "jupyter_config.json"
+    EXAMPLE_LITE_BUILD_CONFIG = EXAMPLES / "jupyter_lite_config.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]

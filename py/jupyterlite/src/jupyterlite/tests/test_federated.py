@@ -33,7 +33,7 @@ def test_federated_extensions(
     }
     overrides = {"the-smallest-extension:plugin": {}}
 
-    (an_empty_lite_dir / "jupyter_config.json").write_text(json.dumps(config))
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
     (an_empty_lite_dir / "overrides.json").write_text(json.dumps(overrides))
 
     build = script_runner.run("jupyter", "lite", "build", cwd=an_empty_lite_dir)
