@@ -1,6 +1,7 @@
 import base64
 import os
 from io import BytesIO
+import types
 
 os.environ["MPLBACKEND"] = "AGG"
 
@@ -18,13 +19,10 @@ def register_patch(module_name, path, method_name, function):
         obj = new_module
         if path:
             for item in path.split("."):
-                if hasattr(obj, item):
-                    obj = getattr(obj, item)
-                else:
-                    return None
+                obj = getattr(obj, item)
         original = getattr(obj, method_name)
         setattr(obj, "__wrapped__", original)
-        setattr(obj, method_name, classmethod(function))
+        setattr(obj, method_name, types.MethodType(function, obj))
         return new_module
 
 
