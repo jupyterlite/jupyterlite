@@ -4,8 +4,6 @@ from IPython.core.application import BaseIPythonApplication
 from IPython.core.history import HistoryManager
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.core.shellapp import InteractiveShellApp
-from IPython.utils.tokenutil import line_at_cursor
-from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
 from .display import LiteDisplayHook, LiteDisplayPublisher
 from .kernel import Pyolite
@@ -39,31 +37,6 @@ class Interpreter(InteractiveShell):
             "evalue": str(evalue),
             "traceback": stb,
         }
-
-    def do_complete(self, code, cursor_pos):
-        if cursor_pos is None:
-            cursor_pos = len(code)
-        line, offset = line_at_cursor(code, cursor_pos)
-        line_cursor = cursor_pos - offset
-
-        txt, matches = self.complete("", line, line_cursor)
-        return {
-            "matches": matches,
-            "cursor_end": cursor_pos,
-            "cursor_start": cursor_pos - len(txt),
-            "metadata": {},
-            "status": "ok",
-        }
-
-    async def run(self, code):
-        self._last_traceback = None
-        exec_code = self.transform_cell(code)
-        await _load_packages_from_imports(exec_code)
-        if self.should_run_async(code):
-            self.result = await self.run_cell_async(code, store_history=True)
-        else:
-            self.result = self.run_cell(code, store_history=True)
-        return self.result
 
 
 class LitePythonShellApp(BaseIPythonApplication, InteractiveShellApp):
