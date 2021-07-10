@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
-from traitlets import Bool, Instance, default
+from traitlets import Bool, Instance, Unicode, default
 
 from . import __version__
 from .config import LiteBuildConfig
@@ -15,7 +15,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
 
     version = __version__
 
-    name = "jupyter_lite"
+    config_file_name = Unicode("jupyter_lite_config").tag(config=True)
 
     # traitlets app stuff
     aliases = dict(
@@ -197,8 +197,6 @@ class LiteArchiveApp(LiteTaskApp):
 
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
-
-    name = "lite"
 
     subcommands = {
         k: (v, v.__doc__.splitlines()[0].strip())
