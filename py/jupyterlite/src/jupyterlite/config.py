@@ -11,9 +11,8 @@ from typing import Optional as _Optional
 from typing import Text as _Text
 from typing import Tuple as _Tuple
 
-from traitlets import CInt, Tuple, Unicode, default
+from traitlets import Bool, CInt, Tuple, Unicode, default
 from traitlets.config import LoggingConfigurable
-from traitlets.traitlets import Bool
 
 from . import constants as C
 from .trait_types import CPath, TypedTuple
