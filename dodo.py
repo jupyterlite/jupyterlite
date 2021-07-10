@@ -577,7 +577,7 @@ class C:
     CONDA_FORGE_RELEASE = "https://github.com/conda-forge/releases/releases/download"
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 93
+    COV_THRESHOLD = 92
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))

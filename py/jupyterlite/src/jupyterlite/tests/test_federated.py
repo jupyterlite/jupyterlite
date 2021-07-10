@@ -31,7 +31,7 @@ def test_federated_extensions(
             "apps": ["lab"],
         }
     }
-    overrides = {"the-smallest-extension": {}}
+    overrides = {"the-smallest-extension:plugin": {}}
 
     (an_empty_lite_dir / "jupyter_config.json").write_text(json.dumps(config))
     (an_empty_lite_dir / "overrides.json").write_text(json.dumps(overrides))
@@ -53,4 +53,6 @@ def test_federated_extensions(
     assert "extension" in smallest
     assert "mimeExtension" in smallest
     assert "style" in smallest
-    assert (smallest_dir / "schemas/the-smallest-extension/plugin.json").exists()
+
+    lab_build = output / "lab/build"
+    assert (lab_build / "themes/the-smallest-extension/index.css").exists()
