@@ -350,7 +350,16 @@ def task_dev():
         file_dep = [
             B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         ]
-        args = [*C.PYM, "pip", "install", "--find-links", B.DIST, C.NAME]
+        args = [
+            *C.PYM,
+            "pip",
+            "install",
+            "-vv",
+            "--find-links",
+            "--no-index",
+            B.DIST,
+            C.NAME,
+        ]
     else:
         cwd = P.PY_SETUP_PY[C.NAME].parent
         file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
