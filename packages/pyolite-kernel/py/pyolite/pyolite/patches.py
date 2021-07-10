@@ -21,7 +21,7 @@ def register_patch(module_name, path, method_name, function):
             for item in path.split("."):
                 obj = getattr(obj, item)
         original = getattr(obj, method_name)
-        setattr(obj, "__wrapped__", original)
+        setattr(obj, "__wrapped__", types.MethodType(original, obj))
         setattr(obj, method_name, types.MethodType(function, obj))
         return new_module
 
