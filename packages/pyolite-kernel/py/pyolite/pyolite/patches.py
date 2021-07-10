@@ -24,7 +24,7 @@ def register_patch(module_name, path, method_name, function):
                     return None
         original = getattr(obj, method_name)
         setattr(obj, "__wrapped__", original)
-        setattr(obj, method_name, function)
+        setattr(obj, method_name, classmethod(function))
         return new_module
 
 
@@ -43,4 +43,4 @@ def image_repr_png(self):
 
 def register_patches():
     register_patch("PIL.Image", "Image", "_repr_png_", image_repr_png)
-    register_patch("matplotlib", "pyplot", "show", matplotlib_show)
+    register_patch("matplotlib.pyplot", "", "show", matplotlib_show)
