@@ -32,7 +32,7 @@ const EDITOR_FACTORY = 'Editor';
 /**
  * A regular expression to match path to notebooks and documents
  */
-const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?\\?path=(.*)');
+const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?');
 
 /**
  * A plugin to open document in a new browser tab.
@@ -114,11 +114,15 @@ const opener: JupyterFrontEndPlugin<void> = {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
         const matches = parsed.request.match(TREE_PATTERN) ?? [];
-        const [, , path] = matches;
-        if (!path) {
+        if (!matches) {
           return;
         }
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const path = urlParams.get('path');
+        if (!path) {
+          return;
+        }
         const file = decodeURIComponent(path);
         const ext = PathExt.extname(file);
         app.restored.then(() => {
