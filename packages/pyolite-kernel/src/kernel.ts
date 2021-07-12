@@ -209,7 +209,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('inspect-request', content);
   }
 
   /**

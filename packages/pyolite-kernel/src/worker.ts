@@ -218,6 +218,17 @@ function complete(content: any) {
 }
 
 /**
+ * Inspect the code submitted by a user.
+ *
+ * @param content The incoming message with the code to inspect.
+ */
+function inspect(content: any) {
+  const res = kernel.inspect(content.code, content.cursor_pos, content.detail_level);
+  const results = formatResult(res);
+  return results;
+}
+
+/**
  * Respond to the commInfoRequest.
  *
  * @param content The incoming message with the comm target name.
@@ -286,6 +297,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
       results = await execute(messageContent);
+      break;
+
+    case 'inspect-request':
+      results = inspect(messageContent);
       break;
 
     case 'complete-request':

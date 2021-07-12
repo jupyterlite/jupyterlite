@@ -105,6 +105,9 @@ export abstract class BaseKernel implements IKernel {
       case 'execute_request':
         await this._execute(msg);
         break;
+      case 'inspect_request':
+        await this._inspect(msg);
+        break;
       case 'complete_request':
         await this._complete(msg);
         break;
@@ -481,6 +484,25 @@ export abstract class BaseKernel implements IKernel {
     const content = await this.completeRequest(completeMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.ICompleteReplyMsg>({
       msgType: 'complete_reply',
+      parentHeader: completeMsg.header,
+      channel: 'shell',
+      session: msg.header.session,
+      content
+    });
+
+    this._sendMessage(message);
+  }
+
+  /**
+   * Handle an inspect_request message
+   *
+   * @param msg The parent message.
+   */
+  private async _inspect(msg: KernelMessage.IMessage): Promise<void> {
+    const completeMsg = msg as KernelMessage.IInspectRequestMsg;
+    const content = await this.inspectRequest(completeMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.IInspectReplyMsg>({
+      msgType: 'inspect_reply',
       parentHeader: completeMsg.header,
       channel: 'shell',
       session: msg.header.session,
