@@ -53,13 +53,13 @@ Go to the draft release, paste the new changelog entry, and press Publish.
 
 ## Releasing on PyPI
 
-To release the `jupyterlite` command line tool on PyPI:
+To release the `jupyterlite` command line tool on PyPI, download the Python assets from
+the GitHub Release (previous step). Then:
 
-1. Build everything: `doit`
-2. `cd py/jupyterlite`
-3. Check the `dist` folder
-4. Install the `jupyterlite` wheel in a new environment to test it
-5. Run `flit publish` to publish to PyPI
+```bash
+cd path-to-assets/
+twine upload *
+```
 
 ## Releasing on conda forge
 
