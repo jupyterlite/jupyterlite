@@ -1,15 +1,14 @@
 import base64
 import os
-from io import BytesIO
 import types
+from io import BytesIO
 
 os.environ["MPLBACKEND"] = "AGG"
 
+import importhook
 from IPython.display import display
 
 from .display import Image
-
-import importhook
 
 
 def register_patch(module_name, path, method_name, function):
