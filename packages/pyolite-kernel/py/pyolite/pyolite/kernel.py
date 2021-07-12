@@ -1,6 +1,6 @@
 # This is our ipykernel mock
 from ipykernel import CommManager
-from IPython.utils.tokenutil import line_at_cursor
+from IPython.utils.tokenutil import line_at_cursor, token_at_cursor
 from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
 
 
@@ -23,6 +23,23 @@ class Pyolite:
                 comms[comm_id] = dict(target_name=comm.target_name)
 
         return comms
+
+    def inspect(self, code, cursor_pos, detail_level):
+        found = False
+        name = token_at_cursor(code, cursor_pos)
+        data, results = {}, {}
+        try:
+            data = self.interpreter.object_inspect_mime(name, detail_level)
+            found = True
+        except:
+            pass
+
+        results["data"] = data
+        results["metadata"] = {}
+        results["found"] = found
+        results["status"] = "ok"
+
+        return results
 
     def complete(self, code, cursor_pos):
         if cursor_pos is None:

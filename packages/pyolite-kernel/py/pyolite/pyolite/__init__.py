@@ -19,9 +19,9 @@ sys.modules["resource"] = types.ModuleType("resource")
 # This is needed for some Matplotlib backends (webagg, ipympl)
 sys.modules["tornado"] = types.ModuleType("tornados")
 
-from .patches import register_patches
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
+from .patches import register_patches
 
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
