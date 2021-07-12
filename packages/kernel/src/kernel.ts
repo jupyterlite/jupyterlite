@@ -109,7 +109,7 @@ export abstract class BaseKernel implements IKernel {
         await this._inspect(msg);
         break;
       case 'is_complete_request':
-        await this._is_complete_request(msg);
+        await this._isCompleteRequest(msg);
         break;
       case 'complete_request':
         await this._complete(msg);
@@ -520,7 +520,7 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param msg The parent message.
    */
-  private async _is_complete_request(msg: KernelMessage.IMessage): Promise<void> {
+  private async _isCompleteRequest(msg: KernelMessage.IMessage): Promise<void> {
     const isCompleteMsg = msg as KernelMessage.IIsCompleteRequestMsg;
     const content = await this.isCompleteRequest(isCompleteMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.IIsCompleteReplyMsg>({
