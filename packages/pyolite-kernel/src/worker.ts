@@ -222,7 +222,7 @@ function complete(content: any) {
  *
  * @param content The incoming message with the code to inspect.
  */
-function inspect(content: any) {
+function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 1 }) {
   const res = kernel.inspect(content.code, content.cursor_pos, content.detail_level);
   const results = formatResult(res);
   return results;
