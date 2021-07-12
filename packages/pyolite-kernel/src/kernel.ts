@@ -222,7 +222,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async isCompleteRequest(
     content: KernelMessage.IIsCompleteRequestMsg['content']
   ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('is-complete-request', content);
   }
 
   /**

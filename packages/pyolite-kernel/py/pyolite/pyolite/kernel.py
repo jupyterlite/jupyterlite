@@ -40,6 +40,16 @@ class Pyolite:
         results["status"] = "ok"
 
         return results
+    
+    def is_complete(self, code):
+        transformer_manager = getattr(self.interpreter, 'input_transformer_manager', None)
+        if transformer_manager is None:
+            transformer_manager = self.interpreter.input_splitter
+        status, indent_spaces = transformer_manager.check_complete(code)
+        results = {'status': status}
+        if status == 'incomplete':
+            results['indent'] = ' ' * indent_spaces
+        return results
 
     def complete(self, code, cursor_pos):
         if cursor_pos is None:
