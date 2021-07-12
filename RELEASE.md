@@ -37,6 +37,20 @@ https://github.com/jupyterlite/jupyterlite/commit/99dcbe7e445901bd09b34b7f0a19ca
 
 TBD: streamline the bump version process and sync between Python and JS packages.
 
+## Commiting and tagging
+
+```bash
+git add .
+git commit -m "Release x.y.z"
+git tag x.y.z
+git push upstream main --tags
+```
+
+When the new tag is pushed, a GitHub Actions workflow will create the new draft GitHub
+Release.
+
+Go to the draft release, paste the new changelog entry, and press Publish.
+
 ## Releasing on PyPI
 
 To release the `jupyterlite` command line tool on PyPI:
