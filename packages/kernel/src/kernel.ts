@@ -499,11 +499,11 @@ export abstract class BaseKernel implements IKernel {
    * @param msg The parent message.
    */
   private async _inspect(msg: KernelMessage.IMessage): Promise<void> {
-    const completeMsg = msg as KernelMessage.IInspectRequestMsg;
-    const content = await this.inspectRequest(completeMsg.content);
+    const inspectMsg = msg as KernelMessage.IInspectRequestMsg;
+    const content = await this.inspectRequest(inspectMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.IInspectReplyMsg>({
       msgType: 'inspect_reply',
-      parentHeader: completeMsg.header,
+      parentHeader: inspectMsg.header,
       channel: 'shell',
       session: msg.header.session,
       content
