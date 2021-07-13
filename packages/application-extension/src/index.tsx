@@ -45,8 +45,12 @@ import React from 'react';
 
 class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
-    super(`${options.room}${options.guid}`, options.ymodel.ydoc);
+    super(`${options.room}${options.path}`, options.ymodel.ydoc);
     this.awareness = options.ymodel.awareness;
+  }
+
+  setPath() {
+    // TODO: this seems super useful
   }
 
   requestInitialContent(): Promise<boolean> {
