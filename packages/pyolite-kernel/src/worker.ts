@@ -229,6 +229,17 @@ function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 
 }
 
 /**
+ * Check code for completeness submitted by a user.
+ *
+ * @param content The incoming message with the code to check.
+ */
+function isComplete(content: { code: string }) {
+  const res = kernel.is_complete(content.code);
+  const results = formatResult(res);
+  return results;
+}
+
+/**
  * Respond to the commInfoRequest.
  *
  * @param content The incoming message with the comm target name.
@@ -301,6 +312,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'inspect-request':
       results = inspect(messageContent);
+      break;
+
+    case 'is-complete-request':
+      results = isComplete(messageContent);
       break;
 
     case 'complete-request':
