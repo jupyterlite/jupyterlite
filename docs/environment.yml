@@ -37,6 +37,7 @@ dependencies:
   # list of federated extensions for the demo site
   - ipywidgets
   - bqplot
+  - ipycytoscape
   - ipyleaflet
   - ipympl
   - ipycanvas
