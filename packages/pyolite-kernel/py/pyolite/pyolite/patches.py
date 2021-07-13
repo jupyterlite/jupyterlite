@@ -5,8 +5,8 @@ from io import BytesIO
 os.environ["MPLBACKEND"] = "AGG"
 
 import matplotlib.pyplot
-from PIL import Image as PILImage
 from IPython.display import display
+from PIL import Image as PILImage
 
 from .display import Image
 
