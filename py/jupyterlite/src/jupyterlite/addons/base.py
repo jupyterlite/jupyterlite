@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import tempfile
 import warnings
 from pathlib import Path
 
@@ -49,6 +50,34 @@ class BaseAddon(LoggingConfigurable):
             shutil.copy2(src, dest)
 
         self.maybe_timestamp(dest)
+
+    def fetch_one(self, url, dest):
+        """fetch one file
+
+        TODO: enable other backends, auth, etc.
+        """
+        import urllib.request
+
+        if dest.exists():
+            self.log.info(f"[lite][fetch] already downloaded {dest.name}, skipping...")
+            return
+
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True)
+
+        if "anaconda.org/" in url:
+            self.log.error(
+                f"[lite][fetch] cannot reliably download from anaconda.org {url}"
+            )
+            return False
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td)
+            with urllib.request.urlopen(url) as response:
+                tmp_dest = tdp / dest.name
+                with tmp_dest.open("wb") as fd:
+                    shutil.copyfileobj(response, fd)
+            shutil.copy2(tmp_dest, dest)
 
     def maybe_timestamp(self, path):
         if not path.exists() or self.manager.source_date_epoch is None:

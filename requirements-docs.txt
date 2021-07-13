@@ -12,6 +12,3 @@ sphinx-autodoc-typehints
 
 # check
 pytest-check-links
-
-# extras
-diffoscope

@@ -95,7 +95,7 @@ class StaticAddon(BaseAddon):
                 for child in sorted((tdp / "package").glob("*")):
                     self.log.debug(f"[lite] [jupyterlab] copying {child}")
                     dest = output_dir / child.name
-                    if not dest.parent.exists():
+                    if not dest.parent.exists():  # pragma: no cover
                         dest.parent.mkdir(exist_ok=True, parents=True)
                     try:
                         if child.is_dir():
@@ -103,7 +103,7 @@ class StaticAddon(BaseAddon):
                         else:
                             shutil.copy2(child, dest)
                         self.maybe_timestamp(dest)
-                    except Exception as err:
+                    except Exception as err:  # pragma: no cover
                         self.log.error(f"ERR copying {child} to {dest}: {err}")
 
         self.maybe_timestamp(output_dir)

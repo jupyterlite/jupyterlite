@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
-from traitlets import Bool, Instance, default
+from traitlets import Bool, Instance, Unicode, default
 
 from . import __version__
 from .config import LiteBuildConfig
@@ -14,6 +14,8 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
     """TODO: An undescribed app"""
 
     version = __version__
+
+    config_file_name = Unicode("jupyter_lite_config").tag(config=True)
 
     # traitlets app stuff
     aliases = dict(
@@ -31,6 +33,16 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             # addon-specific things
             "port": "LiteBuildConfig.port",
             "base-url": "LiteBuildConfig.base_url",
+        },
+    )
+
+    flags = dict(
+        **base_flags,
+        **{
+            "ignore-sys-prefix": (
+                {"LiteBuildConfig": {"ignore_sys_prefix": True}},
+                "Do not copy any extensions from sys.prefix",
+            )
         },
     )
 
@@ -73,6 +85,10 @@ class ManagedApp(BaseLiteApp):
             kwargs["port"] = self.port
         if self.base_url is not None:
             kwargs["base_url"] = self.base_url
+        if self.federated_extensions is not None:
+            kwargs["federated_extensions"] = self.federated_extensions
+        if self.ignore_sys_prefix is not None:
+            kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
 
         return LiteManager(**kwargs)
 
@@ -181,8 +197,6 @@ class LiteArchiveApp(LiteTaskApp):
 
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
-
-    name = "lite"
 
     subcommands = {
         k: (v, v.__doc__.splitlines()[0].strip())

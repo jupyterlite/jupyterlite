@@ -231,8 +231,20 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - name: Cache (docs extensions)
+        uses: actions/cache@v2
+        with:
+          path: ./examples/.cache
+          key: |
+            ${{ env.CACHE_EPOCH }}-docs-app-${{ hashFiles('examples/jupyter_lite_config.json') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-docs-app-
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt
+      - name: Install (py)
+        run: doit dev:py:jupyterlite
+      - name: Docs (app)
+        run: doit docs:app:build
       - name: Docs (app archive)
         run: doit docs:app:pack
       - name: Upload (docs app archive)
