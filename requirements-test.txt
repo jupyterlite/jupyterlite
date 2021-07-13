@@ -3,6 +3,7 @@
 -r requirements-build.txt
 
 ansi2html
+diffoscope; sys_platform == 'linux'
 pytest-console-scripts
 pytest-cov
 pytest-html

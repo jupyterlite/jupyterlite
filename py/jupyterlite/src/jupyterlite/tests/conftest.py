@@ -1,12 +1,19 @@
 """pytest configuration for jupyterlite"""
 
 import shutil
+import subprocess
 import time
 import warnings
+from pathlib import Path
 
 import pytest
 
 from jupyterlite.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
+
+HERE = Path(__file__).parent
+FIXTURES = HERE / "fixtures"
+WHEELS = [*FIXTURES.glob("*.whl")]
+CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
 
 
 @pytest.fixture
@@ -63,3 +70,27 @@ def a_simple_lite_ipynb():
         }
     )
     return writes(nb)
+
+
+import socket
+
+
+@pytest.fixture
+def an_unused_port():
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 0))
+    sock.listen(1)
+    port = sock.getsockname()[1]
+    sock.close()
+    return port
+
+
+@pytest.fixture
+def a_fixture_server(an_unused_port):
+    p = subprocess.Popen(
+        ["python", "-m", "http.server", "-b", "127.0.0.1", f"{an_unused_port}"],
+        cwd=str(FIXTURES),
+    )
+    url = f"http://localhost:{an_unused_port}"
+    yield url
+    p.terminate()

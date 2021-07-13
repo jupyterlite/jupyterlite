@@ -4,6 +4,9 @@ from pathlib import Path
 #: a locale for reproducible file sorting
 C_LOCALE = "C"
 
+#: the encoding for pretty much every file written and read by jupyterlite
+UTF8 = dict(encoding="utf-8")
+
 ROOT = Path(__file__).parent
 
 #: all of the archives
@@ -22,6 +25,12 @@ INDEX_HTML = "index.html"
 #: settings overrides. used JupyterLab build system, usually goes in
 #: $PREFIX/share/jupyter/lab/
 OVERRIDES_JSON = "overrides.json"
+
+#: the canonical location within an env (or archive) for labextensions
+SHARE_LABEXTENSIONS = "share/jupyter/labextensions"
+
+#: the canonical location of labextension metadata
+PACKAGE_JSON = "package.json"
 
 #: the generally-used listing of pip requirements
 REQUIREMENTS_TXT = "requirements.txt"

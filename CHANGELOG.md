@@ -2,6 +2,58 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## v0.1.0a5
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a4...1732344e565c0694b034a4de015231ea05d28e4b))
+
+### Enhancements made
+
+- add is_complete message protocol
+  [#245](https://github.com/jupyterlite/jupyterlite/pull/245)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+- add inspect message [#243](https://github.com/jupyterlite/jupyterlite/pull/243)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+- Use importhook for patches [#239](https://github.com/jupyterlite/jupyterlite/pull/239)
+  ([@dsblank](https://github.com/dsblank))
+- Add patch for PIL.Image.Image._repr_png_
+  [#226](https://github.com/jupyterlite/jupyterlite/pull/226)
+  ([@dsblank](https://github.com/dsblank))
+- ipython refactor [#216](https://github.com/jupyterlite/jupyterlite/pull/216)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+- Initial support for real time collaboration
+  [#109](https://github.com/jupyterlite/jupyterlite/pull/109)
+  ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Revert importhook for now [#250](https://github.com/jupyterlite/jupyterlite/pull/250)
+  ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Remove the custom theme plugin
+  [#205](https://github.com/jupyterlite/jupyterlite/pull/205)
+  ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add RELEASE.md [#246](https://github.com/jupyterlite/jupyterlite/pull/246)
+  ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-07-08&to=2021-07-12&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-08..2021-07-12&type=Issues)
+|
+[@dsblank](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adsblank+updated%3A2021-07-08..2021-07-12&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-08..2021-07-12&type=Issues)
+|
+[@madhur-tandon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-07-08..2021-07-12&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a3...b984c7528204a1d6506464de7dd62363d29ba830))
@@ -45,8 +97,6 @@
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-06..2021-07-08&type=Issues)
 |
 [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-06..2021-07-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a3
 

@@ -10,7 +10,7 @@ import worker from './worker?raw';
 
 // TODO: see https://github.com/jupyterlite/jupyterlite/issues/151
 // TODO: sync this version with the npm version (despite version mangling)
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0a4-py3-none-any.whl';
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0a5-py3-none-any.whl';
 
 // TODO: sync this version with the pypi version
 import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
@@ -209,7 +209,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('inspect-request', content);
   }
 
   /**
@@ -222,7 +222,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async isCompleteRequest(
     content: KernelMessage.IIsCompleteRequestMsg['content']
   ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('is-complete-request', content);
   }
 
   /**
@@ -284,7 +284,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   private async _sendWorkerMessage(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
-    this._worker.postMessage({ type, data });
+    this._worker.postMessage({ type, data, parent: this.parent });
     return await this._executeDelegate.promise;
   }
 

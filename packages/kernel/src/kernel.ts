@@ -70,6 +70,13 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Get the last parent message (mimick ipykernel's get_parent)
+   */
+  get parent(): KernelMessage.IMessage | undefined {
+    return this._parent;
+  }
+
+  /**
    * Dispose the kernel.
    */
   dispose(): void {
@@ -88,6 +95,8 @@ export abstract class BaseKernel implements IKernel {
   async handleMessage(msg: KernelMessage.IMessage): Promise<void> {
     this._busy(msg);
 
+    this._parent = msg;
+
     const msgType = msg.header.msg_type;
     switch (msgType) {
       case 'kernel_info_request':
@@ -95,6 +104,12 @@ export abstract class BaseKernel implements IKernel {
         break;
       case 'execute_request':
         await this._execute(msg);
+        break;
+      case 'inspect_request':
+        await this._inspect(msg);
+        break;
+      case 'is_complete_request':
+        await this._isCompleteRequest(msg);
         break;
       case 'complete_request':
         await this._complete(msg);
@@ -481,6 +496,44 @@ export abstract class BaseKernel implements IKernel {
     this._sendMessage(message);
   }
 
+  /**
+   * Handle an inspect_request message
+   *
+   * @param msg The parent message.
+   */
+  private async _inspect(msg: KernelMessage.IMessage): Promise<void> {
+    const inspectMsg = msg as KernelMessage.IInspectRequestMsg;
+    const content = await this.inspectRequest(inspectMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.IInspectReplyMsg>({
+      msgType: 'inspect_reply',
+      parentHeader: inspectMsg.header,
+      channel: 'shell',
+      session: msg.header.session,
+      content
+    });
+
+    this._sendMessage(message);
+  }
+
+  /**
+   * Handle an is_complete_request message
+   *
+   * @param msg The parent message.
+   */
+  private async _isCompleteRequest(msg: KernelMessage.IMessage): Promise<void> {
+    const isCompleteMsg = msg as KernelMessage.IIsCompleteRequestMsg;
+    const content = await this.isCompleteRequest(isCompleteMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.IIsCompleteReplyMsg>({
+      msgType: 'is_complete_reply',
+      parentHeader: isCompleteMsg.header,
+      channel: 'shell',
+      session: msg.header.session,
+      content
+    });
+
+    this._sendMessage(message);
+  }
+
   private _id: string;
   private _name: string;
   private _history: [number, number, string][] = [];
@@ -491,4 +544,5 @@ export abstract class BaseKernel implements IKernel {
   private _parentHeader:
     | KernelMessage.IHeader<KernelMessage.MessageType>
     | undefined = undefined;
+  private _parent: KernelMessage.IMessage | undefined = undefined;
 }

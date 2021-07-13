@@ -34,6 +34,14 @@
       "title": "Jupyter Config Data",
       "description": "contents of a jupyter-config-data `<script>`, as read by `PageConfig`. These well-known values may be augmented by other extensions.",
       "properties": {
+        "appName": {
+          "description": "The application name, as would appear in a Help menu",
+          "type": "string"
+        },
+        "appVersion": {
+          "description": "The version of the application",
+          "type": "string"
+        },
         "baseUrl": {
           "description": "base URL of this JupyterLite, must end in `/`, will be expanded by `config-utils.js` to include a leading `/`",
           "type": "string",

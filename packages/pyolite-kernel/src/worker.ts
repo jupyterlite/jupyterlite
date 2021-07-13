@@ -117,7 +117,7 @@ async function execute(content: any) {
       metadata: formatResult(metadata)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'execute_result'
     });
@@ -130,7 +130,7 @@ async function execute(content: any) {
       traceback: traceback
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'execute_error'
     });
@@ -141,7 +141,7 @@ async function execute(content: any) {
       wait: formatResult(wait)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'clear_output'
     });
@@ -154,7 +154,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'display_data'
     });
@@ -171,7 +171,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'update_display_data'
     });
@@ -183,7 +183,7 @@ async function execute(content: any) {
       text: formatResult(text)
     };
     postMessage({
-      parentHeader: content.parentHeader,
+      parentHeader: formatResult(kernel._parent_header['header']),
       bundle,
       type: 'stream'
     });
@@ -196,32 +196,13 @@ async function execute(content: any) {
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
 
-  await interpreter.run(content.code);
-  const results: any = {};
+  const res = await kernel.run(content.code);
+  const results = formatResult(res);
 
-  results['payload'] = formatResult(interpreter.payload_manager.read_payload());
-  interpreter.payload_manager.clear_payload();
-
-  if (typeof interpreter._last_traceback === 'undefined') {
-    results['status'] = 'ok';
-    // TODO: set results['user_expressions']
-  } else {
-    const last_traceback = formatResult(interpreter._last_traceback);
-    results['status'] = 'error';
-    results['ename'] = last_traceback['ename'];
-    results['evalue'] = last_traceback['evalue'];
-    results['traceback'] = last_traceback['traceback'];
-
+  if (results['status'] === 'error') {
     publishExecutionError(results['ename'], results['evalue'], results['traceback']);
   }
 
-  const reply = {
-    parentheader: content.parentheader,
-    results,
-    type: 'reply'
-  };
-
-  postMessage(reply);
   return results;
 }
 /**
@@ -230,15 +211,31 @@ async function execute(content: any) {
  * @param content The incoming message with the code to complete.
  */
 function complete(content: any) {
-  const res = interpreter.do_complete(content.code, content.cursor_pos);
+  const res = kernel.complete(content.code, content.cursor_pos);
   const results = formatResult(res);
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results
-  };
+  return results;
+}
 
-  postMessage(reply);
+/**
+ * Inspect the code submitted by a user.
+ *
+ * @param content The incoming message with the code to inspect.
+ */
+function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 1 }) {
+  const res = kernel.inspect(content.code, content.cursor_pos, content.detail_level);
+  const results = formatResult(res);
+  return results;
+}
+
+/**
+ * Check code for completeness submitted by a user.
+ *
+ * @param content The incoming message with the code to check.
+ */
+function isComplete(content: { code: string }) {
+  const res = kernel.is_complete(content.code);
+  const results = formatResult(res);
+  return results;
 }
 
 /**
@@ -250,16 +247,10 @@ function commInfo(content: any) {
   const res = kernel.comm_info(content.target_name);
   const results = formatResult(res);
 
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results: {
-      comms: results,
-      status: 'ok'
-    }
+  return {
+    comms: results,
+    status: 'ok'
   };
-
-  postMessage(reply);
 }
 
 /**
@@ -271,13 +262,7 @@ function commOpen(content: any) {
   const res = kernel.comm_manager.comm_open(pyodide.toPy(content));
   const results = formatResult(res);
 
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results
-  };
-
-  postMessage(reply);
+  return results;
 }
 
 /**
@@ -289,13 +274,7 @@ function commMsg(content: any) {
   const res = kernel.comm_manager.comm_msg(pyodide.toPy(content));
   const results = formatResult(res);
 
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results
-  };
-
-  postMessage(reply);
+  return results;
 }
 
 /**
@@ -307,13 +286,7 @@ function commClose(content: any) {
   const res = kernel.comm_manager.comm_close(pyodide.toPy(content));
   const results = formatResult(res);
 
-  const reply = {
-    parentheader: content.parentheader,
-    type: 'reply',
-    results
-  };
-
-  postMessage(reply);
+  return results;
 }
 
 /**
@@ -325,30 +298,54 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   await pyodideReadyPromise;
   const data = event.data;
 
+  let results;
   const messageType = data.type;
   const messageContent = data.data;
+  kernel._parent_header = pyodide.toPy(data.parent);
 
   switch (messageType) {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
-      return execute(messageContent);
+      results = await execute(messageContent);
+      break;
+
+    case 'inspect-request':
+      results = inspect(messageContent);
+      break;
+
+    case 'is-complete-request':
+      results = isComplete(messageContent);
+      break;
 
     case 'complete-request':
-      return complete(messageContent);
+      results = complete(messageContent);
+      break;
 
     case 'comm-info-request':
-      return commInfo(messageContent);
+      results = commInfo(messageContent);
+      break;
 
     case 'comm-open':
-      return commOpen(messageContent);
+      results = commOpen(messageContent);
+      break;
 
     case 'comm-msg':
-      return commMsg(messageContent);
+      results = commMsg(messageContent);
+      break;
 
     case 'comm-close':
-      return commClose(messageContent);
+      results = commClose(messageContent);
+      break;
 
     default:
       break;
   }
+
+  const reply = {
+    parentHeader: data.parent['header'],
+    type: 'reply',
+    results
+  };
+
+  postMessage(reply);
 };

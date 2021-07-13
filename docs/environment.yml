@@ -6,6 +6,7 @@ channels:
   - nodefaults
 
 dependencies:
+  # the chunk below gets copied to ../.binder/environment.yml
   ### DOCS ENV ###
   # runtimes
   - nodejs >=14,<15
@@ -34,21 +35,4 @@ dependencies:
   - pytest-cov
   - pytest-html
   - pytest-xdist
-  # list of federated extensions for the demo site
-  - ipywidgets
-  - bqplot
-  - ipyleaflet
-  - ipympl
-  - ipycanvas
-  - jupyterlab-drawio
-  - jupyterlab-tour >=3.1.0
-  - jupyterlab-fasta >=3,<4
-  - jupyterlab-geojson >=3,<4
-  - jupyterlab-kernelspy
-  - jupyterlab_miami_nights
-  - plotly >=5,<6
-  - theme-darcula
   ### DOCS ENV ###
-
-  # this is a UNIX-only dependency, so we don't hoist it to the more-portable binder environment
-  - diffoscope
