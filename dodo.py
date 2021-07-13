@@ -71,6 +71,14 @@ def task_lint():
         return
 
     yield U.ok(
+        B.OK_LITE_VERSION,
+        name="version:js:lite",
+        doc="check jupyter-lite.json version vs package.json",
+        file_dep=[P.APP_JUPYTERLITE_JSON, P.APP_PACKAGE_JSON],
+        actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
+    )
+
+    yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
@@ -584,6 +592,8 @@ class C:
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
     CONDA_FORGE_RELEASE = "https://github.com/conda-forge/releases/releases/download"
+    JUPYTERLITE_JSON = "jupyter-lite.json"
+    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 92
@@ -621,7 +631,7 @@ class P:
     PYOLITE_PACKAGES = {}
 
     APP = ROOT / "app"
-    APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
+    APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
@@ -781,6 +791,7 @@ class B:
     OK_PRETTIER = OK / "prettier"
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
+    OK_LITE_VERSION = OK / "lite.version"
     DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
