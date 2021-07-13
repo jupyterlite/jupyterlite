@@ -23,7 +23,7 @@ class Pyolite:
                 comms[comm_id] = dict(target_name=comm.target_name)
 
         return comms
-    
+
     def input_request(self, prompt, password):
         pass
 

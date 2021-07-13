@@ -203,7 +203,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    */
   async inputRequest(
     content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<void> {
+  ): Promise<KernelMessage.IInputReplyMsg['content']> {
     throw new Error('Not implemented');
   }
 
