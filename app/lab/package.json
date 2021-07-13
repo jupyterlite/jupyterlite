@@ -84,21 +84,21 @@
     "@jupyterlite/pyolite-kernel-extension": "^0.1.0-alpha.5",
     "@jupyterlite/server": "^0.1.0-alpha.5",
     "@jupyterlite/server-extension": "^0.1.0-alpha.5",
-    "@lumino/algorithm": "^1.6.0",
-    "@lumino/application": "^1.20.0",
-    "@lumino/commands": "^1.15.0",
-    "@lumino/coreutils": "^1.8.0",
-    "@lumino/disposable": "^1.7.0",
-    "@lumino/domutils": "^1.5.0",
-    "@lumino/dragdrop": "^1.10.0",
-    "@lumino/messaging": "^1.7.0",
-    "@lumino/properties": "^1.5.0",
-    "@lumino/signaling": "^1.7.0",
-    "@lumino/virtualdom": "^1.11.0",
-    "@lumino/widgets": "^1.23.0",
-    "es6-promise": "^4.2.8",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "@lumino/algorithm": "^1.3.3",
+    "@lumino/application": "^1.16.0",
+    "@lumino/commands": "^1.12.0",
+    "@lumino/coreutils": "^1.5.3",
+    "@lumino/disposable": "^1.4.3",
+    "@lumino/domutils": "^1.2.3",
+    "@lumino/dragdrop": "^1.7.1",
+    "@lumino/messaging": "^1.4.3",
+    "@lumino/properties": "^1.2.3",
+    "@lumino/signaling": "^1.4.3",
+    "@lumino/virtualdom": "^1.8.0",
+    "@lumino/widgets": "^1.19.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "yjs": "^13.5.6"
   },
   "dependencies": {
     "@jupyterlab/application": "^3.1.0-rc.1",
@@ -143,7 +143,8 @@
     "@jupyterlite/ui-components": "^0.1.0-alpha.5",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "yjs": "^13.5.6"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -160,7 +161,6 @@
     "jest": "^26.4.2",
     "mini-css-extract-plugin": "~0.9.0",
     "npm-run-all": "^4.1.5",
-    "playwright": "^1.8.0",
     "raw-loader": "~4.0.0",
     "rimraf": "~3.0.2",
     "style-loader": "~1.0.1",
@@ -254,7 +254,8 @@
       "@lumino/virtualdom",
       "@lumino/widgets",
       "react",
-      "react-dom"
+      "react-dom",
+      "yjs"
     ],
     "mimeExtensions": {
       "@jupyterlab/json-extension": "",
