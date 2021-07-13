@@ -3,6 +3,7 @@
     "federated_extensions": [
       "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.29-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.29-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2",
