@@ -105,6 +105,9 @@ export abstract class BaseKernel implements IKernel {
       case 'execute_request':
         await this._execute(msg);
         break;
+      case 'input_request':
+        await this._inputRequest(msg);
+        break;
       case 'inspect_request':
         await this._inspect(msg);
         break;
@@ -198,7 +201,7 @@ export abstract class BaseKernel implements IKernel {
    */
   abstract inputRequest(
     content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<void>;
+  ): Promise<KernelMessage.IInputReplyMsg['content']>;
 
   /**
    * Send an `comm_open` message.
@@ -527,6 +530,25 @@ export abstract class BaseKernel implements IKernel {
       msgType: 'is_complete_reply',
       parentHeader: isCompleteMsg.header,
       channel: 'shell',
+      session: msg.header.session,
+      content
+    });
+
+    this._sendMessage(message);
+  }
+
+  /**
+   * Handle an input_request message
+   *
+   * @param msg The parent message.
+   */
+  private async _inputRequest(msg: KernelMessage.IMessage): Promise<void> {
+    const inputMsg = msg as KernelMessage.IInputRequestMsg;
+    const content = await this.inputRequest(inputMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.IInputReplyMsg>({
+      msgType: 'input_reply',
+      parentHeader: inputMsg.header,
+      channel: 'stdin',
       session: msg.header.session,
       content
     });

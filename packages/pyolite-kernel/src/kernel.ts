@@ -245,8 +245,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   async inputRequest(
     content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<void> {
-    throw new Error('Not implemented');
+  ): Promise<KernelMessage.IInputReplyMsg['content']> {
+    return await this._sendWorkerMessage('input-request', content);
   }
 
   /**

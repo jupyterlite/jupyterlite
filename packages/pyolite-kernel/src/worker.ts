@@ -228,6 +228,17 @@ function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 
 }
 
 /**
+ * Deal with Inputs
+ *
+ * @param content The incoming message with the input prompt.
+ */
+function inputReq(content: { prompt: string; password: boolean }) {
+  const res = kernel.input_request(content.prompt, content.password);
+  const results = formatResult(res);
+  return results;
+}
+
+/**
  * Check code for completeness submitted by a user.
  *
  * @param content The incoming message with the code to check.
@@ -307,6 +318,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
     case 'execute-request':
       console.log('Perform execution inside worker', data);
       results = await execute(messageContent);
+      break;
+
+    case 'input-request':
+      results = inputReq(messageContent);
       break;
 
     case 'inspect-request':
