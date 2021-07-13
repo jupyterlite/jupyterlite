@@ -24,6 +24,11 @@
   [#109](https://github.com/jupyterlite/jupyterlite/pull/109)
   ([@jtpio](https://github.com/jtpio))
 
+### Bugs fixed
+
+- Revert importhook for now [#250](https://github.com/jupyterlite/jupyterlite/pull/250)
+  ([@jtpio](https://github.com/jtpio))
+
 ### Maintenance and upkeep improvements
 
 - Remove the custom theme plugin
