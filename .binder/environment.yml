@@ -24,6 +24,7 @@ dependencies:
   ### FEDERATED EXTENSIONS ###
   - bqplot
   - ipycanvas
+  - ipycytoscape
   - ipyleaflet
   - ipympl
   - jupyterlab_miami_nights
