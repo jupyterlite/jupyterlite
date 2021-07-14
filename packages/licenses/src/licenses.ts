@@ -8,7 +8,8 @@ import {
 
 export class Licenses implements ILicenses {
   async get(): Promise<ILicenseResponse> {
-    return { bundles: { 'this app': await this._getAppLicenses() } };
+    const appName = PageConfig.getOption('appName') || 'JupyterLite';
+    return { bundles: { [appName]: await this._getAppLicenses() } };
   }
 
   async _getAppLicenses(): Promise<ILicenseBundle> {
