@@ -42,8 +42,8 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/nbformat": "^3.1.0-alpha.11",
-    "@jupyterlab/services": "^6.1.0-alpha.11",
+    "@jupyterlab/nbformat": "^3.1.0-rc.1",
+    "@jupyterlab/services": "^6.1.0-rc.1",
     "@lumino/coreutils": "^1.8.0",
     "@lumino/signaling": "^1.7.0",
     "localforage": "^1.9.0"
@@ -51,7 +51,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "^3.1.0-alpha.11",
+    "@jupyterlab/testutils": "^3.1.0-rc.1",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
