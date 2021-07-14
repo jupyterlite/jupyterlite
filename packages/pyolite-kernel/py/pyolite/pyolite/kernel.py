@@ -27,14 +27,11 @@ class Pyolite:
     def input_request(self, prompt, password):
         prompt = "" if prompt is None else prompt
         password = False if password is None else password
-        self.interpreter.input_request(
-            prompt,
-            password
-        )
-    
+        self.interpreter.input_request(prompt, password)
+
     def getpass(self, prompt):
         self.input_request(prompt, password=True)
-    
+
     def raw_input(self, prompt):
         self.input_request(prompt, password=False)
 
