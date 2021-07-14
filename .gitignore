@@ -137,3 +137,6 @@ docs/jupyter_execute
 *.whl
 *.tar.gz
 *.bz2
+
+ui-tests/test-output
+_output

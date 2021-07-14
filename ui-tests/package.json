@@ -1,0 +1,16 @@
+{
+  "name": "@jupyterlite/ui-tests",
+  "version": "0.1.0",
+  "description": "JupyterLite UI Tests",
+  "private": true,
+  "scripts": {
+    "start:jupyterlite": "jupyter lite build && jupyter lite serve",
+    "start:jupyterlite:detached": "yarn run start-jlab&",
+    "test": "galata --jlab-base-url http://localhost:8000"
+  },
+  "author": "JupyterLite Contributors",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@jupyterlab/galata": "3.0.11-2"
+  }
+}
