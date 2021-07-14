@@ -30,7 +30,7 @@ export interface ILicenseResponse {
 /**
  * A top-level report of the licenses for all code included in a bundle
  *
- * #### Note
+ * Note
  *
  * This is roughly informed by the terms defined in the SPDX spec, though is not
  * an SPDX Document, since there seem to be several (incompatible) specs
@@ -45,7 +45,7 @@ export interface ILicenseBundle extends ReadonlyJSONObject {
 /**
  * A best-effort single bundled package's information.
  *
- * #### Note
+ * Note
  *
  * This is roughly informed by SPDX `packages` and `hasExtractedLicenseInfos`,
  * as making it conformant would vastly complicate the structure.
