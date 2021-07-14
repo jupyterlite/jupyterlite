@@ -50,6 +50,7 @@
     "@jupyterlab/statedb": "^3.1.0-rc.1",
     "@jupyterlite/contents": "^0.1.0-alpha.5",
     "@jupyterlite/kernel": "^0.1.0-alpha.5",
+    "@jupyterlite/licenses": "^0.1.0-alpha.5",
     "@jupyterlite/session": "^0.1.0-alpha.5",
     "@jupyterlite/settings": "^0.1.0-alpha.5",
     "@lumino/application": "^1.20.0",
