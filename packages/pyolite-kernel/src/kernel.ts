@@ -243,10 +243,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    *
    * @param content - The content of the request.
    */
-  async inputReply(
-    content: KernelMessage.IInputReplyMsg['content']
-  ): Promise<KernelMessage.IInputRequestMsg['content']> {
-    return await this._sendWorkerMessage('input-reply', content);
+  async inputRequest(
+    content: KernelMessage.IInputRequestMsg['content']
+  ): Promise<KernelMessage.IInputReplyMsg['content']> {
+    return await this._sendWorkerMessage('input-request', content);
   }
 
   /**

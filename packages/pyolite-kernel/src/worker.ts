@@ -249,11 +249,11 @@ function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 
 /**
  * Deal with Inputs
  *
- * @param content The incoming message with the input value.
+ * @param content The incoming message with the input prompt.
  */
-function inputRep(content: { value: string }) {
+function inputReq(content: { prompt: string; password: boolean }) {
   console.log(content);
-  const res = kernel.input_reply(content.value);
+  const res = kernel.input_request(content.prompt, content.password);
   console.log(res);
   const results = formatResult(res);
   console.log(results);
@@ -342,8 +342,8 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
       results = await execute(messageContent);
       break;
 
-    case 'input-reply':
-      results = inputRep(messageContent);
+    case 'input-request':
+      results = inputReq(messageContent);
       break;
 
     case 'inspect-request':
