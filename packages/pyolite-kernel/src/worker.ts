@@ -39,6 +39,7 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;
+  interpreter.input_request = sendInputRequest;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
 }
@@ -97,6 +98,24 @@ async function sendComm(
     metadata: formatResult(metadata),
     ident: formatResult(ident),
     buffers: formatResult(buffers)
+  });
+}
+
+/**
+ * Send a input request to the front-end.
+ *
+ * @param prompt the text to show at the prompt
+ * @param password Is the request for a password?
+ */
+async function sendInputRequest(prompt: string, password: boolean) {
+  const content = {
+    prompt,
+    password
+  };
+  postMessage({
+    type: 'input_request',
+    parentHeader: formatResult(kernel._parent_header['header']),
+    content
   });
 }
 
@@ -230,11 +249,14 @@ function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 
 /**
  * Deal with Inputs
  *
- * @param content The incoming message with the input prompt.
+ * @param content The incoming message with the input value.
  */
-function inputReq(content: { prompt: string; password: boolean }) {
-  const res = kernel.input_request(content.prompt, content.password);
+function inputRep(content: { value: string }) {
+  console.log(content);
+  const res = kernel.input_reply(content.value);
+  console.log(res);
   const results = formatResult(res);
+  console.log(results);
   return results;
 }
 
@@ -320,8 +342,8 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
       results = await execute(messageContent);
       break;
 
-    case 'input-request':
-      results = inputReq(messageContent);
+    case 'input-reply':
+      results = inputRep(messageContent);
       break;
 
     case 'inspect-request':

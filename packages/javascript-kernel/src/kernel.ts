@@ -201,9 +201,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    *
    * @param content - The content of the request.
    */
-  async inputRequest(
-    content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<KernelMessage.IInputReplyMsg['content']> {
+  async inputReply(
+    content: KernelMessage.IInputReplyMsg['content']
+  ): Promise<KernelMessage.IInputRequestMsg['content']> {
     throw new Error('Not implemented');
   }
 

@@ -105,8 +105,8 @@ export abstract class BaseKernel implements IKernel {
       case 'execute_request':
         await this._execute(msg);
         break;
-      case 'input_request':
-        await this._inputRequest(msg);
+      case 'input_reply':
+        await this._inputReply(msg);
         break;
       case 'inspect_request':
         await this._inspect(msg);
@@ -199,9 +199,9 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param content - The content of the request.
    */
-  abstract inputRequest(
-    content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<KernelMessage.IInputReplyMsg['content']>;
+  abstract inputReply(
+    content: KernelMessage.IInputReplyMsg['content']
+  ): Promise<KernelMessage.IInputRequestMsg['content']>;
 
   /**
    * Send an `comm_open` message.
@@ -538,15 +538,15 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
-   * Handle an input_request message
+   * Handle an input_reply message
    *
    * @param msg The parent message.
    */
-  private async _inputRequest(msg: KernelMessage.IMessage): Promise<void> {
-    const inputMsg = msg as KernelMessage.IInputRequestMsg;
-    const content = await this.inputRequest(inputMsg.content);
-    const message = KernelMessage.createMessage<KernelMessage.IInputReplyMsg>({
-      msgType: 'input_reply',
+  private async _inputReply(msg: KernelMessage.IMessage): Promise<void> {
+    const inputMsg = msg as KernelMessage.IInputReplyMsg;
+    const content = await this.inputReply(inputMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
+      msgType: 'input_request',
       parentHeader: inputMsg.header,
       channel: 'stdin',
       session: msg.header.session,
