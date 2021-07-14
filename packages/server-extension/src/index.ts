@@ -5,6 +5,8 @@ import { Contents, IContents } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
+import { ILicenses, Licenses } from '@jupyterlite/licenses';
+
 import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
@@ -72,12 +74,13 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
 const server: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:server',
   autoStart: true,
-  requires: [IContents, IKernels, IKernelSpecs, ISessions, ISettings],
+  requires: [IContents, IKernels, IKernelSpecs, ILicenses, ISessions, ISettings],
   activate: (
     app: JupyterLiteServer,
     contents: IContents,
     kernels: IKernels,
     kernelspecs: IKernelSpecs,
+    licenses: ILicenses,
     sessions: ISessions,
     settings: ISettings
   ) => {
@@ -85,6 +88,7 @@ const server: JupyterLiteServerPlugin<void> = {
       contents,
       kernels,
       kernelspecs,
+      licenses,
       sessions,
       settings
     });
@@ -105,10 +109,26 @@ const settings: JupyterLiteServerPlugin<ISettings> = {
   }
 };
 
+/**
+ * The licenses service plugin
+ */
+const licenses: JupyterLiteServerPlugin<ILicenses> = {
+  id: '@jupyterlite/server-extension:licenses',
+  autoStart: true,
+  provides: ILicenses,
+  activate: (app: JupyterLiteServer) => {
+    return new Licenses();
+  }
+};
+
+/**
+ * All of the exported plugins
+ */
 const plugins: JupyterLiteServerPlugin<any>[] = [
   contents,
   kernels,
   kernelSpec,
+  licenses,
   server,
   sessions,
   settings

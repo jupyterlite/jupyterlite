@@ -28,6 +28,9 @@
       "path": "./packages/kernel"
     },
     {
+      "path": "./packages/licenses"
+    },
+    {
       "path": "./packages/p5-kernel"
     },
     {
@@ -53,6 +56,9 @@
     },
     {
       "path": "./packages/settings"
+    },
+    {
+      "path": "./packages/types"
     },
     {
       "path": "./packages/ui-components"

@@ -8,6 +8,8 @@ import { ISessions } from '@jupyterlite/session';
 
 import { ISettings } from '@jupyterlite/settings';
 
+import { ILicenses } from '@jupyterlite/licenses';
+
 import { Router } from './router';
 
 /**
@@ -18,12 +20,13 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor(options: JupyterServer.IOptions) {
-    const { contents, kernels, kernelspecs, sessions, settings } = options;
+    const { contents, kernels, kernelspecs, sessions, settings, licenses } = options;
     this._contents = contents;
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
     this._settings = settings;
+    this._licenses = licenses;
     this._addRoutes();
   }
 
@@ -209,7 +212,8 @@ export class JupyterServer {
     });
 
     app.get('/api/licenses', async (req: Router.IRequest) => {
-      return new Response(JSON.stringify({ bundles: {} }), { status: 200 });
+      const licenses = await this._licenses.get();
+      return new Response(JSON.stringify(licenses));
     });
   }
 
@@ -217,6 +221,7 @@ export class JupyterServer {
   private _contents: IContents;
   private _kernels: IKernels;
   private _kernelspecs: IKernelSpecs;
+  private _licenses: ILicenses;
   private _sessions: ISessions;
   private _settings: ISettings;
 }
@@ -243,6 +248,11 @@ export namespace JupyterServer {
      * The kernel specs service.
      */
     kernelspecs: IKernelSpecs;
+
+    /**
+     * The licenses service
+     */
+    licenses: ILicenses;
 
     /**
      * The sessions service.

@@ -1,10 +1,11 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { IFederatedExtension } from '@jupyterlite/types';
 
 import * as json5 from 'json5';
 
 import localforage from 'localforage';
 
-import { IFederatedExtension, IPlugin } from './tokens';
+import { IPlugin } from './tokens';
 
 /**
  * The name of the local storage.

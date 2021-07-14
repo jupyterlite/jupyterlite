@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/server-extension",
+  "name": "@jupyterlite/types",
   "version": "0.1.0-alpha.5",
-  "description": "JupyterLite - Server Extension",
+  "description": "JupyterLite - Types",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
     "url": "https://github.com/jupyterlite/jupyterlite/issues"
@@ -18,39 +18,27 @@
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
   "files": [
     "lib/*.d.ts",
     "lib/*.js.map",
-    "lib/*.js",
-    "style/*.css",
-    "style/index.js"
+    "lib/*.js"
   ],
   "scripts": {
     "build": "tsc -b",
+    "build:test": "tsc --build tsconfig.test.json",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "docs": "typedoc src",
     "prepublishOnly": "npm run build",
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-alpha.5",
-    "@jupyterlite/licenses": "^0.1.0-alpha.5",
-    "@jupyterlite/server": "^0.1.0-alpha.5",
-    "@jupyterlite/session": "^0.1.0-alpha.5",
-    "@jupyterlite/settings": "^0.1.0-alpha.5"
+    "@lumino/coreutils": "^1.8.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.12.1",
-    "@types/jest": "^26.0.10",
-    "jest": "^26.4.2",
     "rimraf": "~3.0.0",
-    "ts-jest": "^26.3.0",
     "typescript": "~4.2.3"
   },
   "publishConfig": {
