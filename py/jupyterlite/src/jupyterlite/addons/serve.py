@@ -87,7 +87,7 @@ class ServeAddon(BaseAddon):
         Serving JupyterLite from:
             {path}
         on:
-            {self.url}
+            {self.url}index.html
 
         *** Press Ctrl+C to exit **
         """
