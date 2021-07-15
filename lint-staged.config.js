@@ -17,7 +17,7 @@ module.exports = {
     const escapedFileNames = escapeFileNames(filenames);
     return [
       `prettier --write ${escapedFileNames}`,
-      `eslint --fix ${escapedFileNames}`,
+      `eslint --cache --fix ${escapedFileNames}`,
       `git add -f ${escapedFileNames}`
     ];
   }
