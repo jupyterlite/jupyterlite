@@ -22,6 +22,7 @@ class Interpreter(InteractiveShell):
         super(Interpreter, self).__init__(*args, **kwargs)
         self.kernel = Pyolite(interpreter=self)
         self._last_traceback = None
+        self.input_request = None
 
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)

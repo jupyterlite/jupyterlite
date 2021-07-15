@@ -97,7 +97,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       }
       case 'input_request': {
         const bundle = msg.content ?? { prompt: '', password: false };
-        this._inputRequest(bundle);
+        const parentHeader = msg.parentHeader;
+        this.inputRequest(bundle, parentHeader);
         break;
       }
       case 'reply': {

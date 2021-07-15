@@ -259,13 +259,16 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param content The input_request content.
    */
-  protected _inputRequest(content: KernelMessage.IInputRequestMsg['content']): void {
+  protected inputRequest(
+    content: KernelMessage.IInputRequestMsg['content'],
+    parentHeader: any
+  ): void {
     const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
       channel: 'stdin',
       msgType: 'input_request',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeader?.session ?? '',
+      parentHeader,
       content
     });
     this._sendMessage(message);

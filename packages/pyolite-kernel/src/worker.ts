@@ -42,7 +42,6 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;
-  interpreter.input_request = input;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
 }
@@ -226,6 +225,7 @@ async function execute(content: any) {
   interpreter.display_pub.display_data_callback = displayDataCallback;
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
+  interpreter.input_request = input;
 
   const res = await kernel.run(content.code);
   const results = formatResult(res);
@@ -342,7 +342,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'input-reply':
       resolveInputReply(messageContent);
-      break;
+      return;
 
     case 'inspect-request':
       results = inspect(messageContent);
