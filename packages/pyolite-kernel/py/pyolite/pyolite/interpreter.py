@@ -1,3 +1,4 @@
+import builtins
 import sys
 
 from IPython.core.application import BaseIPythonApplication
@@ -22,7 +23,16 @@ class Interpreter(InteractiveShell):
         super(Interpreter, self).__init__(*args, **kwargs)
         self.kernel = Pyolite(interpreter=self)
         self._last_traceback = None
-        self.input_request = None
+        self._input = None
+
+    @property
+    def input_request(self):
+        return self._input
+
+    @input_request.setter
+    def input_request(self, value):
+        self._input = value
+        builtins.input = self._input
 
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)
