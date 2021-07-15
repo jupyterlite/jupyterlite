@@ -39,7 +39,7 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
   interpreter = kernel.interpreter;
   interpreter.send_comm = sendComm;
-  interpreter.input_request = sendInputRequest;
+  interpreter.input_request = input;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
 }
@@ -99,6 +99,16 @@ async function sendComm(
     ident: formatResult(ident),
     buffers: formatResult(buffers)
   });
+}
+
+let resolveInputReply: any;
+async function input(prompt: string, passwd: boolean) {
+  await sendInputRequest(prompt, passwd);
+  const replyPromise = new Promise(resolve => {
+    resolveInputReply = resolve;
+  });
+  const result = await replyPromise;
+  return result;
 }
 
 /**
@@ -247,20 +257,6 @@ function inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 
 }
 
 /**
- * Deal with Inputs
- *
- * @param content The incoming message with the input prompt.
- */
-function inputReq(content: { prompt: string; password: boolean }) {
-  console.log(content);
-  const res = kernel.input_request(content.prompt, content.password);
-  console.log(res);
-  const results = formatResult(res);
-  console.log(results);
-  return results;
-}
-
-/**
  * Check code for completeness submitted by a user.
  *
  * @param content The incoming message with the code to check.
@@ -342,8 +338,8 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
       results = await execute(messageContent);
       break;
 
-    case 'input-request':
-      results = inputReq(messageContent);
+    case 'input-reply':
+      resolveInputReply(messageContent);
       break;
 
     case 'inspect-request':

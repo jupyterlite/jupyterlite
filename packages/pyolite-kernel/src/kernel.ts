@@ -95,6 +95,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
         this.stream(bundle);
         break;
       }
+      case 'input_request': {
+        const bundle = msg.content ?? { prompt: '', password: false };
+        this._inputRequest(bundle);
+        break;
+      }
       case 'reply': {
         const bundle = msg.results;
         this._executeDelegate.resolve(bundle);
@@ -239,14 +244,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Send an `input_request` message.
+   * Send an `input_reply` message.
    *
-   * @param content - The content of the request.
+   * @param content - The content of the reply.
    */
-  async inputRequest(
-    content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<KernelMessage.IInputReplyMsg['content']> {
-    return await this._sendWorkerMessage('input-request', content);
+  async inputReply(content: KernelMessage.IInputReplyMsg['content']): Promise<void> {
+    return await this._sendWorkerMessage('input-reply', content);
   }
 
   /**
