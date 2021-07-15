@@ -13,6 +13,9 @@ let stdout_stream: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let stderr_stream: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let resolveInputReply: any;
 /**
  * Load Pyodided and initialize the interpreter.
  */
@@ -101,7 +104,6 @@ async function sendComm(
   });
 }
 
-let resolveInputReply: any;
 async function input(prompt: string, passwd: boolean) {
   await sendInputRequest(prompt, passwd);
   const replyPromise = new Promise(resolve => {
