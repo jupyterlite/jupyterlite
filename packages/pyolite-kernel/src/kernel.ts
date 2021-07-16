@@ -97,8 +97,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       }
       case 'input_request': {
         const bundle = msg.content ?? { prompt: '', password: false };
-        const parentHeader = msg.parentHeader;
-        this.inputRequest(bundle, parentHeader);
+        this.inputRequest(bundle);
         break;
       }
       case 'reply': {
@@ -249,8 +248,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    *
    * @param content - The content of the reply.
    */
-  async inputReply(content: KernelMessage.IInputReplyMsg['content']): Promise<void> {
-    return await this._sendWorkerMessage('input-reply', content);
+  inputReply(content: KernelMessage.IInputReplyMsg['content']): void {
+    this._worker.postMessage({
+      type: 'input-reply',
+      data: content,
+      parent: this.parent
+    });
   }
 
   /**
@@ -288,8 +291,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   private async _sendWorkerMessage(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
-    console.log('sending parent header to worker');
-    console.log(this.parent);
     this._worker.postMessage({ type, data, parent: this.parent });
     return await this._executeDelegate.promise;
   }

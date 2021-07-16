@@ -196,7 +196,7 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param content - The content of the request.
    */
-  abstract inputReply(content: KernelMessage.IInputReplyMsg['content']): Promise<void>;
+  abstract inputReply(content: KernelMessage.IInputReplyMsg['content']): void;
 
   /**
    * Send an `comm_open` message.
@@ -259,14 +259,7 @@ export abstract class BaseKernel implements IKernel {
    *
    * @param content The input_request content.
    */
-  protected inputRequest(
-    content: KernelMessage.IInputRequestMsg['content'],
-    parentHeader: any
-  ): void {
-    console.log('parent header from worker');
-    console.log(parentHeader);
-    console.log('this parent header');
-    console.log(this._parentHeader);
+  protected inputRequest(content: KernelMessage.IInputRequestMsg['content']): void {
     const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
       channel: 'stdin',
       msgType: 'input_request',
