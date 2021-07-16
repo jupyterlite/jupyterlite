@@ -105,6 +105,9 @@ export abstract class BaseKernel implements IKernel {
       case 'execute_request':
         await this._execute(msg);
         break;
+      case 'input_reply':
+        this.inputReply(msg.content as KernelMessage.IInputReplyMsg['content']);
+        break;
       case 'inspect_request':
         await this._inspect(msg);
         break;
