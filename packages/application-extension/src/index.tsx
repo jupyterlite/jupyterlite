@@ -16,7 +16,9 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 import {
   IDocumentProvider,
   IDocumentProviderFactory,
-  ProviderMock
+  ProviderMock,
+  getAnonymousUserName,
+  getRandomColor
 } from '@jupyterlab/docprovider';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
@@ -47,6 +49,16 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
     super(`${options.room}${options.path}`, options.ymodel.ydoc);
     this.awareness = options.ymodel.awareness;
+    const color = `#${getParam('--usercolor', getRandomColor().slice(1))}`;
+    const name = getParam('--username', getAnonymousUserName());
+    const currState = this.awareness.getLocalState();
+    // only set if this was not already set by another plugin
+    if (currState && !currState.name) {
+      this.awareness.setLocalStateField('user', {
+        name,
+        color
+      });
+    }
   }
 
   setPath() {

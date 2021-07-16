@@ -5,6 +5,7 @@ requires = ["flit_core >=3.1,<4"]
 [tool.flit.metadata]
 module = "jupyterlite"
 author = "JupyterLite Contributors"
+author-email = ""
 description-file = "README.md"
 license = "BSD-3-Clause"
 home-page = "https://github.com/jupyterlite/jupyterlite"

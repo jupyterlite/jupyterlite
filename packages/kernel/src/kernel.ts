@@ -245,6 +245,9 @@ export abstract class BaseKernel implements IKernel {
    * @param content The display_data content.
    */
   protected displayData(content: KernelMessage.IDisplayDataMsg['content']): void {
+    // Make sure metadata is always set
+    content.metadata = content.metadata ?? {};
+
     const message = KernelMessage.createMessage<KernelMessage.IDisplayDataMsg>({
       channel: 'iopub',
       msgType: 'display_data',
