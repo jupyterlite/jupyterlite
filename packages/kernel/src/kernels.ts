@@ -75,7 +75,14 @@ export class Kernels implements IKernels {
           } else {
             return;
           }
-          void processMsg(msg);
+
+          // TODO Find a better solution for this?
+          // input-reply is asynchrone, must not be processed like other messages
+          if (msg.header.msg_type === 'input_reply') {
+            kernel.handleMessage(msg);
+          } else {
+            void processMsg(msg);
+          }
         }
       );
 
