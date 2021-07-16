@@ -123,6 +123,11 @@ async function sendInputRequest(prompt: string, password: boolean) {
     prompt,
     password
   };
+  console.log('sending parent header from worker');
+  console.log('without formatResult');
+  console.log(kernel._parent_header['header']);
+  console.log('with formatResult');
+  console.log(formatResult(kernel._parent_header['header']));
   postMessage({
     type: 'input_request',
     parentHeader: formatResult(kernel._parent_header['header']),
@@ -333,6 +338,9 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   const messageType = data.type;
   const messageContent = data.data;
   kernel._parent_header = pyodide.toPy(data.parent);
+  console.log('worker receives this');
+  console.log(data.parent);
+  console.log(kernel._parent_header);
 
   switch (messageType) {
     case 'execute-request':

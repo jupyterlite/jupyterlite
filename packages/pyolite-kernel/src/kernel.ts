@@ -288,6 +288,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   private async _sendWorkerMessage(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
+    console.log('sending parent header to worker');
+    console.log(this.parent);
     this._worker.postMessage({ type, data, parent: this.parent });
     return await this._executeDelegate.promise;
   }

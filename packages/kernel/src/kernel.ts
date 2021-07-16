@@ -263,12 +263,16 @@ export abstract class BaseKernel implements IKernel {
     content: KernelMessage.IInputRequestMsg['content'],
     parentHeader: any
   ): void {
+    console.log('parent header from worker');
+    console.log(parentHeader);
+    console.log('this parent header');
+    console.log(this._parentHeader);
     const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
       channel: 'stdin',
       msgType: 'input_request',
       // TODO: better handle this
-      session: parentHeader?.session ?? '',
-      parentHeader,
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
       content
     });
     this._sendMessage(message);
