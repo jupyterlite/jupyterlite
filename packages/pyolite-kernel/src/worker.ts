@@ -109,8 +109,8 @@ async function getpass(prompt: string) {
   const replyPromise = new Promise(resolve => {
     resolveInputReply = resolve;
   });
-  const result = await replyPromise;
-  return result;
+  const result: any = await replyPromise;
+  return result['value'];
 }
 
 async function input(prompt: string) {
@@ -119,8 +119,8 @@ async function input(prompt: string) {
   const replyPromise = new Promise(resolve => {
     resolveInputReply = resolve;
   });
-  const result = await replyPromise;
-  return result;
+  const result: any = await replyPromise;
+  return result['value'];
 }
 
 /**
