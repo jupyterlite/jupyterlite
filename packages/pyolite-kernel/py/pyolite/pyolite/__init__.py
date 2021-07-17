@@ -17,7 +17,7 @@ sys.modules["fcntl"] = types.ModuleType("fcntl")
 sys.modules["resource"] = types.ModuleType("resource")
 
 # This is needed for some Matplotlib backends (webagg, ipympl)
-sys.modules["tornado"] = types.ModuleType("tornados")
+sys.modules["tornado"] = types.ModuleType("tornado")
 
 from .patches import ensure_matplotlib_patch, ensure_pil_patch
 

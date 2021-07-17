@@ -23,6 +23,13 @@ let stderr_stream: any;
 async function loadPyodideAndPackages() {
   // new in 0.17.0 indexURL must be provided
   pyodide = await loadPyodide({ indexURL });
+
+  console.log(
+    'FIXME: pyodide.fileSystem (deprecated) is',
+    Object.keys(pyodide.fileSystem || {})
+  );
+  console.log('FIXME: pyodide.FS is', pyodide.FS, Object.keys(pyodide.FS || {}));
+
   await pyodide.loadPackage(['micropip']);
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`

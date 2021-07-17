@@ -134,7 +134,8 @@ docs/.jupyter_cache
 docs/api/ts
 docs/jupyter_execute
 .vercel
+*.bz2
+*.isorted
+*.tar.gz
 *.tgz
 *.whl
-*.tar.gz
-*.bz2
