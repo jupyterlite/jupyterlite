@@ -12,6 +12,8 @@ let interpreter: any;
 
 let pyodide: any;
 
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
 let stdout_stream: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
