@@ -24,17 +24,6 @@ class Pyolite:
 
         return comms
 
-    def input_request(self, prompt, password):
-        prompt = "" if prompt is None else prompt
-        password = False if password is None else password
-        self.interpreter.input_request(prompt, password)
-
-    def getpass(self, prompt):
-        self.input_request(prompt, password=True)
-
-    def raw_input(self, prompt):
-        self.input_request(prompt, password=False)
-
     def inspect(self, code, cursor_pos, detail_level):
         found = False
         name = token_at_cursor(code, cursor_pos)

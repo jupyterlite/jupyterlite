@@ -197,9 +197,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Send an `input_request` message.
+   * Send an `input_reply` message.
    *
-   * @param content - The content of the request.
+   * @param content - The content of the reply.
    */
   inputReply(content: KernelMessage.IInputReplyMsg['content']): void {
     throw new Error('Not implemented');

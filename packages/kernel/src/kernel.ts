@@ -195,9 +195,9 @@ export abstract class BaseKernel implements IKernel {
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']>;
 
   /**
-   * Send an `input_request` message.
+   * Send an `input_reply` message.
    *
-   * @param content - The content of the request.
+   * @param content - The content of the reply.
    */
   abstract inputReply(content: KernelMessage.IInputReplyMsg['content']): void;
 

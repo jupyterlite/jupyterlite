@@ -185,7 +185,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
-    const result = await this._sendWorkerMessage('execute-request', content);
+    const result = await this._sendRequestMessageToWorker('execute-request', content);
 
     return {
       execution_count: this.executionCount,
@@ -201,7 +201,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async completeRequest(
     content: KernelMessage.ICompleteRequestMsg['content']
   ): Promise<KernelMessage.ICompleteReplyMsg['content']> {
-    return await this._sendWorkerMessage('complete-request', content);
+    return await this._sendRequestMessageToWorker('complete-request', content);
   }
 
   /**
@@ -214,7 +214,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    return await this._sendWorkerMessage('inspect-request', content);
+    return await this._sendRequestMessageToWorker('inspect-request', content);
   }
 
   /**
@@ -227,7 +227,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async isCompleteRequest(
     content: KernelMessage.IIsCompleteRequestMsg['content']
   ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
-    return await this._sendWorkerMessage('is-complete-request', content);
+    return await this._sendRequestMessageToWorker('is-complete-request', content);
   }
 
   /**
@@ -240,7 +240,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async commInfoRequest(
     content: KernelMessage.ICommInfoRequestMsg['content']
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']> {
-    return await this._sendWorkerMessage('comm-info-request', content);
+    return await this._sendRequestMessageToWorker('comm-info-request', content);
   }
 
   /**
@@ -262,7 +262,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg - The comm_open message.
    */
   async commOpen(msg: KernelMessage.ICommOpenMsg): Promise<void> {
-    return await this._sendWorkerMessage('comm-open', msg);
+    return await this._sendRequestMessageToWorker('comm-open', msg);
   }
 
   /**
@@ -271,7 +271,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg - The comm_msg message.
    */
   async commMsg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
-    return await this._sendWorkerMessage('comm-msg', msg);
+    return await this._sendRequestMessageToWorker('comm-msg', msg);
   }
 
   /**
@@ -280,7 +280,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param close - The comm_close message.
    */
   async commClose(msg: KernelMessage.ICommCloseMsg): Promise<void> {
-    return await this._sendWorkerMessage('comm-close', msg);
+    return await this._sendRequestMessageToWorker('comm-close', msg);
   }
 
   /**
@@ -289,7 +289,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param type The message type to send to the worker.
    * @param data The message to send to the worker.
    */
-  private async _sendWorkerMessage(type: string, data: any): Promise<any> {
+  private async _sendRequestMessageToWorker(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
     this._worker.postMessage({ type, data, parent: this.parent });
     return await this._executeDelegate.promise;

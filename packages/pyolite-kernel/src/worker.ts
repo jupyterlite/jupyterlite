@@ -104,6 +104,7 @@ async function sendComm(
 }
 
 async function input(prompt: string, passwd: boolean) {
+  prompt = typeof prompt === 'undefined' ? '' : prompt;
   await sendInputRequest(prompt, passwd);
   const replyPromise = new Promise(resolve => {
     resolveInputReply = resolve;
