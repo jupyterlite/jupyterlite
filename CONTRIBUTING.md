@@ -10,7 +10,7 @@ Thanks for contributing to JupyterLite!
 ### Get the Code
 
 ```bash
-git clone https://github.com/jtpio/jupyterlite
+git clone https://github.com/jupyterlite/jupyterlite
 ```
 
 > if you don't have `git` yet, you might be able to use the instructions below to get it
@@ -27,20 +27,27 @@ You'll need:
 Various package managers on different operating systems provide these.
 
 > A recommended approach for _any platform_ is to install [Mambaforge] and use the
-> binder environment description checked into the repo.
+> Binder environment description checked into the repo.
 >
 > ```bash
 > mamba env update --file .binder/environment.yml
 > mamba activate jupyterlite-dev
 > ```
 
+For speed, in GitHub Actions, `python` and `nodejs` are installed directly. Provided you
+already have these, to install the full development stack:
+
+```bash
+python -m pip install -r requirements-docs.txt -r requirements-lint.txt
+```
+
 ## Development Tasks
 
 ### doit
 
-[doit](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
-JavaScript to documentation building. It understands the dependencies between different
-nested _tasks_, usually as files that change on disk.
+[`doit`](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
+JavaScript to documentation building and link checking. It understands the dependencies
+between different nested _tasks_, usually as files that change on disk.
 
 #### List Tasks
 
@@ -61,14 +68,24 @@ doit info build:js:app:retro
 
 The default `doit` _action_ is `run` which... runs the named _tasks_.
 
-The default tasks are `lint` and `build`, which do basically everything performed by
-continuous integration, so the following are equivalent:
+The default tasks are `lint`, `build` and `docs:app:build`, so the following are
+equivalent:
 
 ```bash
 doit
-doit lint build
-doit run lint build
+doit lint build docs:app:build
+doit run lint build docs:app:build
 ```
+
+#### `doit auto`
+
+On Linux and MacOS, `doit auto` (which can also accept task names) will watch all files
+and perform any dependent tasks, then reload the tasks, useful for rapidly seeing
+changes.
+
+> By default, `auto` will invoke `doit lint` which may change source files. This can be
+> confusing to IDEs (or the `watch:docs` and `watch:js` tasks) that might be performing
+> their own watching, or run up against file system limits.
 
 ### Core JavaScript development
 
@@ -76,21 +93,23 @@ The JupyterLite core JS development workflow builds:
 
 - a ready-to-serve, empty website with:
   - a `lab/index.html` and supporting assets
-  - a `retro/*/index.html` and supporting assets (for `tree`, `editor`, etc)
+  - a `retro/*/index.html` and supporting assets (for `tree`, `editor`, etc.)
   - common configuration tools
 - `typedoc` documentation
-  > - _TBD: a set of component tarballs distributed on `npmjs.com`_
+- > _TBD: a set of component tarballs distributed on `npmjs.com`. See [#7]._
 
 from:
 
 - a set of `packages` in the `@jupyterlite` namespace, , written in TypeScript
 - some `buildutils`
 - some `webpack` configuration
-- some un-compiled JS for very early loading utilities
-  - > TODO: fix this, perhaps with typedoc tags
+- some un-compiled, vanilla JS for very early-loading utilities
+  - > TODO: fix this, perhaps with jsdoc tags
 
 While most of the scripts below will be run (in the correct order based on changes) by
 `doit`, the following _scripts_ (defined in `package.json`) are worth highlighting.
+
+[#7]: https://github.com/jupyterlite/jupyterlite/issues/7
 
 #### Quick start
 
@@ -123,13 +142,12 @@ yarn build:prod
 #### Serve Apps
 
 > These are **not real server solutions**, but they _will_ serve all of the assets types
-> (including `.wasm`) correctly for JupyterLite under development, testing, and demo
-> purposes.
+> (including `.wasm`) correctly for JupyterLite development, testing, and demo purposes.
 
 To serve with `scripts/serve.js`, based on Node.js's
 [`http`](https://nodejs.org/api/http.html) module:
 
-```
+```bash
 yarn serve
 ```
 
@@ -137,7 +155,7 @@ To serve with Python's built-in
 [`http.server`](https://docs.python.org/3/library/http.server.html) module (requires
 Python 3.7+):
 
-```
+```bash
 yarn serve:py
 ```
 
@@ -163,11 +181,13 @@ yarn test
 ### Lab Extension development
 
 > _TBD: describe how the `@jupyterlite/labextension` works with e.g. **real**
-> serverextension_
+> serverextensions_
 
 ### (Browser) Python Development
 
-> _TBD: describe successor to `pyolite`, patches, etc._
+> _TBD: describe successor to `pyolite`, patches, etc. See [#151]._
+
+[#151]: https://github.com/jupyterlite/jupyterlite/issues/151
 
 ### (Server) Python Development
 
@@ -189,8 +209,8 @@ site.
 ### Documentation
 
 The documentation site, served on [jupyterlite.rtfd.io], uses information from different
-parts of the software lifecycle (e.g. contains a copy of the built `app` directory), so
-using the [doit](#doit) tools are recommended.
+parts of the software lifecycle (e.g. contains an archive of the built `app` directory),
+so using the [doit](#doit) tools are recommended.
 
 [jupyterlite.rtfd.io]: https://jupyterlite.rtfd.io
 
@@ -202,7 +222,7 @@ doit docs
 
 > Extra `sphinx-build` arguments are set by the `SPHINX_ARGS` environment variable. For
 > example to fail on all warnings (the configuration for the ReadTheDocs build):
-
+>
 > ```bash
 > SPHINX_ARGS='["-W"]' doit docs
 > ```
@@ -212,6 +232,10 @@ doit docs
 ```bash
 doit watch:docs
 ```
+
+> This also respects the `SPHINX_ARGS` variable. If working on the theme layer,
+> `SPHINX_ARGS='["-a", "-j8"]'` is recommended, as by default static assets are not
+> included in the calculation of what needs to be updated.
 
 ## Community Tasks
 
@@ -229,7 +253,7 @@ JupyterLite features and bug fixes start as [issues] on GitHub.
 
 ### Pull Requests
 
-JupyterLite become _real_ as [pull requests].
+JupyterLite features and fixes become _real_ as [pull requests].
 
 > Pull requests are a great place to discuss work-in-progress, but it is **highly
 > recommended** to create an [issue](#issues) before starting work so the community can
@@ -238,10 +262,10 @@ JupyterLite become _real_ as [pull requests].
 - Fork the repo
 - Make a new branch off `main`
 - Make changes
-- Run `doit lint test`
+- Run `doit`
 - Push to your fork
 - Start the pull request
-  - your `git` cli should offer you a link, as will the GitHub web UI
+  - your `git` CLI should offer you a link, as will the GitHub web UI
   - reference one or more [issue](#issues) so those that are interested can find your
     work
     - adding magic strings like `fixes #123` help tie the collaboration history together
@@ -250,18 +274,33 @@ JupyterLite become _real_ as [pull requests].
 
 #### Previews
 
-Each pull request is built and deployed on Read The Docs. You can check the live preview
-by clicking on the Read The Docs check:
+Each pull request is built and deployed on ReadTheDocs. You can view the live preview
+site by clicking on the ReadTheDocs check:
 
 ![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
 
+#### Artifacts
+
+Additionally, several build artifacts are available from the each run on the [Actions]
+page, including:
+
+- test reports
+- installable artifacts
+- an app archive ready to be used as the input to the `jupyter lite` CLI with all the
+  demo content and supporting extensions.
+
+> You must be logged in to GitHub to download these.
+
+[actions]: https://github.com/jupyterlite/jupyterlite/actions
+
 ### Releasing
 
-> TBD
+> TBD: See [#121].
 
-[issues]: https://github.com/jtpio/jupyterlite/issues
-[new issue]: https://github.com/jtpio/jupyterlite/issues/new
-[pull requests]: https://github.com/jtpio/jupyterlite/pulls
-[repo]: https://github.com/jtpio/jupyterlite
+[#121]: https://github.com/jupyterlite/jupyterlite/issues/121
+[issues]: https://github.com/jupyterlite/jupyterlite/issues
+[new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
+[pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
+[repo]: https://github.com/jupyterlite/jupyterlite
 [coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
 [mambaforge]: https://github.com/conda-forge/miniforge

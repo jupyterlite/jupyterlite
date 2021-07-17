@@ -21,7 +21,7 @@ def test_archive_input(a_lite_app_archive, the_npm_source_date_epoch):
                 observed_value = getattr(member, expected_key)
                 if observed_value == expected_value:
                     continue
-                unexpected += [
+                unexpected += [  # pragma: no cover
                     [expected_key, expected_value, observed_value, member.name]
                 ]
 
@@ -92,7 +92,7 @@ def _reset_a_lite_dir(lite_dir, *skip):
             path.unlink()
 
 
-def _assert_same_tarball(message, script_runner, before, after):
+def _assert_same_tarball(message, script_runner, before, after):  # pragma: no cover
     """helper function to compare two tarballs.
 
     TODO: the `diffoscope` HTML output is _definitely_ good enough for end users

@@ -16,7 +16,9 @@ import { IDocumentManager } from '@jupyterlab/docmanager';
 import {
   IDocumentProvider,
   IDocumentProviderFactory,
-  ProviderMock
+  ProviderMock,
+  getAnonymousUserName,
+  getRandomColor
 } from '@jupyterlab/docprovider';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
@@ -33,30 +35,70 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { toArray } from '@lumino/algorithm';
 
+import { UUID, PromiseDelegate } from '@lumino/coreutils';
+
 import { Widget } from '@lumino/widgets';
 
-import { WebsocketProvider } from 'y-websocket';
+import { getParam } from 'lib0/environment';
+
+import { WebrtcProvider } from 'y-webrtc';
 
 import React from 'react';
 
-const YJS_WEBSOCKET_URL = 'wss://demos.yjs.dev';
+class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
+  constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
+    super(`${options.room}${options.path}`, options.ymodel.ydoc);
+    this.awareness = options.ymodel.awareness;
+    const color = `#${getParam('--usercolor', getRandomColor().slice(1))}`;
+    const name = getParam('--username', getAnonymousUserName());
+    const currState = this.awareness.getLocalState();
+    // only set if this was not already set by another plugin
+    if (currState && !currState.name) {
+      this.awareness.setLocalStateField('user', {
+        name,
+        color
+      });
+    }
+  }
 
-class WebSocketProvider extends WebsocketProvider implements IDocumentProvider {
-  constructor(options: IDocumentProviderFactory.IOptions) {
-    super(YJS_WEBSOCKET_URL, options.guid, options.ymodel.ydoc);
+  setPath() {
+    // TODO: this seems super useful
   }
+
   requestInitialContent(): Promise<boolean> {
-    return Promise.resolve(true);
+    if (this._initialRequest) {
+      return this._initialRequest.promise;
+    }
+    let resolved = false;
+    this._initialRequest = new PromiseDelegate<boolean>();
+    this.on('synced', (event: any) => {
+      if (this._initialRequest) {
+        this._initialRequest.resolve(event.synced);
+        resolved = true;
+      }
+    });
+    // similar logic as in the upstream plugin
+    setTimeout(() => {
+      if (!resolved && this._initialRequest) {
+        this._initialRequest.resolve(false);
+      }
+    }, 1000);
+    return this._initialRequest.promise;
   }
+
   putInitializedState(): void {
     // no-op
   }
+
   acquireLock(): Promise<number> {
     return Promise.resolve(0);
   }
+
   releaseLock(lock: number): void {
     // no-op
   }
+
+  private _initialRequest: PromiseDelegate<boolean> | null = null;
 }
 
 /**
@@ -107,9 +149,9 @@ const about: JupyterFrontEndPlugin<void> = {
         );
 
         // Create the body of the about dialog
-        const jupyterliteURL = 'https://github.com/jtpio/jupyterlite';
+        const jupyterliteURL = 'https://github.com/jupyterlite/jupyterlite';
         const contributorsURL =
-          'https://github.com/jtpio/jupyterlite/graphs/contributors';
+          'https://github.com/jupyterlite/jupyterlite/graphs/contributors';
         const externalLinks = (
           <span className="jp-About-externalLinks">
             <a
@@ -172,9 +214,19 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
   activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
-    const collaborative = PageConfig.getOption('collaborative');
+    const roomName = getParam('--room', '').trim();
+    const host = window.location.host;
+    // enable if both the page config option (deployment wide) and the room name (user) are defined
+    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
+    // default to a random id to not collaborate with others by default
+    const room = `${host}-${roomName || UUID.uuid4()}`;
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
-      return collaborative ? new WebSocketProvider(options) : new ProviderMock();
+      return collaborative
+        ? new WebRtcProvider({
+            room,
+            ...options
+          })
+        : new ProviderMock();
     };
     return factory;
   }

@@ -1,14 +1,14 @@
 {
   "name": "@jupyterlite/p5-kernel-extension",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.5",
   "description": "JupyterLite - p5.js Kernel Extension",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -38,9 +38,9 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-alpha.0",
-    "@jupyterlite/p5-kernel": "^0.1.0-alpha.0",
-    "@jupyterlite/server": "^0.1.0-alpha.0"
+    "@jupyterlite/kernel": "^0.1.0-alpha.5",
+    "@jupyterlite/p5-kernel": "^0.1.0-alpha.5",
+    "@jupyterlite/server": "^0.1.0-alpha.5"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

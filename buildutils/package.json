@@ -1,15 +1,15 @@
 {
   "name": "@jupyterlite/buildutils",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.5",
   "private": true,
   "description": "JupyterLite - Build Utilities",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "Project Jupyter",
@@ -30,10 +30,10 @@
     "watch": "tsc -w --listEmittedFiles"
   },
   "dependencies": {
-    "@jupyterlab/buildutils": "^3.0.0",
+    "@jupyterlab/buildutils": "^3.1.0-rc.1",
     "commander": "^6.2.0",
     "fs-extra": "^9.1.0",
-    "typescript": "~4.1.3"
+    "typescript": "~4.2.3"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.10",

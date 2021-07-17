@@ -1,27 +1,61 @@
-from asyncio import ensure_future
+import sys
 
-from pyodide.console import _InteractiveConsole
+from IPython.core.application import BaseIPythonApplication
+from IPython.core.history import HistoryManager
+from IPython.core.interactiveshell import InteractiveShell
+from IPython.core.shellapp import InteractiveShellApp
 
-from .display import display
+from .display import LiteDisplayHook, LiteDisplayPublisher
+from .kernel import Pyolite
 
-__all__ = ["Interpreter", "display"]
+__all__ = ["Interpreter"]
 
 
-class Interpreter(_InteractiveConsole):
-    def __init__(self):
-        super().__init__(persistent_stream_redirection=False)
+class CustomHistoryManager(HistoryManager):
+    def __init__(self, shell=None, config=None, **traits):
+        self.enabled = False
+        super(CustomHistoryManager, self).__init__(shell=shell, config=config, **traits)
 
-    def display(self, result):
-        """
-        Called with the result when code has finished executing.
-        Override to prevent the default behavior
-        """
-        return
 
-    async def run(self, code):
-        self.run_complete = ensure_future(
-            self.load_packages_and_run(self.run_complete, code)
+class Interpreter(InteractiveShell):
+    def __init__(self, *args, **kwargs):
+        super(Interpreter, self).__init__(*args, **kwargs)
+        self.kernel = Pyolite(interpreter=self)
+        self._last_traceback = None
+
+    def init_history(self):
+        self.history_manager = CustomHistoryManager(shell=self, parent=self)
+        self.configurables.append(self.history_manager)
+
+    def enable_gui(self, gui=None):
+        """Not implemented yet."""
+        pass
+
+    def _showtraceback(self, etype, evalue, stb):
+        self._last_traceback = {
+            "ename": str(etype),
+            "evalue": str(evalue),
+            "traceback": stb,
+        }
+
+
+class LitePythonShellApp(BaseIPythonApplication, InteractiveShellApp):
+    def initialize(self, argv=None):
+        super(LitePythonShellApp, self).initialize(argv)
+        self.user_ns = {}
+        self.init_path()
+        self.init_shell()
+        self.init_extensions()
+        self.init_code()
+        sys.stdout.flush()
+        sys.stderr.flush()
+
+    def init_shell(self):
+        self.shell = Interpreter.instance(
+            displayhook_class=LiteDisplayHook,
+            display_pub_class=LiteDisplayPublisher,
+            user_ns=self.user_ns,
         )
-        result = await self.run_complete
-        if result is not None:
-            display(result)
+
+    def exit(self, exit_status=0):
+        pass

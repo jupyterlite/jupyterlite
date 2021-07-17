@@ -6,6 +6,7 @@
 :maxdepth: 2
 
 kernels/index
+rtc/index
 ```
 
 ## Frequently-Asked Questions

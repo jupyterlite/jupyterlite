@@ -1,15 +1,15 @@
 {
   "name": "@jupyterlite/metapackage",
   "private": true,
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.5",
   "description": "JupyterLite - Metapackage",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributor",
@@ -34,8 +34,6 @@
     "@jupyterlite/server": "file:../server-extension",
     "@jupyterlite/session": "file:../session",
     "@jupyterlite/settings": "file:../settings",
-    "@jupyterlite/theme": "file:../theme",
-    "@jupyterlite/theme-extension": "file:../theme-extension",
     "@jupyterlite/ui-components": "file:../ui-components"
   },
   "devDependencies": {

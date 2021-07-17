@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
-from traitlets import Bool, Instance, default
+from traitlets import Bool, Instance, Unicode, default
 
 from . import __version__
 from .config import LiteBuildConfig
@@ -14,6 +14,8 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
     """TODO: An undescribed app"""
 
     version = __version__
+
+    config_file_name = Unicode("jupyter_lite_config").tag(config=True)
 
     # traitlets app stuff
     aliases = dict(
@@ -28,6 +30,19 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             "output-archive": "LiteBuildConfig.output_archive",
             "overrides": "LiteBuildConfig.overrides",
             "source-date-epoch": "LiteBuildConfig.source_date_epoch",
+            # addon-specific things
+            "port": "LiteBuildConfig.port",
+            "base-url": "LiteBuildConfig.base_url",
+        },
+    )
+
+    flags = dict(
+        **base_flags,
+        **{
+            "ignore-sys-prefix": (
+                {"LiteBuildConfig": {"ignore_sys_prefix": True}},
+                "Do not copy any extensions from sys.prefix",
+            )
         },
     )
 
@@ -47,11 +62,11 @@ class ManagedApp(BaseLiteApp):
             parent=self,
         )
         if self.lite_dir:
-            kwargs["lite_dir"] = Path(self.lite_dir).resolve()
+            kwargs["lite_dir"] = self.lite_dir
         if self.app_archive:
-            kwargs["app_archive"] = Path(self.app_archive)
+            kwargs["app_archive"] = self.app_archive
         if self.output_dir:
-            kwargs["output_dir"] = Path(self.output_dir)
+            kwargs["output_dir"] = self.output_dir
         if self.files:
             kwargs["files"] = [Path(p) for p in self.files]
         if self.ignore_files:
@@ -66,6 +81,14 @@ class ManagedApp(BaseLiteApp):
             kwargs["disable_addons"] = self.disable_addons
         if self.source_date_epoch is not None:
             kwargs["source_date_epoch"] = self.source_date_epoch
+        if self.port is not None:
+            kwargs["port"] = self.port
+        if self.base_url is not None:
+            kwargs["base_url"] = self.base_url
+        if self.federated_extensions is not None:
+            kwargs["federated_extensions"] = self.federated_extensions
+        if self.ignore_sys_prefix is not None:
+            kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
 
         return LiteManager(**kwargs)
 
@@ -174,8 +197,6 @@ class LiteArchiveApp(LiteTaskApp):
 
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
-
-    name = "lite"
 
     subcommands = {
         k: (v, v.__doc__.splitlines()[0].strip())

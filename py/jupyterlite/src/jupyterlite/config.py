@@ -7,12 +7,15 @@
 """
 import os
 from pathlib import Path
+from typing import Optional as _Optional
+from typing import Text as _Text
+from typing import Tuple as _Tuple
 
-from traitlets import CInt, Tuple, default
+from traitlets import Bool, CInt, Tuple, Unicode, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
-from .trait_types import CPath
+from .trait_types import CPath, TypedTuple
 
 
 class LiteBuildConfig(LoggingConfigurable):
@@ -29,46 +32,71 @@ class LiteBuildConfig(LoggingConfigurable):
     loader paths
     """
 
-    disable_addons = Tuple(
-        allow_none=True,
+    disable_addons: _Tuple[_Text] = TypedTuple(
+        Unicode(),
         help=("skip loading `entry_point` for these addons. TODO: should be a dict"),
     ).tag(config=True)
 
-    apps = Tuple(
+    apps: _Tuple[_Text] = TypedTuple(
+        Unicode(),
         help=(
             f"""the Lite apps: currently {C.JUPYTERLITE_APPS}. """
             f"""Required: {C.JUPYTERLITE_APPS_REQUIRED}"""
         ),
     ).tag(config=True)
 
-    # a bunch of paths
     app_archive: Path = CPath(
-        help=(f"""The app archive to use, default: {C.DEFAULT_APP_ARCHIVE}""")
+        help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE"
     ).tag(config=True)
 
-    lite_dir: Path = CPath(help=("""The root folder of a JupyterLite project""")).tag(
-        config=True
-    )
+    lite_dir: Path = CPath(
+        help="The root folder of a JupyterLite project. env: JUPYTERLITE_DIR"
+    ).tag(config=True)
 
-    output_dir: Path = CPath(help=("""Where to build the JupyterLite site""")).tag(
-        config=True
-    )
+    cache_dir: Path = CPath(help="A cache folder").tag(config=True)
 
-    output_archive: Path = CPath(help="Archive to create").tag(config=True)
+    output_dir: Path = CPath(
+        help="Where to build the JupyterLite site. env: JUPYTERLITE_OUTPUT_DIR"
+    ).tag(config=True)
 
-    # actually some more paths
-    files = Tuple(allow_none=True).tag(config=True)
+    output_archive: Path = CPath(
+        help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")
+    ).tag(config=True)
 
-    overrides = Tuple(allow_none=True, help=("Specific overrides.json to include")).tag(
-        config=True
-    )
+    files: _Tuple[Path] = TypedTuple(
+        CPath(), help="Files to add and index as Jupyter Contents"
+    ).tag(config=True)
+
+    ignore_sys_prefix: bool = Bool(
+        False,
+        help="ignore lab components from sys.prefix, such as federated_extensions",
+    ).tag(config=True)
+
+    federated_extensions: _Tuple[str] = TypedTuple(
+        Unicode(), help="Local paths or URLs in which to find federated_extensions"
+    ).tag(config=True)
+
+    overrides: _Tuple[_Text] = TypedTuple(
+        CPath(), help=("Specific overrides.json to include")
+    ).tag(config=True)
+
+    # serving
+    port: int = CInt(
+        help=(
+            "[serve] the port to (insecurely) expose on http://127.0.0.1."
+            " env: JUPYTERLITE_PORT"
+        )
+    ).tag(config=True)
+    base_url: str = Unicode(
+        help=("[serve] the prefix to use." " env: JUPYTERLITE_BASE_URL")
+    ).tag(config=True)
 
     # patterns
-    ignore_files = Tuple(
-        allow_none=True, help="Path patterns that should never be included"
+    ignore_files: _Tuple[_Text] = Tuple(
+        help="Path patterns that should never be included"
     ).tag(config=True)
 
-    source_date_epoch = CInt(
+    source_date_epoch: _Optional[int] = CInt(
         allow_none=True,
         min=1,
         help="Trigger reproducible builds, clamping timestamps to this value",
@@ -90,9 +118,13 @@ class LiteBuildConfig(LoggingConfigurable):
             or self.lite_dir / C.DEFAULT_OUTPUT_DIR
         )
 
+    @default("cache_dir")
+    def _default_cache_dir(self):
+        return Path(os.environ.get("JUPYTERLITE_CACHE_DIR") or self.lite_dir / ".cache")
+
     @default("lite_dir")
     def _default_lite_dir(self):
-        return Path.cwd()
+        return Path(os.environ.get("JUPYTERLITE_DIR", Path.cwd()))
 
     @default("files")
     def _default_files(self):
@@ -115,9 +147,12 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("ignore_files")
     def _default_ignore_files(self):
+        output_dir = self.output_dir.name.replace(".", "\\.")
         return [
-            ".*\.pyc" "/\.git/",
+            ".*\.pyc",
+            "/\.git/",
             "/\.gitignore",
+            "/\.cache/",
             "/\.ipynb_checkpoints/",
             "/build/",
             "/lib/",
@@ -131,7 +166,7 @@ class LiteBuildConfig(LoggingConfigurable):
             C.JUPYTERLITE_IPYNB.replace(".", "\\."),
             "untitled.*",
             "Untitled.*",
-            f"/{self.output_dir.name}/",
+            f"""/{output_dir}/""",
         ]
 
     @default("app_archive")
@@ -151,3 +186,11 @@ class LiteBuildConfig(LoggingConfigurable):
             return None
         sde = int(os.environ[C.SOURCE_DATE_EPOCH])
         return sde
+
+    @default("port")
+    def _default_port(self):
+        return int(os.environ.get("JUPYTERLITE_PORT", 8000))
+
+    @default("base_url")
+    def _default_base_url(self):
+        return os.environ.get("JUPYTERLITE_BASE_URL", "/")

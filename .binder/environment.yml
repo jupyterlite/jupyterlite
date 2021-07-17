@@ -2,7 +2,7 @@ name: jupyterlite-dev
 # this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
-  - conda-forge/label/jupyterlab_alpha
+  - conda-forge/label/jupyterlab_rc
   - conda-forge
 
 dependencies:
@@ -11,13 +11,34 @@ dependencies:
   - flit >=3.1
   - isort
   - pyflakes
+  - twine
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3.1.0a11,<4
+  - jupyterlab >=3.1.0rc1,<4
   - retrolab
   # extra docs tools
   - sphinx-autobuild
 
+  # the chunk below populates `../examples/jupyter_lite_config.json`,
+  # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
+  ### FEDERATED EXTENSIONS ###
+  - bqplot
+  - ipycanvas
+  - ipycytoscape
+  - ipyleaflet
+  - ipympl
+  - jupyterlab_miami_nights
+  - jupyterlab_widgets >=1,<2
+  - jupyterlab-drawio
+  - jupyterlab-fasta >=3,<4
+  - jupyterlab-geojson >=3,<4
+  - jupyterlab-kernelspy
+  - jupyterlab-tour >=3.1.0
+  - plotly >=5,<6
+  - theme-darcula
+  ### FEDERATED EXTENSIONS ###
+
+  # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
   - nodejs >=14,<15
@@ -46,15 +67,4 @@ dependencies:
   - pytest-cov
   - pytest-html
   - pytest-xdist
-  # list of federated extensions for the demo site
-  - ipywidgets
-  - bqplot
-  - ipyleaflet
-  - ipycanvas
-  - jupyterlab-drawio
-  - jupyterlab-tour >=3.1.0
-  - jupyterlab-fasta >=3,<4
-  - jupyterlab-geojson >=3,<4
-  - plotly >=5,<6
-  - theme-darcula
   ### DOCS ENV ###

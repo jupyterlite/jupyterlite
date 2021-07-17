@@ -79,7 +79,7 @@ export interface IKernel extends IObservableDisposable {
    */
   executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']>;
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']>;
 
   /**
    * Handle a `complete_request` message.

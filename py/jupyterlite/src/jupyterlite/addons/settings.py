@@ -83,7 +83,7 @@ class SettingsAddon(BaseAddon):
         for plugin_id, defaults in overrides.items():
             ext, plugin = plugin_id.split(":")
             plugin_stem = f"schemas/{ext}/{plugin}.json"
-            schema = self.output_env_extensions_dir / ext / plugin_stem
+            schema = self.output_extensions / ext / plugin_stem
             if not schema.exists():
                 core_schema = self.manager.output_dir / "lab/build" / plugin_stem
                 if core_schema.exists():
@@ -129,6 +129,6 @@ class SettingsAddon(BaseAddon):
         self.log.debug(f"[lite] [settings] Updated {jupyterlite_json}")
 
     @property
-    def output_env_extensions_dir(self):
+    def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS

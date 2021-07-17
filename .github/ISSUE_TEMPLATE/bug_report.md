@@ -8,7 +8,7 @@ labels: bug
 Welcome! Before creating a new issue:
 * Search for relevant issues
 * Follow the issue reporting guidelines:
-https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md
+https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md
 -->
 
 ## Description
@@ -25,7 +25,7 @@ https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md
 4. See error '...'
 
 <!--Describe how you diagnosed the issue. See the guidelines at
- https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md -->
+ https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md -->
 
 ## Expected behavior
 

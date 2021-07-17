@@ -1,0 +1,23 @@
+{
+  "LiteBuildConfig": {
+    "federated_extensions": [
+      "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.29-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.29-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-fasta-3.1.1-pyhd8ed1ab_0.tar.bz2/jupyterlab-fasta-3.1.1-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-kernelspy-3.0.3-pyhd8ed1ab_0.tar.bz2/jupyterlab-kernelspy-3.0.3-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-tour-3.1.2-pyhd8ed1ab_0.tar.bz2/jupyterlab-tour-3.1.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.0-pyhd8ed1ab_1.tar.bz2/jupyterlab_widgets-1.0.0-pyhd8ed1ab_1.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.1.0-pyhd8ed1ab_0.tar.bz2/plotly-5.1.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.0.1-pyhd8ed1ab_0.tar.bz2/theme-darcula-3.0.1-pyhd8ed1ab_0.tar.bz2"
+    ],
+    "files": ["."],
+    "ignore_sys_prefix": true,
+    "output_dir": "../build/docs-app"
+  }
+}

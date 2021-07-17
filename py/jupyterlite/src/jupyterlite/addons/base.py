@@ -1,9 +1,10 @@
 import json
 import os
 import shutil
+import tempfile
+import warnings
 from pathlib import Path
 
-import jsonschema
 from traitlets import Instance
 from traitlets.config import LoggingConfigurable
 
@@ -49,6 +50,34 @@ class BaseAddon(LoggingConfigurable):
             shutil.copy2(src, dest)
 
         self.maybe_timestamp(dest)
+
+    def fetch_one(self, url, dest):
+        """fetch one file
+
+        TODO: enable other backends, auth, etc.
+        """
+        import urllib.request
+
+        if dest.exists():
+            self.log.info(f"[lite][fetch] already downloaded {dest.name}, skipping...")
+            return
+
+        if not dest.parent.exists():
+            dest.parent.mkdir(parents=True)
+
+        if "anaconda.org/" in url:
+            self.log.error(
+                f"[lite][fetch] cannot reliably download from anaconda.org {url}"
+            )
+            return False
+
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td)
+            with urllib.request.urlopen(url) as response:
+                tmp_dest = tdp / dest.name
+                with tmp_dest.open("wb") as fd:
+                    shutil.copyfileobj(response, fd)
+            shutil.copy2(tmp_dest, dest)
 
     def maybe_timestamp(self, path):
         if not path.exists() or self.manager.source_date_epoch is None:
@@ -96,14 +125,27 @@ class BaseAddon(LoggingConfigurable):
             selected = loaded
 
         if validator is None:
+            # just checking if the JSON is well-formed
             return True
 
         if isinstance(validator, Path):
             validator = self.get_validator(validator)
+            if validator is None:
+                return True
 
         validator.validate(selected)
 
-    def get_validator(self, schema_path, klass=jsonschema.Draft7Validator):
+    def get_validator(self, schema_path, klass=None):
+        if klass is None:
+            try:
+                from jsonschema import Draft7Validator
+            except ImportError:  # pragma: no cover
+                warnings.warn(
+                    "jsonschema >=3 not installed: only checking JSON well-formedness"
+                )
+                return None
+            klass = Draft7Validator
+
         schema = json.loads(schema_path.read_text(encoding="utf-8"))
         return klass(schema)
 

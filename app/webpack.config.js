@@ -120,24 +120,6 @@ const extensionAssetConfig = Build.ensureAssets({
   output: buildDir
 });
 
-// Override for the custom theme plugin
-const jupyterliteApputilsPlugin = path.resolve(
-  buildDir,
-  'schemas/@jupyterlite/apputils-extension/'
-);
-fs.mkdirpSync(jupyterliteApputilsPlugin);
-
-fs.moveSync(
-  path.resolve(buildDir, 'schemas/@jupyterlab/apputils-extension', 'themes.json'),
-  path.resolve(jupyterliteApputilsPlugin, 'themes.json'),
-  { overwrite: true }
-);
-
-fs.copySync(
-  path.resolve(buildDir, 'schemas/@jupyterlab/apputils-extension', 'package.json.orig'),
-  path.resolve(jupyterliteApputilsPlugin, 'package.json.orig')
-);
-
 // ensure all schemas are statically compiled
 const schemaDir = path.resolve(buildDir, './schemas');
 const files = glob.sync(`${schemaDir}/**/*.json`, {

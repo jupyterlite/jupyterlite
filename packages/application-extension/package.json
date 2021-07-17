@@ -1,14 +1,14 @@
 {
   "name": "@jupyterlite/application-extension",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.5",
   "description": "JupyterLite - Application Extension",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -37,19 +37,21 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "^3.1.0-alpha.11",
-    "@jupyterlab/apputils": "^3.1.0-alpha.11",
-    "@jupyterlab/docmanager": "^3.1.0-alpha.11",
-    "@jupyterlab/docprovider": "^3.1.0-alpha.11",
-    "@jupyterlab/filebrowser": "^3.1.0-alpha.11",
-    "@jupyterlab/help-extension": "^3.1.0-alpha.11",
-    "@jupyterlab/mainmenu": "^3.1.0-alpha.11",
-    "@jupyterlab/services": "^6.1.0-alpha.11",
-    "@jupyterlab/translation": "^3.1.0-alpha.11",
-    "@jupyterlab/ui-components": "^3.1.0-alpha.11",
-    "@jupyterlite/ui-components": "^0.1.0-alpha.0",
+    "@jupyterlab/application": "^3.1.0-rc.1",
+    "@jupyterlab/apputils": "^3.1.0-rc.1",
+    "@jupyterlab/docmanager": "^3.1.0-rc.1",
+    "@jupyterlab/docprovider": "^3.1.0-rc.1",
+    "@jupyterlab/filebrowser": "^3.1.0-rc.1",
+    "@jupyterlab/help-extension": "^3.1.0-rc.1",
+    "@jupyterlab/mainmenu": "^3.1.0-rc.1",
+    "@jupyterlab/services": "^6.1.0-rc.1",
+    "@jupyterlab/translation": "^3.1.0-rc.1",
+    "@jupyterlab/ui-components": "^3.1.0-rc.1",
+    "@jupyterlite/ui-components": "^0.1.0-alpha.5",
     "@lumino/algorithm": "^1.6.0",
-    "@lumino/widgets": "^1.23.0"
+    "@lumino/coreutils": "^1.8.0",
+    "@lumino/widgets": "^1.23.0",
+    "y-webrtc": "^10.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

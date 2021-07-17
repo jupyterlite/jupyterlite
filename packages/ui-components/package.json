@@ -1,14 +1,14 @@
 {
   "name": "@jupyterlite/ui-components",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.5",
   "description": "JupyterLite - UI components",
-  "homepage": "https://github.com/jtpio/jupyterlite",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
-    "url": "https://github.com/jtpio/jupyterlite/issues"
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jtpio/jupyterlite.git"
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
   "license": "BSD-3-Clause",
   "author": "Project Jupyter",
@@ -54,7 +54,7 @@
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
-    "typescript": "~4.1.3"
+    "typescript": "~4.2.3"
   },
   "publishConfig": {
     "access": "public"

@@ -31,8 +31,8 @@ NOT_SERVE_HOOK = [h for h in HOOKS if h != "serve"]
 
 # a simple overrides.json
 AN_OVERRIDES = """{
-  "@jupyterlab/docmanager-extension:plugin": {
-    "nameFileOnSave": false
+  "@jupyterlab/apputils-plugin:themes": {
+    "themeScrollbars": true
   }
 }
 """

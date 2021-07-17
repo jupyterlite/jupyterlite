@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install --user -U pip setuptools wheel
+        run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -33,7 +33,7 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (build)
-        run: pip install -r requirements-build.txt
+        run: python3 -m pip install -r requirements-build.txt
       - name: Install node
         uses: actions/setup-node@v2
         with:
@@ -81,7 +81,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install --user -U pip setuptools wheel
+        run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -91,7 +91,7 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (lint)
-        run: pip install -r requirements-lint.txt
+        run: python3 -m pip install -r requirements-lint.txt
       - name: Install node
         uses: actions/setup-node@v2
         with:
@@ -150,8 +150,12 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: |
-          pip install --user -U pip setuptools wheel
+        run: python3 -m pip install --user -U pip setuptools wheel
+      - name: Download (dist)
+        uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite dist ${{ github.run_number }}
+          path: ./dist
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -160,13 +164,32 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - name: Install (py)
+        run: |
+          python3 -m pip install entrypoints doit jupyter_core
+          python3 -m pip install --find-links dist --no-index jupyterlite
+          python3 -m pip check
+      - name: Prepare smoke test folder
+        shell: bash
+        run: mkdir -p build/smoke-test
+      - name: Get SOURCE_DATE_EPOCH
+        id: source-date
+        run: |
+          echo "::set-output name=epoch::$(git log -1 --format=%ct)"
+      - name: Test (CLI)
+        run: |
+          cd build/smoke-test
+          jupyter lite --version || exit 1
+          jupyter lite --help || exit 1
+          jupyter lite list || exit 1
+          jupyter lite status || exit 1
+          jupyter lite build || exit 1
+          jupyter lite check || exit 1
+          jupyter lite archive --source-date-epoch ${{ steps.source-date.outputs.epoch }} || exit 1
+          jupyter lite list || exit 1
+          jupyter lite status --debug || exit 1
       - name: Setup pip (test)
-        run: pip install -r requirements-test.txt
-      - name: Download (dist)
-        uses: actions/download-artifact@v2
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
+        run: python3 -m pip install -r requirements-test.txt
       - name: Test (py)
         run: doit test:py:*
       - name: Upload (reports)
@@ -199,7 +222,7 @@ jobs:
         with:
           python-version: 3.8
       - name: Setup pip (base)
-        run: pip install --user -U pip setuptools wheel
+        run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
@@ -208,16 +231,37 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - name: Cache (docs extensions)
+        uses: actions/cache@v2
+        with:
+          path: ./examples/.cache
+          key: |
+            ${{ env.CACHE_EPOCH }}-docs-app-${{ hashFiles('examples/jupyter_lite_config.json') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-docs-app-
       - name: Setup pip (docs)
-        run: pip install -r requirements-docs.txt
-      - name: Docs
+        run: python3 -m pip install -r requirements-docs.txt
+      - name: Install (py)
+        run: doit dev:py:jupyterlite
+      - name: Docs (app)
+        run: doit docs:app:build
+      - name: Docs (app archive)
+        run: doit docs:app:pack
+      - name: Upload (docs app archive)
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite docs archive ${{ github.run_number }}
+          path: |
+            build/docs-app/jupyterlite-docs-*.tgz
+      - name: Docs (sphinx)
         run: doit docs:sphinx
       - name: Check Built Artifacts
         run: doit check
-      - name: Upload Sphinx Logs
+      - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v2
         with:
+          name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
           path: /tmp/sphinx-*.log
 

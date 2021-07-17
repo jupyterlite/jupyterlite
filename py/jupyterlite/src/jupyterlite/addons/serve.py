@@ -2,16 +2,18 @@
 import sys
 
 import doit
-from traitlets import Bool, Int, default
+from traitlets import Bool, default
 
 from .base import BaseAddon
+
+# we _really_ don't want to be in the server-running business, so hardcode, now...
+HOST = "127.0.0.1"
 
 
 class ServeAddon(BaseAddon):
     __all__ = ["status", "serve"]
 
     has_tornado: bool = Bool()
-    port: int = Int(8000)
 
     @default("has_tornado")
     def _default_has_tornado(self):
@@ -27,33 +29,45 @@ class ServeAddon(BaseAddon):
             name="contents",
             actions=[
                 lambda: print(
-                    f"""    will serve {self.port} with: {"tornado" if self.has_tornado else "stdlib"}"""
+                    f"""    will serve {manager.port} with: {"tornado" if self.has_tornado else "stdlib"}"""
                 )
             ],
         )
 
-    def serve(self, manager):
-        task = dict(
-            name="serve",
-            doc=f"run server at http://localhost:{self.port}/ for {manager.output_dir}",
-            uptodate=[lambda: False],
-        )
+    @property
+    def url(self):
+        return f"http://{HOST}:{self.manager.port}{self.manager.base_url}"
 
+    def serve(self, manager):
         if self.has_tornado:
-            task["actions"] = [(self._serve_tornado, [])]
+            name = "tornado"
+            actions = [(self._serve_tornado, [])]
         else:
-            task["actions"] = [
+            name = "stdlib"
+            actions = [
                 lambda: self.log.info(
                     "Using python's built-in http.server: "
-                    "install tornado for a snappier experience"
+                    "install tornado for a snappier experience and base_url"
                 ),
                 doit.tools.Interactive(
-                    [sys.executable, "-m", "http.server", "-b", "localhost"],
+                    [
+                        sys.executable,
+                        "-m",
+                        "http.server",
+                        "-b",
+                        HOST,
+                        f"{self.manager.port}",
+                    ],
                     cwd=str(self.manager.output_dir),
                     shell=False,
                 ),
             ]
-        yield task
+        yield dict(
+            name=name,
+            doc=f"run server at {self.url} for {manager.output_dir}",
+            uptodate=[lambda: False],
+            actions=actions,
+        )
 
     def _serve_tornado(self):
         from tornado import ioloop, web
@@ -65,7 +79,7 @@ class ServeAddon(BaseAddon):
                 return url_path
 
         path = str(self.manager.output_dir)
-        routes = [("/(.*)", Handler, {"path": path})]
+        routes = [(self.manager.base_url + "(.*)", Handler, {"path": path})]
         app = web.Application(routes, debug=True)
         self.log.warning(
             f"""
@@ -73,13 +87,13 @@ class ServeAddon(BaseAddon):
         Serving JupyterLite from:
             {path}
         on:
-            http://localhost:{self.port}/
+            {self.url}index.html
 
         *** Press Ctrl+C to exit **
         """
         )
-        app.listen(self.port)
+        app.listen(self.manager.port)
         try:
             ioloop.IOLoop.instance().start()
         except KeyboardInterrupt:
-            self.log.warning(f"""Stopping http://localhost:{self.port}...""")
+            self.log.warning(f"Stopping {self.url}")

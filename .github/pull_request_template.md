@@ -2,7 +2,7 @@
 Thanks for contributing to JupyterLite!
 Please fill out the following items to submit a pull request.
 See the contributing guidelines for more information:
-https://github.com/jtpio/jupyterlite/blob/main/CONTRIBUTING.md
+https://github.com/jupyterlite/jupyterlite/blob/main/CONTRIBUTING.md
 -->
 
 ## References

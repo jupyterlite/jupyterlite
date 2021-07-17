@@ -8,9 +8,9 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
-// TODO: see https://github.com/jtpio/jupyterlite/issues/151
+// TODO: see https://github.com/jupyterlite/jupyterlite/issues/151
 // TODO: sync this version with the npm version (despite version mangling)
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0a0-py3-none-any.whl';
+import pyolite from '../py/pyolite/dist/pyolite-0.1.0a5-py3-none-any.whl';
 
 // TODO: sync this version with the pypi version
 import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
@@ -89,50 +89,40 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg The worker message to process.
    */
   private _processWorkerMessage(msg: any): void {
-    const parentHeader = this.parentHeader;
     switch (msg.type) {
-      case 'stdout': {
-        const content = {
-          event: 'stream',
-          name: 'stdout',
-          parentHeader,
-          text: msg.stdout
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
+      case 'stream': {
+        const bundle = msg.bundle ?? { name: 'stdout', text: '' };
+        this.stream(bundle);
         break;
       }
-      case 'stderr': {
-        const { message } = msg.stderr;
-        const content = {
-          event: 'stream',
-          name: 'stderr',
-          parentHeader,
-          text: message ?? msg.stderr
-        } as KernelMessage.IStreamMsg['content'];
-        this.stream(content);
-        break;
-      }
-      case 'results': {
-        const bundle = msg.results ?? { data: {}, metadata: {} };
+      case 'reply': {
+        const bundle = msg.results;
         this._executeDelegate.resolve(bundle);
         break;
       }
-      case 'error': {
-        const { name, stack, message } = msg.error;
-        const error = {
-          name,
-          stack,
-          message
-        };
-        this._executeDelegate.resolve({
-          ...error,
-          parentHeader
-        });
+      case 'display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.displayData(bundle);
         break;
       }
-      case 'display': {
-        const bundle = msg.bundle ?? { data: {}, metadata: {} };
-        this.displayData(bundle);
+      case 'update_display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.updateDisplayData(bundle);
+        break;
+      }
+      case 'clear_output': {
+        const bundle = msg.bundle ?? { wait: false };
+        this.clearOutput(bundle);
+        break;
+      }
+      case 'execute_result': {
+        const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
+        this.publishExecuteResult(bundle);
+        break;
+      }
+      case 'execute_error': {
+        const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
+        this.publishExecuteError(bundle);
         break;
       }
       case 'comm_msg':
@@ -189,12 +179,9 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']> {
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
     const result = await this._sendWorkerMessage('execute-request', content);
-    if (result.name) {
-      throw result;
-    }
-    // TODO: move executeResult and executeError here
+
     return {
       execution_count: this.executionCount,
       ...result
@@ -222,7 +209,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('inspect-request', content);
   }
 
   /**
@@ -235,7 +222,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async isCompleteRequest(
     content: KernelMessage.IIsCompleteRequestMsg['content']
   ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
-    throw new Error('Not implemented');
+    return await this._sendWorkerMessage('is-complete-request', content);
   }
 
   /**
@@ -297,7 +284,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   private async _sendWorkerMessage(type: string, data: any): Promise<any> {
     this._executeDelegate = new PromiseDelegate<any>();
-    this._worker.postMessage({ type, data });
+    this._worker.postMessage({ type, data, parent: this.parent });
     return await this._executeDelegate.promise;
   }
 

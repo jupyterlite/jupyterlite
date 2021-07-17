@@ -78,7 +78,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       help_links: [
         {
           text: 'JavaScript Kernel',
-          url: 'https://github.com/jtpio/jupyterlite'
+          url: 'https://github.com/jupyterlite/jupyterlite'
         }
       ]
     };
@@ -92,17 +92,41 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    */
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
-  ): Promise<KernelMessage.IExecuteResultMsg['content']> {
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
     const { code } = content;
-    const result = this._eval(code);
-    // TODO: move executeResult and executeError here
-    return {
-      execution_count: this.executionCount,
-      data: {
-        'text/plain': result
-      },
-      metadata: {}
-    };
+    try {
+      const result = this._eval(code);
+
+      this.publishExecuteResult({
+        execution_count: this.executionCount,
+        data: {
+          'text/plain': result
+        },
+        metadata: {}
+      });
+
+      return {
+        status: 'ok',
+        execution_count: this.executionCount,
+        user_expressions: {}
+      };
+    } catch (e) {
+      const { name, stack, message } = e;
+
+      this.publishExecuteError({
+        ename: name,
+        evalue: message,
+        traceback: [stack]
+      });
+
+      return {
+        status: 'error',
+        execution_count: this.executionCount,
+        ename: name,
+        evalue: message,
+        traceback: [stack]
+      };
+    }
   }
 
   /**

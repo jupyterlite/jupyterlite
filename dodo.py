@@ -17,10 +17,24 @@ def task_env():
 
     yield dict(
         name="binder",
+        doc="update binder environment with docs environment",
         file_dep=[P.DOCS_ENV],
         targets=[P.BINDER_ENV],
         actions=[(U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER])],
     )
+
+    if C.IN_CONDA:
+        yield dict(
+            name="lite:extensions",
+            doc="update jupyter-lite.json from the conda env",
+            file_dep=[P.BINDER_ENV],
+            actions=[
+                (
+                    U.sync_lite_config,
+                    [P.BINDER_ENV, P.EXAMPLE_LITE_BUILD_CONFIG, C.FED_EXT_MARKER],
+                )
+            ],
+        )
 
 
 def task_setup():
@@ -55,6 +69,14 @@ def task_lint():
     """format and ensure style of code, docs, etc."""
     if C.RTD or C.BUILDING_IN_CI or C.DOCS_IN_CI:
         return
+
+    yield U.ok(
+        B.OK_LITE_VERSION,
+        name="version:js:lite",
+        doc="check jupyter-lite.json version vs package.json",
+        file_dep=[P.APP_JUPYTERLITE_JSON, P.APP_PACKAGE_JSON],
+        actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
+    )
 
     yield U.ok(
         B.OK_PRETTIER,
@@ -243,10 +265,19 @@ def task_build():
     )
 
     yield dict(
-        name=f"py:{C.NAME}:pre",
+        name=f"py:{C.NAME}:pre:readme",
+        file_dep=[P.README],
+        targets=[P.PY_README],
+        actions=[(U.copy_one, [P.README, P.PY_README])],
+    )
+
+    yield dict(
+        name=f"py:{C.NAME}:pre:app",
         file_dep=[B.APP_PACK],
         targets=[B.PY_APP_PACK],
-        actions=[(U.copy_one, [B.APP_PACK, B.PY_APP_PACK])],
+        actions=[
+            (U.copy_one, [B.APP_PACK, B.PY_APP_PACK]),
+        ],
     )
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
@@ -261,7 +292,8 @@ def task_build():
 
         file_dep = [
             *P.PY_SETUP_DEPS[py_name](),
-            *py_pkg.rglob("*.py"),
+            *py_pkg.rglob("src/*.py"),
+            *py_pkg.glob("*.md"),
             setup_py,
         ]
 
@@ -307,6 +339,17 @@ def task_dist():
         targets=[B.DIST / "SHA256SUMS"],
     )
 
+    for dist in B.DISTRIBUTIONS:
+        if dist.name.endswith(".tar.gz"):
+            # apparently flit sdists are malformed according to `twine check`
+            continue
+        yield dict(
+            name=f"twine:{dist.name}",
+            doc=f"use twine to validate {dist.name}",
+            file_dep=[dist],
+            actions=[["twine", "check", dist]],
+        )
+
 
 def task_dev():
     """setup up local packages for interactive development"""
@@ -315,11 +358,20 @@ def task_dev():
         file_dep = [
             B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         ]
-        args = [*C.PYM, "pip", "install", "--find-links", B.DIST, C.NAME]
+        args = [
+            *C.PYM,
+            "pip",
+            "install",
+            "-vv",
+            "--no-index",
+            "--find-links",
+            B.DIST,
+            C.NAME,
+        ]
     else:
         cwd = P.PY_SETUP_PY[C.NAME].parent
         file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
-        args = [*C.FLIT, "install", "--pth-file"]
+        args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
 
     yield dict(
         name=f"py:{C.NAME}",
@@ -533,12 +585,18 @@ class C:
     ENC = dict(encoding="utf-8")
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
+    IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
+    FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
+    RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
+    CONDA_FORGE_RELEASE = "https://github.com/conda-forge/releases/releases/download"
+    JUPYTERLITE_JSON = "jupyter-lite.json"
+    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 88
+    COV_THRESHOLD = 92
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -573,7 +631,7 @@ class P:
     PYOLITE_PACKAGES = {}
 
     APP = ROOT / "app"
-    APP_JUPYTERLITE_JSON = APP / "jupyter-lite.json"
+    APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
@@ -592,12 +650,15 @@ class P:
 
     # docs
     README = ROOT / "README.md"
+    PY_README = ROOT / f"py/{C.NAME}/README.md"
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
+    EXAMPLE_JUPYTERLITE_JSON = EXAMPLES / "jupyter-lite.json"
+    EXAMPLE_LITE_BUILD_CONFIG = EXAMPLES / "jupyter_lite_config.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
@@ -730,6 +791,7 @@ class B:
     OK_PRETTIER = OK / "prettier"
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
+    OK_LITE_VERSION = OK / "lite.version"
     DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
@@ -770,12 +832,43 @@ class U:
 
     @staticmethod
     def sync_env(from_env, to_env, marker):
+        """update an environment from another environment, based on marker pairs"""
         from_chunks = from_env.read_text(**C.ENC).split(marker)
         to_chunks = to_env.read_text(**C.ENC).split(marker)
         to_env.write_text(
             "".join([to_chunks[0], marker, from_chunks[1], marker, to_chunks[2]]),
             **C.ENC,
         )
+
+    @staticmethod
+    def sync_lite_config(from_env, to_json, marker):
+        """use conda list to derive tarball names"""
+        raw_lock = subprocess.check_output(["conda", "list", "--explicit"])
+        ext_packages = [
+            p.strip().split(" ")[0]
+            for p in from_env.read_text(**C.ENC).split(marker)[1].split(" - ")
+            if p.strip()
+        ]
+        tarball_urls = []
+        for raw_url in raw_lock.decode("utf-8").splitlines():
+            try:
+                label, subdir, pkg = re.findall(C.RE_CONDA_FORGE_URL, raw_url)[0]
+            except IndexError:
+                continue
+
+            if label:
+                # TODO: haven't looked into this
+                continue
+
+            for ext in ext_packages:
+                if pkg.startswith(ext):
+                    tarball_urls += [
+                        "/".join([C.CONDA_FORGE_RELEASE, subdir, pkg, pkg])
+                    ]
+
+        config = json.loads(to_json.read_text(**C.ENC))
+        config["LiteBuildConfig"]["federated_extensions"] = sorted(tarball_urls)
+        to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
 
     @staticmethod
     def typedoc_conf():
@@ -928,10 +1021,6 @@ class U:
                 "lite",
                 task,
                 "--debug",
-                "--files",
-                ".",
-                "--output-dir",
-                B.DOCS_APP,
                 "--output-archive",
                 B.DOCS_APP_ARCHIVE,
             ]
@@ -1015,5 +1104,5 @@ DOIT_CONFIG = {
     "backend": "sqlite3",
     "verbosity": 2,
     "par_type": "thread",
-    "default_tasks": ["lint", "schema", "build"],
+    "default_tasks": ["lint", "build", "docs:app:build"],
 }

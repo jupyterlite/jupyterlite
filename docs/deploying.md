@@ -26,7 +26,7 @@ integration with other Jupyter tools.
 To get the [Python CLI](./cli.ipynb) and [API](./api/index.md) from [PyPI]:
 
 ```bash
-pip install jupyterlite
+python -m pip install --pre jupyterlite
 # TODO: mamba install jupyterlite
 ```
 
@@ -44,8 +44,8 @@ jupyter lite init
 - _TBD: use `cookiecutter-jupyterlite`_
 - _TBD: `yarn add @jupyterlite/builder` from `npmjs.com`_
 
-[github actions]: https://github.com/jtpio/jupyterlite/actions
-[releases]: https://github.com/jtpio/jupyterlite/releases
+[github actions]: https://github.com/jupyterlite/jupyterlite/actions
+[releases]: https://github.com/jupyterlite/jupyterlite/releases
 [pypi]: https://pypi.org/project/jupyterlite/
 
 ```{hint}
@@ -115,8 +115,8 @@ will immediately redirect to `appUrl` as defined in the [schema].
   https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_extra_path
 [sphinx]: https://www.sphinx-doc.org
 [myst-nb]: https://github.com/executablebooks/MyST-NB
-[conf.py]: https://github.com/jtpio/jupyterlite/blob/main/docs/conf.py
-[dodo.py]: https://github.com/jtpio/jupyterlite/blob/main/dodo.py
+[conf.py]: https://github.com/jupyterlite/jupyterlite/blob/main/docs/conf.py
+[dodo.py]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
 [schema]: ./schema-v0.rst
 
 ## Standalone Servers
@@ -200,7 +200,7 @@ preview.
 See the JupyterLite [binder configuration] for an example.
 ```
 
-[binder configuration]: https://github.com/jtpio/jupyterlite/tree/main/.binder
+[binder configuration]: https://github.com/jupyterlite/jupyterlite/tree/main/.binder
 
 ### ReadTheDocs
 
@@ -219,9 +219,30 @@ automatically get a preview link when opening a new pull request:
 ![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
 ```
 
-[.readthedocs.yml]: https://github.com/jtpio/jupyterlite/blob/main/.readthedocs.yml
+[.readthedocs.yml]:
+  https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml
 [autobuild documentation for pull requests]:
   https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
+
+### Netlify
+
+[Netlify](https://www.netlify.com/) makes it easy and convenient to host static websites
+from existing git repositories, and make them widely available via their CDN.
+
+To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
+generating a new repository from the template.
+
+Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
+dependency.
+
+Finally specify `jupyter lite build --output-dir dist` as the "Build Command", and
+`dist` as "Published Directory":
+
+![netlify-build](https://user-images.githubusercontent.com/591645/124728917-4846c380-df10-11eb-8256-65e60dd3f258.png)
+
+You might also want to specify the `--debug` flag to get extra log messages:
+
+![deploy-logs](https://user-images.githubusercontent.com/591645/124779931-79d88280-df42-11eb-8f94-93d5715c18bc.png)
 
 ### Vercel
 
@@ -229,12 +250,46 @@ automatically get a preview link when opening a new pull request:
 
 ### GitHub Pages
 
-> TBD
+JupyterLite can easily be deployed on GitHub Pages, using the `jupyterlite` CLI to add
+content and extensions.
+
+```{hint}
+See the [JupyterLite Demo] for an example. That repository is a GitHub template repository
+which makes it convenient to generate a new JupyterLite site with a single click.
+```
 
 ### GitLab Pages
 
-> TBD
+JupyterLite can easily be deployed on GitLab Pages, using the `jupyterlite` CLI and
+setting the `output_path` to the `public` folder in your `.gitlab-ci.yml` file.
+
+Suppose that your notebooks are stored in the `content` folder; and you don't require
+any additional python dependencies and configuration overrides, the `.gitlab-ci.yml`
+could look like.
+
+```
+image: python
+pages:
+  stage: deploy
+  before_script:
+    - python -m pip install jupyterlite
+  script:
+    - jupyter lite build --files content --output-dir public
+  artifacts:
+    paths:
+      - public # mandatory, other folder won't work
+  only:
+    - main # the branch you want to publish
+```
+
+```{hint}
+See the [gitlab pages template] for a more involved example.
+```
+
+[gitlab pages template]: https://gitlab.com/benabel/jupyterlite-template
 
 ### Heroku
 
 > TBD
+
+[jupyterlite demo]: https://github.com/jupyterlite/demo
