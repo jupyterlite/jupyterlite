@@ -103,9 +103,19 @@ async function sendComm(
   });
 }
 
-async function input(prompt: string, passwd: boolean) {
+async function getpass(prompt: string) {
   prompt = typeof prompt === 'undefined' ? '' : prompt;
-  await sendInputRequest(prompt, passwd);
+  await sendInputRequest(prompt, true);
+  const replyPromise = new Promise(resolve => {
+    resolveInputReply = resolve;
+  });
+  const result = await replyPromise;
+  return result;
+}
+
+async function input(prompt: string) {
+  prompt = typeof prompt === 'undefined' ? '' : prompt;
+  await sendInputRequest(prompt, false);
   const replyPromise = new Promise(resolve => {
     resolveInputReply = resolve;
   });
@@ -226,7 +236,8 @@ async function execute(content: any) {
   interpreter.display_pub.display_data_callback = displayDataCallback;
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
-  interpreter.input_request = input;
+  interpreter.input = input;
+  interpreter.getpass = getpass;
 
   const res = await kernel.run(content.code);
   const results = formatResult(res);
