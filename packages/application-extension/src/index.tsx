@@ -59,10 +59,34 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
         color
       });
     }
+    this._room = options.room;
+    this._path = options.path;
+
+    this.on('rename', (args: any) => {
+      const path = args.path;
+      if (path !== this._path) {
+        this._path = path;
+        console.log('new path', path);
+        this._reconnect(path);
+      }
+    });
   }
 
-  setPath() {
-    // TODO: this seems super useful
+  private _reconnect(path: string): void {
+    this.roomName = `${this._room}${path}`;
+    if (this.room) {
+      this.room.name = this.roomName;
+    }
+    this.connect();
+  }
+
+  setPath(newPath: string): void {
+    if (newPath === this._path) {
+      return;
+    }
+    this._path = newPath;
+    this.emit('rename', [{ path: this._path }]);
+    this._reconnect(newPath);
   }
 
   requestInitialContent(): Promise<boolean> {
@@ -99,6 +123,8 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   }
 
   private _initialRequest: PromiseDelegate<boolean> | null = null;
+  private _path: string;
+  private _room: string;
 }
 
 /**
