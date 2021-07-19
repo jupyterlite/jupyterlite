@@ -1,3 +1,5 @@
+import builtins
+import getpass
 import sys
 
 from IPython.core.application import BaseIPythonApplication
@@ -22,6 +24,26 @@ class Interpreter(InteractiveShell):
         super(Interpreter, self).__init__(*args, **kwargs)
         self.kernel = Pyolite(interpreter=self)
         self._last_traceback = None
+        self._input = None
+        self._getpass = None
+
+    @property
+    def input(self):
+        return self._input
+
+    @input.setter
+    def input(self, value):
+        self._input = value
+        builtins.input = self._input
+
+    @property
+    def getpass(self):
+        return self._getpass
+
+    @getpass.setter
+    def getpass(self, value):
+        self._getpass = value
+        getpass.getpass = self._getpass
 
     def init_history(self):
         self.history_manager = CustomHistoryManager(shell=self, parent=self)

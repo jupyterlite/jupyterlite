@@ -124,11 +124,11 @@ export interface IKernel extends IObservableDisposable {
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']>;
 
   /**
-   * Send an `input_request` message.
+   * Send an `input_reply` message.
    *
-   * @param content - The content of the request.
+   * @param content - The content of the reply.
    */
-  inputRequest(content: KernelMessage.IInputRequestMsg['content']): Promise<void>;
+  inputReply(content: KernelMessage.IInputReplyMsg['content']): void;
 }
 
 /**

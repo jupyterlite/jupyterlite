@@ -105,6 +105,9 @@ export abstract class BaseKernel implements IKernel {
       case 'execute_request':
         await this._execute(msg);
         break;
+      case 'input_reply':
+        this.inputReply(msg.content as KernelMessage.IInputReplyMsg['content']);
+        break;
       case 'inspect_request':
         await this._inspect(msg);
         break;
@@ -192,13 +195,11 @@ export abstract class BaseKernel implements IKernel {
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']>;
 
   /**
-   * Send an `input_request` message.
+   * Send an `input_reply` message.
    *
-   * @param content - The content of the request.
+   * @param content - The content of the reply.
    */
-  abstract inputRequest(
-    content: KernelMessage.IInputRequestMsg['content']
-  ): Promise<void>;
+  abstract inputReply(content: KernelMessage.IInputReplyMsg['content']): void;
 
   /**
    * Send an `comm_open` message.
@@ -251,6 +252,23 @@ export abstract class BaseKernel implements IKernel {
     const message = KernelMessage.createMessage<KernelMessage.IDisplayDataMsg>({
       channel: 'iopub',
       msgType: 'display_data',
+      // TODO: better handle this
+      session: this._parentHeader?.session ?? '',
+      parentHeader: this._parentHeader,
+      content
+    });
+    this._sendMessage(message);
+  }
+
+  /**
+   * Send a `input_request` message to the client.
+   *
+   * @param content The input_request content.
+   */
+  protected inputRequest(content: KernelMessage.IInputRequestMsg['content']): void {
+    const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
+      channel: 'stdin',
+      msgType: 'input_request',
       // TODO: better handle this
       session: this._parentHeader?.session ?? '',
       parentHeader: this._parentHeader,
