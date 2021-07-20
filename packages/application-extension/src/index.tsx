@@ -61,15 +61,6 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
     }
     this._room = options.room;
     this._path = options.path;
-
-    this.on('rename', (args: any) => {
-      const path = args.path;
-      if (path !== this._path) {
-        this._path = path;
-        console.log('new path', path);
-        this._reconnect(path);
-      }
-    });
   }
 
   private _reconnect(path: string): void {
@@ -85,7 +76,6 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
       return;
     }
     this._path = newPath;
-    this.emit('rename', [{ path: this._path }]);
     this._reconnect(newPath);
   }
 
