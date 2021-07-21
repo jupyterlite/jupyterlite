@@ -3,31 +3,20 @@
 __version__ = "0.1.0a5"
 
 import sys
-import types
 
-# Set the recursion limit, needed for altair
-# for more details, see: https://github.com/jupyterlite/jupyterlite/pull/113#issuecomment-851072065
-sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
+# 0. do early mocks that change `sys.modules`
+from . import mocks
 
-termios_mock = types.ModuleType("termios")
-termios_mock.TCSAFLUSH = 2
+mocks.apply_mocks()
+del mocks
 
-sys.modules["termios"] = termios_mock
-sys.modules["fcntl"] = types.ModuleType("fcntl")
-sys.modules["resource"] = types.ModuleType("resource")
+# 1. do expensive patches that require imports
+from . import patches
 
-# This is needed for some Matplotlib backends (webagg, ipympl)
-sys.modules["tornado"] = types.ModuleType("tornado")
-# Appease plotly -> tenacity -> tornado.gen.coroutine
-sys.modules["tornado.gen"] = types.ModuleType("gen")
-sys.modules["tornado.gen"].coroutine = lambda *args, **kwargs: args[0]
+patches.apply_patches()
+del patches
 
-from .patches import ensure_matplotlib_patch, ensure_pil_patch
-
-# apply patches for available modules
-ensure_matplotlib_patch()
-ensure_pil_patch()
-
+# 2. set up the rest of the IPython-like environment
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
 
@@ -39,5 +28,6 @@ ipython_shell_app.initialize()
 ipython_shell = ipython_shell_app.shell
 kernel_instance = ipython_shell.kernel
 
+# 3. handle streams
 sys.stdout = stdout_stream
 sys.stderr = stderr_stream
