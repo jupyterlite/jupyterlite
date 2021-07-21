@@ -34,7 +34,8 @@ class Interpreter(InteractiveShell):
     @input.setter
     def input(self, value):
         self._input = value
-        builtins.input = self._input
+        # self._input is an unhashable JsProxy and can break things
+        builtins.input = lambda *args, **kwargs: value(*args, **kwargs)
 
     @property
     def getpass(self):
