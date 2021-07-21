@@ -478,6 +478,10 @@ def task_check():
         ],
     )
 
+    for example in P.ALL_EXAMPLES:
+        if example.name.endswith(".ipynb"):
+            yield from U.check_one_ipynb(example)
+
 
 def task_watch():
     """watch sources and rebuild on change"""
@@ -850,7 +854,7 @@ class U:
             if p.strip()
         ]
         tarball_urls = []
-        for raw_url in raw_lock.decode("utf-8").splitlines():
+        for raw_url in sorted(raw_lock.decode("utf-8").splitlines()):
             try:
                 label, subdir, pkg = re.findall(C.RE_CONDA_FORGE_URL, raw_url)[0]
             except IndexError:
@@ -1090,6 +1094,36 @@ class U:
                 shutil.copytree(py_pkg, py_tmp)
                 subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
+
+    @staticmethod
+    def check_one_ipynb(path):
+        """ensure the path"""
+        built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
+        raw = built.read_text(**C.ENC)
+
+        if "micropip" not in raw:
+            return
+
+        def _check():
+            from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
+            missing = []
+            for pkg, version in re.findall(
+                "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
+            ):
+                spec = f"{pkg}=={version}"
+                if pkg in raw and spec not in raw:
+                    missing += [spec]
+
+            if missing:
+                print(path.name, *missing)
+
+            return not missing
+
+        yield dict(
+            name=f"ipynb:{path.name}",
+            actions=[_check],
+            file_dep=[path, built, P.BINDER_ENV],
+        )
 
 
 # environment overloads
