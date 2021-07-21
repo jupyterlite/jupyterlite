@@ -19,8 +19,8 @@ sys.modules["resource"] = types.ModuleType("resource")
 # This is needed for some Matplotlib backends (webagg, ipympl)
 sys.modules["tornado"] = types.ModuleType("tornado")
 # Appease plotly -> tenacity -> tornado.gen.coroutine
-sys.modules["tornado"].gen = types.ModuleType("gen")
-sys.modules["tornado"].gen.coroutine = lambda *args, **kwargs: args[0]
+sys.modules["tornado.gen"] = types.ModuleType("gen")
+sys.modules["tornado.gen"].coroutine = lambda *args, **kwargs: args[0]
 
 from .patches import ensure_matplotlib_patch, ensure_pil_patch
 
