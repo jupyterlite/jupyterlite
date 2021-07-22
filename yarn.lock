@@ -3132,6 +3132,11 @@
     async-mutex "^0.3.1"
     mock-socket "^9.0.3"
 
+"@jupyterlite/licenses@file:packages/licenses":
+  version "0.1.0-alpha.5"
+  dependencies:
+    "@jupyterlab/coreutils" "^5.1.0-rc.1"
+
 "@jupyterlite/p5-kernel-extension@file:packages/p5-kernel-extension":
   version "0.1.0-alpha.5"
   dependencies:
@@ -3169,6 +3174,7 @@
   version "0.1.0-alpha.5"
   dependencies:
     "@jupyterlite/kernel" "^0.1.0-alpha.5"
+    "@jupyterlite/licenses" "^0.1.0-alpha.5"
     "@jupyterlite/server" "^0.1.0-alpha.5"
     "@jupyterlite/session" "^0.1.0-alpha.5"
     "@jupyterlite/settings" "^0.1.0-alpha.5"
@@ -3189,6 +3195,11 @@
     "@lumino/coreutils" "^1.8.0"
     json5 "^2.2.0"
     localforage "^1.9.0"
+
+"@jupyterlite/types@file:packages/types":
+  version "0.1.0-alpha.5"
+  dependencies:
+    "@lumino/coreutils" "^1.8.0"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
   version "0.1.0-alpha.5"

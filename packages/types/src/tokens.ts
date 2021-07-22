@@ -9,15 +9,19 @@ export interface IFederatedExtension {
    */
   name: string;
   /**
-   * The relative path to the extension
-   */
-  extension: string;
-  /**
    * The relative entrypoint to the WebPack remoteEntry
    */
   load: string;
   /**
+   * Optional relative path to the extension
+   */
+  extension?: string;
+  /**
    * Optional path to the style module
    */
   style?: string;
+  /**
+   * Optional relative path to the mimeExtension
+   */
+  mimeExtension?: string;
 }
