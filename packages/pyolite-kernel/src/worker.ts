@@ -13,6 +13,9 @@ let stdout_stream: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let stderr_stream: any;
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
+let resolveInputReply: any;
 /**
  * Load Pyodided and initialize the interpreter.
  */
@@ -97,6 +100,44 @@ async function sendComm(
     metadata: formatResult(metadata),
     ident: formatResult(ident),
     buffers: formatResult(buffers)
+  });
+}
+
+async function getpass(prompt: string) {
+  prompt = typeof prompt === 'undefined' ? '' : prompt;
+  await sendInputRequest(prompt, true);
+  const replyPromise = new Promise(resolve => {
+    resolveInputReply = resolve;
+  });
+  const result: any = await replyPromise;
+  return result['value'];
+}
+
+async function input(prompt: string) {
+  prompt = typeof prompt === 'undefined' ? '' : prompt;
+  await sendInputRequest(prompt, false);
+  const replyPromise = new Promise(resolve => {
+    resolveInputReply = resolve;
+  });
+  const result: any = await replyPromise;
+  return result['value'];
+}
+
+/**
+ * Send a input request to the front-end.
+ *
+ * @param prompt the text to show at the prompt
+ * @param password Is the request for a password?
+ */
+async function sendInputRequest(prompt: string, password: boolean) {
+  const content = {
+    prompt,
+    password
+  };
+  postMessage({
+    type: 'input_request',
+    parentHeader: formatResult(kernel._parent_header['header']),
+    content
   });
 }
 
@@ -195,6 +236,8 @@ async function execute(content: any) {
   interpreter.display_pub.display_data_callback = displayDataCallback;
   interpreter.display_pub.update_display_data_callback = updateDisplayDataCallback;
   interpreter.displayhook.publish_execution_result = publishExecutionResult;
+  interpreter.input = input;
+  interpreter.getpass = getpass;
 
   const res = await kernel.run(content.code);
   const results = formatResult(res);
@@ -308,6 +351,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
       console.log('Perform execution inside worker', data);
       results = await execute(messageContent);
       break;
+
+    case 'input-reply':
+      resolveInputReply(messageContent);
+      return;
 
     case 'inspect-request':
       results = inspect(messageContent);
