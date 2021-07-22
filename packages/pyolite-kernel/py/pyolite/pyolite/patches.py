@@ -1,19 +1,18 @@
-import base64
-import os
-from io import BytesIO
+def patch_matplotlib():
+    import os
+    from io import BytesIO
 
-os.environ["MPLBACKEND"] = "AGG"
+    # before importing matplotlib
+    # to avoid the wasm backend (which needs `js.document`, not available in worker)
+    os.environ["MPLBACKEND"] = "AGG"
 
-import matplotlib.pyplot
-from IPython.display import display
-from PIL import Image as PILImage
+    import matplotlib.pyplot
+    from IPython.display import display
 
-from .display import Image
+    from .display import Image
 
-
-def ensure_matplotlib_patch():
     _old_show = matplotlib.pyplot.show
-    assert _old_show
+    assert _old_show, "matplotlib.pyplot.show"
 
     def show():
         buf = BytesIO()
@@ -25,7 +24,11 @@ def ensure_matplotlib_patch():
     matplotlib.pyplot.show = show
 
 
-def ensure_pil_patch():
+def patch_pillow():
+    import base64
+
+    from PIL import Image as PILImage
+
     _old_repr_png = PILImage.Image._repr_png_
     assert _old_repr_png
 
@@ -34,3 +37,19 @@ def ensure_pil_patch():
         return base64.b64encode(byte).decode("utf-8")
 
     PILImage.Image._repr_png_ = _repr_png_
+
+
+ALL_PATCHES = [
+    patch_pillow,
+    patch_matplotlib,
+]
+
+
+def apply_patches():
+    import warnings
+
+    for patch in ALL_PATCHES:
+        try:
+            patch()
+        except Exception as err:
+            warnings.warn("faield to apply patch", patch, err)
