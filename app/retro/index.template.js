@@ -75,6 +75,7 @@ async function main() {
       [
         '@jupyterlab/apputils-extension:palette',
         '@jupyterlab/apputils-extension:settings',
+        '@jupyterlab/apputils-extension:state',
         '@jupyterlab/apputils-extension:themes',
         '@jupyterlab/apputils-extension:themes-palette-menu'
       ].includes(id)
