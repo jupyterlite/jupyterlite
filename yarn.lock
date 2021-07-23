@@ -1767,7 +1767,7 @@
     path-browserify "^1.0.0"
     url-parse "~1.5.1"
 
-"@jupyterlab/coreutils@^5.1.0-rc.2":
+"@jupyterlab/coreutils@^5.1.0-rc.1", "@jupyterlab/coreutils@^5.1.0-rc.2":
   version "5.1.0-rc.2"
   resolved "https://registry.yarnpkg.com/@jupyterlab/coreutils/-/coreutils-5.1.0-rc.2.tgz#b6afad38bde81cae94cc08d4e0c7ace9eb189ac5"
   integrity sha512-nvsxVAGFAboj2RDCRbK/56O/qtM3Xziz/yf/GmA643GxtjCbaR1v7W9nGZepvubtqsIeQ7qDR5LX7b56dRRgJw==
