@@ -197,8 +197,8 @@ jobs:
       - name: Download (dist)
         uses: actions/download-artifact@v2
         with:
-          name: jupyterlite conda-dist ${{ github.run_number }}
-          path: ./dist
+          name: jupyterlite fixtures ${{ github.run_number }}
+          path: ./build/fixtures
       - name: Cache (pip)
         uses: actions/cache@v2
         with:
