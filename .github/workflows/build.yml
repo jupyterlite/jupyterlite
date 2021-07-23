@@ -77,7 +77,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache (fixtures)
+        id: cache-fixtures
+        with:
+          path: build/fixtures
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-${{ hashFiles('py/the_smallest_extension/**/*') }}
       - name: Cache (node_modules)
+        if: steps.cache-fixtures.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         id: cache-node-modules
         with:
@@ -85,6 +92,7 @@ jobs:
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-node-modules-${{ hashFiles('py/the_smallest_extension/yarn.lock') }}
       - name: Cache conda
+        if: steps.cache-fixtures.outputs.cache-hit != 'true'
         uses: actions/cache@v2
         with:
           path: ~/conda_pkgs_dir
@@ -93,6 +101,7 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-conda-
       - name: Setup Conda
+        if: steps.cache-fixtures.outputs.cache-hit != 'true'
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
@@ -100,6 +109,7 @@ jobs:
           environment-file: ./.github/environment.yml
           use-only-tar-bz2: true
       - name: Build
+        if: steps.cache-fixtures.outputs.cache-hit != 'true'
         shell: bash -l {0}
         run: doit build:py:the_smallest_extension:fixture
       - name: Upload (fixtures)
@@ -194,7 +204,7 @@ jobs:
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
-      - name: Download (dist)
+      - name: Download (fixtures)
         uses: actions/download-artifact@v2
         with:
           name: jupyterlite fixtures ${{ github.run_number }}

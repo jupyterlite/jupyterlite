@@ -281,7 +281,7 @@ def task_build():
     )
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
-        if py_name == C.SMALLEST and C.CI and not C.FIXTURING_IN_CI:
+        if py_name == C.SMALLEST and (C.CI or C.RTD) and not C.FIXTURING_IN_CI:
             continue
         py_pkg = setup_py.parent
         wheel = (
