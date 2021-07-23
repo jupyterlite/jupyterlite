@@ -2,6 +2,91 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## v0.1.0a6
+
+([full changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a5...f3e1fcea1c80577a1914fb73b2167f6bc2128c9d))
+
+### Enhancements made
+
+- fix syntax error showing in JS console
+  [#290](https://github.com/jupyterlite/jupyterlite/pull/290)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+- Provide `IStateDB` in retro
+  [#287](https://github.com/jupyterlite/jupyterlite/pull/287)
+  ([@jtpio](https://github.com/jtpio))
+- Make sure display_data always contain metadata
+  [#269](https://github.com/jupyterlite/jupyterlite/pull/269)
+  ([@martinRenou](https://github.com/martinRenou))
+- Add RTC colors and usernames
+  [#263](https://github.com/jupyterlite/jupyterlite/pull/263)
+  ([@jtpio](https://github.com/jtpio))
+- add input_request message protocol
+  [#253](https://github.com/jupyterlite/jupyterlite/pull/253)
+  ([@madhur-tandon](https://github.com/madhur-tandon))
+- Support more sources of federated_extension
+  [#238](https://github.com/jupyterlite/jupyterlite/pull/238)
+  ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Update to RetroLab 0.3.0rc1
+  [#289](https://github.com/jupyterlite/jupyterlite/pull/289)
+  ([@jtpio](https://github.com/jtpio))
+- Switch to the organization issue templates
+  [#288](https://github.com/jupyterlite/jupyterlite/pull/288)
+  ([@jtpio](https://github.com/jtpio))
+- Update to jupyterlab 3.1.0rc2
+  [#283](https://github.com/jupyterlite/jupyterlite/pull/283)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Pin jupyter widgets versions
+  [#281](https://github.com/jupyterlite/jupyterlite/pull/281)
+  ([@martinRenou](https://github.com/martinRenou))
+- Fix possible typo [#272](https://github.com/jupyterlite/jupyterlite/pull/272)
+  ([@SimonBiggs](https://github.com/SimonBiggs))
+- Add author-email to pyproject.toml
+  [#270](https://github.com/jupyterlite/jupyterlite/pull/270)
+  ([@jtpio](https://github.com/jtpio))
+- Add .eslintcache to the .gitignore
+  [#268](https://github.com/jupyterlite/jupyterlite/pull/268)
+  ([@jtpio](https://github.com/jtpio))
+- Update ESLint dependencies [#240](https://github.com/jupyterlite/jupyterlite/pull/240)
+  ([@jtpio](https://github.com/jtpio))
+- Upgrade to JupyterLab 3.1.0rc1
+  [#207](https://github.com/jupyterlite/jupyterlite/pull/207)
+  ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Add the architecture diagram
+  [#278](https://github.com/jupyterlite/jupyterlite/pull/278)
+  ([@jtpio](https://github.com/jtpio))
+- add index.html to serve message
+  [#260](https://github.com/jupyterlite/jupyterlite/pull/260)
+  ([@bollwyvl](https://github.com/bollwyvl))
+- Add ipycytoscape to the example federated extensions
+  [#257](https://github.com/jupyterlite/jupyterlite/pull/257)
+  ([@jtpio](https://github.com/jtpio))
+- Add ipycytoscape example [#256](https://github.com/jupyterlite/jupyterlite/pull/256)
+  ([@marimeireles](https://github.com/marimeireles))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-07-13&to=2021-07-23&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-13..2021-07-23&type=Issues)
+|
+[@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-13..2021-07-23&type=Issues)
+|
+[@madhur-tandon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-07-13..2021-07-23&type=Issues)
+|
+[@marimeireles](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amarimeireles+updated%3A2021-07-13..2021-07-23&type=Issues)
+|
+[@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-13..2021-07-23&type=Issues)
+|
+[@SimonBiggs](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ASimonBiggs+updated%3A2021-07-13..2021-07-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a5
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a4...1732344e565c0694b034a4de015231ea05d28e4b))
@@ -51,8 +136,6 @@
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-08..2021-07-12&type=Issues)
 |
 [@madhur-tandon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-07-08..2021-07-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a4
 
