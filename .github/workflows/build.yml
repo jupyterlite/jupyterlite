@@ -77,15 +77,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache conda
+        uses: actions/cache@v2
+        with:
+          path: ~/conda_pkgs_dir
+          key:
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-${{
+            hashFiles('.github/environment.yml') }}
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
-          python-version: 3.8
           miniforge-variant: Mambaforge
           use_mamba: true
-      - name: Install (conda)
-        shell: bash -l {0}
-        run: mamba install -yc conda-forge conda-build mamba doit pip
+          environment_file: ./.github/environment.yml
+          use-only-tar-bz2: true
       - name: Build
         shell: bash -l {0}
         run: doit build:py:the_smallest_extension:fixture
