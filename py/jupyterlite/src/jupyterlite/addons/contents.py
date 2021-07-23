@@ -20,7 +20,7 @@ class ContentsAddon(BaseAddon):
             name="contents",
             actions=[
                 lambda: self.log.debug(
-                    "[lite] [contents] All Files %s",
+                    "[lite] [contents] All Contents %s",
                     pprint.pformat([str(p[0]) for p in self.file_src_dest]),
                 ),
                 lambda: print(
@@ -34,6 +34,7 @@ class ContentsAddon(BaseAddon):
         contents = sorted(self.file_src_dest)
         output_files_dir = self.output_files_dir
         all_dest_files = []
+
         for src_file, dest_file in contents:
             all_dest_files += [dest_file]
             rel = dest_file.relative_to(output_files_dir)
@@ -122,7 +123,7 @@ class ContentsAddon(BaseAddon):
         """add a file or folder's contents (if not ignored)"""
 
         if root is not None:
-            rel_posix_path = str(path.relative_to(root).as_posix())
+            rel_posix_path = f"/{path.relative_to(root).as_posix()}"
 
             for ignore in self.manager.ignore_contents:
                 if re.findall(ignore, rel_posix_path):
