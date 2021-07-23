@@ -319,6 +319,9 @@ def task_build():
                 style = (py_pkg / "style").rglob("*.*")
                 schema = (py_pkg / "schema").rglob("*.json")
                 task_dep += [f"build:py:{py_name}:ext"]
+                output_dir = py_pkg / pkg_data["jupyterlab"]["outputDir"]
+                ext_pkg_json = output_dir / "package.json"
+                file_dep += [ext_pkg_json]
                 yield dict(
                     name=f"py:{py_name}:ext",
                     doc=f"build the {py_name} labextension",
@@ -327,9 +330,7 @@ def task_build():
                         U.do("jlpm", cwd=py_pkg),
                         U.do("jlpm", "build:prod", cwd=py_pkg),
                     ],
-                    targets=[
-                        py_pkg / pkg_data["jupyterlab"]["outputDir"] / "package.json"
-                    ],
+                    targets=[ext_pkg_json],
                 )
 
         yield dict(
