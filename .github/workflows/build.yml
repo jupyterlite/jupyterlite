@@ -88,8 +88,8 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           miniforge-variant: Mambaforge
-          use_mamba: true
-          environment_file: ./.github/environment.yml
+          use-mamba: true
+          environment-file: ./.github/environment.yml
           use-only-tar-bz2: true
       - name: Build
         shell: bash -l {0}
