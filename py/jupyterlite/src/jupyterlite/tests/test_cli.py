@@ -117,10 +117,12 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
     readme = an_empty_lite_dir / "README.md"
     readme.write_text("# hello world", encoding="utf-8")
 
-    # ... and a nested file
-    details = an_empty_lite_dir / "details/README.md"
-    details.parent.mkdir()
-    details.write_text("# more details", encoding="utf-8")
+    # ... and a nested folder
+    more = an_empty_lite_dir / "more"
+    details = more / "details"
+    details_readme = details / "README.md"
+    details_readme.parent.mkdir(parents=True)
+    details_readme.write_text("# more details", encoding="utf-8")
 
     # some federated stuff
     lite_json = an_empty_lite_dir / "jupyter-lite.json"
@@ -139,22 +141,23 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         "lite",
         lite_hook,
         "--force",
-        "--files",
+        "--contents",
         readme,
-        "--files",
-        details,
+        "--contents",
+        more,
         cwd=an_empty_lite_dir,
     )
 
     if A_GOOD_BUILD[-1] in expected_files and lite_hook not in ["init"]:
-        # TODO: ugly debugging, sure, but helpful with `-s`
         out = an_empty_lite_dir / "_output"
 
         # did the files make it...
         expected_readme = out / "files/README.md"
-        assert "world" in expected_readme.read_text()
+        assert expected_readme.exists()
+        assert "world" in expected_readme.read_text(encoding="utf-8")
         expected_details = out / "files/details/README.md"
-        assert "details" in expected_details.read_text()
+        assert expected_details.exists()
+        assert "details" in expected_details.read_text(encoding="utf-8")
 
         # ...and get indexed
         missed = 0

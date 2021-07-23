@@ -5,8 +5,6 @@ import pprint
 import re
 from pathlib import Path
 
-import doit
-
 from ..constants import ALL_JSON, API_CONTENTS
 from .base import BaseAddon
 
@@ -23,12 +21,7 @@ class ContentsAddon(BaseAddon):
             actions=[
                 lambda: self.log.debug(
                     "[lite] [contents] All Files %s",
-                    pprint.pformat(
-                        [
-                            str(p[0].relative_to(manager.lite_dir))
-                            for p in self.file_src_dest
-                        ]
-                    ),
+                    pprint.pformat([str(p[0]) for p in self.file_src_dest]),
                 ),
                 lambda: print(
                     f"""    contents: {len(list(self.file_src_dest))} files"""
@@ -38,18 +31,18 @@ class ContentsAddon(BaseAddon):
 
     def build(self, manager):
         """perform the main user build of pre-populating ``/files/``"""
-        files = sorted(self.file_src_dest)
+        contents = sorted(self.file_src_dest)
+        output_files_dir = self.output_files_dir
         all_dest_files = []
-        for src_file, dest_file in files:
+        for src_file, dest_file in contents:
             all_dest_files += [dest_file]
-            stem = dest_file.relative_to(self.output_files_dir)
+            rel = dest_file.relative_to(output_files_dir)
             yield dict(
-                name=f"copy:/files/{stem}",
-                doc=f"copy {stem} to be distributed as files",
+                name=f"copy:{rel}",
+                doc=f"copy {src_file} to {rel}",
                 file_dep=[src_file],
                 targets=[dest_file],
                 actions=[
-                    (doit.tools.create_folder, [self.output_files_dir]),
                     (self.copy_one, [src_file, dest_file]),
                 ],
             )
@@ -107,25 +100,37 @@ class ContentsAddon(BaseAddon):
 
     @property
     def file_src_dest(self):
-        """the paits of files that will be copied"""
-        for mgr_file in self.manager.files:
+        """the pairs of contents that will be copied
+
+        these are processed in `reverse` order, such that only the last path
+        wins
+        """
+        yielded_dests = []
+        for mgr_file in reversed(self.manager.contents):
             path = Path(mgr_file)
             for from_path in self.maybe_add_one_path(path):
-                stem = from_path.relative_to(self.manager.lite_dir)
+                stem = from_path.relative_to(path) if path.is_dir() else path.name
                 to_path = self.output_files_dir / stem
+                resolved = str(to_path.resolve())
+                if resolved in yielded_dests:
+                    self.log.debu("Already populated", resolved)
+                    continue
+                yielded_dests += [resolved]
                 yield from_path, to_path
 
-    def maybe_add_one_path(self, path):
-        """add a folder or directory (if not ignored)"""
-        p_path = str(path.resolve().as_posix())
+    def maybe_add_one_path(self, path, root=None):
+        """add a file or folder's contents (if not ignored)"""
 
-        for ignore in self.manager.ignore_files:
-            if re.findall(ignore, p_path):
-                return
+        if root is not None:
+            rel_posix_path = str(path.relative_to(root).as_posix())
+
+            for ignore in self.manager.ignore_contents:
+                if re.findall(ignore, rel_posix_path):
+                    return
 
         if path.is_dir():
             for child in path.glob("*"):
-                for from_child in self.maybe_add_one_path(child):
+                for from_child in self.maybe_add_one_path(child, root or path):
                     yield from_child
         else:
             yield path.resolve()
