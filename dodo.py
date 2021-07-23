@@ -600,7 +600,7 @@ class C:
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 92
+    COV_THRESHOLD = 91
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
