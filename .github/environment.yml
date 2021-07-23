@@ -7,10 +7,11 @@ channels:
 
 dependencies:
   # TODO: sync/check these against... something
-  - python >=3.9,<3.10
+  - boa
   - conda-build
   - doit
   - jupyterlab >=3.1.0rc2,<4
   - mamba
   - nodejs >=14,<15
   - pip
+  - python >=3.9,<3.10

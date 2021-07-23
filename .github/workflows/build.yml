@@ -81,9 +81,10 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/conda_pkgs_dir
-          key:
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-${{
-            hashFiles('.github/environment.yml') }}
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-${{ hashFiles('.github/environment.yml') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:
