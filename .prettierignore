@@ -4,13 +4,15 @@
 **/package.json
 **/static
 
-.yarn-packages
-build
-docs/_build
-node_modules
-docs/api/ts
 .pytest_cache
+.yarn-packages
 app/lab/extensions/
+build/
+dist/
+docs/_build
+docs/api/ts
+labextension/
+node_modules
 
 # JS templating
 bootstrap.js
