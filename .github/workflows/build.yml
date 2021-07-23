@@ -73,18 +73,25 @@ jobs:
   fixtures:
     runs-on: ubuntu-latest
     env:
-      BUILDING_IN_CI: 1
+      FIXTURING_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Cache (node_modules)
+        uses: actions/cache@v2
+        id: cache-node-modules
+        with:
+          path: py/the_smallest_extension/node_modules
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-node-modules-${{ hashFiles('py/the_smallest_extension/yarn.lock') }}
       - name: Cache conda
         uses: actions/cache@v2
         with:
           path: ~/conda_pkgs_dir
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-${{ hashFiles('.github/environment.yml') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-conda-${{ hashFiles('.github/environment.yml') }}
           restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-conda-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-fixture-conda-
       - name: Setup Conda
         uses: conda-incubator/setup-miniconda@v2
         with:

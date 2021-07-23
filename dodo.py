@@ -281,6 +281,8 @@ def task_build():
     )
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
+        if py_name == C.SMALLEST and C.CI and not C.FIXTURING_IN_CI:
+            continue
         py_pkg = setup_py.parent
         wheel = (
             py_pkg
@@ -673,6 +675,7 @@ class C:
     SMALLEST = "the_smallest_extension"
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
+    FIXTURING_IN_CI = json.loads(os.environ.get("FIXTURING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
