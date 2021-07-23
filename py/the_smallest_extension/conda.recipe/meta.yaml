@@ -1,0 +1,35 @@
+{% set name = "the-smallest-extension" %}
+{% set version = "0.1.0a5" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  path: ../dist/{{ name }}-{{ version }}.tar.gz
+
+build:
+  noarch: python
+  number: 0
+  script:
+    - tar -xvzf {{ name }}-{{ version }}.tar.gz
+    - cd {{ name }}-{{ version }}
+    - "{{ PYTHON }} -m pip install . -vv"
+
+requirements:
+  host:
+    - python
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - the_smallest_extension
+
+about:
+  home: https://github.com/jupyterlite/the-smallest-extension
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: {{ name }}-{{ version }}/LICENSE
+  summary: 'a small JupyterLab extension'

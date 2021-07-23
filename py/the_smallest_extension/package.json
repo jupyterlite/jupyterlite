@@ -1,0 +1,52 @@
+{
+  "name": "the-smallest-extension",
+  "version": "0.1.0-alpha.5",
+  "description": "A small JupyterLab extension",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/jupyterlite/the-smallest-extension",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/the-smallest-extension/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": {
+    "name": "JupyterLite Contributors",
+    "email": "noreply@jupyterlite.xyz"
+  },
+  "files": [
+    "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
+    "style/**/*.{css,.js,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/the-smallest-extension.git"
+  },
+  "scripts": {
+    "build": "jlpm run build:lib && jlpm run build:labextension:dev",
+    "build:prod": "jlpm run build:lib && jlpm run build:labextension",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:lib": "tsc",
+    "install:extension": "jlpm run build"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "^3.1.0-rc.2"
+  },
+  "devDependencies": {
+    "@jupyterlab/builder": "^3.1.0-rc.2",
+    "typescript": "~4.2.3"
+  },
+  "jupyterlab": {
+    "extension": "lib/index.js",
+    "mimeExtension": "lib/mime.js",
+    "themePath": "style/index.css",
+    "outputDir": "the_smallest_extension/labextension",
+    "schemaDir": "schema"
+  }
+}

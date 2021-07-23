@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include the_smallest_extension/labextension *.*
+include install.json

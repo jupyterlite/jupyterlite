@@ -1,5 +1,10 @@
 {
   "extends": "./tsconfigbase",
-  "include": ["packages/**/*", "app/**/*", "buildutils/**/*"],
+  "include": [
+    "packages/**/*",
+    "app/**/*",
+    "buildutils/**/*",
+    "py/the_smallest_extension/src"
+  ],
   "types": ["jest"]
 }

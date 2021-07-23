@@ -290,14 +290,20 @@ def task_build():
 
         actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
 
+        task_dep = []
         file_dep = [
             *P.PY_SETUP_DEPS[py_name](),
-            *py_pkg.rglob("src/*.py"),
+            *[
+                p
+                for p in py_pkg.rglob("*.py")
+                if "build" not in str(p) and "node_modules" not in str(p)
+            ],
             *py_pkg.glob("*.md"),
             setup_py,
         ]
 
         pyproj_toml = py_pkg / "pyproject.toml"
+        package_json = py_pkg / "package.json"
 
         targets = [wheel, sdist]
 
@@ -306,13 +312,59 @@ def task_build():
             actions = [(U.build_one_flit, [py_pkg])]
             file_dep += [pyproj_toml]
 
+        if package_json.exists():
+            pkg_data = json.loads(package_json.read_text(**C.ENC))
+            if "jupyterlab" in pkg_data:
+                ts_src = (py_pkg / "src").rglob("*.ts")
+                style = (py_pkg / "style").rglob("*.*")
+                schema = (py_pkg / "schema").rglob("*.json")
+                task_dep += [f"build:py:{py_name}:ext"]
+                yield dict(
+                    name=f"py:{py_name}:ext",
+                    doc=f"build the {py_name} labextension",
+                    file_dep=[*ts_src, package_json, *style, *schema],
+                    actions=[
+                        U.do("jlpm", cwd=py_pkg),
+                        U.do("jlpm", "build:prod", cwd=py_pkg),
+                    ],
+                    targets=[
+                        py_pkg / pkg_data["jupyterlab"]["outputDir"] / "package.json"
+                    ],
+                )
+
         yield dict(
             name=f"py:{py_name}",
             doc=f"build the {py_name} python package",
             file_dep=file_dep,
+            task_dep=task_dep,
             actions=actions,
             targets=targets,
         )
+
+        meta_yaml = py_pkg / "conda.recipe/meta.yaml"
+
+        if meta_yaml.exists() and shutil.which("conda"):
+            yield dict(
+                name=f"py:{py_name}:conda",
+                doc=f"build the {py_name} conda package",
+                file_dep=[meta_yaml, sdist],
+                actions=[
+                    [
+                        "conda",
+                        "mambabuild",
+                        "-c",
+                        "conda-forge",
+                        meta_yaml.parent,
+                        "--output-folder",
+                        B.CONDA_BLD,
+                    ]
+                ],
+                targets=[
+                    B.CONDA_BLD
+                    / "noarch"
+                    / f"""{py_name.replace("_", "-")}-{D.PY_VERSION}-py_0.tar.bz2"""
+                ],
+            )
 
 
 @doit.create_after("build")
@@ -601,6 +653,7 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 92
+    SMALLEST = "the_smallest_extension"
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -648,9 +701,7 @@ class P:
 
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
-    PY_SETUP_DEPS = {
-        C.NAME: lambda: [B.PY_APP_PACK],
-    }
+    PY_SETUP_DEPS = {C.NAME: lambda: [B.PY_APP_PACK], C.SMALLEST: lambda: []}
 
     # docs
     README = ROOT / "README.md"
@@ -765,6 +816,7 @@ class B:
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
+    CONDA_BLD = DIST / "conda-bld"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
 
