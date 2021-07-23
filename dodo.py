@@ -342,8 +342,14 @@ def task_build():
         )
 
         meta_yaml = py_pkg / "conda.recipe/meta.yaml"
+        conda_pkg = None
 
         if meta_yaml.exists() and shutil.which("conda"):
+            conda_pkg = (
+                B.CONDA_BLD
+                / "noarch"
+                / f"""{py_name.replace("_", "-")}-{D.PY_VERSION}-py_0.tar.bz2"""
+            )
             yield dict(
                 name=f"py:{py_name}:conda",
                 doc=f"build the {py_name} conda package",
@@ -359,11 +365,21 @@ def task_build():
                         B.CONDA_BLD,
                     ]
                 ],
-                targets=[
-                    B.CONDA_BLD
-                    / "noarch"
-                    / f"""{py_name.replace("_", "-")}-{D.PY_VERSION}-py_0.tar.bz2"""
+                targets=[conda_pkg],
+            )
+
+        if py_name == C.SMALLEST:
+            wheel_dest = B.FIXTURES / wheel.name
+            conda_pkg_dest = B.FIXTURES / conda_pkg.name
+            yield dict(
+                name=f"py:{py_name}:fixture",
+                actions=[
+                    (doit.tools.create_folder, [B.FIXTURES]),
+                    (U.copy_one, [wheel, wheel_dest]),
+                    (U.copy_one, [conda_pkg, conda_pkg_dest]),
                 ],
+                file_dep=[wheel, conda_pkg],
+                targets=[wheel_dest, conda_pkg_dest],
             )
 
 
@@ -815,6 +831,7 @@ class B:
 
     # built things
     BUILD = P.ROOT / "build"
+    FIXTURES = BUILD / "fixtures"
     DIST = P.ROOT / "dist"
     CONDA_BLD = DIST / "conda-bld"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
@@ -1183,6 +1200,7 @@ os.environ.update(
     NODE_OPTS="--max-old-space-size=4096",
     PYTHONIOENCODING=C.ENC["encoding"],
     PIP_DISABLE_PIP_VERSION_CHECK="1",
+    JUPYTER_LITE_FIXTURES=str(B.FIXTURES),
 )
 
 # doit configuration

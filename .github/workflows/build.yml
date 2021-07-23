@@ -70,7 +70,7 @@ jobs:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
 
-  conda-build:
+  fixtures:
     runs-on: ubuntu-latest
     env:
       BUILDING_IN_CI: 1
@@ -87,12 +87,12 @@ jobs:
         run: mamba install -yc conda-forge conda-build mamba doit pip
       - name: Build
         shell: bash -l {0}
-        run: doit build:py:the_smallest_extension:conda
-      - name: Upload (dist)
+        run: doit build:py:the_smallest_extension:fixture
+      - name: Upload (fixtures)
         uses: actions/upload-artifact@v2
         with:
-          name: jupyterlite conda-dist ${{ github.run_number }}
-          path: ./dist/conda-bld/noarch/*.tar.bz2
+          name: jupyterlite fixtures ${{ github.run_number }}
+          path: ./build/fixtures
 
   lint-js-test:
     runs-on: ubuntu-latest
@@ -153,7 +153,7 @@ jobs:
           path: ./docs/api/ts
 
   test:
-    needs: [build, conda-build]
+    needs: [build, fixtures]
     runs-on: ${{ matrix.os }}-latest
     env:
       TESTING_IN_CI: 1

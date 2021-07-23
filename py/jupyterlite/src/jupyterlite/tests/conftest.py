@@ -1,5 +1,6 @@
 """pytest configuration for jupyterlite"""
 
+import os
 import shutil
 import subprocess
 import time
@@ -11,9 +12,15 @@ import pytest
 from jupyterlite.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 
 HERE = Path(__file__).parent
-FIXTURES = HERE / "fixtures"
-WHEELS = [*FIXTURES.glob("*.whl")]
-CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
+
+FIXTURES = None
+WHEELS = []
+CONDA_PKGS = []
+
+if "JUPYTER_LITE_FIXTURES" in os.environ:
+    FIXTURES = Path(os.environ["JUPYTER_LITE_FIXTURES"])
+    WHEELS = [*FIXTURES.glob("*.whl")]
+    CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
 
 
 @pytest.fixture
