@@ -19,12 +19,17 @@ export interface ILicenses {
 }
 
 /**
+ * A named bundle of licenses
+ */
+export interface ILicenseBundles {
+  [key: string]: ILicenseBundle;
+}
+
+/**
  * The JSON response from the API
  */
 export interface ILicenseResponse {
-  bundles: {
-    [key: string]: ILicenseBundle;
-  };
+  bundles: ILicenseBundles;
 }
 
 /**
