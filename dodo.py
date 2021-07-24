@@ -408,7 +408,8 @@ def task_docs():
             actions=[U.mystify, U.do("yarn", "prettier")],
         )
 
-    yield dict(
+    yield U.ok(
+        B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
@@ -419,13 +420,12 @@ def task_docs():
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
         ],
-        targets=[B.DOCS_APP_SHA256SUMS],
     )
 
     yield dict(
         name="app:pack",
         doc="build the as-deployed app archive",
-        file_dep=[B.DOCS_APP_SHA256SUMS],
+        file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
         targets=[B.DOCS_APP_ARCHIVE],
     )
@@ -600,7 +600,7 @@ class C:
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 92
+    COV_THRESHOLD = 91
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -629,7 +629,11 @@ class P:
     ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
     EXAMPLES = ROOT / "examples"
-    ALL_EXAMPLES = [p for p in EXAMPLES.rglob("*") if not p.is_dir()]
+    ALL_EXAMPLES = [
+        p
+        for p in EXAMPLES.rglob("*")
+        if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
+    ]
 
     # set later
     PYOLITE_PACKAGES = {}
@@ -789,6 +793,7 @@ class B:
     ]
 
     OK = BUILD / "ok"
+    OK_DOCS_APP = OK / "docs-app"
     OK_BLACK = OK / "black"
     OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
@@ -1099,6 +1104,10 @@ class U:
     def check_one_ipynb(path):
         """ensure the path"""
         built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
+
+        if not built.exists():
+            return
+
         raw = built.read_text(**C.ENC)
 
         if "micropip" not in raw:
