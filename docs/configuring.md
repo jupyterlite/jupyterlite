@@ -54,7 +54,7 @@ With the [CLI](./cli.ipynb) installed, run
 jupyter lite build
 ```
 
-...any contents of `{lite-dir}/files/` (and any added `--files`) will be:
+...any contents of `{lite-dir}/files/` (and any added `--contents`) will be:
 
 - copied to the built site under `{output-dir}/files/`
   - may have timestamps changed if `--source-date-epoch` is provided.
