@@ -101,13 +101,23 @@
           "default": "./lab/build/themes",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "pyodideUrl": {
+          "description": "The path to the main pyodide.js entry point",
+          "type": "string",
+          "default": "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js",
+          "format": "uri"
+        },
         "disabledExtensions": {
           "description": "Lab extensions (or specific plugins) to disable",
           "type": "array",
           "items": {
             "oneOf": [
-              { "$ref": "#/definitions/npm-package-name" },
-              { "$ref": "#/definitions/lab-extension-plugin-name" }
+              {
+                "$ref": "#/definitions/npm-package-name"
+              },
+              {
+                "$ref": "#/definitions/lab-extension-plugin-name"
+              }
             ]
           }
         }
