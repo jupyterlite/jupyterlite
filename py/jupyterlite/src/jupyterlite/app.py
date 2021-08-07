@@ -23,12 +23,12 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
         **{
             "app-archive": "LiteBuildConfig.app_archive",
             "apps": "LiteBuildConfig.apps",
-            "files": "LiteBuildConfig.files",
-            "ignore-files": "LiteBuildConfig.ignore_files",
+            "contents": "LiteBuildConfig.contents",
+            "ignore-contents": "LiteBuildConfig.ignore_contents",
             "lite-dir": "LiteBuildConfig.lite_dir",
             "output-dir": "LiteBuildConfig.output_dir",
             "output-archive": "LiteBuildConfig.output_archive",
-            "overrides": "LiteBuildConfig.overrides",
+            "settings-overrides": "LiteBuildConfig.settings_overrides",
             "source-date-epoch": "LiteBuildConfig.source_date_epoch",
             # addon-specific things
             "port": "LiteBuildConfig.port",
@@ -67,12 +67,12 @@ class ManagedApp(BaseLiteApp):
             kwargs["app_archive"] = self.app_archive
         if self.output_dir:
             kwargs["output_dir"] = self.output_dir
-        if self.files:
-            kwargs["files"] = [Path(p) for p in self.files]
-        if self.ignore_files:
-            kwargs["ignore_files"] = self.ignore_files
-        if self.overrides:
-            kwargs["overrides"] = [Path(p) for p in self.overrides]
+        if self.contents:
+            kwargs["contents"] = [Path(p) for p in self.contents]
+        if self.ignore_contents:
+            kwargs["ignore_contents"] = self.ignore_contents
+        if self.settings_overrides:
+            kwargs["settings_overrides"] = [Path(p) for p in self.settings_overrides]
         if self.apps:
             kwargs["apps"] = self.apps
         if self.output_archive:

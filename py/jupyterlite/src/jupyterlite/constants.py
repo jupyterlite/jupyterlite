@@ -59,6 +59,7 @@ JUPYTERLITE_JSON = "jupyter-lite.json"
 #: our configuration file
 JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
 JUPYTERLITE_METADATA = "jupyter-lite"
+JUPYTER_LITE_CONFIG = "jupyter_lite_config.json"
 
 #: Needs a better canonical location
 DEFAULT_OUTPUT_DIR = "_output"

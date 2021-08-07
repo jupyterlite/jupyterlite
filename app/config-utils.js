@@ -233,7 +233,7 @@ function addFavicon(config) {
 async function main() {
   const config = await jupyterConfigData();
   if (config.baseUrl === new URL(here()).pathname) {
-    window.location.href = config.appUrl;
+    window.location.href = config.appUrl.replace(/\/?$/, '/index.html');
     return;
   }
   // rewrite the config

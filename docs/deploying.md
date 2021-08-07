@@ -274,7 +274,7 @@ pages:
   before_script:
     - python -m pip install jupyterlite
   script:
-    - jupyter lite build --files content --output-dir public
+    - jupyter lite build --contents content --output-dir public
   artifacts:
     paths:
       - public # mandatory, other folder won't work

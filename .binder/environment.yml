@@ -14,7 +14,7 @@ dependencies:
   - twine
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3.1.0rc1,<4
+  - jupyterlab >=3.1.0rc2,<4
   - retrolab
   # extra docs tools
   - sphinx-autobuild
@@ -22,11 +22,6 @@ dependencies:
   # the chunk below populates `../examples/jupyter_lite_config.json`,
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
-  - bqplot
-  - ipycanvas
-  - ipycytoscape
-  - ipyleaflet
-  - ipympl
   - jupyterlab_miami_nights
   - jupyterlab_widgets >=1,<2
   - jupyterlab-drawio
@@ -34,8 +29,15 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - jupyterlab-kernelspy
   - jupyterlab-tour >=3.1.0
-  - plotly >=5,<6
-  - theme-darcula
+  - theme-darcula >=3,<4
+  # if a package is pinned with == `doit check` will ensure the version is pinned
+  # in `docs/_build/_static/files/*.ipynb`
+  - bqplot ==0.12.30
+  - ipycanvas ==0.9.0
+  - ipycytoscape ==1.2.2
+  - ipyleaflet ==0.14.0
+  - ipympl ==0.7.0
+  - plotly ==5.1.0
   ### FEDERATED EXTENSIONS ###
 
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`

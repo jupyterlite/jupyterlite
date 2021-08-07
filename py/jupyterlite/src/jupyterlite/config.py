@@ -63,9 +63,9 @@ class LiteBuildConfig(LoggingConfigurable):
         help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")
     ).tag(config=True)
 
-    files: _Tuple[Path] = TypedTuple(
-        CPath(), help="Files to add and index as Jupyter Contents"
-    ).tag(config=True)
+    contents: _Tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(
+        config=True
+    )
 
     ignore_sys_prefix: bool = Bool(
         False,
@@ -76,7 +76,7 @@ class LiteBuildConfig(LoggingConfigurable):
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
-    overrides: _Tuple[_Text] = TypedTuple(
+    settings_overrides: _Tuple[_Text] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
@@ -92,8 +92,8 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     # patterns
-    ignore_files: _Tuple[_Text] = Tuple(
-        help="Path patterns that should never be included"
+    ignore_contents: _Tuple[_Text] = Tuple(
+        help="Path regular expressions that should never be included as contents"
     ).tag(config=True)
 
     source_date_epoch: _Optional[int] = CInt(
@@ -126,8 +126,8 @@ class LiteBuildConfig(LoggingConfigurable):
     def _default_lite_dir(self):
         return Path(os.environ.get("JUPYTERLITE_DIR", Path.cwd()))
 
-    @default("files")
-    def _default_files(self):
+    @default("contents")
+    def _default_contents(self):
         lite_files = self.lite_dir / "files"
 
         if lite_files.is_dir():
@@ -145,27 +145,29 @@ class LiteBuildConfig(LoggingConfigurable):
                 all_overrides += [overrides_json]
         return all_overrides
 
-    @default("ignore_files")
+    @default("ignore_contents")
     def _default_ignore_files(self):
         output_dir = self.output_dir.name.replace(".", "\\.")
         return [
-            ".*\.pyc",
-            "/\.git/",
-            "/\.gitignore",
+            "/_build/",
             "/\.cache/",
-            "/\.ipynb_checkpoints/",
-            "/build/",
-            "/lib/",
-            "/dist/",
-            ".*doit.db",
-            "/node_modules/",
-            "/envs/",
-            "/venvs/",
             "/\.env",
-            C.JUPYTERLITE_JSON.replace(".", "\\."),
+            "/\.git",
+            "/\.ipynb_checkpoints",
+            "/build/",
+            "/dist/",
+            "/envs/",
+            "/lib/",
+            "/node_modules/",
+            "/overrides\.json",
+            "/untitled\..*",
+            "/Untitled\..*",
+            "/venvs/",
+            "\.*doit\.db$",
+            "\.pyc$",
+            C.JUPYTER_LITE_CONFIG.replace(".", "\\."),
             C.JUPYTERLITE_IPYNB.replace(".", "\\."),
-            "untitled.*",
-            "Untitled.*",
+            C.JUPYTERLITE_JSON.replace(".", "\\."),
             f"""/{output_dir}/""",
         ]
 

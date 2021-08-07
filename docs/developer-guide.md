@@ -10,6 +10,7 @@ cli
 deploying
 api/index
 doit
+architecture
 contributing
 ```
 

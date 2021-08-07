@@ -64,10 +64,18 @@ async function main() {
     require('@retrolab/notebook-extension'),
 
     // @jupyterlab plugins
+    require('@jupyterlab/application-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/application-extension:commands',
+        '@jupyterlab/application-extension:context-menu',
+        '@jupyterlab/application-extension:faviconbusy'
+      ].includes(id)
+    ),
     require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
       [
         '@jupyterlab/apputils-extension:palette',
         '@jupyterlab/apputils-extension:settings',
+        '@jupyterlab/apputils-extension:state',
         '@jupyterlab/apputils-extension:themes',
         '@jupyterlab/apputils-extension:themes-palette-menu'
       ].includes(id)
