@@ -1,7 +1,9 @@
 """pytest configuration for jupyterlite"""
 
+import os
 import shutil
 import subprocess
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -16,15 +18,27 @@ WHEELS = [*FIXTURES.glob("*.whl")]
 CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
 
 
+CI = os.environ.get("CI", None)
+DARWIN = sys.platform.startswith("darwin")
+LINUX = sys.platform.startswith("linux")
+PYPY = "__pypy__" in sys.builtin_module_names
+
+
 @pytest.fixture
 def an_empty_lite_dir(tmp_path):
     lite_dir = tmp_path / "a_lite_dir"
     lite_dir.mkdir()
+
     yield lite_dir
-    try:
-        shutil.rmtree(lite_dir)
-    except Exception as err:
-        warnings.warn(f"failed to clean up {lite_dir}: {err}")
+
+    # for windows flake
+    for retry in range(5):
+        if lite_dir.exists():
+            try:
+                shutil.rmtree(lite_dir)
+            except Exception as err:
+                warnings.warn(f"Attempt {retry}: failed to clean up {lite_dir}: {err}")
+                time.sleep(5)
 
 
 @pytest.fixture

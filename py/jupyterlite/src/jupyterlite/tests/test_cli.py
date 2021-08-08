@@ -73,7 +73,7 @@ def test_cli_help(lite_args, help, script_runner):
 def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
     """do the "side-effect-free" commands create exactly one file?"""
     returned_status = script_runner.run(
-        "jupyter", "lite", lite_hook, cwd=an_empty_lite_dir
+        "jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir)
     )
     assert returned_status.success
     files = set(an_empty_lite_dir.rglob("*"))
@@ -92,7 +92,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
     expected_files = TRASH if lite_hook in FAST_HOOKS else A_GOOD_BUILD
     started = time.time()
     returned_status = script_runner.run(
-        "jupyter", "lite", lite_hook, cwd=an_empty_lite_dir
+        "jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir)
     )
     duration_1 = time.time() - started
     assert returned_status.success
@@ -107,7 +107,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
     # re-run, be faster
     restarted = time.time()
     rereturned_status = script_runner.run(
-        "jupyter", "lite", lite_hook, cwd=an_empty_lite_dir
+        "jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir)
     )
     duration_2 = time.time() - restarted
     assert rereturned_status.success
@@ -142,10 +142,10 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         lite_hook,
         "--force",
         "--contents",
-        readme,
+        str(readme),
         "--contents",
-        more,
-        cwd=an_empty_lite_dir,
+        str(more),
+        cwd=str(an_empty_lite_dir),
     )
 
     if A_GOOD_BUILD[-1] in expected_files and lite_hook not in ["init"]:
@@ -174,7 +174,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
 def test_cli_raw_doit(an_empty_lite_dir, script_runner):
     """does raw doit work"""
     returned_status = script_runner.run(
-        "jupyter", "lite", "doit", "--", "--help", cwd=an_empty_lite_dir
+        "jupyter", "lite", "doit", "--", "--help", cwd=str(an_empty_lite_dir)
     )
     assert returned_status.success
     assert "http://pydoit.org" in returned_status.stdout
