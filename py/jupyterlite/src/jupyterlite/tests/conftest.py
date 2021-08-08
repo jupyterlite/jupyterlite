@@ -20,11 +20,17 @@ CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
 def an_empty_lite_dir(tmp_path):
     lite_dir = tmp_path / "a_lite_dir"
     lite_dir.mkdir()
+
     yield lite_dir
-    try:
-        shutil.rmtree(lite_dir)
-    except Exception as err:
-        warnings.warn(f"failed to clean up {lite_dir}: {err}")
+
+    # for windows flake
+    for retry in range(5):
+        if lite_dir.exists():
+            try:
+                shutil.rmtree(lite_dir)
+            except Exception as err:
+                warnings.warn(f"Attempt {retry}: failed to clean up {lite_dir}: {err}")
+                time.sleep(5)
 
 
 @pytest.fixture
