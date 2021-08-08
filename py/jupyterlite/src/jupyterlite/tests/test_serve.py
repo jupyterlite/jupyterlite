@@ -12,7 +12,7 @@ if os.environ.get("CI", None) and sys.platform.startswith("darwin"):  # pragma: 
     pytest.skip("skipping flaky MacOS tests", allow_module_level=True)
 
 
-@pytest.mark.parametrize("base_url", [[None], ["/@foo/"]])
+@pytest.mark.parametrize("base_url", [None, "/@foo/"])
 def test_serve(
     an_empty_lite_dir, script_runner, base_url, an_unused_port
 ):  # pragma: no cover
@@ -26,7 +26,7 @@ def test_serve(
 
     url = f"http://127.0.0.1:{an_unused_port}{base_url}"
 
-    server = subprocess.Popen(args, cwd=an_empty_lite_dir)
+    server = subprocess.Popen(args, cwd=str(an_empty_lite_dir))
     time.sleep(2)
 
     app_urls = [""]
