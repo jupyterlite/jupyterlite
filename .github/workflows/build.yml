@@ -136,7 +136,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: [3.7, 3.9]
+        python-version: [3.7, 3.9, pypy-3.7]
         include:
           - os: ubuntu
             pip-cache: ~/.cache/pip
@@ -196,7 +196,8 @@ jobs:
       - name: Upload (reports)
         uses: actions/upload-artifact@v2
         with:
-          name: jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
+          name: |
+            jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
           path: |
             build/htmlcov
             build/pytest
