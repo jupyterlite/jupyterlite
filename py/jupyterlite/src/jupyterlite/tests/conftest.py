@@ -1,7 +1,9 @@
 """pytest configuration for jupyterlite"""
 
+import os
 import shutil
 import subprocess
+import sys
 import time
 import warnings
 from pathlib import Path
@@ -14,6 +16,12 @@ HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
 WHEELS = [*FIXTURES.glob("*.whl")]
 CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
+
+
+CI = os.environ.get("CI", None)
+DARWIN = sys.platform.startswith("darwin")
+LINUX = sys.platform.startswith("linux")
+PYPY = "__pypy__" in sys.builtin_module_names
 
 
 @pytest.fixture

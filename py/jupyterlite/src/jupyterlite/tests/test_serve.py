@@ -1,15 +1,18 @@
 """Test that various serving options work"""
 
-import os
 import subprocess
-import sys
 import time
 
 import pytest
 from tornado import httpclient
 
-if os.environ.get("CI", None) and sys.platform.startswith("darwin"):  # pragma: no cover
+from .conftest import CI, DARWIN, LINUX, PYPY
+
+if CI and DARWIN:  # pragma: no cover
     pytest.skip("skipping flaky MacOS tests", allow_module_level=True)
+
+if CI and LINUX and PYPY:  # pragma: no cover
+    pytest.skip("skipping flaky Linux/PyPy tests", allow_module_level=True)
 
 
 @pytest.mark.parametrize("base_url", [None, "/@foo/"])
