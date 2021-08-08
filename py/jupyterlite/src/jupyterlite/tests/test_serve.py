@@ -12,22 +12,19 @@ if os.environ.get("CI", None) and sys.platform.startswith("darwin"):  # pragma: 
     pytest.skip("skipping flaky MacOS tests", allow_module_level=True)
 
 
-@pytest.mark.parametrize("base_url,port", [[None, None], ["/@foo/", 8001]])
-def test_serve(an_empty_lite_dir, script_runner, base_url, port):  # pragma: no cover
+@pytest.mark.parametrize("base_url", [[None], ["/@foo/"]])
+def test_serve(
+    an_empty_lite_dir, script_runner, base_url, an_unused_port
+):  # pragma: no cover
     """verify that serving kinda works"""
-    args = ["jupyter", "lite", "serve"]
-
-    if port:
-        args += ["--port", f"{port}"]
-    else:
-        port = 8000
+    args = ["jupyter", "lite", "serve", "--port", f"{an_unused_port}"]
 
     if base_url:
         args += ["--base-url", base_url]
     else:
         base_url = "/"
 
-    url = f"http://127.0.0.1:{port}{base_url}"
+    url = f"http://127.0.0.1:{an_unused_port}{base_url}"
 
     server = subprocess.Popen(args, cwd=an_empty_lite_dir)
     time.sleep(2)
