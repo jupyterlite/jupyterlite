@@ -36,10 +36,10 @@ def test_federated_extensions(
     (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
     (an_empty_lite_dir / "overrides.json").write_text(json.dumps(overrides))
 
-    build = script_runner.run("jupyter", "lite", "build", cwd=an_empty_lite_dir)
+    build = script_runner.run("jupyter", "lite", "build", cwd=str(an_empty_lite_dir))
     assert build.success
 
-    check = script_runner.run("jupyter", "lite", "check", cwd=an_empty_lite_dir)
+    check = script_runner.run("jupyter", "lite", "check", cwd=str(an_empty_lite_dir))
     assert check.success
 
     output = an_empty_lite_dir / "_output"
