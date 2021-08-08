@@ -9,6 +9,11 @@ let kernel: any;
 let interpreter: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
+
+let pyodide: any;
+
+// eslint-disable-next-line
+// @ts-ignore: breaks typedoc
 let stdout_stream: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
@@ -16,12 +21,15 @@ let stderr_stream: any;
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
 let resolveInputReply: any;
+
 /**
  * Load Pyodided and initialize the interpreter.
  */
 async function loadPyodideAndPackages() {
-  // new in 0.17.0 indexURL must be provided
-  await loadPyodide({ indexURL });
+  // as of 0.17.0 indexURL must be provided
+  pyodide = await loadPyodide({ indexURL });
+
+  await pyodide.loadPackage(['micropip']);
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
@@ -37,10 +45,12 @@ async function loadPyodideAndPackages() {
     await micropip.install('ipython');
     import pyolite
   `);
-  kernel = pyodide.globals.get('pyolite').kernel_instance;
-  stdout_stream = pyodide.globals.get('pyolite').stdout_stream;
-  stderr_stream = pyodide.globals.get('pyolite').stderr_stream;
-  interpreter = kernel.interpreter;
+
+  // make copies of these so they don't get garbage collected
+  kernel = pyodide.globals.get('pyolite').kernel_instance.copy();
+  stdout_stream = pyodide.globals.get('pyolite').stdout_stream.copy();
+  stderr_stream = pyodide.globals.get('pyolite').stderr_stream.copy();
+  interpreter = kernel.interpreter.copy();
   interpreter.send_comm = sendComm;
   const version = pyodide.globals.get('pyolite').__version__;
   console.log('Pyolite kernel initialized, version', version);
