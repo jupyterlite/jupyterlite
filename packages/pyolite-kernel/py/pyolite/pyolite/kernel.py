@@ -71,18 +71,21 @@ class Pyolite:
     async def run(self, code):
         self.interpreter._last_traceback = None
         exec_code = self.interpreter.transform_cell(code)
-        if self.is_complete(exec_code)["status"] not in ["incomplete", "invalid"]:
-            await _load_packages_from_imports(exec_code)
-        if self.interpreter.should_run_async(code):
-            self.result = await self.interpreter.run_cell_async(
-                code, store_history=True
-            )
-        else:
-            self.result = self.interpreter.run_cell(code, store_history=True)
 
         results = {}
-        results["payload"] = self.interpreter.payload_manager.read_payload()
-        self.interpreter.payload_manager.clear_payload()
+
+        try:
+            await _load_packages_from_imports(exec_code)
+        except Exception:
+            self.interpreter.showtraceback()
+        else:
+            if self.interpreter.should_run_async(code):
+                await self.interpreter.run_cell_async(code, store_history=True)
+            else:
+                self.interpreter.run_cell(code, store_history=True)
+
+            results["payload"] = self.interpreter.payload_manager.read_payload()
+            self.interpreter.payload_manager.clear_payload()
 
         if self.interpreter._last_traceback is None:
             results["status"] = "ok"
