@@ -228,13 +228,18 @@ export abstract class BaseKernel implements IKernel {
    * @param parentHeader The parent header.
    * @param content The stream content.
    */
-  protected stream(content: KernelMessage.IStreamMsg['content']): void {
+  protected stream(
+    content: KernelMessage.IStreamMsg['content'],
+    parentHeader: any = undefined
+  ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IStreamMsg>({
       channel: 'iopub',
       msgType: 'stream',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -243,18 +248,24 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send a `display_data` message to the client.
    *
+   * @param parentHeader The parent header.
    * @param content The display_data content.
    */
-  protected displayData(content: KernelMessage.IDisplayDataMsg['content']): void {
+  protected displayData(
+    content: KernelMessage.IDisplayDataMsg['content'],
+    parentHeader: any = undefined
+  ): void {
     // Make sure metadata is always set
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     content.metadata = content.metadata ?? {};
 
     const message = KernelMessage.createMessage<KernelMessage.IDisplayDataMsg>({
       channel: 'iopub',
       msgType: 'display_data',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -263,15 +274,21 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send a `input_request` message to the client.
    *
+   * @param parentHeader The parent header.
    * @param content The input_request content.
    */
-  protected inputRequest(content: KernelMessage.IInputRequestMsg['content']): void {
+  protected inputRequest(
+    content: KernelMessage.IInputRequestMsg['content'],
+    parentHeader: any = undefined
+  ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
       channel: 'stdin',
       msgType: 'input_request',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -280,17 +297,21 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send an `execute_result` message.
    *
+   * @param parentHeader The parent header.
    * @param content The execut result content.
    */
   protected publishExecuteResult(
-    content: KernelMessage.IExecuteResultMsg['content']
+    content: KernelMessage.IExecuteResultMsg['content'],
+    parentHeader: any = undefined
   ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
       channel: 'iopub',
       msgType: 'execute_result',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -299,15 +320,21 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send an `error` message to the client.
    *
+   * @param parentHeader The parent header.
    * @param content The error content.
    */
-  protected publishExecuteError(content: KernelMessage.IErrorMsg['content']): void {
+  protected publishExecuteError(
+    content: KernelMessage.IErrorMsg['content'],
+    parentHeader: any = undefined
+  ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
       channel: 'iopub',
       msgType: 'error',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -316,17 +343,21 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send a `update_display_data` message to the client.
    *
+   * @param parentHeader The parent header.
    * @param content The update_display_data content.
    */
   protected updateDisplayData(
-    content: KernelMessage.IUpdateDisplayDataMsg['content']
+    content: KernelMessage.IUpdateDisplayDataMsg['content'],
+    parentHeader: any = undefined
   ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IUpdateDisplayDataMsg>({
       channel: 'iopub',
       msgType: 'update_display_data',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
@@ -335,15 +366,21 @@ export abstract class BaseKernel implements IKernel {
   /**
    * Send a `clear_output` message to the client.
    *
+   * @param parentHeader The parent header.
    * @param content The clear_output content.
    */
-  protected clearOutput(content: KernelMessage.IClearOutputMsg['content']): void {
+  protected clearOutput(
+    content: KernelMessage.IClearOutputMsg['content'],
+    parentHeader: any = undefined
+  ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IClearOutputMsg>({
       channel: 'iopub',
       msgType: 'clear_output',
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content
     });
     this._sendMessage(message);
