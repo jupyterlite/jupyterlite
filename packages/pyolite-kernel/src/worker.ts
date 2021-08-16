@@ -109,7 +109,8 @@ async function sendComm(
     content: formatResult(content),
     metadata: formatResult(metadata),
     ident: formatResult(ident),
-    buffers: formatResult(buffers)
+    buffers: formatResult(buffers),
+    parentHeader: formatResult(kernel._parent_header)['header']
   });
 }
 

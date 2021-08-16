@@ -409,14 +409,19 @@ export abstract class BaseKernel implements IKernel {
     type: 'comm_close' | 'comm_msg' | 'comm_open',
     content: KernelMessage.ICommMsgMsg['content'],
     metadata: KernelMessage.ICommMsgMsg['metadata'],
-    buffers: KernelMessage.ICommMsgMsg['buffers']
+    buffers: KernelMessage.ICommMsgMsg['buffers'],
+    parentHeader:
+      | KernelMessage.IHeader<KernelMessage.MessageType>
+      | undefined = undefined
   ): void {
+    const parentHeaderValue =
+      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
     const message = KernelMessage.createMessage<any>({
       channel: 'iopub',
       msgType: type,
       // TODO: better handle this
-      session: this._parentHeader?.session ?? '',
-      parentHeader: this._parentHeader,
+      session: parentHeaderValue?.session ?? '',
+      parentHeader: parentHeaderValue,
       content,
       metadata,
       buffers

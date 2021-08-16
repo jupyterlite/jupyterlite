@@ -133,7 +133,13 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       case 'comm_msg':
       case 'comm_open':
       case 'comm_close': {
-        this.handleComm(msg.type, msg.content, msg.metadata, msg.buffers);
+        this.handleComm(
+          msg.type,
+          msg.content,
+          msg.metadata,
+          msg.buffers,
+          msg.parentHeader
+        );
         break;
       }
       default:
