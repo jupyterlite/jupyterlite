@@ -109,7 +109,8 @@ async function sendComm(
     content: formatResult(content),
     metadata: formatResult(metadata),
     ident: formatResult(ident),
-    buffers: formatResult(buffers)
+    buffers: formatResult(buffers),
+    parentHeader: formatResult(kernel._parent_header)['header']
   });
 }
 
@@ -146,7 +147,7 @@ async function sendInputRequest(prompt: string, password: boolean) {
   };
   postMessage({
     type: 'input_request',
-    parentHeader: formatResult(kernel._parent_header['header']),
+    parentHeader: formatResult(kernel._parent_header)['header'],
     content
   });
 }
@@ -168,7 +169,7 @@ async function execute(content: any) {
       metadata: formatResult(metadata)
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'execute_result'
     });
@@ -181,7 +182,7 @@ async function execute(content: any) {
       traceback: traceback
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'execute_error'
     });
@@ -192,7 +193,7 @@ async function execute(content: any) {
       wait: formatResult(wait)
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'clear_output'
     });
@@ -205,7 +206,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'display_data'
     });
@@ -222,7 +223,7 @@ async function execute(content: any) {
       transient: formatResult(transient)
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'update_display_data'
     });
@@ -234,7 +235,7 @@ async function execute(content: any) {
       text: formatResult(text)
     };
     postMessage({
-      parentHeader: formatResult(kernel._parent_header['header']),
+      parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
       type: 'stream'
     });

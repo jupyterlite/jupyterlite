@@ -92,12 +92,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     switch (msg.type) {
       case 'stream': {
         const bundle = msg.bundle ?? { name: 'stdout', text: '' };
-        this.stream(bundle);
+        this.stream(bundle, msg.parentHeader);
         break;
       }
       case 'input_request': {
         const bundle = msg.content ?? { prompt: '', password: false };
-        this.inputRequest(bundle);
+        this.inputRequest(bundle, msg.parentHeader);
         break;
       }
       case 'reply': {
@@ -107,33 +107,39 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       }
       case 'display_data': {
         const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
-        this.displayData(bundle);
+        this.displayData(bundle, msg.parentHeader);
         break;
       }
       case 'update_display_data': {
         const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
-        this.updateDisplayData(bundle);
+        this.updateDisplayData(bundle, msg.parentHeader);
         break;
       }
       case 'clear_output': {
         const bundle = msg.bundle ?? { wait: false };
-        this.clearOutput(bundle);
+        this.clearOutput(bundle, msg.parentHeader);
         break;
       }
       case 'execute_result': {
         const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
-        this.publishExecuteResult(bundle);
+        this.publishExecuteResult(bundle, msg.parentHeader);
         break;
       }
       case 'execute_error': {
         const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
-        this.publishExecuteError(bundle);
+        this.publishExecuteError(bundle, msg.parentHeader);
         break;
       }
       case 'comm_msg':
       case 'comm_open':
       case 'comm_close': {
-        this.handleComm(msg.type, msg.content, msg.metadata, msg.buffers);
+        this.handleComm(
+          msg.type,
+          msg.content,
+          msg.metadata,
+          msg.buffers,
+          msg.parentHeader
+        );
         break;
       }
       default:
