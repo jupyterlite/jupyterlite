@@ -28,6 +28,7 @@
     "@jupyterlab/coreutils": "~5.1.0",
     "@jupyterlab/docmanager": "~3.1.0",
     "@jupyterlab/docmanager-extension": "~3.1.0",
+    "@jupyterlab/docprovider": "~3.1.0",
     "@jupyterlab/documentsearch": "~3.1.0",
     "@jupyterlab/filebrowser": "~3.1.0",
     "@jupyterlab/filebrowser-extension": "~3.1.0",
@@ -50,6 +51,7 @@
     "@jupyterlab/services": "~6.1.0",
     "@jupyterlab/settingeditor": "~3.1.0",
     "@jupyterlab/settingregistry": "~3.1.0",
+    "@jupyterlab/shared-models": "~3.1.0",
     "@jupyterlab/shortcuts-extension": "~3.1.0",
     "@jupyterlab/statedb": "~3.1.0",
     "@jupyterlab/statusbar": "~3.1.0",
@@ -89,7 +91,8 @@
     "@retrolab/ui-components": "~0.3.1",
     "es6-promise": "^4.2.8",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "yjs": "~13.5.10"
   },
   "dependencies": {
     "@jupyterlab/application-extension": "~3.1.0",
@@ -191,6 +194,7 @@
       "@jupyterlab/console",
       "@jupyterlab/coreutils",
       "@jupyterlab/docmanager",
+      "@jupyterlab/docprovider",
       "@jupyterlab/documentsearch",
       "@jupyterlab/filebrowser",
       "@jupyterlab/fileeditor",
@@ -207,6 +211,7 @@
       "@jupyterlab/services",
       "@jupyterlab/settingeditor",
       "@jupyterlab/settingregistry",
+      "@jupyterlab/shared-models",
       "@jupyterlab/statedb",
       "@jupyterlab/statusbar",
       "@jupyterlab/tooltip",
@@ -225,7 +230,8 @@
       "@lumino/virtualdom",
       "@lumino/widgets",
       "react",
-      "react-dom"
+      "react-dom",
+      "yjs"
     ],
     "mimeExtensions": {},
     "linkedPackages": {}
