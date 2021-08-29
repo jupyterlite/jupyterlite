@@ -212,6 +212,9 @@ export function fixRelativeUrls(url, config) {
       }
       config[k] = `${urlBase}${v.slice(2)}`;
     }
+    if (k.endsWith('Urls') && Array.isArray(v)) {
+      config[k] = v.map(vv => (vv.startsWith('./') ? `${urlBase}${vv.slice(2)}` : vv));
+    }
   }
   return config;
 }

@@ -23,16 +23,9 @@ const kernel: JupyterLiteServerPlugin<void> = {
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     const url = PageConfig.getOption('pyodideUrl') || PYODIDE_CDN_URL;
-    const pyodideUrl = URLExt.isLocal(url)
-      ? URLExt.join(window.location.origin, url)
-      : url;
-
+    const pyodideUrl = URLExt.parse(url).href;
     const rawPipUrls = JSON.parse(PageConfig.getOption('micropipUrls') || '[]');
-
-    const micropipUrls = rawPipUrls.map((url: string) =>
-      URLExt.isLocal(url) ? URLExt.join(window.location.origin, url) : url
-    );
-
+    const micropipUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     kernelspecs.register({
       spec: {
         name: 'python',

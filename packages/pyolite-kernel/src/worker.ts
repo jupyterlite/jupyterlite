@@ -53,7 +53,7 @@ async function loadPyodideAndPackages() {
                       index = json.load(fd)
                       MICROPIP_INDICES.update({micropip_url: index})
                   except Exception as err:
-                      js.console.log("...", pkgname, "is not available from", micropip_url, str(err))
+                      pass
 
               pkg = (index or {}).get(pkgname)
 
@@ -66,11 +66,9 @@ async function loadPyodideAndPackages() {
                                   micropip_url.split(ALL_JSON)[0],
                                   artifact["url"]
                               ])
-                  js.console.log(json.dumps(pkg))
               return pkg
 
           async def _get_pypi_json(pkgname):
-              js.console.log(pkgname)
               for micropip_url in MICROPIP_URLS:
                   if micropip_url.endswith(ALL_JSON):
                       pypi_json_from_index = await _get_pypi_json_from_index(pkgname, micropip_url)
@@ -82,9 +80,8 @@ async function loadPyodideAndPackages() {
                       fd = await _get_url(url)
                       return json.load(fd)
                   except Exception as err:
-                      js.console.log("...", pkgname, "is not available from", micropip_url, err)
+                      pass
 
-              js.console.log("...", pkgname, "falling back to default behavior")
               return await _old_get_pypi_json(pkgname)
 
           mp._get_pypi_json = _get_pypi_json
