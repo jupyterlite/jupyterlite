@@ -235,7 +235,6 @@ def task_build():
             app_build / "index.js",
             app_build / "style.js",
         ]
-        app_targets += [app_build / w.name for w in wheels]
         all_app_targets += app_targets
 
         yield dict(
@@ -258,14 +257,15 @@ def task_build():
         doc="build the JupyterLite distribution",
         file_dep=[
             *all_app_targets,
-            P.APP_SCHEMA,
-            *P.APP.glob("*/*/index.html"),
-            *P.APP.glob("*/build/schemas/**/.json"),
             *P.APP.glob("*.js"),
             *P.APP.glob("*.json"),
+            *P.APP.glob("*/*/index.html"),
+            *P.APP.glob("*/build/schemas/**/.json"),
+            B.LAB_WHEEL_INDEX,
             B.META_BUILDINFO,
             P.APP / "index.html",
             P.APP_NPM_IGNORE,
+            P.APP_SCHEMA,
         ],
         actions=[
             (doit.tools.create_folder, [B.DIST]),
