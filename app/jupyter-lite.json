@@ -12,6 +12,7 @@
     "fullStaticUrl": "./lab/build",
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
     "settingsUrl": "./lab/build/schemas",
-    "themesUrl": "./lab/build/themes"
+    "themesUrl": "./lab/build/themes",
+    "micropipUrls": ["./lab/wheels/all.json"]
   }
 }

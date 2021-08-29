@@ -107,6 +107,13 @@
           "default": "https://cdn.jsdelivr.net/pyodide/v0.18.0/full/pyodide.js",
           "format": "uri"
         },
+        "micropipUrls": {
+          "description": "Paths to PyPI-compatible APIs for wheels. If ending in ``all.json``, asssumed to be an aggregate, keyed by package name, with relative paths",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["https://pypi.org/pypi/"],
+          "format": "uri"
+        },
         "disabledExtensions": {
           "description": "Lab extensions (or specific plugins) to disable",
           "type": "array",

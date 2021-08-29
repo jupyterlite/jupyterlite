@@ -1,5 +1,3 @@
-import { URLExt } from '@jupyterlab/coreutils';
-
 import { KernelMessage } from '@jupyterlab/services';
 
 import { BaseKernel, IKernel } from '@jupyterlite/kernel';
@@ -7,15 +5,6 @@ import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
-
-// TODO: see https://github.com/jupyterlite/jupyterlite/issues/151
-// TODO: sync this version with the npm version (despite version mangling)
-import pyolite from '../py/pyolite/dist/pyolite-0.1.0a6-py3-none-any.whl';
-
-// TODO: sync this version with the pypi version
-import widgetsnbextension from '../py/widgetsnbextension/dist/widgetsnbextension-3.5.0-py3-none-any.whl';
-import nbformat from '../py/nbformat/dist/nbformat-4.2.0-py3-none-any.whl';
-import ipykernel from '../py/ipykernel/dist/ipykernel-5.5.5-py3-none-any.whl';
 
 /**
  * A kernel that executes Python code with Pyodide.
@@ -28,40 +17,37 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   constructor(options: PyoliteKernel.IOptions) {
     super(options);
-    const { pyodideUrl } = options;
-
-    const widgetsnbextensionWheel = (widgetsnbextension as unknown) as string;
-    const widgetsnbextensionWheelUrl = URLExt.join(
-      window.location.origin,
-      widgetsnbextensionWheel
-    );
-
-    const nbformatWheel = (nbformat as unknown) as string;
-    const nbformatWheelUrl = URLExt.join(window.location.origin, nbformatWheel);
-
-    const ipykernelWheel = (ipykernel as unknown) as string;
-    const ipykernelWheelUrl = URLExt.join(window.location.origin, ipykernelWheel);
-
-    const pyoliteWheel = options.pyoliteWheel ?? ((pyolite as unknown) as string);
-    const pyoliteWheelUrl = URLExt.join(window.location.origin, pyoliteWheel);
-
-    const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
-    const blob = new Blob([
-      [
-        `importScripts("${pyodideUrl}");`,
-        `var indexURL = "${indexUrl}";`,
-        `var _widgetsnbextensionWheelUrl = '${widgetsnbextensionWheelUrl}';`,
-        `var _nbformatWheelUrl = '${nbformatWheelUrl}';`,
-        `var _ipykernelWheelUrl = '${ipykernelWheelUrl}';`,
-        `var _pyoliteWheelUrl = '${pyoliteWheelUrl}';`,
-        worker
-      ].join('\n')
-    ]);
+    const blob = new Blob([this.buildWorkerScript(options).join('\n')]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
     this._worker.onmessage = e => {
       this._processWorkerMessage(e.data);
     };
     this._ready.resolve();
+  }
+
+  /**
+   * Build a list of literal strings to use in the worker
+   *
+   * Subclasses could use overload this to customize pre-loaded behavior, replace
+   * the worker, or any number of other tricks.
+   *
+   * @param options The instantiation options for a new PyodideKernel
+   */
+  protected buildWorkerScript(options: PyoliteKernel.IOptions): string[] {
+    const { pyodideUrl } = options;
+
+    const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
+
+    return [
+      // first we need the pyodide initialization scripts...
+      `importScripts("${options.pyodideUrl}");`,
+      // ...we also need the location of the index of pyodide-built js/WASM...
+      `var indexURL = "${indexUrl}";`,
+      // ...and the locations of custom wheel APIs and indices...
+      `var micropipUrls = ${JSON.stringify(options.micropipUrls)};`,
+      // ...finally, the worker... which _must_ appear last!
+      worker.toString()
+    ];
   }
 
   /**
@@ -318,6 +304,11 @@ export namespace PyoliteKernel {
      * The URL to fetch Pyodide.
      */
     pyodideUrl: string;
+
+    /**
+     * The URLs from which to attempt PyPI API requests
+     */
+    micropipUrls: string[];
 
     /**
      * The URL to fetch the Pyolite wheel.

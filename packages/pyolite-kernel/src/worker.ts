@@ -30,17 +30,78 @@ async function loadPyodideAndPackages() {
   pyodide = await loadPyodide({ indexURL });
 
   await pyodide.loadPackage(['micropip']);
+
+  // apply patch early enough to impact pyolite dependencies
+  await pyodide.runPythonAsync(`
+      def _patch_micropip():
+          import js
+          import json
+          import micropip.micropip as mp
+
+          _old_get_pypi_json = mp._get_pypi_json
+          _get_url = mp._get_url
+
+          MICROPIP_URLS = ${JSON.stringify(micropipUrls)}
+          MICROPIP_INDICES = {}
+          ALL_JSON = "/all.json"
+
+          async def _get_pypi_json_from_index(pkgname, micropip_url):
+              index = MICROPIP_INDICES.get(micropip_url, {})
+              if not index:
+                  try:
+                      fd = await _get_url(micropip_url)
+                      index = json.load(fd)
+                      MICROPIP_INDICES.update({micropip_url: index})
+                  except Exception as err:
+                      js.console.log("...", pkgname, "is not available from", micropip_url, str(err))
+
+              pkg = (index or {}).get(pkgname)
+
+              if pkg:
+                  # rewrite local paths
+                  for release in pkg["releases"].values():
+                      for artifact in release:
+                          if artifact["url"].startswith("."):
+                              artifact["url"] = "/".join([
+                                  micropip_url.split(ALL_JSON)[0],
+                                  artifact["url"]
+                              ])
+                  js.console.log(json.dumps(pkg))
+              return pkg
+
+          async def _get_pypi_json(pkgname):
+              js.console.log(pkgname)
+              for micropip_url in MICROPIP_URLS:
+                  if micropip_url.endswith(ALL_JSON):
+                      pypi_json_from_index = await _get_pypi_json_from_index(pkgname, micropip_url)
+                      if pypi_json_from_index:
+                          return pypi_json_from_index
+                      continue
+                  try:
+                      url = f"{micropip_url}{pkgname}/json"
+                      fd = await _get_url(url)
+                      return json.load(fd)
+                  except Exception as err:
+                      js.console.log("...", pkgname, "is not available from", micropip_url, err)
+
+              js.console.log("...", pkgname, "falling back to default behavior")
+              return await _old_get_pypi_json(pkgname)
+
+          mp._get_pypi_json = _get_pypi_json
+      _patch_micropip()
+  `);
+
   await pyodide.loadPackage(['matplotlib']);
   await pyodide.runPythonAsync(`
     import micropip
     await micropip.install([
       'traitlets',
-      '${_widgetsnbextensionWheelUrl}',
-      '${_nbformatWheelUrl}',
-      '${_ipykernelWheelUrl}'
+      'widgetsnbextension',
+      'nbformat',
+      'ipykernel'
     ])
     await micropip.install([
-      '${_pyoliteWheelUrl}'
+      'pyolite'
     ]);
     await micropip.install('ipython');
     import pyolite

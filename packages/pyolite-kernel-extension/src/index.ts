@@ -27,6 +27,12 @@ const kernel: JupyterLiteServerPlugin<void> = {
       ? URLExt.join(window.location.origin, url)
       : url;
 
+    const rawPipUrls = JSON.parse(PageConfig.getOption('micropipUrls') || '[]');
+
+    const micropipUrls = rawPipUrls.map((url: string) =>
+      URLExt.isLocal(url) ? URLExt.join(window.location.origin, url) : url
+    );
+
     kernelspecs.register({
       spec: {
         name: 'python',
@@ -49,7 +55,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
         return new PyoliteKernel({
           ...options,
-          pyodideUrl
+          pyodideUrl,
+          micropipUrls
         });
       }
     });
