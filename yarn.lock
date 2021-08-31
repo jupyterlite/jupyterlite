@@ -1589,7 +1589,7 @@
     "@lumino/properties" "^1.2.3"
     "@lumino/widgets" "^1.19.0"
 
-"@jupyterlab/console@^3.1.8":
+"@jupyterlab/console@^3.1.8", "@jupyterlab/console@~3.1.0":
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/@jupyterlab/console/-/console-3.1.8.tgz#efa64e994d0128b8a9f8b1234057b9bc2b312046"
   integrity sha512-85w2v7u6hKBx0I7wgHM/5nlijgZ2YS5R7j783Lbk3IwkHKvDTdMqzSTw9a1hDM1mYbJP9XTwplAh7DClENb7JQ==
@@ -2761,9 +2761,11 @@
   version "0.1.0-alpha.6"
   dependencies:
     "@jupyterlab/application" "~3.1.0"
+    "@jupyterlab/console" "~3.1.0"
     "@jupyterlab/coreutils" "~5.1.0"
     "@jupyterlab/docmanager" "~3.1.0"
     "@jupyterlab/services" "~6.1.0"
+    "@lumino/algorithm" "^1.6.2"
 
 "@jupyterlite/server@file:packages/server-extension":
   version "0.1.0-alpha.6"

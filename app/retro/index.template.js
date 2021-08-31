@@ -89,6 +89,7 @@ async function main() {
     require('@jupyterlab/completer-extension').default.filter(({ id }) =>
       ['@jupyterlab/completer-extension:manager'].includes(id)
     ),
+    require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
       ['@jupyterlab/docmanager-extension:plugin'].includes(id)
     ),

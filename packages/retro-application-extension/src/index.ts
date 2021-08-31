@@ -7,6 +7,8 @@ import {
   JupyterFrontEnd
 } from '@jupyterlab/application';
 
+import { IConsoleTracker } from '@jupyterlab/console';
+
 import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
@@ -16,6 +18,8 @@ import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 import { Kernel } from '@jupyterlab/services';
 
 import { liteWordmark } from '@jupyterlite/ui-components';
+
+import { find } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
 
@@ -30,9 +34,33 @@ const NOTEBOOK_FACTORY = 'Notebook';
 const EDITOR_FACTORY = 'Editor';
 
 /**
- * A regular expression to match path to notebooks and documents
+ * A regular expression to match path to notebooks, documents and consoles
  */
-const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?');
+const URL_PATTERN = new RegExp('/(notebooks|edit|consoles)\\/?');
+
+/**
+ * Open consoles in a new tab.
+ */
+const consoles: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/retro-application-extension:consoles',
+  requires: [IConsoleTracker],
+  autoStart: true,
+  activate: (app: JupyterFrontEnd, tracker: IConsoleTracker) => {
+    const baseUrl = PageConfig.getBaseUrl();
+    tracker.widgetAdded.connect(async (send, console) => {
+      const widget = find(app.shell.widgets('main'), w => w.id === console.id);
+      if (widget) {
+        // bail if the console is already added to the main area
+        return;
+      }
+      const path = console.sessionContext.path;
+      window.open(`${baseUrl}retro/consoles?path=${path}`, '_blank');
+
+      // the widget is not needed anymore
+      // console.dispose();
+    });
+  }
+};
 
 /**
  * A plugin to open document in a new browser tab.
@@ -94,7 +122,7 @@ const logo: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * A custom openeer plugin to pass the path to documents as
+ * A custom opener plugin to pass the path to documents as
  * query string parameters.
  */
 const opener: JupyterFrontEndPlugin<void> = {
@@ -113,7 +141,7 @@ const opener: JupyterFrontEndPlugin<void> = {
       execute: (args: any) => {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
-        const matches = parsed.request.match(TREE_PATTERN) ?? [];
+        const matches = parsed.request.match(URL_PATTERN) ?? [];
         if (!matches) {
           return;
         }
@@ -126,6 +154,12 @@ const opener: JupyterFrontEndPlugin<void> = {
         const file = decodeURIComponent(path);
         const ext = PathExt.extname(file);
         app.restored.then(() => {
+          // handle code consoles first
+          if (window.location.href.includes('/consoles')) {
+            commands.execute('console:create', { path: file });
+            return;
+          }
+
           // TODO: get factory from file type instead?
           if (ext === '.ipynb') {
             docManager.open(file, NOTEBOOK_FACTORY, undefined, {
@@ -140,10 +174,10 @@ const opener: JupyterFrontEndPlugin<void> = {
       }
     });
 
-    router.register({ command, pattern: TREE_PATTERN });
+    router.register({ command, pattern: URL_PATTERN });
   }
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [docmanager, logo, opener];
+const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo, opener];
 
 export default plugins;
