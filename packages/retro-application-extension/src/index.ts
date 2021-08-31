@@ -19,8 +19,6 @@ import { Kernel } from '@jupyterlab/services';
 
 import { liteWordmark } from '@jupyterlite/ui-components';
 
-import { find } from '@lumino/algorithm';
-
 import { Widget } from '@lumino/widgets';
 
 /**
@@ -48,16 +46,16 @@ const consoles: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd, tracker: IConsoleTracker) => {
     const baseUrl = PageConfig.getBaseUrl();
     tracker.widgetAdded.connect(async (send, console) => {
-      const widget = find(app.shell.widgets('main'), w => w.id === console.id);
-      if (widget) {
-        // bail if the console is already added to the main area
+      const { sessionContext } = console;
+      const page = PageConfig.getOption('retroPage');
+      if (page === 'consoles') {
         return;
       }
-      const path = console.sessionContext.path;
+      const path = sessionContext.path;
       window.open(`${baseUrl}retro/consoles?path=${path}`, '_blank');
 
       // the widget is not needed anymore
-      // console.dispose();
+      console.dispose();
     });
   }
 };
@@ -152,23 +150,25 @@ const opener: JupyterFrontEndPlugin<void> = {
           return;
         }
         const file = decodeURIComponent(path);
-        const ext = PathExt.extname(file);
         app.restored.then(() => {
-          // handle code consoles first
-          if (window.location.href.includes('/consoles')) {
-            commands.execute('console:create', { path: file });
-            return;
-          }
-
-          // TODO: get factory from file type instead?
-          if (ext === '.ipynb') {
-            docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-              ref: '_noref'
-            });
-          } else {
-            docManager.open(file, EDITOR_FACTORY, undefined, {
-              ref: '_noref'
-            });
+          const page = PageConfig.getOption('retroPage');
+          switch (page) {
+            case 'consoles': {
+              commands.execute('console:create', { path: file });
+              return;
+            }
+            case 'notebooks': {
+              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
+            case 'edit': {
+              docManager.open(file, EDITOR_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
           }
         });
       }
