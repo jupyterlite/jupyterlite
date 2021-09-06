@@ -89,6 +89,7 @@ async function main() {
     require('@jupyterlab/completer-extension').default.filter(({ id }) =>
       ['@jupyterlab/completer-extension:manager'].includes(id)
     ),
+    require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
       ['@jupyterlab/docmanager-extension:plugin'].includes(id)
     ),
@@ -138,6 +139,20 @@ async function main() {
           [
             '@jupyterlab/tooltip-extension:manager',
             '@jupyterlab/tooltip-extension:notebooks'
+          ].includes(id)
+        )
+      ]);
+      break;
+    }
+    case 'consoles': {
+      mods = mods.concat([
+        require('@jupyterlab/completer-extension').default.filter(({ id }) =>
+          ['@jupyterlab/completer-extension:consoles'].includes(id)
+        ),
+        require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
+          [
+            '@jupyterlab/tooltip-extension:manager',
+            '@jupyterlab/tooltip-extension:consoles'
           ].includes(id)
         )
       ]);

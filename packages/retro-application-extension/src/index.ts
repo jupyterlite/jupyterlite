@@ -7,6 +7,8 @@ import {
   JupyterFrontEnd
 } from '@jupyterlab/application';
 
+import { IConsoleTracker } from '@jupyterlab/console';
+
 import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
@@ -30,9 +32,33 @@ const NOTEBOOK_FACTORY = 'Notebook';
 const EDITOR_FACTORY = 'Editor';
 
 /**
- * A regular expression to match path to notebooks and documents
+ * A regular expression to match path to notebooks, documents and consoles
  */
-const TREE_PATTERN = new RegExp('/(notebooks|edit)\\/?');
+const URL_PATTERN = new RegExp('/(notebooks|edit|consoles)\\/?');
+
+/**
+ * Open consoles in a new tab.
+ */
+const consoles: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/retro-application-extension:consoles',
+  requires: [IConsoleTracker],
+  autoStart: true,
+  activate: (app: JupyterFrontEnd, tracker: IConsoleTracker) => {
+    const baseUrl = PageConfig.getBaseUrl();
+    tracker.widgetAdded.connect(async (send, console) => {
+      const { sessionContext } = console;
+      const page = PageConfig.getOption('retroPage');
+      if (page === 'consoles') {
+        return;
+      }
+      const path = sessionContext.path;
+      window.open(`${baseUrl}retro/consoles?path=${path}`, '_blank');
+
+      // the widget is not needed anymore
+      console.dispose();
+    });
+  }
+};
 
 /**
  * A plugin to open document in a new browser tab.
@@ -94,7 +120,7 @@ const logo: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * A custom openeer plugin to pass the path to documents as
+ * A custom opener plugin to pass the path to documents as
  * query string parameters.
  */
 const opener: JupyterFrontEndPlugin<void> = {
@@ -113,7 +139,7 @@ const opener: JupyterFrontEndPlugin<void> = {
       execute: (args: any) => {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
-        const matches = parsed.request.match(TREE_PATTERN) ?? [];
+        const matches = parsed.request.match(URL_PATTERN) ?? [];
         if (!matches) {
           return;
         }
@@ -124,26 +150,34 @@ const opener: JupyterFrontEndPlugin<void> = {
           return;
         }
         const file = decodeURIComponent(path);
-        const ext = PathExt.extname(file);
         app.restored.then(() => {
-          // TODO: get factory from file type instead?
-          if (ext === '.ipynb') {
-            docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-              ref: '_noref'
-            });
-          } else {
-            docManager.open(file, EDITOR_FACTORY, undefined, {
-              ref: '_noref'
-            });
+          const page = PageConfig.getOption('retroPage');
+          switch (page) {
+            case 'consoles': {
+              commands.execute('console:create', { path: file });
+              return;
+            }
+            case 'notebooks': {
+              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
+            case 'edit': {
+              docManager.open(file, EDITOR_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
           }
         });
       }
     });
 
-    router.register({ command, pattern: TREE_PATTERN });
+    router.register({ command, pattern: URL_PATTERN });
   }
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [docmanager, logo, opener];
+const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo, opener];
 
 export default plugins;
