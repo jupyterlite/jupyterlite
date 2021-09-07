@@ -2,14 +2,13 @@ name: Check Release
 on:
   push:
     branches:
-      - "*"
+      - '*'
   pull_request:
     branches:
-      - "*"
+      - '*'
 
 permissions:
-  contents:
-    write
+  contents: write
 
 jobs:
   check_release:
@@ -22,7 +21,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-          architecture: "x64"
+          architecture: 'x64'
 
       - name: Install node
         uses: actions/setup-node@v2
