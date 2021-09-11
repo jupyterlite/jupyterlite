@@ -4,3 +4,13 @@ multi_line_output = 3
 known_first_party = [
     "jupyterlite",
 ]
+
+[tool.jupyter-releaser]
+skip = ["build-npm", "build-python", "check-links"]
+
+[tool.jupyter-releaser.hooks]
+after-build-changelog = ["yarn lint", "yarn lint check"]
+before-check-python = ["doit release:build"]
+
+[tool.jupyter-releaser.options]
+version-cmd = "doit release:bump:version"
