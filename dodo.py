@@ -321,24 +321,24 @@ def task_dist():
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         return
 
-    npm_dests = []
-    for package in P.PACKAGE_JSONS:
-        pkg_data = json.loads(package.read_text())
-        parent = package.parent
-        name = pkg_data["name"]
-        version = pkg_data["version"]
-        target = parent / f"{name.replace('@', '').replace('/', '-')}-{version}.tgz"
-        if name in C.NO_TYPEDOC:
-            continue
-        yield dict(
-            name=f"pack:js:{name}",
-            actions=[U.do("npm", "pack", cwd=package.parent)],
-            file_dep=[package],
-            targets=[target],
-        )
+    # npm_dests = []
+    # for package in P.PACKAGE_JSONS:
+    #     pkg_data = json.loads(package.read_text())
+    #     parent = package.parent
+    #     name = pkg_data["name"]
+    #     version = pkg_data["version"]
+    #     target = parent / f"{name.replace('@', '').replace('/', '-')}-{version}.tgz"
+    #     if name in C.NO_TYPEDOC:
+    #         continue
+    #     yield dict(
+    #         name=f"pack:js:{name}",
+    #         actions=[U.do("npm", "pack", cwd=package.parent)],
+    #         file_dep=[package],
+    #         targets=[target],
+    #     )
 
     py_dests = []
-    for dist in [*B.PY_DISTRIBUTIONS, *B.NPM_DISTRIBUTIONS]:
+    for dist in B.PY_DISTRIBUTIONS:
         dest = B.DIST / dist.name
         py_dests += [dest]
         yield dict(
@@ -350,7 +350,7 @@ def task_dist():
 
     yield dict(
         name="hash",
-        file_dep=[*npm_dests, *py_dests],
+        file_dep=py_dests,
         actions=[(U.hashfile, [B.DIST])],
         targets=[B.DIST / "SHA256SUMS"],
     )
