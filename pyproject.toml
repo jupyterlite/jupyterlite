@@ -9,6 +9,7 @@ known_first_party = [
 skip = ["build-python", "check-links", "check-manifest"]
 
 [tool.jupyter-releaser.hooks]
+before-build-npm = ["yarn build:lib"]
 after-build-changelog = ["yarn lint", "yarn lint:check"]
 after-check-npm = ["doit", "doit dist:copy:*"]
 
