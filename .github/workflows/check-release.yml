@@ -43,7 +43,7 @@ jobs:
 
       - name: Upgrade packaging dependencies
         run: |
-          python -m pip install --upgrade pip setuptools wheel jupyter-packaging~=0.10 --user
+          python -m pip install --upgrade pip setuptools wheel --user
           python -m pip install -r requirements-docs.txt -r requirements-lint.txt -r requirements-build.txt
 
       - name: Install Dependencies
@@ -56,3 +56,9 @@ jobs:
           RH_VERSION_SPEC: next
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Distributions
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite-releaser-dist ${{ github.run_number }}
+          path: ./dist
