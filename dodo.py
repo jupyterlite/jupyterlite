@@ -321,10 +321,21 @@ def task_dist():
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         return
 
-    dests = []
-    for dist in B.DISTRIBUTIONS:
+    npm_dests = []
+    for package in P.PACKAGE_JSONS:
+        parent, name = package.parent, parent.name
+        if name in C.NO_TYPEDOC:
+            continue
+        yield dict(
+            name=f"pack:js:{name}",
+            actions=[U.do("npm", "pack", cwd=parent)],
+            targets=[dist for dist in B.NPM_DISTRIBUTIONS if parent in dist],
+        )
+
+    py_dests = []
+    for dist in [*B.PY_DISTRIBUTIONS, *B.NPM_DISTRIBUTIONS]:
         dest = B.DIST / dist.name
-        dests += [dest]
+        py_dests += [dest]
         yield dict(
             name=f"copy:{dist.name}",
             actions=[(U.copy_one, [dist, dest])],
@@ -334,12 +345,12 @@ def task_dist():
 
     yield dict(
         name="hash",
-        file_dep=dests,
+        file_dep=[*npm_dests, *py_dests],
         actions=[(U.hashfile, [B.DIST])],
         targets=[B.DIST / "SHA256SUMS"],
     )
 
-    for dist in B.DISTRIBUTIONS:
+    for dist in B.PY_DISTRIBUTIONS:
         if dist.name.endswith(".tar.gz"):
             # apparently flit sdists are malformed according to `twine check`
             continue
@@ -582,6 +593,16 @@ def task_test():
         )
 
 
+def task_version():
+    yield dict(
+        name="bump",
+        doc="bump the version",
+        actions=[(U.bump,)],
+        pos_arg='spec',
+        verbosity=1,
+    )
+
+
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
@@ -801,11 +822,12 @@ class B:
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
-    DISTRIBUTIONS = [
+    NPM_DISTRIBUTIONS = [*P.PACKAGES.rglob("*.tgz")]
+    PY_DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
-    DIST_HASH_INPUTS = sorted([*DISTRIBUTIONS, APP_PACK])
+    DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
 
 
 class U:
@@ -1133,6 +1155,10 @@ class U:
             actions=[_check],
             file_dep=[path, built, P.BINDER_ENV],
         )
+
+    @staticmethod
+    def bump(spec):
+        print(f"Bumping to {spec}")
 
 
 # environment overloads

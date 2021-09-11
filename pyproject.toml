@@ -6,11 +6,11 @@ known_first_party = [
 ]
 
 [tool.jupyter-releaser]
-skip = ["build-npm", "build-python", "check-links"]
+skip = ["build-npm", "build-python", "check-links", "check-manifest"]
 
 [tool.jupyter-releaser.hooks]
 after-build-changelog = ["yarn lint", "yarn lint check"]
-before-check-python = ["doit release:build"]
+before-check-npm = ["doit dist"]
 
 [tool.jupyter-releaser.options]
-version-cmd = "doit release:bump:version"
+version-cmd = "doit version:bump"
