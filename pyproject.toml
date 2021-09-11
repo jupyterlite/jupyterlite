@@ -6,7 +6,7 @@ known_first_party = [
 ]
 
 [tool.jupyter-releaser]
-skip = ["build-npm", "build-python", "check-links", "check-manifest"]
+skip = ["build-python", "check-links", "check-manifest"]
 
 [tool.jupyter-releaser.hooks]
 after-build-changelog = ["yarn lint", "yarn lint:check"]
