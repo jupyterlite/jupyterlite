@@ -323,13 +323,18 @@ def task_dist():
 
     npm_dests = []
     for package in P.PACKAGE_JSONS:
-        parent, name = package.parent, parent.name
+        pkg_data = json.loads(package.read_text())
+        parent = package.parent
+        name = pkg_data["name"]
+        version = pkg_data["version"]
+        target = parent / f"{name.replace('@', '').replace('/', '-')}-{version}.tgz"
         if name in C.NO_TYPEDOC:
             continue
         yield dict(
             name=f"pack:js:{name}",
-            actions=[U.do("npm", "pack", cwd=parent)],
-            targets=[dist for dist in B.NPM_DISTRIBUTIONS if parent in dist],
+            actions=[U.do("npm", "pack", cwd=package.parent)],
+            file_dep=[package],
+            targets=[target],
         )
 
     py_dests = []
@@ -598,7 +603,7 @@ def task_version():
         name="bump",
         doc="bump the version",
         actions=[(U.bump,)],
-        pos_arg='spec',
+        pos_arg="spec",
         verbosity=1,
     )
 
