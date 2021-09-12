@@ -342,7 +342,7 @@ def task_dist():
         dest = B.DIST / dist.name
         py_dests += [dest]
         yield dict(
-            name=f"copy:{dist.name}",
+            name=f"copy:py:{dist.name}",
             actions=[(U.copy_one, [dist, dest])],
             file_dep=[dist],
             targets=[dest],
