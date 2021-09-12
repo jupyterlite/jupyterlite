@@ -1259,9 +1259,17 @@ class U:
 
         if spec == "patch":
             patch()
-            return
+        else:
+            update()
 
-        update()
+        # read the new app version
+        app_json = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
+        new_version = app_json["version"]
+
+        # save the new version to the top-level package.json
+        root_json = json.loads(P.ROOT_PACKAGE_JSON.read_text(**C.ENC))
+        root_json["version"] = new_version
+        P.ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **C.ENC)
 
 
 # environment overloads
