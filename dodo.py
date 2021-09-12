@@ -10,7 +10,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-from jupyter_releaser.util import run, is_prerelease
+from jupyter_releaser.util import is_prerelease, run
 
 
 def task_env():
