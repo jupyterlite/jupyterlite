@@ -1186,6 +1186,8 @@ class U:
         options = ["major", "minor", "release", "build"]
         prev = D.PY_VERSION
         is_final = not is_prerelease(prev)
+        if spec == "next":
+            spec = "patch" if is_final else "build"
 
         def patch():
             if not is_final:
