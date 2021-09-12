@@ -60,5 +60,5 @@ jobs:
       - name: Upload Distributions
         uses: actions/upload-artifact@v2
         with:
-          name: jupyterlite-releaser-dist ${{ github.run_number }}
+          name: jupyterlite-releaser-dist-${{ github.run_number }}
           path: .jupyter_releaser_checkout/dist
