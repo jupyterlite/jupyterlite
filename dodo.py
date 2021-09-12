@@ -602,10 +602,18 @@ def task_version():
     yield dict(
         name="bump",
         doc="bump the version",
-        actions=[(U.bump,)],
+        actions=[(U.bump_version,)],
         pos_arg="spec",
         verbosity=1,
     )
+
+    # TODO: how to get the version without the doit task printed?
+    # yield dict(
+    #     title=lambda _: None,
+    #     name="get",
+    #     doc="get the version",
+    #     actions=[lambda: print(D.PY_VERSION)],
+    # )
 
 
 class C:
@@ -717,7 +725,12 @@ class D:
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
     # derive the PEP-compatible version
-    PY_VERSION = APP["version"].replace("-alpha.", "a")
+    PY_VERSION = (
+        APP["version"]
+        .replace("-alpha.", "a")
+        .replace("-beta.", "b")
+        .replace("-rc.", "rc")
+    )
 
     PACKAGE_JSONS = {
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
@@ -1162,7 +1175,7 @@ class U:
         )
 
     @staticmethod
-    def bump(spec):
+    def bump_version(spec):
         print(f"Bumping to {spec}")
 
 

@@ -42,6 +42,7 @@
     "serve": "node scripts/serve.js",
     "serve:py": "cd app && python -m http.server -b 127.0.0.1",
     "test": "lerna run test",
+    "version:get": "jupyter-lite --version",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
     "watch": "run-p watch:lib watch:app",
     "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-*\" yarn watch",
