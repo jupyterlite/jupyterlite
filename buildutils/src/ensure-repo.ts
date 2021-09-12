@@ -22,7 +22,7 @@ function ensureResolutions(app: string): string[] {
 
   packages.forEach(name => {
     const data = require(`${name}/package.json`);
-    const prefix = name.startsWith('@retrolab') ? '~' : '^';
+    const prefix = '~';
     corePackage.resolutions[name] = `${prefix}${data.version}`;
   });
 

@@ -10,7 +10,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-from jupyter_releaser.util import is_prerelease, run
 
 
 def task_env():
@@ -1177,6 +1176,10 @@ class U:
 
     @staticmethod
     def bump_version(pos):
+        # TODO: avoid dependency on jupyter_releaser?
+        # puts the import here so it does not fail on RTD (jupyter-releaser not on conda)
+        from jupyter_releaser.util import is_prerelease, run
+
         status = run("git status --porcelain")
         spec = pos[0]
         force = True
@@ -1203,7 +1206,7 @@ class U:
             # switches to final.
 
             # Version the changed
-            cmd = "jlpm run lerna version patch --no-push --force-publish --no-git-tag-version"
+            cmd = "yarn run lerna version patch --no-push --force-publish --no-git-tag-version"
             if force:
                 cmd += " --yes"
             run(cmd)
@@ -1242,7 +1245,7 @@ class U:
             if lerna_version == "preminor":
                 lerna_version += " --preid=alpha"
 
-            cmd = f"jlpm run lerna version --force-publish --no-push --no-git-tag-version {lerna_version}"
+            cmd = f"yarn run lerna version --force-publish --no-push --no-git-tag-version {lerna_version}"
             if force:
                 cmd += " --yes"
 

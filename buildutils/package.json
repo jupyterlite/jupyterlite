@@ -30,7 +30,7 @@
     "watch": "tsc -w --listEmittedFiles"
   },
   "dependencies": {
-    "@jupyterlab/buildutils": "~3.1.7",
+    "@jupyterlab/buildutils": "~3.1.11",
     "commander": "^6.2.0",
     "fs-extra": "^9.1.0",
     "typescript": "~4.2.3"

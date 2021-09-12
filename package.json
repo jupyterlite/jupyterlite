@@ -42,8 +42,8 @@
     "serve": "node scripts/serve.js",
     "serve:py": "cd app && python -m http.server -b 127.0.0.1",
     "test": "lerna run test",
-    "version:get": "jupyter-lite --version",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
+    "version:get": "jupyter-lite --version",
     "watch": "run-p watch:lib watch:app",
     "watch:app": "lerna exec --stream --stream --parallel --scope \"@jupyterlite/app-*\" yarn watch",
     "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch"
@@ -54,7 +54,7 @@
     }
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~3.1.7",
+    "@jupyterlab/buildutils": "~3.1.11",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",
