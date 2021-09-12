@@ -10,6 +10,7 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
+from jupyter_releaser.util import run, is_prerelease
 
 
 def task_env():
@@ -1175,34 +1176,35 @@ class U:
         )
 
     @staticmethod
-    def bump_version(pos, force=True):
-        status = subprocess.check_output(["git", "status", "--porcelain"]).decode("utf-8").strip()
+    def bump_version(pos):
+        status = run("git status --porcelain")
         spec = pos[0]
+        force = True
         if len(status) > 0:
             raise Exception("Must be in a clean git state with no untracked files")
 
         options = ["major", "minor", "release", "build"]
         prev = D.PY_VERSION
-        is_final = "a" not in prev and "b" not in prev and "c" not in prev
+        is_final = not is_prerelease(prev)
 
         def patch():
             if not is_final:
                 raise Exception("Can only make a patch release from a final version")
 
-            U.do("bumpversion", "patch")
+            run("bumpversion patch", quiet=True)
             # switches to alpha
-            U.do("bumpversion", "release", "--allow-dirty")
+            run("bumpversion release --allow-dirty", quiet=True)
             # switches to beta
-            U.do("bumpversion", "release", "--allow-dirty")
+            run("bumpversion release --allow-dirty", quiet=True)
             # switches to rc.
-            U.do("bumpversion", "release", "--allow-dirty")
+            run("bumpversion release --allow-dirty", quiet=True)
             # switches to final.
 
             # Version the changed
             cmd = "jlpm run lerna version patch --no-push --force-publish --no-git-tag-version"
             if force:
                 cmd += " --yes"
-            U.do(*cmd.split())
+            run(cmd)
 
         def update():
             # Make sure we have a valid version spec.
@@ -1219,7 +1221,7 @@ class U:
 
             # If this is a major release during the alpha cycle, bump just the Python version.
             if "a" in prev and spec == "major":
-                U.do("bumpversion", spec)
+                run(f"bumpversion {spec}")
                 return
 
             # Determine the version spec to use for lerna.
@@ -1244,15 +1246,14 @@ class U:
 
             # For a preminor release, we bump 10 minor versions so that we do
             # not conflict with versions during minor releases of the top level package.
-            cmd = cmd.split()
             if lerna_version == "preminor":
                 for i in range(10):
-                    U.do(*cmd)
+                    run(cmd)
             else:
-                U.do(*cmd)
+                run(cmd)
 
             # Bump the version.
-            U.do("bumpversion", spec, "--allow-dirty")
+            run(f"bumpversion {spec} --allow-dirty")
 
         if spec == "patch":
             patch()

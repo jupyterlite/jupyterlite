@@ -3,4 +3,5 @@
 bump2version
 doit >=0.33,<0.34
 flit >=3.1
+jupyter_releaser
 twine
