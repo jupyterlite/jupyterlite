@@ -321,22 +321,6 @@ def task_dist():
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         return
 
-    # npm_dests = []
-    # for package in P.PACKAGE_JSONS:
-    #     pkg_data = json.loads(package.read_text())
-    #     parent = package.parent
-    #     name = pkg_data["name"]
-    #     version = pkg_data["version"]
-    #     target = parent / f"{name.replace('@', '').replace('/', '-')}-{version}.tgz"
-    #     if name in C.NO_TYPEDOC:
-    #         continue
-    #     yield dict(
-    #         name=f"pack:js:{name}",
-    #         actions=[U.do("npm", "pack", cwd=package.parent)],
-    #         file_dep=[package],
-    #         targets=[target],
-    #     )
-
     py_dests = []
     for dist in B.PY_DISTRIBUTIONS:
         dest = B.DIST / dist.name
@@ -829,7 +813,6 @@ class B:
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
-    NPM_DISTRIBUTIONS = [*P.PACKAGES.rglob("*.tgz")]
     PY_DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
@@ -1175,7 +1158,10 @@ class U:
             for name in packages:
                 package_json = P.ROOT / "node_modules" / name / "package.json"
                 data = json.loads(package_json.read_text(**C.ENC))
-                app["resolutions"][name] = f"~{data['version']}"
+                prefix = (
+                    "~" if re.search("^(@jupyter|@retrolab|@lumino).*", name) else "^"
+                )
+                app["resolutions"][name] = f"{prefix}{data['version']}"
 
             app["resolutions"] = {
                 k: v

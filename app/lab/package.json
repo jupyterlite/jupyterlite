@@ -97,10 +97,10 @@
     "@lumino/signaling": "~1.7.2",
     "@lumino/virtualdom": "~1.11.2",
     "@lumino/widgets": "~1.26.2",
-    "es6-promise": "~4.2.8",
-    "react": "~17.0.2",
-    "react-dom": "~17.0.2",
-    "yjs": "~13.5.12"
+    "es6-promise": "^4.2.8",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "yjs": "^13.5.12"
   },
   "dependencies": {
     "@jupyterlab/application": "~3.1.10",
@@ -259,7 +259,10 @@
       "react-dom",
       "yjs"
     ],
-    "mimeExtensions": {},
+    "mimeExtensions": {
+      "@jupyterlab/json-extension": "",
+      "@jupyterlab/vega5-extension": ""
+    },
     "linkedPackages": {}
   }
 }
