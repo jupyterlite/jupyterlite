@@ -15,7 +15,7 @@ from jupyter_releaser.util import get_version, is_prerelease, run
 
 OPTIONS = ["major", "minor", "release", "build"]
 
-ENC = dict(encoding='utf-8')
+ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"

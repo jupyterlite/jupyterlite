@@ -600,7 +600,7 @@ def task_test():
 
 def task_repo():
     yield dict(
-        name=f"integrity",
+        name="integrity",
         actions=[(U.integrity,)],
     )
 
