@@ -598,6 +598,13 @@ def task_test():
         )
 
 
+def task_repo():
+    yield dict(
+        name=f"integrity",
+        actions=[(U.integrity,)],
+    )
+
+
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
@@ -1155,6 +1162,31 @@ class U:
             actions=[_check],
             file_dep=[path, built, P.BINDER_ENV],
         )
+
+    @staticmethod
+    def integrity():
+        def _ensure_resolutions(app_name):
+            app_json = P.ROOT / "app" / app_name / "package.json"
+            app = json.loads(app_json.read_text(**C.ENC))
+            app["resolutions"] = {}
+            dependencies = list(app["dependencies"].keys())
+            singletonPackages = list(app["jupyterlab"]["singletonPackages"])
+            packages = dependencies + singletonPackages
+            for name in packages:
+                package_json = P.ROOT / "node_modules" / name / "package.json"
+                data = json.loads(package_json.read_text(**C.ENC))
+                app["resolutions"][name] = f"~{data['version']}"
+
+            app["resolutions"] = {
+                k: v
+                for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
+            }
+
+            # Write the package.json back to disk.
+            app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
+
+        for app in C.APPS:
+            _ensure_resolutions(app)
 
 
 # environment overloads
