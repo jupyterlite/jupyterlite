@@ -16,7 +16,7 @@ from jupyter_releaser.util import get_version, is_prerelease, run
 OPTIONS = ["major", "minor", "release", "build"]
 
 ENC = dict(encoding='utf-8')
-ROOT = Path("..")
+ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 
@@ -30,6 +30,8 @@ def postbump():
     root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     root_json["version"] = new_version
     ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **ENC)
+
+    run("doit repo:integrity", cwd=ROOT)
 
 
 def patch(force=False):
