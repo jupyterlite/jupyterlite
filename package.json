@@ -16,7 +16,6 @@
     "packages": [
       "app",
       "app/*",
-      "buildutils",
       "packages/*"
     ]
   },
