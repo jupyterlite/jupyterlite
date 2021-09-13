@@ -598,24 +598,6 @@ def task_test():
         )
 
 
-def task_version():
-    yield dict(
-        name="bump",
-        doc="bump the version",
-        actions=[U.bump_version],
-        params=[{"name": "force", "short": "f", "default": False}],
-        pos_arg="pos",
-    )
-
-    # TODO: how to get the version without the doit task printed?
-    # yield dict(
-    #     title=lambda _: None,
-    #     name="get",
-    #     doc="get the version",
-    #     actions=[lambda: print(D.PY_VERSION)],
-    # )
-
-
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
@@ -1173,106 +1155,6 @@ class U:
             actions=[_check],
             file_dep=[path, built, P.BINDER_ENV],
         )
-
-    @staticmethod
-    def bump_version(pos):
-        # TODO: avoid dependency on jupyter_releaser?
-        # puts the import here so it does not fail on RTD (jupyter-releaser not on conda)
-        from jupyter_releaser.util import is_prerelease, run
-
-        status = run("git status --porcelain")
-        spec = pos[0]
-        force = True
-        if len(status) > 0:
-            raise Exception("Must be in a clean git state with no untracked files")
-
-        options = ["major", "minor", "release", "build"]
-        prev = D.PY_VERSION
-        is_final = not is_prerelease(prev)
-        if spec == "next":
-            spec = "patch" if is_final else "build"
-
-        def patch():
-            if not is_final:
-                raise Exception("Can only make a patch release from a final version")
-
-            run("bumpversion patch", quiet=True)
-            # switches to alpha
-            run("bumpversion release --allow-dirty", quiet=True)
-            # switches to beta
-            run("bumpversion release --allow-dirty", quiet=True)
-            # switches to rc.
-            run("bumpversion release --allow-dirty", quiet=True)
-            # switches to final.
-
-            # Version the changed
-            cmd = "yarn run lerna version patch --no-push --force-publish --no-git-tag-version"
-            if force:
-                cmd += " --yes"
-            run(cmd)
-
-        def update():
-            # Make sure we have a valid version spec.
-            if spec not in options:
-                raise Exception(f"Version spec must be one of: {options}")
-
-            if is_final and spec == "release":
-                raise Exception(
-                    'Use "major" or "minor" to switch back to alpha release'
-                )
-
-            if is_final and spec == "build":
-                raise Exception("Cannot increment a build on a final release")
-
-            # If this is a major release during the alpha cycle, bump just the Python version.
-            if "a" in prev and spec == "major":
-                run(f"bumpversion {spec}")
-                return
-
-            # Determine the version spec to use for lerna.
-            lerna_version = "preminor"
-            if spec == "build":
-                lerna_version = "prerelease"
-            # a -> b
-            elif spec == "release" and "a" in prev:
-                lerna_version = "prerelease --preid=beta"
-            # b -> rc
-            elif spec == "release" and "b" in prev:
-                lerna_version = "prerelease --preid=rc"
-            # rc -> final
-            elif spec == "release" and "c" in prev:
-                lerna_version = "patch"
-            if lerna_version == "preminor":
-                lerna_version += " --preid=alpha"
-
-            cmd = f"yarn run lerna version --force-publish --no-push --no-git-tag-version {lerna_version}"
-            if force:
-                cmd += " --yes"
-
-            # For a preminor release, we bump 10 minor versions so that we do
-            # not conflict with versions during minor releases of the top level package.
-            if lerna_version == "preminor":
-                for i in range(10):
-                    run(cmd)
-            else:
-                run(cmd)
-
-            # Bump the version.
-            run(f"bumpversion {spec} --allow-dirty")
-
-        if spec == "patch":
-            patch()
-        else:
-            update()
-
-        # read the new app version
-        app_json = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
-        new_version = app_json["version"]
-
-        # save the new version to the top-level package.json
-        root_json = json.loads(P.ROOT_PACKAGE_JSON.read_text(**C.ENC))
-        root_json["version"] = new_version
-        P.ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **C.ENC)
 
 
 # environment overloads

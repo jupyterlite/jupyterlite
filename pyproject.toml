@@ -9,10 +9,11 @@ known_first_party = [
 skip = ["build-python", "check-links", "check-manifest"]
 
 [tool.jupyter-releaser.hooks]
+before-bump-version = ["python -m pip install bump2version jupyter_releaser"]
 before-build-npm = ["doit build"]
 after-draft-changelog = ["yarn lint", "yarn lint:check"]
 after-check-npm = ["doit dist"]
 before-draft-release = ["rm dist/jupyterlite-app-*.tgz"]
 
 [tool.jupyter-releaser.options]
-version-cmd = "doit version:bump"
+version-cmd = "python scripts/bump-version.py --force"
