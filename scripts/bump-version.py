@@ -125,6 +125,8 @@ def bump(force, spec):
 
     update(spec, force)
 
+    postbump()
+
 
 if __name__ == "__main__":
     bump()
