@@ -4,3 +4,16 @@ multi_line_output = 3
 known_first_party = [
     "jupyterlite",
 ]
+
+[tool.jupyter-releaser]
+skip = ["build-python", "check-links", "check-manifest"]
+
+[tool.jupyter-releaser.hooks]
+before-bump-version = ["python -m pip install bump2version jupyter_releaser -r requirements-build.txt -r requirements-lint.txt"]
+before-build-npm = ["doit build"]
+after-draft-changelog = ["yarn lint", "yarn lint:check"]
+after-check-npm = ["doit dist"]
+before-draft-release = ["rm dist/jupyterlite-app-*.tgz"]
+
+[tool.jupyter-releaser.options]
+version-cmd = "python scripts/bump-version.py --force"

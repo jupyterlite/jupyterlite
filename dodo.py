@@ -321,12 +321,12 @@ def task_dist():
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         return
 
-    dests = []
-    for dist in B.DISTRIBUTIONS:
+    py_dests = []
+    for dist in B.PY_DISTRIBUTIONS:
         dest = B.DIST / dist.name
-        dests += [dest]
+        py_dests += [dest]
         yield dict(
-            name=f"copy:{dist.name}",
+            name=f"copy:py:{dist.name}",
             actions=[(U.copy_one, [dist, dest])],
             file_dep=[dist],
             targets=[dest],
@@ -334,12 +334,12 @@ def task_dist():
 
     yield dict(
         name="hash",
-        file_dep=dests,
+        file_dep=py_dests,
         actions=[(U.hashfile, [B.DIST])],
         targets=[B.DIST / "SHA256SUMS"],
     )
 
-    for dist in B.DISTRIBUTIONS:
+    for dist in B.PY_DISTRIBUTIONS:
         if dist.name.endswith(".tar.gz"):
             # apparently flit sdists are malformed according to `twine check`
             continue
@@ -582,6 +582,13 @@ def task_test():
         )
 
 
+def task_repo():
+    yield dict(
+        name="integrity",
+        actions=[(U.integrity,)],
+    )
+
+
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
@@ -691,7 +698,12 @@ class D:
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
     # derive the PEP-compatible version
-    PY_VERSION = APP["version"].replace("-alpha.", "a")
+    PY_VERSION = (
+        APP["version"]
+        .replace("-alpha.", "a")
+        .replace("-beta.", "b")
+        .replace("-rc.", "rc")
+    )
 
     PACKAGE_JSONS = {
         p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
@@ -801,11 +813,11 @@ class B:
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
-    DISTRIBUTIONS = [
+    PY_DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
-    DIST_HASH_INPUTS = sorted([*DISTRIBUTIONS, APP_PACK])
+    DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
 
 
 class U:
@@ -1133,6 +1145,34 @@ class U:
             actions=[_check],
             file_dep=[path, built, P.BINDER_ENV],
         )
+
+    @staticmethod
+    def integrity():
+        def _ensure_resolutions(app_name):
+            app_json = P.ROOT / "app" / app_name / "package.json"
+            app = json.loads(app_json.read_text(**C.ENC))
+            app["resolutions"] = {}
+            dependencies = list(app["dependencies"].keys())
+            singletonPackages = list(app["jupyterlab"]["singletonPackages"])
+            packages = dependencies + singletonPackages
+            for name in packages:
+                package_json = P.ROOT / "node_modules" / name / "package.json"
+                data = json.loads(package_json.read_text(**C.ENC))
+                prefix = (
+                    "~" if re.search("^(@jupyter|@retrolab|@lumino).*", name) else "^"
+                )
+                app["resolutions"][name] = f"{prefix}{data['version']}"
+
+            app["resolutions"] = {
+                k: v
+                for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
+            }
+
+            # Write the package.json back to disk.
+            app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
+
+        for app in C.APPS:
+            _ensure_resolutions(app)
 
 
 # environment overloads
