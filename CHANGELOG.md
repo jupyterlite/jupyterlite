@@ -2,6 +2,44 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a7
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a6...b8f942bd98db0a76b18bbe73b6d9bbada11d3e0a))
+
+### New features added
+
+- Add support for code consoles in Retro [#313](https://github.com/jupyterlite/jupyterlite/pull/313) ([@jtpio](https://github.com/jtpio))
+
+### Enhancements made
+
+- use parent header passed from worker [#307](https://github.com/jupyterlite/jupyterlite/pull/307) ([@madhur-tandon](https://github.com/madhur-tandon))
+- use bytes for nested buffers [#280](https://github.com/jupyterlite/jupyterlite/pull/280) ([@madhur-tandon](https://github.com/madhur-tandon))
+- Upgrade to Pyodide 0.18.0 [#274](https://github.com/jupyterlite/jupyterlite/pull/274) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Bugs fixed
+
+- access header key after formatResult on whole object [#306](https://github.com/jupyterlite/jupyterlite/pull/306) ([@madhur-tandon](https://github.com/madhur-tandon))
+
+### Maintenance and upkeep improvements
+
+- Add Jupyter Releaser config [#319](https://github.com/jupyterlite/jupyterlite/pull/319) ([@jtpio](https://github.com/jtpio))
+- Prevent calling "is_complete" from execution request [#304](https://github.com/jupyterlite/jupyterlite/pull/304) ([@martinRenou](https://github.com/martinRenou))
+- Upgrade to JupyterLab 3.1.9, RetroLab 0.3.1 [#302](https://github.com/jupyterlite/jupyterlite/pull/302) ([@bollwyvl](https://github.com/bollwyvl))
+- add CPython/PyPy 3.7 test excursions [#301](https://github.com/jupyterlite/jupyterlite/pull/301) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Add ipyvuetify example notebook [#309](https://github.com/jupyterlite/jupyterlite/pull/309) ([@seidlr](https://github.com/seidlr))
+-  rename --files to --contents [#295](https://github.com/jupyterlite/jupyterlite/pull/295) ([@nv2k3](https://github.com/nv2k3))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-07-24&to=2021-09-14&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-07-24..2021-09-14&type=Issues) | [@datakurre](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adatakurre+updated%3A2021-07-24..2021-09-14&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-07-24..2021-09-14&type=Issues) | [@madhur-tandon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amadhur-tandon+updated%3A2021-07-24..2021-09-14&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-24..2021-09-14&type=Issues) | [@nv2k3](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Anv2k3+updated%3A2021-07-24..2021-09-14&type=Issues) | [@seidlr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aseidlr+updated%3A2021-07-24..2021-09-14&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## v0.1.0a6
 
 ([full changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a5...7365c39de145eee5a5d0ea66a9fe6b22198b3616))
@@ -87,8 +125,6 @@
 [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2021-07-13..2021-07-24&type=Issues)
 |
 [@SimonBiggs](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ASimonBiggs+updated%3A2021-07-13..2021-07-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## v0.1.0a5
 
