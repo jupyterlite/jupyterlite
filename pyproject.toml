@@ -11,7 +11,7 @@ skip = ["build-python", "check-links", "check-manifest"]
 [tool.jupyter-releaser.hooks]
 before-bump-version = ["python -m pip install bump2version jupyter_releaser -r requirements-build.txt -r requirements-lint.txt"]
 before-build-npm = ["doit build"]
-after-build-changelog = ["yarn lint", "yarn lint:check"]
+after-build-changelog = ["yarn lint", "yarn lint:check", "git add CHANGELOG.md"]
 after-check-npm = ["doit dist"]
 before-draft-release = ["rm dist/jupyterlite-app-*.tgz"]
 
