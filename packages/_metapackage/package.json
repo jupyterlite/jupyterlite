@@ -1,7 +1,7 @@
 {
   "name": "@jupyterlite/metapackage",
   "private": true,
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.7",
   "description": "JupyterLite - Metapackage",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@jupyterlite/application-extension": "file:../application-extension",
-    "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/contents": "file:../contents",
     "@jupyterlite/iframe-extension": "file:../iframe-extension",
     "@jupyterlite/javascript-kernel": "file:../javascript-kernel",
@@ -31,6 +30,7 @@
     "@jupyterlite/p5-kernel-extension": "file:../p5-kernel-extension",
     "@jupyterlite/pyolite-kernel": "file:../pyolite-kernel",
     "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
+    "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/server": "file:../server-extension",
     "@jupyterlite/session": "file:../session",
     "@jupyterlite/settings": "file:../settings",
