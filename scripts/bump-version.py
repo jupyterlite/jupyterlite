@@ -27,8 +27,9 @@ def postbump():
     new_version = app_json["version"]
 
     # save the new version to the top-level package.json
+    py_version = new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
     root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
-    root_json["version"] = new_version
+    root_json["version"] = py_version
     ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **ENC)
 
     run("doit repo:integrity", cwd=ROOT)
