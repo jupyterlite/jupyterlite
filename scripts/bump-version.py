@@ -19,6 +19,7 @@ ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
+APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
 
 def postbump():
@@ -26,8 +27,17 @@ def postbump():
     app_json = json.loads(APP_PACKAGE_JSON.read_text(**ENC))
     new_version = app_json["version"]
 
+    # save the new version to the app jupyter-lite.json
+    jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))
+    jupyterlite_json["jupyter-config-data"]["appVersion"] = new_version
+    APP_JUPYTERLITE_JSON.write_text(
+        json.dumps(jupyterlite_json, indent=2) + "\n", **ENC
+    )
+
     # save the new version to the top-level package.json
-    py_version = new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
+    py_version = (
+        new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
+    )
     root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     root_json["version"] = py_version
     ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **ENC)

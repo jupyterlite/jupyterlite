@@ -15,3 +15,6 @@ app/lab/extensions/
 # JS templating
 bootstrap.js
 index.template.js
+
+# The changelog is updated by the releaser
+CHANGELOG.md
