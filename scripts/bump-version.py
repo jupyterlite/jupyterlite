@@ -29,7 +29,7 @@ def postbump():
 
     # save the new version to the app jupyter-lite.json
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))
-    jupyterlite_json["version"] = new_version
+    jupyterlite_json["appVersion"] = new_version
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json, indent=2), **ENC)
 
     # save the new version to the top-level package.json
