@@ -40,7 +40,10 @@ class Comm:
         data = {} if data is None else data
         metadata = {} if metadata is None else metadata
         content = dict(data=data, comm_id=self.comm_id, **keys)
-        buffers = None if buffers is None else [b.tobytes() for b in buffers]
+        if ((buffers is not None) and
+            (len(buffers) > 0) and
+            hasattr(buffers[0], "tobytes")):
+            buffers = [b.tobytes() for b in buffers]
 
         self.kernel.interpreter.send_comm(
             msg_type,
