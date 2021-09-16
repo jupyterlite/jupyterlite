@@ -207,6 +207,11 @@ export class JupyterServer {
       const plugins = await this._settings.getAll();
       return new Response(JSON.stringify(plugins));
     });
+
+    app.get('/api/translations/(.*)', async (req: Router.IRequest) => {
+      const data = {};
+      return new Response(JSON.stringify(data));
+    });
   }
 
   private _router = new Router();
