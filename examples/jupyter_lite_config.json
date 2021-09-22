@@ -12,12 +12,12 @@
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2/jupyterlab-drawio-0.9.0-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-fasta-3.1.1-pyhd8ed1ab_0.tar.bz2/jupyterlab-fasta-3.1.1-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-kernelspy-3.0.4-pyhd8ed1ab_0.tar.bz2/jupyterlab-kernelspy-3.0.4-pyhd8ed1ab_0.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-tour-3.1.2-pyhd8ed1ab_0.tar.bz2/jupyterlab-tour-3.1.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-kernelspy-3.0.6-pyhd8ed1ab_0.tar.bz2/jupyterlab-kernelspy-3.0.6-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-tour-3.1.3-pyhd8ed1ab_0.tar.bz2/jupyterlab-tour-3.1.3-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.0-pyhd8ed1ab_1.tar.bz2/jupyterlab_widgets-1.0.0-pyhd8ed1ab_1.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.0.1-pyhd8ed1ab_0.tar.bz2/theme-darcula-3.0.1-pyhd8ed1ab_0.tar.bz2"
+      "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2/theme-darcula-3.1.1-pyh3684270_0.tar.bz2"
     ],
     "ignore_sys_prefix": true,
     "output_dir": "../build/docs-app"

@@ -37,6 +37,7 @@ dependencies:
   - ipycytoscape ==1.2.2
   - ipyleaflet ==0.14.0
   - ipympl ==0.7.0
+  - ipyvue ==1.5.0
   - ipyvuetify ==1.8.1
   - plotly ==5.1.0
   ### FEDERATED EXTENSIONS ###
