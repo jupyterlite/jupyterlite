@@ -42,12 +42,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.1.10",
-    "@jupyterlab/nbformat": "~3.1.10",
-    "@jupyterlab/observables": "~4.1.10",
-    "@jupyterlab/services": "~6.1.10",
-    "@jupyterlab/settingregistry": "~3.1.10",
-    "@jupyterlab/statedb": "~3.1.10",
+    "@jupyterlab/coreutils": "~5.1.12",
+    "@jupyterlab/nbformat": "~3.1.12",
+    "@jupyterlab/observables": "~4.1.12",
+    "@jupyterlab/services": "~6.1.12",
+    "@jupyterlab/settingregistry": "~3.1.12",
+    "@jupyterlab/statedb": "~3.1.12",
     "@jupyterlite/contents": "^0.1.0-alpha.8",
     "@jupyterlite/kernel": "^0.1.0-alpha.8",
     "@jupyterlite/session": "^0.1.0-alpha.8",
@@ -59,7 +59,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.1.10",
+    "@jupyterlab/testutils": "~3.1.12",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
