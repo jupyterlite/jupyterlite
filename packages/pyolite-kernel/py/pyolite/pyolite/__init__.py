@@ -1,6 +1,23 @@
 """A Python kernel backed by Pyodide"""
 
+import sys
 from collections import namedtuple
+
+# 0. do early mocks that change `sys.modules`
+from . import mocks
+
+mocks.apply_mocks()
+del mocks
+
+# 1. do expensive patches that require imports
+from . import patches
+
+patches.apply_patches()
+del patches
+
+# 2. set up the rest of the IPython-like environment
+from .display import LiteStream
+from .interpreter import LitePythonShellApp
 
 VersionInfo = namedtuple(
     "VersionInfo", ["major", "minor", "micro", "releaselevel", "serial"]
@@ -21,25 +38,6 @@ __version__ = "{}.{}.{}{}".format(
         else _specifier_[version_info.releaselevel] + str(version_info.serial)
     ),
 )
-
-
-import sys
-
-# 0. do early mocks that change `sys.modules`
-from . import mocks
-
-mocks.apply_mocks()
-del mocks
-
-# 1. do expensive patches that require imports
-from . import patches
-
-patches.apply_patches()
-del patches
-
-# 2. set up the rest of the IPython-like environment
-from .display import LiteStream
-from .interpreter import LitePythonShellApp
 
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
