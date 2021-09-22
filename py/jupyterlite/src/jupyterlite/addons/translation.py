@@ -33,6 +33,7 @@ class TranslationAddon(BaseAddon):
                 get_language_pack,
                 get_language_packs,
             )
+
             metadata, _ = get_language_packs()
             packs = {locale: get_language_pack(locale)[0] for locale in metadata.keys()}
         except ImportError as err:  # pragma: no cover
