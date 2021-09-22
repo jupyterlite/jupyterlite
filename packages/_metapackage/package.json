@@ -34,6 +34,7 @@
     "@jupyterlite/server": "file:../server-extension",
     "@jupyterlite/session": "file:../session",
     "@jupyterlite/settings": "file:../settings",
+    "@jupyterlite/translation": "file:../translation",
     "@jupyterlite/ui-components": "file:../ui-components"
   },
   "devDependencies": {

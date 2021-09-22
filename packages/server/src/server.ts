@@ -8,6 +8,8 @@ import { ISessions } from '@jupyterlite/session';
 
 import { ISettings } from '@jupyterlite/settings';
 
+import { ITranslation } from '@jupyterlite/translation';
+
 import { Router } from './router';
 
 /**
@@ -18,12 +20,13 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor(options: JupyterServer.IOptions) {
-    const { contents, kernels, kernelspecs, sessions, settings } = options;
+    const { contents, kernels, kernelspecs, sessions, settings, translation } = options;
     this._contents = contents;
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
     this._sessions = sessions;
     this._settings = settings;
+    this._translation = translation;
     this._addRoutes();
   }
 
@@ -208,8 +211,8 @@ export class JupyterServer {
       return new Response(JSON.stringify(plugins));
     });
 
-    app.get('/api/translations/(.*)', async (req: Router.IRequest) => {
-      const data = {};
+    app.get('/api/translations/?(.*)', async (req: Router.IRequest, locale: string) => {
+      const data = this._translation.get(locale);
       return new Response(JSON.stringify(data));
     });
   }
@@ -220,6 +223,7 @@ export class JupyterServer {
   private _kernelspecs: IKernelSpecs;
   private _sessions: ISessions;
   private _settings: ISettings;
+  private _translation: ITranslation;
 }
 
 /**
@@ -254,5 +258,10 @@ export namespace JupyterServer {
      * The settings service.
      */
     settings: ISettings;
+
+    /**
+     * The translation service.
+     */
+    translation: ITranslation;
   }
 }

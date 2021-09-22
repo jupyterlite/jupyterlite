@@ -3160,6 +3160,9 @@
     json5 "^2.2.0"
     localforage "^1.9.0"
 
+"@jupyterlite/translation@file:packages/translation":
+  version "0.1.0-alpha.8"
+
 "@jupyterlite/ui-components@file:packages/ui-components":
   version "0.1.0-alpha.8"
   dependencies:
