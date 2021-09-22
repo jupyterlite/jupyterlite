@@ -4,6 +4,10 @@ import json
 from ..constants import ALL_JSON, API_TRANSLATIONS
 from .base import BaseAddon
 
+DEFAULT_PACKS = {
+    {"en": {"displayName": "English", "nativeName": "English"}, "message": ""}
+}
+
 
 class TranslationAddon(BaseAddon):
     """Add translation data to /api/translations"""
@@ -29,15 +33,15 @@ class TranslationAddon(BaseAddon):
                 get_language_pack,
                 get_language_packs,
             )
+            metadata, _ = get_language_packs()
+            packs = {locale: get_language_pack(locale)[0] for locale in metadata.keys()}
         except ImportError as err:  # pragma: no cover
             self.log.warning(
                 f"[lite] [translation] `jupyterlab_server` was not importable, "
                 f"cannot create translation data {err}"
             )
-            return
-
-        metadata, _ = get_language_packs()
-        packs = {locale: get_language_pack(locale)[0] for locale in metadata.keys()}
+            metadata = DEFAULT_PACKS
+            packs = {}
 
         all_packs = dict(metadata=metadata, packs=packs)
 
