@@ -3,7 +3,9 @@ import { JSONObject, Token } from '@lumino/coreutils';
 /**
  * The token for the settings service.
  */
-export const ITranslation = new Token<ITranslation>('@jupyterlite/translation:ITranslation');
+export const ITranslation = new Token<ITranslation>(
+  '@jupyterlite/translation:ITranslation'
+);
 
 /**
  * The interface for the Translation service.
