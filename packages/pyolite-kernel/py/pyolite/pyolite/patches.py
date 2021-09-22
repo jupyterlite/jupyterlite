@@ -52,4 +52,4 @@ def apply_patches():
         try:
             patch()
         except Exception as err:
-            warnings.warn("faield to apply patch", patch, err)
+            warnings.warn("failed to apply patch", patch, err)
