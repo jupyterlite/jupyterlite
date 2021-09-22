@@ -7,6 +7,7 @@
 # - https://github.com/voila-dashboards/voila/blob/master/scripts/bump-version.py
 
 import json
+import re
 from pathlib import Path
 
 import click
@@ -21,11 +22,40 @@ ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
+PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
+PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
+PYOLITE_KERNEL_SOURCE = PYOLITE_PACKAGE / "src" / "kernel.ts"
+PYOLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "pyolite" / "pyolite" / "__init__.py"
+
+
+def replace_in_file(path, pattern, replacement):
+    source = path.read_text(**ENC)
+    replaced = re.sub(pattern, replacement, source)
+    path.write_text(replaced, **ENC)
+
 
 def postbump():
     # read the new app version
     app_json = json.loads(APP_PACKAGE_JSON.read_text(**ENC))
     new_version = app_json["version"]
+    py_version = (
+        new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
+    )
+
+    # bump pyolite wheel import
+    replace_in_file(
+        PYOLITE_KERNEL_SOURCE,
+        "pyolite-(.*)-py3-none-any.whl",
+        f"pyolite-{py_version}-py3-none-any.whl",
+    )
+    replace_in_file(
+        PYOLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
+    )
+
+    # bump pyolite version
+    pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
+    pyolite_json["pyolite"]["packages"]["py/pyolite"] = py_version
+    PYOLITE_PACKAGE_JSON.write_text(json.dumps(pyolite_json, indent=2) + "\n", **ENC)
 
     # save the new version to the app jupyter-lite.json
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))
@@ -35,9 +65,6 @@ def postbump():
     )
 
     # save the new version to the top-level package.json
-    py_version = (
-        new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
-    )
     root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     root_json["version"] = py_version
     ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **ENC)

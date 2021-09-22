@@ -65,7 +65,7 @@
   },
   "pyolite": {
     "packages": {
-      "py/pyolite": "0.1.0a6",
+      "py/pyolite": "0.1.0a8",
       "py/ipykernel": "5.5.5",
       "py/nbformat": "4.2.0",
       "py/widgetsnbextension": "3.5.0"
