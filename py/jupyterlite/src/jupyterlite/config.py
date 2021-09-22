@@ -87,6 +87,7 @@ class LiteBuildConfig(LoggingConfigurable):
             " env: JUPYTERLITE_PORT"
         )
     ).tag(config=True)
+
     base_url: str = Unicode(
         help=("[serve] the prefix to use." " env: JUPYTERLITE_BASE_URL")
     ).tag(config=True)
