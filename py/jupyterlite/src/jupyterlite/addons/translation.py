@@ -37,7 +37,7 @@ class TranslationAddon(BaseAddon):
             return
 
         metadata, _ = get_language_packs()
-        packs = {locale: get_language_pack(locale) for locale in metadata.keys()}
+        packs = {locale: get_language_pack(locale)[0] for locale in metadata.keys()}
 
         all_packs = dict(metadata=metadata, packs=packs)
 
