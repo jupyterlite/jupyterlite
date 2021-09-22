@@ -212,7 +212,7 @@ export class JupyterServer {
     });
 
     app.get('/api/translations/?(.*)', async (req: Router.IRequest, locale: string) => {
-      const data = this._translation.get(locale);
+      const data = await this._translation.get(locale);
       return new Response(JSON.stringify(data));
     });
   }
