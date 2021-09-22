@@ -1,7 +1,6 @@
 """A Python kernel backed by Pyodide"""
 
 import sys
-from collections import namedtuple
 
 # 0. do early mocks that change `sys.modules`
 from . import mocks
@@ -15,29 +14,13 @@ from . import patches
 patches.apply_patches()
 del patches
 
+from ._version import __version__ as version
+
 # 2. set up the rest of the IPython-like environment
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
 
-VersionInfo = namedtuple(
-    "VersionInfo", ["major", "minor", "micro", "releaselevel", "serial"]
-)
-
-# DO NOT EDIT THIS DIRECTLY!  It is managed by bumpversion
-version_info = VersionInfo(0, 1, 0, "alpha", 8)
-
-_specifier_ = {"alpha": "a", "beta": "b", "candidate": "rc", "final": ""}
-
-__version__ = "{}.{}.{}{}".format(
-    version_info.major,
-    version_info.minor,
-    version_info.micro,
-    (
-        ""
-        if version_info.releaselevel == "final"
-        else _specifier_[version_info.releaselevel] + str(version_info.serial)
-    ),
-)
+__version__ = version
 
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
