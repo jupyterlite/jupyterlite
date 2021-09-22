@@ -1,5 +1,7 @@
 """A Python kernel backed by Pyodide"""
 
+__version__ = "0.1.0a8"
+
 import sys
 
 # 0. do early mocks that change `sys.modules`
@@ -14,13 +16,9 @@ from . import patches
 patches.apply_patches()
 del patches
 
-from ._version import __version__ as version
-
 # 2. set up the rest of the IPython-like environment
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
-
-__version__ = version
 
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")

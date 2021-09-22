@@ -25,7 +25,13 @@ APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
 PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
 PYOLITE_KERNEL_SOURCE = PYOLITE_PACKAGE / "src" / "kernel.ts"
-PYOLITE_IMPORT_PATTERN = "pyolite-(.*)-py3-none-any.whl"
+PYOLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "pyolite" / "pyolite" / "__init__.py"
+
+
+def replace_in_file(path, pattern, replacement):
+    source = path.read_text(**ENC)
+    replaced = re.sub(pattern, replacement, source)
+    path.write_text(replaced, **ENC)
 
 
 def postbump():
@@ -37,10 +43,14 @@ def postbump():
     )
 
     # bump pyolite wheel import
-    replacement = f"pyolite-{py_version}-py3-none-any.whl"
-    pyolite_source = PYOLITE_KERNEL_SOURCE.read_text(**ENC)
-    bumped_source = re.sub(PYOLITE_IMPORT_PATTERN, replacement, pyolite_source)
-    PYOLITE_KERNEL_SOURCE.write_text(bumped_source, **ENC)
+    replace_in_file(
+        PYOLITE_KERNEL_SOURCE,
+        "pyolite-(.*)-py3-none-any.whl",
+        f"pyolite-{py_version}-py3-none-any.whl",
+    )
+    replace_in_file(
+        PYOLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
+    )
 
     # bump pyolite version
     pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
