@@ -61,6 +61,7 @@
     "@jupyterlab/tooltip": "~3.1.12",
     "@jupyterlab/tooltip-extension": "~3.1.12",
     "@jupyterlab/translation": "~3.1.12",
+    "@jupyterlab/translation-extension": "~3.1.12",
     "@jupyterlab/ui-components": "~3.1.12",
     "@jupyterlite/application-extension": "~0.1.0-alpha.8",
     "@jupyterlite/iframe-extension": "~0.1.0-alpha.8",
@@ -113,6 +114,7 @@
     "@jupyterlab/theme-dark-extension": "~3.1.12",
     "@jupyterlab/theme-light-extension": "~3.1.12",
     "@jupyterlab/tooltip-extension": "~3.1.12",
+    "@jupyterlab/translation-extension": "~3.1.12",
     "@jupyterlite/application-extension": "^0.1.0-alpha.8",
     "@jupyterlite/iframe-extension": "^0.1.0-alpha.8",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0-alpha.8",
@@ -185,6 +187,7 @@
       "@jupyterlab/theme-dark-extension",
       "@jupyterlab/theme-light-extension",
       "@jupyterlab/tooltip-extension",
+      "@jupyterlab/translation-extension",
       "@jupyterlab/vega5-extension"
     ],
     "singletonPackages": [
