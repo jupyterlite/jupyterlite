@@ -24,7 +24,7 @@ export class Translation {
         message: ''
       };
     }
-    const data = (this._data?.packs as JSONObject)[locale];
+    const data = (this._data?.packs as JSONObject)?.[locale] ?? {};
     return {
       data,
       message: ''
