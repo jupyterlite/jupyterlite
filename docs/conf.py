@@ -105,7 +105,7 @@ html_theme_options = {
 }
 
 html_context = {
-    "github_user": "jtpio",
+    "github_user": "jupyterlite",
     "github_repo": "jupyterlite",
     "github_version": "main",
     "doc_path": "docs",
