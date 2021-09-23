@@ -1,18 +1,35 @@
 """a JupyterLite addon to expose translation data"""
 import json
+import pprint
 
 from ..constants import ALL_JSON, API_TRANSLATIONS
 from .base import BaseAddon
 
 DEFAULT_PACKS = {
-    {"en": {"displayName": "English", "nativeName": "English"}, "message": ""}
+    "en": {"displayName": "English", "nativeName": "English"},
+    "message": "",
 }
 
 
 class TranslationAddon(BaseAddon):
     """Add translation data to /api/translations"""
 
-    __all__ = ["build"]
+    __all__ = ["build", "status"]
+
+    def status(self, manager):
+        """yield some status information about the state of the translation"""
+        yield dict(
+            name="translation",
+            actions=[
+                lambda: self.log.debug(
+                    "[lite] [translation] All Translations %s",
+                    pprint.pformat([str(p) for p in self.translation_files]),
+                ),
+                lambda: print(
+                    f"""    translation files: {len(list(self.translation_files))} files"""
+                ),
+            ],
+        )
 
     def build(self, manager):
         api_path = self.api_dir / ALL_JSON
@@ -57,3 +74,7 @@ class TranslationAddon(BaseAddon):
     @property
     def api_dir(self):
         return self.manager.output_dir / API_TRANSLATIONS
+
+    @property
+    def translation_files(self):
+        return self.api_dir.glob("*")

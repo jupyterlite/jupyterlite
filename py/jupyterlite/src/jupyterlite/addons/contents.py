@@ -15,7 +15,7 @@ class ContentsAddon(BaseAddon):
     __all__ = ["build", "post_build", "check", "status"]
 
     def status(self, manager):
-        """yield some status information about the state of contentss"""
+        """yield some status information about the state of contents"""
         yield dict(
             name="contents",
             actions=[
