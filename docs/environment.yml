@@ -35,4 +35,6 @@ dependencies:
   - pytest-cov
   - pytest-html
   - pytest-xdist
+  # language packs
+  - jupyterlab-language-pack-fr-FR
   ### DOCS ENV ###

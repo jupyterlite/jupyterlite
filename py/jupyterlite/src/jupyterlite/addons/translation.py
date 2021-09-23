@@ -59,7 +59,7 @@ class TranslationAddon(BaseAddon):
                 f"cannot create translation data {err}"
             )
             metadata = DEFAULT_PACKS
-            packs = {}
+            packs = None
 
         all_packs = dict(metadata=metadata, packs=packs)
 

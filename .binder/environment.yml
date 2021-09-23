@@ -15,7 +15,6 @@ dependencies:
   # demo stuff
   - jupyter-server-proxy
   - jupyterlab >=3.1.9,<4
-  - jupyterlab-language-pack-fr-FR
   - retrolab
   # extra docs tools
   - sphinx-autobuild
