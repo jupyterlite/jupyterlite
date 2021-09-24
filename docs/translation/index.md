@@ -23,4 +23,6 @@ JupyterLab:
 
 https://jupyterlab.readthedocs.io/en/stable/user/language.html#changing-the-display-language
 
+Both the JupyterLab and RetroLab interfaces support localization:
+
 ![localization](https://user-images.githubusercontent.com/591645/134638710-e99b9710-af61-43e0-856b-cb383b8e8181.gif)
