@@ -5,11 +5,6 @@ import pprint
 from ..constants import ALL_JSON, API_TRANSLATIONS
 from .base import BaseAddon
 
-DEFAULT_PACKS = {
-    "en": {"displayName": "English", "nativeName": "English"},
-    "message": "",
-}
-
 
 class TranslationAddon(BaseAddon):
     """Add translation data to /api/translations"""
@@ -51,25 +46,40 @@ class TranslationAddon(BaseAddon):
                 get_language_packs,
             )
 
-            metadata, _ = get_language_packs()
-            packs = {locale: get_language_pack(locale)[0] for locale in metadata.keys()}
+            all_packs, _ = get_language_packs()
+            packs = {
+                locale: {"data": get_language_pack(locale)[0], "message": ""}
+                for locale in all_packs.keys()
+            }
+            metadata = {"data": all_packs}
         except ImportError as err:  # pragma: no cover
             self.log.warning(
                 f"[lite] [translation] `jupyterlab_server` was not importable, "
                 f"cannot create translation data {err}"
             )
-            metadata = DEFAULT_PACKS
-            packs = None
 
-        all_packs = dict(metadata=metadata, packs=packs)
+            metadata = {
+                "data": {
+                    "en": {"displayName": "English", "nativeName": "English"},
+                    "message": "",
+                }
+            }
+            packs = {}
 
+        # save the metadata about available packs
         api_path.parent.mkdir(parents=True, exist_ok=True)
         api_path.write_text(
-            json.dumps(all_packs, indent=2, sort_keys=True),
+            json.dumps(metadata, indent=2, sort_keys=True),
             encoding="utf-8",
         )
 
-        self.maybe_timestamp(api_path)
+        for locale, data in packs.items():
+            language_pack_file = self.api_dir / f"{locale}.json"
+            language_pack_file.write_text(
+                json.dumps(data, indent=2, sort_keys=True),
+                encoding="utf-8",
+            )
+            self.maybe_timestamp(language_pack_file)
 
     @property
     def api_dir(self):
