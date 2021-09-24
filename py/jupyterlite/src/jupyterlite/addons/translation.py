@@ -61,10 +61,10 @@ class TranslationAddon(BaseAddon):
             metadata = {
                 "data": {
                     "en": {"displayName": "English", "nativeName": "English"},
-                    "message": "",
-                }
+                },
+                "message": "",
             }
-            packs = {"en": {"data": {}, "message": ""}}
+            packs = {"en": {"data": {}, "message": "Language pack 'en' not installed!"}}
 
         # save the metadata about available packs
         api_path.parent.mkdir(parents=True, exist_ok=True)
