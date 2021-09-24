@@ -64,7 +64,7 @@ class TranslationAddon(BaseAddon):
                     "message": "",
                 }
             }
-            packs = {}
+            packs = {"en": {"data": {}, "message": ""}}
 
         # save the metadata about available packs
         api_path.parent.mkdir(parents=True, exist_ok=True)
