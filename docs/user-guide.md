@@ -7,6 +7,7 @@
 
 kernels/index
 rtc/index
+translation/index
 ```
 
 ## Frequently-Asked Questions
