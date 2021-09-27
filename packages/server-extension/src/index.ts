@@ -16,6 +16,8 @@ import { ISessions, Sessions } from '@jupyterlite/session';
 
 import { ISettings, Settings } from '@jupyterlite/settings';
 
+import { ITranslation, Translation } from '@jupyterlite/translation';
+
 /**
  * The contents service plugin.
  */
@@ -72,21 +74,23 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
 const server: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:server',
   autoStart: true,
-  requires: [IContents, IKernels, IKernelSpecs, ISessions, ISettings],
+  requires: [IContents, IKernels, IKernelSpecs, ISessions, ISettings, ITranslation],
   activate: (
     app: JupyterLiteServer,
     contents: IContents,
     kernels: IKernels,
     kernelspecs: IKernelSpecs,
     sessions: ISessions,
-    settings: ISettings
+    settings: ISettings,
+    translation: ITranslation
   ) => {
     const jupyterServer = new JupyterServer({
       contents,
       kernels,
       kernelspecs,
       sessions,
-      settings
+      settings,
+      translation
     });
     const serviceManager = new LiteServiceManager({ server: jupyterServer });
     app.registerServiceManager(serviceManager);
@@ -105,13 +109,26 @@ const settings: JupyterLiteServerPlugin<ISettings> = {
   }
 };
 
+/**
+ * The translation service plugin.
+ */
+const translation: JupyterLiteServerPlugin<ITranslation> = {
+  id: '@jupyterlite/server-extension:translation',
+  autoStart: true,
+  provides: ITranslation,
+  activate: (app: JupyterLiteServer) => {
+    return new Translation();
+  }
+};
+
 const plugins: JupyterLiteServerPlugin<any>[] = [
   contents,
   kernels,
   kernelSpec,
   server,
   sessions,
-  settings
+  settings,
+  translation
 ];
 
 export default plugins;

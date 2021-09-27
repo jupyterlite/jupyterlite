@@ -27,7 +27,7 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { Contents } from '@jupyterlab/services';
 
-import { ITranslator, TranslationManager } from '@jupyterlab/translation';
+import { ITranslator } from '@jupyterlab/translation';
 
 import { downloadIcon } from '@jupyterlab/ui-components';
 
@@ -358,25 +358,11 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
   }
 };
 
-/**
- * A simplified Translator
- */
-const translator: JupyterFrontEndPlugin<ITranslator> = {
-  id: '@jupyterlite/application-extension:translator',
-  activate: (app: JupyterFrontEnd): ITranslator => {
-    const translationManager = new TranslationManager();
-    return translationManager;
-  },
-  autoStart: true,
-  provides: ITranslator
-};
-
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   docProviderPlugin,
   downloadPlugin,
-  liteLogo,
-  translator
+  liteLogo
 ];
 
 export default plugins;

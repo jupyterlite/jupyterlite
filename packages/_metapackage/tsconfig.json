@@ -20,6 +20,7 @@
     { "path": "../server-extension" },
     { "path": "../session" },
     { "path": "../settings" },
+    { "path": "../translation" },
     { "path": "../ui-components" }
   ]
 }

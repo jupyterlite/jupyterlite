@@ -105,7 +105,8 @@ async function main() {
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
-    require('@jupyterlab/theme-dark-extension')
+    require('@jupyterlab/theme-dark-extension'),
+    require('@jupyterlab/translation-extension')
   ];
 
   // The motivation here is to only load a specific set of plugins dependending on

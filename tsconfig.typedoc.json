@@ -55,6 +55,9 @@
       "path": "./packages/settings"
     },
     {
+      "path": "./packages/translation"
+    },
+    {
       "path": "./packages/ui-components"
     }
   ]

@@ -80,6 +80,7 @@ NPM_SOURCE_DATE_EPOCH = 499162500
 
 #: the Jupyter API route for Contents API
 API_CONTENTS = "api/contents"
+API_TRANSLATIONS = "api/translations"
 LAB_EXTENSIONS = "lab/extensions"
 
 #: our doit task-based plugin system

@@ -32,6 +32,7 @@ class LiteManager(LiteBuildConfig):
         federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
         settings = "jupyterlite.addons.settings:SettingsAddon"
         contents = "jupyterlite.addons.contents:ContentsAddon"
+        translation = "jupyterlite.addons.translation:TranslationAddon"
         lite = "jupyterlite.addons.lite:LiteAddon"
         report = "jupyterlite.addons.report:ReportAddon"
         serve = "jupyterlite.addons.serve:ServeAddon"

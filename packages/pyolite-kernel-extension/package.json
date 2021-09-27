@@ -37,7 +37,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.1.10",
+    "@jupyterlab/coreutils": "~5.1.12",
     "@jupyterlite/kernel": "^0.1.0-alpha.8",
     "@jupyterlite/pyolite-kernel": "^0.1.0-alpha.8",
     "@jupyterlite/server": "^0.1.0-alpha.8"
