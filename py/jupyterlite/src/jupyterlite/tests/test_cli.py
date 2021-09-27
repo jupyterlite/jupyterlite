@@ -168,14 +168,14 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
                 missed += 1
         assert not missed, "some contents were not indexed"
 
-        if lite_hook == "build":
-            # default translation files should also be created
-            all_packs = (out / "api/translations/all.json").read_text()
-            assert all_packs.exists()
-            assert "English" in all_packs
+        # default translation files should also be created
+        all_packs_file = out / "api/translations/all.json"
+        assert all_packs_file.exists()
+        all_packs = all_packs_file.read_text()
+        assert "English" in all_packs
 
-            en_pack = (out / "api/translations/en.json").read_text()
-            assert en_pack.exists()
+        en_pack_file = out / "api/translations/en.json"
+        assert en_pack_file.exists()
 
     assert forced_status.success
 
