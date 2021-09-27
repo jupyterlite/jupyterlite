@@ -9,7 +9,7 @@ from .base import BaseAddon
 class TranslationAddon(BaseAddon):
     """Add translation data to /api/translations"""
 
-    __all__ = ["build", "status"]
+    __all__ = ["build", "status", "check"]
 
     def status(self, manager):
         """yield some status information about the state of the translation"""
@@ -37,6 +37,17 @@ class TranslationAddon(BaseAddon):
                 (self.maybe_timestamp, [api_path]),
             ],
         )
+
+    def check(self, manager):
+        """Check the translation data is valid"""
+        for all_json in self.api_dir.rglob(ALL_JSON):
+            stem = all_json.relative_to(self.api_dir)
+            yield dict(
+                name=f"validate:translation:{stem}",
+                doc=f"Validate {stem} with the JupyterLab Translation API",
+                file_dep=[all_json],
+                actions=[(self.validate_one_json_file, [None, all_json])],
+            )
 
     def one_translation_path(self, api_path):
         """Reuse of the utilities from ``jupyterlab_server`` to populate the translation data"""
