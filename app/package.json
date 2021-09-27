@@ -10,5 +10,8 @@
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
   "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors"
+  "author": "JupyterLite Contributors",
+  "dependencies": {
+    "copy-webpack-plugin": "^9.0.1"
+  }
 }

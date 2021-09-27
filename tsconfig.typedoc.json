@@ -56,6 +56,12 @@
     },
     {
       "path": "./packages/ui-components"
+    },
+    {
+      "path": "./packages/xeus-kernel"
+    },
+    {
+      "path": "./packages/xeus-kernel-extension"
     }
   ]
 }

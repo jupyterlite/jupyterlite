@@ -30,6 +30,8 @@
     "@jupyterlite/p5-kernel-extension": "file:../p5-kernel-extension",
     "@jupyterlite/pyolite-kernel": "file:../pyolite-kernel",
     "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
+    "@jupyterlite/xeus-kernel": "file:../xeus-kernel",
+    "@jupyterlite/xeus-kernel-extension": "file:../xeus-kernel-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/server": "file:../server-extension",
     "@jupyterlite/session": "file:../session",

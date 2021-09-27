@@ -11,6 +11,7 @@ const Build = require('@jupyterlab/builder').Build;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
 const data = fs.readJSONSync('./package.json');
+const CopyPlugin = require('copy-webpack-plugin');
 
 /**
  * Create the webpack ``shared`` configuration
@@ -224,6 +225,14 @@ module.exports = [
         },
         name: 'CORE_FEDERATION',
         shared: createShared(data)
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: '../../packages/xeus-kernel/src/xeus_lua.wasm',
+            to: '.'
+          }
+        ]
       })
     ]
   })

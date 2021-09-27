@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "lib": ["ES2019", "WebWorker", "ScriptHost", "DOM", "DOM.Iterable"],
+    "outDir": "lib",
+    "rootDir": "src",
+    "moduleResolution": "node",
+    "allowJs": true
+  },
+  "include": ["src/**/*"],
+  "references": [
+    {
+      "path": "../kernel"
+    }
+  ]
+}

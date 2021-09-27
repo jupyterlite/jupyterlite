@@ -143,6 +143,7 @@
     "@jupyterlite/server": "^0.1.0-alpha.8",
     "@jupyterlite/server-extension": "^0.1.0-alpha.8",
     "@jupyterlite/ui-components": "^0.1.0-alpha.8",
+    "@jupyterlite/xeus-kernel-extension": "^0.1.0-alpha.6",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

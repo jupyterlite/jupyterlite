@@ -10,6 +10,8 @@
     "packages/p5-kernel/src/index.ts",
     "packages/pyolite-kernel-extension/src/index.ts",
     "packages/pyolite-kernel/src/index.ts",
+    "packages/xeus-kernel-extension/src/index.ts",
+    "packages/xeus-kernel/src/index.ts",
     "packages/retro-application-extension/src/index.ts",
     "packages/server-extension/src/index.ts",
     "packages/server/src/index.ts",
