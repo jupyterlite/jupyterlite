@@ -51,11 +51,15 @@ async function main() {
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
+  const liteExtensionPromises = [];
 
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
   const extensions = JSON.parse(
     PageConfig.getOption('federated_extensions')
+  );
+  const liteExtensions = JSON.parse(
+    PageConfig.getOption('lite_extensions')
   );
 
   // The set of federated extension names.
@@ -72,6 +76,12 @@ async function main() {
     }
     if (data.style) {
       federatedStylePromises.push(createModule(data.name, data.style));
+    }
+  });
+
+  liteExtensions.forEach(data => {
+    if (data.extension) {
+      liteExtensionPromises.push(createModule(data.name, data.extension));
     }
   });
 
@@ -154,6 +164,18 @@ async function main() {
     }
   });
 
+  // Add the serverlite federated extensions.
+  const liteExtensions = await Promise.allSettled(liteExtensionPromises);
+  liteExtensions.forEach(p => {
+    if (p.status === "fulfilled") {
+      for (let plugin of activePlugins(p.value)) {
+        litePluginsToRegister.push(plugin);
+      }
+    } else {
+      console.error(p.reason);
+    }
+  });
+
   // Load all federated component styles and log errors for any that do not
   (await Promise.allSettled(federatedStylePromises)).filter(({status}) => status === "rejected").forEach(({reason}) => {
      console.error(reason);
@@ -161,7 +183,8 @@ async function main() {
 
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
-  jupyterLiteServer.registerPluginModules(await Promise.all(serverExtensions));
+  const allServerExtensions = await Promise.all(serverExtensions.concat(liteExtensions))
+  jupyterLiteServer.registerPluginModules(allServerExtensions);
   // start the server
   await jupyterLiteServer.start();
 
