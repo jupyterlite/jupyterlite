@@ -16,8 +16,23 @@ export class Translation {
       PageConfig.getBaseUrl(),
       `api/translations/${locale}.json`
     );
-    const response = await fetch(apiURL);
-    const json = JSON.parse(await response.text());
-    return json;
+    try {
+      const response = await fetch(apiURL);
+      const json = JSON.parse(await response.text());
+      return json;
+    } catch (e) {
+      if (locale) {
+        return {
+          data: {},
+          message: `Language pack '${locale}' not installed!`
+        };
+      }
+      return {
+        data: {
+          en: { displayName: 'English', nativeName: 'English' }
+        },
+        message: ''
+      };
+    }
   }
 }
