@@ -50,6 +50,7 @@ async function main() {
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
+  const litePluginsToRegister = [];
   const liteExtensionPromises = [];
 
   // This is all the data needed to load and activate plugins. This should be
@@ -182,7 +183,7 @@ async function main() {
 
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
-  const allServerExtensions = await Promise.all(serverExtensions.concat(federatedLiteExtensions))
+  const allServerExtensions = (await Promise.all(serverExtensions)).concat(litePluginsToRegister);
   jupyterLiteServer.registerPluginModules(allServerExtensions);
   // start the server
   await jupyterLiteServer.start();
