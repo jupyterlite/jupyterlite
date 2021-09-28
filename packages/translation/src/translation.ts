@@ -19,6 +19,15 @@ export class Translation {
     try {
       const response = await fetch(apiURL);
       const json = JSON.parse(await response.text());
+      if (this._prevLocale !== 'all' && locale === 'all') {
+        // TODO: fix this logic upstream?
+        const prev = this._prevLocale;
+        json.data[prev].displayName = json.data[prev].nativeName;
+        if (prev !== 'en') {
+          json.data['en'].displayName = `${json.data['en'].nativeName} (default)`;
+        }
+      }
+      this._prevLocale = locale;
       return json;
     } catch (e) {
       if (locale) {
@@ -35,4 +44,6 @@ export class Translation {
       };
     }
   }
+
+  private _prevLocale = '';
 }
