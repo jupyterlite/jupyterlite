@@ -65,6 +65,7 @@ void (async function bootstrap() {
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
   const extension_data = getOption('federated_extensions');
+  const lite_data = getOption('lite_extensions');
 
   // We first load all federated components so that the shared module
   // deduplication can run and figure out which shared modules from all
@@ -72,12 +73,19 @@ void (async function bootstrap() {
   // and using the module that actually uses these components so that all
   // dependencies are initialized.
   let labExtensionUrl = getOption('fullLabextensionsUrl');
-  const extensions = await Promise.allSettled(
+  const labExtensions = await Promise.allSettled(
     extension_data.map(async data => {
       await loadComponent(`${labExtensionUrl}/${data.name}/${data.load}`, data.name);
     })
   );
+  let liteExtensionUrl = getOption('fullLiteextensionsUrl');
+  const liteExtensions = await Promise.allSettled(
+    lite_data.map(async data => {
+      await loadComponent(`${liteExtensionUrl}/${data.name}/${data.load}`, data.name);
+    })
+  );
 
+  const extensions = labExtensions.concat(liteExtensions);
   extensions.forEach(p => {
     if (p.status === 'rejected') {
       // There was an error loading the component

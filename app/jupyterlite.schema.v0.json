@@ -75,6 +75,18 @@
           "default": "./lab/extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "lite_extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/federated-extension"
+          },
+          "default": []
+        },
+        "fullLiteextensionsUrl": {
+          "description": "path to federated extensions, a folder organized by `({:org}/){package}`",
+          "default": "./lab/extensions",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
         "fullMathjaxUrl": {
           "type": "string",
           "description": "path to MathJax2 assets",

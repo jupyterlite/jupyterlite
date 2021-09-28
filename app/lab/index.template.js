@@ -164,8 +164,8 @@ async function main() {
   });
 
   // Add the serverlite federated extensions.
-  const liteExtensions = await Promise.allSettled(liteExtensionPromises);
-  liteExtensions.forEach(p => {
+  const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
+  federatedLiteExtensions.forEach(p => {
     if (p.status === "fulfilled") {
       for (let plugin of activePlugins(p.value)) {
         litePluginsToRegister.push(plugin);
@@ -182,7 +182,7 @@ async function main() {
 
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
-  const allServerExtensions = await Promise.all(serverExtensions.concat(liteExtensions))
+  const allServerExtensions = await Promise.all(serverExtensions.concat(federatedLiteExtensions))
   jupyterLiteServer.registerPluginModules(allServerExtensions);
   // start the server
   await jupyterLiteServer.start();
