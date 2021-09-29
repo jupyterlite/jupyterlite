@@ -211,6 +211,7 @@
       "@jupyterlab/vega5-extension",
       "@jupyterlite/application-extension",
       "@jupyterlite/iframe-extension",
+      "@jupyterlite/javascript-kernel-extension",
       "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
