@@ -62,7 +62,7 @@ class TranslationAddon(BaseAddon):
                 locale: {"data": get_language_pack(locale)[0], "message": ""}
                 for locale in all_packs.keys()
             }
-            metadata = {"data": all_packs}
+            metadata = {"data": all_packs, "message": ""}
         except ImportError as err:  # pragma: no cover
             self.log.warning(
                 f"[lite] [translation] `jupyterlab_server` was not importable, "
