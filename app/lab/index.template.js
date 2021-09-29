@@ -58,14 +58,15 @@ async function main() {
   const extensions = JSON.parse(
     PageConfig.getOption('federated_extensions')
   );
-  const liteExtensions = JSON.parse(
-    PageConfig.getOption('lite_extensions')
-  );
 
   // The set of federated extension names.
   const federatedExtensionNames = new Set();
 
   extensions.forEach(data => {
+    if (data.liteExtension) {
+      liteExtensionPromises.push(createModule(data.name, data.extension));
+      return;
+    }
     if (data.extension) {
       federatedExtensionNames.add(data.name);
       federatedExtensionPromises.push(createModule(data.name, data.extension));
@@ -76,12 +77,6 @@ async function main() {
     }
     if (data.style) {
       federatedStylePromises.push(createModule(data.name, data.style));
-    }
-  });
-
-  liteExtensions.forEach(data => {
-    if (data.extension) {
-      liteExtensionPromises.push(createModule(data.name, data.extension));
     }
   });
 
