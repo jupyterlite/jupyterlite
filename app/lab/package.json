@@ -246,6 +246,7 @@
       "@jupyterlab/translation",
       "@jupyterlab/ui-components",
       "@jupyterlite/kernel",
+      "@jupyterlite/javascript-kernel",
       "@lumino/algorithm",
       "@lumino/application",
       "@lumino/commands",
