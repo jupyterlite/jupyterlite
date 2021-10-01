@@ -161,9 +161,6 @@
   "jupyterlab": {
     "name": "JupyterLite Retro",
     "extensions": [
-      "@jupyterlite/application-extension",
-      "@jupyterlite/iframe-extension",
-      "@jupyterlite/retro-application-extension",
       "@retrolab/application-extension",
       "@retrolab/docmanager-extension",
       "@retrolab/help-extension",
@@ -186,7 +183,12 @@
       "@jupyterlab/theme-light-extension",
       "@jupyterlab/tooltip-extension",
       "@jupyterlab/translation-extension",
-      "@jupyterlab/vega5-extension"
+      "@jupyterlab/vega5-extension",
+      "@jupyterlite/application-extension",
+      "@jupyterlite/iframe-extension",
+      "@jupyterlite/javascript-kernel-extension",
+      "@jupyterlite/retro-application-extension",
+      "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",
@@ -220,6 +222,8 @@
       "@jupyterlab/tooltip",
       "@jupyterlab/translation",
       "@jupyterlab/ui-components",
+      "@jupyterlite/kernel",
+      "@jupyterlite/javascript-kernel",
       "@lumino/algorithm",
       "@lumino/application",
       "@lumino/commands",
