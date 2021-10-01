@@ -26,8 +26,6 @@
     "@jupyterlite/javascript-kernel": "file:../javascript-kernel",
     "@jupyterlite/javascript-kernel-extension": "file:../javascript-kernel-extension",
     "@jupyterlite/kernel": "file:../kernel",
-    "@jupyterlite/p5-kernel": "file:../p5-kernel",
-    "@jupyterlite/p5-kernel-extension": "file:../p5-kernel-extension",
     "@jupyterlite/pyolite-kernel": "file:../pyolite-kernel",
     "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",

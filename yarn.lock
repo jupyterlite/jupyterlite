@@ -2643,18 +2643,6 @@
     async-mutex "^0.3.1"
     mock-socket "^9.0.3"
 
-"@jupyterlite/p5-kernel-extension@file:packages/p5-kernel-extension":
-  version "0.1.0-alpha.8"
-  dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.8"
-    "@jupyterlite/p5-kernel" "^0.1.0-alpha.8"
-    "@jupyterlite/server" "^0.1.0-alpha.8"
-
-"@jupyterlite/p5-kernel@file:packages/p5-kernel":
-  version "0.1.0-alpha.8"
-  dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.8"
-
 "@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
   version "0.1.0-alpha.8"
   dependencies:

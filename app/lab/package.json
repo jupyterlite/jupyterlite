@@ -81,7 +81,6 @@
     "@jupyterlite/application-extension": "~0.1.0-alpha.9",
     "@jupyterlite/iframe-extension": "~0.1.0-alpha.9",
     "@jupyterlite/javascript-kernel-extension": "~0.1.0-alpha.9",
-    "@jupyterlite/p5-kernel-extension": "~0.1.0-alpha.9",
     "@jupyterlite/pyolite-kernel-extension": "~0.1.0-alpha.9",
     "@jupyterlite/server": "~0.1.0-alpha.9",
     "@jupyterlite/server-extension": "~0.1.0-alpha.9",
@@ -140,7 +139,6 @@
     "@jupyterlite/application-extension": "^0.1.0-alpha.9",
     "@jupyterlite/iframe-extension": "^0.1.0-alpha.9",
     "@jupyterlite/javascript-kernel-extension": "^0.1.0-alpha.9",
-    "@jupyterlite/p5-kernel-extension": "^0.1.0-alpha.9",
     "@jupyterlite/pyolite-kernel-extension": "^0.1.0-alpha.9",
     "@jupyterlite/server": "^0.1.0-alpha.9",
     "@jupyterlite/server-extension": "^0.1.0-alpha.9",
@@ -179,8 +177,6 @@
   },
   "jupyterlab": {
     "extensions": [
-      "@jupyterlite/application-extension",
-      "@jupyterlite/iframe-extension",
       "@jupyterlab/application-extension",
       "@jupyterlab/apputils-extension",
       "@jupyterlab/celltags-extension",
@@ -212,7 +208,11 @@
       "@jupyterlab/tooltip-extension",
       "@jupyterlab/translation-extension",
       "@jupyterlab/ui-components-extension",
-      "@jupyterlab/vega5-extension"
+      "@jupyterlab/vega5-extension",
+      "@jupyterlite/application-extension",
+      "@jupyterlite/iframe-extension",
+      "@jupyterlite/javascript-kernel-extension",
+      "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",
@@ -246,6 +246,8 @@
       "@jupyterlab/tooltip",
       "@jupyterlab/translation",
       "@jupyterlab/ui-components",
+      "@jupyterlite/kernel",
+      "@jupyterlite/javascript-kernel",
       "@lumino/algorithm",
       "@lumino/application",
       "@lumino/commands",

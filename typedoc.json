@@ -6,8 +6,6 @@
     "packages/javascript-kernel-extension/src/index.ts",
     "packages/javascript-kernel/src/index.ts",
     "packages/kernel/src/index.ts",
-    "packages/p5-kernel-extension/src/index.ts",
-    "packages/p5-kernel/src/index.ts",
     "packages/pyolite-kernel-extension/src/index.ts",
     "packages/pyolite-kernel/src/index.ts",
     "packages/retro-application-extension/src/index.ts",

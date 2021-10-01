@@ -8,9 +8,8 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 require('./style.js');
 
-const serverMods = [
+const serverExtensions = [
   import('@jupyterlite/javascript-kernel-extension'),
-  import('@jupyterlite/p5-kernel-extension'),
   import('@jupyterlite/pyolite-kernel-extension'),
   import('@jupyterlite/server-extension')
 ];
@@ -37,15 +36,6 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 async function main() {
-  // create the in-browser JupyterLite Server
-  const jupyterLiteServer = new JupyterLiteServer({});
-  jupyterLiteServer.registerPluginModules(await Promise.all(serverMods));
-  // start the server
-  await jupyterLiteServer.start();
-
-  // retrieve the custom service manager from the server app
-  const { serviceManager } = jupyterLiteServer;
-
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
   let mods = [
@@ -181,6 +171,8 @@ async function main() {
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
+  const litePluginsToRegister = [];
+  const liteExtensionPromises = [];
 
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
@@ -192,6 +184,10 @@ async function main() {
   const federatedExtensionNames = new Set();
 
   extensions.forEach(data => {
+    if (data.liteExtension) {
+      liteExtensionPromises.push(createModule(data.name, data.extension));
+      return;
+    }
     if (data.extension) {
       federatedExtensionNames.add(data.name);
       federatedExtensionPromises.push(createModule(data.name, data.extension));
@@ -254,6 +250,28 @@ async function main() {
       console.error(p.reason);
     }
   });
+
+  // Add the serverlite federated extensions.
+  const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
+  federatedLiteExtensions.forEach(p => {
+    if (p.status === "fulfilled") {
+      for (let plugin of activePlugins(p.value)) {
+        litePluginsToRegister.push(plugin);
+      }
+    } else {
+      console.error(p.reason);
+    }
+  });
+
+  // create the in-browser JupyterLite Server
+  const jupyterLiteServer = new JupyterLiteServer({});
+  const allServerExtensions = (await Promise.all(serverExtensions)).concat(litePluginsToRegister);
+  jupyterLiteServer.registerPluginModules(allServerExtensions);
+  // start the server
+  await jupyterLiteServer.start();
+
+  // retrieve the custom service manager from the server app
+  const { serviceManager } = jupyterLiteServer;
 
   // create a RetroLab frontend
   const { RetroApp } = require('@retrolab/application');
