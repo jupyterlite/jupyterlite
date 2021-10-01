@@ -99,9 +99,7 @@ export namespace IKernel {
 /**
  * The token for the kernel spec service.
  */
-export const IKernelSpecs = new Token<IKernelSpecs>(
-  '@jupyterlite/kernelspec:IKernelSpecs'
-);
+export const IKernelSpecs = new Token<IKernelSpecs>('@jupyterlite/kernel:IKernelSpecs');
 
 /**
  * The interface for the kernel specs service.
