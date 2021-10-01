@@ -1,0 +1,25 @@
+name: RTD Preview
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests:
+    write
+
+jobs:
+  binder:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Comment on the PR with the RTD preview
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          var PR_NUMBER = context.issue.number
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `[![lite-badge](https://gist.githubusercontent.com/bollwyvl/72565d11c9f0340c98c8199438cd63d5/raw/d78510cafbc45f83eba2acf51a38e5885d0bb3ce/badge.svg)](https://jupyterlite--${PR_NUMBER}.org.readthedocs.build/en/${PR_NUMBER}/_static/lab/index.html) :point_left: Try it on ReadTheDocs`
+          })
