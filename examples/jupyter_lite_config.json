@@ -18,7 +18,7 @@
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
-      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a10/jupyterlite_p5_kernel-0.1.0a10-py3-none-any.whl"
+      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a11/jupyterlite_p5_kernel-0.1.0a11-py3-none-any.whl"
     ],
     "ignore_sys_prefix": true,
     "output_dir": "../build/docs-app"
