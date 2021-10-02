@@ -20,8 +20,6 @@ const mimeExtensionsMods = [
   import('@jupyterlab/vega5-extension')
 ];
 
-const disabled = JSON.parse(PageConfig.getOption('disabledExtensions') || '[]');
-
 async function createModule(scope, module) {
   try {
     const factory = await window._JUPYTERLAB[scope].get(module);
@@ -216,11 +214,7 @@ async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      // skip the plugin (or extension) if disabled
-      if (
-        disabled.includes(plugin.id) ||
-        disabled.includes(plugin.id.split(':')[0])
-      ) {
+      if (PageConfig.Extension.isDisabled(plugin.id)) {
         continue;
       }
       yield plugin;
@@ -251,6 +245,14 @@ async function main() {
     }
   });
 
+  // Add the base serverlite extensions
+  const baseServerExtensions = await Promise.all(serverExtensions);
+  baseServerExtensions.forEach(p => {
+    for (let plugin of activePlugins(p)) {
+      litePluginsToRegister.push(plugin);
+    }
+  })
+
   // Add the serverlite federated extensions.
   const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
   federatedLiteExtensions.forEach(p => {
@@ -265,8 +267,7 @@ async function main() {
 
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
-  const allServerExtensions = (await Promise.all(serverExtensions)).concat(litePluginsToRegister);
-  jupyterLiteServer.registerPluginModules(allServerExtensions);
+  jupyterLiteServer.registerPluginModules(litePluginsToRegister);
   // start the server
   await jupyterLiteServer.start();
 
