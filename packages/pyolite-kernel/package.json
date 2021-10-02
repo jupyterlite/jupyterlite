@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/pyolite-kernel",
-  "version": "0.1.0-alpha.10",
+  "version": "0.1.0-alpha.11",
   "description": "JupyterLite - Pyolite Kernel",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -48,7 +48,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-alpha.10"
+    "@jupyterlite/kernel": "^0.1.0-alpha.11"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -65,7 +65,7 @@
   },
   "pyolite": {
     "packages": {
-      "py/pyolite": "0.1.0a10",
+      "py/pyolite": "0.1.0a11",
       "py/ipykernel": "5.5.5",
       "py/nbformat": "4.2.0",
       "py/widgetsnbextension": "3.5.0"
