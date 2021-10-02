@@ -10,6 +10,7 @@ from jupyterlite.constants import HOOKS
 LITE_INVOCATIONS = [
     ["jupyter-lite"],
     ["jupyter", "lite"],
+    ["python", "-m", "jupyterlite"],
 ]
 
 # nothing we can do about this, at present
