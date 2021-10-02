@@ -284,7 +284,7 @@ python -m pip install -r requirements-deploy.txt
 
 # build the JupyterLite site
 jupyter lite --version
-jupyter lite build
+jupyter lite build --output-dir dist
 ```
 
 [Micromamba](https://github.com/mamba-org/mamba#micromamba) creates a new self-contained
@@ -293,7 +293,7 @@ being limited by the build image.
 
 Then configure the build command and output directory on Vercel:
 
-![image](https://user-images.githubusercontent.com/591645/135725426-1dc0d9d1-e661-477d-810c-1c06400a0f6a.png)
+![image](https://user-images.githubusercontent.com/591645/135726080-93ca6930-19de-4371-ad13-78f5716b7299.png)
 
 You might also want to specify the `--debug` flag to get extra log messages:
 
