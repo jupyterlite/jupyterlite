@@ -36,7 +36,7 @@ async function createModule(scope, module) {
 async function main() {
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
-  let mods = [
+  let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
     require('@jupyterlite/retro-application-extension'),
@@ -102,7 +102,7 @@ async function main() {
   const page = PageConfig.getOption('retroPage');
   switch (page) {
     case 'tree': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
           [
             '@jupyterlab/filebrowser-extension:browser',
@@ -120,7 +120,7 @@ async function main() {
       break;
     }
     case 'notebooks': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:notebooks'].includes(id)
         ),
@@ -134,7 +134,7 @@ async function main() {
       break;
     }
     case 'consoles': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:consoles'].includes(id)
         ),
@@ -148,7 +148,7 @@ async function main() {
       break;
     }
     case 'edit': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:files'].includes(id)
         ),
@@ -166,6 +166,7 @@ async function main() {
     }
   }
 
+  const mods = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
@@ -221,6 +222,14 @@ async function main() {
     }
   }
 
+  // Add the base frontend extensions
+  const baseFrontendMods = await Promise.all(baseMods);
+  baseFrontendMods.forEach(p => {
+    for (let plugin of activePlugins(p)) {
+      mods.push(plugin);
+    }
+  })
+
   // Add the federated mime extensions.
   const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);
   federatedMimeExtensions.forEach(p => {
@@ -251,7 +260,7 @@ async function main() {
     for (let plugin of activePlugins(p)) {
       litePluginsToRegister.push(plugin);
     }
-  })
+  });
 
   // Add the serverlite federated extensions.
   const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
