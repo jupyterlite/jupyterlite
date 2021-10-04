@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/server-extension",
-  "version": "0.1.0-alpha.11",
+  "version": "0.1.0-alpha.12",
   "description": "JupyterLite - Server Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -38,11 +38,11 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-alpha.11",
-    "@jupyterlite/server": "^0.1.0-alpha.11",
-    "@jupyterlite/session": "^0.1.0-alpha.11",
-    "@jupyterlite/settings": "^0.1.0-alpha.11",
-    "@jupyterlite/translation": "^0.1.0-alpha.11"
+    "@jupyterlite/kernel": "^0.1.0-alpha.12",
+    "@jupyterlite/server": "^0.1.0-alpha.12",
+    "@jupyterlite/session": "^0.1.0-alpha.12",
+    "@jupyterlite/settings": "^0.1.0-alpha.12",
+    "@jupyterlite/translation": "^0.1.0-alpha.12"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
