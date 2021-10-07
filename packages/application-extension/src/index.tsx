@@ -245,8 +245,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
-    factory: IFileBrowserFactory | null,
-    mainMenu: IMainMenu | null
+    factory: IFileBrowserFactory | null
   ) => {
     const trans = translator.load('jupyterlab');
     const { commands, contextMenu, serviceManager, shell } = app;
@@ -290,10 +289,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 
     if (palette) {
       palette.addItem({ command: CommandIDs.docmanagerDownload, category });
-    }
-
-    if (mainMenu) {
-      mainMenu.fileMenu.addGroup([{ command: CommandIDs.docmanagerDownload }], 6);
     }
 
     if (factory) {
