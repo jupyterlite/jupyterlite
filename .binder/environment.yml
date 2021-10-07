@@ -37,6 +37,8 @@ dependencies:
   - ipycytoscape ==1.2.2
   - ipyleaflet ==0.14.0
   - ipympl ==0.7.0
+  - ipyvue ==1.5.0
+  - ipyvuetify ==1.8.1
   - plotly ==5.1.0
   ### FEDERATED EXTENSIONS ###
 
@@ -70,4 +72,9 @@ dependencies:
   - pytest-cov
   - pytest-html
   - pytest-xdist
+  # language packs and contents
+  - jupyter_server >=1.11,<2
+  - jupyterlab-language-pack-fr-FR
+  - jupyterlab-language-pack-zh-CN
+  - jupyterlab_server >=2.8.1,<3
   ### DOCS ENV ###

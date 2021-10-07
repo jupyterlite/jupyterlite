@@ -10,6 +10,7 @@ from jupyterlite.constants import HOOKS
 LITE_INVOCATIONS = [
     ["jupyter-lite"],
     ["jupyter", "lite"],
+    ["python", "-m", "jupyterlite"],
 ]
 
 # nothing we can do about this, at present
@@ -167,6 +168,15 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
             if "README" not in contents:  # pragma: no cover
                 missed += 1
         assert not missed, "some contents were not indexed"
+
+        # default translation files should also be created
+        all_packs_file = out / "api/translations/all.json"
+        assert all_packs_file.exists()
+        all_packs = all_packs_file.read_text()
+        assert "English" in all_packs
+
+        en_pack_file = out / "api/translations/en.json"
+        assert en_pack_file.exists()
 
     assert forced_status.success
 

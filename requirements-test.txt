@@ -11,3 +11,4 @@ pytest-xdist
 
 # extras
 jupyter_server
+jupyterlab_server

@@ -15,18 +15,6 @@ ROOT = HERE.parent
 APP_PKG = ROOT / "app/package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
 RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
-EXAMPLE_FILES = [
-    ROOT / "README.md",
-    ROOT / "docs/_static/icon.svg",
-    ROOT / "app/jupyter-lite.json",
-    ROOT / "app/jupyterlite.schema.v0.json",
-    *[
-        example
-        for example in (ROOT / "examples").rglob("*.*")
-        if not ".ipynb_checkpoints" in str(example)
-        and "__pycache__" not in str(example)
-    ],
-]
 
 # tasks that won't have been run prior to building the docs on RTD
 RTD_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
@@ -117,7 +105,7 @@ html_theme_options = {
 }
 
 html_context = {
-    "github_user": "jtpio",
+    "github_user": "jupyterlite",
     "github_repo": "jupyterlite",
     "github_version": "main",
     "doc_path": "docs",

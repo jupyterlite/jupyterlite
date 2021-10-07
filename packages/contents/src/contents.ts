@@ -1,4 +1,5 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import { Contents as ServerContents, ServerConnection } from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
@@ -364,7 +365,7 @@ export class Contents implements IContents {
             mimetype: model.mimetype || 'application/json'
           };
           // TODO: this is not great, need a better oracle
-        } else if (mimetype === 'image/svg+xml' || mimetype.indexOf('text') !== -1) {
+        } else if (mimetype.indexOf('xml') !== -1 || mimetype.indexOf('text') !== -1) {
           model = {
             ...model,
             content: await response.text(),

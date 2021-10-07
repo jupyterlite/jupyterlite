@@ -9,8 +9,9 @@ configuring
 cli
 deploying
 api/index
-doit
 architecture
+extensions
+doit
 contributing
 ```
 

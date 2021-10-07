@@ -8,9 +8,8 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 require('./style.js');
 
-const serverMods = [
+const serverExtensions = [
   import('@jupyterlite/javascript-kernel-extension'),
-  import('@jupyterlite/p5-kernel-extension'),
   import('@jupyterlite/pyolite-kernel-extension'),
   import('@jupyterlite/server-extension')
 ];
@@ -20,8 +19,6 @@ const mimeExtensionsMods = [
   import('@jupyterlab/json-extension'),
   import('@jupyterlab/vega5-extension')
 ];
-
-const disabled = JSON.parse(PageConfig.getOption('disabledExtensions') || '[]');
 
 async function createModule(scope, module) {
   try {
@@ -37,18 +34,9 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 async function main() {
-  // create the in-browser JupyterLite Server
-  const jupyterLiteServer = new JupyterLiteServer({});
-  jupyterLiteServer.registerPluginModules(await Promise.all(serverMods));
-  // start the server
-  await jupyterLiteServer.start();
-
-  // retrieve the custom service manager from the server app
-  const { serviceManager } = jupyterLiteServer;
-
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
-  let mods = [
+  let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
     require('@jupyterlite/retro-application-extension'),
@@ -89,6 +77,7 @@ async function main() {
     require('@jupyterlab/completer-extension').default.filter(({ id }) =>
       ['@jupyterlab/completer-extension:manager'].includes(id)
     ),
+    require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
       ['@jupyterlab/docmanager-extension:plugin'].includes(id)
     ),
@@ -104,7 +93,8 @@ async function main() {
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
-    require('@jupyterlab/theme-dark-extension')
+    require('@jupyterlab/theme-dark-extension'),
+    require('@jupyterlab/translation-extension')
   ];
 
   // The motivation here is to only load a specific set of plugins dependending on
@@ -112,7 +102,7 @@ async function main() {
   const page = PageConfig.getOption('retroPage');
   switch (page) {
     case 'tree': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
           [
             '@jupyterlab/filebrowser-extension:browser',
@@ -130,7 +120,7 @@ async function main() {
       break;
     }
     case 'notebooks': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:notebooks'].includes(id)
         ),
@@ -143,8 +133,22 @@ async function main() {
       ]);
       break;
     }
+    case 'consoles': {
+      baseMods = baseMods.concat([
+        require('@jupyterlab/completer-extension').default.filter(({ id }) =>
+          ['@jupyterlab/completer-extension:consoles'].includes(id)
+        ),
+        require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
+          [
+            '@jupyterlab/tooltip-extension:manager',
+            '@jupyterlab/tooltip-extension:consoles'
+          ].includes(id)
+        )
+      ]);
+      break;
+    }
     case 'edit': {
-      mods = mods.concat([
+      baseMods = baseMods.concat([
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:files'].includes(id)
         ),
@@ -162,9 +166,12 @@ async function main() {
     }
   }
 
+  const mods = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
+  const litePluginsToRegister = [];
+  const liteExtensionPromises = [];
 
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
@@ -176,6 +183,10 @@ async function main() {
   const federatedExtensionNames = new Set();
 
   extensions.forEach(data => {
+    if (data.liteExtension) {
+      liteExtensionPromises.push(createModule(data.name, data.extension));
+      return;
+    }
     if (data.extension) {
       federatedExtensionNames.add(data.name);
       federatedExtensionPromises.push(createModule(data.name, data.extension));
@@ -204,16 +215,20 @@ async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      // skip the plugin (or extension) if disabled
-      if (
-        disabled.includes(plugin.id) ||
-        disabled.includes(plugin.id.split(':')[0])
-      ) {
+      if (PageConfig.Extension.isDisabled(plugin.id)) {
         continue;
       }
       yield plugin;
     }
   }
+
+  // Add the base frontend extensions
+  const baseFrontendMods = await Promise.all(baseMods);
+  baseFrontendMods.forEach(p => {
+    for (let plugin of activePlugins(p)) {
+      mods.push(plugin);
+    }
+  })
 
   // Add the federated mime extensions.
   const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);
@@ -238,6 +253,35 @@ async function main() {
       console.error(p.reason);
     }
   });
+
+  // Add the base serverlite extensions
+  const baseServerExtensions = await Promise.all(serverExtensions);
+  baseServerExtensions.forEach(p => {
+    for (let plugin of activePlugins(p)) {
+      litePluginsToRegister.push(plugin);
+    }
+  });
+
+  // Add the serverlite federated extensions.
+  const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
+  federatedLiteExtensions.forEach(p => {
+    if (p.status === "fulfilled") {
+      for (let plugin of activePlugins(p.value)) {
+        litePluginsToRegister.push(plugin);
+      }
+    } else {
+      console.error(p.reason);
+    }
+  });
+
+  // create the in-browser JupyterLite Server
+  const jupyterLiteServer = new JupyterLiteServer({});
+  jupyterLiteServer.registerPluginModules(litePluginsToRegister);
+  // start the server
+  await jupyterLiteServer.start();
+
+  // retrieve the custom service manager from the server app
+  const { serviceManager } = jupyterLiteServer;
 
   // create a RetroLab frontend
   const { RetroApp } = require('@retrolab/application');

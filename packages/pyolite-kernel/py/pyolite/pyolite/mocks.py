@@ -57,4 +57,4 @@ def apply_mocks():
         try:
             mock()
         except Exception as err:
-            warnings.warn("faield to apply mock", mock, err)
+            warnings.warn("failed to apply mock", mock, err)

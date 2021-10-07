@@ -15,7 +15,7 @@ class ContentsAddon(BaseAddon):
     __all__ = ["build", "post_build", "check", "status"]
 
     def status(self, manager):
-        """yield some status information about the state of contentss"""
+        """yield some status information about the state of contents"""
         yield dict(
             name="contents",
             actions=[
@@ -114,7 +114,7 @@ class ContentsAddon(BaseAddon):
                 to_path = self.output_files_dir / stem
                 resolved = str(to_path.resolve())
                 if resolved in yielded_dests:
-                    self.log.debu("Already populated", resolved)
+                    self.log.debug("Already populated", resolved)
                     continue
                 yielded_dests += [resolved]
                 yield from_path, to_path

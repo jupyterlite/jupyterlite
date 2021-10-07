@@ -4,8 +4,6 @@ import '@jupyterlite/iframe-extension';
 import '@jupyterlite/javascript-kernel-extension';
 import '@jupyterlite/javascript-kernel';
 import '@jupyterlite/kernel';
-import '@jupyterlite/p5-kernel';
-import '@jupyterlite/p5-kernel-extension';
 import '@jupyterlite/pyolite-kernel-extension';
 import '@jupyterlite/pyolite-kernel';
 import '@jupyterlite/retro-application-extension';

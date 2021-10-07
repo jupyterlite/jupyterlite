@@ -27,7 +27,7 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { Contents } from '@jupyterlab/services';
 
-import { ITranslator, TranslationManager } from '@jupyterlab/translation';
+import { ITranslator } from '@jupyterlab/translation';
 
 import { downloadIcon } from '@jupyterlab/ui-components';
 
@@ -239,17 +239,18 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:download',
   autoStart: true,
   requires: [ITranslator, IDocumentManager],
-  optional: [ICommandPalette, IFileBrowserFactory, IMainMenu],
+  optional: [ICommandPalette, IFileBrowserFactory],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
-    factory: IFileBrowserFactory | null,
-    mainMenu: IMainMenu | null
+    factory: IFileBrowserFactory | null
   ) => {
     const trans = translator.load('jupyterlab');
-    const { commands, contextMenu, serviceManager, shell } = app;
+    const { commands, serviceManager, shell } = app;
+    const { contents } = serviceManager;
+
     const isEnabled = () => {
       const { currentWidget } = shell;
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
@@ -264,11 +265,19 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       document.body.removeChild(element);
     };
 
+    const formatContent = async (path: string) => {
+      const model = await contents.get(path, { content: true });
+      if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
+        return JSON.stringify(model.content, null, 2);
+      }
+      return model.content;
+    };
+
     commands.addCommand(CommandIDs.docmanagerDownload, {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
       isEnabled,
-      execute: () => {
+      execute: async () => {
         // Checks that shell.currentWidget is valid:
         const current = shell.currentWidget;
         if (!isEnabled() || !current) {
@@ -282,7 +291,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })]
           });
         }
-        downloadContent(context.model.toString(), context.path);
+        const content = await formatContent(context.path);
+        downloadContent(content, context.path);
       }
     });
 
@@ -292,13 +302,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       palette.addItem({ command: CommandIDs.docmanagerDownload, category });
     }
 
-    if (mainMenu) {
-      mainMenu.fileMenu.addGroup([{ command: CommandIDs.docmanagerDownload }], 6);
-    }
-
     if (factory) {
       const { tracker } = factory;
-      const { contents } = serviceManager;
 
       commands.addCommand(CommandIDs.filebrowserDownload, {
         execute: async () => {
@@ -312,22 +317,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const file = await contents.get(item.path, { content: true });
-            const formatted =
-              file.type === 'notebook' || file.mimetype.indexOf('json') !== -1
-                ? JSON.stringify(file.content, null, 2)
-                : file.content;
-            downloadContent(formatted, item.name);
+            const content = await formatContent(item.path);
+            downloadContent(content, item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download')
-      });
-
-      contextMenu.addItem({
-        command: CommandIDs.filebrowserDownload,
-        selector: '.jp-DirListing-item[data-isdir="false"]',
-        rank: 9
       });
     }
   }
@@ -358,25 +353,11 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
   }
 };
 
-/**
- * A simplified Translator
- */
-const translator: JupyterFrontEndPlugin<ITranslator> = {
-  id: '@jupyterlite/application-extension:translator',
-  activate: (app: JupyterFrontEnd): ITranslator => {
-    const translationManager = new TranslationManager();
-    return translationManager;
-  },
-  autoStart: true,
-  provides: ITranslator
-};
-
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   docProviderPlugin,
   downloadPlugin,
-  liteLogo,
-  translator
+  liteLogo
 ];
 
 export default plugins;

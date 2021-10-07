@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/pyolite-kernel",
-  "version": "0.1.0-alpha.6",
+  "version": "0.1.0-alpha.12",
   "description": "JupyterLite - Pyolite Kernel",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -37,7 +37,7 @@
     "build:test": "tsc --build tsconfig.test.json",
     "clean": "yarn run clean:lib && yarn run clean:python",
     "clean:lib": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "clean:python": "rimraf py/dist",
+    "clean:python": "rimraf py/**/dist",
     "docs": "typedoc src",
     "prepublishOnly": "npm run build",
     "test": "jest",
@@ -47,12 +47,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/kernel": "^0.1.0-alpha.6"
+    "@jupyterlite/kernel": "^0.1.0-alpha.12"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.1.0",
+    "@jupyterlab/testutils": "~3.1.12",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
@@ -64,7 +64,7 @@
   },
   "pyolite": {
     "packages": {
-      "py/pyolite": "0.1.0a6",
+      "py/pyolite": "0.1.0a12",
       "py/ipykernel": "5.5.5",
       "py/nbformat": "4.2.0",
       "py/widgetsnbextension": "3.5.0"

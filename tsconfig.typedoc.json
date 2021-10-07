@@ -28,12 +28,6 @@
       "path": "./packages/kernel"
     },
     {
-      "path": "./packages/p5-kernel"
-    },
-    {
-      "path": "./packages/p5-kernel-extension"
-    },
-    {
       "path": "./packages/pyolite-kernel"
     },
     {
@@ -53,6 +47,9 @@
     },
     {
       "path": "./packages/settings"
+    },
+    {
+      "path": "./packages/translation"
     },
     {
       "path": "./packages/ui-components"

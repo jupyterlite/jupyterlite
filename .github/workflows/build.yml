@@ -3,8 +3,6 @@ name: Build
 on:
   push:
     branches: [main]
-    tags:
-      - v*.*.*
   pull_request:
     branches: '*'
 
@@ -267,22 +265,3 @@ jobs:
           name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
           path: /tmp/sphinx-*.log
-
-  release:
-    needs: [build]
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download (dist)
-        uses: actions/download-artifact@v2
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: true
-          prerelease: true
-          files: dist/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

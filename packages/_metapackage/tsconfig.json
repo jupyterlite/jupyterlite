@@ -12,14 +12,13 @@
     { "path": "../javascript-kernel" },
     { "path": "../javascript-kernel-extension" },
     { "path": "../kernel" },
-    { "path": "../p5-kernel" },
-    { "path": "../p5-kernel-extension" },
     { "path": "../pyolite-kernel" },
     { "path": "../pyolite-kernel-extension" },
     { "path": "../retro-application-extension" },
     { "path": "../server-extension" },
     { "path": "../session" },
     { "path": "../settings" },
+    { "path": "../translation" },
     { "path": "../ui-components" }
   ]
 }
