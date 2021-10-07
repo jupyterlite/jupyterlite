@@ -22,7 +22,7 @@ def task_env():
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
-            U.do(*C.PRETTIER, P.BINDER_ENV),
+            ([U.do(*C.PRETTIER, P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
         ],
     )
 
