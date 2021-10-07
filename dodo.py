@@ -31,7 +31,12 @@ def task_env():
             actions=[
                 (
                     U.sync_lite_config,
-                    [P.BINDER_ENV, P.EXAMPLE_LITE_BUILD_CONFIG, C.FED_EXT_MARKER],
+                    [
+                        P.BINDER_ENV,
+                        P.EXAMPLE_LITE_BUILD_CONFIG,
+                        C.FED_EXT_MARKER,
+                        [C.P5_WHL_URL],
+                    ],
                 )
             ],
         )
@@ -612,7 +617,14 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
-    CONDA_FORGE_RELEASE = "https://github.com/conda-forge/releases/releases/download"
+    GH = "https://github.com"
+    CONDA_FORGE_RELEASE = f"{GH}/conda-forge/releases/releases/download"
+    LITE_GH_ORG = f"{GH}/{NAME}"
+    P5_GH_REPO = f"{LITE_GH_ORG}/p5-kernel"
+    P5_MOD = "jupyterlite_p5_kernel"
+    P5_VERSION = "0.1.0a11"
+    P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
+    P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     JUPYTERLITE_JSON = "jupyter-lite.json"
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
@@ -874,7 +886,7 @@ class U:
         )
 
     @staticmethod
-    def sync_lite_config(from_env, to_json, marker):
+    def sync_lite_config(from_env, to_json, marker, extra_urls):
         """use conda list to derive tarball names"""
         raw_lock = subprocess.check_output(["conda", "list", "--explicit"])
         ext_packages = [
@@ -882,7 +894,7 @@ class U:
             for p in from_env.read_text(**C.ENC).split(marker)[1].split(" - ")
             if p.strip()
         ]
-        tarball_urls = []
+        tarball_urls = [*(extra_urls or [])]
         for raw_url in sorted(raw_lock.decode("utf-8").splitlines()):
             try:
                 label, subdir, pkg = re.findall(C.RE_CONDA_FORGE_URL, raw_url)[0]
@@ -900,7 +912,7 @@ class U:
                     ]
 
         config = json.loads(to_json.read_text(**C.ENC))
-        config["LiteBuildConfig"]["federated_extensions"] = sorted(tarball_urls)
+        config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
         to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
 
     @staticmethod
