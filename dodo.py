@@ -20,7 +20,10 @@ def task_env():
         doc="update binder environment with docs environment",
         file_dep=[P.DOCS_ENV],
         targets=[P.BINDER_ENV],
-        actions=[(U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER])],
+        actions=[
+            (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
+            U.do(*C.PRETTIER, P.BINDER_ENV),
+        ],
     )
 
     if C.IN_CONDA:
@@ -37,7 +40,8 @@ def task_env():
                         C.FED_EXT_MARKER,
                         [C.P5_WHL_URL],
                     ],
-                )
+                ),
+                U.do(*C.PRETTIER, P.EXAMPLE_LITE_BUILD_CONFIG),
             ],
         )
 
@@ -88,7 +92,7 @@ def task_lint():
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier:check" if C.CI else "prettier")],
+        actions=[U.do("yarn", "prettier:check" if C.CI else "prettier:fix")],
     )
 
     yield U.ok(
@@ -96,7 +100,7 @@ def task_lint():
         name="eslint",
         doc="format and verify .ts, .js files with eslint",
         file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-        actions=[U.do("yarn", "eslint:check" if C.CI else "eslint")],
+        actions=[U.do("yarn", "eslint:check" if C.CI else "eslint:fix")],
     )
 
     yield U.ok(
@@ -420,7 +424,10 @@ def task_docs():
             doc="transform raw typedoc into myst markdown",
             file_dep=[B.DOCS_RAW_TYPEDOC_README],
             targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
-            actions=[U.mystify, U.do("yarn", "prettier")],
+            actions=[
+                U.mystify,
+                U.do(*C.PRETTIER, B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES),
+            ],
         )
 
     yield U.ok(
@@ -598,14 +605,13 @@ def task_test():
 
 
 def task_repo():
+    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in C.APPS]
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[(U.integrity,)],
+        actions=[(U.integrity,), U.do(*C.PRETTIER, *pkg_jsons)],
         file_dep=[P.YARN_LOCK],
-        targets=[
-            *[P.ROOT / "app" / app / "package.json" for app in C.APPS],
-        ],
+        targets=pkg_jsons,
     )
 
 
@@ -648,6 +654,7 @@ class C:
         .decode("utf-8")
         .strip()
     )
+    PRETTIER = ["yarn", "prettier", "--write"]
 
 
 class P:
