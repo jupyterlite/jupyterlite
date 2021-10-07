@@ -613,8 +613,7 @@ def task_repo():
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
         actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
-        file_dep=[P.YARN_LOCK],
-        targets=pkg_jsons,
+        file_dep=[B.YARN_INTEGRITY, *pkg_jsons],
     )
 
 
