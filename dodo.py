@@ -408,7 +408,10 @@ def task_docs():
         yield dict(
             name="typedoc:ensure",
             file_dep=[*P.PACKAGE_JSONS],
-            actions=[U.typedoc_conf],
+            actions=[
+                U.typedoc_conf,
+                U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
+            ],
             targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
         )
         yield dict(
@@ -609,7 +612,7 @@ def task_repo():
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[(U.integrity,), U.do(*C.PRETTIER, *pkg_jsons)],
+        actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
         file_dep=[P.YARN_LOCK],
         targets=pkg_jsons,
     )
@@ -706,7 +709,7 @@ class P:
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
-    EXAMPLE_JUPYTERLITE_JSON = EXAMPLES / "jupyter-lite.json"
+    EXAMPLE_JUPYTERLITE_JSON = EXAMPLES / C.JUPYTERLITE_JSON
     EXAMPLE_LITE_BUILD_CONFIG = EXAMPLES / "jupyter_lite_config.json"
     TSCONFIG_TYPEDOC = ROOT / "tsconfig.typedoc.json"
     TYPEDOC_JSON = ROOT / "typedoc.json"
@@ -801,6 +804,7 @@ class L:
     ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
         P.DODO,
+        *(P.ROOT / "scripts").glob("*.py"),
         *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
         *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES.keys()], []),
     )

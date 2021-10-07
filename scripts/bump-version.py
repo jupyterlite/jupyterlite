@@ -13,7 +13,6 @@ from pathlib import Path
 import click
 from jupyter_releaser.util import get_version, is_prerelease, run
 
-
 OPTIONS = ["major", "minor", "release", "build"]
 
 ENC = dict(encoding="utf-8")
@@ -55,19 +54,20 @@ def postbump():
     # bump pyolite version
     pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
     pyolite_json["pyolite"]["packages"]["py/pyolite"] = py_version
-    PYOLITE_PACKAGE_JSON.write_text(json.dumps(pyolite_json, indent=2) + "\n", **ENC)
+    PYOLITE_PACKAGE_JSON.write_text(json.dumps(pyolite_json), **ENC)
+    run(f"yarn prettier --write {PYOLITE_PACKAGE_JSON}")
 
     # save the new version to the app jupyter-lite.json
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))
     jupyterlite_json["jupyter-config-data"]["appVersion"] = new_version
-    APP_JUPYTERLITE_JSON.write_text(
-        json.dumps(jupyterlite_json, indent=2) + "\n", **ENC
-    )
+    APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
+    run(f"yarn prettier --write {APP_JUPYTERLITE_JSON}")
 
     # save the new version to the top-level package.json
     root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     root_json["version"] = py_version
-    ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **ENC)
+    ROOT_PACKAGE_JSON.write_text(json.dumps(root_json), **ENC)
+    run(f"yarn prettier --write {ROOT_PACKAGE_JSON}")
 
     run("doit repo:integrity", cwd=ROOT)
 
