@@ -239,17 +239,16 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:download',
   autoStart: true,
   requires: [ITranslator, IDocumentManager],
-  optional: [ICommandPalette, IFileBrowserFactory, IMainMenu],
+  optional: [ICommandPalette, IFileBrowserFactory],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
-    factory: IFileBrowserFactory | null,
-    mainMenu: IMainMenu | null
+    factory: IFileBrowserFactory | null
   ) => {
     const trans = translator.load('jupyterlab');
-    const { commands, contextMenu, serviceManager, shell } = app;
+    const { commands, serviceManager, shell } = app;
     const isEnabled = () => {
       const { currentWidget } = shell;
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
@@ -292,10 +291,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       palette.addItem({ command: CommandIDs.docmanagerDownload, category });
     }
 
-    if (mainMenu) {
-      mainMenu.fileMenu.addGroup([{ command: CommandIDs.docmanagerDownload }], 6);
-    }
-
     if (factory) {
       const { tracker } = factory;
       const { contents } = serviceManager;
@@ -322,12 +317,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download')
-      });
-
-      contextMenu.addItem({
-        command: CommandIDs.filebrowserDownload,
-        selector: '.jp-DirListing-item[data-isdir="false"]',
-        rank: 9
       });
     }
   }
