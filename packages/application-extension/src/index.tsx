@@ -249,6 +249,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   ) => {
     const trans = translator.load('jupyterlab');
     const { commands, serviceManager, shell } = app;
+    const { contents } = serviceManager;
+
     const isEnabled = () => {
       const { currentWidget } = shell;
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
@@ -263,10 +265,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       document.body.removeChild(element);
     };
 
-    const formatJSON = (model: Contents.IModel | null = null) => {
-      if (!model) {
-        return '';
-      }
+    const formatJSON = async (path: string) => {
+      const model = await contents.get(path, { content: true });
       if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
         return JSON.stringify(model.content, null, 2);
       }
@@ -277,7 +277,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
       isEnabled,
-      execute: () => {
+      execute: async () => {
         // Checks that shell.currentWidget is valid:
         const current = shell.currentWidget;
         if (!isEnabled() || !current) {
@@ -291,7 +291,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })]
           });
         }
-        const content = formatJSON(context.contentsModel);
+        const content = await formatJSON(context.path);
         downloadContent(content, context.path);
       }
     });
@@ -304,7 +304,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 
     if (factory) {
       const { tracker } = factory;
-      const { contents } = serviceManager;
 
       commands.addCommand(CommandIDs.filebrowserDownload, {
         execute: async () => {
@@ -318,8 +317,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const file = await contents.get(item.path, { content: true });
-            downloadContent(formatJSON(file), item.name);
+            const content = await formatJSON(item.path);
+            downloadContent(content, item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
