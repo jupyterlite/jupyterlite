@@ -265,7 +265,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       document.body.removeChild(element);
     };
 
-    const formatJSON = async (path: string) => {
+    const formatContent = async (path: string) => {
       const model = await contents.get(path, { content: true });
       if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
         return JSON.stringify(model.content, null, 2);
@@ -291,7 +291,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })]
           });
         }
-        const content = await formatJSON(context.path);
+        const content = await formatContent(context.path);
         downloadContent(content, context.path);
       }
     });
@@ -317,7 +317,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const content = await formatJSON(item.path);
+            const content = await formatContent(item.path);
             downloadContent(content, item.name);
           });
         },
