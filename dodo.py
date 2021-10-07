@@ -1220,6 +1220,7 @@ class U:
 
         wheel_index.write_text(json.dumps(all_json, indent=2, sort_keys=2), **C.ENC)
 
+    @staticmethod
     def integrity():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
