@@ -600,7 +600,12 @@ def task_test():
 def task_repo():
     yield dict(
         name="integrity",
+        doc="ensure app yarn resolutions are up-to-date",
         actions=[(U.integrity,)],
+        file_dep=[P.YARN_LOCK],
+        targets=[
+            *[P.ROOT / "app" / app / "package.json" for app in C.APPS],
+        ],
     )
 
 
