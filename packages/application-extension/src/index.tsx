@@ -263,6 +263,16 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       document.body.removeChild(element);
     };
 
+    const formatJSON = (model: Contents.IModel | null = null) => {
+      if (!model) {
+        return '';
+      }
+      if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
+        return JSON.stringify(model.content, null, 2);
+      }
+      return model.content;
+    };
+
     commands.addCommand(CommandIDs.docmanagerDownload, {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
@@ -281,7 +291,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })]
           });
         }
-        downloadContent(context.model.toString(), context.path);
+        const content = formatJSON(context.contentsModel);
+        downloadContent(content, context.path);
       }
     });
 
@@ -308,11 +319,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
               return;
             }
             const file = await contents.get(item.path, { content: true });
-            const formatted =
-              file.type === 'notebook' || file.mimetype.indexOf('json') !== -1
-                ? JSON.stringify(file.content, null, 2)
-                : file.content;
-            downloadContent(formatted, item.name);
+            downloadContent(formatJSON(file), item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
