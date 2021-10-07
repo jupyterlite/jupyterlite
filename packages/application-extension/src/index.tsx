@@ -239,7 +239,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:download',
   autoStart: true,
   requires: [ITranslator, IDocumentManager],
-  optional: [ICommandPalette, IFileBrowserFactory, IMainMenu],
+  optional: [ICommandPalette, IFileBrowserFactory],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
