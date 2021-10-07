@@ -249,6 +249,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
   ) => {
     const trans = translator.load('jupyterlab');
     const { commands, serviceManager, shell } = app;
+    const { contents } = serviceManager;
+
     const isEnabled = () => {
       const { currentWidget } = shell;
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
@@ -263,11 +265,19 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       document.body.removeChild(element);
     };
 
+    const formatContent = async (path: string) => {
+      const model = await contents.get(path, { content: true });
+      if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
+        return JSON.stringify(model.content, null, 2);
+      }
+      return model.content;
+    };
+
     commands.addCommand(CommandIDs.docmanagerDownload, {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
       isEnabled,
-      execute: () => {
+      execute: async () => {
         // Checks that shell.currentWidget is valid:
         const current = shell.currentWidget;
         if (!isEnabled() || !current) {
@@ -281,7 +291,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })]
           });
         }
-        downloadContent(context.model.toString(), context.path);
+        const content = await formatContent(context.path);
+        downloadContent(content, context.path);
       }
     });
 
@@ -293,7 +304,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 
     if (factory) {
       const { tracker } = factory;
-      const { contents } = serviceManager;
 
       commands.addCommand(CommandIDs.filebrowserDownload, {
         execute: async () => {
@@ -307,12 +317,8 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const file = await contents.get(item.path, { content: true });
-            const formatted =
-              file.type === 'notebook' || file.mimetype.indexOf('json') !== -1
-                ? JSON.stringify(file.content, null, 2)
-                : file.content;
-            downloadContent(formatted, item.name);
+            const content = await formatContent(item.path);
+            downloadContent(content, item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
