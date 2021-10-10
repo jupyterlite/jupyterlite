@@ -1,11 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  IRouter,
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd
-} from '@jupyterlab/application';
+import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { IConsoleTracker } from '@jupyterlab/console';
 
@@ -20,21 +16,6 @@ import { Kernel } from '@jupyterlab/services';
 import { liteWordmark } from '@jupyterlite/ui-components';
 
 import { Widget } from '@lumino/widgets';
-
-/**
- * The default notebook factory.
- */
-const NOTEBOOK_FACTORY = 'Notebook';
-
-/**
- * The editor factory.
- */
-const EDITOR_FACTORY = 'Editor';
-
-/**
- * A regular expression to match path to notebooks, documents and consoles
- */
-const URL_PATTERN = new RegExp('/(notebooks|edit|consoles)\\/?');
 
 /**
  * Open consoles in a new tab.
@@ -119,65 +100,6 @@ const logo: JupyterFrontEndPlugin<void> = {
   }
 };
 
-/**
- * A custom opener plugin to pass the path to documents as
- * query string parameters.
- */
-const opener: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/retro-application-extension:opener',
-  autoStart: true,
-  requires: [IRouter, IDocumentManager],
-  activate: (
-    app: JupyterFrontEnd,
-    router: IRouter,
-    docManager: IDocumentManager
-  ): void => {
-    const { commands } = app;
-
-    const command = 'router:tree';
-    commands.addCommand(command, {
-      execute: (args: any) => {
-        const parsed = args as IRouter.ILocation;
-        // use request to do the matching
-        const matches = parsed.request.match(URL_PATTERN) ?? [];
-        if (!matches) {
-          return;
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const path = urlParams.get('path');
-        if (!path) {
-          return;
-        }
-        const file = decodeURIComponent(path);
-        app.restored.then(() => {
-          const page = PageConfig.getOption('retroPage');
-          switch (page) {
-            case 'consoles': {
-              commands.execute('console:create', { path: file });
-              return;
-            }
-            case 'notebooks': {
-              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-                ref: '_noref'
-              });
-              return;
-            }
-            case 'edit': {
-              docManager.open(file, EDITOR_FACTORY, undefined, {
-                ref: '_noref'
-              });
-              return;
-            }
-          }
-        });
-      }
-    });
-
-    router.register({ command, pattern: URL_PATTERN });
-  }
-};
-
-const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo, opener];
+const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo];
 
 export default plugins;
