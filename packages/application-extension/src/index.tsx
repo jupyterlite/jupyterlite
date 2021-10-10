@@ -423,8 +423,7 @@ const opener: JupyterFrontEndPlugin<void> = {
             default:
               // in the lab interface
               docManager.open(file);
-              const path = URLExt.parse(url).pathname;
-              router.navigate(path, { skipRouting: true });
+              router.navigate(URLExt.parse(url).pathname, { skipRouting: true });
               break;
           }
         });
