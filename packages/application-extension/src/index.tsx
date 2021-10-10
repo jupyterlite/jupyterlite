@@ -10,7 +10,7 @@ import {
 
 import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
@@ -389,7 +389,8 @@ const opener: JupyterFrontEndPlugin<void> = {
       execute: (args: any) => {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
-        const matches = parsed.request.match(URL_PATTERN) ?? [];
+        const url = parsed.request;
+        const matches = url.match(URL_PATTERN) ?? [];
         if (!matches) {
           return;
         }
@@ -422,6 +423,8 @@ const opener: JupyterFrontEndPlugin<void> = {
             default:
               // in the lab interface
               docManager.open(file);
+              const path = URLExt.parse(url).pathname;
+              router.navigate(path, { skipRouting: true });
               break;
           }
         });
