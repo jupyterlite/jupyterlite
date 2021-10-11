@@ -405,26 +405,21 @@ const opener: JupyterFrontEndPlugin<void> = {
         const files = paths.map(path => decodeURIComponent(path));
         app.restored.then(() => {
           const page = PageConfig.getOption('retroPage');
+          const [file, _] = files;
           switch (page) {
             case 'consoles': {
-              files.forEach(file => {
-                commands.execute('console:create', { path: file });
-              });
+              commands.execute('console:create', { path: file });
               return;
             }
             case 'notebooks': {
-              files.forEach(file => {
-                docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-                  ref: '_noref'
-                });
+              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
+                ref: '_noref'
               });
               return;
             }
             case 'edit': {
-              files.forEach(file => {
-                docManager.open(file, EDITOR_FACTORY, undefined, {
-                  ref: '_noref'
-                });
+              docManager.open(file, EDITOR_FACTORY, undefined, {
+                ref: '_noref'
               });
               return;
             }
