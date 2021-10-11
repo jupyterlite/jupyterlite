@@ -405,7 +405,7 @@ const opener: JupyterFrontEndPlugin<void> = {
         const files = paths.map(path => decodeURIComponent(path));
         app.restored.then(() => {
           const page = PageConfig.getOption('retroPage');
-          const [file,] = files;
+          const [file] = files;
           switch (page) {
             case 'consoles': {
               commands.execute('console:create', { path: file });
