@@ -430,7 +430,7 @@ const opener: JupyterFrontEndPlugin<void> = {
               // only remove the path (to keep extra parameters like the RTC room)
               newUrl.searchParams.delete('path');
               const { pathname, search } = newUrl;
-              router.navigate(URLExt.join(pathname, search), { skipRouting: true });
+              router.navigate(`${pathname}${search}`, { skipRouting: true });
               break;
             }
           }
