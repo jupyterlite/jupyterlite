@@ -398,33 +398,39 @@ const opener: JupyterFrontEndPlugin<void> = {
         }
 
         const urlParams = new URLSearchParams(window.location.search);
-        const path = urlParams.get('path');
-        if (!path) {
+        const paths = urlParams.getAll('path');
+        if (!paths) {
           return;
         }
-        const file = decodeURIComponent(path);
+        const files = paths.map(path => decodeURIComponent(path));
         app.restored.then(() => {
           const page = PageConfig.getOption('retroPage');
           switch (page) {
             case 'consoles': {
-              commands.execute('console:create', { path: file });
+              files.forEach(file => {
+                commands.execute('console:create', { path: file });
+              });
               return;
             }
             case 'notebooks': {
-              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-                ref: '_noref'
+              files.forEach(file => {
+                docManager.open(file, NOTEBOOK_FACTORY, undefined, {
+                  ref: '_noref'
+                });
               });
               return;
             }
             case 'edit': {
-              docManager.open(file, EDITOR_FACTORY, undefined, {
-                ref: '_noref'
+              files.forEach(file => {
+                docManager.open(file, EDITOR_FACTORY, undefined, {
+                  ref: '_noref'
+                });
               });
               return;
             }
             default: {
-              // in the lab interface
-              docManager.open(file);
+              // open all files in the lab interface
+              files.forEach(file => docManager.open(file));
               const newUrl = new URL(URLExt.join(PageConfig.getBaseUrl(), url));
               // only remove the path (to keep extra parameters like the RTC room)
               newUrl.searchParams.delete('path');
