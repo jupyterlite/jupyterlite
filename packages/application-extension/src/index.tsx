@@ -425,6 +425,7 @@ const opener: JupyterFrontEndPlugin<void> = {
             default:
               // in the lab interface
               docManager.open(file);
+              // TODO: keep room in the URL
               router.navigate(URLExt.parse(url).pathname, { skipRouting: true });
               break;
           }
@@ -456,6 +457,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     const { commands } = app;
     const { tracker } = factory;
 
+    const roomName = getParam('--room', '').trim();
+    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
+
     commands.addCommand(CommandIDs.copyShareableLink, {
       execute: () => {
         const widget = tracker.currentWidget;
@@ -466,6 +470,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
         url.searchParams.append('path', model.path);
+        if (collaborative) {
+          url.searchParams.append('room', roomName);
+        }
         Clipboard.copyToSystem(url.href);
       },
       isVisible: () =>
