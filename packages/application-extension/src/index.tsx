@@ -425,8 +425,10 @@ const opener: JupyterFrontEndPlugin<void> = {
             default:
               // in the lab interface
               docManager.open(file);
-              // TODO: keep room in the URL
-              router.navigate(URLExt.parse(url).pathname, { skipRouting: true });
+              const newUrl = new URL(url);
+              // only remove the path (to keep extra parameters like the RTC room)
+              newUrl.searchParams.delete('path');
+              router.navigate(newUrl.href, { skipRouting: true });
               break;
           }
         });
