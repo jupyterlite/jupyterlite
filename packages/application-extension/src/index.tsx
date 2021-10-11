@@ -464,12 +464,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
           return;
         }
 
-        // TODO
-        const url = PageConfig.getUrl({
-          workspace: PageConfig.defaultWorkspace,
-          treePath: model.path
-        });
-        Clipboard.copyToSystem(url);
+        const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
+        url.searchParams.append('path', model.path);
+        Clipboard.copyToSystem(url.href);
       },
       isVisible: () =>
         !!tracker.currentWidget &&
