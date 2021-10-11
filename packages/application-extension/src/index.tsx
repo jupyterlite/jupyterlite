@@ -422,14 +422,16 @@ const opener: JupyterFrontEndPlugin<void> = {
               });
               return;
             }
-            default:
+            default: {
               // in the lab interface
               docManager.open(file);
-              const newUrl = new URL(url);
+              const newUrl = new URL(URLExt.join(PageConfig.getBaseUrl(), url));
               // only remove the path (to keep extra parameters like the RTC room)
               newUrl.searchParams.delete('path');
-              router.navigate(newUrl.href, { skipRouting: true });
+              const { pathname, search } = newUrl;
+              router.navigate(URLExt.join(pathname, search), { skipRouting: true });
               break;
+            }
           }
         });
       }
