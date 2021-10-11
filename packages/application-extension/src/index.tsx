@@ -34,7 +34,7 @@ import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
-import { toArray } from '@lumino/algorithm';
+import { filter, toArray } from '@lumino/algorithm';
 
 import { UUID, PromiseDelegate } from '@lumino/coreutils';
 
@@ -473,13 +473,17 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     commands.addCommand(CommandIDs.copyShareableLink, {
       execute: () => {
         const widget = tracker.currentWidget;
-        const model = widget?.selectedItems().next();
-        if (!model) {
+        if (!widget) {
           return;
         }
 
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
-        url.searchParams.append('path', model.path);
+        const models = toArray(
+          filter(widget.selectedItems(), item => item.type !== 'directory')
+        );
+        models.forEach(model => {
+          url.searchParams.append('path', model.path);
+        });
         if (collaborative) {
           url.searchParams.append('room', roomName);
         }
@@ -487,7 +491,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
       },
       isVisible: () =>
         !!tracker.currentWidget &&
-        toArray(tracker.currentWidget.selectedItems()).length === 1,
+        toArray(tracker.currentWidget.selectedItems()).length >= 1,
       icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
       label: trans.__('Copy Shareable Link')
     });
