@@ -391,13 +391,13 @@ const opener: JupyterFrontEndPlugin<void> = {
       execute: (args: any) => {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
-        const url = parsed.request;
-        const matches = url.match(URL_PATTERN) ?? [];
+        const { request, search } = parsed;
+        const matches = request.match(URL_PATTERN) ?? [];
         if (!matches) {
           return;
         }
 
-        const urlParams = new URLSearchParams(window.location.search);
+        const urlParams = new URLSearchParams(search);
         const paths = urlParams.getAll('path');
         if (!paths) {
           return;
@@ -426,10 +426,10 @@ const opener: JupyterFrontEndPlugin<void> = {
             default: {
               // open all files in the lab interface
               files.forEach(file => docManager.open(file));
-              const newUrl = new URL(URLExt.join(PageConfig.getBaseUrl(), url));
+              const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
               // only remove the path (to keep extra parameters like the RTC room)
-              newUrl.searchParams.delete('path');
-              const { pathname, search } = newUrl;
+              url.searchParams.delete('path');
+              const { pathname, search } = url;
               router.navigate(`${pathname}${search}`, { skipRouting: true });
               break;
             }
