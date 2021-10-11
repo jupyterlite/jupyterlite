@@ -25,6 +25,7 @@ const disabled = [
   '@jupyterlab/apputils-extension:resolver',
   '@jupyterlab/docmanager-extension:download',
   '@jupyterlab/filebrowser-extension:download',
+  '@jupyterlab/filebrowser-extension:share-file',
   '@jupyterlab/help-extension:about'
 ];
 

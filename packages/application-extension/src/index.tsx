@@ -8,7 +8,7 @@ import {
   ILabShell
 } from '@jupyterlab/application';
 
-import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
+import { Clipboard, ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
@@ -30,7 +30,7 @@ import { Contents } from '@jupyterlab/services';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { downloadIcon } from '@jupyterlab/ui-components';
+import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -126,6 +126,8 @@ namespace CommandIDs {
   export const docmanagerDownload = 'docmanager:download';
 
   export const filebrowserDownload = 'filebrowser:download';
+
+  export const copyShareableLink = 'filebrowser:share-main';
 }
 
 /**
@@ -434,12 +436,57 @@ const opener: JupyterFrontEndPlugin<void> = {
   }
 };
 
+/**
+ * A custom plugin to share a link to a file.
+ *
+ * This url can be used to open a particular file in JupyterLab.
+ * It also adds the corresponding room if RTC is enabled.
+ *
+ */
+const shareFile: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:share-file',
+  requires: [IFileBrowserFactory, ITranslator],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    factory: IFileBrowserFactory,
+    translator: ITranslator
+  ): void => {
+    const trans = translator.load('jupyterlab');
+    const { commands } = app;
+    const { tracker } = factory;
+
+    commands.addCommand(CommandIDs.copyShareableLink, {
+      execute: () => {
+        const widget = tracker.currentWidget;
+        const model = widget?.selectedItems().next();
+        if (!model) {
+          return;
+        }
+
+        // TODO
+        const url = PageConfig.getUrl({
+          workspace: PageConfig.defaultWorkspace,
+          treePath: model.path
+        });
+        Clipboard.copyToSystem(url);
+      },
+      isVisible: () =>
+        !!tracker.currentWidget &&
+        toArray(tracker.currentWidget.selectedItems()).length === 1,
+      icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
+      label: trans.__('Copy Shareable Link')
+    });
+  }
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   docProviderPlugin,
   downloadPlugin,
   liteLogo,
-  opener
+  opener,
+  shareFile
 ];
 
 export default plugins;
