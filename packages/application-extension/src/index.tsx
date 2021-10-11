@@ -2,14 +2,15 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
+  IRouter,
   JupyterFrontEndPlugin,
   JupyterFrontEnd,
   ILabShell
 } from '@jupyterlab/application';
 
-import { ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
+import { Clipboard, ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
@@ -29,11 +30,11 @@ import { Contents } from '@jupyterlab/services';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { downloadIcon } from '@jupyterlab/ui-components';
+import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
-import { toArray } from '@lumino/algorithm';
+import { filter, toArray } from '@lumino/algorithm';
 
 import { UUID, PromiseDelegate } from '@lumino/coreutils';
 
@@ -44,6 +45,21 @@ import { getParam } from 'lib0/environment';
 import { WebrtcProvider } from 'y-webrtc';
 
 import React from 'react';
+
+/**
+ * The default notebook factory.
+ */
+const NOTEBOOK_FACTORY = 'Notebook';
+
+/**
+ * The editor factory.
+ */
+const EDITOR_FACTORY = 'Editor';
+
+/**
+ * A regular expression to match path to notebooks, documents and consoles
+ */
+const URL_PATTERN = new RegExp('/(lab|notebooks|edit|consoles)\\/?');
 
 class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
@@ -110,6 +126,8 @@ namespace CommandIDs {
   export const docmanagerDownload = 'docmanager:download';
 
   export const filebrowserDownload = 'filebrowser:download';
+
+  export const copyShareableLink = 'filebrowser:share-main';
 }
 
 /**
@@ -353,11 +371,135 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
   }
 };
 
+/**
+ * A custom opener plugin to pass the path to documents as
+ * query string parameters.
+ */
+const opener: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:opener',
+  autoStart: true,
+  requires: [IRouter, IDocumentManager],
+  activate: (
+    app: JupyterFrontEnd,
+    router: IRouter,
+    docManager: IDocumentManager
+  ): void => {
+    const { commands } = app;
+
+    const command = 'router:tree';
+    commands.addCommand(command, {
+      execute: (args: any) => {
+        const parsed = args as IRouter.ILocation;
+        // use request to do the matching
+        const { request, search } = parsed;
+        const matches = request.match(URL_PATTERN) ?? [];
+        if (!matches) {
+          return;
+        }
+
+        const urlParams = new URLSearchParams(search);
+        const paths = urlParams.getAll('path');
+        if (!paths) {
+          return;
+        }
+        const files = paths.map(path => decodeURIComponent(path));
+        app.restored.then(() => {
+          const page = PageConfig.getOption('retroPage');
+          const [file] = files;
+          switch (page) {
+            case 'consoles': {
+              commands.execute('console:create', { path: file });
+              return;
+            }
+            case 'notebooks': {
+              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
+            case 'edit': {
+              docManager.open(file, EDITOR_FACTORY, undefined, {
+                ref: '_noref'
+              });
+              return;
+            }
+            default: {
+              // open all files in the lab interface
+              files.forEach(file => docManager.open(file));
+              const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
+              // only remove the path (to keep extra parameters like the RTC room)
+              url.searchParams.delete('path');
+              const { pathname, search } = url;
+              router.navigate(`${pathname}${search}`, { skipRouting: true });
+              break;
+            }
+          }
+        });
+      }
+    });
+
+    router.register({ command, pattern: URL_PATTERN });
+  }
+};
+
+/**
+ * A custom plugin to share a link to a file.
+ *
+ * This url can be used to open a particular file in JupyterLab.
+ * It also adds the corresponding room if RTC is enabled.
+ *
+ */
+const shareFile: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:share-file',
+  requires: [IFileBrowserFactory, ITranslator],
+  autoStart: true,
+  activate: (
+    app: JupyterFrontEnd,
+    factory: IFileBrowserFactory,
+    translator: ITranslator
+  ): void => {
+    const trans = translator.load('jupyterlab');
+    const { commands } = app;
+    const { tracker } = factory;
+
+    const roomName = getParam('--room', '').trim();
+    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
+
+    commands.addCommand(CommandIDs.copyShareableLink, {
+      execute: () => {
+        const widget = tracker.currentWidget;
+        if (!widget) {
+          return;
+        }
+
+        const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
+        const models = toArray(
+          filter(widget.selectedItems(), item => item.type !== 'directory')
+        );
+        models.forEach(model => {
+          url.searchParams.append('path', model.path);
+        });
+        if (collaborative) {
+          url.searchParams.append('room', roomName);
+        }
+        Clipboard.copyToSystem(url.href);
+      },
+      isVisible: () =>
+        !!tracker.currentWidget &&
+        toArray(tracker.currentWidget.selectedItems()).length >= 1,
+      icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
+      label: trans.__('Copy Shareable Link')
+    });
+  }
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   docProviderPlugin,
   downloadPlugin,
-  liteLogo
+  liteLogo,
+  opener,
+  shareFile
 ];
 
 export default plugins;
