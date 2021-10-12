@@ -113,7 +113,6 @@ async function main() {
             '@jupyterlab/filebrowser-extension:browser',
             '@jupyterlab/filebrowser-extension:file-upload-status',
             '@jupyterlab/filebrowser-extension:open-with',
-            '@jupyterlab/filebrowser-extension:share-file'
           ].includes(id)
         ),
         // do not enable the new terminal button from RetroLab
