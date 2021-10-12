@@ -81,6 +81,11 @@ async function main() {
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
       ['@jupyterlab/docmanager-extension:plugin'].includes(id)
     ),
+    require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/filebrowser-extension:factory'
+      ].includes(id)
+    ),
     require('@jupyterlab/mainmenu-extension'),
     require('@jupyterlab/mathjax2-extension'),
     require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
@@ -106,10 +111,8 @@ async function main() {
         require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
           [
             '@jupyterlab/filebrowser-extension:browser',
-            '@jupyterlab/filebrowser-extension:factory',
             '@jupyterlab/filebrowser-extension:file-upload-status',
             '@jupyterlab/filebrowser-extension:open-with',
-            '@jupyterlab/filebrowser-extension:share-file'
           ].includes(id)
         ),
         // do not enable the new terminal button from RetroLab
@@ -157,8 +160,7 @@ async function main() {
         ),
         require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
           [
-            '@jupyterlab/filebrowser-extension:browser',
-            '@jupyterlab/filebrowser-extension:factory'
+            '@jupyterlab/filebrowser-extension:browser'
           ].includes(id)
         ),
       ]);
