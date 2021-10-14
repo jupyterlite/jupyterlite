@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a14
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a13...5d46a724d2518325e8ccdc88a9264bd99c99c358))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 3.2 and RetroLab 0.3.10 [#371](https://github.com/jupyterlite/jupyterlite/pull/371) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add a README.md to the `examples` folder [#389](https://github.com/jupyterlite/jupyterlite/pull/389) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-10-12&to=2021-10-14&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-10-12..2021-10-14&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2021-10-12..2021-10-14&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-10-12..2021-10-14&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a13
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a12...d2a4c4dec8a087f9f106aafaf510808c974dcb59))
@@ -25,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-10-04&to=2021-10-12&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-10-04..2021-10-12&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2021-10-04..2021-10-12&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-10-04..2021-10-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a12
 
