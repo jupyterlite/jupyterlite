@@ -2650,6 +2650,7 @@
 "@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
   version "0.1.0-alpha.13"
   dependencies:
+    "@jupyterlab/coreutils" "^5.2.0"
     "@jupyterlite/javascript-kernel" "^0.1.0-alpha.13"
     "@jupyterlite/kernel" "^0.1.0-alpha.13"
     "@jupyterlite/server" "^0.1.0-alpha.13"
@@ -3706,10 +3707,10 @@
   resolved "https://registry.yarnpkg.com/@polka/url/-/url-1.0.0-next.19.tgz#2c94db828794aa53e7a420809dac870348819233"
   integrity sha512-kHR9OHwP9WLpyC0i/WCAQCgf5hXkR9C+/21qxmrn+YwRlDRnBlqrcrFpXxhJTA9LDHJWa/FjoO2LJ12q8iWlEQ==
 
-"@retrolab/application-extension@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/application-extension/-/application-extension-0.3.10.tgz#7c1ce7794ec67b80cb9ad2341d7273886a8d86d6"
-  integrity sha512-jxHLKPpvyHVAYZRTPu98rX+hRtjWygA9Axy3FH5rHf4JIZqAMCEQ0fDbEzjJSmhEc9oD3/iYW4YCDRMs3je0ow==
+"@retrolab/application-extension@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/application-extension/-/application-extension-0.3.11.tgz#1f2cf8c89ada715087ef381f55a2595bda55a336"
+  integrity sha512-u+gWy3wriMlQRx8ICsqLtUIC3KKvRhSSu9+B3l0d3+iN8+OhuPGbm2FIvLN9J1B842zm6nNx0TANC0XXRa+NUQ==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/apputils" "^3.2.0"
@@ -3726,13 +3727,13 @@
     "@lumino/coreutils" "^1.8.0"
     "@lumino/disposable" "^1.7.0"
     "@lumino/widgets" "^1.23.0"
-    "@retrolab/application" "^0.3.10"
-    "@retrolab/ui-components" "^0.3.10"
+    "@retrolab/application" "^0.3.11"
+    "@retrolab/ui-components" "^0.3.11"
 
-"@retrolab/application@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/application/-/application-0.3.10.tgz#0ab43b3782bdef434201cc04ac6f64d4f1b95368"
-  integrity sha512-cE52Xyozix6grMfPkqHRa5WjW+RgdpKl/xIEE5s3W4uPWGjXgXMimp2fKPztIdm+dNIZqy/OFPXjT+/sR36BWA==
+"@retrolab/application@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/application/-/application-0.3.11.tgz#d92df312c1ab3d3a116e3bd080e81aa6c8a8c48b"
+  integrity sha512-ROAX+eSy1BpfHtw7ojhlpnh6uuJYBindUKq8+W2gC8QFSjL2+BgBK4kRmOCyWfrgI3WFYzcnFuqn+6wPOoUMVQ==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/coreutils" "^5.2.0"
@@ -3746,10 +3747,10 @@
     "@lumino/signaling" "^1.7.0"
     "@lumino/widgets" "^1.23.0"
 
-"@retrolab/docmanager-extension@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/docmanager-extension/-/docmanager-extension-0.3.10.tgz#9568d0204ffe51c626a32c8d38d19574c2e10476"
-  integrity sha512-915egLJblggaxQv9Rzb+W1tngy6/OMxpVQTMJD4BaD3ex9OMo05LAsDfOnQO4fOLA1NjALd/zMR8iTljMZakzA==
+"@retrolab/docmanager-extension@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/docmanager-extension/-/docmanager-extension-0.3.11.tgz#4dbc1ec76db1d851d1014539ca6921e1f0228998"
+  integrity sha512-KIOqWIeXxKZQUOUEEy6eL5Ryw3NiJl8CItsakAi5ndrY6FoayPWrbMd61SlKvBxOTuXE+ny3CBZMxoOdiOK4/A==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/coreutils" "^5.2.0"
@@ -3758,21 +3759,21 @@
     "@jupyterlab/services" "^6.2.0"
     "@lumino/algorithm" "^1.6.0"
 
-"@retrolab/help-extension@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/help-extension/-/help-extension-0.3.10.tgz#d2509c82394b1208d850285080c205591dec6e14"
-  integrity sha512-xXTGE1OOye3fR49XSiTFFQ6P7Ajtd894pvEuwAe57YPKMhLC1JYCwDTVINnoWMYzp0J7lGnb/bx1navLECf7oA==
+"@retrolab/help-extension@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/help-extension/-/help-extension-0.3.11.tgz#83375f33103c5ca7048356731a27c06be4245712"
+  integrity sha512-U0645KsTduIMkTrL04IUBpEk0ZmKdmcbqlvMhWxy0sL4liZvU7dQlhUTlxqhe2SvFKsugUNXrYSTm+k6DyR5Rg==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/apputils" "^3.2.0"
     "@jupyterlab/mainmenu" "^3.2.0"
     "@jupyterlab/translation" "^3.2.0"
-    "@retrolab/ui-components" "^0.3.10"
+    "@retrolab/ui-components" "^0.3.11"
 
-"@retrolab/notebook-extension@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/notebook-extension/-/notebook-extension-0.3.10.tgz#f4ef148c69ad82fd171ce785cc6bc5758b0621e6"
-  integrity sha512-M+kAFDn7O7i5nro3HSeNWxe7VlQaKQ2YO5EpEiNOx2ld0efH0SlnubGNQ2WRB3uzkV/5oHDG+wQwv59qPbsEkg==
+"@retrolab/notebook-extension@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/notebook-extension/-/notebook-extension-0.3.11.tgz#8d42f46bccdd789410f8b791a27573087011d444"
+  integrity sha512-6rnvCMoW9zDLYUjV05c4XzM/r2NHW302KbLEnaLAcJNc6C7rsH+y+Wbly7dOQRzDxIqKQGh8XsvmEzIIYrKaZg==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/apputils" "^3.2.0"
@@ -3781,12 +3782,12 @@
     "@jupyterlab/translation" "^3.2.0"
     "@lumino/polling" "^1.6.0"
     "@lumino/widgets" "^1.23.0"
-    "@retrolab/application" "^0.3.10"
+    "@retrolab/application" "^0.3.11"
 
-"@retrolab/tree-extension@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/tree-extension/-/tree-extension-0.3.10.tgz#dac56fc7b870e49fd515cc0ca58941f153a30290"
-  integrity sha512-mYVDbXLF8U3CvlHzWKgQCSWYxZFYwiYfFvvMou0lCZ0HxFkwU6mWUdSRnFgwKroRizbpi9+2PU8SrGTlez3bXA==
+"@retrolab/tree-extension@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/tree-extension/-/tree-extension-0.3.11.tgz#cccf2e66d86dd9d1ab37472c9659eb7a285a8f66"
+  integrity sha512-wJh4QuD1zImWugTlSOOEfpgTj0M9rzflq4yxDfPez+yL1XjkePeAmitfx9pjO8kXMc9fPEd0ZYmsImOsx+rM4w==
   dependencies:
     "@jupyterlab/application" "^3.2.0"
     "@jupyterlab/apputils" "^3.2.0"
@@ -3802,12 +3803,12 @@
     "@lumino/algorithm" "^1.6.0"
     "@lumino/commands" "^1.15.0"
     "@lumino/widgets" "^1.23.0"
-    "@retrolab/application" "^0.3.10"
+    "@retrolab/application" "^0.3.11"
 
-"@retrolab/ui-components@^0.3.10":
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/@retrolab/ui-components/-/ui-components-0.3.10.tgz#b3531da395eb0520c199a7f0173f8ef6b9f03cba"
-  integrity sha512-/57Zd2kEjHSC1PS70Mx1oUUkrjVXTGdes3+Jjv9ZYoMGjhgD1dz/BvH7tODZEMKpOx0D+Yp4fgdzE+bzy4WDjA==
+"@retrolab/ui-components@^0.3.11":
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/@retrolab/ui-components/-/ui-components-0.3.11.tgz#945df530d7f379b1692787fd6bc56d4a867929df"
+  integrity sha512-D7Syjyt2QjclHJ2fnnLqXQUfPQYGC8W12vTDxVMg1gT95CwTR9XwTSu9njD5/cHyahDz5zGNmjbRLvjm+oMy2A==
   dependencies:
     "@jupyterlab/ui-components" "^3.2.0"
     react "^17.0.1"
