@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server';
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
@@ -15,6 +17,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+    const baseUrl = PageConfig.getBaseUrl();
     kernelspecs.register({
       spec: {
         name: 'javascript',
@@ -30,8 +33,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
           metadata: {}
         },
         resources: {
-          'logo-32x32': 'TODO',
-          'logo-64x64': '/kernelspecs/javascript.svg'
+          'logo-32x32': '',
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/javascript.svg')
         }
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {

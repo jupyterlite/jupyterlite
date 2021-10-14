@@ -26,6 +26,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const pyodideUrl = URLExt.isLocal(url)
       ? URLExt.join(window.location.origin, url)
       : url;
+    const baseUrl = PageConfig.getBaseUrl();
 
     kernelspecs.register({
       spec: {
@@ -43,7 +44,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         },
         resources: {
           'logo-32x32': 'TODO',
-          'logo-64x64': '/kernelspecs/python.png'
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png')
         }
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
