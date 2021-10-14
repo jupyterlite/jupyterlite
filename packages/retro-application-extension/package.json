@@ -37,11 +37,11 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~3.1.12",
-    "@jupyterlab/console": "~3.1.12",
-    "@jupyterlab/coreutils": "~5.1.12",
-    "@jupyterlab/docmanager": "~3.1.12",
-    "@jupyterlab/services": "~6.1.12"
+    "@jupyterlab/application": "~3.2.0",
+    "@jupyterlab/console": "~3.2.0",
+    "@jupyterlab/coreutils": "~5.2.0",
+    "@jupyterlab/docmanager": "~3.2.0",
+    "@jupyterlab/services": "~6.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
