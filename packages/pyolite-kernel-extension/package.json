@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/pyolite-kernel-extension",
-  "version": "0.1.0-alpha.12",
+  "version": "0.1.0-alpha.14",
   "description": "JupyterLite - Pyolite Kernel Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -37,10 +37,10 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.1.12",
-    "@jupyterlite/kernel": "^0.1.0-alpha.12",
-    "@jupyterlite/pyolite-kernel": "^0.1.0-alpha.12",
-    "@jupyterlite/server": "^0.1.0-alpha.12"
+    "@jupyterlab/coreutils": "~5.2.0",
+    "@jupyterlite/kernel": "^0.1.0-alpha.14",
+    "@jupyterlite/pyolite-kernel": "^0.1.0-alpha.14",
+    "@jupyterlite/server": "^0.1.0-alpha.14"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

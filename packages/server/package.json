@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/server",
-  "version": "0.1.0-alpha.12",
+  "version": "0.1.0-alpha.14",
   "description": "JupyterLite - Server",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -42,17 +42,17 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.1.12",
-    "@jupyterlab/nbformat": "~3.1.12",
-    "@jupyterlab/observables": "~4.1.12",
-    "@jupyterlab/services": "~6.1.12",
-    "@jupyterlab/settingregistry": "~3.1.12",
-    "@jupyterlab/statedb": "~3.1.12",
-    "@jupyterlite/contents": "^0.1.0-alpha.12",
-    "@jupyterlite/kernel": "^0.1.0-alpha.12",
-    "@jupyterlite/session": "^0.1.0-alpha.12",
-    "@jupyterlite/settings": "^0.1.0-alpha.12",
-    "@jupyterlite/translation": "^0.1.0-alpha.12",
+    "@jupyterlab/coreutils": "~5.2.0",
+    "@jupyterlab/nbformat": "~3.2.0",
+    "@jupyterlab/observables": "~4.2.0",
+    "@jupyterlab/services": "~6.2.0",
+    "@jupyterlab/settingregistry": "~3.2.0",
+    "@jupyterlab/statedb": "~3.2.0",
+    "@jupyterlite/contents": "^0.1.0-alpha.14",
+    "@jupyterlite/kernel": "^0.1.0-alpha.14",
+    "@jupyterlite/session": "^0.1.0-alpha.14",
+    "@jupyterlite/settings": "^0.1.0-alpha.14",
+    "@jupyterlite/translation": "^0.1.0-alpha.14",
     "@lumino/application": "^1.20.0",
     "@lumino/coreutils": "^1.8.0",
     "mock-socket": "^9.0.3"
@@ -60,7 +60,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.1.12",
+    "@jupyterlab/testutils": "~3.2.0",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",

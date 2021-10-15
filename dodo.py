@@ -635,7 +635,7 @@ class C:
     LITE_GH_ORG = f"{GH}/{NAME}"
     P5_GH_REPO = f"{LITE_GH_ORG}/p5-kernel"
     P5_MOD = "jupyterlite_p5_kernel"
-    P5_VERSION = "0.1.0a11"
+    P5_VERSION = "0.1.0a12"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     JUPYTERLITE_JSON = "jupyter-lite.json"
