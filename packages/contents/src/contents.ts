@@ -27,25 +27,13 @@ const N_CHECKPOINTS = 5;
 /**
  * A list of mime types of text files
  */
-const TEXT_MIME_TYPES = new Set([
+const EXTRA_TEXT_MIME_TYPES = new Set([
   'application/javascript',
   'application/json',
   'application/manifest+json',
   'application/x-python-code',
   'application/xml',
-  'image/svg+xml',
-  'text/css',
-  'text/csv',
-  'text/html',
-  'text/plain',
-  'text/richtext',
-  'text/tab-separated-values',
-  'text/x-python',
-  'text/x-setext',
-  'text/x-sgml',
-  'text/x-vcard',
-  'text/xml',
-  'text/xul'
+  'image/svg+xml'
 ]);
 
 /**
@@ -388,7 +376,10 @@ export class Contents implements IContents {
             format: 'json',
             mimetype: model.mimetype || 'application/json'
           };
-        } else if (TEXT_MIME_TYPES.has(mimetype) || mimetype.indexOf('text') !== -1) {
+        } else if (
+          mimetype.indexOf('text') !== -1 ||
+          EXTRA_TEXT_MIME_TYPES.has(mimetype)
+        ) {
           model = {
             ...model,
             content: await response.text(),
