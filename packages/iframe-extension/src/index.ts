@@ -35,12 +35,6 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
     super();
     this.addClass('jp-IFrameContainer');
     this._iframe = document.createElement('iframe');
-    // Provide default dimensions
-    this._iframe.width = '100%';
-    this._iframe.height = '400px';
-    this._iframe.onload = () => {
-      this._ready.resolve(void 0);
-    };
     this.node.appendChild(this._iframe);
   }
 
@@ -48,6 +42,15 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
    * Render the IFrame into this widget's node.
    */
   async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
+    this.node.removeChild(this._iframe);
+    this._iframe = document.createElement('iframe');
+    // Provide default dimensions
+    this._iframe.width = '100%';
+    this._iframe.height = '400px';
+    this._iframe.onload = () => {
+      this._ready.resolve(void 0);
+    };
+    this.node.appendChild(this._iframe);
     await this._ready.promise;
     const data = model.data[MIME_TYPE] as string | undefined;
     if (!data || !this._iframe.contentWindow) {
