@@ -1005,7 +1005,7 @@ class U:
         )
         subprocess.check_call(["pip", "download", "-r", reqs], cwd=str(B.RAW_WHEELS))
 
-        for wheel in sorted(B.RAW_WHEELS.glob(f"*.{C.NOARCH_WHL}")):
+        for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
             if any(re.findall(f"{p}-\d", wheel.name) for p in C.IGNORED_WHEELS):
                 continue
             meta = pkginfo.get_metadata(str(wheel))
@@ -1013,10 +1013,15 @@ class U:
 
     @staticmethod
     def pip_url(name, version, wheel_name):
+        python_tag = "py3" if "py2." not in wheel_name else "py2.py3"
+
+        if name == "testpath":
+            python_tag = "py2.py3"
+
         return "/".join(
             [
                 "https://files.pythonhosted.org/packages",
-                "py3" if "py2." not in wheel_name else "py2.py3",
+                python_tag,
                 name[0],
                 name,
                 wheel_name,

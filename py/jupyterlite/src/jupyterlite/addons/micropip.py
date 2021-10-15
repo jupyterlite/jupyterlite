@@ -17,7 +17,7 @@ from .base import BaseAddon
 
 
 class MicropipAddon(BaseAddon):
-    __all__ = ["post_init", "build", "post_build"]
+    __all__ = ["post_init", "pre_build", "post_build"]
 
     @property
     def output_wheels(self):
@@ -33,8 +33,8 @@ class MicropipAddon(BaseAddon):
         for path_or_url in manager.micropip_wheels:
             yield from self.resolve_one_wheel(path_or_url, init=True)
 
-    def build(self, manager):
-        for wheel in sorted(self.wheel_cache.glob(f"*.{NOARCH_WHL}")):
+    def pre_build(self, manager):
+        for wheel in sorted(self.wheel_cache.glob(f"*{NOARCH_WHL}")):
             dest = self.output_wheels / wheel.name
             yield dict(
                 name=f"copy:whl:{wheel.name}",
@@ -46,7 +46,7 @@ class MicropipAddon(BaseAddon):
     def post_build(self, manager):
         """update the root jupyter-lite.json with micropipUrls"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
-        wheels = sorted(self.output_wheels.glob(f"*.{NOARCH_WHL}"))
+        wheels = sorted(self.output_wheels.glob(f"*{NOARCH_WHL}"))
 
         if wheels:
             whl_metas = []
