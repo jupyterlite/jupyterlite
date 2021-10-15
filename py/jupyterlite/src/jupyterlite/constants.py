@@ -43,6 +43,7 @@ JUPYTER_CONFIG_DATA = "jupyter-config-data"
 FEDERATED_EXTENSIONS = "federated_extensions"
 DISABLED_EXTENSIONS = "disabledExtensions"
 SETTINGS_OVERRIDES = "settingsOverrides"
+MICROPIP_URLS = "micropipUrls"
 
 ### jupyterlite "well-known" paths
 
@@ -75,6 +76,12 @@ SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 
 #: this is arrived at by inspection
 NPM_SOURCE_DATE_EPOCH = 499162500
+
+#: the only kind of wheel micropip understands
+NOARCH_WHL = "py3-none-any.whl"
+
+#: where we put wheels, for now
+LAB_WHEELS = "lab/build/wheels"
 
 ### URLs
 

@@ -27,10 +27,27 @@ def task_env():
     )
 
     if C.IN_CONDA:
+        all_deps = []
+        for nb in P.ALL_EXAMPLES:
+            if not nb.name.endswith(".ipynb"):
+                continue
+            nb_deps = B.EXAMPLE_DEPS / f"{nb.name}.yml"
+            yield dict(
+                name=f"lite:deps:{nb.name}",
+                doc="find dependencies for pyolite notebooks",
+                file_dep=[nb],
+                targets=[nb_deps],
+                actions=[
+                    (doit.tools.create_folder, [B.EXAMPLE_DEPS]),
+                    (U.get_deps, [nb, nb_deps]),
+                ],
+            )
+
+            all_deps += [nb_deps]
         yield dict(
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
-            file_dep=[P.BINDER_ENV],
+            file_dep=[P.BINDER_ENV, *all_deps],
             actions=[
                 (
                     U.sync_lite_config,
@@ -39,6 +56,7 @@ def task_env():
                         P.EXAMPLE_LITE_BUILD_CONFIG,
                         C.FED_EXT_MARKER,
                         [C.P5_WHL_URL],
+                        all_deps,
                     ],
                 ),
                 U.do(*C.PRETTIER, P.EXAMPLE_LITE_BUILD_CONFIG),
@@ -643,6 +661,19 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 91
+    # TODO: automate this
+    IGNORED_WHEEL_DEPS = [
+        "js",
+        "matplotlib",
+        "micropip",
+        "numpy",
+        "pandas",
+        "pillow",
+        "plotly",
+        "pyodide_js",
+        "pyolite",
+    ]
+    IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -819,10 +850,14 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    LAB_WHEELS = P.APP / "lab/wheels"
+    LAB_WHEELS = P.APP / "lab/build/wheels"
     LAB_WHEEL_INDEX = LAB_WHEELS / "all.json"
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
 
+    EXAMPLE_DEPS = BUILD / "depfinder"
+
+    RAW_WHEELS = BUILD / "wheels"
+    EXAMPLE_WHEELS = P.EXAMPLES / "lab/build/wheels"
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
@@ -901,8 +936,19 @@ class U:
         )
 
     @staticmethod
-    def sync_lite_config(from_env, to_json, marker, extra_urls):
-        """use conda list to derive tarball names"""
+    def get_deps(has_deps, dep_file):
+        """look for deps with depfinder"""
+        try:
+            out = subprocess.check_output(
+                ["depfinder", "--no-remap", "--yaml", "--key", "required", has_deps]
+            ).decode("utf-8")
+            dep_file.write_text(out, **C.ENC)
+        except subprocess.CalledProcessError:
+            dep_file.write_text("{}", **C.ENC)
+
+    @staticmethod
+    def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
+        """use conda list to derive tarball names for federated_extensions"""
         raw_lock = subprocess.check_output(["conda", "list", "--explicit"])
         ext_packages = [
             p.strip().split(" ")[0]
@@ -928,7 +974,54 @@ class U:
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
+        config["LiteBuildConfig"]["micropip_wheels"] = sorted(
+            set(U.deps_to_wheels(all_deps))
+        )
+
+        # fetch micropip wheels
+        U.deps_to_wheels(all_deps)
+
         to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+
+    @staticmethod
+    def deps_to_wheels(all_deps):
+        import pkginfo
+        from yaml import safe_load
+
+        required = ["ipykernel", "notebook"]
+        for dep in all_deps:
+            required += safe_load(dep.read_text(**C.ENC)).get("required", [])
+
+        B.RAW_WHEELS.mkdir(exist_ok=True, parents=True)
+        reqs = B.RAW_WHEELS / "requirements.txt"
+        reqs.write_text(
+            "\n".join(
+                [
+                    req
+                    for req in sorted(set(required))
+                    if req not in C.IGNORED_WHEEL_DEPS
+                ]
+            )
+        )
+        subprocess.check_call(["pip", "download", "-r", reqs], cwd=str(B.RAW_WHEELS))
+
+        for wheel in sorted(B.RAW_WHEELS.glob(f"*.{C.NOARCH_WHL}")):
+            if any(re.findall(f"{p}-\d", wheel.name) for p in C.IGNORED_WHEELS):
+                continue
+            meta = pkginfo.get_metadata(str(wheel))
+            yield U.pip_url(meta.name, meta.version, wheel.name)
+
+    @staticmethod
+    def pip_url(name, version, wheel_name):
+        return "/".join(
+            [
+                "https://files.pythonhosted.org/packages",
+                "py3" if "py2." not in wheel_name else "py2.py3",
+                name[0],
+                name,
+                wheel_name,
+            ]
+        )
 
     @staticmethod
     def typedoc_conf():

@@ -34,6 +34,11 @@ class FederatedExtensionAddon(BaseAddon):
         ]
 
     @property
+    def ext_cache(self):
+        """where extensions will go in the cache"""
+        return self.manager.cache_dir / "federated_extensions"
+
+    @property
     def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
@@ -85,7 +90,7 @@ class FederatedExtensionAddon(BaseAddon):
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
-            dest = self.manager.cache_dir / name
+            dest = self.ext_cache / name
             if init:
                 if not dest.exists():
                     yield dict(

@@ -13,6 +13,6 @@
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
     "settingsUrl": "./lab/build/schemas",
     "themesUrl": "./lab/build/themes",
-    "micropipUrls": ["./lab/wheels/all.json"]
+    "micropipUrls": ["./lab/build/wheels/all.json"]
   }
 }

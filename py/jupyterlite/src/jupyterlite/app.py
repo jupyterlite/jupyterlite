@@ -30,9 +30,10 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             "output-archive": "LiteBuildConfig.output_archive",
             "settings-overrides": "LiteBuildConfig.settings_overrides",
             "source-date-epoch": "LiteBuildConfig.source_date_epoch",
-            # addon-specific things
+            # server-specific things
             "port": "LiteBuildConfig.port",
             "base-url": "LiteBuildConfig.base_url",
+            "micropip-wheels": "LiteBuildConfig.micropip_wheels",
         },
     )
 
@@ -89,6 +90,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["federated_extensions"] = self.federated_extensions
         if self.ignore_sys_prefix is not None:
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
+        if self.micropip_wheels is not None:
+            kwargs["micropip_wheels"] = self.micropip_wheels
 
         return LiteManager(**kwargs)
 
