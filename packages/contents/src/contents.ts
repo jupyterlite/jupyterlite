@@ -25,6 +25,30 @@ const STORAGE_NAME = 'JupyterLite Storage';
 const N_CHECKPOINTS = 5;
 
 /**
+ * A list of mime types of text files
+ */
+const TEXT_MIME_TYPES = new Set([
+  'application/javascript',
+  'application/json',
+  'application/manifest+json',
+  'application/x-python-code',
+  'application/xml',
+  'image/svg+xml',
+  'text/css',
+  'text/csv',
+  'text/html',
+  'text/plain',
+  'text/richtext',
+  'text/tab-separated-values',
+  'text/x-python',
+  'text/x-setext',
+  'text/x-sgml',
+  'text/x-vcard',
+  'text/xml',
+  'text/xul'
+]);
+
+/**
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
@@ -364,8 +388,7 @@ export class Contents implements IContents {
             format: 'json',
             mimetype: model.mimetype || 'application/json'
           };
-          // TODO: this is not great, need a better oracle
-        } else if (mimetype.indexOf('xml') !== -1 || mimetype.indexOf('text') !== -1) {
+        } else if (TEXT_MIME_TYPES.has(mimetype) || mimetype.indexOf('text') !== -1) {
           model = {
             ...model,
             content: await response.text(),
