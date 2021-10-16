@@ -16,6 +16,7 @@ const serverExtensions = [
 
 const mimeExtensionsMods = [
   import('@jupyterlite/iframe-extension'),
+  import('@jupyterlab/javascript-extension'),
   import('@jupyterlab/json-extension'),
   import('@jupyterlab/vega5-extension')
 ];

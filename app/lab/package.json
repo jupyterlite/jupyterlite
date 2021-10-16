@@ -43,6 +43,7 @@
     "@jupyterlab/imageviewer-extension": "~3.2.0",
     "@jupyterlab/inspector": "~3.2.0",
     "@jupyterlab/inspector-extension": "~3.2.0",
+    "@jupyterlab/javascript-extension": "~3.2.0",
     "@jupyterlab/json-extension": "~3.2.0",
     "@jupyterlab/launcher": "~3.2.0",
     "@jupyterlab/launcher-extension": "~3.2.0",
@@ -121,6 +122,7 @@
     "@jupyterlab/htmlviewer-extension": "~3.2.0",
     "@jupyterlab/imageviewer-extension": "~3.2.0",
     "@jupyterlab/inspector-extension": "~3.2.0",
+    "@jupyterlab/javascript-extension": "~3.2.0",
     "@jupyterlab/json-extension": "~3.2.0",
     "@jupyterlab/launcher-extension": "~3.2.0",
     "@jupyterlab/logconsole-extension": "~3.2.0",
@@ -196,6 +198,7 @@
       "@jupyterlab/imageviewer-extension",
       "@jupyterlab/inspector-extension",
       "@jupyterlab/json-extension",
+      "@jupyterlab/javascript-extension",
       "@jupyterlab/launcher-extension",
       "@jupyterlab/logconsole-extension",
       "@jupyterlab/mainmenu-extension",
@@ -270,6 +273,7 @@
       "yjs"
     ],
     "mimeExtensions": {
+      "@jupyterlab/javascript-extension": "",
       "@jupyterlab/json-extension": "",
       "@jupyterlab/vega5-extension": ""
     },
