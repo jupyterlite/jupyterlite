@@ -46,22 +46,20 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
       this._iframe.parentNode.removeChild(this._iframe);
     }
 
+    const ready = new PromiseDelegate<void>();
     this._iframe = document.createElement('iframe');
-    // Provide default dimensions
-    this._iframe.width = '100%';
-    this._iframe.height = '400px';
     this._iframe.onload = () => {
-      this._ready.resolve(void 0);
+      ready.resolve(void 0);
     };
     this.node.appendChild(this._iframe);
-    await this._ready.promise;
+    await ready.promise;
     const data = model.data[MIME_TYPE] as string | undefined;
     if (!data || !this._iframe.contentWindow) {
       return;
     }
     const metadata = model.metadata[MIME_TYPE] as IIFrameMetadata | undefined;
-    this._iframe.width = metadata?.width ?? this._iframe.width;
-    this._iframe.height = metadata?.height ?? this._iframe.height;
+    this._iframe.width = metadata?.width ?? '100%';
+    this._iframe.height = metadata?.height ?? '400px';
     this._iframe.contentWindow.document.write(data);
   }
 
@@ -74,7 +72,6 @@ export class RenderedIFrame extends Widget implements IRenderMime.IRenderer {
   }
 
   private _iframe: HTMLIFrameElement;
-  private _ready = new PromiseDelegate<void>();
 }
 
 /**
