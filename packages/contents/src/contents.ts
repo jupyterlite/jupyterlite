@@ -458,6 +458,7 @@ export class Contents implements IContents {
     path: string,
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
+    path = decodeURIComponent(path);
     let item = await this.get(path);
     if (!item) {
       item = await this.newUntitled({ path });
