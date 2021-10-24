@@ -94,6 +94,9 @@ export class JupyterServer {
         content: req.query?.content === '1'
       };
       const nb = await this._contents.get(filename, options);
+      if (!nb) {
+        return new Response(null, { status: 404 });
+      }
       return new Response(JSON.stringify(nb));
     });
 

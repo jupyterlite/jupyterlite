@@ -1,14 +1,10 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents as ServerContents, ServerConnection } from '@jupyterlab/services';
+import { Contents as ServerContents } from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
 
-import { ModelDB } from '@jupyterlab/observables';
-
 import { PathExt } from '@jupyterlab/coreutils';
-
-import { ISignal, Signal } from '@lumino/signaling';
 
 import localforage from 'localforage';
 
@@ -40,34 +36,6 @@ const EXTRA_TEXT_MIME_TYPES = new Set([
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
-  /**
-   * A signal emitted when the file has changed.
-   */
-  get fileChanged(): ISignal<ServerContents.IManager, ServerContents.IChangedArgs> {
-    return this._fileChanged;
-  }
-
-  /**
-   * Test whether the manager has been disposed.
-   */
-  get isDisposed(): boolean {
-    return this._isDisposed;
-  }
-
-  /**
-   * Return the server settings.
-   */
-  get serverSettings(): ServerConnection.ISettings {
-    // TODO: placeholder
-    return ServerConnection.makeSettings();
-  }
-
-  /**
-   * Dispose of the resources held by the manager.
-   */
-  dispose(): void {
-    throw new Error('Method not implemented.');
-  }
   /**
    * Create a new untitled file or directory in the specified directory path.
    *
@@ -169,6 +137,9 @@ export class Contents implements IContents {
     }
     const toPath = `${toDir}${name}`;
     let item = await this.get(path, { content: true });
+    if (!item) {
+      throw Error(`Could not find file with path ${path}`);
+    }
     item = {
       ...item,
       name,
@@ -189,21 +160,21 @@ export class Contents implements IContents {
   async get(
     path: string,
     options?: ServerContents.IFetchOptions
-  ): Promise<ServerContents.IModel> {
+  ): Promise<ServerContents.IModel | null> {
     // remove leading slash
     path = decodeURIComponent(path.replace(/^\//, ''));
 
     if (path === '') {
-      return await this.getFolder(path);
+      return await this._getFolder(path);
     }
 
     const item = await this._storage.getItem(path);
-    const serverItem = await this.getServerContents(path, options);
+    const serverItem = await this._getServerContents(path, options);
 
     const model = (item || serverItem) as ServerContents.IModel | null;
 
     if (!model) {
-      throw Error(`Could not find file with path ${path}`);
+      return null;
     }
 
     if (!options?.content) {
@@ -227,7 +198,7 @@ export class Contents implements IContents {
 
       const serverContents: ServerContents.IModel[] = serverItem
         ? serverItem.content
-        : Array.from((await this.getServerDirectory(path)).values());
+        : Array.from((await this._getServerDirectory(path)).values());
       for (const file of serverContents) {
         if (!contentMap.has(file.name)) {
           contentMap.set(file.name, file);
@@ -249,156 +220,6 @@ export class Contents implements IContents {
         type: 'directory'
       };
     }
-    return model;
-  }
-
-  /**
-   * retrieve the contents for this path from the union of local storage and
-   * `api/contents/{path}/all.json`.
-   *
-   * @param path - The contents path to retrieve
-   *
-   * @returns A promise which resolves with a Map of contents, keyed by local file name
-   */
-  async getFolder(path: string): Promise<ServerContents.IModel> {
-    const content = new Map<string, ServerContents.IModel>();
-    await this._storage.iterate((item, key) => {
-      if (key.includes('/')) {
-        return;
-      }
-      const file = (item as unknown) as ServerContents.IModel;
-      content.set(file.path, file);
-    });
-
-    // layer in contents that don't have local overwrites
-    for (const file of (await this.getServerDirectory(path)).values()) {
-      if (!content.has(file.path)) {
-        content.set(file.path, file);
-      }
-    }
-
-    return {
-      name: '',
-      path,
-      last_modified: new Date(0).toISOString(),
-      created: new Date(0).toISOString(),
-      format: 'json',
-      mimetype: 'application/json',
-      content: Array.from(content.values()),
-      size: undefined,
-      writable: true,
-      type: 'directory'
-    };
-  }
-
-  private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
-
-  /**
-   * retrieve the contents for this path from `__index__.json` in the appropriate
-   * folder.
-   *
-   * @param newLocalPath - The new file path.
-   *
-   * @returns A promise which resolves with a Map of contents, keyed by local file name
-   */
-  async getServerDirectory(path: string): Promise<Map<string, ServerContents.IModel>> {
-    const content = this._serverContents.get(path) || new Map();
-
-    if (!this._serverContents.has(path)) {
-      const apiURL = URLExt.join(
-        PageConfig.getBaseUrl(),
-        'api/contents',
-        path,
-        'all.json'
-      );
-
-      try {
-        const response = await fetch(apiURL);
-        const json = JSON.parse(await response.text());
-        for (const file of json['content'] as ServerContents.IModel[]) {
-          content.set(file.name, file);
-        }
-      } catch (err) {
-        console.warn(
-          `don't worry, about ${err}... nothing's broken. if there had been a
-          file at ${apiURL}, you might see some more files.`
-        );
-      }
-      this._serverContents.set(path, content);
-    }
-
-    return content;
-  }
-
-  /**
-   * Attempt to recover the model from `{:path}/__all__.json` file, fall back to
-   * deriving the model (including content) off the file in `/files/`. Otherwise
-   * return `null`.
-   */
-  async getServerContents(
-    path: string,
-    options?: ServerContents.IFetchOptions
-  ): Promise<ServerContents.IModel | null> {
-    const name = PathExt.basename(path);
-    const parentContents = await this.getServerDirectory(URLExt.join(path, '..'));
-    let model = parentContents.get(name) || {
-      name,
-      path,
-      last_modified: new Date(0).toISOString(),
-      created: new Date(0).toISOString(),
-      format: 'text',
-      mimetype: 'text/plain',
-      type: 'file',
-      writable: true,
-      content: null
-    };
-
-    if (options?.content) {
-      if (model.type === 'directory') {
-        const serverContents = await this.getServerDirectory(path);
-        model = { ...model, content: Array.from(serverContents.values()) };
-      } else {
-        const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
-        const response = await fetch(fileUrl);
-        if (!response.ok) {
-          return null;
-        }
-        const mimetype = model.mimetype || response.headers.get('Content-Type');
-
-        if (
-          model.type === 'notebook' ||
-          mimetype?.indexOf('json') !== -1 ||
-          path.match(/\.(ipynb|[^/]*json[^/]*)$/)
-        ) {
-          model = {
-            ...model,
-            content: await response.json(),
-            format: 'json',
-            mimetype: model.mimetype || 'application/json'
-          };
-        } else if (
-          mimetype.indexOf('text') !== -1 ||
-          EXTRA_TEXT_MIME_TYPES.has(mimetype)
-        ) {
-          model = {
-            ...model,
-            content: await response.text(),
-            format: 'text',
-            mimetype: mimetype || 'text/plain'
-          };
-        } else {
-          model = {
-            ...model,
-            content: btoa(
-              String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
-            ),
-            format: 'base64',
-            mimetype: mimetype || 'octet/stream'
-          };
-        }
-      }
-    }
-
     return model;
   }
 
@@ -523,6 +344,9 @@ export class Contents implements IContents {
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
     const item = await this.get(path, { content: true });
+    if (!item) {
+      throw Error(`Could not find file with path ${path}`);
+    }
     const copies = (
       ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? []
     ).filter(item => !!item);
@@ -593,86 +417,157 @@ export class Contents implements IContents {
   }
 
   /**
-   * Add an `IDrive` to the manager.
+   * retrieve the contents for this path from the union of local storage and
+   * `api/contents/{path}/all.json`.
+   *
+   * @param path - The contents path to retrieve
+   *
+   * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
-  addDrive(drive: ServerContents.IDrive): void {
-    throw new Error('Method not implemented.');
+  private async _getFolder(path: string): Promise<ServerContents.IModel> {
+    const content = new Map<string, ServerContents.IModel>();
+    await this._storage.iterate((item, key) => {
+      if (key.includes('/')) {
+        return;
+      }
+      const file = (item as unknown) as ServerContents.IModel;
+      content.set(file.path, file);
+    });
+
+    // layer in contents that don't have local overwrites
+    for (const file of (await this._getServerDirectory(path)).values()) {
+      if (!content.has(file.path)) {
+        content.set(file.path, file);
+      }
+    }
+
+    return {
+      name: '',
+      path,
+      last_modified: new Date(0).toISOString(),
+      created: new Date(0).toISOString(),
+      format: 'json',
+      mimetype: 'application/json',
+      content: Array.from(content.values()),
+      size: undefined,
+      writable: true,
+      type: 'directory'
+    };
   }
 
   /**
-   * Given a path of the form `drive:local/portion/of/it.txt`
-   * get the local part of it.
-   *
-   * @param path: the path.
-   *
-   * @returns The local part of the path.
+   * Attempt to recover the model from `{:path}/__all__.json` file, fall back to
+   * deriving the model (including content) off the file in `/files/`. Otherwise
+   * return `null`.
    */
-  localPath(path: string): string {
-    throw new Error('Method not implemented.');
+  private async _getServerContents(
+    path: string,
+    options?: ServerContents.IFetchOptions
+  ): Promise<ServerContents.IModel | null> {
+    const name = PathExt.basename(path);
+    const parentContents = await this._getServerDirectory(URLExt.join(path, '..'));
+    let model = parentContents.get(name);
+    if (!model) {
+      return null;
+    }
+    model = {
+      name,
+      path,
+      last_modified: new Date(0).toISOString(),
+      created: new Date(0).toISOString(),
+      format: 'text',
+      mimetype: 'text/plain',
+      type: 'file',
+      writable: true,
+      content: null
+    };
+
+    if (options?.content) {
+      if (model.type === 'directory') {
+        const serverContents = await this._getServerDirectory(path);
+        model = { ...model, content: Array.from(serverContents.values()) };
+      } else {
+        const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+          return null;
+        }
+        const mimetype = model.mimetype || response.headers.get('Content-Type');
+
+        if (
+          model.type === 'notebook' ||
+          mimetype?.indexOf('json') !== -1 ||
+          path.match(/\.(ipynb|[^/]*json[^/]*)$/)
+        ) {
+          model = {
+            ...model,
+            content: await response.json(),
+            format: 'json',
+            mimetype: model.mimetype || 'application/json'
+          };
+        } else if (
+          mimetype.indexOf('text') !== -1 ||
+          EXTRA_TEXT_MIME_TYPES.has(mimetype)
+        ) {
+          model = {
+            ...model,
+            content: await response.text(),
+            format: 'text',
+            mimetype: mimetype || 'text/plain'
+          };
+        } else {
+          model = {
+            ...model,
+            content: btoa(
+              String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
+            ),
+            format: 'base64',
+            mimetype: mimetype || 'octet/stream'
+          };
+        }
+      }
+    }
+
+    return model;
   }
 
   /**
-   * Normalize a global path. Reduces '..' and '.' parts, and removes
-   * leading slashes from the local part of the path, while retaining
-   * the drive name if it exists.
+   * retrieve the contents for this path from `__index__.json` in the appropriate
+   * folder.
    *
-   * @param path: the path.
+   * @param newLocalPath - The new file path.
    *
-   * @returns The normalized path.
+   * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
-  normalize(path: string): string {
-    throw new Error('Method not implemented.');
-  }
+  private async _getServerDirectory(
+    path: string
+  ): Promise<Map<string, ServerContents.IModel>> {
+    const content = this._serverContents.get(path) || new Map();
 
-  /**
-   * Resolve a global path, starting from the root path. Behaves like
-   * posix-path.resolve, with 3 differences:
-   *  - will never prepend cwd
-   *  - if root has a drive name, the result is prefixed with "<drive>:"
-   *  - before adding drive name, leading slashes are removed
-   *
-   * @param path: the path.
-   *
-   * @returns The normalized path.
-   */
-  resolvePath(root: string, path: string): string {
-    throw new Error('Method not implemented.');
-  }
+    if (!this._serverContents.has(path)) {
+      const apiURL = URLExt.join(
+        PageConfig.getBaseUrl(),
+        'api/contents',
+        path,
+        'all.json'
+      );
 
-  /**
-   * Given a path of the form `drive:local/portion/of/it.txt`
-   * get the name of the drive. If the path is missing
-   * a drive portion, returns an empty string.
-   *
-   * @param path: the path.
-   *
-   * @returns The drive name for the path, or the empty string.
-   */
-  driveName(path: string): string {
-    throw new Error('Method not implemented.');
-  }
+      try {
+        const response = await fetch(apiURL);
+        const json = JSON.parse(await response.text());
+        for (const file of json['content'] as ServerContents.IModel[]) {
+          content.set(file.name, file);
+        }
+      } catch (err) {
+        console.warn(
+          `don't worry, about ${err}... nothing's broken. if there had been a
+          file at ${apiURL}, you might see some more files.`
+        );
+      }
+      this._serverContents.set(path, content);
+    }
 
-  /**
-   * Given a path, get a ModelDB.IFactory from the
-   * relevant backend. Returns `null` if the backend
-   * does not provide one.
-   */
-  getModelDBFactory(path: string): ModelDB.IFactory | null {
-    throw new Error('Method not implemented.');
-  }
-
-  /**
-   * Get an encoded download url given a file path.
-   *
-   * @param path - An absolute POSIX file path on the server.
-   *
-   * #### Notes
-   * It is expected that the path contains no relative paths.
-   *
-   * The returned URL may include a query parameter.
-   */
-  getDownloadUrl(path: string): Promise<string> {
-    throw new Error('Method not implemented.');
+    return content;
   }
 
   /**
@@ -688,8 +583,7 @@ export class Contents implements IContents {
     return counter;
   }
 
-  private _isDisposed = false;
-  private _fileChanged = new Signal<this, ServerContents.IChangedArgs>(this);
+  private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
   private _storage = localforage.createInstance({
     name: STORAGE_NAME,
     description: 'Offline Storage for Notebooks and Files',
