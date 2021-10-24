@@ -45,11 +45,13 @@ export class Contents implements IContents {
    */
   async newUntitled(
     options?: ServerContents.ICreateOptions
-  ): Promise<ServerContents.IModel> {
+  ): Promise<ServerContents.IModel | null> {
     const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
-    const prefix = path ? `${path}/` : '';
+    const dirname = PathExt.dirname(path);
+    const basename = PathExt.basename(path);
+    const prefix = path && dirname ? `${path}/` : '';
 
     let file: ServerContents.IModel;
     let name = '';
@@ -74,7 +76,7 @@ export class Contents implements IContents {
       case 'file': {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
-        name += `untitled${counter || ''}${ext}`;
+        name += basename || `untitled${counter || ''}${ext}`;
         file = {
           name,
           path: `${prefix}${name}`,
@@ -92,7 +94,7 @@ export class Contents implements IContents {
       }
       default: {
         const counter = await this._incrementCounter('notebook');
-        name += `Untitled${counter || ''}.ipynb`;
+        name += basename || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
           path: `${prefix}${name}`,
@@ -278,11 +280,11 @@ export class Contents implements IContents {
   async save(
     path: string,
     options: Partial<ServerContents.IModel> = {}
-  ): Promise<ServerContents.IModel> {
+  ): Promise<ServerContents.IModel | null> {
     path = decodeURIComponent(path);
-    let item = await this.get(path);
+    let item = (await this.get(path)) || (await this.newUntitled({ path }));
     if (!item) {
-      item = await this.newUntitled({ path });
+      return null;
     }
     // override with the new values
     const modified = new Date().toISOString();
@@ -424,7 +426,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
-  private async _getFolder(path: string): Promise<ServerContents.IModel> {
+  private async _getFolder(path: string): Promise<ServerContents.IModel | null> {
     const content = new Map<string, ServerContents.IModel>();
     await this._storage.iterate((item, key) => {
       if (key.includes('/')) {
@@ -439,6 +441,10 @@ export class Contents implements IContents {
       if (!content.has(file.path)) {
         content.set(file.path, file);
       }
+    }
+
+    if (path && content.size === 0) {
+      return null;
     }
 
     return {

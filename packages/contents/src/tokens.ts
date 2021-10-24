@@ -18,7 +18,9 @@ export interface IContents {
    *
    * @returns A promise which resolves with the created file content when the file is created.
    */
-  newUntitled(options?: ServerContents.ICreateOptions): Promise<ServerContents.IModel>;
+  newUntitled(
+    options?: ServerContents.ICreateOptions
+  ): Promise<ServerContents.IModel | null>;
 
   /**
    * Copy a file into a given directory.
@@ -68,7 +70,7 @@ export interface IContents {
   save(
     path: string,
     options?: Partial<ServerContents.IModel>
-  ): Promise<ServerContents.IModel>;
+  ): Promise<ServerContents.IModel | null>;
 
   /**
    * Delete a file.
