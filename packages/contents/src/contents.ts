@@ -49,9 +49,16 @@ export class Contents implements IContents {
     const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
-    const dirname = PathExt.dirname(path);
-    const basename = PathExt.basename(path);
-    const prefix = path && dirname ? `${path}/` : '';
+    let basename = PathExt.basename(path);
+    let dirname = PathExt.dirname(path);
+    const item = await this.get(path);
+    // if it exists (directory)
+    if (path && item) {
+      dirname = `${path}/`;
+      basename = '';
+    } else if (path) {
+      dirname = `${dirname}/`;
+    }
 
     let file: ServerContents.IModel;
     let name = '';
@@ -61,7 +68,7 @@ export class Contents implements IContents {
         name += `Untitled Folder${counter || ''}`;
         file = {
           name,
-          path: `${prefix}${name}`,
+          path: `${dirname}${name}`,
           last_modified: created,
           created,
           format: 'text',
@@ -79,7 +86,7 @@ export class Contents implements IContents {
         name += basename || `untitled${counter || ''}${ext}`;
         file = {
           name,
-          path: `${prefix}${name}`,
+          path: `${dirname}${name}`,
           last_modified: created,
           created,
           format: 'text',
@@ -97,7 +104,7 @@ export class Contents implements IContents {
         name += basename || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
-          path: `${prefix}${name}`,
+          path: `${dirname}${name}`,
           last_modified: created,
           created,
           format: 'json',
@@ -111,7 +118,7 @@ export class Contents implements IContents {
       }
     }
 
-    const key = `${prefix}${name}`;
+    const key = file.path;
     await this._storage.setItem(key, file);
     return file;
   }

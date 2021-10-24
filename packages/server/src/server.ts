@@ -109,9 +109,9 @@ export class JupyterServer {
         file = await this._contents.copy(copyFrom, path);
       } else {
         file = await this._contents.newUntitled(options);
-        if (!file) {
-          return new Response(null, { status: 400 });
-        }
+      }
+      if (!file) {
+        return new Response(null, { status: 400 });
       }
       return new Response(JSON.stringify(file), { status: 201 });
     });
