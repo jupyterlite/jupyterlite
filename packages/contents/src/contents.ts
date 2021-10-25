@@ -51,21 +51,28 @@ export class Contents implements IContents {
     const created = new Date().toISOString();
     let basename = PathExt.basename(path);
     let dirname = PathExt.dirname(path);
-    const item = await this.get(path);
-    // if it exists (directory)
-    if (path && item) {
+    const extname = PathExt.extname(path);
+    const item = await this.get(dirname);
+    let name = '';
+    if (path && !extname && item) {
+      // directory
       dirname = `${path}/`;
-      basename = '';
-    } else if (path) {
+      name = '';
+    } else if (dirname && basename) {
+      // file in a subfolder
       dirname = `${dirname}/`;
+      name = basename;
+    } else {
+      // file at the top level
+      dirname = '';
+      name = path;
     }
 
     let file: ServerContents.IModel;
-    let name = '';
     switch (type) {
       case 'directory': {
         const counter = await this._incrementCounter('directory');
-        name += `Untitled Folder${counter || ''}`;
+        name = `Untitled Folder${counter || ''}`;
         file = {
           name,
           path: `${dirname}${name}`,
@@ -83,7 +90,7 @@ export class Contents implements IContents {
       case 'file': {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
-        name += basename || `untitled${counter || ''}${ext}`;
+        name = name || `untitled${counter || ''}${ext}`;
         file = {
           name,
           path: `${dirname}${name}`,
@@ -101,7 +108,7 @@ export class Contents implements IContents {
       }
       default: {
         const counter = await this._incrementCounter('notebook');
-        name += basename || `Untitled${counter || ''}.ipynb`;
+        name = name || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
           path: `${dirname}${name}`,
