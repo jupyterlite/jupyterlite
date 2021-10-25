@@ -49,8 +49,9 @@ export class Contents implements IContents {
     const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
-    let basename = PathExt.basename(path);
+
     let dirname = PathExt.dirname(path);
+    const basename = PathExt.basename(path);
     const extname = PathExt.extname(path);
     const item = await this.get(dirname);
     let name = '';
