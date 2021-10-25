@@ -360,6 +360,7 @@ export class Contents implements IContents {
    *   checkpoint is created.
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
+    path = decodeURIComponent(path);
     const item = await this.get(path, { content: true });
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
@@ -410,6 +411,7 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
+    path = decodeURIComponent(path);
     const copies = ((await this._checkpoints.getItem(path)) ||
       []) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
@@ -426,6 +428,7 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
+    path = decodeURIComponent(path);
     const copies = ((await this._checkpoints.getItem(path)) ||
       []) as ServerContents.IModel[];
     const id = parseInt(checkpointID);
