@@ -4,6 +4,8 @@ import json
 import re
 import urllib.parse
 
+import doit.tools
+
 from ..constants import (
     ALL_JSON,
     JUPYTER_CONFIG_DATA,
@@ -58,7 +60,10 @@ class MicropipAddon(BaseAddon):
                     name=f"meta:{whl_meta.name}",
                     doc=f"ensure {wheel} metadata",
                     file_dep=[wheel],
-                    actions=[(self.index_wheel, [wheel, whl_meta])],
+                    actions=[
+                        (doit.tools.create_folder, [whl_meta.parent]),
+                        (self.index_wheel, [wheel, whl_meta]),
+                    ],
                     targets=[whl_meta],
                 )
 
