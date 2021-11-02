@@ -25,6 +25,18 @@ const STORAGE_NAME = 'JupyterLite Storage';
 const N_CHECKPOINTS = 5;
 
 /**
+ * A list of mime types of text files
+ */
+const EXTRA_TEXT_MIME_TYPES = new Set([
+  'application/javascript',
+  'application/json',
+  'application/manifest+json',
+  'application/x-python-code',
+  'application/xml',
+  'image/svg+xml'
+]);
+
+/**
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
@@ -364,8 +376,10 @@ export class Contents implements IContents {
             format: 'json',
             mimetype: model.mimetype || 'application/json'
           };
-          // TODO: this is not great, need a better oracle
-        } else if (mimetype.indexOf('xml') !== -1 || mimetype.indexOf('text') !== -1) {
+        } else if (
+          mimetype.indexOf('text') !== -1 ||
+          EXTRA_TEXT_MIME_TYPES.has(mimetype)
+        ) {
           model = {
             ...model,
             content: await response.text(),
@@ -444,6 +458,7 @@ export class Contents implements IContents {
     path: string,
     options: Partial<ServerContents.IModel> = {}
   ): Promise<ServerContents.IModel> {
+    path = decodeURIComponent(path);
     let item = await this.get(path);
     if (!item) {
       item = await this.newUntitled({ path });
