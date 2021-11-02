@@ -106,9 +106,8 @@ class MicropipAddon(BaseAddon):
         local_path = (self.manager.lite_dir / path_or_url).resolve()
 
         if local_path.is_dir():
-            raise NotImplementedError(
-                f"Don't know what to do with directory {path_or_url}"
-            )
+            for wheel in local_path.glob(f"*{NOARCH_WHL}"):
+                yield from self.copy_wheel(wheel)
         elif local_path.exists():
             suffix = local_path.suffix
 

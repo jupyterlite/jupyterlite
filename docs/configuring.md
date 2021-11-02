@@ -120,6 +120,24 @@ specific `app` directory, these will be:
 - merged into
   `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
 
+## Adding `pyolite` wheels
+
+The [pyolite kernel](./kernels/pyolite.md) itself consists of a bit of JavaScript and
+customized python wheels, which in turn require other wheels and pre-built WASM modules
+and other JavaScript.
+
+Extra wheels that can be installed via `micropip` in a running kernel can be added via
+the `--micropip-wheels` CLI flag or `LiteBuildConfig/micropip_wheels` config value.
+
+These will be:
+
+- downloaded to the local cache
+- copied into `{output-dir}/lab/build/wheels`
+- indexed into an `all.json` with data similar to the [PyPI Warehouse API]
+- added to `jupyter-lite.json#/micropipUrls`
+
+[pypi-warehouse-api]: https://warehouse.pypa.io/api-reference
+
 ## About the Demo
 
 This documentation site contains the JupyterLite Demo (the **Try** buttons on the top of
