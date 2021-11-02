@@ -19,7 +19,7 @@ from .base import BaseAddon
 
 
 class MicropipAddon(BaseAddon):
-    __all__ = ["post_init", "pre_build", "post_build"]
+    __all__ = ["post_init", "post_build"]
 
     @property
     def output_wheels(self):
@@ -33,17 +33,7 @@ class MicropipAddon(BaseAddon):
 
     def post_init(self, manager):
         for path_or_url in manager.micropip_wheels:
-            yield from self.resolve_one_wheel(path_or_url, init=True)
-
-    def pre_build(self, manager):
-        for wheel in sorted(self.wheel_cache.glob(f"*{NOARCH_WHL}")):
-            dest = self.output_wheels / wheel.name
-            yield dict(
-                name=f"copy:whl:{wheel.name}",
-                file_dep=[wheel],
-                targets=[dest],
-                actions=[(self.copy_one, [wheel, dest])],
-            )
+            yield from self.resolve_one_wheel(path_or_url)
 
     def post_build(self, manager):
         """update the root jupyter-lite.json with micropipUrls"""
@@ -82,25 +72,18 @@ class MicropipAddon(BaseAddon):
                 targets=[whl_index],
             )
 
-    def resolve_one_wheel(self, path_or_url, init):
+    def resolve_one_wheel(self, path_or_url):
         """download a single wheel, and copy to the cache"""
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
-            dest = self.wheel_cache / name
-            if init:
-                if not dest.exists():
-                    yield dict(
-                        name=f"fetch:{name}",
-                        doc=f"fetch the wheel {name}",
-                        actions=[(self.fetch_one, [path_or_url, dest])],
-                        targets=[dest],
-                    )
-                return
-            path_or_url = dest.resolve()
-
-        if init:
-            # nothing to do for local files during this phase
+            dest = self.output_wheels / name
+            yield dict(
+                name=f"fetch:{name}",
+                doc=f"fetch the wheel {name}",
+                actions=[(self.fetch_one, [path_or_url, dest])],
+                targets=[dest],
+            )
             return
 
         local_path = (self.manager.lite_dir / path_or_url).resolve()
@@ -120,6 +103,8 @@ class MicropipAddon(BaseAddon):
     def copy_wheel(self, wheel):
         """copy one wheel to output"""
         dest = self.output_wheels / wheel.name
+        if dest == wheel:  # pragma: no cover
+            return
         yield dict(
             name=f"copy:whl:{wheel.name}",
             file_dep=[wheel],
