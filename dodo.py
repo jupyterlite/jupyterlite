@@ -425,7 +425,7 @@ def task_docs():
     if not C.DOCS_IN_CI:
         yield dict(
             name="typedoc:ensure",
-            file_dep=[*P.PACKAGE_JSONS],
+            file_dep=[*P.PACKAGE_JSONS, B.YARN_INTEGRITY],
             actions=[
                 U.typedoc_conf,
                 U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
