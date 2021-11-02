@@ -98,7 +98,7 @@ class ArchiveAddon(BaseAddon):
             with os.fdopen(
                 os.open(temp_ball, os.O_WRONLY | os.O_CREAT, 0o644), "wb"
             ) as tar_gz:
-                with gzip.GzipFile("wb", fileobj=tar_gz, mtime=0) as gz:
+                with gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:
 
                         for i, path in enumerate(members):
