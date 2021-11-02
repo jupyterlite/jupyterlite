@@ -83,6 +83,7 @@ class MicropipAddon(BaseAddon):
             )
 
     def resolve_one_wheel(self, path_or_url, init):
+        """download a single wheel, and copy to the cache"""
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
@@ -91,6 +92,7 @@ class MicropipAddon(BaseAddon):
                 if not dest.exists():
                     yield dict(
                         name=f"fetch:{name}",
+                        doc=f"fetch the wheel {name}",
                         actions=[(self.fetch_one, [path_or_url, dest])],
                         targets=[dest],
                     )
