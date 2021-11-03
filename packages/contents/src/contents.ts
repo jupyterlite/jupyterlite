@@ -54,6 +54,9 @@ export class Contents implements IContents {
     const basename = PathExt.basename(path);
     const extname = PathExt.extname(path);
     const item = await this.get(dirname);
+
+    // handle the case of "Save As", where the path points to the new file
+    // to create, e.g. subfolder/example-copy.ipynb
     let name = '';
     if (path && !extname && item) {
       // directory
