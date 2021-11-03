@@ -94,6 +94,9 @@ export class JupyterServer {
         content: req.query?.content === '1'
       };
       const nb = await this._contents.get(filename, options);
+      if (!nb) {
+        return new Response(null, { status: 404 });
+      }
       return new Response(JSON.stringify(nb));
     });
 
@@ -101,11 +104,14 @@ export class JupyterServer {
     app.post('/api/contents(.*)', async (req: Router.IRequest, path: string) => {
       const options = req.body;
       const copyFrom = options?.copy_from as string;
-      let file: ServerContents.IModel;
+      let file: ServerContents.IModel | null;
       if (copyFrom) {
         file = await this._contents.copy(copyFrom, path);
       } else {
         file = await this._contents.newUntitled(options);
+      }
+      if (!file) {
+        return new Response(null, { status: 400 });
       }
       return new Response(JSON.stringify(file), { status: 201 });
     });

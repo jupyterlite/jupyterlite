@@ -45,7 +45,6 @@
     "@jupyterlab/nbformat": "~3.2.0",
     "@jupyterlab/services": "~6.2.0",
     "@lumino/coreutils": "^1.8.0",
-    "@lumino/signaling": "^1.7.0",
     "localforage": "^1.9.0"
   },
   "devDependencies": {
