@@ -497,7 +497,7 @@ export class Contents implements IContents {
     if (!model) {
       return null;
     }
-    model = {
+    model = model || {
       name,
       path,
       last_modified: new Date(0).toISOString(),
