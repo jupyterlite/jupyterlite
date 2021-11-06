@@ -206,27 +206,22 @@ export async function getLiteConfig(url, fileName) {
 export function fixRelativeUrls(url, config) {
   let urlBase = new URL(url || here()).pathname;
   for (const [k, v] of Object.entries(config)) {
-    config[k] = fixOneRelativeUrl(k, v, urlBase);
+    config[k] = fixOneRelativeUrl(k, v, url, urlBase);
   }
   return config;
 }
 
-export function fixOneRelativeUrl(key, value, urlBase) {
+export function fixOneRelativeUrl(key, value, url, urlBase) {
   if (key === 'litePluginSettings' || key === 'settingsOverrides') {
     // these are plugin id-keyed objects, fix each plugin
-    return Object.keys(value || {}).reduce((m, [k, v]) => {
-      m[k] = fixRelativeUrls(url, v, urlBase);
+    return Object.entries(value || {}).reduce((m, [k, v]) => {
+      m[k] = fixRelativeUrls(url, v);
       return m;
     }, {});
-  }
-  if (key.endsWith('Url') && value.startsWith('./')) {
-    if (key === 'themesUrl') {
-      // themesUrls is joined in code with baseUrl, leave as-is
-      continue;
-    }
+  } else if (key !== 'themesUrl' && key.endsWith('Url') && value.startsWith('./')) {
+    // themesUrls is joined in code with baseUrl, leave as-is: otherwise, clean
     return `${urlBase}${value.slice(2)}`;
-  }
-  if (key.endsWith('Urls') && Array.isArray(value)) {
+  } else if (key.endsWith('Urls') && Array.isArray(value)) {
     return value.map(v => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
   }
   return value;

@@ -7,8 +7,6 @@ import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server'
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 
-import { PyoliteKernel } from '@jupyterlite/pyolite-kernel';
-
 /**
  * The default CDN fallback for Pyodide
  */
@@ -55,6 +53,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
         }
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
+        const { PyoliteKernel } = await import('@jupyterlite/pyolite-kernel');
+
         return new PyoliteKernel({
           ...options,
           pyodideUrl,

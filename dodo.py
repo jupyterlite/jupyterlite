@@ -48,6 +48,7 @@ def task_env():
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
             file_dep=[P.BINDER_ENV, *all_deps],
+            targets=[B.RAW_WHEELS_REQS],
             actions=[
                 (
                     U.sync_lite_config,
@@ -462,6 +463,7 @@ def task_docs():
             *P.ALL_EXAMPLES,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+            B.RAW_WHEELS_REQS
         ],
     )
 
@@ -669,7 +671,6 @@ class C:
         "numpy",
         "pandas",
         "pillow",
-        "plotly",
         "pyodide_js",
         "pyolite",
     ]
@@ -857,10 +858,11 @@ class B:
     EXAMPLE_DEPS = BUILD / "depfinder"
 
     RAW_WHEELS = BUILD / "wheels"
-    EXAMPLE_WHEELS = P.EXAMPLES / "lab/build/wheels"
+    RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
+    DOCS_APP_WHEEL_INDEX = DOCS_APP / "lab/build/wheels/all.json"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
@@ -938,13 +940,16 @@ class U:
     @staticmethod
     def get_deps(has_deps, dep_file):
         """look for deps with depfinder"""
+        out = "{}"
+
         try:
             out = subprocess.check_output(
                 ["depfinder", "--no-remap", "--yaml", "--key", "required", has_deps]
             ).decode("utf-8")
-            dep_file.write_text(out, **C.ENC)
         except subprocess.CalledProcessError:
-            dep_file.write_text("{}", **C.ENC)
+            print(has_deps, "probably isn't python")
+
+        dep_file.write_text(out, **C.ENC)
 
     @staticmethod
     def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
@@ -992,18 +997,26 @@ class U:
         for dep in all_deps:
             required += safe_load(dep.read_text(**C.ENC)).get("required", [])
 
+        from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
+        # replace unversioned dependencies with versioned ones, if needed
+        for pkg, version in re.findall(
+            "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
+        ):
+            if pkg in required:
+                required.remove(pkg)
+            required += [f"{pkg}=={version}"]
+
         B.RAW_WHEELS.mkdir(exist_ok=True, parents=True)
-        reqs = B.RAW_WHEELS / "requirements.txt"
-        reqs.write_text(
+        B.RAW_WHEELS_REQS.write_text(
             "\n".join(
                 [
                     req
                     for req in sorted(set(required))
-                    if req not in C.IGNORED_WHEEL_DEPS
+                    if req.split("==")[0] not in C.IGNORED_WHEEL_DEPS
                 ]
             )
         )
-        subprocess.check_call(["pip", "download", "-r", reqs], cwd=str(B.RAW_WHEELS))
+        subprocess.check_call(["pip", "download", "-r", B.RAW_WHEELS_REQS], cwd=str(B.RAW_WHEELS))
 
         for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
             if any(re.findall(f"{p}-\d", wheel.name) for p in C.IGNORED_WHEELS):
@@ -1251,7 +1264,7 @@ class U:
 
     @staticmethod
     def check_one_ipynb(path):
-        """ensure the path"""
+        """ensure any pinned imports are present in the env and wheel cache"""
         built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
 
         if not built.exists():
@@ -1264,23 +1277,31 @@ class U:
 
         def _check():
             from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
-            missing = []
+            wheels = json.loads(B.DOCS_APP_WHEEL_INDEX.read_text(**C.ENC))
+            unpinned = []
+            uncached = []
             for pkg, version in re.findall(
                 "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
             ):
                 spec = f"{pkg}=={version}"
-                if pkg in raw and spec not in raw:
-                    missing += [spec]
+                if pkg in raw:
+                    if spec not in raw:
+                        unpinned += [spec]
+                    if not wheels.get(pkg, {}).get("releases",{}).get(version):
+                        uncached += [spec]
 
-            if missing:
-                print(path.name, *missing)
+            if unpinned:
+                print(P.BINDER_ENV, path.name, *unpinned)
 
-            return not missing
+            if uncached:
+                print(B.DOCS_APP_WHEEL_INDEX, path.name, *uncached)
+
+            return not (unpinned + uncached)
 
         yield dict(
             name=f"ipynb:{path.name}",
             actions=[_check],
-            file_dep=[path, built, P.BINDER_ENV],
+            file_dep=[path, built, P.BINDER_ENV, B.DOCS_APP_WHEEL_INDEX],
         )
 
     @staticmethod
