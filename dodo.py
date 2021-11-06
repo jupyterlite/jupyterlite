@@ -452,19 +452,24 @@ def task_docs():
             ],
         )
 
+    app_build_deps = [
+        *([] if C.CI else [B.PY_APP_PACK]),
+        *P.ALL_EXAMPLES,
+        # NOTE: these won't always trigger a rebuild because of the inner dodo
+        *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+    ]
+
+    # in CI, assume the config, wheels, etc. all agree
+    if not (C.DOCS_IN_CI or C.RTD):
+        app_build_deps += [B.RAW_WHEELS_REQS]
+
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
-        file_dep=[
-            *([] if C.CI else [B.PY_APP_PACK]),
-            *P.ALL_EXAMPLES,
-            # NOTE: these won't always trigger a rebuild because of the inner dodo
-            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
-            B.RAW_WHEELS_REQS,
-        ],
+        file_dep=app_build_deps,
     )
 
     yield dict(
