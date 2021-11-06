@@ -857,10 +857,10 @@ class B:
     EXAMPLE_DEPS = BUILD / "depfinder"
 
     RAW_WHEELS = BUILD / "wheels"
-    EXAMPLE_WHEELS = P.EXAMPLES / "lab/build/wheels"
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
+    DOCS_APP_WHEEL_INDEX = DOCS_APP / "lab/build/wheels/all.json"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
@@ -1251,7 +1251,7 @@ class U:
 
     @staticmethod
     def check_one_ipynb(path):
-        """ensure the path"""
+        """ensure any pinned imports are present in the env and wheel cache"""
         built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
 
         if not built.exists():
@@ -1264,23 +1264,31 @@ class U:
 
         def _check():
             from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
-            missing = []
+            wheels = json.loads(B.DOCS_APP_WHEEL_INDEX.read_text(**C.ENC))
+            unpinned = []
+            uncached = []
             for pkg, version in re.findall(
                 "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
             ):
                 spec = f"{pkg}=={version}"
-                if pkg in raw and spec not in raw:
-                    missing += [spec]
+                if pkg in raw:
+                    if spec not in raw:
+                        unpinned += [spec]
+                    if not wheels.get(pkg, {}).get(version):
+                        uncached += [spec]
 
-            if missing:
-                print(path.name, *missing)
+            if unpinned:
+                print(P.BINDER_ENV, path.name, *unpinned)
 
-            return not missing
+            if uncached:
+                print(B.DOCS_APP_WHEEL_INDEX, path.name, *uncached)
+
+            return not (unpinned + uncached)
 
         yield dict(
             name=f"ipynb:{path.name}",
             actions=[_check],
-            file_dep=[path, built, P.BINDER_ENV],
+            file_dep=[path, built, P.BINDER_ENV, B.DOCS_APP_WHEEL_INDEX],
         )
 
     @staticmethod
