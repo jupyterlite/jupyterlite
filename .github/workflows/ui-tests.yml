@@ -1,0 +1,165 @@
+name: UI Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Setup pip (base)
+        run: python3 -m pip install --user -U pip setuptools wheel
+
+      - name: Cache (pip)
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+
+      - name: Setup pip (build)
+        run: python3 -m pip install -r requirements-build.txt
+
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+
+      - name: Cache (node_modules)
+        uses: actions/cache@v2
+        id: cache-node-modules
+        with:
+          path: node_modules/
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Cache (.yarn-packages)
+        uses: actions/cache@v2
+        id: cache-yarn-packages
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        with:
+          path: .yarn-packages
+          key: |
+            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-yarn-packages-
+
+      - name: Install
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: doit setup:js
+
+      - name: Build (js)
+        run: doit -n4 build:js* || doit build:js*
+
+      - name: Build (py)
+        run: doit -n4 build:py*
+
+      - name: Dist
+        run: doit dist
+
+      - name: Install JupyterLite
+        run: |
+          python3 -m pip install entrypoints doit jupyter_core
+          python3 -m pip install --find-links dist --no-index jupyterlite
+
+      - name: Build JupyterLite
+        run: |
+          cd ui-tests
+          # Build the JupyterLite website
+          yarn build
+
+      - name: Upload the JupyterLite website
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite-ui-tests-app-${{ github.run_number }}
+          path: ./ui-tests/ui-tests-app
+
+  ui-tests:
+    needs: [build]
+    name: Visual Regression
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox, chromium]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: jupyterlite-ui-tests-app-${{ github.run_number }}
+          path: ./ui-tests/ui-tests-app
+
+      - name: Cache (ui-tests/node_modules)
+        uses: actions/cache@v2
+        id: cache-ui-tests-node-modules
+        with:
+          path: ui-tests/node_modules/
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('ui-tests/yarn.lock') }}
+
+      - name: Install dependencies and browser
+        run: |
+          cd ui-tests
+          yarn --frozen-lockfile
+          yarn playwright install
+
+      - name: Start JupyterLite
+        run: |
+          cd ui-tests
+          # Serve the website
+          yarn start:detached
+
+      - name: Wait for JupyterLite
+        uses: ifaxity/wait-on-action@v1
+        with:
+          resource: http-get://127.0.0.1:8000/
+          timeout: 360000
+
+      - name: Test
+        run: |
+          cd ui-tests
+          yarn run test --browser ${{ matrix.browser }}
+
+      - name: Upload Playwright Test assets
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite-${{ matrix.browser }}-test-assets
+          path: |
+            ui-tests/test-results
+
+      - name: Upload Playwright Test report
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite-${{ matrix.browser }}-test-report
+          path: |
+            ui-tests/playwright-report
+
+      - name: Update snapshots
+        if: failure()
+        run: |
+          cd ui-tests
+          # remove previous snapshots from other browser
+          yarn rimraf "test/**/*-snapshots/*.png"
+          # generate new snapshots
+          yarn run test:update --browser ${{ matrix.browser }}
+
+      - name: Upload updated snapshots
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: jupyterlite-${{ matrix.browser }}-updated-snapshots
+          path: ui-tests/test

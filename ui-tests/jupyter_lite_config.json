@@ -1,0 +1,15 @@
+{
+  "LiteBuildConfig": {
+    "federated_extensions": [
+      "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
+      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a12/jupyterlite_p5_kernel-0.1.0a12-py3-none-any.whl"
+    ],
+    "ignore_sys_prefix": true,
+    "output_dir": "ui-tests-app"
+  }
+}
