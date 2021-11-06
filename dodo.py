@@ -463,7 +463,7 @@ def task_docs():
             *P.ALL_EXAMPLES,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
             *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
-            B.RAW_WHEELS_REQS
+            B.RAW_WHEELS_REQS,
         ],
     )
 
@@ -999,9 +999,7 @@ class U:
 
         from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
         # replace unversioned dependencies with versioned ones, if needed
-        for pkg, version in re.findall(
-            "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
-        ):
+        for pkg, version in re.findall("-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]):
             if pkg in required:
                 required.remove(pkg)
             required += [f"{pkg}=={version}"]
@@ -1016,7 +1014,9 @@ class U:
                 ]
             )
         )
-        subprocess.check_call(["pip", "download", "-r", B.RAW_WHEELS_REQS], cwd=str(B.RAW_WHEELS))
+        subprocess.check_call(
+            ["pip", "download", "-r", B.RAW_WHEELS_REQS], cwd=str(B.RAW_WHEELS)
+        )
 
         for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
             if any(re.findall(f"{p}-\d", wheel.name) for p in C.IGNORED_WHEELS):
@@ -1287,7 +1287,7 @@ class U:
                 if pkg in raw:
                     if spec not in raw:
                         unpinned += [spec]
-                    if not wheels.get(pkg, {}).get("releases",{}).get(version):
+                    if not wheels.get(pkg, {}).get("releases", {}).get(version):
                         uncached += [spec]
 
             if unpinned:

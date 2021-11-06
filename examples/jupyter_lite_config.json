@@ -3,7 +3,7 @@
     "contents": ["."],
     "federated_extensions": [
       "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.1-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.1-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2/ipycytoscape-1.2.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2/ipyleaflet-0.14.0-pyhd8ed1ab_1.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2/ipympl-0.7.0-pyhd8ed1ab_0.tar.bz2",
@@ -31,7 +31,6 @@
       "https://files.pythonhosted.org/packages/py2.py3/e/entrypoints/entrypoints-0.3-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/f/folium/folium-0.12.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipycanvas/ipycanvas-0.9.0-py2.py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py2.py3/i/ipycanvas/ipycanvas-0.9.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipycytoscape/ipycytoscape-1.2.2-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipyleaflet/ipyleaflet-0.14.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/i/ipympl/ipympl-0.7.0-py2.py3-none-any.whl",
