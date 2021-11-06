@@ -18,7 +18,7 @@ def task_env():
     yield dict(
         name="binder",
         doc="update binder environment with docs environment",
-        file_dep=[P.DOCS_ENV],
+        file_dep=[P.DOCS_ENV, B.YARN_INTEGRITY],
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
