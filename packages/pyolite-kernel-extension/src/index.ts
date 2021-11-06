@@ -15,17 +15,24 @@ import { PyoliteKernel } from '@jupyterlite/pyolite-kernel';
 const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js';
 
 /**
+ * The id for the extension, and key in the litePlugins.
+ */
+const PLUGIN_ID = '@jupyterlite/pyolite-kernel-extension:kernel';
+
+/**
  * A plugin to register the Pyodide kernel.
  */
 const kernel: JupyterLiteServerPlugin<void> = {
-  id: '@jupyterlite/pyolite-kernel-extension:kernel',
+  id: PLUGIN_ID,
   autoStart: true,
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     const baseUrl = PageConfig.getBaseUrl();
-    const url = PageConfig.getOption('pyodideUrl') || PYODIDE_CDN_URL;
+    const config =
+      JSON.parse(PageConfig.getOption('litePluginSettings') || '{}')[PLUGIN_ID] || {};
+    const url = config.pyodideUrl || PYODIDE_CDN_URL;
     const pyodideUrl = URLExt.parse(url).href;
-    const rawPipUrls = JSON.parse(PageConfig.getOption('micropipUrls') || '[]');
+    const rawPipUrls = config.micropipUrls || [];
     const micropipUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
 
     kernelspecs.register({

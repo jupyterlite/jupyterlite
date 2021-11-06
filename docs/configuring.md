@@ -134,7 +134,7 @@ These will be:
 - downloaded to the local cache
 - copied into `{output-dir}/lab/build/wheels`
 - indexed into an `all.json` with data similar to the [PyPI Warehouse API]
-- added to `jupyter-lite.json#/micropipUrls`
+- added to `micropipUrls` in `jupyter-lite.json`
 
 [pypi-warehouse-api]: https://warehouse.pypa.io/api-reference
 

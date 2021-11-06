@@ -47,7 +47,9 @@ def test_micropip_wheels(
 
     lite_json = output / "jupyter-lite.json"
     lite_data = json.loads(lite_json.read_text(encoding="utf-8"))
-    assert lite_data["jupyter-config-data"]["micropipUrls"]
+    assert lite_data["jupyter-config-data"]["litePluginSettings"][
+        "@jupyterlite/pyolite-kernel-extension:kernel"
+    ]["micropipUrls"], "bad wheel urls"
 
     wheel_out = output / "lab/build/wheels"
     assert (wheel_out / WHEELS[0].name).exists()

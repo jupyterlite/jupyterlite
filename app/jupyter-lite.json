@@ -13,6 +13,10 @@
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
     "settingsUrl": "./lab/build/schemas",
     "themesUrl": "./lab/build/themes",
-    "micropipUrls": ["./lab/build/wheels/all.json"]
+    "litePluginSettings": {
+      "@jupyterlite/pyolite-kernel-extension:kernel": {
+        "micropipUrls": ["./lab/build/wheels/all.json"]
+      }
+    }
   }
 }

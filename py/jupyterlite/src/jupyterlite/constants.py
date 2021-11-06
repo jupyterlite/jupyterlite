@@ -43,7 +43,15 @@ JUPYTER_CONFIG_DATA = "jupyter-config-data"
 FEDERATED_EXTENSIONS = "federated_extensions"
 DISABLED_EXTENSIONS = "disabledExtensions"
 SETTINGS_OVERRIDES = "settingsOverrides"
+
+#: the top-level key for lite plugin settings
+LITE_PLUGIN_SETTINGS = "litePluginSettings"
+
+### pyolite-specific values, will move to separate repo
+#: the key for PyPI-compatible API responses pointing to wheels
 MICROPIP_URLS = "micropipUrls"
+#: the plugin id for the pyolite kernel
+PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
 
 ### jupyterlite "well-known" paths
 
