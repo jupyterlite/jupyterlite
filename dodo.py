@@ -147,6 +147,18 @@ def task_lint():
         actions=[(U.validate, [P.APP_SCHEMA])],
     )
 
+    yield dict(
+        name="schema:piplite",
+        file_dep=[P.PIPLITE_SCHEMA],
+        actions=[(U.validate, [P.PIPLITE_SCHEMA])],
+    )
+
+    yield dict(
+        name=f"schema:validate:{B.LAB_WHEEL_INDEX.relative_to(P.ROOT)}",
+        file_dep=[P.PIPLITE_SCHEMA, B.LAB_WHEEL_INDEX],
+        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.LAB_WHEEL_INDEX))],
+    )
+
     for config in D.APP_CONFIGS:
         yield dict(
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
@@ -651,6 +663,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
@@ -722,9 +735,11 @@ class P:
     APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
+    PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
     APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
+    APP_EXTRA_JSON = sorted(APP.glob("*/*.json"))
     APP_NPM_IGNORE = APP / ".npmignore"
     LAB_FAVICON = APP / "lab/favicon.ico"
     LITE_ICON = UI_COMPONENTS_ICONS / "liteIcon.svg"
@@ -824,7 +839,11 @@ class L:
         P.PACKAGES.rglob("*/src/**/*.ts"),
     )
     ALL_JSON = _clean_paths(
-        P.PACKAGE_JSONS, P.APP_JSONS, P.ROOT_PACKAGE_JSON, P.ROOT.glob("*.json")
+        P.PACKAGE_JSONS,
+        P.APP_JSONS,
+        P.APP_EXTRA_JSON,
+        P.ROOT_PACKAGE_JSON,
+        P.ROOT.glob("*.json"),
     )
     ALL_JS = _clean_paths(
         (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
@@ -1183,7 +1202,7 @@ class U:
             label = instance_path.relative_to(P.ROOT)
         errors = [*validator.iter_errors(instance)]
         for error in errors:
-            print(f"""{label}#/{"/".join(error.relative_path)}""")
+            print(f"""{label}#/{"/".join(map(str, error.relative_path))}""")
             print("\t!!!", error.message)
             print("\ton:", str(error.instance)[:64])
         return not errors
@@ -1204,6 +1223,8 @@ class U:
             # prefer the shipped archive in CI
             if not C.CI:
                 args += ["--app-archive", B.APP_PACK]
+
+            args += C.LITE_ARGS
 
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 

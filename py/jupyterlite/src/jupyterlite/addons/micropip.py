@@ -11,15 +11,18 @@ from ..constants import (
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_WHEELS,
+    LITE_PLUGIN_SETTINGS,
     MICROPIP_URLS,
     NOARCH_WHL,
+    PIPLITE_INDEX_SCHEMA,
+    PYOLITE_PLUGIN_ID,
     UTF8,
 )
 from .base import BaseAddon
 
 
 class MicropipAddon(BaseAddon):
-    __all__ = ["post_init", "post_build"]
+    __all__ = ["post_init", "post_build", "check"]
 
     @property
     def output_wheels(self):
@@ -70,6 +73,38 @@ class MicropipAddon(BaseAddon):
                     )
                 ],
                 targets=[whl_index],
+            )
+
+    def check(self, manager):
+        """verify that all Wheel API are valid (sorta)"""
+        jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
+        config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
+        urls = (
+            config.get(JUPYTER_CONFIG_DATA, {})
+            .get(LITE_PLUGIN_SETTINGS, {})
+            .get(PYOLITE_PLUGIN_ID, {})
+            .get(MICROPIP_URLS, [])
+        )
+
+        for wheel_index_url in urls:
+            if not wheel_index_url.startswith("./"):
+                continue
+
+            path = manager.output_dir / wheel_index_url
+
+            if not path.exists():
+                continue
+
+            yield dict(
+                name=f"validate:{wheel_index_url}",
+                doc=f"validate {wheel_index_url} with the piplite API schema",
+                file_dep=[path],
+                actions=[
+                    (
+                        self.validate_one_json_file,
+                        [manager.output_dir / PIPLITE_INDEX_SCHEMA, path],
+                    )
+                ],
             )
 
     def resolve_one_wheel(self, path_or_url):
@@ -125,8 +160,15 @@ class MicropipAddon(BaseAddon):
             ] = meta["release"]
 
         whl_index.write_text(json.dumps(index, indent=2, sort_keys=True), **UTF8)
-        urls = config.setdefault(JUPYTER_CONFIG_DATA, {}).get(MICROPIP_URLS, [])
-        config[JUPYTER_CONFIG_DATA][MICROPIP_URLS] = urls
+        urls = (
+            config.setdefault(JUPYTER_CONFIG_DATA, {})
+            .setdefault(LITE_PLUGIN_SETTINGS, {})
+            .setdefault(PYOLITE_PLUGIN_ID, {})
+            .get(MICROPIP_URLS, [])
+        )
+        config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
+            MICROPIP_URLS
+        ] = urls
 
         jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
 

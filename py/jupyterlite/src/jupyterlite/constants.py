@@ -52,6 +52,8 @@ LITE_PLUGIN_SETTINGS = "litePluginSettings"
 MICROPIP_URLS = "micropipUrls"
 #: the plugin id for the pyolite kernel
 PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
+#: the schema for micropip-compatible wheel index
+PIPLITE_INDEX_SCHEMA = "piplite.schema.v0.json"
 
 ### jupyterlite "well-known" paths
 
