@@ -935,10 +935,7 @@ class U:
         except Exception:
             print(cmd, "is not available (this might not be a problem)")
             return ["echo", f"{cmd} not available"]
-        cmd_class = doit.tools.Interactive
-        if C.RTD:
-            cmd_class = doit.action.CmdAction
-        return cmd_class([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        return doit.action.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
 
     @staticmethod
     def ok(ok, **task):

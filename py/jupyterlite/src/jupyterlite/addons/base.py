@@ -1,7 +1,9 @@
+import email.utils
 import json
 import os
 import shutil
 import tempfile
+import time
 import warnings
 from pathlib import Path
 
@@ -77,6 +79,10 @@ class BaseAddon(LoggingConfigurable):
                 tmp_dest = tdp / dest.name
                 with tmp_dest.open("wb") as fd:
                     shutil.copyfileobj(response, fd)
+                last_modified = response.headers.get("Last-Modified")
+                if last_modified:
+                    epoch_time = time.mktime(email.utils.parsedate(last_modified))
+                    os.utime(tmp_dest, (epoch_time, epoch_time))
             shutil.copy2(tmp_dest, dest)
 
     def maybe_timestamp(self, path):

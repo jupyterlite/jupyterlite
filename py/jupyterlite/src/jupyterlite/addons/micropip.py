@@ -109,24 +109,28 @@ class MicropipAddon(BaseAddon):
 
     def resolve_one_wheel(self, path_or_url):
         """download a single wheel, and copy to the cache"""
+        local_path = None
+        will_fetch = False
+
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
-            dest = self.output_wheels / name
+            dest = self.wheel_cache / name
             yield dict(
                 name=f"fetch:{name}",
                 doc=f"fetch the wheel {name}",
                 actions=[(self.fetch_one, [path_or_url, dest])],
                 targets=[dest],
             )
-            return
-
-        local_path = (self.manager.lite_dir / path_or_url).resolve()
+            local_path = dest
+            will_fetch = True
+        else:
+            local_path = (self.manager.lite_dir / path_or_url).resolve()
 
         if local_path.is_dir():
             for wheel in local_path.glob(f"*{NOARCH_WHL}"):
                 yield from self.copy_wheel(wheel)
-        elif local_path.exists():
+        elif local_path.exists() or will_fetch:
             suffix = local_path.suffix
 
             if suffix == ".whl":
