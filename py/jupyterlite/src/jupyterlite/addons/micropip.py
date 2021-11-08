@@ -116,14 +116,15 @@ class MicropipAddon(BaseAddon):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
             dest = self.wheel_cache / name
-            yield dict(
-                name=f"fetch:{name}",
-                doc=f"fetch the wheel {name}",
-                actions=[(self.fetch_one, [path_or_url, dest])],
-                targets=[dest],
-            )
             local_path = dest
-            will_fetch = True
+            if not dest.exists():
+                yield dict(
+                    name=f"fetch:{name}",
+                    doc=f"fetch the wheel {name}",
+                    actions=[(self.fetch_one, [path_or_url, dest])],
+                    targets=[dest],
+                )
+                will_fetch = True
         else:
             local_path = (self.manager.lite_dir / path_or_url).resolve()
 
@@ -148,7 +149,10 @@ class MicropipAddon(BaseAddon):
             name=f"copy:whl:{wheel.name}",
             file_dep=[wheel],
             targets=[dest],
-            actions=[(self.copy_one, [wheel, dest])],
+            actions=[
+                (self.copy_one, [wheel, dest]),
+                (self.maybe_timestamp, [dest]),
+            ],
         )
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, *whl_metas):
@@ -227,3 +231,5 @@ class MicropipAddon(BaseAddon):
                 sort_keys=True,
             )
         )
+
+        self.maybe_timestamp(whl_meta)
