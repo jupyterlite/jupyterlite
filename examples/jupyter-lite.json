@@ -3,6 +3,7 @@
   "jupyter-config-data": {
     "appName": "JupyterLite Examples",
     "collaborative": true,
+    "exposeAppInBrowser": true,
     "disabledExtensions": [
       "@jupyterlab/server-proxy",
       "jupyterlab-server-proxy",
