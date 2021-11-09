@@ -1,5 +1,6 @@
 {
   "LiteBuildConfig": {
+    "contents": ["../examples"],
     "federated_extensions": [
       "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
