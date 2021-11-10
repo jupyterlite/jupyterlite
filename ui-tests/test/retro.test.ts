@@ -5,6 +5,8 @@ import { test as base } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import { createNewDirectory } from './utils';
+
 // TODO: fix upstream condition so it's not specific to JupyterLab?
 const test = base.extend({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
@@ -18,6 +20,10 @@ const test = base.extend({
 test.describe('Retro Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('retro/index.html');
+    // create a new directory for now to avoid showing the default content
+    const name = 'retro';
+    await createNewDirectory({ page, name });
+    await page.filebrowser.openDirectory(name);
   });
 
   test('Tree Screen', async ({ page }) => {

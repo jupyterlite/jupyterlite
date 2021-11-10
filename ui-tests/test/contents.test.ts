@@ -3,18 +3,11 @@
 
 import * as path from 'path';
 
-import { IJupyterLabPageFixture, test } from '@jupyterlab/galata';
+import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-// TODO: upstream in Galata
-const deleteItem = async (page: IJupyterLabPageFixture, name: string) => {
-  const item = await page.$(`xpath=${page.filebrowser.xpBuildFileSelector(name)}`);
-  await item.click({ button: 'right' });
-  await page.click('text="Delete"');
-  const button = await page.$('.jp-mod-accept');
-  await button.click();
-};
+import { createNewDirectory, deleteItem } from './utils';
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -83,7 +76,7 @@ test.describe('Contents Tests', () => {
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
-    await deleteItem(page, name);
+    await deleteItem({ page, name });
     await page.filebrowser.refresh();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
@@ -91,19 +84,14 @@ test.describe('Contents Tests', () => {
 
   test('Create a new folder with content and delete it', async ({ page }) => {
     const name = 'Custom Name';
-
-    await page.click('[data-icon="ui-components:new-folder"]');
-    await page.fill('.jp-DirListing-editor', name);
-    await page.keyboard.down('Enter');
-    await page.filebrowser.refresh();
-
+    await createNewDirectory({ page, name });
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
     await page.filebrowser.openDirectory(name);
     await page.notebook.createNew();
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();
-    await deleteItem(page, name);
+    await deleteItem({ page, name });
     await page.filebrowser.refresh();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
