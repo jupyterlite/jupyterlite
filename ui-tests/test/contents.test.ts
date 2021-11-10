@@ -36,6 +36,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
+    await page.filebrowser.refresh();
     await page.notebook.open(notebook);
     expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
@@ -47,6 +48,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
     const file = 'data/iris.csv';
+    await page.filebrowser.refresh();
     await page.filebrowser.open(file);
     expect(
       await page.filebrowser.isFileListedInBrowser(path.basename(file))
