@@ -3,11 +3,13 @@
 
 import * as path from 'path';
 
+import * as fs from 'fs/promises';
+
 import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, deleteItem } from './utils';
+import { createNewDirectory, deleteItem, download } from './utils';
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -95,7 +97,25 @@ test.describe('Contents Tests', () => {
     await page.filebrowser.refresh();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
+  });
 
-    await page.waitForTimeout(5000);
+  test('Download a notebook', async ({ page }) => {
+    const name = await page.notebook.createNew();
+    const source = '## Markdown cell';
+    await page.notebook.setCell(0, 'markdown', source);
+    await page.notebook.save();
+
+    const path = await download({ page, path: name });
+    expect(path).toBeTruthy();
+
+    const content = await fs.readFile(path, { encoding: 'utf-8' });
+    const lines = content.split('\n');
+
+    // check the file is correctly formatted
+    expect(lines.length).toBeGreaterThan(1);
+
+    const parsed = JSON.parse(content);
+
+    expect(parsed.cells[0].source).toEqual(source);
   });
 });

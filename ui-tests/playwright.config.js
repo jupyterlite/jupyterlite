@@ -8,7 +8,8 @@ module.exports = {
     appPath: '',
     baseURL: 'http://localhost:8000',
     autoGoto: false,
-    video: 'retain-on-failure'
+    video: 'retain-on-failure',
+    acceptDownloads: true
   },
   retries: 1
 };
