@@ -482,6 +482,7 @@ def task_docs():
         task_dep=[f"dev:py:{C.NAME}"],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
+        targets=[B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE],
     )
 
     yield dict(
@@ -887,6 +888,7 @@ class B:
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "lab/build/wheels/all.json"
+    DOCS_APP_JS_BUNDLE = DOCS_APP / "lab/build/bundle.js"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"

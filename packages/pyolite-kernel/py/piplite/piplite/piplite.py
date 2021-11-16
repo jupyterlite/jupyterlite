@@ -4,6 +4,7 @@ import json
 from typing import List, Union
 from unittest.mock import patch
 
+import js
 from micropip.micropip import PACKAGE_MANAGER as _MP_PACKAGE_MANAGER
 from micropip.micropip import _get_pypi_json as _MP_GET_PYPI_JSON
 from micropip.micropip import _get_url as _MP_GET_URL
@@ -26,34 +27,41 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
             index = json.load(fd)
             _PIPLITE_INDICES.update({piplite_url: index})
         except Exception:
+            js.console.warn("piplite failed to download", piplite_url)
             pass
 
-    pkg = (index or {}).get(pkgname)
+    pkg = dict((index or {}).get(pkgname) or {})
 
-    if pkg:
-        # rewrite local paths
-        for release in pkg["releases"].values():
-            for artifact in release:
-                if artifact["url"].startswith("."):
-                    artifact["url"] = "/".join(
-                        [piplite_url.split(ALL_JSON)[0], artifact["url"]]
-                    )
+    if not pkg:
+        js.console.debug("piplite did not find", pkg, "in", piplite_url)
+        return None
+
+    # rewrite local paths, add cache busting
+    for release in pkg["releases"].values():
+        for artifact in release:
+            if artifact["url"].startswith("."):
+                artifact["url"] = (
+                    f"""{piplite_url.split(ALL_JSON)[0]}/{artifact["url"]}"""
+                    f"""?sha256={artifact["digests"]["sha256"]}"""
+                )
+
     return pkg
 
 
 async def _get_pypi_json(pkgname):
     for piplite_url in _PIPLITE_URLS:
-        if piplite_url.endswith(ALL_JSON):
+        if piplite_url.split("?")[0].split("#")[0].endswith(ALL_JSON):
             pypi_json_from_index = await _get_pypi_json_from_index(pkgname, piplite_url)
             if pypi_json_from_index:
                 return pypi_json_from_index
             continue
-        try:
-            url = f"{piplite_url}{pkgname}/json"
-            fd = await _MP_GET_URL(url)
-            return json.load(fd)
-        except Exception:
-            pass
+        else:
+            try:
+                url = f"{piplite_url}{pkgname}/json"
+                fd = await _MP_GET_URL(url)
+                return json.load(fd)
+            except Exception:
+                pass
 
     return await _MP_GET_PYPI_JSON(pkgname)
 
