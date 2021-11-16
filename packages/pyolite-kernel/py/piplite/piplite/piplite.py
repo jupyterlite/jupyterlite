@@ -59,9 +59,9 @@ async def _get_pypi_json(pkgname):
 
 
 class _PackageManager:
-    @patch("micropip.micropip._get_pypi_json", new_callable=_get_pypi_json)
     async def install(self, requirements: Union[str, List[str]], ctx=None):
-        return await _MP_PACKAGE_MANAGER.install(requirements, ctx)
+        with patch("micropip.micropip._get_pypi_json", _get_pypi_json):
+            return await _MP_PACKAGE_MANAGER.install(requirements, ctx)
 
 
 # Make PACKAGE_MANAGER singleton
