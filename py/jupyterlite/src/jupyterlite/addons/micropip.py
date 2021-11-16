@@ -149,10 +149,7 @@ class MicropipAddon(BaseAddon):
             name=f"copy:whl:{wheel.name}",
             file_dep=[wheel],
             targets=[dest],
-            actions=[
-                (self.copy_one, [wheel, dest]),
-                (self.maybe_timestamp, [dest]),
-            ],
+            actions=[(self.copy_one, [wheel, dest])],
         )
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, *whl_metas):
