@@ -1,8 +1,10 @@
 """a JupyterLite addon for supporting piplite wheels"""
 
+import datetime
 import json
 import re
 import urllib.parse
+from hashlib import md5, sha256
 
 import doit.tools
 
@@ -165,9 +167,13 @@ class PipliteAddon(BaseAddon):
                 meta["version"]
             ] = meta["release"]
 
-        whl_index.write_text(json.dumps(index, **JSON_FMT), **UTF8)
+        whl_index_text = json.dumps(index, **JSON_FMT)
+        whl_index_sha256 = sha256(whl_index_text.encode("utf-8")).hexdigest()
+
+        whl_index.write_text(whl_index_text, **UTF8)
 
         whl_index_url = f"./{whl_index.relative_to(jupyterlite_json.parent).as_posix()}"
+        whl_index_url_with_sha = f"{whl_index_url}?sha256={whl_index_sha256}"
 
         urls = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
@@ -176,21 +182,28 @@ class PipliteAddon(BaseAddon):
             .get(PIPLITE_URLS, [])
         )
 
-        if not whl_index_url in urls:
-            urls = [*urls, whl_index_url]
+        new_urls = []
+        added_build = False
+
+        for url in urls:
+            if url.split("#")[0].split("?")[0] == whl_index_url:
+                new_urls += [whl_index_url_with_sha]
+                added_build = True
+            else:
+                new_urls += [url]
+
+        if not added_build:
+            new_urls = [whl_index_url_with_sha, *new_urls]
 
         config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
             PIPLITE_URLS
-        ] = urls
+        ] = new_urls
 
         jupyterlite_json.write_text(json.dumps(config, **JSON_FMT))
 
         self.maybe_timestamp(jupyterlite_json)
 
     def index_wheel(self, whl_path, whl_meta):
-        import datetime
-        from hashlib import md5, sha256
-
         import pkginfo
 
         metadata = pkginfo.get_metadata(str(whl_path))
