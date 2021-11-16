@@ -59,7 +59,7 @@ async def _get_pypi_json(pkgname):
 
 
 class _PackageManager:
-    @patch("micropip._get_pypi_json", new_callable=_get_pypi_json)
+    @patch("micropip.micropip._get_pypi_json", new_callable=_get_pypi_json)
     async def install(self, requirements: Union[str, List[str]], ctx=None):
         return await _MP_PACKAGE_MANAGER.install(requirements, ctx)
 
