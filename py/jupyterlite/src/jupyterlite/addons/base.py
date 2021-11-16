@@ -13,10 +13,12 @@ from traitlets.config import LoggingConfigurable
 from ..constants import (
     DISABLED_EXTENSIONS,
     FEDERATED_EXTENSIONS,
+    JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_METADATA,
     SETTINGS_OVERRIDES,
+    UTF8,
 )
 from ..manager import LiteManager
 
@@ -120,7 +122,7 @@ class BaseAddon(LoggingConfigurable):
 
     def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
         if path:
-            loaded = json.loads(path.read_text(encoding="utf-8"))
+            loaded = json.loads(path.read_text(**UTF8))
         else:
             loaded = data
 
@@ -152,7 +154,7 @@ class BaseAddon(LoggingConfigurable):
                 return None
             klass = Draft7Validator
 
-        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        schema = json.loads(schema_path.read_text(**UTF8))
         return klass(schema)
 
     def merge_one_jupyterlite(self, out_path, in_paths):
@@ -170,7 +172,7 @@ class BaseAddon(LoggingConfigurable):
             self.log.debug(f"[lite][config][merge] . {in_path}")
             in_config = None
             try:
-                in_config = json.loads(in_path.read_text(encoding="utf-8"))
+                in_config = json.loads(in_path.read_text(**UTF8))
                 if out_path.name == JUPYTERLITE_IPYNB:
                     in_config = in_config["metadata"].get(JUPYTERLITE_METADATA)
             except:
@@ -204,17 +206,13 @@ class BaseAddon(LoggingConfigurable):
                         doc_path = in_path
                         break
 
-            doc = json.loads(doc_path.read_text(encoding="utf-8"))
+            doc = json.loads(doc_path.read_text(**UTF8))
 
             doc["metadata"][JUPYTERLITE_METADATA] = config
 
-            out_path.write_text(
-                json.dumps(doc, indent=2, sort_keys=True), encoding="utf-8"
-            )
+            out_path.write_text(json.dumps(doc, **JSON_FMT), **UTF8)
         else:
-            out_path.write_text(
-                json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
-            )
+            out_path.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
     def merge_jupyter_config_data(self, config, in_config):
         """merge well-known ``jupyter-config-data`` fields"""

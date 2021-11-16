@@ -6,7 +6,7 @@ C_LOCALE = "C"
 
 #: the encoding for pretty much every file written and read by jupyterlite
 UTF8 = dict(encoding="utf-8")
-
+JSON_FMT = dict(sort_keys=True, indent=2)
 ROOT = Path(__file__).parent
 
 #: all of the archives

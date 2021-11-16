@@ -8,6 +8,7 @@ import doit.tools
 
 from ..constants import (
     ALL_JSON,
+    JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_WHEELS,
@@ -78,7 +79,7 @@ class PipliteAddon(BaseAddon):
     def check(self, manager):
         """verify that all Wheel API are valid (sorta)"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
-        config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
+        config = json.loads(jupyterlite_json.read_text(**UTF8))
         urls = (
             config.get(JUPYTER_CONFIG_DATA, {})
             .get(LITE_PLUGIN_SETTINGS, {})
@@ -164,18 +165,25 @@ class PipliteAddon(BaseAddon):
                 meta["version"]
             ] = meta["release"]
 
-        whl_index.write_text(json.dumps(index, indent=2, sort_keys=True), **UTF8)
+        whl_index.write_text(json.dumps(index, **JSON_FMT), **UTF8)
+
+        whl_index_url = f"./{whl_index.relative_to(jupyterlite_json.parent).as_posix()}"
+
         urls = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
             .setdefault(LITE_PLUGIN_SETTINGS, {})
             .setdefault(PYOLITE_PLUGIN_ID, {})
             .get(PIPLITE_URLS, [])
         )
+
+        if not whl_index_url in urls:
+            urls = [*urls, whl_index_url]
+
         config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
             PIPLITE_URLS
         ] = urls
 
-        jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT))
 
         self.maybe_timestamp(jupyterlite_json)
 

@@ -8,6 +8,7 @@ from pathlib import Path
 
 from ..constants import (
     FEDERATED_EXTENSIONS,
+    JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
@@ -288,6 +289,6 @@ class FederatedExtensionAddon(BaseAddon):
 
         self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
-        jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
         self.maybe_timestamp(jupyterlite_json)
