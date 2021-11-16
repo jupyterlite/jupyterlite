@@ -4,7 +4,6 @@ import json
 from typing import List, Union
 from unittest.mock import patch
 
-import js
 from micropip.micropip import PACKAGE_MANAGER as _MP_PACKAGE_MANAGER
 from micropip.micropip import _get_pypi_json as _MP_GET_PYPI_JSON
 from micropip.micropip import _get_url as _MP_GET_URL
@@ -27,13 +26,11 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
             index = json.load(fd)
             _PIPLITE_INDICES.update({piplite_url: index})
         except Exception:
-            js.console.warn("piplite failed to download", piplite_url)
             pass
 
     pkg = dict((index or {}).get(pkgname) or {})
 
     if not pkg:
-        js.console.debug("piplite did not find", pkg, "in", piplite_url)
         return None
 
     # rewrite local paths, add cache busting
