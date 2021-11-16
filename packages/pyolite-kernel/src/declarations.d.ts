@@ -9,6 +9,7 @@ declare module '*.whl' {
 }
 
 declare let indexURL: string;
-declare let micropipUrls: string[];
+declare let _pipliteWheelUrl: any;
+declare let _micropipUrls: string[];
 declare let pyodide: any;
 declare let loadPyodide: any;

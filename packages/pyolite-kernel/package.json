@@ -28,7 +28,8 @@
     "lib/*.js.map",
     "lib/*.js",
     "style/*.css",
-    "style/index.js"
+    "style/index.js",
+    "py/**/*.whl"
   ],
   "scripts": {
     "build": "yarn run build:lib",

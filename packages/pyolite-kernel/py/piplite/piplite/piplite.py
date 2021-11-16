@@ -1,31 +1,31 @@
 import asyncio
 import importlib
 import json
-from typing import Union, List
+from typing import List, Union
 from unittest.mock import patch
 
-import js
-from micropip.micropip import _MP_PACKAGE_MANAGER, _get_url as _MP_GET_URL, _get_pypi_json as _MP_GET_PYPI_JSON
-
+from micropip.micropip import PACKAGE_MANAGER as _MP_PACKAGE_MANAGER
+from micropip.micropip import _get_pypi_json as _MP_GET_PYPI_JSON
+from micropip.micropip import _get_url as _MP_GET_URL
 
 #: a list of Warehouse-like API endpoints or derived multi-package all.json
-PIPLITE_URLS = []
+_PIPLITE_URLS = []
 
 # a cache of available packages
-PIPLITE_INDICES = {}
+_PIPLITE_INDICES = {}
 
 #: a well-known file name respected by the rest of the buld chain
 ALL_JSON = "/all.json"
 
 
 async def _get_pypi_json_from_index(pkgname, piplite_url):
-    index = PIPLITE_INDICES.get(piplite_url, {})
+    index = _PIPLITE_INDICES.get(piplite_url, {})
     if not index:
         try:
             fd = await _MP_GET_URL(piplite_url)
             index = json.load(fd)
-            PIPLITE_INDICES.update({piplite_url: index})
-        except Exception as err:
+            _PIPLITE_INDICES.update({piplite_url: index})
+        except Exception:
             pass
 
     pkg = (index or {}).get(pkgname)
@@ -35,15 +35,14 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
         for release in pkg["releases"].values():
             for artifact in release:
                 if artifact["url"].startswith("."):
-                    artifact["url"] = "/".join([
-                        piplite_url.split(ALL_JSON)[0],
-                        artifact["url"]
-                    ])
+                    artifact["url"] = "/".join(
+                        [piplite_url.split(ALL_JSON)[0], artifact["url"]]
+                    )
     return pkg
 
 
 async def _get_pypi_json(pkgname):
-    for piplite_url in PIPLITE_URLS:
+    for piplite_url in _PIPLITE_URLS:
         if piplite_url.endswith(ALL_JSON):
             pypi_json_from_index = await _get_pypi_json_from_index(pkgname, piplite_url)
             if pypi_json_from_index:
@@ -53,14 +52,14 @@ async def _get_pypi_json(pkgname):
             url = f"{piplite_url}{pkgname}/json"
             fd = await _MP_GET_URL(url)
             return json.load(fd)
-        except Exception as err:
+        except Exception:
             pass
 
     return await _MP_GET_PYPI_JSON(pkgname)
 
 
 class _PackageManager:
-    @patch('micropip._get_pypi_json', new_callable=_get_pypi_json)
+    @patch("micropip._get_pypi_json", new_callable=_get_pypi_json)
     async def install(self, requirements: Union[str, List[str]], ctx=None):
         return await _MP_PACKAGE_MANAGER.install(requirements, ctx)
 

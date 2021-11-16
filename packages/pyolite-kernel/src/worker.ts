@@ -23,84 +23,42 @@ let stderr_stream: any;
 let resolveInputReply: any;
 
 /**
- * Load Pyodided and initialize the interpreter.
+ * Load pyodide and initialize the interpreter.
+ *
+ * The first package loaded, `piplite`, is a build-time configurable wrapper
+ * around `micropip` that supports multiple warehouse API endpoints, as well
+ * as a multipackage summary JSON format in `all.json`.
  */
 async function loadPyodideAndPackages() {
   // as of 0.17.0 indexURL must be provided
   pyodide = await loadPyodide({ indexURL });
 
+  // this is the only use of `loadPackage`, allow `piplite` to handle the rest
   await pyodide.loadPackage(['micropip']);
 
-  // apply patch early enough to impact pyolite dependencies
-  await pyodide.runPythonAsync(`
-      def _patch_micropip():
-          import js
-          import json
-          import micropip.micropip as mp
-
-          _old_get_pypi_json = mp._get_pypi_json
-          _get_url = mp._get_url
-
-          MICROPIP_URLS = ${JSON.stringify(micropipUrls)}
-          MICROPIP_INDICES = {}
-          ALL_JSON = "/all.json"
-
-          async def _get_pypi_json_from_index(pkgname, micropip_url):
-              index = MICROPIP_INDICES.get(micropip_url, {})
-              if not index:
-                  try:
-                      fd = await _get_url(micropip_url)
-                      index = json.load(fd)
-                      MICROPIP_INDICES.update({micropip_url: index})
-                  except Exception as err:
-                      pass
-
-              pkg = (index or {}).get(pkgname)
-
-              if pkg:
-                  # rewrite local paths
-                  for release in pkg["releases"].values():
-                      for artifact in release:
-                          if artifact["url"].startswith("."):
-                              artifact["url"] = "/".join([
-                                  micropip_url.split(ALL_JSON)[0],
-                                  artifact["url"]
-                              ])
-              return pkg
-
-          async def _get_pypi_json(pkgname):
-              for micropip_url in MICROPIP_URLS:
-                  if micropip_url.endswith(ALL_JSON):
-                      pypi_json_from_index = await _get_pypi_json_from_index(pkgname, micropip_url)
-                      if pypi_json_from_index:
-                          return pypi_json_from_index
-                      continue
-                  try:
-                      url = f"{micropip_url}{pkgname}/json"
-                      fd = await _get_url(url)
-                      return json.load(fd)
-                  except Exception as err:
-                      pass
-
-              return await _old_get_pypi_json(pkgname)
-
-          mp._get_pypi_json = _get_pypi_json
-      _patch_micropip()
-  `);
-
-  await pyodide.loadPackage(['matplotlib']);
+  // get piplite early enough to impact pyolite dependencies
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install([
+    await micropip.install('${_pipliteWheelUrl}')
+    import piplite
+    piplite._PIPLITE_URLS = ${JSON.stringify(_micropipUrls)}
+  `);
+
+  // from this point forward, only use piplite
+  await pyodide.runPythonAsync(`
+    await piplite.install([
+      'matplotlib',
       'traitlets',
       'widgetsnbextension',
       'nbformat',
-      'ipykernel'
+      'ipykernel',
     ])
-    await micropip.install([
-      'pyolite'
+    await piplite.install([
+      'pyolite',
     ]);
-    await micropip.install('ipython');
+    await piplite.install([
+      'ipython',
+    ]);
     import pyolite
   `);
 
