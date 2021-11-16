@@ -14,8 +14,6 @@ requires = [
     "doit",
     "entrypoints",
     "jupyter_core >=4.7",
-    # TODO: support wheels https://github.com/jupyterlite/jupyterlite/issues/151
-    # "wheel",
 ]
 keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"
 classifiers = [

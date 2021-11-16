@@ -954,7 +954,9 @@ class U:
         except Exception:
             print(cmd, "is not available (this might not be a problem)")
             return ["echo", f"{cmd} not available"]
-        return doit.action.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)))
+        return doit.action.CmdAction(
+            [cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs
+        )
 
     @staticmethod
     def ok(ok, **task):
