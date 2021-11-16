@@ -6,3 +6,4 @@ twine
 # bootstrap packages
 pkginfo
 jupyter_core >=4.7
+entrypoints

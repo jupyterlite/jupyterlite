@@ -179,9 +179,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("app_archive")
     def _default_app_archive(self):
-        return Path(
-            os.environ.get("JUPYTERLITE_APP_ARCHIVE") or C.DEFAULT_APP_ARCHIVE[-1]
-        )
+        return Path(os.environ.get("JUPYTERLITE_APP_ARCHIVE") or C.ALL_APP_ARCHIVES[-1])
 
     @default("output_archive")
     def _default_output_archive(self):
