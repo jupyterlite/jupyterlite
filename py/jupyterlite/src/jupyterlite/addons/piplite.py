@@ -21,7 +21,7 @@ from ..constants import (
 from .base import BaseAddon
 
 
-class MicropipAddon(BaseAddon):
+class PipliteAddon(BaseAddon):
     __all__ = ["post_init", "post_build", "check"]
 
     @property
