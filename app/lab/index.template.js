@@ -203,6 +203,14 @@ async function main() {
 
   lab.registerPluginModules(pluginsToRegister);
 
+  // Expose global app instance when in dev mode or when toggled explicitly.
+  const exposeAppInBrowser =
+    (PageConfig.getOption('exposeAppInBrowser') || '').toLowerCase() === 'true';
+
+  if (exposeAppInBrowser) {
+    window.jupyterapp = lab;
+  }
+
   /* eslint-disable no-console */
   console.log('Starting app');
   await lab.start();

@@ -178,6 +178,81 @@ yarn build:test
 yarn test
 ```
 
+### UI Tests
+
+`jupyterlite` uses the
+[Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata) framework for end
+to end and visual regression testing. Galata is build on top of
+[Playwright](https://playwright.dev) provides a high level API to programmatically
+interact with the JupyterLab UI, and tools for taking screenshots and generating test
+reports.
+
+#### Running the UI Tests locally
+
+First install the dependencies:
+
+```sh
+cd ui-tests
+yarn install
+```
+
+The UI tests use a custom JupyterLite website:
+
+```sh
+# in ui-tests directory
+
+# build
+yarn build
+
+# start the HTTP server to server the JupyterLite website
+yarn start
+```
+
+Then run the `test` script:
+
+```sh
+# in the ui-tests directory
+yarn test
+```
+
+You can pass additional arguments to `playwright` by appending parameters to the
+command. For example to run the test in headed mode, `yarn test --headed`.
+
+Checkout the [Playwright Command Line Reference](https://playwright.dev/docs/test-cli/)
+for more information about the available command line options.
+
+#### Adding new UI tests
+
+New test suites can be added to the `ui-tests/tests` directory. You can see some
+additional example test suites in the
+[JupyterLab repo](https://github.com/jupyterlab/jupyterlab/blob/master/galata/test). If
+the tests in new suites are doing visual regression tests or HTML source regression
+tests then you also need to add their reference images to the `-snapshots` directories.
+
+#### Reference Image Captures
+
+When adding a new visual regression test, first make sure your tests pass locally on
+your development environment, with a reference snapshots generated in your dev
+environment. You can generate new reference snapshots by running the following command:
+
+```bash
+yarn test:update
+```
+
+To update the snapshots:
+
+- push the new changes to the branch
+- wait for the CI check to complete
+- go to the artifacts section and download the `jupyterlite-chromium-updated-snapshots`
+  and `jupyterlite-firefox-updated-snapshots` archives
+- extract the archives
+- copy the `-snapshots` directories to replace the existing ones
+- commmit and push the changes
+
+The generated snapshots can be found on the Summary page of the CI check:
+
+![reference-snapshots](https://user-images.githubusercontent.com/591645/141300086-d13c3221-a66d-45f5-b0ac-6f4795b16349.png)
+
 ### Lab Extension development
 
 > _TBD: describe how the `@jupyterlite/labextension` works with e.g. **real**
