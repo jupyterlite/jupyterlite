@@ -28,6 +28,15 @@ def task_env():
 
     if C.IN_CONDA:
         all_deps = []
+
+        yield dict(
+            name="pyodide:packages",
+            doc="fetch the pyodide packages.json",
+            file_dep=[P.APP_SCHEMA],
+            targets=[B.PYODIDE_PACKAGES],
+            actions=[U.fetch_pyodide_packages],
+        )
+
         for nb in P.ALL_EXAMPLES:
             if not nb.name.endswith(".ipynb"):
                 continue
@@ -44,10 +53,11 @@ def task_env():
             )
 
             all_deps += [nb_deps]
+
         yield dict(
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
-            file_dep=[P.BINDER_ENV, *all_deps],
+            file_dep=[P.BINDER_ENV, B.PYODIDE_PACKAGES, *all_deps],
             targets=[B.RAW_WHEELS_REQS],
             actions=[
                 (
@@ -660,6 +670,7 @@ class C:
     APPS = ["retro", "lab"]
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
+    JSON = dict(indent=2, sort_keys=True)
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
@@ -689,12 +700,6 @@ class C:
         # magic JS interop layer
         "js",
         "pyodide_js",
-        # shipped by pyodide https://cdn.jsdelivr.net/pyodide/v0.18.1/full/packages.json
-        "micropip",
-        "matplotlib",
-        "numpy",
-        "pandas",
-        "pillow",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
 
@@ -885,6 +890,7 @@ class B:
 
     EXAMPLE_DEPS = BUILD / "depfinder"
 
+    PYODIDE_PACKAGES = BUILD / "pyodide-packages.json"
     RAW_WHEELS = BUILD / "wheels"
     RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
     DOCS_APP = BUILD / "docs-app"
@@ -1012,31 +1018,39 @@ class U:
         # fetch piplite wheels
         U.deps_to_wheels(all_deps)
 
-        to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+        to_json.write_text(json.dumps(config, **C.JSON))
 
     @staticmethod
     def deps_to_wheels(all_deps):
         import pkginfo
         from yaml import safe_load
 
-        required = ["ipykernel", "notebook"]
+        required_deps = ["ipykernel", "notebook"]
+        ignored_deps = [
+            p
+            for p in json.loads(B.PYODIDE_PACKAGES.read_text(**C.ENC))[
+                "packages"
+            ].keys()
+        ]
+        ignored_deps += C.IGNORED_WHEEL_DEPS
+
         for dep in all_deps:
-            required += safe_load(dep.read_text(**C.ENC)).get("required", [])
+            required_deps += safe_load(dep.read_text(**C.ENC)).get("required", [])
 
         from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
         # replace unversioned dependencies with versioned ones, if needed
         for pkg, version in re.findall("-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]):
-            if pkg in required:
-                required.remove(pkg)
-            required += [f"{pkg}=={version}"]
+            if pkg in required_deps:
+                required_deps.remove(pkg)
+            required_deps += [f"{pkg}=={version}"]
 
         B.RAW_WHEELS.mkdir(exist_ok=True, parents=True)
         B.RAW_WHEELS_REQS.write_text(
             "\n".join(
                 [
                     req
-                    for req in sorted(set(required))
-                    if req.split("==")[0] not in C.IGNORED_WHEEL_DEPS
+                    for req in sorted(set(required_deps))
+                    if req.split("==")[0] not in ignored_deps
                 ]
             )
         )
@@ -1044,8 +1058,10 @@ class U:
             ["pip", "download", "-r", B.RAW_WHEELS_REQS], cwd=str(B.RAW_WHEELS)
         )
 
+        ignored_wheels = [*C.IGNORED_WHEELS, *ignored_deps]
+
         for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
-            if any(re.findall(f"{p}-\d", wheel.name) for p in C.IGNORED_WHEELS):
+            if any(re.findall(f"{p}-\d", wheel.name) for p in ignored_wheels):
                 continue
             meta = pkginfo.get_metadata(str(wheel))
             yield U.pip_url(meta.name, meta.version, wheel.name)
@@ -1081,9 +1097,7 @@ class U:
 
         if json.dumps(original_entry_points) != json.dumps(new_entry_points):
             typedoc["entryPoints"] = new_entry_points
-            P.TYPEDOC_JSON.write_text(
-                json.dumps(typedoc, indent=2, sort_keys=True), **C.ENC
-            )
+            P.TYPEDOC_JSON.write_text(json.dumps(typedoc, **C.JSON), **C.ENC)
 
         tsconfig = json.loads(P.TSCONFIG_TYPEDOC.read_text(**C.ENC))
         original_references = tsconfig["references"]
@@ -1095,9 +1109,7 @@ class U:
 
         if json.dumps(original_references) != json.dumps(new_references):
             tsconfig["references"] = new_references
-            P.TSCONFIG_TYPEDOC.write_text(
-                json.dumps(tsconfig, indent=2, sort_keys=True), **C.ENC
-            )
+            P.TSCONFIG_TYPEDOC.write_text(json.dumps(tsconfig, **C.JSON), **C.ENC)
 
     @staticmethod
     def mystify():
@@ -1380,7 +1392,7 @@ class U:
             ]
             shutil.copy2(whl_path, wheel_dir / whl_path.name)
 
-        wheel_index.write_text(json.dumps(all_json, indent=2, sort_keys=2), **C.ENC)
+        wheel_index.write_text(json.dumps(all_json, **C.JSON), **C.ENC)
 
     @staticmethod
     def integrity():
@@ -1409,6 +1421,19 @@ class U:
 
         for app in C.APPS:
             _ensure_resolutions(app)
+
+    @staticmethod
+    def fetch_pyodide_packages():
+        import urllib.request
+
+        schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
+        props = schema["definitions"]["pyolite-settings"]["properties"]
+        url = props["pyodideUrl"]["default"].replace("pyodide.js", "packages.json")
+        print("fetching", url)
+        with urllib.request.urlopen(url) as response:
+            packages = json.loads(response.read().decode("utf-8"))
+        B.PYODIDE_PACKAGES.parent.mkdir(exist_ok=True, parents=True)
+        B.PYODIDE_PACKAGES.write_text(json.dumps(packages, **C.JSON))
 
 
 # environment overloads

@@ -53,7 +53,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       // ...and the piplite wheel
       `var _pipliteWheelUrl = "${pipliteWheelUrl}";`,
       // ...and the locations of custom wheel APIs and indices...
-      `var _pipliteUrls ${JSON.stringify(options.pipliteUrls)};`,
+      `var _pipliteUrls = ${JSON.stringify(options.pipliteUrls)};`,
       // ...finally, the worker... which _must_ appear last!
       worker.toString()
     ];

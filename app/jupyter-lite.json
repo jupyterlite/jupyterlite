@@ -15,7 +15,7 @@
     "themesUrl": "./lab/build/themes",
     "litePluginSettings": {
       "@jupyterlite/pyolite-kernel-extension:kernel": {
-        "micropipUrls": ["./lab/build/wheels/all.json"]
+        "pipliteUrls": ["./lab/build/wheels/all.json"]
       }
     }
   }
