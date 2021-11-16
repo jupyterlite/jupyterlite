@@ -1429,7 +1429,6 @@ class U:
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
         url = props["pyodideUrl"]["default"].replace("pyodide.js", "packages.json")
-        print("fetching", url)
         with urllib.request.urlopen(url) as response:
             packages = json.loads(response.read().decode("utf-8"))
         B.PYODIDE_PACKAGES.parent.mkdir(exist_ok=True, parents=True)
