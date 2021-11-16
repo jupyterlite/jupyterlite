@@ -5,6 +5,7 @@ import json
 import re
 import urllib.parse
 from hashlib import md5, sha256
+from pathlib import Path
 
 import doit.tools
 
@@ -158,20 +159,15 @@ class PipliteAddon(BaseAddon):
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, *whl_metas):
         """add the piplite wheels to jupyter-lite.json"""
         config = json.loads(jupyterlite_json.read_text(**UTF8))
-
-        index = {}
+        metadata = {}
 
         for whl_meta in whl_metas:
             meta = json.loads(whl_meta.read_text(**UTF8))
-            index.setdefault(meta["name"], {"releases": {}})["releases"][
-                meta["version"]
-            ] = meta["release"]
+            whl = self.output_wheels / whl_meta.name.replace(".json", "")
+            metadata[whl] = meta["name"], meta["version"], meta["release"]
 
-        whl_index_text = json.dumps(index, **JSON_FMT)
-        whl_index_sha256 = sha256(whl_index_text.encode("utf-8")).hexdigest()
-
-        whl_index.write_text(whl_index_text, **UTF8)
-
+        whl_index = write_wheel_index(self.output_wheels, metadata)
+        whl_index_sha256 = sha256(whl_index.read_bytes()).hexdigest()
         whl_index_url = f"./{whl_index.relative_to(jupyterlite_json.parent).as_posix()}"
         whl_index_url_with_sha = f"{whl_index_url}?sha256={whl_index_sha256}"
 
@@ -204,50 +200,74 @@ class PipliteAddon(BaseAddon):
         self.maybe_timestamp(jupyterlite_json)
 
     def index_wheel(self, whl_path, whl_meta):
-        import pkginfo
-
-        metadata = pkginfo.get_metadata(str(whl_path))
-        whl_stat = whl_path.stat()
-        whl_isodate = (
-            datetime.datetime.fromtimestamp(whl_stat.st_mtime, tz=datetime.timezone.utc)
-            .isoformat()
-            .split("+")[0]
-            + "Z"
-        )
-        whl_bytes = whl_path.read_bytes()
-        whl_sha256 = sha256(whl_bytes).hexdigest()
-        whl_md5 = md5(whl_bytes).hexdigest()
-
-        release = [
-            {
-                "comment_text": "",
-                "digests": {"sha256": whl_sha256, "md5": whl_md5},
-                "downloads": -1,
-                "filename": whl_path.name,
-                "has_sig": False,
-                "md5_digest": whl_md5,
-                "packagetype": "bdist_wheel",
-                "python_version": "py3",
-                "requires_python": metadata.requires_python,
-                "size": whl_stat.st_size,
-                "upload_time": whl_isodate,
-                "upload_time_iso_8601": whl_isodate,
-                "url": f"./{whl_path.name}",
-                "yanked": False,
-                "yanked_reason": None,
-            }
-        ]
-
+        """Generate an intermediate file representation to merge with other releases"""
+        name, version, release = get_wheel_fileinfo(whl_path)
         whl_meta.write_text(
-            json.dumps(
-                {
-                    "name": metadata.name,
-                    "version": metadata.version,
-                    "release": release,
-                },
-                indent=2,
-                sort_keys=True,
-            )
+            json.dumps(dict(name=name, version=version, release=release), **JSON_FMT),
+            **UTF8,
         )
-
         self.maybe_timestamp(whl_meta)
+
+
+def get_wheel_fileinfo(whl_path):
+    """Generate a minimal Warehouse-like JSON API entry from a wheel"""
+    import pkginfo
+
+    metadata = pkginfo.get_metadata(str(whl_path))
+    whl_stat = whl_path.stat()
+    whl_isodate = (
+        datetime.datetime.fromtimestamp(whl_stat.st_mtime, tz=datetime.timezone.utc)
+        .isoformat()
+        .split("+")[0]
+        + "Z"
+    )
+    whl_bytes = whl_path.read_bytes()
+    whl_sha256 = sha256(whl_bytes).hexdigest()
+    whl_md5 = md5(whl_bytes).hexdigest()
+
+    release = {
+        "comment_text": "",
+        "digests": {"sha256": whl_sha256, "md5": whl_md5},
+        "downloads": -1,
+        "filename": whl_path.name,
+        "has_sig": False,
+        "md5_digest": whl_md5,
+        "packagetype": "bdist_wheel",
+        "python_version": "py3",
+        "requires_python": metadata.requires_python,
+        "size": whl_stat.st_size,
+        "upload_time": whl_isodate,
+        "upload_time_iso_8601": whl_isodate,
+        "url": f"./{whl_path.name}",
+        "yanked": False,
+        "yanked_reason": None,
+    }
+
+    return metadata.name, metadata.version, release
+
+
+def get_wheel_index(wheels, metadata=None):
+    """Get the raw python object representing a wheel index for a bunch of wheels
+
+    If given, metadata should be a dictionary of the form:
+
+        {Path: (name, version, metadata)}
+    """
+    metadata = metadata or {}
+    all_json = {}
+
+    for whl_path in sorted(wheels):
+        name, version, release = metadata.get(whl_path, get_wheel_fileinfo(whl_path))
+        if name not in all_json:
+            all_json[name] = {"releases": {}}
+        all_json[name]["releases"][version] = [release]
+
+    return all_json
+
+
+def write_wheel_index(whl_dir, metadata=None):
+    """Write out an all.json for a directory of wheels"""
+    wheel_index = Path(whl_dir) / ALL_JSON
+    index_data = get_wheel_index([*whl_dir.glob(f"*{NOARCH_WHL}")], metadata)
+    wheel_index.write_text(json.dumps(index_data, **JSON_FMT), **UTF8)
+    return wheel_index
