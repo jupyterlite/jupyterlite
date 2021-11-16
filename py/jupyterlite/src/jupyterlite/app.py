@@ -6,11 +6,20 @@ from traitlets import Bool, Instance, Unicode, default
 
 from . import __version__
 from .config import LiteBuildConfig
-from .constants import PHASES
+from .constants import NOARCH_WHL, PHASES
 from .manager import LiteManager
+from .trait_types import CPath
 
 
-class BaseLiteApp(JupyterApp, LiteBuildConfig):
+class DescribedMixin:
+    """a self-describing mixin"""
+
+    @property
+    def description(self):
+        return self.__doc__.splitlines()[0].strip()
+
+
+class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
     """TODO: An undescribed app"""
 
     version = __version__
@@ -47,10 +56,6 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             ),
         },
     )
-
-    @property
-    def description(self):
-        return self.__doc__.splitlines()[0].strip()
 
 
 class ManagedApp(BaseLiteApp):
@@ -199,6 +204,40 @@ class LiteArchiveApp(LiteTaskApp):
     _doit_task = "archive"
 
 
+class PipliteIndex(DescribedMixin, JupyterApp):
+    """index a directory of wheels for piplite"""
+
+    version = __version__
+
+    wheel_dir = CPath(Path.cwd(), help="a path of wheels")
+
+    def parse_command_line(self, argv=None):
+        super(PipliteIndex, self).parse_command_line(argv)
+
+        if self.extra_args:
+            self.wheel_dir = Path(self.extra_args[0])
+
+    def start(self):
+        if not self.wheel_dir.exists():
+            raise ValueError(f"{self.wheel_dir} does not exist")
+        if not [*self.wheel_dir.glob(f"*{NOARCH_WHL}")]:
+            raise ValueError(f"no wheels found in {self.wheel_dir}")
+        from .addons.piplite import write_wheel_index
+
+        write_wheel_index(self.wheel_dir)
+
+
+class PipliteApp(DescribedMixin, JupyterApp):
+    """tools for working with piplite"""
+
+    subcommands = {
+        k: (v, v.__doc__.splitlines()[0].strip())
+        for k, v in dict(
+            index=PipliteIndex,
+        ).items()
+    }
+
+
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
 
@@ -216,6 +255,7 @@ class LiteApp(BaseLiteApp):
             archive=LiteArchiveApp,
             # more special apps
             doit=LiteRawDoitApp,
+            pip=PipliteApp,
         ).items()
     }
 
