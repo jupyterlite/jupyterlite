@@ -21,6 +21,10 @@ _PIPLITE_DISABLE_PYPI = False
 ALL_JSON = "/all.json"
 
 
+class PiplitePyPIDisabled(ValueError):
+    pass
+
+
 async def _get_pypi_json_from_index(pkgname, piplite_url):
     index = _PIPLITE_INDICES.get(piplite_url, {})
     if not index:
@@ -64,7 +68,9 @@ async def _get_pypi_json(pkgname):
                 pass
 
     if _PIPLITE_DISABLE_PYPI:
-        return None
+        raise PiplitePyPIDisabled(
+            f"{pkgname} could not be installed: PyPI fallback is disabled"
+        )
 
     return await _MP_GET_PYPI_JSON(pkgname)
 
@@ -86,7 +92,7 @@ def install(requirements: Union[str, List[str]]):
     This only works for packages that are either pure Python or for packages
     with C extensions that are built in Pyodide. If a pure Python package is not
     found in the Pyodide repository it will be loaded from one of
-    `indexURL <globalThis.pipliteUrls>` or PyPI.
+    `indexURL <globalThis.pipliteUrls>` or PyPI, if enabled.
 
     Parameters
     ----------
