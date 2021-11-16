@@ -56,3 +56,28 @@ def test_piplite_urls(
     wheel_index = output / "lab/build/wheels/all.json"
     wheel_index_text = wheel_index.read_text(encoding="utf-8")
     assert WHEELS[0].name in wheel_index_text, wheel_index_text
+
+
+index_cmd = "jupyter", "lite", "pip", "index"
+
+
+def test_piplite_cli_fail_missing(script_runner, tmp_path):
+    path = tmp_path / "missing"
+    build = script_runner.run(*index_cmd, path)
+    assert not build.success
+
+
+def test_piplite_cli_empty(script_runner, tmp_path):
+    path = tmp_path / "empty"
+    path.mkdir()
+    build = script_runner.run(*index_cmd, path)
+    assert not build.success
+
+
+def test_piplite_cli_win(script_runner, tmp_path):
+    path = tmp_path / "one"
+    path.mkdir()
+    shutil.copy2(WHEELS[0], path / WHEELS[0].name)
+    build = script_runner.run(*index_cmd, path)
+    assert build.success
+    assert json.loads((path / "all.json").read_text(encoding="utf-8"))

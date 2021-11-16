@@ -262,5 +262,5 @@ class LiteApp(BaseLiteApp):
 
 main = launch_new_instance = LiteApp.launch_instance
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: nocover
     main()
