@@ -10,6 +10,7 @@ from hashlib import md5, sha256
 from pathlib import Path
 
 import doit
+import pkginfo
 
 
 def task_env():
@@ -1349,8 +1350,6 @@ class U:
         """create a warehouse-like index for the wheels"""
 
         import datetime
-
-        import pkginfo
 
         wheel_dir = wheel_index.parent
         all_json = {}
