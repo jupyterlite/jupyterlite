@@ -11,8 +11,11 @@ from micropip.micropip import _get_url as _MP_GET_URL
 #: a list of Warehouse-like API endpoints or derived multi-package all.json
 _PIPLITE_URLS = []
 
-# a cache of available packages
+#: a cache of available packages
 _PIPLITE_INDICES = {}
+
+#: don't fall back to pypi.org if a package is not found in _PIPLITE_URLS
+_PIPLITE_DISABLE_PYPI = False
 
 #: a well-known file name respected by the rest of the buld chain
 ALL_JSON = "/all.json"
@@ -59,6 +62,9 @@ async def _get_pypi_json(pkgname):
                 return json.load(fd)
             except Exception:
                 pass
+
+    if _PIPLITE_DISABLE_PYPI:
+        return None
 
     return await _MP_GET_PYPI_JSON(pkgname)
 

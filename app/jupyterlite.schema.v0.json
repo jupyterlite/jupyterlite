@@ -139,13 +139,18 @@
           "default": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
           "format": "uri"
         },
+        "disablePyPIFallback": {
+          "description": "Disable the piplite behavior of falling back to https://pypi.org/pypi/",
+          "default": false,
+          "type": "boolean"
+        },
         "pipliteUrls": {
-          "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, asssumed to be an aggregate, keyed by package name, with relative paths",
+          "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, assumed to be an aggregate, keyed by package name, with relative paths",
           "type": "array",
           "items": {
             "type": "string"
           },
-          "default": ["https://pypi.org/pypi/"],
+          "default": [],
           "format": "uri"
         }
       }

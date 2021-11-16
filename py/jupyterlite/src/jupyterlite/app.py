@@ -33,6 +33,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             # server-specific things
             "port": "LiteBuildConfig.port",
             "base-url": "LiteBuildConfig.base_url",
+            # pyolite things likely to move away
             "piplite-wheels": "LiteBuildConfig.piplite_urls",
         },
     )
@@ -43,7 +44,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             "ignore-sys-prefix": (
                 {"LiteBuildConfig": {"ignore_sys_prefix": True}},
                 "Do not copy any extensions from sys.prefix",
-            )
+            ),
         },
     )
 

@@ -41,6 +41,7 @@ async function loadPyodideAndPackages() {
     import micropip
     await micropip.install('${_pipliteWheelUrl}')
     import piplite.piplite
+    piplite.piplite._PIPLITE_DISABLE_PYPI = ${_disablePyPIFallback ? 'True' : 'False'}
     piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_pipliteUrls)}
   `);
 

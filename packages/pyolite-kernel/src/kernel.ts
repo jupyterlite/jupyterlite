@@ -50,10 +50,12 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       `importScripts("${options.pyodideUrl}");`,
       // ...we also need the location of the index of pyodide-built js/WASM...
       `var indexURL = "${indexUrl}";`,
-      // ...and the piplite wheel
+      // ...and the piplite wheel...
       `var _pipliteWheelUrl = "${pipliteWheelUrl}";`,
       // ...and the locations of custom wheel APIs and indices...
       `var _pipliteUrls = ${JSON.stringify(options.pipliteUrls)};`,
+      // ...but maybe not PyPI...
+      `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)}`,
       // ...finally, the worker... which _must_ appear last!
       worker.toString()
     ];
@@ -318,5 +320,10 @@ export namespace PyoliteKernel {
      * The URLs from which to attempt PyPI API requests
      */
     pipliteUrls: string[];
+
+    /**
+     * Do not try pypi.org if `piplite.install` fails against local URLs
+     */
+    disablePyPIFallback: boolean;
   }
 }
