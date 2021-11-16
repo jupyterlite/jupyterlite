@@ -55,7 +55,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       // ...and the locations of custom wheel APIs and indices...
       `var _pipliteUrls = ${JSON.stringify(options.pipliteUrls)};`,
       // ...but maybe not PyPI...
-      `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)}`,
+      `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)};`,
       // ...finally, the worker... which _must_ appear last!
       worker.toString()
     ];
