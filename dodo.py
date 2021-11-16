@@ -682,16 +682,19 @@ class C:
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     COV_THRESHOLD = 91
-    # TODO: automate this
     IGNORED_WHEEL_DEPS = [
+        # our stuff
+        "pyolite",
+        "piplite",
+        # magic JS interop layer
         "js",
-        "matplotlib",
+        "pyodide_js",
+        # shipped by pyodide https://cdn.jsdelivr.net/pyodide/v0.18.1/full/packages.json
         "micropip",
+        "matplotlib",
         "numpy",
         "pandas",
         "pillow",
-        "pyodide_js",
-        "pyolite",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
 
