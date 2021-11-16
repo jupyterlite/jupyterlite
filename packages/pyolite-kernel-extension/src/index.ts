@@ -30,8 +30,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
       JSON.parse(PageConfig.getOption('litePluginSettings') || '{}')[PLUGIN_ID] || {};
     const url = config.pyodideUrl || PYODIDE_CDN_URL;
     const pyodideUrl = URLExt.parse(url).href;
-    const rawPipUrls = config.micropipUrls || [];
-    const micropipUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
+    const rawPipUrls = config.pipliteUrls || [];
+    const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
 
     kernelspecs.register({
       spec: {
@@ -58,7 +58,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         return new PyoliteKernel({
           ...options,
           pyodideUrl,
-          micropipUrls
+          pipliteUrls
         });
       }
     });

@@ -41,7 +41,7 @@ async function loadPyodideAndPackages() {
     import micropip
     await micropip.install('${_pipliteWheelUrl}')
     import piplite.piplite
-    piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_micropipUrls)}
+    piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_pipliteUrls)}
   `);
 
   // from this point forward, only use piplite

@@ -132,7 +132,7 @@
                   "default": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
                   "format": "uri"
                 },
-                "micropipUrls": {
+                "pipliteUrls": {
                   "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, asssumed to be an aggregate, keyed by package name, with relative paths",
                   "type": "array",
                   "items": { "type": "string" },

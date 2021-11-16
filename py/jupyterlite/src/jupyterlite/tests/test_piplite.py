@@ -11,25 +11,25 @@ from .conftest import WHEELS
     "remote,folder",
     [[True, False], [False, False], [False, True]],
 )
-def test_micropip_wheels(
+def test_piplite_urls(
     an_empty_lite_dir, script_runner, remote, folder, a_fixture_server
 ):
     """can we include a single wheel?"""
     ext = WHEELS[0]
 
     if remote:
-        micropip_wheels = [f"{a_fixture_server}/{ext.name}"]
+        piplite_urls = [f"{a_fixture_server}/{ext.name}"]
     else:
         shutil.copy2(WHEELS[0], an_empty_lite_dir)
         if folder:
-            micropip_wheels = ["."]
+            piplite_urls = ["."]
         else:
-            micropip_wheels = [WHEELS[0].name]
+            piplite_urls = [WHEELS[0].name]
 
     config = {
         "LiteBuildConfig": {
             "ignore_sys_prefix": True,
-            "micropip_wheels": micropip_wheels,
+            "piplite_urls": piplite_urls,
             "apps": ["lab"],
         }
     }
@@ -49,21 +49,10 @@ def test_micropip_wheels(
     lite_data = json.loads(lite_json.read_text(encoding="utf-8"))
     assert lite_data["jupyter-config-data"]["litePluginSettings"][
         "@jupyterlite/pyolite-kernel-extension:kernel"
-    ]["micropipUrls"], "bad wheel urls"
+    ]["pipliteUrls"], "bad wheel urls"
 
     wheel_out = output / "lab/build/wheels"
     assert (wheel_out / WHEELS[0].name).exists()
     wheel_index = output / "lab/build/wheels/all.json"
     wheel_index_text = wheel_index.read_text(encoding="utf-8")
     assert WHEELS[0].name in wheel_index_text, wheel_index_text
-    # smallest_dir = output / "lab/extensions/the-smallest-extension"
-    # assert smallest_dir.exists()
-    # lite_ext = lite_data["jupyter-config-data"]["federated_extensions"]
-    # smallest = lite_ext[0]
-    # assert (smallest_dir / smallest["load"]).exists()
-    # assert "extension" in smallest
-    # assert "mimeExtension" in smallest
-    # assert "style" in smallest
-
-    # lab_build = output / "lab/build"
-    # assert (lab_build / "themes/the-smallest-extension/index.css").exists()

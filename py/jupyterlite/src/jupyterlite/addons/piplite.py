@@ -1,4 +1,4 @@
-"""a JupyterLite addon for supporting micropip wheels"""
+"""a JupyterLite addon for supporting piplite wheels"""
 
 import json
 import re
@@ -12,7 +12,7 @@ from ..constants import (
     JUPYTERLITE_JSON,
     LAB_WHEELS,
     LITE_PLUGIN_SETTINGS,
-    MICROPIP_URLS,
+    PIPLITE_URLS,
     NOARCH_WHL,
     PIPLITE_INDEX_SCHEMA,
     PYOLITE_PLUGIN_ID,
@@ -35,11 +35,11 @@ class MicropipAddon(BaseAddon):
         return self.manager.cache_dir / "wheels"
 
     def post_init(self, manager):
-        for path_or_url in manager.micropip_wheels:
+        for path_or_url in manager.piplite_urls:
             yield from self.resolve_one_wheel(path_or_url)
 
     def post_build(self, manager):
-        """update the root jupyter-lite.json with micropipUrls"""
+        """update the root jupyter-lite.json with pipliteUrls"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
         wheels = sorted(self.output_wheels.glob(f"*{NOARCH_WHL}"))
 
@@ -64,7 +64,7 @@ class MicropipAddon(BaseAddon):
 
             yield dict(
                 name="patch",
-                doc=f"ensure {JUPYTERLITE_JSON} includes the micropip wheel",
+                doc=f"ensure {JUPYTERLITE_JSON} includes the piplite wheel",
                 file_dep=[*whl_metas, jupyterlite_json],
                 actions=[
                     (
@@ -83,7 +83,7 @@ class MicropipAddon(BaseAddon):
             config.get(JUPYTER_CONFIG_DATA, {})
             .get(LITE_PLUGIN_SETTINGS, {})
             .get(PYOLITE_PLUGIN_ID, {})
-            .get(MICROPIP_URLS, [])
+            .get(PIPLITE_URLS, [])
         )
 
         for wheel_index_url in urls:
@@ -153,7 +153,7 @@ class MicropipAddon(BaseAddon):
         )
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, *whl_metas):
-        """add the micropip wheels to jupyter-lite.json"""
+        """add the piplite wheels to jupyter-lite.json"""
         config = json.loads(jupyterlite_json.read_text(**UTF8))
 
         index = {}
@@ -169,10 +169,10 @@ class MicropipAddon(BaseAddon):
             config.setdefault(JUPYTER_CONFIG_DATA, {})
             .setdefault(LITE_PLUGIN_SETTINGS, {})
             .setdefault(PYOLITE_PLUGIN_ID, {})
-            .get(MICROPIP_URLS, [])
+            .get(PIPLITE_URLS, [])
         )
         config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
-            MICROPIP_URLS
+            PIPLITE_URLS
         ] = urls
 
         jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))

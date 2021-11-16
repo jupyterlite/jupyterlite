@@ -1002,11 +1002,11 @@ class U:
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
-        config["LiteBuildConfig"]["micropip_wheels"] = sorted(
+        config["LiteBuildConfig"]["piplite_urls"] = sorted(
             set(U.deps_to_wheels(all_deps))
         )
 
-        # fetch micropip wheels
+        # fetch piplite wheels
         U.deps_to_wheels(all_deps)
 
         to_json.write_text(json.dumps(config, indent=2, sort_keys=True))
@@ -1297,7 +1297,7 @@ class U:
 
         raw = built.read_text(**C.ENC)
 
-        if "micropip" not in raw:
+        if "piplite" not in raw:
             return
 
         def _check():

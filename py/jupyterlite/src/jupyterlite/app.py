@@ -33,7 +33,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig):
             # server-specific things
             "port": "LiteBuildConfig.port",
             "base-url": "LiteBuildConfig.base_url",
-            "micropip-wheels": "LiteBuildConfig.micropip_wheels",
+            "piplite-wheels": "LiteBuildConfig.piplite_urls",
         },
     )
 
@@ -90,8 +90,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["federated_extensions"] = self.federated_extensions
         if self.ignore_sys_prefix is not None:
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
-        if self.micropip_wheels is not None:
-            kwargs["micropip_wheels"] = self.micropip_wheels
+        if self.piplite_urls is not None:
+            kwargs["piplite_urls"] = self.piplite_urls
 
         return LiteManager(**kwargs)
 

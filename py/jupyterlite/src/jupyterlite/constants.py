@@ -49,10 +49,10 @@ LITE_PLUGIN_SETTINGS = "litePluginSettings"
 
 ### pyolite-specific values, will move to separate repo
 #: the key for PyPI-compatible API responses pointing to wheels
-MICROPIP_URLS = "micropipUrls"
+PIPLITE_URLS = "pipliteUrls"
 #: the plugin id for the pyolite kernel
 PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
-#: the schema for micropip-compatible wheel index
+#: the schema for piplite-compatible wheel index
 PIPLITE_INDEX_SCHEMA = "piplite.schema.v0.json"
 
 ### jupyterlite "well-known" paths
@@ -87,7 +87,7 @@ SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 #: this is arrived at by inspection
 NPM_SOURCE_DATE_EPOCH = 499162500
 
-#: the only kind of wheel micropip understands
+#: the only kind of wheel piplite understands
 NOARCH_WHL = "py3-none-any.whl"
 
 #: where we put wheels, for now

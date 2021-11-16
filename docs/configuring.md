@@ -127,14 +127,14 @@ customized python wheels, which in turn require other wheels and pre-built WASM 
 and other JavaScript.
 
 Extra wheels that can be installed via `micropip` in a running kernel can be added via
-the `--micropip-wheels` CLI flag or `LiteBuildConfig/micropip_wheels` config value.
+the `--micropip-wheels` CLI flag or `LiteBuildConfig/piplite_urls` config value.
 
 These will be:
 
 - downloaded to the local cache
 - copied into `{output-dir}/lab/build/wheels`
 - indexed into an `all.json` with data similar to the [PyPI Warehouse API]
-- added to `micropipUrls` in `jupyter-lite.json`
+- added to `pipliteUrls` in `jupyter-lite.json`
 
 [pypi-warehouse-api]: https://warehouse.pypa.io/api-reference
 

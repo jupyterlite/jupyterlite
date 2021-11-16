@@ -53,7 +53,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       // ...and the piplite wheel
       `var _pipliteWheelUrl = "${pipliteWheelUrl}";`,
       // ...and the locations of custom wheel APIs and indices...
-      `var _micropipUrls = ${JSON.stringify(options.micropipUrls)};`,
+      `var _pipliteUrls ${JSON.stringify(options.pipliteUrls)};`,
       // ...finally, the worker... which _must_ appear last!
       worker.toString()
     ];
@@ -317,6 +317,6 @@ export namespace PyoliteKernel {
     /**
      * The URLs from which to attempt PyPI API requests
      */
-    micropipUrls: string[];
+    pipliteUrls: string[];
   }
 }

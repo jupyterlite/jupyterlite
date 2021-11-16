@@ -80,7 +80,7 @@ def install(requirements: Union[str, List[str]]):
     This only works for packages that are either pure Python or for packages
     with C extensions that are built in Pyodide. If a pure Python package is not
     found in the Pyodide repository it will be loaded from one of
-    `indexURL <globalThis.micropipUrls>` or PyPI.
+    `indexURL <globalThis.pipliteUrls>` or PyPI.
 
     Parameters
     ----------

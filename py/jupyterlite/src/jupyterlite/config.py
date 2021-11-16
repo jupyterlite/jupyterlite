@@ -76,9 +76,9 @@ class LiteBuildConfig(LoggingConfigurable):
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
-    micropip_wheels: _Tuple[str] = TypedTuple(
+    piplite_urls: _Tuple[str] = TypedTuple(
         Unicode(),
-        help="Local paths or URLs of micropip-compatible wheels to copy and index",
+        help="Local paths or URLs of piplite-compatible wheels to copy and index",
     ).tag(config=True)
 
     settings_overrides: _Tuple[_Text] = TypedTuple(
