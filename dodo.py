@@ -264,12 +264,18 @@ def task_build():
             targets=[wheel],
         )
 
+    # a temporary environment to reuse build logic for app, for now
+    bs_env = dict(os.environ)
+    bs_env["PYTHONPATH"] = str(P.MAIN_SRC)
+
     yield dict(
-        name="js:piplite:index",
+        name="js:piplite:wheels",
         file_dep=wheels,
         actions=[
             (doit.tools.create_folder, [B.LAB_WHEELS]),
-            (U.index_wheels, [B.LAB_WHEEL_INDEX, wheels]),
+            (U.copy_wheels, [B.LAB_WHEEL_INDEX, wheels]),
+            # nasty
+            U.do(*C.PYM, "jupyterlite.app", "pip", "index", B.LAB_WHEELS, env=bs_env),
         ],
         targets=[B.LAB_WHEEL_INDEX],
     )
@@ -760,6 +766,7 @@ class P:
     PY_SETUP_DEPS = {
         C.NAME: lambda: [B.PY_APP_PACK],
     }
+    MAIN_SRC = ROOT / "py" / C.NAME / "src"
 
     # docs
     README = ROOT / "README.md"
@@ -1345,16 +1352,12 @@ class U:
         )
 
     @staticmethod
-    def index_wheels(wheel_index, wheels):
+    def copy_wheels(wheel_index, wheels):
         """create a warehouse-like index for the wheels"""
-        from jupyterlite.addons.piplite import write_wheel_index
-
         wheel_dir = wheel_index.parent
 
         for whl_path in wheels:
             shutil.copy2(whl_path, wheel_dir / whl_path.name)
-
-        write_wheel_index(wheel_dir)
 
     @staticmethod
     def integrity():
