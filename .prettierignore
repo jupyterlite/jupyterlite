@@ -17,5 +17,8 @@ app/lab/extensions/
 bootstrap.js
 index.template.js
 
+# generated
+_wheels.ts
+
 # The changelog is updated by the releaser
 CHANGELOG.md

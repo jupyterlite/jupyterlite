@@ -3,7 +3,7 @@ declare module '*?raw' {
   return res;
 }
 
-declare module '*.whl' {
+declare module '!!file-loader*' {
   const res: string;
   return res;
 }

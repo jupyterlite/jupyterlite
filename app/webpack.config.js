@@ -198,7 +198,7 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /\.whl/,
+          test: /wheels\/.*/,
           type: 'asset/resource'
         },
         {

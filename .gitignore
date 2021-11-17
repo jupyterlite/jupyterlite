@@ -33,6 +33,7 @@ parts/
 sdist/
 var/
 wheels/
+_wheels.ts
 pip-wheel-metadata/
 share/python-wheels/
 .installed.cfg

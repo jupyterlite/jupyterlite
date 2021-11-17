@@ -8,7 +8,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
-import piplite from '../py/piplite/dist/piplite-0.1.0a16-py3-none-any.whl';
+import { pipliteUrl, allJSONUrl } from './_wheels';
 
 /**
  * A kernel that executes Python code with Pyodide.
@@ -42,8 +42,9 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
 
-    const pipliteWheel = (piplite as unknown) as string;
+    const pipliteWheel = (pipliteUrl as unknown) as string;
     const pipliteWheelUrl = URLExt.join(window.location.origin, pipliteWheel);
+    const pipliteUrls = [allJSONUrl, ...(options.pipliteUrls || [])];
 
     return [
       // first we need the pyodide initialization scripts...
@@ -53,7 +54,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       // ...and the piplite wheel...
       `var _pipliteWheelUrl = "${pipliteWheelUrl}";`,
       // ...and the locations of custom wheel APIs and indices...
-      `var _pipliteUrls = ${JSON.stringify(options.pipliteUrls)};`,
+      `var _pipliteUrls = ${JSON.stringify(pipliteUrls)};`,
       // ...but maybe not PyPI...
       `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)};`,
       // ...finally, the worker... which _must_ appear last!

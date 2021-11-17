@@ -132,7 +132,7 @@ the `--micropip-wheels` CLI flag or `LiteBuildConfig/piplite_urls` config value.
 These will be:
 
 - downloaded to the local cache
-- copied into `{output-dir}/lab/build/wheels`
+- copied into `{output-dir}/lab/wheels`
 - indexed into an `all.json` with data similar to the [PyPI Warehouse API]
 - added to `pipliteUrls` in `jupyter-lite.json`
 

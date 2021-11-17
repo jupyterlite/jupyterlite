@@ -29,7 +29,7 @@
     "lib/*.js",
     "style/*.css",
     "style/index.js",
-    "py/**/*.whl"
+    "src/wheels/*.{json,whl}"
   ],
   "scripts": {
     "build": "yarn run build:lib",
