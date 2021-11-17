@@ -18,7 +18,7 @@ bootstrap.js
 index.template.js
 
 # generated
-_wheels.ts
+_pypi.ts
 
 # The changelog is updated by the releaser
 CHANGELOG.md

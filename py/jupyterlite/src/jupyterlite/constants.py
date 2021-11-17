@@ -88,7 +88,7 @@ NPM_SOURCE_DATE_EPOCH = 499162500
 NOARCH_WHL = "py3-none-any.whl"
 
 #: where we put wheels, for now
-LAB_WHEELS = "lab/wheels"
+LAB_WHEELS = "lab/pypi"
 
 ### URLs
 

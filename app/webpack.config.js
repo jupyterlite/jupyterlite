@@ -198,7 +198,7 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /wheels\/.*/,
+          test: /pypi\/.*/,
           type: 'asset/resource'
         },
         {

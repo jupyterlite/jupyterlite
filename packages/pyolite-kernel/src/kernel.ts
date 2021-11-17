@@ -1,4 +1,4 @@
-import { URLExt } from '@jupyterlab/coreutils';
+import { URLExt, PageConfig } from '@jupyterlab/coreutils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
@@ -8,7 +8,7 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import worker from './worker?raw';
 
-import { pipliteUrl, allJSONUrl } from './_wheels';
+import { PIPLITE_WHEEL } from './_pypi';
 
 /**
  * A kernel that executes Python code with Pyodide.
@@ -42,9 +42,13 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
 
-    const pipliteWheel = (pipliteUrl as unknown) as string;
-    const pipliteWheelUrl = URLExt.join(window.location.origin, pipliteWheel);
-    const pipliteUrls = [allJSONUrl, ...(options.pipliteUrls || [])];
+    const { origin } = window.location;
+
+    const pypi = URLExt.join(origin, PageConfig.getOption('appUrl'), 'build/pypi');
+
+    const pipliteUrls = [...(options.pipliteUrls || []), URLExt.join(pypi, 'all.json')];
+
+    const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
 
     return [
       // first we need the pyodide initialization scripts...
