@@ -728,9 +728,9 @@ class C:
     )
     PRETTIER = ["yarn", "prettier", "--write"]
     PRETTIER_IGNORE = [
+        "_pypi.ts",
+        ".ipynb_checkpoints",
         "node_modules",
-        "ipynb_checkpoints",
-        "_pypi.ts"
     ]
 
 
