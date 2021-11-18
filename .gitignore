@@ -34,7 +34,6 @@ sdist/
 var/
 wheels/
 pypi/
-_pypi.ts
 pip-wheel-metadata/
 share/python-wheels/
 .installed.cfg
