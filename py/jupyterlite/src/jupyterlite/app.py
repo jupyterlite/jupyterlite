@@ -212,17 +212,19 @@ class PipliteIndex(DescribedMixin, JupyterApp):
     """index a directory of wheels for piplite into an all.json
 
     this file is suitable for including in a pre-built lab extension and will be
-    found by adding to the extension's `package.json`:
+    found by adding to the extension's ``package.json``:
 
-    {
-        "name": "my-extension",
-        "jupyterlab": {
-            "extension": true
-        },
-        "piplite": {
-            "wheelDir": "./pypi"
+    .. code-block: json
+
+        {
+            "name": "my-extension",
+            "jupyterlab": {
+                "extension": true
+            },
+            "piplite": {
+                "wheelDir": "./pypi"
+            }
         }
-    }
     """
 
     version = __version__
