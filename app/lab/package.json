@@ -57,6 +57,7 @@
     "@jupyterlab/notebook": "~3.2.0",
     "@jupyterlab/notebook-extension": "~3.2.0",
     "@jupyterlab/outputarea": "~3.2.0",
+    "@jupyterlab/pdf-extension": "~3.2.4",
     "@jupyterlab/rendermime": "~3.2.0",
     "@jupyterlab/rendermime-extension": "~3.2.0",
     "@jupyterlab/rendermime-interfaces": "~3.2.0",
