@@ -7,6 +7,29 @@ from pytest import mark
 from .conftest import WHEELS
 
 
+def has_wheel_after_build(an_empty_lite_dir, script_runner):
+    """run a build, expecting the fixture wheel to be there"""
+    build = script_runner.run("jupyter", "lite", "build", cwd=str(an_empty_lite_dir))
+    assert build.success
+
+    check = script_runner.run("jupyter", "lite", "check", cwd=str(an_empty_lite_dir))
+    assert check.success
+
+    output = an_empty_lite_dir / "_output"
+
+    lite_json = output / "jupyter-lite.json"
+    lite_data = json.loads(lite_json.read_text(encoding="utf-8"))
+    assert lite_data["jupyter-config-data"]["litePluginSettings"][
+        "@jupyterlite/pyolite-kernel-extension:kernel"
+    ]["pipliteUrls"], "bad wheel urls"
+
+    wheel_out = output / "pypi"
+    assert (wheel_out / WHEELS[0].name).exists()
+    wheel_index = output / "pypi/all.json"
+    wheel_index_text = wheel_index.read_text(encoding="utf-8")
+    assert WHEELS[0].name in wheel_index_text, wheel_index_text
+
+
 @mark.parametrize(
     "remote,folder",
     [[True, False], [False, False], [False, True]],
@@ -37,25 +60,15 @@ def test_piplite_urls(
 
     (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
 
-    build = script_runner.run("jupyter", "lite", "build", cwd=str(an_empty_lite_dir))
-    assert build.success
+    has_wheel_after_build(an_empty_lite_dir, script_runner)
 
-    check = script_runner.run("jupyter", "lite", "check", cwd=str(an_empty_lite_dir))
-    assert check.success
 
-    output = an_empty_lite_dir / "_output"
+def test_lite_dir_wheel(an_empty_lite_dir, script_runner):
+    wheel_dir = an_empty_lite_dir / "pypi"
+    wheel_dir.mkdir()
+    shutil.copy2(WHEELS[0], wheel_dir / WHEELS[0].name)
 
-    lite_json = output / "jupyter-lite.json"
-    lite_data = json.loads(lite_json.read_text(encoding="utf-8"))
-    assert lite_data["jupyter-config-data"]["litePluginSettings"][
-        "@jupyterlite/pyolite-kernel-extension:kernel"
-    ]["pipliteUrls"], "bad wheel urls"
-
-    wheel_out = output / "pypi"
-    assert (wheel_out / WHEELS[0].name).exists()
-    wheel_index = output / "pypi/all.json"
-    wheel_index_text = wheel_index.read_text(encoding="utf-8")
-    assert WHEELS[0].name in wheel_index_text, wheel_index_text
+    has_wheel_after_build(an_empty_lite_dir, script_runner)
 
 
 index_cmd = "jupyter", "lite", "pip", "index"

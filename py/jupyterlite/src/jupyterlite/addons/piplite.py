@@ -52,7 +52,7 @@ class PipliteAddon(BaseAddon):
     def build(self, manager):
         """yield a doit task to copy each local wheel into the output_dir"""
         for wheel in (manager.lite_dir / PYPI_WHEELS).glob(f"*{NOARCH_WHL}"):
-            yield self.resolve_one_wheel(wheel)
+            yield from self.resolve_one_wheel(str(wheel.resolve()))
 
     def post_build(self, manager):
         """update the root jupyter-lite.json with pipliteUrls"""
