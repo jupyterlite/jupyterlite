@@ -14,6 +14,7 @@ from ..constants import (
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
+    LAB_EXTENSIONS,
     LAB_WHEELS,
     LITE_PLUGIN_SETTINGS,
     NOARCH_WHL,
@@ -38,46 +39,57 @@ class PipliteAddon(BaseAddon):
         """where wheels will go in the cache folder"""
         return self.manager.cache_dir / "wheels"
 
+    @property
+    def output_extensions(self):
+        """where labextensions will go in the output folder"""
+        return self.manager.output_dir / LAB_EXTENSIONS
+
     def post_init(self, manager):
+        """handle downloading of wheels"""
         for path_or_url in manager.piplite_urls:
             yield from self.resolve_one_wheel(path_or_url)
 
     def post_build(self, manager):
         """update the root jupyter-lite.json with pipliteUrls"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
+        whl_metas = []
+
         wheels = sorted(self.output_wheels.glob(f"*{NOARCH_WHL}"))
+        pkg_jsons = sorted(
+            [
+                *self.output_extensions.glob("*/package.json"),
+                *self.output_extensions.glob("@*/*/package.json"),
+            ]
+        )
 
-        if wheels:
-            whl_metas = []
-
-            for wheel in wheels:
-                whl_meta = self.wheel_cache / f"{wheel.name}.meta.json"
-                whl_metas += [whl_meta]
-                yield dict(
-                    name=f"meta:{whl_meta.name}",
-                    doc=f"ensure {wheel} metadata",
-                    file_dep=[wheel],
-                    actions=[
-                        (doit.tools.create_folder, [whl_meta.parent]),
-                        (self.index_wheel, [wheel, whl_meta]),
-                    ],
-                    targets=[whl_meta],
-                )
-
-            whl_index = self.manager.output_dir / LAB_WHEELS / ALL_JSON
-
+        for wheel in wheels:
+            whl_meta = self.wheel_cache / f"{wheel.name}.meta.json"
+            whl_metas += [whl_meta]
             yield dict(
-                name="patch",
-                doc=f"ensure {JUPYTERLITE_JSON} includes the piplite wheel",
-                file_dep=[*whl_metas, jupyterlite_json],
+                name=f"meta:{whl_meta.name}",
+                doc=f"ensure {wheel} metadata",
+                file_dep=[wheel],
                 actions=[
-                    (
-                        self.patch_jupyterlite_json,
-                        [jupyterlite_json, whl_index, *whl_metas],
-                    )
+                    (doit.tools.create_folder, [whl_meta.parent]),
+                    (self.index_wheel, [wheel, whl_meta]),
                 ],
-                targets=[whl_index],
+                targets=[whl_meta],
             )
+
+        whl_index = self.manager.output_dir / LAB_WHEELS / ALL_JSON
+
+        yield dict(
+            name="patch",
+            doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
+            file_dep=[*whl_metas, jupyterlite_json],
+            actions=[
+                (
+                    self.patch_jupyterlite_json,
+                    [jupyterlite_json, whl_index, whl_metas, pkg_jsons],
+                )
+            ],
+            targets=[whl_index],
+        )
 
     def check(self, manager):
         """verify that all Wheel API are valid (sorta)"""
@@ -156,22 +168,10 @@ class PipliteAddon(BaseAddon):
             actions=[(self.copy_one, [wheel, dest])],
         )
 
-    def patch_jupyterlite_json(self, jupyterlite_json, whl_index, *whl_metas):
+    def patch_jupyterlite_json(self, jupyterlite_json, whl_index, whl_metas, pkg_jsons):
         """add the piplite wheels to jupyter-lite.json"""
         config = json.loads(jupyterlite_json.read_text(**UTF8))
-        metadata = {}
-
-        for whl_meta in whl_metas:
-            meta = json.loads(whl_meta.read_text(**UTF8))
-            whl = self.output_wheels / whl_meta.name.replace(".json", "")
-            metadata[whl] = meta["name"], meta["version"], meta["release"]
-
-        whl_index = write_wheel_index(self.output_wheels, metadata)
-        whl_index_sha256 = sha256(whl_index.read_bytes()).hexdigest()
-        whl_index_url = f"./{whl_index.relative_to(jupyterlite_json.parent).as_posix()}"
-        whl_index_url_with_sha = f"{whl_index_url}?sha256={whl_index_sha256}"
-
-        urls = (
+        old_urls = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
             .setdefault(LITE_PLUGIN_SETTINGS, {})
             .setdefault(PYOLITE_PLUGIN_ID, {})
@@ -179,25 +179,59 @@ class PipliteAddon(BaseAddon):
         )
 
         new_urls = []
-        added_build = False
 
-        for url in urls:
-            if url.split("#")[0].split("?")[0] == whl_index_url:
-                new_urls += [whl_index_url_with_sha]
-                added_build = True
-            else:
-                new_urls += [url]
+        # first add user-specified wheels
+        if whl_metas:
+            metadata = {}
+            for whl_meta in whl_metas:
+                meta = json.loads(whl_meta.read_text(**UTF8))
+                whl = self.output_wheels / whl_meta.name.replace(".json", "")
+                metadata[whl] = meta["name"], meta["version"], meta["release"]
 
-        if not added_build:
-            new_urls = [whl_index_url_with_sha, *new_urls]
+            whl_index = write_wheel_index(self.output_wheels, metadata)
+            whl_index_url, whl_index_url_with_sha = self.get_index_urls(whl_index)
 
-        config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
-            PIPLITE_URLS
-        ] = new_urls
+            added_build = False
 
-        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT))
+            for url in old_urls:
+                if url.split("#")[0].split("?")[0] == whl_index_url:
+                    new_urls += [whl_index_url_with_sha]
+                    added_build = True
+                else:
+                    new_urls += [url]
 
-        self.maybe_timestamp(jupyterlite_json)
+            if not added_build:
+                new_urls = [whl_index_url_with_sha, *new_urls]
+        else:
+            new_urls = old_urls
+
+        # ...then add wheels from federated extensions...
+        if pkg_jsons:
+            for pkg_json in pkg_jsons:
+                pkg_data = json.loads(pkg_json.read_text(**UTF8))
+                wheel_dir = pkg_data.get("piplite", {}).get("wheelDir")
+                if wheel_dir:
+                    pkg_whl_index = pkg_json.parent / wheel_dir / ALL_JSON
+                    if pkg_whl_index.exists():
+                        pkg_whl_index_url_with_sha = self.get(pkg_whl_index)[1]
+                        new_urls += [pkg_whl_index_url_with_sha]
+
+        # ... and only update if actually changed
+        if new_urls:
+            config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
+                PIPLITE_URLS
+            ] = new_urls
+
+            jupyterlite_json.write_text(json.dumps(config, **JSON_FMT))
+
+            self.maybe_timestamp(jupyterlite_json)
+
+    def get_index_urls(self, whl_index):
+        """get output dir relative URLs for all.json files"""
+        whl_index_sha256 = sha256(whl_index.read_bytes()).hexdigest()
+        whl_index_url = f"./{whl_index.relative_to(self.manager.output_dir).as_posix()}"
+        whl_index_url_with_sha = f"{whl_index_url}?sha256={whl_index_sha256}"
+        return whl_index_url, whl_index_url_with_sha
 
     def index_wheel(self, whl_path, whl_meta):
         """Generate an intermediate file representation to merge with other releases"""
