@@ -51,9 +51,9 @@ def test_piplite_urls(
         "@jupyterlite/pyolite-kernel-extension:kernel"
     ]["pipliteUrls"], "bad wheel urls"
 
-    wheel_out = output / "lab/pypi"
+    wheel_out = output / "pypi"
     assert (wheel_out / WHEELS[0].name).exists()
-    wheel_index = output / "lab/pypi/all.json"
+    wheel_index = output / "pypi/all.json"
     wheel_index_text = wheel_index.read_text(encoding="utf-8")
     assert WHEELS[0].name in wheel_index_text, wheel_index_text
 

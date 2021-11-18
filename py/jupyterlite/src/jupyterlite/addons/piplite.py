@@ -15,24 +15,24 @@ from ..constants import (
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
-    LAB_WHEELS,
     LITE_PLUGIN_SETTINGS,
     NOARCH_WHL,
     PIPLITE_INDEX_SCHEMA,
     PIPLITE_URLS,
     PYOLITE_PLUGIN_ID,
+    PYPI_WHEELS,
     UTF8,
 )
 from .base import BaseAddon
 
 
 class PipliteAddon(BaseAddon):
-    __all__ = ["post_init", "post_build", "check"]
+    __all__ = ["post_init", "build", "post_build", "check"]
 
     @property
     def output_wheels(self):
         """where wheels will go in the output folder"""
-        return self.manager.output_dir / LAB_WHEELS
+        return self.manager.output_dir / PYPI_WHEELS
 
     @property
     def wheel_cache(self):
@@ -48,6 +48,11 @@ class PipliteAddon(BaseAddon):
         """handle downloading of wheels"""
         for path_or_url in manager.piplite_urls:
             yield from self.resolve_one_wheel(path_or_url)
+
+    def build(self, manager):
+        """yield a doit task to copy each local wheel into the output_dir"""
+        for wheel in (manager.lite_dir / PYPI_WHEELS).glob(f"*{NOARCH_WHL}"):
+            yield self.resolve_one_wheel(wheel)
 
     def post_build(self, manager):
         """update the root jupyter-lite.json with pipliteUrls"""
@@ -76,7 +81,7 @@ class PipliteAddon(BaseAddon):
                 targets=[whl_meta],
             )
 
-        whl_index = self.manager.output_dir / LAB_WHEELS / ALL_JSON
+        whl_index = self.manager.output_dir / PYPI_WHEELS / ALL_JSON
 
         yield dict(
             name="patch",
@@ -94,6 +99,8 @@ class PipliteAddon(BaseAddon):
     def check(self, manager):
         """verify that all Wheel API are valid (sorta)"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
+        if not jupyterlite_json.exists():
+            return
         config = json.loads(jupyterlite_json.read_text(**UTF8))
         urls = (
             config.get(JUPYTER_CONFIG_DATA, {})

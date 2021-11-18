@@ -48,7 +48,11 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
     )
 
     flags = dict(
-        **base_flags,
+        **{
+            flag: value
+            for flag, value in base_flags.items()
+            if flag not in ["show-config", "show-config-json", "generate-config"]
+        },
         **{
             "ignore-sys-prefix": (
                 {"LiteBuildConfig": {"ignore_sys_prefix": True}},
@@ -205,7 +209,21 @@ class LiteArchiveApp(LiteTaskApp):
 
 
 class PipliteIndex(DescribedMixin, JupyterApp):
-    """index a directory of wheels for piplite"""
+    """index a directory of wheels for piplite into an all.json
+
+    this file is suitable for including in a pre-built lab extension and will be
+    found by adding to the extension's `package.json`:
+
+    {
+        "name": "my-extension",
+        "jupyterlab": {
+            "extension": true
+        },
+        "piplite": {
+            "wheelDir": "./pypi"
+        }
+    }
+    """
 
     version = __version__
 
