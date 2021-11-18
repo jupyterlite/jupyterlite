@@ -727,6 +727,11 @@ class C:
         .strip()
     )
     PRETTIER = ["yarn", "prettier", "--write"]
+    PRETTIER_IGNORE = [
+        "node_modules",
+        "ipynb_checkpoints",
+        "_pypi.ts"
+    ]
 
 
 class P:
@@ -847,7 +852,7 @@ def _clean_paths(*paths_or_globs):
         else:
             paths = set(pg)
         for path in paths:
-            if "node_modules" in str(path) or ".ipynb_checkpoints" in str(path):
+            if any(p in str(path) for p in C.PRETTIER_IGNORE):
                 continue
             final_paths += [path]
     return sorted(set(final_paths))
