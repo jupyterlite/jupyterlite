@@ -64,6 +64,9 @@ serve = [
 piplite = [
     "pkginfo"
 ]
+mathjax = [
+    "jupyter-server-mathjax >=0.2.3"
+]
 check = [
     "jsonschema >=3"
 ]
@@ -87,3 +90,4 @@ report = "jupyterlite.addons.report:ReportAddon"
 serve = "jupyterlite.addons.serve:ServeAddon"
 archive = "jupyterlite.addons.archive:ArchiveAddon"
 piplite = "jupyterlite.addons.piplite:PipliteAddon"
+mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
