@@ -11,7 +11,7 @@ MATHJAX_JS = "MathJax.js"
 class MathjaxAddon(BaseAddon):
     """Ship mathjax assets"""
 
-    __all__ = ["build", "post_build"]
+    __all__ = ["status", "build", "post_build"]
 
     @property
     def mathjax_path(self):
@@ -25,6 +25,22 @@ class MathjaxAddon(BaseAddon):
     @property
     def mathjax_output(self):
         return self.manager.output_dir / "static/mathjax"
+
+    def status(self, manager):
+        yield dict(
+            name="status",
+            doc="Get information about offline MathJax",
+            actions=[self.log_status],
+        )
+
+    def log_status(self):
+        path = self.mathjax_path
+        if path and path.exists():
+            self.log.info(f"MathJax Path: {path}")
+        else:
+            self.log.info(
+                "Offline MathJax not available: jupyter-server-mathjax not installed"
+            )
 
     def build(self, manager):
         path = self.mathjax_path
@@ -48,7 +64,7 @@ class MathjaxAddon(BaseAddon):
             name="patch",
             doc=f"ensure {JUPYTERLITE_JSON} includes the mathjax url",
             file_dep=[jupyterlite_json],
-            actions=[(self.patch_jupyterlite_json, [jupyterlite_json])],
+            actions=[(self.patch, [jupyterlite_json])],
         )
 
     def patch(self, jupyterlite_json):
@@ -56,5 +72,8 @@ class MathjaxAddon(BaseAddon):
         mathjax_url = str(
             self.mathjax_output.relative_to(self.manager.output_dir).as_posix()
         )
-        config[JUPYTER_CONFIG_DATA]["fullMathjaxUrl"] = mathjax_url
+        config[JUPYTER_CONFIG_DATA].update(
+            fullMathjaxUrl=f"./{mathjax_url}/{MATHJAX_JS}",
+            mathjaxConfig="TeX-AMS-MML_HTMLorMML-full,Safe",
+        )
         jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
