@@ -94,7 +94,7 @@ This discovery behavior can be disabled with the CLI flag `--ignore-sys-prefix` 
 #### Extensions for a Specific App
 
 Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
-pre-built extensions will only be avaialable for pages within that file tree.
+pre-built extensions will only be available for pages within that file tree.
 
 #### Custom Extensions
 
