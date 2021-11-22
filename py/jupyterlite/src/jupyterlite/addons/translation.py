@@ -2,7 +2,7 @@
 import json
 import pprint
 
-from ..constants import ALL_JSON, API_TRANSLATIONS
+from ..constants import ALL_JSON, API_TRANSLATIONS, JSON_FMT, UTF8
 from .base import BaseAddon
 
 
@@ -79,17 +79,11 @@ class TranslationAddon(BaseAddon):
 
         # save the metadata about available packs
         api_path.parent.mkdir(parents=True, exist_ok=True)
-        api_path.write_text(
-            json.dumps(metadata, indent=2, sort_keys=True),
-            encoding="utf-8",
-        )
+        api_path.write_text(json.dumps(metadata, **JSON_FMT), **UTF8)
 
         for locale, data in packs.items():
             language_pack_file = self.api_dir / f"{locale}.json"
-            language_pack_file.write_text(
-                json.dumps(data, indent=2, sort_keys=True),
-                encoding="utf-8",
-            )
+            language_pack_file.write_text(json.dumps(data, **JSON_FMT), **UTF8)
             self.maybe_timestamp(language_pack_file)
 
     @property

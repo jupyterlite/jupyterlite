@@ -76,6 +76,11 @@ class LiteBuildConfig(LoggingConfigurable):
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
+    piplite_urls: _Tuple[str] = TypedTuple(
+        Unicode(),
+        help="Local paths or URLs of piplite-compatible wheels to copy and index",
+    ).tag(config=True)
+
     settings_overrides: _Tuple[_Text] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
@@ -174,7 +179,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("app_archive")
     def _default_app_archive(self):
-        return Path(os.environ.get("JUPYTERLITE_APP_ARCHIVE") or C.DEFAULT_APP_ARCHIVE)
+        return Path(os.environ.get("JUPYTERLITE_APP_ARCHIVE") or C.ALL_APP_ARCHIVES[-1])
 
     @default("output_archive")
     def _default_output_archive(self):

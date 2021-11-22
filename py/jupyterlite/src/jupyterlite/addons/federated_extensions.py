@@ -8,6 +8,7 @@ from pathlib import Path
 
 from ..constants import (
     FEDERATED_EXTENSIONS,
+    JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
@@ -32,6 +33,11 @@ class FederatedExtensionAddon(BaseAddon):
             *root.glob(f"*/{PACKAGE_JSON}"),
             *root.glob(f"@*/*/{PACKAGE_JSON}"),
         ]
+
+    @property
+    def ext_cache(self):
+        """where extensions will go in the cache"""
+        return self.manager.cache_dir / "federated_extensions"
 
     @property
     def output_extensions(self):
@@ -85,7 +91,7 @@ class FederatedExtensionAddon(BaseAddon):
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
-            dest = self.manager.cache_dir / name
+            dest = self.ext_cache / name
             if init:
                 if not dest.exists():
                     yield dict(
@@ -283,6 +289,6 @@ class FederatedExtensionAddon(BaseAddon):
 
         self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
 
-        jupyterlite_json.write_text(json.dumps(config, indent=2, sort_keys=True))
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
         self.maybe_timestamp(jupyterlite_json)

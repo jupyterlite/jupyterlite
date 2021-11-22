@@ -23,26 +23,43 @@ let stderr_stream: any;
 let resolveInputReply: any;
 
 /**
- * Load Pyodided and initialize the interpreter.
+ * Load pyodide and initialize the interpreter.
+ *
+ * The first package loaded, `piplite`, is a build-time configurable wrapper
+ * around `micropip` that supports multiple warehouse API endpoints, as well
+ * as a multipackage summary JSON format in `all.json`.
  */
 async function loadPyodideAndPackages() {
   // as of 0.17.0 indexURL must be provided
   pyodide = await loadPyodide({ indexURL });
 
+  // this is the only use of `loadPackage`, allow `piplite` to handle the rest
   await pyodide.loadPackage(['micropip']);
-  await pyodide.loadPackage(['matplotlib']);
+
+  // get piplite early enough to impact pyolite dependencies
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install([
+    await micropip.install('${_pipliteWheelUrl}')
+    import piplite.piplite
+    piplite.piplite._PIPLITE_DISABLE_PYPI = ${_disablePyPIFallback ? 'True' : 'False'}
+    piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_pipliteUrls)}
+  `);
+
+  // from this point forward, only use piplite
+  await pyodide.runPythonAsync(`
+    await piplite.install([
+      'matplotlib',
       'traitlets',
-      '${_widgetsnbextensionWheelUrl}',
-      '${_nbformatWheelUrl}',
-      '${_ipykernelWheelUrl}'
+      'widgetsnbextension',
+      'nbformat',
+      'ipykernel',
     ])
-    await micropip.install([
-      '${_pyoliteWheelUrl}'
+    await piplite.install([
+      'pyolite',
     ]);
-    await micropip.install('ipython');
+    await piplite.install([
+      'ipython',
+    ]);
     import pyolite
   `);
 

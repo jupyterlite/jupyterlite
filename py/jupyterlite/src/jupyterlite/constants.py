@@ -6,14 +6,11 @@ C_LOCALE = "C"
 
 #: the encoding for pretty much every file written and read by jupyterlite
 UTF8 = dict(encoding="utf-8")
-
+JSON_FMT = dict(sort_keys=True, indent=2)
 ROOT = Path(__file__).parent
 
 #: all of the archives
 ALL_APP_ARCHIVES = sorted(ROOT.glob("jupyterlite-*.tgz"))
-
-#: our baseline archive.
-DEFAULT_APP_ARCHIVE = ALL_APP_ARCHIVES[-1]
 
 #: the extension point for addons, including core
 ADDON_ENTRYPOINT = "jupyterlite.addon.v0"
@@ -43,6 +40,17 @@ JUPYTER_CONFIG_DATA = "jupyter-config-data"
 FEDERATED_EXTENSIONS = "federated_extensions"
 DISABLED_EXTENSIONS = "disabledExtensions"
 SETTINGS_OVERRIDES = "settingsOverrides"
+
+#: the top-level key for lite plugin settings
+LITE_PLUGIN_SETTINGS = "litePluginSettings"
+
+### pyolite-specific values, will move to separate repo
+#: the key for PyPI-compatible API responses pointing to wheels
+PIPLITE_URLS = "pipliteUrls"
+#: the plugin id for the pyolite kernel
+PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
+#: the schema for piplite-compatible wheel index
+PIPLITE_INDEX_SCHEMA = "piplite.schema.v0.json"
 
 ### jupyterlite "well-known" paths
 
@@ -75,6 +83,12 @@ SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 
 #: this is arrived at by inspection
 NPM_SOURCE_DATE_EPOCH = 499162500
+
+#: the only kind of wheel piplite understands
+NOARCH_WHL = "py3-none-any.whl"
+
+#: where we put wheels, for now
+PYPI_WHEELS = "pypi"
 
 ### URLs
 

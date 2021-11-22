@@ -5,7 +5,7 @@ import pprint
 import re
 from pathlib import Path
 
-from ..constants import ALL_JSON, API_CONTENTS
+from ..constants import ALL_JSON, API_CONTENTS, JSON_FMT, UTF8
 from .base import BaseAddon
 
 
@@ -175,8 +175,8 @@ class ContentsAddon(BaseAddon):
         api_path.parent.mkdir(parents=True, exist_ok=True)
 
         api_path.write_text(
-            json.dumps(listing, indent=2, sort_keys=True, cls=DateTimeEncoder),
-            encoding="utf-8",
+            json.dumps(listing, **JSON_FMT, cls=DateTimeEncoder),
+            **UTF8,
         )
 
         self.maybe_timestamp(api_path.parent)

@@ -2,6 +2,7 @@
 import json
 
 from ..constants import (
+    JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_JSON,
@@ -9,6 +10,7 @@ from ..constants import (
     LAB_EXTENSIONS,
     OVERRIDES_JSON,
     SETTINGS_OVERRIDES,
+    UTF8,
 )
 from .base import BaseAddon
 
@@ -73,7 +75,7 @@ class SettingsAddon(BaseAddon):
                 yield task
 
     def check_one_lite_file(self, lite_file):
-        config = json.loads(lite_file.read_text(encoding="utf-8"))
+        config = json.loads(lite_file.read_text(**UTF8))
 
         if lite_file.name == JUPYTERLITE_IPYNB:
             config = config["metadata"][JUPYTERLITE_METADATA]
@@ -105,14 +107,14 @@ class SettingsAddon(BaseAddon):
     def patch_one_overrides(self, jupyterlite_json, overrides_json):
         """update and normalize settingsOverrides"""
         try:
-            config = json.loads(jupyterlite_json.read_text(encoding="utf-8"))
+            config = json.loads(jupyterlite_json.read_text(**UTF8))
         except:
             self.log.debug(f"[lite] [settings] Initializing {jupyterlite_json}")
             config = {JUPYTER_CONFIG_DATA: {}}
 
         overrides = config[JUPYTER_CONFIG_DATA].get(SETTINGS_OVERRIDES, {})
 
-        from_json = json.loads(overrides_json.read_text(encoding="utf-8"))
+        from_json = json.loads(overrides_json.read_text(**UTF8))
         for k, v in from_json.items():
             if k in overrides:
                 overrides[k].update(v)
@@ -121,9 +123,7 @@ class SettingsAddon(BaseAddon):
 
         config[JUPYTER_CONFIG_DATA][SETTINGS_OVERRIDES] = overrides
 
-        jupyterlite_json.write_text(
-            json.dumps(config, indent=2, sort_keys=True), encoding="utf-8"
-        )
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
         self.maybe_timestamp(jupyterlite_json)
         self.log.debug(f"[lite] [settings] Updated {jupyterlite_json}")

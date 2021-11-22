@@ -48,13 +48,20 @@ schema-v0
 
 ### Content with the CLI
 
-With the [CLI](./cli.ipynb) installed, run
+With the [CLI](./cli.ipynb) installed, run:
 
 ```bash
 jupyter lite build
 ```
 
-...any contents of `{lite-dir}/files/` (and any added `--contents`) will be:
+Any contents found in:
+
+- `{lite-dir}/files/`
+- any _content roots_ added via:
+  - the CLI flag `--contents`
+  - the `#/LiteBuildConfig/contents` in `jupyter_lite_config.json`
+
+Will be:
 
 - copied to the built site under `{output-dir}/files/`
   - may have timestamps changed if `--source-date-epoch` is provided.
@@ -62,29 +69,32 @@ jupyter lite build
 
 ## Adding Extensions
 
-JupyterLab 3 [federated extensions] allow for adding new capabilities to JupyterLite
+JupyterLab 3 [pre-built extensions] allow for adding new capabilities to JupyterLite
 without rebuilding the entire web application. A good starting point for extensions that
 _might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
 (#9461)][#9461]_. Additionally, this site demonstrates a few
 [extensions](#demo-extension-notes).
 
 [#9461]: https://github.com/jupyterlab/jupyterlab/issues/9461
-[federated extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
+[pre-built extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ### Extensions with the CLI
 
 #### Environment Extensions
 
-When you `jupyter lite build`, all federated extensions in your JupyterLab environment,
-e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
+When you run `jupyter lite build`, all pre-built extensions in your JupyterLab
+environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
 - copied to `{output-dir}/lab/extensions`
 - have its theme information copied to `{output-dir}/{app/?}theme/`
 
+This discovery behavior can be disabled with the CLI flag `--ignore-sys-prefix` or
+`LiteBuildConfig/ignore_sys_prefix`.
+
 #### Extensions for a Specific App
 
 Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
-federated extensions will only be avaialable for pages within that file tree.
+pre-built extensions will only be available for pages within that file tree.
 
 #### Custom Extensions
 
@@ -98,6 +108,10 @@ For example, after building a lab extension, you can copy the contents of
 extension.
 ```
 
+Finally, the `--federated-extensions` CLI flag and the
+`LiteBuildConfig/federated_extensions` config entry allow for adding additional
+federated extensions, as packaged in Python `.whl` or conda `.tar.bz2` packages.
+
 ## Customizing Settings
 
 With the [CLI](./cli.ipynb), if you create an `overrides.json` in either the root, or a
@@ -105,6 +119,37 @@ specific `app` directory, these will be:
 
 - merged into
   `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
+
+## Adding `pyolite` wheels
+
+The [pyolite kernel](./kernels/pyolite.md) itself consists of a bit of JavaScript and
+customized python wheels, which in turn require other wheels and pre-built WASM modules
+and other JavaScript.
+
+Extra wheels that can be installed via `piplite` in a running kernel can be added via
+the `--piplite-urls` CLI flag or `LiteBuildConfig/piplite_urls` config value.
+
+These will be:
+
+- downloaded to the local cache
+- copied into `{output-dir}/pypi`
+- indexed into an `all.json` with data similar to the [PyPI Warehouse API]
+- added to `pipliteUrls` in `jupyter-lite.json`
+
+[pypi-warehouse-api]: https://warehouse.pypa.io/api-reference
+
+If a package is _not_ found in one of these URLs, it will be sought on the main Python
+Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
+
+```json
+"jupyter-config-data": {
+  "litePluginSettings": {
+    "@jupyterlite/pyolite-kernel-extension:kernel": {
+      "disablePyPIFallback": true
+    }
+  }
+}
+```
 
 ## About the Demo
 
@@ -203,7 +248,7 @@ Assuming you have a working JupyterLab 3 installation, look in your
 `{sys.prefix}/share/jupyter/labextensions`. Each folder contains either:
 
 - if it begins with `@`, a collection of packages
-- otherwise, a single federated extension
+- otherwise, a single pre-built extension
 
 ```bash
 cd $YOUR_JUPYTERLITE

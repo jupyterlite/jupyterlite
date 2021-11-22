@@ -14,8 +14,6 @@ requires = [
     "doit",
     "entrypoints",
     "jupyter_core >=4.7",
-    # TODO: support wheels https://github.com/jupyterlite/jupyterlite/issues/151
-    # "wheel",
 ]
 keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"
 classifiers = [
@@ -52,7 +50,7 @@ test = [
     "pytest-xdist",
 ]
 lab = [
-    "jupyterlab >=3.0,<4",
+    "jupyterlab >=3.1,<4",
 ]
 contents = [
     "jupyter_server",
@@ -63,8 +61,19 @@ translation = [
 serve = [
     "tornado >=6.1",
 ]
+piplite = [
+    "pkginfo"
+]
 check = [
     "jsonschema >=3"
+]
+all = [
+    "jsonschema >=3",
+    "jupyter_server",
+    "jupyterlab >=3.0,<4",
+    "jupyterlab_server >=2.8.1,<3",
+    "pkginfo",
+    "tornado >=6.1",
 ]
 
 [tool.flit.entrypoints."jupyterlite.addon.v0"]
@@ -77,3 +86,4 @@ lite = "jupyterlite.addons.lite:LiteAddon"
 report = "jupyterlite.addons.report:ReportAddon"
 serve = "jupyterlite.addons.serve:ServeAddon"
 archive = "jupyterlite.addons.archive:ArchiveAddon"
+piplite = "jupyterlite.addons.piplite:PipliteAddon"

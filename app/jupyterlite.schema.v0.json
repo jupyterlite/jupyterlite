@@ -101,12 +101,6 @@
           "default": "./lab/build/themes",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
-        "pyodideUrl": {
-          "description": "The path to the main pyodide.js entry point",
-          "type": "string",
-          "default": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
-          "format": "uri"
-        },
         "disabledExtensions": {
           "description": "Lab extensions (or specific plugins) to disable",
           "type": "array",
@@ -120,6 +114,44 @@
               }
             ]
           }
+        },
+        "litePluginSettings": {
+          "description": "Additional configuration options for jupyterlite plugins, keyed by npm-compatible name",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object"
+          },
+          "properties": {
+            "@jupyterlite/pyolite-kernel-extension:kernel": {
+              "$ref": "#/definitions/pyolite-settings"
+            }
+          }
+        }
+      }
+    },
+    "pyolite-settings": {
+      "description": "Pyodide-specific configuration values. Will be defined in another location in the future.",
+      "type": "object",
+      "properties": {
+        "pyodideUrl": {
+          "description": "The path to the main pyodide.js entry point",
+          "type": "string",
+          "default": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
+          "format": "uri"
+        },
+        "disablePyPIFallback": {
+          "description": "Disable the piplite behavior of falling back to https://pypi.org/pypi/",
+          "default": false,
+          "type": "boolean"
+        },
+        "pipliteUrls": {
+          "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, assumed to be an aggregate, keyed by package name, with relative paths",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "format": "uri"
         }
       }
     },

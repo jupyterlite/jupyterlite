@@ -122,7 +122,8 @@ function mergeOneConfig(memo, config) {
       case 'federated_extensions':
         memo[k] = [...(memo[k] || []), ...v];
         break;
-      // this `@org/pkg:plugin` is merged at the first level of values
+      // these `@org/pkg:plugin` are merged at the first level of values
+      case 'litePluginSettings':
       case 'settingsOverrides':
         if (!memo[k]) {
           memo[k] = {};
@@ -205,15 +206,25 @@ export async function getLiteConfig(url, fileName) {
 export function fixRelativeUrls(url, config) {
   let urlBase = new URL(url || here()).pathname;
   for (const [k, v] of Object.entries(config)) {
-    if (k.endsWith('Url') && v.startsWith('./')) {
-      if (k === 'themesUrl') {
-        // themesUrls is joined in code with baseUrl, leave as-is
-        continue;
-      }
-      config[k] = `${urlBase}${v.slice(2)}`;
-    }
+    config[k] = fixOneRelativeUrl(k, v, url, urlBase);
   }
   return config;
+}
+
+export function fixOneRelativeUrl(key, value, url, urlBase) {
+  if (key === 'litePluginSettings' || key === 'settingsOverrides') {
+    // these are plugin id-keyed objects, fix each plugin
+    return Object.entries(value || {}).reduce((m, [k, v]) => {
+      m[k] = fixRelativeUrls(url, v);
+      return m;
+    }, {});
+  } else if (key !== 'themesUrl' && key.endsWith('Url') && value.startsWith('./')) {
+    // themesUrls is joined in code with baseUrl, leave as-is: otherwise, clean
+    return `${urlBase}${value.slice(2)}`;
+  } else if (key.endsWith('Urls') && Array.isArray(value)) {
+    return value.map(v => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
+  }
+  return value;
 }
 
 /**

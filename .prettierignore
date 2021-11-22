@@ -11,10 +11,14 @@ node_modules
 docs/api/ts
 .pytest_cache
 app/lab/extensions/
+.cache/
 
 # JS templating
 bootstrap.js
 index.template.js
+
+# generated
+_pypi.ts
 
 # The changelog is updated by the releaser
 CHANGELOG.md
