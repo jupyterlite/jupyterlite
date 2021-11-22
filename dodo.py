@@ -1075,7 +1075,8 @@ class U:
             )
         )
         subprocess.check_call(
-            ["pip", "download", "-r", B.RAW_WHEELS_REQS], cwd=str(B.RAW_WHEELS)
+            ["pip", "download", "-r", B.RAW_WHEELS_REQS, "--prefer-binary"],
+            cwd=str(B.RAW_WHEELS),
         )
 
         ignored_wheels = [*C.IGNORED_WHEELS, *ignored_deps]
@@ -1298,7 +1299,7 @@ class U:
         """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
 
         print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
-        args = [*C.FLIT, "--debug", "build"]
+        args = [*C.FLIT, "--debug", "build", "--setup-py"]
         env = os.environ.update(SOURCE_DATE_EPOCH=C.SOURCE_DATE_EPOCH)
 
         try:
