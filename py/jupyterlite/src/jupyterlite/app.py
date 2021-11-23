@@ -10,6 +10,19 @@ from .constants import NOARCH_WHL, PHASES
 from .manager import LiteManager
 from .trait_types import CPath
 
+#: some flags we use
+lite_flags = {
+    "ignore-sys-prefix": (
+        {"LiteBuildConfig": {"ignore_sys_prefix": True}},
+        "Do not copy anything from sys.prefix",
+    ),
+    **{
+        flag: value
+        for flag, value in base_flags.items()
+        if flag not in ["show-config", "show-config-json", "generate-config"]
+    },
+}
+
 
 class DescribedMixin:
     """a self-describing mixin"""
@@ -33,6 +46,8 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             "app-archive": "LiteBuildConfig.app_archive",
             "apps": "LiteBuildConfig.apps",
             "contents": "LiteBuildConfig.contents",
+            "disable-addons": "LiteBuildConfig.disable_addons",
+            "mathjax-dir": "LiteBuildConfig.mathjax_dir",
             "ignore-contents": "LiteBuildConfig.ignore_contents",
             "lite-dir": "LiteBuildConfig.lite_dir",
             "output-dir": "LiteBuildConfig.output_dir",
@@ -47,19 +62,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
         },
     )
 
-    flags = dict(
-        **{
-            flag: value
-            for flag, value in base_flags.items()
-            if flag not in ["show-config", "show-config-json", "generate-config"]
-        },
-        **{
-            "ignore-sys-prefix": (
-                {"LiteBuildConfig": {"ignore_sys_prefix": True}},
-                "Do not copy any extensions from sys.prefix",
-            ),
-        },
-    )
+    flags = lite_flags
 
 
 class ManagedApp(BaseLiteApp):
@@ -78,6 +81,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["app_archive"] = self.app_archive
         if self.output_dir:
             kwargs["output_dir"] = self.output_dir
+        if self.mathjax_dir:
+            kwargs["mathjax_dir"] = self.mathjax_dir
         if self.contents:
             kwargs["contents"] = [Path(p) for p in self.contents]
         if self.ignore_contents:
@@ -149,7 +154,7 @@ class LiteTaskApp(LiteDoitApp):
     ).tag(config=True)
 
     flags = dict(
-        **base_flags,
+        **lite_flags,
         **{
             "force": (
                 {"LiteTaskApp": {"force": True}},
