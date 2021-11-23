@@ -25,6 +25,7 @@ PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
 PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
 PYOLITE_KERNEL_SOURCE = PYOLITE_PACKAGE / "src" / "kernel.ts"
 PYOLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "pyolite" / "pyolite" / "__init__.py"
+PIPITE_INIT_PY = PYOLITE_PACKAGE / "py" / "piplite" / "piplite" / "__init__.py"
 
 
 def replace_in_file(path, pattern, replacement):
@@ -50,10 +51,14 @@ def postbump():
     replace_in_file(
         PYOLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
     )
+    replace_in_file(
+        PIPITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
+    )
 
     # bump pyolite version
     pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
     pyolite_json["pyolite"]["packages"]["py/pyolite"] = py_version
+    pyolite_json["pyolite"]["packages"]["py/piplite"] = py_version
     PYOLITE_PACKAGE_JSON.write_text(json.dumps(pyolite_json), **ENC)
     run(f"yarn prettier --write {PYOLITE_PACKAGE_JSON}")
 
