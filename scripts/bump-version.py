@@ -23,9 +23,8 @@ APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
 PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
 PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
-PYPI_SOURCE = PYOLITE_PACKAGE / "src" / "_pypi.ts"
 PYOLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "pyolite" / "pyolite" / "__init__.py"
-PIPITE_INIT_PY = PYOLITE_PACKAGE / "py" / "piplite" / "piplite" / "__init__.py"
+PIPLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "piplite" / "piplite" / "__init__.py"
 
 
 def replace_in_file(path, pattern, replacement):
@@ -44,20 +43,10 @@ def postbump():
 
     # bump pyolite wheel import
     replace_in_file(
-        PYPI_SOURCE,
-        "pyolite-(.*)-py3-none-any.whl",
-        f"pyolite-{py_version}-py3-none-any.whl",
-    )
-    replace_in_file(
-        PYPI_SOURCE,
-        "piplite-(.*)-py3-none-any.whl",
-        f"piplite-{py_version}-py3-none-any.whl",
-    )
-    replace_in_file(
         PYOLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
     )
     replace_in_file(
-        PIPITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
+        PIPLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
     )
 
     # bump pyolite version
