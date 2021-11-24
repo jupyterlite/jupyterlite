@@ -30,6 +30,8 @@ PIPLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "piplite" / "piplite" / "__init__.py"
 def replace_in_file(path, pattern, replacement):
     source = path.read_text(**ENC)
     replaced = re.sub(pattern, replacement, source)
+    if replaced == source:
+        raise ValueError("pattern not found")
     path.write_text(replaced, **ENC)
 
 
