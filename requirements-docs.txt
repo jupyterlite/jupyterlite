@@ -3,12 +3,13 @@
 -r requirements-build.txt
 
 # build
-sphinx
-sphinx-jsonschema
-sphinxext-rediraffe
+jupyter-server-mathjax
 myst-nb
 pydata-sphinx-theme
+sphinx
 sphinx-autodoc-typehints
+sphinx-jsonschema
+sphinxext-rediraffe
 
 # check
 pytest-check-links
