@@ -30,8 +30,12 @@ class FederatedExtensionAddon(BaseAddon):
     def env_extensions(self, root):
         """a list of all federated extensions"""
         return [
-            *root.glob(f"*/{PACKAGE_JSON}"),
-            *root.glob(f"@*/*/{PACKAGE_JSON}"),
+            p
+            for p in [
+                *root.glob(f"*/{PACKAGE_JSON}"),
+                *root.glob(f"@*/*/{PACKAGE_JSON}"),
+            ]
+            if self.is_prebuilt(json.loads(p).read_text(**UTF8))
         ]
 
     @property
@@ -146,7 +150,17 @@ class FederatedExtensionAddon(BaseAddon):
                     and SHARE_LABEXTENSIONS in filename
                     and filename.endswith(PACKAGE_JSON)
                 ):
-                    yield from self.extract_one_wheel_extension(wheel, info, infos)
+                    is_prebuilt = False
+
+                    try:
+                        is_prebuilt = self.is_prebuilt(
+                            json.loads(zf.extractfile(info).read().decode("utf-8"))
+                        )
+                    except Exception as err:
+                        print(f"... skipping {info}: {err}")
+
+                    if is_prebuilt:
+                        yield from self.extract_one_wheel_extension(wheel, info, infos)
 
     def extract_one_wheel_extension(self, wheel, pkg_json_info, all_infos):
         """extract one labextension from a wheel"""
@@ -176,6 +190,10 @@ class FederatedExtensionAddon(BaseAddon):
             actions=[_extract],
         )
 
+    def is_prebuilt(pkg_json):
+        """verify this is an actual pre-built extension, containing load information"""
+        return pkg_json.get("jupyterlab", {}).get("_build", {}).get("load") is not None
+
     def copy_conda_extensions(self, conda_pkg):
         """copy the labextensions from a local conda package"""
         import tarfile
@@ -188,7 +206,18 @@ class FederatedExtensionAddon(BaseAddon):
                 if filename.startswith(SHARE_LABEXTENSIONS) and filename.endswith(
                     PACKAGE_JSON
                 ):
-                    yield from self.extract_one_conda_extension(conda_pkg, info, infos)
+                    is_prebuilt = False
+                    try:
+                        is_prebuilt = self.is_prebuilt(
+                            json.loads(zf.extractfile(info).read().decode("utf-8"))
+                        )
+                    except Exception as err:
+                        print(f"... skipping {info}: {err}")
+
+                    if is_prebuilt:
+                        yield from self.extract_one_conda_extension(
+                            conda_pkg, info, infos
+                        )
 
     def extract_one_conda_extension(self, conda_pkg, pkg_json_info, all_infos):
         """extract one labextension from a conda package"""
