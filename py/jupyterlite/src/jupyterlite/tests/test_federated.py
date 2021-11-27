@@ -9,7 +9,12 @@ from .conftest import CONDA_PKGS, WHEELS
 
 @mark.parametrize(
     "remote,kind",
-    [[True, "wheel"], [True, "conda"], [False, "wheel"], [False, "conda"]],
+    [
+        [True, "wheel"],
+        [True, "conda"],
+        [False, "wheel"],
+        [False, "conda"],
+    ],
 )
 def test_federated_extensions(
     an_empty_lite_dir, script_runner, remote, kind, a_fixture_server

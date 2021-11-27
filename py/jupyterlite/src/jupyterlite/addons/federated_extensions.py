@@ -35,7 +35,7 @@ class FederatedExtensionAddon(BaseAddon):
                 *root.glob(f"*/{PACKAGE_JSON}"),
                 *root.glob(f"@*/*/{PACKAGE_JSON}"),
             ]
-            if self.is_prebuilt(json.loads(p).read_text(**UTF8))
+            if self.is_prebuilt(json.loads(p.read_text(**UTF8)))
         ]
 
     @property
@@ -154,7 +154,7 @@ class FederatedExtensionAddon(BaseAddon):
 
                     try:
                         is_prebuilt = self.is_prebuilt(
-                            json.loads(zf.extractfile(info).read().decode("utf-8"))
+                            json.loads(zf.read(info).decode("utf-8"))
                         )
                     except Exception as err:
                         print(f"... skipping {info}: {err}")
@@ -190,7 +190,7 @@ class FederatedExtensionAddon(BaseAddon):
             actions=[_extract],
         )
 
-    def is_prebuilt(pkg_json):
+    def is_prebuilt(self, pkg_json):
         """verify this is an actual pre-built extension, containing load information"""
         return pkg_json.get("jupyterlab", {}).get("_build", {}).get("load") is not None
 

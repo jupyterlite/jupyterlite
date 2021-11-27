@@ -31,6 +31,8 @@ class StaticAddon(BaseAddon):
             actions=[
                 lambda: print(
                     f"""    tarball:  {self.app_archive.name} {int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
+                    if self.app_archive.exists()
+                    else "    tarball:  none"
                 ),
                 lambda: print(f"""    output:   {self.manager.output_dir}"""),
                 lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
