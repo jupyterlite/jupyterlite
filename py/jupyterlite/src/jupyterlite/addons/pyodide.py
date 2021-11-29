@@ -27,7 +27,7 @@ from .base import BaseAddon
 
 
 class PyodideAddon(BaseAddon):
-    __all__ = ["post_init", "build", "post_build", "check"]
+    __all__ = ["status", "post_init", "build", "post_build", "check"]
 
     @property
     def pyodide_cache(self):
@@ -38,6 +38,22 @@ class PyodideAddon(BaseAddon):
     def output_pyodide(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / "static" / PYODIDE
+
+    def status(self, manager):
+        yield dict(
+            name="pyodide",
+            actions=[
+                lambda: print(
+                    f"        pydodide URL: {manager.pyodide_url}",
+                ),
+                lambda: print(
+                    f"    pyodide archives: {[*self.pyodide_cache.glob('*.bz2')]}"
+                ),
+                lambda: print(
+                    f"       pyodide cache: {len([*self.pyodide_cache.rglob('*')])} files",
+                ),
+            ],
+        )
 
     def post_init(self, manager):
         """handle downloading of wheels"""
@@ -81,7 +97,7 @@ class PyodideAddon(BaseAddon):
         output_js = self.output_pyodide / PYODIDE_JS
 
         yield dict(
-            name="patch",
+            name=f"patch:{JUPYTERLITE_JSON}",
             doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
             file_dep=[output_js],
             actions=[
