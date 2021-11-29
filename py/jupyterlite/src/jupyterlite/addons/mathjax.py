@@ -143,10 +143,10 @@ class MathjaxAddon(BaseAddon):
         if not mathjax_url or not mathjax_url.startswith("./"):
             return
 
-        mathjax_path = Path(self.manager.output_dir / mathjax_url)
-        assert mathjax_path.exists(), f"{mathjax_url} not found"
+        mathjax_path = Path(self.manager.output_dir / mathjax_url).parent
+        assert mathjax_path.exists(), f"{mathjax_path} not found"
         mathjax_js = mathjax_path / MATHJAX_JS
-        assert mathjax_js.exists(), f"{MATHJAX_JS} not found"
+        assert mathjax_js.exists(), f"{mathjax_js} not found"
 
         for config in config.get(MATHJAX_CONFIG, "").split(","):
             config_js = mathjax_path / "config/{config}.js"
