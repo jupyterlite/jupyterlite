@@ -512,7 +512,7 @@ def task_docs():
 
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
 
-    if C.FORCE_PYODIDE or C.DOCS_IN_CI or C.RTD:
+    if C.FORCE_PYODIDE:
         docs_app_targets += [B.DOCS_APP_PYODIDE_JS]
 
     yield U.ok(
@@ -707,7 +707,6 @@ class C:
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
-    FORCE_PYODIDE = bool(json.loads(os.environ.get("FORCE_PYODIDE", "0")))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
@@ -734,7 +733,6 @@ class C:
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 91
     IGNORED_WHEEL_DEPS = [
         # our stuff
         "pyolite",
@@ -749,6 +747,9 @@ class C:
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
+    FORCE_PYODIDE = (
+        DOCS_IN_CI or RTD or bool(json.loads(os.environ.get("FORCE_PYODIDE", "0")))
+    )
 
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
@@ -763,6 +764,9 @@ class C:
         ".ipynb_checkpoints",
         "node_modules",
     ]
+
+    # coverage varies based on excursions
+    COV_THRESHOLD = 91 if FORCE_PYODIDE else 88
 
 
 class P:
@@ -1304,7 +1308,7 @@ class U:
             if not C.CI:
                 args += ["--app-archive", B.APP_PACK]
 
-            if C.FORCE_PYODIDE or C.DOCS_IN_CI or C.RTD:
+            if C.FORCE_PYODIDE:
                 args += ["--pyodide", C.PYODIDE_URL]
 
             # ignoring sys-prefix for fine-grained extensions, add mathjax dir
