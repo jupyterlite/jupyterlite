@@ -59,6 +59,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             "base-url": "LiteBuildConfig.base_url",
             # pyolite things likely to move away
             "piplite-wheels": "LiteBuildConfig.piplite_urls",
+            "pyodide": "LiteBuildConfig.pyodide_url",
         },
     )
 
@@ -107,6 +108,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
         if self.piplite_urls is not None:
             kwargs["piplite_urls"] = self.piplite_urls
+        if self.pyodide_url is not None:
+            kwargs["pyodide_url"] = self.pyodide_url
 
         return LiteManager(**kwargs)
 

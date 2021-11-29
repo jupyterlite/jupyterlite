@@ -85,6 +85,10 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Local paths or URLs of piplite-compatible wheels to copy and index",
     ).tag(config=True)
 
+    pyodide_url: str = Unicode(
+        help="Local path or URL of a pyodide distribution tarball"
+    ).tag(config=True)
+
     settings_overrides: _Tuple[_Text] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)

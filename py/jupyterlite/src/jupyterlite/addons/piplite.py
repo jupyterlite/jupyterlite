@@ -9,6 +9,15 @@ from pathlib import Path
 
 import doit.tools
 
+### pyolite-specific values, will move to separate repo
+#: the key for PyPI-compatible API responses pointing to wheels
+PIPLITE_URLS = "pipliteUrls"
+#: the schema for piplite-compatible wheel index
+PIPLITE_INDEX_SCHEMA = "piplite.schema.v0.json"
+#: where we put wheels, for now
+PYPI_WHEELS = "pypi"
+
+
 from ..constants import (
     ALL_JSON,
     JSON_FMT,
@@ -17,10 +26,7 @@ from ..constants import (
     LAB_EXTENSIONS,
     LITE_PLUGIN_SETTINGS,
     NOARCH_WHL,
-    PIPLITE_INDEX_SCHEMA,
-    PIPLITE_URLS,
     PYOLITE_PLUGIN_ID,
-    PYPI_WHEELS,
     UTF8,
 )
 from .base import BaseAddon
@@ -229,7 +235,7 @@ class PipliteAddon(BaseAddon):
                 PIPLITE_URLS
             ] = new_urls
 
-            jupyterlite_json.write_text(json.dumps(config, **JSON_FMT))
+            jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
             self.maybe_timestamp(jupyterlite_json)
 
