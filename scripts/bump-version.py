@@ -7,7 +7,6 @@
 # - https://github.com/voila-dashboards/voila/blob/master/scripts/bump-version.py
 
 import json
-import re
 from pathlib import Path
 
 import click
