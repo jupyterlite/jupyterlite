@@ -1,7 +1,6 @@
 **/_output
 **/lib
 **/node_modules
-**/package.json
 **/static
 
 .yarn-packages
