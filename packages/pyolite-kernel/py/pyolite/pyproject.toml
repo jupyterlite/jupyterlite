@@ -15,8 +15,12 @@ regex = '''
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
 '''
 
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
 [[tool.tbump.file]]
-src = "pyolite/_version.py"
+src = "pyolite/__init__.py"
 
 [[tool.tbump.field]]
 name = "channel"

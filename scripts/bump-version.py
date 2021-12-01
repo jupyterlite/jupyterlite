@@ -23,16 +23,9 @@ APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
 PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
 PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
-PYOLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "pyolite" / "pyolite" / "__init__.py"
-PIPLITE_INIT_PY = PYOLITE_PACKAGE / "py" / "piplite" / "piplite" / "__init__.py"
-
-
-def replace_in_file(path, pattern, replacement):
-    source = path.read_text(**ENC)
-    replaced = re.sub(pattern, replacement, source)
-    if replaced == source:
-        raise ValueError("pattern not found")
-    path.write_text(replaced, **ENC)
+PYOLITE_PY_PACKAGE = PYOLITE_PACKAGE / "py" / "pyolite"
+PIPLITE_PY_PACKAGE = PYOLITE_PACKAGE / "py" / "piplite"
+TBUMP_CMD = "tbump --non-interactive --only-patch"
 
 
 def postbump():
@@ -43,15 +36,11 @@ def postbump():
         new_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
     )
 
-    # bump pyolite wheel import
-    replace_in_file(
-        PYOLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
-    )
-    replace_in_file(
-        PIPLITE_INIT_PY, "__version__ = (.*)", f'__version__ = "{py_version}"'
-    )
+    # bump pyolite and piplite py versions
+    run(f"{TBUMP_CMD} {py_version}", cwd=PYOLITE_PY_PACKAGE)
+    run(f"{TBUMP_CMD} {py_version}", cwd=PIPLITE_PY_PACKAGE)
 
-    # bump pyolite version
+    # bump pyolite js version
     pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
     pyolite_json["pyolite"]["packages"]["py/pyolite"] = py_version
     pyolite_json["pyolite"]["packages"]["py/piplite"] = py_version
