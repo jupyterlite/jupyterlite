@@ -1,7 +1,6 @@
 **/_output
 **/lib
 **/node_modules
-**/package.json
 **/static
 
 .yarn-packages
@@ -22,3 +21,6 @@ _pypi.ts
 
 # The changelog is updated by the releaser
 CHANGELOG.md
+
+# UI tests
+ui-tests/ui-tests-app
