@@ -46,8 +46,9 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
@@ -122,9 +123,11 @@ jobs:
         with:
           path: ${{ matrix.pip-cache }}
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('requirements*.txt') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-test-${{ matrix.python-version }}-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-test-${{ matrix.python-version }}-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-test-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Install (py)
         run: |
           python3 -m pip install entrypoints doit jupyter_core
@@ -190,8 +193,9 @@ jobs:
         with:
           path: ~/.cache/pip
           key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-${{ hashFiles('requirements*.txt') }}
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-${{ hashFiles('requirements*.txt') }}
           restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Cache (docs extensions)
         uses: actions/cache@v2
