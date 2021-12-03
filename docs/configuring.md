@@ -151,6 +151,24 @@ Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
 }
 ```
 
+## Pyodide
+
+Beneah custom wheels are the raw JS and WebAssembly parts of `pyolite` provided by
+[pyodide](https://pyodide.org). A custom `pyodide.js`, along with its `packages.json`
+and the rest of its assets, such as might be downloaded via the
+[`--pyodide` CLI option](./cli.ipynb#pyodide), can also be configured. This can be
+either relative to the `lite_dir`, or as an absolute path.
+
+```json
+"jupyter-config-data": {
+  "litePluginSettings": {
+    "@jupyterlite/pyolite-kernel-extension:kernel": {
+      "pyodideUrl": "./path/to/custom/pyodide/pyodide.js"
+    }
+  }
+}
+```
+
 ## LaTeX
 
 Rendering $\LaTeX$ is generally handled in a special way when compared with most other
