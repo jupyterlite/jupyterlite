@@ -747,9 +747,7 @@ class C:
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
-    FORCE_PYODIDE = (
-        DOCS_IN_CI or RTD or bool(json.loads(os.environ.get("FORCE_PYODIDE", "0")))
-    )
+    FORCE_PYODIDE = DOCS_IN_CI or bool(json.loads(os.environ.get("FORCE_PYODIDE", "0")))
 
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
