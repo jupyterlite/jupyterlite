@@ -198,9 +198,10 @@ jobs:
         with:
           path: ./examples/.cache
           key: |
-            ${{ env.CACHE_EPOCH }}-docs-app-${{ hashFiles('examples/jupyter_lite_config.json') }}
+            ${{ env.CACHE_EPOCH }}-docs-app-${{ hashFiles('examples/*.json') }}
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-docs-app-
+      - name: Cache (pyodide)
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt
       - name: Install (py)
