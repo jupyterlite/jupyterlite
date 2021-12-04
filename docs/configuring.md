@@ -120,7 +120,7 @@ specific `app` directory, these will be:
 - merged into
   `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
 
-## Adding `pyolite` wheels
+## Adding pyolite wheels
 
 The [pyolite kernel](./kernels/pyolite.md) itself consists of a bit of JavaScript and
 customized python wheels, which in turn require other wheels and pre-built WASM modules
