@@ -151,7 +151,7 @@ Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
 }
 ```
 
-## Pyodide
+## pyodide
 
 Beneah custom wheels are the raw JS and WebAssembly parts of `pyolite` provided by
 [pyodide](https://pyodide.org). A custom `pyodide.js`, along with its `packages.json`
