@@ -619,7 +619,7 @@ def task_watch():
 
 def task_test():
     """test jupyterlite"""
-    if C.DOCS_IN_CI or C.BUILDING_IN_CI:
+    if C.BUILDING_IN_CI:
         return
 
     yield U.ok(
