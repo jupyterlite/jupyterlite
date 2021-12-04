@@ -1,6 +1,6 @@
 # minimum needed to build jupyterlite docs... in addition to nodejs and yarn
 # see .binder/ and docs/ for full development/docs environments
--r requirements-build.txt
+-r requirements-test.txt
 
 # build
 jupyter-server-mathjax
