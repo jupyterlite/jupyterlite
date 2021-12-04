@@ -39,39 +39,45 @@ class PyodideAddon(BaseAddon):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / "static" / PYODIDE
 
+    @property
+    def well_known_pyodide(self):
+        """a well-known path where pyodide might be stored"""
+        return self.manager.lite_dir / "static" / PYODIDE
+
     def status(self, manager):
+        """report on the status of pyodide"""
         yield dict(
             name="pyodide",
             actions=[
                 lambda: print(
-                    f"        pydodide URL: {manager.pyodide_url}",
+                    f"     URL: {manager.pyodide_url}",
+                ),
+                lambda: print(f" archive: {[*self.pyodide_cache.glob('*.bz2')]}"),
+                lambda: print(
+                    f"   cache: {len([*self.pyodide_cache.rglob('*')])} files",
                 ),
                 lambda: print(
-                    f"    pyodide archives: {[*self.pyodide_cache.glob('*.bz2')]}"
-                ),
-                lambda: print(
-                    f"       pyodide cache: {len([*self.pyodide_cache.rglob('*')])} files",
+                    f"   local: {len([*self.well_known_pyodide.rglob('*')])} files"
                 ),
             ],
         )
 
     def post_init(self, manager):
-        """handle downloading of wheels"""
-        if not manager.pyodide_url:
+        """handle downloading of pyodide"""
+        if manager.pyodide_url is None:
             return
 
         yield from self.cache_pyodide(manager.pyodide_url)
 
     def build(self, manager):
-        """yield a doit task to copy a local pyodide into the output_dir"""
-        user_pyodide = manager.lite_dir / "static" / PYODIDE
+        """copy a local (cached or well-known) pyodide into the output_dir"""
         cached_pyodide = self.pyodide_cache / PYODIDE / PYODIDE
 
         the_pyodide = None
 
-        if user_pyodide.exists():
-            the_pyodide = user_pyodide
-        elif manager.pyodide_url:
+        if self.well_known_pyodide.exists():
+            the_pyodide = self.well_known_pyodide
+        elif manager.pyodide_url is not None:
             the_pyodide = cached_pyodide
 
         if not the_pyodide:
@@ -89,7 +95,8 @@ class PyodideAddon(BaseAddon):
         )
 
     def post_build(self, manager):
-        if not manager.pyodide_url:
+        """configure jupyter-lite.json for pyodide"""
+        if not self.well_known_pyodide.exists() and manager.pyodide_url is None:
             return
 
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
@@ -109,6 +116,7 @@ class PyodideAddon(BaseAddon):
         )
 
     def check(self, manager):
+        """ensure the pyodide configuration is sound"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
 
         yield dict(
@@ -118,7 +126,7 @@ class PyodideAddon(BaseAddon):
         )
 
     def check_config_paths(self, jupyterlite_json):
-        config = json.loads(jupyterlite_json.read_text(**UTF8))[JUPYTER_CONFIG_DATA]
+        config = json.loads(jupyterlite_json.read_text(**UTF8))
         pyodide_url = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
             .setdefault(LITE_PLUGIN_SETTINGS, {})
@@ -137,6 +145,7 @@ class PyodideAddon(BaseAddon):
         assert pyodide_packages.exists(), f"{pyodide_packages} not found"
 
     def patch_jupyterlite_json(self, jupyterlite_json, output_js):
+        """update jupyter-lite.json to use the local pyodide"""
         config = json.loads(jupyterlite_json.read_text(**UTF8))
         pyolite_config = (
             config.setdefault(JUPYTER_CONFIG_DATA, {})
@@ -150,6 +159,7 @@ class PyodideAddon(BaseAddon):
             self.maybe_timestamp(jupyterlite_json)
 
     def cache_pyodide(self, path_or_url):
+        """copy pyodide to the cache"""
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
@@ -165,9 +175,10 @@ class PyodideAddon(BaseAddon):
                 will_fetch = True
         else:
             local_path = (self.manager.lite_dir / path_or_url).resolve()
+            dest = self.pyodide_cache / local_path.name
 
         if local_path.is_dir():
-            all_paths = local_path.rglob("*")
+            all_paths = sorted([p for p in local_path.rglob("*") if not p.is_dir()])
             yield dict(
                 name=f"copy:pyodide:{local_path.name}",
                 file_dep=[*all_paths],

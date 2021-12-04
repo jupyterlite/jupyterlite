@@ -157,6 +157,7 @@ jobs:
       - name: Test (py)
         run: doit test:py:*
       - name: Upload (reports)
+        if: always()
         uses: actions/upload-artifact@v2
         with:
           name: |
@@ -170,6 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
+      FORCE_PYODIDE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -223,6 +225,17 @@ jobs:
         run: doit docs:sphinx
       - name: Check Built Artifacts
         run: doit check
+      - name: Test (py)
+        run: doit test:py:jupyterlite
+      - name: Upload (reports)
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: |
+            jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
+          path: |
+            build/htmlcov
+            build/pytest
       - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v2

@@ -512,14 +512,18 @@ def task_docs():
 
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
 
+    uptodate = []
+
     if C.FORCE_PYODIDE:
         docs_app_targets += [B.DOCS_APP_PYODIDE_JS]
+        uptodate = [doit.tools.config_changed(dict(pyodide_url=C.PYODIDE_URL))]
 
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
+        uptodate=uptodate,
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
         targets=docs_app_targets,
@@ -528,6 +532,7 @@ def task_docs():
     yield dict(
         name="app:pack",
         doc="build the as-deployed app archive",
+        uptodate=uptodate,
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
         targets=[B.DOCS_APP_ARCHIVE],
@@ -628,6 +633,12 @@ def task_test():
     if C.LINTING_IN_CI:
         return
 
+    env = dict(os.environ)
+
+    if P.PYODIDE_ARCHIVE_CACHE.exists():
+        # this makes some tests e.g. archive _very_ slow
+        env["TEST_JUPYTERLITE_PYODIDE_URL"] = str(P.PYODIDE_ARCHIVE_CACHE)
+
     pytest_args = [
         *C.PYM,
         "pytest",
@@ -679,6 +690,7 @@ def task_test():
                     f"--html={html_index}",
                     "--self-contained-html",
                     *pkg_args,
+                    env=env,
                     cwd=cwd,
                 )
             ],
@@ -722,8 +734,10 @@ class C:
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
     PYODIDE_VERSION = "0.18.1"
     PYODIDE_JS = "pyodide.js"
-    PYODIDE_URL = (
-        f"{PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/pyodide-build-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_URL = os.environ.get(
+        "JUPYTERLITE_PYODIDE_URL",
+        f"{PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
     )
     PYODIDE_CDN_URL = (
         f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/{PYODIDE_JS}"
@@ -747,8 +761,9 @@ class C:
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
-    FORCE_PYODIDE = DOCS_IN_CI or bool(json.loads(os.environ.get("FORCE_PYODIDE", "0")))
-
+    FORCE_PYODIDE = "JUPYTERLITE_PYODIDE_URL" in os.environ or bool(
+        json.loads(os.environ.get("FORCE_PYODIDE", "0"))
+    )
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
     SOURCE_DATE_EPOCH = (
@@ -785,6 +800,7 @@ class P:
         for p in EXAMPLES.rglob("*")
         if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
     ]
+    PYODIDE_ARCHIVE_CACHE = EXAMPLES / ".cache/pyodide" / C.PYODIDE_ARCHIVE
 
     # set later
     PYOLITE_PACKAGES = {}
