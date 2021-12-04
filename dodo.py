@@ -779,7 +779,7 @@ class C:
     ]
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 91 if FORCE_PYODIDE else 88
+    COV_THRESHOLD = 92 if FORCE_PYODIDE else 87
 
 
 class P:
