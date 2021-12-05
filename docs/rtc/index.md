@@ -20,6 +20,10 @@ The main differences compared to JupyterLab are:
   browser local storage
 - the communication with peers and the initial syncing mechanism happens over WebRTC,
   instead of the WebSocket Jupyter Server handler in JupyterLab
+  - however, an initial WebSocket connection to one or more _WebRTC Signaling Servers_
+    are made in order to help discover other peers
+  - A custom list of signaling servers can be configured with `fullWebRtcSignalingUrls`
+    in `jupyter-config-data`
 
 ## Enabling RTC in JupyterLite
 
