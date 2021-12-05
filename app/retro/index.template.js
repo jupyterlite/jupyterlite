@@ -290,7 +290,7 @@ async function main() {
   const { RetroApp } = require('@retrolab/application');
   const app = new RetroApp({ serviceManager, mimeExtensions });
 
-  app.name = 'RetroLite';
+  app.name = PageConfig.getOption('appName') || 'RetroLite';
 
   app.registerPluginModules(mods);
 
