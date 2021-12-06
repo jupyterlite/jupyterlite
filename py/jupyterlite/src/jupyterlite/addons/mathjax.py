@@ -149,5 +149,5 @@ class MathjaxAddon(BaseAddon):
         assert mathjax_js.exists(), f"{mathjax_js} not found"
 
         for config in config.get(MATHJAX_CONFIG, "").split(","):
-            config_js = mathjax_path / "config/{config}.js"
+            config_js = mathjax_path / f"config/{config}.js"
             assert config_js.exists(), f"{config_js} doesn't exist, fix mathjaxConfig"

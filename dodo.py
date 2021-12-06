@@ -118,6 +118,20 @@ def task_lint():
     )
 
     yield U.ok(
+        B.OK_PYODIDE_VERSION,
+        name="version:js:pyodide",
+        doc="check pyodide version vs schema, ts, etc",
+        file_dep=[
+            P.APP_SCHEMA,
+            P.PYOLITE_EXT_TS,
+        ],
+        actions=[
+            lambda: C.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
+            lambda: C.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
+        ],
+    )
+
+    yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
@@ -496,19 +510,29 @@ def task_docs():
     if not (C.DOCS_IN_CI or C.RTD):
         app_build_deps += [B.RAW_WHEELS_REQS]
 
+    docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
+
+    uptodate = []
+
+    if C.FORCE_PYODIDE:
+        docs_app_targets += [B.DOCS_APP_PYODIDE_JS]
+        uptodate = [doit.tools.config_changed(dict(pyodide_url=C.PYODIDE_URL))]
+
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
+        uptodate=uptodate,
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
-        targets=[B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE],
+        targets=docs_app_targets,
     )
 
     yield dict(
         name="app:pack",
         doc="build the as-deployed app archive",
+        uptodate=uptodate,
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
         targets=[B.DOCS_APP_ARCHIVE],
@@ -595,7 +619,7 @@ def task_watch():
 
 def task_test():
     """test jupyterlite"""
-    if C.DOCS_IN_CI or C.BUILDING_IN_CI:
+    if C.BUILDING_IN_CI:
         return
 
     yield U.ok(
@@ -608,6 +632,12 @@ def task_test():
 
     if C.LINTING_IN_CI:
         return
+
+    env = dict(os.environ)
+
+    if P.PYODIDE_ARCHIVE_CACHE.exists():
+        # this makes some tests e.g. archive _very_ slow
+        env["TEST_JUPYTERLITE_PYODIDE_URL"] = str(P.PYODIDE_ARCHIVE_CACHE)
 
     pytest_args = [
         *C.PYM,
@@ -660,6 +690,7 @@ def task_test():
                     f"--html={html_index}",
                     "--self-contained-html",
                     *pkg_args,
+                    env=env,
                     cwd=cwd,
                 )
             ],
@@ -699,11 +730,23 @@ class C:
     P5_VERSION = "0.1.0a12"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
+    PYODIDE_GH = f"{GH}/pyodide/pyodide"
+    PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
+    PYODIDE_VERSION = "0.18.1"
+    PYODIDE_JS = "pyodide.js"
+    PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_URL = os.environ.get(
+        "JUPYTERLITE_PYODIDE_URL",
+        f"{PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
+    )
+    PYODIDE_CDN_URL = (
+        f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/{PYODIDE_JS}"
+    )
+
     JUPYTERLITE_JSON = "jupyter-lite.json"
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
     NO_TYPEDOC = ["_metapackage"]
     LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
-    COV_THRESHOLD = 91
     IGNORED_WHEEL_DEPS = [
         # our stuff
         "pyolite",
@@ -718,7 +761,9 @@ class C:
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
-
+    FORCE_PYODIDE = "JUPYTERLITE_PYODIDE_URL" in os.environ or bool(
+        json.loads(os.environ.get("FORCE_PYODIDE", "0"))
+    )
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
     SOURCE_DATE_EPOCH = (
@@ -732,6 +777,9 @@ class C:
         ".ipynb_checkpoints",
         "node_modules",
     ]
+
+    # coverage varies based on excursions
+    COV_THRESHOLD = 92 if FORCE_PYODIDE else 87
 
 
 class P:
@@ -752,6 +800,7 @@ class P:
         for p in EXAMPLES.rglob("*")
         if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
     ]
+    PYODIDE_ARCHIVE_CACHE = EXAMPLES / ".cache/pyodide" / C.PYODIDE_ARCHIVE
 
     # set later
     PYOLITE_PACKAGES = {}
@@ -798,6 +847,11 @@ class P:
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
     DOCS_IPYNB = sorted(DOCS.glob("*.ipynb"))
+
+    # pyolite
+    PYOLITE_TS = PACKAGES / "pyolite-kernel"
+    PYOLITE_EXT = PACKAGES / "pyolite-kernel-extension"
+    PYOLITE_EXT_TS = PYOLITE_EXT / "src/index.ts"
 
     # demo
     BINDER = ROOT / ".binder"
@@ -901,10 +955,9 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PYOLITE_JS = P.ROOT / "packages/pyolite-kernel"
-    PYOLITE_WHEELS = PYOLITE_JS / "pypi"
+    PYOLITE_WHEELS = P.PYOLITE_TS / "pypi"
     PYOLITE_WHEEL_INDEX = PYOLITE_WHEELS / "all.json"
-    PYOLITE_WHEEL_TS = PYOLITE_JS / "src/_pypi.ts"
+    PYOLITE_WHEEL_TS = P.PYOLITE_TS / "src/_pypi.ts"
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
 
     EXAMPLE_DEPS = BUILD / "depfinder"
@@ -917,6 +970,7 @@ class B:
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
     DOCS_APP_JS_BUNDLE = DOCS_APP / "lab/build/bundle.js"
+    DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{C.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
@@ -943,6 +997,7 @@ class B:
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
+    OK_PYODIDE_VERSION = OK / "pyodide.version"
     PY_DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
@@ -1267,6 +1322,9 @@ class U:
             if not C.CI:
                 args += ["--app-archive", B.APP_PACK]
 
+            if C.FORCE_PYODIDE:
+                args += ["--pyodide", C.PYODIDE_URL]
+
             # ignoring sys-prefix for fine-grained extensions, add mathjax dir
             if MATHJAX_DIR:
                 args += ["--mathjax-dir", MATHJAX_DIR]
@@ -1417,7 +1475,7 @@ class U:
 
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
-        url = props["pyodideUrl"]["default"].replace("pyodide.js", "packages.json")
+        url = props["pyodideUrl"]["default"].replace(C.PYODIDE_JS, "packages.json")
         with urllib.request.urlopen(url) as response:
             packages = json.loads(response.read().decode("utf-8"))
         B.PYODIDE_PACKAGES.parent.mkdir(exist_ok=True, parents=True)
