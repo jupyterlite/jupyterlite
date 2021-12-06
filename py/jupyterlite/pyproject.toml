@@ -68,7 +68,7 @@ mathjax = [
     "jupyter-server-mathjax >=0.2.3",
 ]
 check = [
-    "jsonschema >=3",
+    "jsonschema[format_nongpl] >=3",
 ]
 all = [
     "jsonschema >=3",

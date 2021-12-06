@@ -81,6 +81,20 @@
           "default": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
           "format": "uri"
         },
+        "fullWebRtcSignalingUrls": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          },
+          "description": "WebSocket URLs to use for finding WebRTC peers",
+          "default": [
+            "wss://signaling.yjs.dev",
+            "wss://y-webrtc-signaling-eu.herokuapp.com",
+            "wss://y-webrtc-signaling-us.herokuapp.com"
+          ],
+          "minItems": 1
+        },
         "mathjaxConfig": {
           "type": "string",
           "default": "TeX-AMS_CHTML-full,Safe",
@@ -126,6 +140,27 @@
               "$ref": "#/definitions/pyolite-settings"
             }
           }
+        },
+        "retroPage": {
+          "description": "The page corresponding the named Notebook Classic UI section",
+          "anyOf": [
+            { "type": "string", "description": "an unknown retro page" },
+            {
+              "type": "string",
+              "enum": ["consoles", "notebooks", "edit", "tree"],
+              "description": "a well-known retro page"
+            }
+          ]
+        },
+        "exposeAppInBrowser": {
+          "description": "Whether to make the top-level Application instance available as ``window.jupyterapp``",
+          "type": "boolean",
+          "default": false
+        },
+        "collaborative": {
+          "description": "Whether to enable collaborative editing over WebRTC. Should be paired with the ``?room=<room name>`` URL parameter",
+          "type": "boolean",
+          "default": false
         }
       }
     },

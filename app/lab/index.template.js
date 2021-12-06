@@ -199,7 +199,7 @@ async function main() {
     serviceManager,
     disabled
   });
-  lab.name = 'JupyterLite';
+  lab.name = PageConfig.getOption('appName') || 'JupyterLite';
 
   lab.registerPluginModules(pluginsToRegister);
 

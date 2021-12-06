@@ -44,6 +44,8 @@ import { getParam } from 'lib0/environment';
 
 import { WebrtcProvider } from 'y-webrtc';
 
+import { Awareness } from 'y-protocols/awareness';
+
 import React from 'react';
 
 /**
@@ -62,8 +64,12 @@ const EDITOR_FACTORY = 'Editor';
 const URL_PATTERN = new RegExp('/(lab|notebooks|edit|consoles)\\/?');
 
 class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
-  constructor(options: IDocumentProviderFactory.IOptions & { room: string }) {
-    super(`${options.room}${options.path}`, options.ymodel.ydoc);
+  constructor(options: IWebRtcProvider.IOptions) {
+    super(
+      `${options.room}${options.path}`,
+      options.ymodel.ydoc,
+      WebRtcProvider.yProviderOptions(options)
+    );
     this.awareness = options.ymodel.awareness;
     const color = `#${getParam('--usercolor', getRandomColor().slice(1))}`;
     const name = getParam('--username', getAnonymousUserName());
@@ -115,6 +121,42 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
   }
 
   private _initialRequest: PromiseDelegate<boolean> | null = null;
+}
+
+/**
+ * A public namespace for WebRTC options
+ */
+export namespace IWebRtcProvider {
+  export interface IOptions extends IDocumentProviderFactory.IOptions {
+    room: string;
+    signalingUrls?: string[];
+  }
+}
+
+/**
+ * A private (so far) namespace for Yjs/WebRTC implementation details
+ */
+namespace WebRtcProvider {
+  /**
+   * Re-map Lab provider options to yjs ones.
+   */
+  export function yProviderOptions(options: IWebRtcProvider.IOptions) {
+    return {
+      signaling:
+        options.signalingUrls && options.signalingUrls.length
+          ? options.signalingUrls
+          : [
+              'wss://signaling.yjs.dev',
+              'wss://y-webrtc-signaling-eu.herokuapp.com',
+              'wss://y-webrtc-signaling-us.herokuapp.com'
+            ],
+      password: null,
+      awareness: new Awareness(options.ymodel.ydoc),
+      maxConns: 20 + Math.floor(Math.random() * 15), // the random factor reduces the chance that n clients form a cluster
+      filterBcConns: true,
+      peerOpts: {} // simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts
+    };
+  }
 }
 
 /**
@@ -236,13 +278,17 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
     const host = window.location.host;
     // enable if both the page config option (deployment wide) and the room name (user) are defined
     const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
+    const signalingUrls = JSON.parse(
+      PageConfig.getOption('fullWebRtcSignalingUrls') || 'null'
+    );
     // default to a random id to not collaborate with others by default
     const room = `${host}-${roomName || UUID.uuid4()}`;
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       return collaborative
         ? new WebRtcProvider({
             room,
-            ...options
+            ...options,
+            ...(signalingUrls && signalingUrls.length ? { signalingUrls } : {})
           })
         : new ProviderMock();
     };
