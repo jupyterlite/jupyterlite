@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a18
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a17...31d33608863e34105ae65d66b86537a8e631391a))
+
+### Enhancements made
+
+- Respect app name, WebRTC Signaling Server, schema updates [#427](https://github.com/jupyterlite/jupyterlite/pull/427) ([@bollwyvl](https://github.com/bollwyvl))
+- add pyodide downloading [#425](https://github.com/jupyterlite/jupyterlite/pull/425) ([@bollwyvl](https://github.com/bollwyvl))
+- Fix false positive for non-prebuilt extensions in wheels, MathJax check [#424](https://github.com/jupyterlite/jupyterlite/pull/424) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Bump Python packages with `tbump` [#426](https://github.com/jupyterlite/jupyterlite/pull/426) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-11-26&to=2021-12-06&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-11-26..2021-12-06&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2021-11-26..2021-12-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-11-26..2021-12-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a17
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a16...5f3971d0c00b00a0b8f590f230491dfd8c8b6398))
@@ -23,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-11-03&to=2021-11-26&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2021-11-03..2021-11-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2021-11-03..2021-11-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2021-11-03..2021-11-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a16
 
