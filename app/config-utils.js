@@ -224,7 +224,7 @@ export function fixOneRelativeUrl(key, value, url, urlBase) {
       return m;
     }, {});
   } else if (
-    UNPREFIXED_PATHS.includes(k) &&
+    UNPREFIXED_PATHS.includes(key) &&
     key.endsWith('Url') &&
     value.startsWith('./')
   ) {
