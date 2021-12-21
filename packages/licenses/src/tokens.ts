@@ -1,5 +1,12 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import { ReadonlyJSONObject, Token } from '@lumino/coreutils';
 
+/**
+ * The well-known name of the file. Can actually be configured by alternate
+ * implementations, but the default is probably good enough for "best-effort."
+ */
 export const THIRD_PARTY_LICENSES = 'third-party-licenses.json';
 
 /**
