@@ -4,7 +4,9 @@ import * as json5 from 'json5';
 
 import localforage from 'localforage';
 
-import { IFederatedExtension, IPlugin } from './tokens';
+import { IFederatedExtension } from '@jupyterlite/types';
+
+import { IPlugin } from './tokens';
 
 /**
  * The name of the local storage.

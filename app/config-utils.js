@@ -70,6 +70,11 @@ const RAW_LITE_ROOT = CONFIG_SCRIPT.dataset[LITE_ROOT_ATTR];
 const FULL_LITE_ROOT = new URL(RAW_LITE_ROOT, HERE).toString();
 
 /**
+ * Paths that are joined with baseUrl to derive full URLs
+ */
+const UNPREFIXED_PATHS = ['licensesUrl', 'themesUrl'];
+
+/**
  * Whether we are currently operating on the root itself, changes some behaviors
  */
 const IS_ROOT = HERE == FULL_LITE_ROOT;
@@ -218,7 +223,11 @@ export function fixOneRelativeUrl(key, value, url, urlBase) {
       m[k] = fixRelativeUrls(url, v);
       return m;
     }, {});
-  } else if (key !== 'themesUrl' && key.endsWith('Url') && value.startsWith('./')) {
+  } else if (
+    UNPREFIXED_PATHS.includes(k) &&
+    key.endsWith('Url') &&
+    value.startsWith('./')
+  ) {
     // themesUrls is joined in code with baseUrl, leave as-is: otherwise, clean
     return `${urlBase}${value.slice(2)}`;
   } else if (key.endsWith('Urls') && Array.isArray(value)) {

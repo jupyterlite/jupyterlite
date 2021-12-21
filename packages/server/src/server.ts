@@ -4,6 +4,8 @@ import { IContents } from '@jupyterlite/contents';
 
 import { IKernels, IKernelSpecs } from '@jupyterlite/kernel';
 
+import { ILicenses } from '@jupyterlite/licenses';
+
 import { ISessions } from '@jupyterlite/session';
 
 import { ISettings } from '@jupyterlite/settings';
@@ -20,10 +22,19 @@ export class JupyterServer {
    * Construct a new JupyterServer.
    */
   constructor(options: JupyterServer.IOptions) {
-    const { contents, kernels, kernelspecs, sessions, settings, translation } = options;
+    const {
+      contents,
+      kernels,
+      kernelspecs,
+      licenses,
+      sessions,
+      settings,
+      translation
+    } = options;
     this._contents = contents;
     this._kernels = kernels;
     this._kernelspecs = kernelspecs;
+    this._licenses = licenses;
     this._sessions = sessions;
     this._settings = settings;
     this._translation = translation;
@@ -158,6 +169,11 @@ export class JupyterServer {
       return new Response(JSON.stringify(res));
     });
 
+    app.get('/api/licenses', async (req: Router.IRequest) => {
+      const licenses = await this._licenses.get();
+      return new Response(JSON.stringify(licenses));
+    });
+
     // NbConvert
     app.get('/api/nbconvert', async (req: Router.IRequest) => {
       return new Response(JSON.stringify({}));
@@ -227,6 +243,7 @@ export class JupyterServer {
   private _contents: IContents;
   private _kernels: IKernels;
   private _kernelspecs: IKernelSpecs;
+  private _licenses: ILicenses;
   private _sessions: ISessions;
   private _settings: ISettings;
   private _translation: ITranslation;
@@ -254,6 +271,11 @@ export namespace JupyterServer {
      * The kernel specs service.
      */
     kernelspecs: IKernelSpecs;
+
+    /**
+     * The licenses service.
+     */
+    licenses: ILicenses;
 
     /**
      * The sessions service.

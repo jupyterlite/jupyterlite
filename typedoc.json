@@ -6,6 +6,7 @@
     "packages/javascript-kernel-extension/src/index.ts",
     "packages/javascript-kernel/src/index.ts",
     "packages/kernel/src/index.ts",
+    "packages/licenses/src/index.ts",
     "packages/pyolite-kernel-extension/src/index.ts",
     "packages/pyolite-kernel/src/index.ts",
     "packages/retro-application-extension/src/index.ts",
@@ -14,6 +15,7 @@
     "packages/session/src/index.ts",
     "packages/settings/src/index.ts",
     "packages/translation/src/index.ts",
+    "packages/types/src/index.ts",
     "packages/ui-components/src/index.ts"
   ],
   "exclude": ["*.spec.ts", "**/node_modules/**", "**/test/**", "**/lib/**"],
