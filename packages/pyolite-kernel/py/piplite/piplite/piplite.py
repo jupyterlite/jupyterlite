@@ -76,9 +76,11 @@ async def _get_pypi_json(pkgname):
 
 
 class _PackageManager:
-    async def install(self, requirements: Union[str, List[str]], ctx=None):
+    async def install(
+        self, requirements: Union[str, List[str]], ctx=None, keep_going: bool = False
+    ):
         with patch("micropip._micropip._get_pypi_json", _get_pypi_json):
-            return await _MP_PACKAGE_MANAGER.install(requirements, ctx)
+            return await _MP_PACKAGE_MANAGER.install(requirements, ctx, keep_going)
 
 
 # Make PACKAGE_MANAGER singleton
@@ -86,7 +88,7 @@ PACKAGE_MANAGER = _PackageManager()
 del _PackageManager
 
 
-def install(requirements: Union[str, List[str]]):
+def install(requirements: Union[str, List[str]], keep_going: bool = False):
     """Install the given package and all of its dependencies.
     See :ref:`loading packages <loading_packages>` for more information.
     This only works for packages that are either pure Python or for packages
@@ -105,6 +107,15 @@ def install(requirements: Union[str, List[str]]):
         - If the requirement does not end in ``.whl``, it will interpreted as the
           name of a package. A package by this name must either be present in the
           Pyodide repository at `indexURL <globalThis.loadPyodide>` or on PyPi
+
+    keep_going : ``bool``, default: False
+        This parameter decides the behavior of the micropip when it encounters a
+        Python package without a pure Python wheel while doing dependency
+        resolution:
+        - If ``False``, an error will be raised on first package with a missing wheel.
+        - If ``True``, the micropip will keep going after the first error, and report a list
+          of errors at the end.
+
     Returns
     -------
     ``Future``
@@ -112,7 +123,9 @@ def install(requirements: Union[str, List[str]]):
         downloaded and installed.
     """
     importlib.invalidate_caches()
-    return asyncio.ensure_future(PACKAGE_MANAGER.install(requirements))
+    return asyncio.ensure_future(
+        PACKAGE_MANAGER.install(requirements, keep_going=keep_going)
+    )
 
 
 __all__ = ["install"]
