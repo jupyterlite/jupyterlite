@@ -29,8 +29,7 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
     index = _PIPLITE_INDICES.get(piplite_url, {})
     if not index:
         try:
-            fd = await _MP_FETCH_STRING(piplite_url)
-            index = json.load(fd)
+            index = json.loads(await _MP_FETCH_STRING(piplite_url))
             _PIPLITE_INDICES.update({piplite_url: index})
         except Exception:
             pass
@@ -62,8 +61,7 @@ async def _get_pypi_json(pkgname):
         else:
             try:
                 url = f"{piplite_url}{pkgname}/json"
-                fd = await _MP_FETCH_STRING(url)
-                return json.load(fd)
+                return json.loads(await _MP_FETCH_STRING(url))
             except Exception:
                 pass
 
@@ -71,7 +69,6 @@ async def _get_pypi_json(pkgname):
         raise PiplitePyPIDisabled(
             f"{pkgname} could not be installed: PyPI fallback is disabled"
         )
-
     return await _MP_GET_PYPI_JSON(pkgname)
 
 
