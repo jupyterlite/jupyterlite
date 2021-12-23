@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 from micropip._micropip import PACKAGE_MANAGER as _MP_PACKAGE_MANAGER
 from micropip._micropip import _get_pypi_json as _MP_GET_PYPI_JSON
-from micropip._micropip import _get_url as _MP_GET_URL
+from micropip._micropip import fetch_string as _MP_FETCH_STRING
 
 #: a list of Warehouse-like API endpoints or derived multi-package all.json
 _PIPLITE_URLS = []
@@ -29,7 +29,7 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
     index = _PIPLITE_INDICES.get(piplite_url, {})
     if not index:
         try:
-            fd = await _MP_GET_URL(piplite_url)
+            fd = await _MP_FETCH_STRING(piplite_url)
             index = json.load(fd)
             _PIPLITE_INDICES.update({piplite_url: index})
         except Exception:
@@ -62,7 +62,7 @@ async def _get_pypi_json(pkgname):
         else:
             try:
                 url = f"{piplite_url}{pkgname}/json"
-                fd = await _MP_GET_URL(url)
+                fd = await _MP_FETCH_STRING(url)
                 return json.load(fd)
             except Exception:
                 pass
