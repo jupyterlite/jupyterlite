@@ -755,7 +755,7 @@ class C:
         "js",
         "pyodide_js",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
+    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
