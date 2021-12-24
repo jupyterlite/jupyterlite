@@ -178,12 +178,6 @@ def task_lint():
         actions=[(U.validate, [P.PIPLITE_SCHEMA])],
     )
 
-    yield dict(
-        name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
-        file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
-        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
-    )
-
     for config in D.APP_CONFIGS:
         yield dict(
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
@@ -572,6 +566,12 @@ def task_check():
                 "^https?://",
             )
         ],
+    )
+
+    yield dict(
+        name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
+        file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
+        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
     )
 
     yield dict(

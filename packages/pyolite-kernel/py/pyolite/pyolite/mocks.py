@@ -3,14 +3,6 @@ import sys
 import types
 
 
-def mock_recursion_limit():
-    """Set the recursion limit as early as possible, needed for altair
-    for more details, see:
-        https://github.com/jupyterlite/jupyterlite/pull/113#issuecomment-851072065
-    """
-    sys.setrecursionlimit(max(170, sys.getrecursionlimit()))
-
-
 def mock_termios():
     termios_mock = types.ModuleType("termios")
     termios_mock.TCSAFLUSH = 2
@@ -41,7 +33,6 @@ def mock_tornado():
 
 # order is probably important
 ALL_MOCKS = [
-    mock_recursion_limit,
     mock_termios,
     mock_fcntl,
     mock_resource,
