@@ -543,17 +543,16 @@ def task_docs():
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
+        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
 
 
-@doit.create_after("docs")
 def task_check():
     """perform checks of built artifacts"""
     yield dict(
         name="docs:links",
         doc="check for broken (internal) links",
-        file_dep=[*B.DOCS.rglob("*.html")],
+        file_dep=[*BB.ALL_DOCS_HTML],
         actions=[
             U.do(
                 "pytest-check-links",
@@ -1003,6 +1002,21 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
+
+
+class BB:
+    """Built from other built files"""
+
+    # not exhaustive, because of per-class API pages
+    ALL_DOCS_HTML = [
+        (
+            B.DOCS
+            / src.parent.relative_to(P.DOCS)
+            / (src.name.rsplit(".", 1)[0] + ".html")
+        )
+        for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
+        if P.DOCS in src.parents and "_static" not in str(src)
+    ]
 
 
 class U:
