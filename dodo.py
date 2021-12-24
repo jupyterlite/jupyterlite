@@ -529,7 +529,7 @@ def task_docs():
         uptodate=uptodate,
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
-        targets=[B.DOCS_APP_ARCHIVE],
+        targets=[B.DOCS_APP_ARCHIVE, B.DOCS_APP_SHA256SUMS],
     )
 
     yield dict(
