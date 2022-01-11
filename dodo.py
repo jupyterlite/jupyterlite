@@ -247,9 +247,10 @@ def task_build():
         doc="build .ts files into .js files",
         file_dep=[
             *L.ALL_ESLINT,
-            P.ROOT_PACKAGE_JSON,
             *P.PACKAGE_JSONS,
+            B.PYOLITE_WHEEL_TS,
             B.YARN_INTEGRITY,
+            P.ROOT_PACKAGE_JSON,
         ],
         actions=[
             U.do("yarn", "build:lib"),
