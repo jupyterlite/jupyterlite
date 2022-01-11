@@ -731,7 +731,7 @@ class C:
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-    PYODIDE_VERSION = "0.19.0a1"
+    PYODIDE_VERSION = "0.19.0"
     PYODIDE_JS = "pyodide.js"
     PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
