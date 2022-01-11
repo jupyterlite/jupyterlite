@@ -19,7 +19,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
@@ -38,7 +37,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^5.2.0",
+    "@jupyterlab/coreutils": "^5.2.6",
     "@jupyterlite/javascript-kernel": "^0.1.0-alpha.18",
     "@jupyterlite/kernel": "^0.1.0-alpha.18",
     "@jupyterlite/server": "^0.1.0-alpha.18"
@@ -55,5 +54,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "jupyterlab": {}
+  "jupyterlab": {},
+  "styleModule": "style/index.js"
 }
