@@ -286,7 +286,6 @@ def task_build():
             U.do(
                 *C.PYM, "jupyterlite.app", "pip", "index", B.PYOLITE_WHEELS, env=bs_env
             ),
-            U.do(*C.PRETTIER, B.PYOLITE_WHEEL_INDEX),
             (U.make_pyolite_wheel_js),
         ],
         targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
