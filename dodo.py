@@ -178,12 +178,6 @@ def task_lint():
         actions=[(U.validate, [P.PIPLITE_SCHEMA])],
     )
 
-    yield dict(
-        name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
-        file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
-        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
-    )
-
     for config in D.APP_CONFIGS:
         yield dict(
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
@@ -253,9 +247,10 @@ def task_build():
         doc="build .ts files into .js files",
         file_dep=[
             *L.ALL_ESLINT,
-            P.ROOT_PACKAGE_JSON,
             *P.PACKAGE_JSONS,
+            B.PYOLITE_WHEEL_TS,
             B.YARN_INTEGRITY,
+            P.ROOT_PACKAGE_JSON,
         ],
         actions=[
             U.do("yarn", "build:lib"),
@@ -288,7 +283,6 @@ def task_build():
         actions=[
             (doit.tools.create_folder, [B.PYOLITE_WHEELS]),
             (U.copy_wheels, [B.PYOLITE_WHEELS, js_wheels]),
-            # nasty
             U.do(
                 *C.PYM, "jupyterlite.app", "pip", "index", B.PYOLITE_WHEELS, env=bs_env
             ),
@@ -535,7 +529,7 @@ def task_docs():
         uptodate=uptodate,
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
-        targets=[B.DOCS_APP_ARCHIVE],
+        targets=[B.DOCS_APP_ARCHIVE, B.DOCS_APP_SHA256SUMS],
     )
 
     yield dict(
@@ -549,17 +543,16 @@ def task_docs():
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
+        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
 
 
-@doit.create_after("docs")
 def task_check():
     """perform checks of built artifacts"""
     yield dict(
         name="docs:links",
         doc="check for broken (internal) links",
-        file_dep=[*B.DOCS.rglob("*.html")],
+        file_dep=[*BB.ALL_DOCS_HTML],
         actions=[
             U.do(
                 "pytest-check-links",
@@ -573,6 +566,13 @@ def task_check():
             )
         ],
     )
+
+    if not C.DOCS_IN_CI:
+        yield dict(
+            name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
+            file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
+            actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
+        )
 
     yield dict(
         name="app",
@@ -732,7 +732,7 @@ class C:
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-    PYODIDE_VERSION = "0.18.1"
+    PYODIDE_VERSION = "0.19.0"
     PYODIDE_JS = "pyodide.js"
     PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
@@ -755,7 +755,7 @@ class C:
         "js",
         "pyodide_js",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
+    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -1003,6 +1003,21 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
+
+
+class BB:
+    """Built from other built files"""
+
+    # not exhaustive, because of per-class API pages
+    ALL_DOCS_HTML = [
+        (
+            B.DOCS
+            / src.parent.relative_to(P.DOCS)
+            / (src.name.rsplit(".", 1)[0] + ".html")
+        )
+        for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
+        if P.DOCS in src.parents and "_static" not in str(src)
+    ]
 
 
 class U:

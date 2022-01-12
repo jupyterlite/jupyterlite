@@ -39,7 +39,7 @@ async function loadPyodideAndPackages() {
   // get piplite early enough to impact pyolite dependencies
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install('${_pipliteWheelUrl}')
+    await micropip.install('${_pipliteWheelUrl}', keep_going=True)
     import piplite.piplite
     piplite.piplite._PIPLITE_DISABLE_PYPI = ${_disablePyPIFallback ? 'True' : 'False'}
     piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_pipliteUrls)}
@@ -53,13 +53,13 @@ async function loadPyodideAndPackages() {
       'widgetsnbextension',
       'nbformat',
       'ipykernel',
-    ])
+    ], keep_going=True)
     await piplite.install([
       'pyolite',
-    ]);
+    ], keep_going=True);
     await piplite.install([
       'ipython',
-    ]);
+    ], keep_going=True);
     import pyolite
   `);
 
