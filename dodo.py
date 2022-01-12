@@ -568,11 +568,12 @@ def task_check():
         ],
     )
 
-    yield dict(
-        name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
-        file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
-        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
-    )
+    if not C.DOCS_IN_CI:
+        yield dict(
+            name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
+            file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
+            actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
+        )
 
     yield dict(
         name="app",
