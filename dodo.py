@@ -283,10 +283,10 @@ def task_build():
         actions=[
             (doit.tools.create_folder, [B.PYOLITE_WHEELS]),
             (U.copy_wheels, [B.PYOLITE_WHEELS, js_wheels]),
-            # nasty
             U.do(
                 *C.PYM, "jupyterlite.app", "pip", "index", B.PYOLITE_WHEELS, env=bs_env
             ),
+            U.do(*C.PRETTIER, B.PYOLITE_WHEEL_INDEX),
             (U.make_pyolite_wheel_js),
         ],
         targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
