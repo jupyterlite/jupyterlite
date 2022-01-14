@@ -23,6 +23,7 @@ class Interpreter(InteractiveShell):
     def __init__(self, *args, **kwargs):
         super(Interpreter, self).__init__(*args, **kwargs)
         self.kernel = Pyolite(interpreter=self)
+        self.Completer.use_jedi = False
         self._last_traceback = None
         self._input = None
         self._getpass = None
