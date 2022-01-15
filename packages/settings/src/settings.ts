@@ -9,12 +9,30 @@ import { IFederatedExtension, IPlugin } from './tokens';
 /**
  * The name of the local storage.
  */
-const STORAGE_NAME = 'JupyterLite Storage';
+const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * A class to handle requests to /api/settings
  */
 export class Settings {
+  constructor(options?: Settings.IOptions) {
+    this._settingsStorageName =
+      (options || {}).settingsStorageName || DEFAULT_STORAGE_NAME;
+    this._storage = this.defaultSettingsStorage();
+  }
+
+  /**
+   * Create a settings store.
+   */
+  protected defaultSettingsStorage(): LocalForage {
+    return localforage.createInstance({
+      name: this._settingsStorageName,
+      description: 'Offline Storage for Settings',
+      storeName: 'settings',
+      version: 1
+    });
+  }
+
   /**
    * Get settings by plugin id
    *
@@ -102,12 +120,20 @@ export class Settings {
     });
   }
 
-  private _storage = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Settings',
-    storeName: 'settings',
-    version: 1
-  });
+  private _settingsStorageName: string = DEFAULT_STORAGE_NAME;
+  private _storage: LocalForage;
+}
+
+/**
+ * A namespaces for settings metadata.
+ */
+namespace Settings {
+  /**
+   * Initialization options for settings.
+   */
+  export interface IOptions {
+    settingsStorageName?: string | null;
+  }
 }
 
 /**

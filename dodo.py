@@ -754,6 +754,8 @@ class C:
         # magic JS interop layer
         "js",
         "pyodide_js",
+        # broken?
+        "pathspec",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
 
