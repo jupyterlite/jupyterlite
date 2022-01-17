@@ -13,7 +13,7 @@ import { IContents } from './tokens';
 /**
  * The name of the local storage.
  */
-const STORAGE_NAME = 'JupyterLite Storage';
+const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * The number of checkpoints to save.
@@ -36,6 +36,52 @@ const EXTRA_TEXT_MIME_TYPES = new Set([
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
+  /**
+   * Construct a new localForage-powered contents provider
+   */
+  constructor(options?: Contents.IOptions) {
+    this._storageName = (options || {}).contentsStorageName || DEFAULT_STORAGE_NAME;
+    this._storage = this.createDefaultStorage();
+    this._counters = this.createDefaultCounters();
+    this._checkpoints = this.createDefaultCheckpoints();
+  }
+
+  /**
+   * Initialize the default storage for contents.
+   */
+  protected createDefaultStorage(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Offline Storage for Notebooks and Files',
+      storeName: 'files',
+      version: 1
+    });
+  }
+
+  /**
+   * Initialize the default storage for counting file suffixes.
+   */
+  protected createDefaultCounters(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Store the current file suffix counters',
+      storeName: 'counters',
+      version: 1
+    });
+  }
+
+  /**
+   * Create the default checkpoint storage.
+   */
+  protected createDefaultCheckpoints(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Offline Storage for Checkpoints',
+      storeName: 'checkpoints',
+      version: 1
+    });
+  }
+
   /**
    * Create a new untitled file or directory in the specified directory path.
    *
@@ -611,24 +657,22 @@ export class Contents implements IContents {
   }
 
   private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
-  private _storage = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Notebooks and Files',
-    storeName: 'files',
-    version: 1
-  });
-  private _counters = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Store the current file suffix counters',
-    storeName: 'counters',
-    version: 1
-  });
-  private _checkpoints = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Checkpoints',
-    storeName: 'checkpoints',
-    version: 1
-  });
+  private _storageName: string = DEFAULT_STORAGE_NAME;
+  private _storage: LocalForage;
+  private _counters: LocalForage;
+  private _checkpoints: LocalForage;
+}
+
+/**
+ * A namespace for contents information.
+ */
+export namespace Contents {
+  export interface IOptions {
+    /**
+     * The name of the storage instance on e.g. IndexedDB, localStorage
+     */
+    contentsStorageName: string;
+  }
 }
 
 /**

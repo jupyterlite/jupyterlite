@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import { Contents, IContents } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
@@ -26,7 +28,8 @@ const contents: JupyterLiteServerPlugin<IContents> = {
   autoStart: true,
   provides: IContents,
   activate: (app: JupyterLiteServer) => {
-    return new Contents();
+    const contentsStorageName = PageConfig.getOption('contentsStorageName');
+    return new Contents({ contentsStorageName });
   }
 };
 
@@ -105,7 +108,8 @@ const settings: JupyterLiteServerPlugin<ISettings> = {
   autoStart: true,
   provides: ISettings,
   activate: (app: JupyterLiteServer) => {
-    return new Settings();
+    const settingsStorageName = PageConfig.getOption('settingsStorageName');
+    return new Settings({ settingsStorageName });
   }
 };
 

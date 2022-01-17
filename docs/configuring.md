@@ -67,6 +67,19 @@ Will be:
   - may have timestamps changed if `--source-date-epoch` is provided.
 - indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
 
+### Server Contents and Local Contents
+
+When a user changes a server-hosted file, a copy will be made to the browser's
+`IndexedDB`. A user's locally-modified copy will take precedence over any server
+contents, even if the server contents are newer.
+
+### Customizing Content Storage
+
+By default, all of a user's contents on the same domain will be available to all
+JupyterLite instances hosted there. To create separate content stores, change the
+`jupyter-lite.json#jupyter-config-data/contentsStorageName` from the default of
+`JupyterLite Storage`.
+
 ## Adding Extensions
 
 JupyterLab 3 [pre-built extensions] allow for adding new capabilities to JupyterLite
@@ -119,6 +132,13 @@ specific `app` directory, these will be:
 
 - merged into
   `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
+
+### Settings Storage
+
+By default, all of a user's settings on the same domain will be available to all
+JupyterLite instances hosted there. To create separate settings stores, change the
+`jupyter-lite.json#jupyter-config-data/settingsStorageName` from the default of
+`JupyterLite Storage`.
 
 ## Adding pyolite wheels
 
