@@ -498,11 +498,13 @@ const opener: JupyterFrontEndPlugin<void> = {
 const shareFile: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:share-file',
   requires: [IFileBrowserFactory, ITranslator],
+  optional: [ICommandPalette],
   autoStart: true,
   activate: (
     app: JupyterFrontEnd,
     factory: IFileBrowserFactory,
-    translator: ITranslator
+    translator: ITranslator,
+    palette?: ICommandPalette
   ): void => {
     const trans = translator.load('jupyterlab');
     const { commands } = app;
@@ -536,6 +538,13 @@ const shareFile: JupyterFrontEndPlugin<void> = {
       icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
       label: trans.__('Copy Shareable Link')
     });
+
+    if (palette) {
+      palette.addItem({
+        command: CommandIDs.copyShareableLink,
+        category: trans.__('File Operations')
+      });
+    }
   }
 };
 
