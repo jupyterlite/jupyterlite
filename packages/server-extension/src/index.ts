@@ -217,6 +217,15 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       }
     );
 
+    // POST /api/kernels/{kernel_id} - Interrupt a kernel
+    app.router.post(
+      '/api/kernels/(.*)/interrupt',
+      async (req: Router.IRequest, kernelId: string) => {
+        const res = await kernels.interrupt(kernelId);
+        return new Response(JSON.stringify(res), { status: 204 });
+      }
+    );
+
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
     app.router.delete(
       '/api/kernels/(.*)',

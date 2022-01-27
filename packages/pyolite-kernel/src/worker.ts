@@ -355,6 +355,13 @@ function commClose(content: any) {
   return results;
 }
 
+function setInterruptBuffer(content: any) {
+  const res = pyodide.setInterruptBuffer(content);
+  const results = formatResult(res);
+
+  return results;
+}
+
 /**
  * Process a message sent to the worker.
  *
@@ -404,6 +411,10 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'comm-close':
       results = commClose(messageContent);
+      break;
+
+    case 'set-interrupt-buffer':
+      results = setInterruptBuffer(messageContent);
       break;
 
     default:

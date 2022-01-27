@@ -137,6 +137,11 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
+   * Interrupt the kernel.
+   */
+  abstract interrupt(): void;
+
+  /**
    * Handle a `kernel_info_request` message.
    *
    * @returns A promise that resolves with the kernel info.

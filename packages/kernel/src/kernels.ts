@@ -196,6 +196,19 @@ export class Kernels implements IKernels {
   }
 
   /**
+   * Interrupt a kernel.
+   *
+   * @param kernelId The kernel id.
+   */
+  interrupt(kernelId: string): void {
+    const kernel = this._kernels.get(kernelId);
+    if (!kernel) {
+      throw Error(`Kernel ${kernelId} does not exist`);
+    }
+    kernel.interrupt();
+  }
+
+  /**
    * Shut down a kernel.
    *
    * @param id The kernel id.
