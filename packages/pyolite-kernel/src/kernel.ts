@@ -50,6 +50,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
 
+    const prerunCodes = PageConfig.getOption('prerunCodes') || '[]';
+
     return [
       // first we need the pyodide initialization scripts...
       `importScripts("${options.pyodideUrl}");`,
@@ -61,6 +63,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       `var _pipliteUrls = ${JSON.stringify(pipliteUrls)};`,
       // ...but maybe not PyPI...
       `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)};`,
+      // ...and execute prerun codes defined in the options.
+      `var _prerunCodes = ${prerunCodes};`,
       // ...finally, the worker... which _must_ appear last!
       worker.toString()
     ];

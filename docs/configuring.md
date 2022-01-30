@@ -140,6 +140,11 @@ JupyterLite instances hosted there. To create separate settings stores, change t
 `jupyter-lite.json#jupyter-config-data/settingsStorageName` from the default of
 `JupyterLite Storage`.
 
+### Prerun Codes
+
+If you want to run specific python codes during notebook initialization, set codes to
+`jupyter-lite.json#jupyter-config-data/prerunCodes` as an array of strings.
+
 ## Adding pyolite wheels
 
 The [pyolite kernel](./kernels/pyolite.md) itself consists of a bit of JavaScript and
