@@ -10,13 +10,6 @@ import worker from './worker?raw';
 
 import { PIPLITE_WHEEL } from './_pypi';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  interface Window {
-    crossOriginIsolated: boolean | undefined;
-  }
-}
-
 /**
  * A kernel that executes Python code with Pyodide.
  */
@@ -102,7 +95,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   private setupInterruptBuffer(): void {
     if (!window.crossOriginIsolated) {
       console.warn(
-        'JupyterLite is not running in a cross origin isolated context. The interrupt button will not function. Details: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements'
+        'JupyterLite is not running in a cross origin isolated context. ' +
+          'The interrupt button will not function. Details: ' +
+          'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/' +
+          'Global_Objects/SharedArrayBuffer#security_requirements'
       );
       return;
     }
