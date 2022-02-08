@@ -33,7 +33,7 @@ const LITE_FILES = ['jupyter-lite.json', 'jupyter-lite.ipynb'];
  *  <link
  *    id="jupyter-lite-main"
  *    rel="preload"
- *    href="./build/bundle.js"
+ *    href="../build/bundle.js"
  *    main="index"
  *    as="script"
  *  />

@@ -9,9 +9,9 @@
     "federated_extensions": [],
     "fullLabextensionsUrl": "./lab/extensions",
     "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
-    "fullStaticUrl": "./lab/build",
+    "fullStaticUrl": "./build",
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
-    "settingsUrl": "./lab/build/schemas",
-    "themesUrl": "./lab/build/themes"
+    "settingsUrl": "./build/schemas",
+    "themesUrl": "./build/themes"
   }
 }

@@ -102,7 +102,7 @@
         },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
-          "default": "./lab/build",
+          "default": "./build",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "contentsStorageName": {
@@ -117,12 +117,12 @@
         },
         "settingsUrl": {
           "description": "relative path to bundled schemas",
-          "default": "./lab/build/schemas",
+          "default": "./build/schemas",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "themesUrl": {
           "description": "relative path to bundled themes",
-          "default": "./lab/build/themes",
+          "default": "./build/themes",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "disabledExtensions": {

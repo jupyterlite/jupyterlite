@@ -328,13 +328,13 @@ Continuing the example above:
 
 ```bash
 cd $YOUR_JUPYTERLITE/lab/extensions
-mkdir -p ../build/themes
-cp -r @*/*/themes/* ../build/themes/
-cp -r @*/themes/* ../build/themes/
+mkdir -p ../../build/themes
+cp -r @*/*/themes/* ../../build/themes/
+cp -r @*/themes/* ../../build/themes/
 # To also ensure these are available for JupyterLite Retro:
-mkdir -p ../../retro/build/themes
-cp -r @*/*/themes/* ../../retro/build/themes/
-cp -r @*/themes/* ../../retro/build/themes/
+mkdir -p ../../build/themes
+cp -r @*/*/themes/* ../../build/themes/
+cp -r @*/themes/* ../../build/themes/
 ```
 
 #### Fill Out `federated_extensions`

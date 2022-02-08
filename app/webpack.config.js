@@ -174,6 +174,8 @@ fs.writeFileSync(
 const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
+const name = data.jupyterlab.name.replace(' ', '-');
+
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
@@ -185,12 +187,12 @@ module.exports = [
       }
     },
     output: {
-      path: path.resolve(buildDir),
+      path: path.resolve(path.join('..', buildDir)),
       library: {
         type: 'var',
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
-      filename: 'bundle.js',
+      filename: `bundle-${name}.js`,
       chunkFilename: '[name].[contenthash].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
