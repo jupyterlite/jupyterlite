@@ -175,6 +175,9 @@ const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
 const name = data.jupyterlab.name.replace(' ', '-');
+const topLevelBuild = path.resolve(path.join('..', buildDir));
+
+fs.copySync(buildDir, topLevelBuild);
 
 module.exports = [
   merge(baseConfig, {
@@ -187,7 +190,7 @@ module.exports = [
       }
     },
     output: {
-      path: path.resolve(path.join('..', buildDir)),
+      path: topLevelBuild,
       library: {
         type: 'var',
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
