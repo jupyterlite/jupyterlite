@@ -113,15 +113,16 @@ function createShared(packageData) {
 }
 
 const buildDir = './build';
+const topLevelBuild = path.resolve(path.join('..', buildDir));
 // Generate webpack config to copy extension assets to the build directory,
 // such as setting schema files, theme assets, etc.
 const extensionAssetConfig = Build.ensureAssets({
   packageNames: data.jupyterlab.extensions,
-  output: buildDir
+  output: topLevelBuild
 });
 
 // ensure all schemas are statically compiled
-const schemaDir = path.resolve(buildDir, './schemas');
+const schemaDir = path.resolve(topLevelBuild, './schemas');
 const files = glob.sync(`${schemaDir}/**/*.json`, {
   ignore: [`${schemaDir}/all.json`]
 });
@@ -175,8 +176,6 @@ const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
 const name = data.jupyterlab.name.replace(' ', '-');
-const topLevelBuild = path.resolve(path.join('..', buildDir));
-fs.copySync(buildDir, topLevelBuild);
 
 module.exports = [
   merge(baseConfig, {
