@@ -9,6 +9,9 @@
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
+  "scripts": {
+    "clean": "rimraf build"
+  },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors"
 }

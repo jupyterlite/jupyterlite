@@ -176,7 +176,6 @@ fs.copySync('../bootstrap.js', entryPoint);
 
 const name = data.jupyterlab.name.replace(' ', '-');
 const topLevelBuild = path.resolve(path.join('..', buildDir));
-
 fs.copySync(buildDir, topLevelBuild);
 
 module.exports = [
@@ -195,7 +194,7 @@ module.exports = [
         type: 'var',
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
-      filename: `bundle-${name}.js`,
+      filename: `${name}/bundle.js`,
       chunkFilename: '[name].[contenthash].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'

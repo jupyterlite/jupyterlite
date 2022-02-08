@@ -299,7 +299,7 @@ def task_build():
         app_data = json.loads(app_json.read_text(**C.ENC))
         app_build = app / "build"
         app_targets = [
-            P.APP / "build" / f"bundle-{app_data['jupyterlab']['name']}.js",
+            P.APP / "build" / app.name / "bundle.js",
             app_build / "index.js",
             app_build / "style.js",
         ]
@@ -971,7 +971,7 @@ class B:
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
-    DOCS_APP_JS_BUNDLE = DOCS_APP / "build/bundle-lab.js"
+    DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
     DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{C.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
