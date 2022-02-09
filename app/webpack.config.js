@@ -114,36 +114,49 @@ function createShared(packageData) {
 }
 
 const buildDir = './build';
+const topLevelBuild = path.resolve(path.join('..', buildDir));
 // Generate webpack config to copy extension assets to the build directory,
 // such as setting schema files, theme assets, etc.
 const extensionAssetConfig = Build.ensureAssets({
   packageNames: data.jupyterlab.extensions,
-  output: buildDir
+  output: buildDir,
+  schemaOutput: topLevelBuild,
+  themeOutput: topLevelBuild
 });
 
-// ensure all schemas are statically compiled
-const schemaDir = path.resolve(buildDir, './schemas');
-const files = glob.sync(`${schemaDir}/**/*.json`, {
-  ignore: [`${schemaDir}/all.json`]
-});
-const all = files.map(file => {
-  const schema = fs.readJSONSync(file);
-  const pluginFile = file.replace(`${schemaDir}/`, '');
-  const basename = path.basename(pluginFile, '.json');
-  const dirname = path.dirname(pluginFile);
-  const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
-  const packageJson = fs.readJSONSync(packageJsonFile);
-  const pluginId = `${dirname}:${basename}`;
-  return {
-    id: pluginId,
-    raw: '{}',
-    schema,
-    settings: {},
-    version: packageJson.version
-  };
-});
+class CompileSchemasPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tapAsync('CompileSchemasPlugin', (compilation, callback) => {
+      console.log('This is an example plugin!');
 
-fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+      // ensure all schemas are statically compiled
+      const schemaDir = path.resolve(topLevelBuild, './schemas');
+      const files = glob.sync(`${schemaDir}/**/*.json`, {
+        ignore: [`${schemaDir}/all.json`]
+      });
+      const all = files.map(file => {
+        const schema = fs.readJSONSync(file);
+        const pluginFile = file.replace(`${schemaDir}/`, '');
+        const basename = path.basename(pluginFile, '.json');
+        const dirname = path.dirname(pluginFile);
+        const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
+        const packageJson = fs.readJSONSync(packageJsonFile);
+        const pluginId = `${dirname}:${basename}`;
+        return {
+          id: pluginId,
+          raw: '{}',
+          schema,
+          settings: {},
+          version: packageJson.version
+        };
+      });
+
+      fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+
+      callback();
+    });
+  }
+}
 
 // Create a list of application extensions and mime extensions from
 // jlab.extensions
@@ -176,7 +189,6 @@ const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
 const name = path.basename(path.dirname(path.resolve(packageJson)));
-const topLevelBuild = path.resolve(path.join('..', buildDir));
 
 module.exports = [
   merge(baseConfig, {
@@ -228,7 +240,8 @@ module.exports = [
         },
         name: 'CORE_FEDERATION',
         shared: createShared(data)
-      })
+      }),
+      new CompileSchemasPlugin()
     ]
   })
 ].concat(extensionAssetConfig);
