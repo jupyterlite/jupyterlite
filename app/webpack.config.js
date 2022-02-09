@@ -124,40 +124,6 @@ const extensionAssetConfig = Build.ensureAssets({
   themeOutput: topLevelBuild
 });
 
-class CompileSchemasPlugin {
-  apply(compiler) {
-    compiler.hooks.done.tapAsync('CompileSchemasPlugin', (compilation, callback) => {
-      console.log('This is an example plugin!');
-
-      // ensure all schemas are statically compiled
-      const schemaDir = path.resolve(topLevelBuild, './schemas');
-      const files = glob.sync(`${schemaDir}/**/*.json`, {
-        ignore: [`${schemaDir}/all.json`]
-      });
-      const all = files.map(file => {
-        const schema = fs.readJSONSync(file);
-        const pluginFile = file.replace(`${schemaDir}/`, '');
-        const basename = path.basename(pluginFile, '.json');
-        const dirname = path.dirname(pluginFile);
-        const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
-        const packageJson = fs.readJSONSync(packageJsonFile);
-        const pluginId = `${dirname}:${basename}`;
-        return {
-          id: pluginId,
-          raw: '{}',
-          schema,
-          settings: {},
-          version: packageJson.version
-        };
-      });
-
-      fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
-
-      callback();
-    });
-  }
-}
-
 // Create a list of application extensions and mime extensions from
 // jlab.extensions
 const extensions = {};
@@ -189,6 +155,41 @@ const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
 const name = path.basename(path.dirname(path.resolve(packageJson)));
+
+/**
+ * Define a custom plugin to ensure schemas are statically compiled
+ * after they have been emitted.
+ */
+class CompileSchemasPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tapAsync('CompileSchemasPlugin', (compilation, callback) => {
+      // ensure all schemas are statically compiled
+      const schemaDir = path.resolve(topLevelBuild, './schemas');
+      const files = glob.sync(`${schemaDir}/**/*.json`, {
+        ignore: [`${schemaDir}/all.json`]
+      });
+      const all = files.map(file => {
+        const schema = fs.readJSONSync(file);
+        const pluginFile = file.replace(`${schemaDir}/`, '');
+        const basename = path.basename(pluginFile, '.json');
+        const dirname = path.dirname(pluginFile);
+        const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
+        const packageJson = fs.readJSONSync(packageJsonFile);
+        const pluginId = `${dirname}:${basename}`;
+        return {
+          id: pluginId,
+          raw: '{}',
+          schema,
+          settings: {},
+          version: packageJson.version
+        };
+      });
+
+      fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+      callback();
+    });
+  }
+}
 
 module.exports = [
   merge(baseConfig, {
