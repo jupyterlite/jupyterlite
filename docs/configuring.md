@@ -98,7 +98,7 @@ _might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
 When you run `jupyter lite build`, all pre-built extensions in your JupyterLab
 environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
-- copied to `{output-dir}/lab/extensions`
+- copied to `{output-dir}/extensions`
 - have its theme information copied to `{output-dir}/{app/?}theme/`
 
 This discovery behavior can be disabled with the CLI flag `--ignore-sys-prefix` or
@@ -111,8 +111,8 @@ pre-built extensions will only be available for pages within that file tree.
 
 #### Custom Extensions
 
-By placing extensions under `{lite-dir}/lab/extensions/{org/?}{package}/`, these will
-also be copied into the `output-dir` _after_ any environment extensions, and all will be
+By placing extensions under `{lite-dir}/extensions/{org/?}{package}/`, these will also
+be copied into the `output-dir` _after_ any environment extensions, and all will be
 added to `{output-dir}/jupyter-lite.json#jupyter-config-data/federated_extensions`.
 
 ```{hint}
@@ -308,8 +308,8 @@ Assuming you have a working JupyterLab 3 installation, look in your
 
 ```bash
 cd $YOUR_JUPYTERLITE
-mkdir -p lab/extensions
-cd lab/extensions
+mkdir -p extensions
+cd extensions
 cp -r $PREFIX/share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager .
 ```
 
@@ -327,7 +327,7 @@ The Theme Manager expects to be able to load theme CSS/font assets from
 Continuing the example above:
 
 ```bash
-cd $YOUR_JUPYTERLITE/lab/extensions
+cd $YOUR_JUPYTERLITE/extensions
 mkdir -p ../../build/themes
 cp -r @*/*/themes/* ../../build/themes/
 cp -r @*/themes/* ../../build/themes/

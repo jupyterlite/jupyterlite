@@ -50,7 +50,7 @@ def test_federated_extensions(
     output = an_empty_lite_dir / "_output"
     lite_json = output / "jupyter-lite.json"
     lite_data = json.loads(lite_json.read_text(encoding="utf-8"))
-    smallest_dir = output / "lab/extensions/the-smallest-extension"
+    smallest_dir = output / "extensions/the-smallest-extension"
     assert smallest_dir.exists()
     lite_ext = lite_data["jupyter-config-data"]["federated_extensions"]
     smallest = lite_ext[0]

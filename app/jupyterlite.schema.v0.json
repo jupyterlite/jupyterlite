@@ -72,7 +72,7 @@
         },
         "fullLabextensionsUrl": {
           "description": "path to federated extensions, a folder organized by `({:org}/){package}`",
-          "default": "./lab/extensions",
+          "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "fullMathjaxUrl": {

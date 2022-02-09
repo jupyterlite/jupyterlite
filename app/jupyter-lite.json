@@ -7,7 +7,7 @@
     "appUrl": "./lab",
     "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [],
-    "fullLabextensionsUrl": "./lab/extensions",
+    "fullLabextensionsUrl": "./extensions",
     "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
     "fullStaticUrl": "./build",
     "mathjaxConfig": "TeX-AMS_CHTML-full,Safe"
