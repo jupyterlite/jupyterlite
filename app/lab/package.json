@@ -184,7 +184,6 @@
     "whatwg-fetch": "^3.0.0"
   },
   "jupyterlab": {
-    "name": "lab",
     "extensions": [
       "@jupyterlab/application-extension",
       "@jupyterlab/apputils-extension",

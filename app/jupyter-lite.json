@@ -10,8 +10,6 @@
     "fullLabextensionsUrl": "./lab/extensions",
     "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
     "fullStaticUrl": "./build",
-    "mathjaxConfig": "TeX-AMS_CHTML-full,Safe",
-    "settingsUrl": "./build/schemas",
-    "themesUrl": "./build/themes"
+    "mathjaxConfig": "TeX-AMS_CHTML-full,Safe"
   }
 }

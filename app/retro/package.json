@@ -165,7 +165,6 @@
     "whatwg-fetch": "^3.0.0"
   },
   "jupyterlab": {
-    "name": "retro",
     "extensions": [
       "@retrolab/application-extension",
       "@retrolab/docmanager-extension",

@@ -10,7 +10,8 @@ const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
-const data = fs.readJSONSync('./package.json');
+const packageJson = './package.json';
+const data = fs.readJSONSync(packageJson);
 
 /**
  * Create the webpack ``shared`` configuration
@@ -113,16 +114,15 @@ function createShared(packageData) {
 }
 
 const buildDir = './build';
-const topLevelBuild = path.resolve(path.join('..', buildDir));
 // Generate webpack config to copy extension assets to the build directory,
 // such as setting schema files, theme assets, etc.
 const extensionAssetConfig = Build.ensureAssets({
   packageNames: data.jupyterlab.extensions,
-  output: topLevelBuild
+  output: buildDir
 });
 
 // ensure all schemas are statically compiled
-const schemaDir = path.resolve(topLevelBuild, './schemas');
+const schemaDir = path.resolve(buildDir, './schemas');
 const files = glob.sync(`${schemaDir}/**/*.json`, {
   ignore: [`${schemaDir}/all.json`]
 });
@@ -175,7 +175,8 @@ fs.writeFileSync(
 const entryPoint = './build/bootstrap.js';
 fs.copySync('../bootstrap.js', entryPoint);
 
-const name = data.jupyterlab.name.replace(' ', '-');
+const name = path.basename(path.dirname(path.resolve(packageJson)));
+const topLevelBuild = path.resolve(path.join('..', buildDir));
 
 module.exports = [
   merge(baseConfig, {
