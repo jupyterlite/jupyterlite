@@ -273,9 +273,7 @@ class FederatedExtensionAddon(BaseAddon):
         stems = [p.parent.relative_to(lab_extensions_root) for p in lab_extensions]
 
         for app in self.manager.apps:
-            # this is _not_ hoisted to a global, as is hard-coded in webpack.config.js
-            # but _could_ be changed
-            app_themes = manager.output_dir / app / "build/themes"
+            app_themes = manager.output_dir / "build/themes"
             for stem in stems:
                 pkg = lab_extensions_root / stem
                 # this pattern appears to be canonical

@@ -59,5 +59,5 @@ def test_federated_extensions(
     assert "mimeExtension" in smallest
     assert "style" in smallest
 
-    lab_build = output / "lab/build"
+    lab_build = output / "build"
     assert (lab_build / "themes/the-smallest-extension/index.css").exists()
