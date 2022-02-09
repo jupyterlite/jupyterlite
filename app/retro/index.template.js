@@ -302,11 +302,8 @@ async function main() {
     window.jupyterapp = app;
   }
 
-  console.log('Starting app');
   await app.start();
-  console.log(`${app.name} started, waiting for restore`);
   await app.restored;
-  console.log(`${app.name} restored`);
 }
 
 main();

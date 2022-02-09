@@ -179,10 +179,19 @@ def task_lint():
     )
 
     for config in D.APP_CONFIGS:
+        if config.name.endswith(".ipynb"):
+            validate_args = [
+                P.APP_SCHEMA,
+                None,
+                json.loads(config.read_text(**C.ENC))["metadata"][C.IPYNB_METADATA],
+            ]
+        else:
+            validate_args = [P.APP_SCHEMA, config]
+
         yield dict(
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
             file_dep=[P.APP_SCHEMA, config],
-            actions=[(U.validate, (P.APP_SCHEMA, config))],
+            actions=[(U.validate, validate_args)],
         )
 
 
@@ -328,6 +337,7 @@ def task_build():
             *all_app_targets,
             *P.APP.glob("*.js"),
             *P.APP.glob("*.json"),
+            *P.APP.rglob("*.ipynb"),
             *P.APP.glob("*/*/index.html"),
             *P.APP.glob("*/build/schemas/**/.json"),
             B.PYOLITE_WHEEL_INDEX,
@@ -744,9 +754,10 @@ class C:
     )
 
     JUPYTERLITE_JSON = "jupyter-lite.json"
-    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
+    JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
+    IPYNB_METADATA = "jupyter-lite"
+    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, JUPYTERLITE_IPYNB]
     NO_TYPEDOC = ["_metapackage"]
-    LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     IGNORED_WHEEL_DEPS = [
         # our stuff
         "pyolite",
@@ -781,7 +792,7 @@ class C:
     ]
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 92 if FORCE_PYODIDE else 87
+    COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
 
 
 class P:
@@ -809,6 +820,7 @@ class P:
 
     APP = ROOT / "app"
     APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
+    APP_JUPYTERLITE_IPYNB = APP / C.JUPYTERLITE_IPYNB
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
