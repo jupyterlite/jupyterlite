@@ -882,7 +882,7 @@ class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
-    APPS = APP["jupyterlite"]["liteApps"]
+    APPS = APP["jupyterlite"]["apps"]
 
     # derive the PEP-compatible version
     PY_VERSION = (

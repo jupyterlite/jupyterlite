@@ -16,7 +16,7 @@
     "watch": "webpack --config webpack.config.watch.js"
   },
   "jupyterlite": {
-    "liteApps": [
+    "apps": [
       "retro",
       "lab"
     ]
