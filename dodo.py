@@ -89,6 +89,11 @@ def task_setup():
             return
         args += ["--frozen-lockfile"]
 
+    actions = [U.do(*args)]
+
+    if not (C.CI or C.RTD):
+        actions += [U.do("yarn", "deduplicate")]
+
     yield dict(
         name="js",
         doc="install node packages",
@@ -99,7 +104,7 @@ def task_setup():
             P.APP_PACKAGE_JSON,
             *P.APP_JSONS,
         ],
-        actions=[U.do(*args)],
+        actions=actions,
         targets=[B.YARN_INTEGRITY],
     )
 
