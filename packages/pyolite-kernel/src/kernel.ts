@@ -42,9 +42,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
 
-    const { origin } = window.location;
-
-    const pypi = URLExt.join(origin, PageConfig.getBaseUrl(), 'build/pypi');
+    const pypi = URLExt.join(PageConfig.getBaseUrl(), 'build/pypi');
 
     const pipliteUrls = [...(options.pipliteUrls || []), URLExt.join(pypi, 'all.json')];
 
