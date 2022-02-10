@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a22
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a21...9c918ca6cbb1840dd37541e0274691b0a444d893))
+
+### Enhancements made
+
+- Share `build` directory for both `lab` and `retro` apps [#472](https://github.com/jupyterlite/jupyterlite/pull/472) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Build all apps in single webpack [#474](https://github.com/jupyterlite/jupyterlite/pull/474) ([@bollwyvl](https://github.com/bollwyvl))
+- Clean up various log warnings [#469](https://github.com/jupyterlite/jupyterlite/pull/469) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-04&to=2022-02-10&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-04..2022-02-10&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-04..2022-02-10&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-04..2022-02-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a21
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a20...60a969dbcba786f3539f84f90c0d6e9e2ce8e0eb))
@@ -23,8 +44,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-01-18&to=2022-02-04&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-01-18..2022-02-04&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-01-18..2022-02-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-01-18..2022-02-04&type=Issues) | [@readthedocs-assistant](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Areadthedocs-assistant+updated%3A2022-01-18..2022-02-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a20
 
