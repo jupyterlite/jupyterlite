@@ -302,33 +302,36 @@ def task_build():
 
     app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
     all_app_targets = []
+    extra_app_deps = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
-        app_data = json.loads(app_json.read_text(**C.ENC))
         app_build = app / "build"
         app_targets = [
-            app_build / "bundle.js",
+            P.APP / "build" / app.name / "bundle.js",
             app_build / "index.js",
             app_build / "style.js",
         ]
         all_app_targets += app_targets
+        extra_app_deps += [
+            app / "index.template.js",
+            app_json,
+        ]
 
-        yield dict(
-            name=f"js:app:{app.name}",
-            doc=f"build JupyterLite {app.name.title()} with webpack",
-            file_dep=[
-                *app_deps,
-                B.PYOLITE_WHEEL_INDEX,
-                B.PYOLITE_WHEEL_TS,
-                app / "index.template.js",
-                app_json,
-            ],
-            actions=[
-                U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
-            ],
-            targets=[*app_targets],
-        )
+    yield dict(
+        name="js:app",
+        doc="build JupyterLite with webpack",
+        file_dep=[
+            *app_deps,
+            *extra_app_deps,
+            B.PYOLITE_WHEEL_INDEX,
+            B.PYOLITE_WHEEL_TS,
+        ],
+        actions=[
+            U.do("yarn", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
+        ],
+        targets=[*all_app_targets],
+    )
 
     yield dict(
         name="js:pack",
@@ -654,7 +657,7 @@ def task_test():
         "pytest",
         "--ff",
         "--script-launch-mode=subprocess",
-        "-n=4",
+        f"-n={C.PYTEST_PROCS}",
         "-vv",
         f"--cov-fail-under={C.COV_THRESHOLD}",
         "--cov-report=term-missing:skip-covered",
@@ -708,7 +711,7 @@ def task_test():
 
 
 def task_repo():
-    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in C.APPS]
+    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in D.APPS]
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
@@ -719,7 +722,6 @@ def task_repo():
 
 class C:
     NAME = "jupyterlite"
-    APPS = ["retro", "lab"]
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -727,6 +729,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
@@ -879,6 +882,8 @@ class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
+    APPS = APP["jupyterlite"]["apps"]
+
     # derive the PEP-compatible version
     PY_VERSION = (
         APP["version"]
@@ -983,7 +988,7 @@ class B:
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
-    DOCS_APP_JS_BUNDLE = DOCS_APP / "lab/build/bundle.js"
+    DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
     DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{C.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
@@ -1495,7 +1500,7 @@ class U:
             # Write the package.json back to disk.
             app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
 
-        for app in C.APPS:
+        for app in D.APPS:
             _ensure_resolutions(app)
 
     @staticmethod

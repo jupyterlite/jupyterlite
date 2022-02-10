@@ -87,7 +87,7 @@ NOARCH_WHL = "py3-none-any.whl"
 #: the Jupyter API route for Contents API
 API_CONTENTS = "api/contents"
 API_TRANSLATIONS = "api/translations"
-LAB_EXTENSIONS = "lab/extensions"
+LAB_EXTENSIONS = "extensions"
 
 #: our doit task-based plugin system
 HOOKS = [

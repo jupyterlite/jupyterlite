@@ -124,7 +124,7 @@ app/test/data
 # extras
 # do not include kernels such as Pyodide
 app/kernels
-app/lab/extensions
+app/extensions
 
 *.log
 

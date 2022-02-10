@@ -10,14 +10,21 @@ const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
-const data = fs.readJSONSync('./package.json');
+const topLevelData = require('./package.json');
+
+const liteAppData = topLevelData.jupyterlite.apps.reduce(
+  (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
+  {}
+);
 
 /**
  * Create the webpack ``shared`` configuration
+ *
+ * Successive apps' merged data are joined
  */
-function createShared(packageData) {
+function createShared(packageData, shared = null) {
   // Set up module federation sharing config
-  const shared = {};
+  shared = shared || {};
   const extensionPackages = packageData.jupyterlab.extensions;
 
   // Make sure any resolutions are shared
@@ -112,85 +119,112 @@ function createShared(packageData) {
   return shared;
 }
 
-const buildDir = './build';
-// Generate webpack config to copy extension assets to the build directory,
-// such as setting schema files, theme assets, etc.
-const extensionAssetConfig = Build.ensureAssets({
-  packageNames: data.jupyterlab.extensions,
-  output: buildDir
-});
+const topLevelBuild = path.resolve('build');
 
-// ensure all schemas are statically compiled
-const schemaDir = path.resolve(buildDir, './schemas');
-const files = glob.sync(`${schemaDir}/**/*.json`, {
-  ignore: [`${schemaDir}/all.json`]
-});
-const all = files.map(file => {
-  const schema = fs.readJSONSync(file);
-  const pluginFile = file.replace(`${schemaDir}/`, '');
-  const basename = path.basename(pluginFile, '.json');
-  const dirname = path.dirname(pluginFile);
-  const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
-  const packageJson = fs.readJSONSync(packageJsonFile);
-  const pluginId = `${dirname}:${basename}`;
-  return {
-    id: pluginId,
-    raw: '{}',
-    schema,
-    settings: {},
-    version: packageJson.version
-  };
-});
+const allAssetConfig = [];
+const allEntryPoints = {};
 
-fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+// each
+for (const [name, data] of Object.entries(liteAppData)) {
+  const buildDir = path.join(name, 'build');
 
-// Create a list of application extensions and mime extensions from
-// jlab.extensions
-const extensions = {};
-const mimeExtensions = {};
-for (const key of data.jupyterlab.extensions) {
-  const {
-    jupyterlab: { extension, mimeExtension }
-  } = require(`${key}/package.json`);
-  if (extension !== undefined) {
-    extensions[key] = extension === true ? '' : extension;
+  const packageNames = data.jupyterlab.extensions;
+  // Generate webpack config to copy extension assets to the build directory,
+  // such as setting schema files, theme assets, etc.
+  const extensionAssetConfig = Build.ensureAssets({
+    packageNames,
+    output: buildDir,
+    schemaOutput: topLevelBuild,
+    themeOutput: topLevelBuild
+  });
+
+  allAssetConfig.push(extensionAssetConfig);
+
+  // Create a list of application extensions and mime extensions from
+  // jlab.extensions
+  const extensions = {};
+  const mimeExtensions = {};
+  for (const key of packageNames) {
+    const {
+      jupyterlab: { extension, mimeExtension }
+    } = require(`${key}/package.json`);
+    if (extension !== undefined) {
+      extensions[key] = extension === true ? '' : extension;
+    }
+    if (mimeExtension !== undefined) {
+      mimeExtensions[key] = mimeExtension === true ? '' : mimeExtension;
+    }
   }
-  if (mimeExtension !== undefined) {
-    mimeExtensions[key] = mimeExtension === true ? '' : mimeExtension;
-  }
+  // Create the entry point and other assets in build directory.
+  const template = Handlebars.compile(
+    fs.readFileSync(path.resolve(`./${name}/index.template.js`)).toString()
+  );
+  fs.writeFileSync(
+    path.join(name, 'build', 'index.js'),
+    template({ extensions, mimeExtensions })
+  );
+  // Create the bootstrap file that loads federated extensions and calls the
+  // initialization logic in index.js
+  const entryPoint = `./${name}/build/bootstrap.js`;
+  fs.copySync('bootstrap.js', entryPoint);
+  allEntryPoints[`${name}/bundle`] = entryPoint;
+  allEntryPoints[`${name}/publicpath`] = path.resolve(name, 'publicpath.js');
 }
 
-// Create the entry point and other assets in build directory.
-const template = Handlebars.compile(
-  fs.readFileSync(path.resolve('./index.template.js')).toString()
-);
-fs.writeFileSync(
-  path.join(buildDir, 'index.js'),
-  template({ extensions, mimeExtensions })
-);
+// const name = path.basename(path.dirname(path.resolve(packageJson)));
 
-// Create the bootstrap file that loads federated extensions and calls the
-// initialization logic in index.js
-const entryPoint = './build/bootstrap.js';
-fs.copySync('../bootstrap.js', entryPoint);
+/**
+ * Define a custom plugin to ensure schemas are statically compiled
+ * after they have been emitted.
+ */
+class CompileSchemasPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tapAsync('CompileSchemasPlugin', (compilation, callback) => {
+      // ensure all schemas are statically compiled
+      const schemaDir = path.resolve(topLevelBuild, './schemas');
+      const files = glob.sync(`${schemaDir}/**/*.json`, {
+        ignore: [`${schemaDir}/all.json`]
+      });
+      const all = files.map(file => {
+        const schema = fs.readJSONSync(file);
+        const pluginFile = file.replace(`${schemaDir}/`, '');
+        const basename = path.basename(pluginFile, '.json');
+        const dirname = path.dirname(pluginFile);
+        const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
+        const packageJson = fs.readJSONSync(packageJsonFile);
+        const pluginId = `${dirname}:${basename}`;
+        return {
+          id: pluginId,
+          raw: '{}',
+          schema,
+          settings: {},
+          version: packageJson.version
+        };
+      });
+
+      fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+      callback();
+    });
+  }
+}
 
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
     devtool: 'source-map',
-    entry: ['./publicpath.js', entryPoint],
+    entry: allEntryPoints,
     resolve: {
       fallback: {
         util: false
       }
     },
     output: {
-      path: path.resolve(buildDir),
+      path: topLevelBuild,
       library: {
         type: 'var',
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
-      filename: 'bundle.js',
+      filename: '[name].js',
       chunkFilename: '[name].[contenthash].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
@@ -223,8 +257,12 @@ module.exports = [
           name: ['_JUPYTERLAB', 'CORE_LIBRARY_FEDERATION']
         },
         name: 'CORE_FEDERATION',
-        shared: createShared(data)
-      })
+        shared: Object.values(liteAppData).reduce(
+          (memo, data) => createShared(data, memo),
+          {}
+        )
+      }),
+      new CompileSchemasPlugin()
     ]
   })
-].concat(extensionAssetConfig);
+].concat(...allAssetConfig);
