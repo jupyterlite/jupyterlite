@@ -6,6 +6,7 @@ const glob = require('glob');
 const webpack = require('webpack');
 const merge = require('webpack-merge').default;
 const { ModuleFederationPlugin } = webpack.container;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
@@ -123,8 +124,8 @@ const topLevelBuild = path.resolve('build');
 
 const allAssetConfig = [];
 const allEntryPoints = {};
+const allHtmlPlugins = [];
 
-// each
 for (const [name, data] of Object.entries(liteAppData)) {
   const buildDir = path.join(name, 'build');
 
@@ -169,6 +170,18 @@ for (const [name, data] of Object.entries(liteAppData)) {
   fs.copySync('bootstrap.js', entryPoint);
   allEntryPoints[`${name}/bundle`] = entryPoint;
   allEntryPoints[`${name}/publicpath`] = path.resolve(name, 'publicpath.js');
+
+  // Use templates to create cache-busting templates
+  for (const page of data.jupyterlite.pages) {
+    allHtmlPlugins.push(
+      new HtmlWebpackPlugin({
+        inject: false,
+        minify: false,
+        filename: `../${name}/${page}.html`,
+        template: `${name}/${page}.template.html`
+      })
+    );
+  }
 }
 
 // const name = path.basename(path.dirname(path.resolve(packageJson)));
@@ -224,8 +237,8 @@ module.exports = [
         type: 'var',
         name: ['_JUPYTERLAB', 'CORE_OUTPUT']
       },
-      filename: '[name].js',
-      chunkFilename: '[name].[contenthash].js',
+      filename: '[name].js?_=[contenthash:7]',
+      chunkFilename: '[name].[contenthash:7].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]'
     },
@@ -262,7 +275,8 @@ module.exports = [
           {}
         )
       }),
-      new CompileSchemasPlugin()
+      new CompileSchemasPlugin(),
+      ...allHtmlPlugins
     ]
   })
 ].concat(...allAssetConfig);

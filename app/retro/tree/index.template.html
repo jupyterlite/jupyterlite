@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>JupyterLite Retro - Console</title>
+    <title>JupyterLite Retro - Tree</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="../../build/retro/bundle.js"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1) %>"
       main="index"
       as="script"
     />

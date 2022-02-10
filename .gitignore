@@ -126,6 +126,13 @@ app/test/data
 app/kernels
 app/extensions
 
+# generated html
+app/lab/index.html
+app/retro/consoles/index.html
+app/retro/edit/index.html
+app/retro/notebooks/index.html
+app/retro/tree/index.html
+
 *.log
 
 *.doit*

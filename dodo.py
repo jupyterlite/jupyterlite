@@ -827,7 +827,16 @@ class P:
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
-    APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
+    APP_HTMLS = [
+        APP / "index.html",
+        *APP.rglob("*/index.template.html"),
+        *[
+            p
+            for p in APP.rglob("*/index.html")
+            if not (p.parent / "index.template.html").exists()
+        ],
+    ]
+
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_EXTRA_JSON = sorted(APP.glob("*/*.json"))

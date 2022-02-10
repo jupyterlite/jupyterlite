@@ -230,5 +230,13 @@
     ],
     "mimeExtensions": {},
     "linkedPackages": {}
+  },
+  "jupyterlite": {
+    "pages": [
+      "consoles/index",
+      "edit/index",
+      "notebooks/index",
+      "tree/index"
+    ]
   }
 }

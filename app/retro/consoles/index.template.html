@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>JupyterLite</title>
+    <title>JupyterLite Retro - Console</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="../build/lab/bundle.js"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1) %>"
       main="index"
       as="script"
     />
     <script
       id="jupyter-config-data"
       type="application/json"
-      data-jupyter-lite-root=".."
+      data-jupyter-lite-root="../.."
     >
       {}
     </script>
@@ -25,8 +25,8 @@
           window.location.href = `${origin}${pathname}/${search}${hash}`;
           return;
         }
-        await import('../config-utils.js');
-      }.call(this));
+        await import('../../config-utils.js');
+      })();
     </script>
   </head>
 </html>
