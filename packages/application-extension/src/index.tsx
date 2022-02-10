@@ -131,6 +131,15 @@ export namespace IWebRtcProvider {
     room: string;
     signalingUrls?: string[];
   }
+
+  export interface IYjsWebRtcOptions {
+    signaling: Array<string>;
+    password: string | null;
+    awareness: Awareness;
+    maxConns: number;
+    filterBcConns: boolean;
+    peerOpts: any;
+  }
 }
 
 /**
@@ -140,7 +149,9 @@ namespace WebRtcProvider {
   /**
    * Re-map Lab provider options to yjs ones.
    */
-  export function yProviderOptions(options: IWebRtcProvider.IOptions) {
+  export function yProviderOptions(
+    options: IWebRtcProvider.IOptions
+  ): IWebRtcProvider.IYjsWebRtcOptions {
     return {
       signaling:
         options.signalingUrls && options.signalingUrls.length

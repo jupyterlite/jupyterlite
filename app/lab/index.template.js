@@ -212,11 +212,8 @@ async function main() {
   }
 
   /* eslint-disable no-console */
-  console.log('Starting app');
   await lab.start();
-  console.log(`${lab.name} started, waiting for restore`);
   await lab.restored;
-  console.log(`${lab.name} restored`);
 }
 
 main();

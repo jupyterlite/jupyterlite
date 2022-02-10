@@ -69,8 +69,6 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream.copy();
   interpreter = kernel.interpreter.copy();
   interpreter.send_comm = sendComm;
-  const version = pyodide.globals.get('pyolite').__version__;
-  console.log('Pyolite kernel initialized, version', version);
 }
 
 /**
@@ -376,7 +374,6 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   switch (messageType) {
     case 'execute-request':
-      console.log('Perform execution inside worker', data);
       results = await execute(messageContent);
       break;
 

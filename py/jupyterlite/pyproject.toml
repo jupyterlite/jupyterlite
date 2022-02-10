@@ -93,3 +93,9 @@ archive = "jupyterlite.addons.archive:ArchiveAddon"
 piplite = "jupyterlite.addons.piplite:PipliteAddon"
 pyodide = "jupyterlite.addons.pyodide:PyodideAddon"
 mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    # https://github.com/jupyter-server/jupyter_server_mathjax/pull/11
+    "ignore:.*Use `_i18n\\(\\)`.*:FutureWarning",
+]
