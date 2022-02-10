@@ -2,8 +2,13 @@
 **/node_modules/*
 */test/**
 babel.config.*
+index.template.js
 jest-setup.js
 jest.config.js
+lab/build
 node_modules/
+publicpath.js
+retro/build
 tsconfig.*
+webpack.*.js
 webpack.config.*

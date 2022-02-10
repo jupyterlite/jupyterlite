@@ -22,7 +22,7 @@
   "scripts": {
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
     "build": "yarn build:lib && yarn build:app",
-    "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
+    "build:app": "lerna run build:prod --stream --parallel --scope @jupyterlite/app",
     "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:prod": "lerna run build:prod",
     "build:python": "lerna run build:python",
