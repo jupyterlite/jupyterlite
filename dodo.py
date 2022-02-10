@@ -657,7 +657,7 @@ def task_test():
         "pytest",
         "--ff",
         "--script-launch-mode=subprocess",
-        "-n=4",
+        f"-n={C.PYTEST_PROCS}",
         "-vv",
         f"--cov-fail-under={C.COV_THRESHOLD}",
         "--cov-report=term-missing:skip-covered",
@@ -711,7 +711,7 @@ def task_test():
 
 
 def task_repo():
-    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in C.APPS]
+    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in D.APPS]
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
@@ -722,7 +722,6 @@ def task_repo():
 
 class C:
     NAME = "jupyterlite"
-    APPS = ["retro", "lab"]
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -730,6 +729,7 @@ class C:
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
@@ -882,6 +882,8 @@ class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
+    APPS = APP["jupyterlite"]["liteApps"]
+
     # derive the PEP-compatible version
     PY_VERSION = (
         APP["version"]
@@ -1498,7 +1500,7 @@ class U:
             # Write the package.json back to disk.
             app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
 
-        for app in C.APPS:
+        for app in D.APPS:
             _ensure_resolutions(app)
 
     @staticmethod

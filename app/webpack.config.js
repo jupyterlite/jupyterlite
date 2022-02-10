@@ -10,22 +10,21 @@ const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
-// const packageJson = './package.json';
-// const data = fs.readJSONSync(packageJson);
+const topLevelData = require('./package.json');
 
-const APPS = ['lab', 'retro'];
-
-const APP_DATA = APPS.reduce((memo, app) => {
-  memo[app] = fs.readJSONSync(`./${app}/package.json`);
-  return memo;
-}, {});
+const liteAppData = topLevelData.jupyterlite.liteApps.reduce(
+  (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
+  {}
+);
 
 /**
  * Create the webpack ``shared`` configuration
+ *
+ * Successive apps' merged data are joined
  */
-function createShared(packageData, mergedShare = null) {
+function createShared(packageData, shared = null) {
   // Set up module federation sharing config
-  const shared = {};
+  shared = shared || {};
   const extensionPackages = packageData.jupyterlab.extensions;
 
   // Make sure any resolutions are shared
@@ -74,7 +73,7 @@ function createShared(packageData, mergedShare = null) {
   }
 
   // Now merge the extra shared config
-  mergedShare = mergedShare || {};
+  const mergedShare = {};
   for (let sharedConfig of extraShared) {
     for (let [pkg, config] of Object.entries(sharedConfig)) {
       // Do not override the basic share config from resolutions
@@ -125,7 +124,8 @@ const topLevelBuild = path.resolve('build');
 const allAssetConfig = [];
 const allEntryPoints = {};
 
-for (const [name, data] of Object.entries(APP_DATA)) {
+// each
+for (const [name, data] of Object.entries(liteAppData)) {
   const buildDir = path.join(name, 'build');
 
   const packageNames = data.jupyterlab.extensions;
@@ -257,9 +257,10 @@ module.exports = [
           name: ['_JUPYTERLAB', 'CORE_LIBRARY_FEDERATION']
         },
         name: 'CORE_FEDERATION',
-        shared: Object.entries(APP_DATA).reduce((memo, [name, data]) => {
-          return createShared(data, memo);
-        }, {})
+        shared: Object.values(liteAppData).reduce(
+          (memo, data) => createShared(data, memo),
+          {}
+        )
       }),
       new CompileSchemasPlugin()
     ]

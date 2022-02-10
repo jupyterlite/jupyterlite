@@ -15,6 +15,12 @@
     "build:prod": "yarn clean && yarn build --mode=production",
     "watch": "webpack --config webpack.config.watch.js"
   },
+  "jupyterlite": {
+    "liteApps": [
+      "retro",
+      "lab"
+    ]
+  },
   "devDependencies": {
     "@jupyterlab/builder": "^3.2.9",
     "@jupyterlab/buildutils": "^3.2.9",
