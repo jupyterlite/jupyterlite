@@ -10,7 +10,10 @@
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
   "scripts": {
-    "clean": "rimraf build"
+    "clean": "rimraf build",
+    "build": "webpack",
+    "build:prod": "yarn build --mode=production",
+    "watch": "webpack --config webpack.config.watch.js"
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors"

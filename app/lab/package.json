@@ -3,16 +3,10 @@
   "version": "0.1.0-alpha.21",
   "private": true,
   "scripts": {
-    "build": "webpack --config ../webpack.config.js",
-    "build:prod": "yarn build --mode=production",
     "build:test": "tsc --build tsconfig.test.json",
-    "clean": "rimraf build",
-    "clean:artifacts": "rimraf artifacts",
-    "prepublishOnly": "yarn build",
     "test:cov": "jest --collect-coverage",
     "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
-    "watch": "webpack --config ../webpack.config.watch.js"
+    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch"
   },
   "resolutions": {
     "@jupyterlab/application": "~3.2.9",
