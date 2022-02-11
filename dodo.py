@@ -305,7 +305,15 @@ def task_build():
         targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
     )
 
-    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
+    app_deps = [
+        B.META_BUILDINFO,
+        P.WEBPACK_CONFIG,
+        P.LITE_ICON,
+        P.LITE_WORDMARK,
+        P.APP_PACKAGE_JSON,
+        *[p for p in P.APP_HTMLS if p.name == "index.template.html"],
+    ]
+
     all_app_targets = []
     extra_app_deps = []
 
