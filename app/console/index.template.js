@@ -1,14 +1,12 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterLab } from '@jupyterlite/application';
-
 import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 
-const styles = import('./style.js');
+require('./style.js');
 
 const serverExtensions = [
   import('@jupyterlite/javascript-kernel-extension'),
@@ -16,17 +14,11 @@ const serverExtensions = [
   import('@jupyterlite/server-extension')
 ];
 
-// custom list of disabled plugins
-const disabled = [
-  '@jupyterlab/apputils-extension:workspaces',
-  '@jupyterlab/application-extension:logo',
-  '@jupyterlab/application-extension:main',
-  '@jupyterlab/application-extension:tree-resolver',
-  '@jupyterlab/apputils-extension:resolver',
-  '@jupyterlab/docmanager-extension:download',
-  '@jupyterlab/filebrowser-extension:download',
-  '@jupyterlab/filebrowser-extension:share-file',
-  '@jupyterlab/help-extension:about'
+const mimeExtensionsMods = [
+  import('@jupyterlite/iframe-extension'),
+  import('@jupyterlab/javascript-extension'),
+  import('@jupyterlab/json-extension'),
+  import('@jupyterlab/vega5-extension')
 ];
 
 async function createModule(scope, module) {
@@ -43,10 +35,62 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 async function main() {
-  // Make sure the styles have loaded
-  await styles;
+  const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
-  const pluginsToRegister = [];
+  let baseMods = [
+    // @jupyterlite plugins
+    require('@jupyterlite/application-extension'),
+    require('@jupyterlite/retro-application-extension'),
+
+    // @jupyterlab plugins
+    require('@jupyterlab/application-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/application-extension:commands',
+        '@jupyterlab/application-extension:context-menu',
+        '@jupyterlab/application-extension:faviconbusy'
+      ].includes(id)
+    ),
+    require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/apputils-extension:palette',
+        '@jupyterlab/apputils-extension:settings',
+        '@jupyterlab/apputils-extension:state',
+        '@jupyterlab/apputils-extension:themes',
+        '@jupyterlab/apputils-extension:themes-palette-menu'
+      ].includes(id)
+    ),
+    require('@jupyterlab/codemirror-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/codemirror-extension:services',
+        '@jupyterlab/codemirror-extension:codemirror'
+      ].includes(id)
+    ),
+    require('@jupyterlab/completer-extension').default.filter(({ id }) =>
+      ['@jupyterlab/completer-extension:manager'].includes(id)
+    ),
+    require('@jupyterlab/console-extension'),
+    require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/filebrowser-extension:factory'
+      ].includes(id)
+    ),
+    require('@jupyterlab/mainmenu-extension'),
+    require('@jupyterlab/mathjax2-extension'),
+    require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/notebook-extension:factory',
+        '@jupyterlab/notebook-extension:tracker',
+        '@jupyterlab/notebook-extension:widget-factory'
+      ].includes(id)
+    ),
+    require('@jupyterlab/rendermime-extension'),
+    require('@jupyterlab/shortcuts-extension'),
+    require('@jupyterlab/theme-light-extension'),
+    require('@jupyterlab/theme-dark-extension'),
+    require('@jupyterlab/translation-extension')
+  ];
+
+  const mods = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
@@ -95,31 +139,20 @@ async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      if (
-        PageConfig.Extension.isDisabled(plugin.id) ||
-        disabled.includes(plugin.id) ||
-        disabled.includes(plugin.id.split(':')[0])
-      ) {
+      if (PageConfig.Extension.isDisabled(plugin.id)) {
         continue;
       }
       yield plugin;
     }
   }
 
-  // Handle the mime extensions.
-  const mimeExtensions = [];
-  {{#each mimeExtensions}}
-  if (!federatedExtensionNames.has('{{@key}}')) {
-    try {
-      let ext = require('{{@key}}{{#if this}}/{{this}}{{/if}}');
-      for (let plugin of activePlugins(ext)) {
-        mimeExtensions.push(plugin);
-      }
-    } catch (e) {
-      console.error(e);
+  // Add the base frontend extensions
+  const baseFrontendMods = await Promise.all(baseMods);
+  baseFrontendMods.forEach(p => {
+    for (let plugin of activePlugins(p)) {
+      mods.push(plugin);
     }
-  }
-  {{/each}}
+  })
 
   // Add the federated mime extensions.
   const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);
@@ -133,26 +166,12 @@ async function main() {
     }
   });
 
-  // Handled the standard extensions.
-  {{#each extensions}}
-  if (!federatedExtensionNames.has('{{@key}}')) {
-    try {
-      let ext = require('{{@key}}{{#if this}}/{{this}}{{/if}}');
-      for (let plugin of activePlugins(ext)) {
-        pluginsToRegister.push(plugin);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-  {{/each}}
-
   // Add the federated extensions.
   const federatedExtensions = await Promise.allSettled(federatedExtensionPromises);
   federatedExtensions.forEach(p => {
     if (p.status === "fulfilled") {
       for (let plugin of activePlugins(p.value)) {
-        pluginsToRegister.push(plugin);
+        mods.push(plugin);
       }
     } else {
       console.error(p.reason);
@@ -165,7 +184,7 @@ async function main() {
     for (let plugin of activePlugins(p)) {
       litePluginsToRegister.push(plugin);
     }
-  })
+  });
 
   // Add the serverlite federated extensions.
   const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
@@ -179,11 +198,6 @@ async function main() {
     }
   });
 
-  // Load all federated component styles and log errors for any that do not
-  (await Promise.allSettled(federatedStylePromises)).filter(({status}) => status === "rejected").forEach(({reason}) => {
-     console.error(reason);
-    });
-
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(litePluginsToRegister);
@@ -193,27 +207,24 @@ async function main() {
   // retrieve the custom service manager from the server app
   const { serviceManager } = jupyterLiteServer;
 
-  // create a full-blown JupyterLab frontend
-  const lab = new JupyterLab({
-    mimeExtensions,
-    serviceManager,
-    disabled
-  });
-  lab.name = PageConfig.getOption('appName') || 'JupyterLite';
+  // create a RetroLab frontend
+  const { SingleWidgetApp } = require('@jupyterlite/application');
+  const app = new SingleWidgetApp({ serviceManager, mimeExtensions });
 
-  lab.registerPluginModules(pluginsToRegister);
+  app.name = PageConfig.getOption('appName') || 'RetroLite';
+
+  app.registerPluginModules(mods);
 
   // Expose global app instance when in dev mode or when toggled explicitly.
   const exposeAppInBrowser =
     (PageConfig.getOption('exposeAppInBrowser') || '').toLowerCase() === 'true';
 
   if (exposeAppInBrowser) {
-    window.jupyterapp = lab;
+    window.jupyterapp = app;
   }
 
-  /* eslint-disable no-console */
-  await lab.start();
-  await lab.restored;
+  await app.start();
+  await app.restored;
 }
 
 main();
