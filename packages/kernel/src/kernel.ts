@@ -542,7 +542,9 @@ export abstract class BaseKernel implements IKernel {
 
     this._executeInput(executeMsg);
 
-    this._history.push([0, 0, content.code]);
+    if (content['store_history']) {
+      this._history.push([0, 0, content.code]);
+    }
 
     const reply = await this.executeRequest(executeMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
