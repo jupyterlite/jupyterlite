@@ -55,7 +55,7 @@
     "@jupyterlite/translation": "^0.1.0-alpha.22",
     "@lumino/application": "^1.20.0",
     "@lumino/coreutils": "^1.8.0",
-    "mock-socket": "^9.0.3"
+    "mock-socket": "^9.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

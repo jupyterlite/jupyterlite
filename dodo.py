@@ -82,6 +82,15 @@ def task_setup():
         return
 
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
+    file_dep = [
+        *P.APP_JSONS,
+        *P.PACKAGE_JSONS,
+        P.APP_PACKAGE_JSON,
+        P.ROOT_PACKAGE_JSON,
+    ]
+
+    if P.YARN_LOCK.exists():
+        file_dep += [P.YARN_LOCK]
 
     if C.CI:
         # .yarn-integrity will only exist on a full cache hit vs yarn.lock, saves 1min+
@@ -97,13 +106,7 @@ def task_setup():
     yield dict(
         name="js",
         doc="install node packages",
-        file_dep=[
-            P.YARN_LOCK,
-            *P.PACKAGE_JSONS,
-            P.ROOT_PACKAGE_JSON,
-            P.APP_PACKAGE_JSON,
-            *P.APP_JSONS,
-        ],
+        file_dep=file_dep,
         actions=actions,
         targets=[B.YARN_INTEGRITY],
     )

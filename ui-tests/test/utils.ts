@@ -24,7 +24,7 @@ export async function deleteItem({
 }): Promise<void> {
   const item = await page.$(`xpath=${page.filebrowser.xpBuildFileSelector(name)}`);
   await item.click({ button: 'right' });
-  await page.click('text="Delete"');
+  await page.click('[data-command="filebrowser:delete"]');
   const button = await page.$('.jp-mod-accept');
   await button.click();
 }
