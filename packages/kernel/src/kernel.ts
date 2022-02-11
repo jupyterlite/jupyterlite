@@ -533,7 +533,7 @@ export abstract class BaseKernel implements IKernel {
   private async _execute(msg: KernelMessage.IMessage): Promise<void> {
     const executeMsg = msg as KernelMessage.IExecuteRequestMsg;
     const content = executeMsg.content;
-    if (content['store_history']) {
+    if (content.store_history) {
       this._executionCount++;
     }
 
@@ -542,7 +542,7 @@ export abstract class BaseKernel implements IKernel {
 
     this._executeInput(executeMsg);
 
-    if (content['store_history']) {
+    if (content.store_history) {
       this._history.push([0, 0, content.code]);
     }
 
