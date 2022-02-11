@@ -13,19 +13,19 @@ import { Message, MessageLoop, IMessageHandler } from '@lumino/messaging';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
-import { Panel, Widget, BoxLayout } from '@lumino/widgets';
+import { Panel, Widget, BoxLayout, PanelLayout } from '@lumino/widgets';
 
 /**
- * The Jupyter Notebook application shell token.
+ * The single widget application shell token.
  */
-export const INotebookShell = new Token<INotebookShell>(
-  '@jupyter-notebook/application:INotebookShell'
+export const ISingleWidgetShell = new Token<ISingleWidgetShell>(
+  '@jupyterlite/:INotebookShell'
 );
 
 /**
- * The Jupyter Notebook application shell interface.
+ * The single widget application shell interface.
  */
-export interface INotebookShell extends NotebookShell {}
+export interface ISingleWidgetShell extends SingleWidgetShell {}
 
 /**
  * The default rank for ranked panels.
@@ -35,50 +35,22 @@ const DEFAULT_RANK = 900;
 /**
  * The application shell.
  */
-export class NotebookShell extends Widget implements JupyterFrontEnd.IShell {
+export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell {
   constructor() {
     super();
     this.id = 'main';
 
-    const rootLayout = new BoxLayout();
-
-    this._topHandler = new Private.PanelHandler();
-    this._menuHandler = new Private.PanelHandler();
+    const rootLayout = new PanelLayout();
     this._main = new Panel();
-
-    this._topHandler.panel.id = 'top-panel';
-    this._menuHandler.panel.id = 'menu-panel';
     this._main.id = 'main-panel';
-
-    // create wrappers around the top and menu areas
-    const topWrapper = (this._topWrapper = new Panel());
-    topWrapper.id = 'top-panel-wrapper';
-    topWrapper.addWidget(this._topHandler.panel);
-
-    const menuWrapper = (this._menuWrapper = new Panel());
-    menuWrapper.id = 'menu-panel-wrapper';
-    menuWrapper.addWidget(this._menuHandler.panel);
-
-    BoxLayout.setStretch(topWrapper, 0);
-    BoxLayout.setStretch(menuWrapper, 0);
-    BoxLayout.setStretch(this._main, 1);
-
-    this._spacer = new Widget();
-    this._spacer.id = 'spacer-widget';
-
-    rootLayout.spacing = 0;
-    rootLayout.addWidget(topWrapper);
-    rootLayout.addWidget(menuWrapper);
-    rootLayout.addWidget(this._spacer);
     rootLayout.addWidget(this._main);
-
     this.layout = rootLayout;
   }
 
   /**
    * A signal emitted when the current widget changes.
    */
-  get currentChanged(): ISignal<NotebookShell, void> {
+  get currentChanged(): ISignal<ISingleWidgetShell, void> {
     return this._currentChanged;
   }
 
@@ -87,20 +59,6 @@ export class NotebookShell extends Widget implements JupyterFrontEnd.IShell {
    */
   get currentWidget(): Widget | null {
     return this._main.widgets[0] ?? null;
-  }
-
-  /**
-   * Get the top area wrapper panel
-   */
-  get top(): Widget {
-    return this._topWrapper;
-  }
-
-  /**
-   * Get the menu area wrapper panel
-   */
-  get menu(): Widget {
-    return this._menuWrapper;
   }
 
   /**
@@ -129,13 +87,6 @@ export class NotebookShell extends Widget implements JupyterFrontEnd.IShell {
     area?: Shell.Area,
     options?: DocumentRegistry.IOpenOptions
   ): void {
-    const rank = options?.rank ?? DEFAULT_RANK;
-    if (area === 'top') {
-      return this._topHandler.addWidget(widget, rank);
-    }
-    if (area === 'menu') {
-      return this._menuHandler.addWidget(widget, rank);
-    }
     if (area === 'main' || area === undefined) {
       if (this._main.widgets.length > 0) {
         // do not add the widget if there is already one
@@ -148,32 +99,12 @@ export class NotebookShell extends Widget implements JupyterFrontEnd.IShell {
   }
 
   /**
-   * Collapse the top area and the spacer to make the view more compact.
-   */
-  collapseTop(): void {
-    this._topWrapper.setHidden(true);
-    this._spacer.setHidden(true);
-  }
-
-  /**
-   * Expand the top area to show the header and the spacer.
-   */
-  expandTop(): void {
-    this._topWrapper.setHidden(false);
-    this._spacer.setHidden(false);
-  }
-
-  /**
    * Return the list of widgets for the given area.
    *
    * @param area The area
    */
   widgets(area: Shell.Area): IIterator<Widget> {
     switch (area ?? 'main') {
-      case 'top':
-        return iter(this._topHandler.panel.widgets);
-      case 'menu':
-        return iter(this._menuHandler.panel.widgets);
       case 'main':
         return iter(this._main.widgets);
       default:
@@ -181,11 +112,6 @@ export class NotebookShell extends Widget implements JupyterFrontEnd.IShell {
     }
   }
 
-  private _topWrapper: Panel;
-  private _topHandler: Private.PanelHandler;
-  private _menuWrapper: Panel;
-  private _menuHandler: Private.PanelHandler;
-  private _spacer: Widget;
   private _main: Panel;
   private _currentChanged = new Signal<this, void>(this);
 }
@@ -197,93 +123,5 @@ export namespace Shell {
   /**
    * The areas of the application shell where widgets can reside.
    */
-  export type Area = 'main' | 'top' | 'menu';
-}
-
-/**
- * A namespace for private module data.
- */
-namespace Private {
-  /**
-   * An object which holds a widget and its sort rank.
-   */
-  export interface IRankItem {
-    /**
-     * The widget for the item.
-     */
-    widget: Widget;
-
-    /**
-     * The sort rank of the widget.
-     */
-    rank: number;
-  }
-  /**
-   * A less-than comparison function for side bar rank items.
-   */
-  export function itemCmp(first: IRankItem, second: IRankItem): number {
-    return first.rank - second.rank;
-  }
-
-  /**
-   * A class which manages a panel and sorts its widgets by rank.
-   */
-  export class PanelHandler {
-    constructor() {
-      MessageLoop.installMessageHook(this._panel, this._panelChildHook);
-    }
-
-    /**
-     * Get the panel managed by the handler.
-     */
-    get panel(): Panel {
-      return this._panel;
-    }
-
-    /**
-     * Add a widget to the panel.
-     *
-     * If the widget is already added, it will be moved.
-     */
-    addWidget(widget: Widget, rank: number): void {
-      widget.parent = null;
-      const item = { widget, rank };
-      const index = ArrayExt.upperBound(this._items, item, Private.itemCmp);
-      ArrayExt.insert(this._items, index, item);
-      this._panel.insertWidget(index, widget);
-    }
-
-    /**
-     * A message hook for child add/remove messages on the main area dock panel.
-     */
-    private _panelChildHook = (handler: IMessageHandler, msg: Message): boolean => {
-      switch (msg.type) {
-        case 'child-added':
-          {
-            const widget = (msg as Widget.ChildMessage).child;
-            // If we already know about this widget, we're done
-            if (this._items.find(v => v.widget === widget)) {
-              break;
-            }
-
-            // Otherwise, add to the end by default
-            const rank = this._items[this._items.length - 1].rank;
-            this._items.push({ widget, rank });
-          }
-          break;
-        case 'child-removed':
-          {
-            const widget = (msg as Widget.ChildMessage).child;
-            ArrayExt.removeFirstWhere(this._items, v => v.widget === widget);
-          }
-          break;
-        default:
-          break;
-      }
-      return true;
-    };
-
-    private _items = new Array<Private.IRankItem>();
-    private _panel = new Panel();
-  }
+  export type Area = 'main';
 }

@@ -13,21 +13,21 @@ import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { Throttler } from '@lumino/polling';
 
-import { INotebookShell, NotebookShell } from './singleWidgetShell';
+import { ISingleWidgetShell, SingleWidgetShell } from './singleWidgetShell';
 
 /**
  * App is the main application class. It is instantiated once and shared.
  */
-export class NotebookApp extends JupyterFrontEnd<INotebookShell> {
+export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
   /**
    * Construct a new NotebookApp object.
    *
    * @param options The instantiation options for an application.
    */
-  constructor(options: NotebookApp.IOptions = { shell: new NotebookShell() }) {
+  constructor(options: NotebookApp.IOptions = { shell: new SingleWidgetShell() }) {
     super({
       ...options,
-      shell: options.shell ?? new NotebookShell()
+      shell: options.shell ?? new SingleWidgetShell()
     });
     if (options.mimeExtensions) {
       for (const plugin of createRendermimePlugins(options.mimeExtensions)) {
@@ -40,7 +40,7 @@ export class NotebookApp extends JupyterFrontEnd<INotebookShell> {
   /**
    * The name of the application.
    */
-  readonly name = 'Jupyter Notebook';
+  readonly name = 'Single Widget Application';
 
   /**
    * A namespace/prefix plugins may use to denote their provenance.
@@ -55,7 +55,6 @@ export class NotebookApp extends JupyterFrontEnd<INotebookShell> {
   /**
    * The version of the application.
    */
-
   readonly version = PageConfig.getOption('appVersion') ?? 'unknown';
 
   /**
@@ -91,18 +90,6 @@ export class NotebookApp extends JupyterFrontEnd<INotebookShell> {
   }
 
   /**
-   * Handle the DOM events for the application.
-   *
-   * @param event - The DOM event sent to the application.
-   */
-  handleEvent(event: Event): void {
-    super.handleEvent(event);
-    if (event.type === 'resize') {
-      void this._formatter.invoke();
-    }
-  }
-
-  /**
    * Register plugins from a plugin module.
    *
    * @param mod - The plugin module to register.
@@ -135,10 +122,6 @@ export class NotebookApp extends JupyterFrontEnd<INotebookShell> {
       this.registerPluginModule(mod);
     });
   }
-
-  private _formatter = new Throttler(() => {
-    Private.setFormat(this);
-  }, 250);
 }
 
 /**
@@ -149,7 +132,7 @@ export namespace NotebookApp {
    * The instantiation options for an App application.
    */
   export interface IOptions
-    extends JupyterFrontEnd.IOptions<INotebookShell>,
+    extends JupyterFrontEnd.IOptions<ISingleWidgetShell>,
       Partial<IInfo> {}
 
   /**
@@ -171,24 +154,5 @@ export namespace NotebookApp {
      * The default export.
      */
     default: JupyterFrontEndPlugin<any> | JupyterFrontEndPlugin<any>[];
-  }
-}
-
-/**
- * A namespace for module-private functionality.
- */
-namespace Private {
-  /**
-   * Media query for mobile devices.
-   */
-  const MOBILE_QUERY = 'only screen and (max-width: 760px)';
-
-  /**
-   * Sets the `format` of a Jupyter front-end application.
-   *
-   * @param app The front-end application whose format is set.
-   */
-  export function setFormat(app: NotebookApp): void {
-    app.format = window.matchMedia(MOBILE_QUERY).matches ? 'mobile' : 'desktop';
   }
 }
