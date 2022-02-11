@@ -572,6 +572,36 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
 
+    def _clean_dupe_ids():
+        for schema_html in B.DOCS.glob("schema-v*.html"):
+            print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
+            text = schema_html.read_text(encoding="utf-8")
+            new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
+            if text != new_text:
+                schema_html.write_text(new_text, encoding="utf-8")
+
+    yield dict(
+        name="post:schema",
+        doc="clean sphinx-jsonschema duplicate ids",
+        actions=[_clean_dupe_ids]
+    )
+
+    def _optimize_images():
+        all_svg = B.DOCS.glob("_static/*.svg")
+        subprocess.check_call([
+            "yarn",
+            "svgo",
+            "--pretty",
+            "--indent=2",
+            *all_svg,
+        ])
+
+    yield dict(
+        name="post:images",
+        doc="clean sphinx-jsonschema duplicate ids",
+        actions=[_optimize_images]
+    )
+
 
 def task_check():
     """perform checks of built artifacts"""
