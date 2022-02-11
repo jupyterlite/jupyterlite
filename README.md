@@ -3,8 +3,7 @@
 [![ci-badge]][ci] [![lite-badge]][lite] [![binder-badge]][binder] [![docs-badge]][docs]
 
 [ci-badge]: https://github.com/jupyterlite/jupyterlite/workflows/Build/badge.svg
-[lite-badge]:
-  https://gist.githubusercontent.com/bollwyvl/72565d11c9f0340c98c8199438cd63d5/raw/d78510cafbc45f83eba2acf51a38e5885d0bb3ce/badge.svg
+[lite-badge]: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
 [lite]: https://jupyterlite.rtfd.io/en/latest/try/lab
 [ci]: https://github.com/jupyterlite/jupyterlite/actions?query=branch%3Amain
 [binder-badge]: https://mybinder.org/badge_logo.svg
