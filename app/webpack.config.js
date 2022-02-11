@@ -251,6 +251,11 @@ module.exports = [
         {
           resourceQuery: /raw/,
           type: 'asset/source'
+        },
+        // just keep the woff2 fonts from fontawesome
+        {
+          test: /fontawesome-free.*\.(svg|eot|ttf|woff)$/,
+          loader: 'ignore-loader'
         }
       ]
     },

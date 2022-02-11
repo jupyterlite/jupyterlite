@@ -7,7 +7,7 @@
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1) %>"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1)[0] %>"
       main="index"
       as="script"
     />
@@ -26,7 +26,9 @@
           return;
         }
 
-        await import('../../config-utils.js');
+        await import(
+          '../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("retro/bundle") !== -1)[0].split("?")[1] %>'
+        );
       })();
     </script>
   </head>

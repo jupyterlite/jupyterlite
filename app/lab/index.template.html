@@ -7,7 +7,7 @@
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('lab/bundle') !== -1) %>"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('lab/bundle') !== -1)[0] %>"
       main="index"
       as="script"
     />
@@ -25,7 +25,9 @@
           window.location.href = `${origin}${pathname}/${search}${hash}`;
           return;
         }
-        await import('../config-utils.js');
+        await import(
+          '../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("lab/bundle") !== -1)[0].split("?")[1] %>'
+        );
       }.call(this));
     </script>
   </head>
