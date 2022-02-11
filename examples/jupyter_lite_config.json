@@ -16,7 +16,7 @@
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab-tour-3.1.4-pyhd8ed1ab_0.tar.bz2/jupyterlab-tour-3.1.4-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2",
-      "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.5.0-pyhd8ed1ab_0.tar.bz2/plotly-5.5.0-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/plotly-5.6.0-pyhd8ed1ab_0.tar.bz2/plotly-5.6.0-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a12/jupyterlite_p5_kernel-0.1.0a12-py3-none-any.whl"
     ],
@@ -82,7 +82,7 @@
       "https://files.pythonhosted.org/packages/py3/t/traitlets/traitlets-5.1.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/t/typing_extensions/typing_extensions-4.0.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/v/vega-datasets/vega_datasets-0.9.0-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/x/xyzservices/xyzservices-2022.1.1-py3-none-any.whl"
+      "https://files.pythonhosted.org/packages/py3/x/xyzservices/xyzservices-2022.2.0-py3-none-any.whl"
     ]
   }
 }

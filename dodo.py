@@ -89,6 +89,11 @@ def task_setup():
             return
         args += ["--frozen-lockfile"]
 
+    actions = [U.do(*args)]
+
+    if not (C.CI or C.RTD):
+        actions += [U.do("yarn", "deduplicate")]
+
     yield dict(
         name="js",
         doc="install node packages",
@@ -99,7 +104,7 @@ def task_setup():
             P.APP_PACKAGE_JSON,
             *P.APP_JSONS,
         ],
-        actions=[U.do(*args)],
+        actions=actions,
         targets=[B.YARN_INTEGRITY],
     )
 
@@ -300,7 +305,15 @@ def task_build():
         targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
     )
 
-    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
+    app_deps = [
+        B.META_BUILDINFO,
+        P.WEBPACK_CONFIG,
+        P.LITE_ICON,
+        P.LITE_WORDMARK,
+        P.APP_PACKAGE_JSON,
+        *[p for p in P.APP_HTMLS if p.name == "index.template.html"],
+    ]
+
     all_app_targets = []
     extra_app_deps = []
 
@@ -827,7 +840,16 @@ class P:
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
-    APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
+    APP_HTMLS = [
+        APP / "index.html",
+        *APP.rglob("*/index.template.html"),
+        *[
+            p
+            for p in APP.rglob("*/index.html")
+            if not (p.parent / "index.template.html").exists()
+        ],
+    ]
+
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_EXTRA_JSON = sorted(APP.glob("*/*.json"))
