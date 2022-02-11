@@ -17,8 +17,9 @@
   },
   "jupyterlite": {
     "apps": [
-      "retro",
-      "lab"
+      "console",
+      "lab",
+      "retro"
     ]
   },
   "devDependencies": {
