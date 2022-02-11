@@ -11,8 +11,6 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
-import { Throttler } from '@lumino/polling';
-
 import { ISingleWidgetShell, SingleWidgetShell } from './singleWidgetShell';
 
 /**
@@ -34,7 +32,6 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
         this.registerPlugin(plugin);
       }
     }
-    this.restored.then(() => this._formatter.invoke());
   }
 
   /**

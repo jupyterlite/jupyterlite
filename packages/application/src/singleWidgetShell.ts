@@ -5,15 +5,13 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
-import { ArrayExt, find, IIterator, iter } from '@lumino/algorithm';
+import { find, IIterator, iter } from '@lumino/algorithm';
 
 import { Token } from '@lumino/coreutils';
 
-import { Message, MessageLoop, IMessageHandler } from '@lumino/messaging';
-
 import { ISignal, Signal } from '@lumino/signaling';
 
-import { Panel, Widget, BoxLayout, PanelLayout } from '@lumino/widgets';
+import { Panel, Widget, PanelLayout } from '@lumino/widgets';
 
 /**
  * The single widget application shell token.
@@ -26,11 +24,6 @@ export const ISingleWidgetShell = new Token<ISingleWidgetShell>(
  * The single widget application shell interface.
  */
 export interface ISingleWidgetShell extends SingleWidgetShell {}
-
-/**
- * The default rank for ranked panels.
- */
-const DEFAULT_RANK = 900;
 
 /**
  * The application shell.
