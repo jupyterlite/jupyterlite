@@ -2,6 +2,7 @@
 **/node_modules/*
 */test/**
 babel.config.*
+index.template.html
 index.template.js
 jest-setup.js
 jest.config.js

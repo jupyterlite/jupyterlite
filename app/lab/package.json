@@ -257,5 +257,10 @@
       "@jupyterlab/vega5-extension": ""
     },
     "linkedPackages": {}
+  },
+  "jupyterlite": {
+    "pages": [
+      "index"
+    ]
   }
 }
