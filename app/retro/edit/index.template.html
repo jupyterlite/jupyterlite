@@ -27,7 +27,7 @@
         }
 
         await import(
-          '../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("retro/bundle") !== -1)[0].split("?")[1] %>'
+          '../../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("retro/bundle") !== -1)[0].split("?")[1] %>'
         );
       })();
     </script>
