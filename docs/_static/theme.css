@@ -17,7 +17,7 @@
 @media (min-width: 960px) {
   #navbar-center {
     display: flex;
-    align-items: baseline;
+    align-items: center;
   }
 }
 
