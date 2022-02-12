@@ -131,15 +131,15 @@ def do_tasks(label, tasks):
     print("[jupyterlite-docs] ... {label.upper()}} OK", flush=True)
 
 
-def after_build(app: Sphinx, error):
-    """sphinx-jsonschema makes duplicate ids. clean them"""
-    do_tasks("post", RTD_POST_TASKS)
-
-
 def before_rtd_build(app: Sphinx, error):
     """ensure doit docs:sphinx precursors have been met on RTD"""
     print("[jupyterlite-docs] Staging files changed by RTD...", flush=True)
     subprocess.call(["git", "add", "."], cwd=str(ROOT))
+    do_tasks("post", RTD_PRE_TASKS)
+
+
+def after_build(app: Sphinx, error):
+    """sphinx-jsonschema makes duplicate ids. clean them"""
     do_tasks("post", RTD_POST_TASKS)
 
 

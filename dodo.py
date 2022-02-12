@@ -781,7 +781,7 @@ class C:
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
-    IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "[]"))
+    IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
