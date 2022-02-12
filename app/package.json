@@ -10,7 +10,7 @@
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
   "scripts": {
-    "clean": "rimraf build lab/build retro/build",
+    "clean": "rimraf build console/build lab/build retro/build",
     "build": "webpack",
     "build:prod": "yarn clean && yarn build --mode=production",
     "watch": "webpack --config webpack.config.watch.js"
