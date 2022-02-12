@@ -127,6 +127,7 @@ app/kernels
 app/extensions
 
 # generated html
+app/console/index.html
 app/lab/index.html
 app/retro/consoles/index.html
 app/retro/edit/index.html
