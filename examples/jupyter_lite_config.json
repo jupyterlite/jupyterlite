@@ -2,7 +2,7 @@
   "LiteBuildConfig": {
     "contents": ["."],
     "federated_extensions": [
-      "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.32-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.32-pyhd8ed1ab_0.tar.bz2",
+      "https://github.com/conda-forge/releases/releases/download/noarch/bqplot-0.12.33-pyhd8ed1ab_0.tar.bz2/bqplot-0.12.33-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipycanvas-0.10.2-pyhd8ed1ab_0.tar.bz2/ipycanvas-0.10.2-pyhd8ed1ab_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipycytoscape-1.3.2-pyh1d7be83_0.tar.bz2/ipycytoscape-1.3.2-pyh1d7be83_0.tar.bz2",
       "https://github.com/conda-forge/releases/releases/download/noarch/ipyleaflet-0.15.0-pyhd8ed1ab_3.tar.bz2/ipyleaflet-0.15.0-pyhd8ed1ab_3.tar.bz2",
@@ -25,7 +25,7 @@
     "piplite_urls": [
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.32-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/c/certifi/certifi-2021.10.8-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/d/defusedxml/defusedxml-0.7.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/e/executing/executing-0.8.2-py2.py3-none-any.whl",
@@ -56,7 +56,7 @@
       "https://files.pythonhosted.org/packages/py3/S/Send2Trash/Send2Trash-1.8.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/a/altair/altair-4.2.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/b/branca/branca-0.4.2-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/c/charset-normalizer/charset_normalizer-2.0.11-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py3/c/charset-normalizer/charset_normalizer-2.0.12-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/c/click/click-8.0.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/e/entrypoints/entrypoints-0.4-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/i/idna/idna-3.3-py3-none-any.whl",

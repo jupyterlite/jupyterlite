@@ -246,11 +246,7 @@ def task_build():
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
-                "yarn",
-                "svgo",
-                "--multipass",
-                "--pretty",
-                "--indent=2",
+                *C.SVGO,
                 P.DOCS_ICON,
                 P.DOCS_WORDMARK,
                 "-o",
@@ -424,7 +420,6 @@ def task_build():
         )
 
 
-@doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
@@ -581,9 +576,6 @@ def task_docs():
         def _clean_dupe_ids():
             all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
 
-            if not all_schema_html:
-                return
-
             for schema_html in all_schema_html:
                 print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
                 text = schema_html.read_text(encoding="utf-8")
@@ -597,14 +589,19 @@ def task_docs():
             actions=[_clean_dupe_ids],
         )
 
-        def _optimize_images():
-            all_svg = sorted(B.DOCS.glob("_static/*.svg"))
+        def _skip_image(path):
+            as_posix = str(path.as_posix())
+            return (
+                "_static/extensions" in as_posix
+                or "_static/build" in as_posix
+                or "_static/vendor" in as_posix
+            )
 
-            if not all_svg:
-                return
+        def _optimize_images():
+            all_svg = [p for p in B.DOCS.rglob("*.svg") if not _skip_image(p)]
 
             subprocess.check_call(
-                ["yarn", "svgo", "--pretty", "--indent=2", *all_svg, "-o", *all_svg],
+                [*C.SVGO, *all_svg, "-o", *all_svg],
                 cwd=str(P.ROOT),
             )
 
@@ -615,6 +612,7 @@ def task_docs():
         )
 
 
+@doit.create_after("docs")
 def task_check():
     """perform checks of built artifacts"""
     yield dict(
@@ -843,6 +841,7 @@ class C:
         .decode("utf-8")
         .strip()
     )
+    SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["yarn", "prettier", "--write"]
     PRETTIER_IGNORE = [
         "_pypi.ts",
