@@ -144,9 +144,6 @@
     "react-dom": "^17.0.1",
     "yjs": "^13.5.6"
   },
-  "devDependencies": {
-    "whatwg-fetch": "^3.0.0"
-  },
   "jupyterlab": {
     "extensions": [
       "@jupyterlab/application-extension",
