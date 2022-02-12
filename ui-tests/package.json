@@ -16,5 +16,8 @@
   },
   "dependencies": {
     "@jupyterlab/galata": "~4.0.2"
+  },
+  "resolutions": {
+    "@playwright/test": "~1.16.2"
   }
 }

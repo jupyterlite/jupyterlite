@@ -6,7 +6,7 @@ import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serializ
 
 import { UUID } from '@lumino/coreutils';
 
-import { Server as WebSocketServer, WebSocket } from 'mock-socket';
+import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
 
 import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
@@ -47,7 +47,11 @@ export class Kernels implements IKernels {
     const mutex = new Mutex();
 
     // hook a new client to a kernel
-    const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
+    const hook = (
+      kernelId: string,
+      clientId: string,
+      socket: WebSocketClient
+    ): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
@@ -146,7 +150,7 @@ export class Kernels implements IKernels {
 
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
-    wsServer.on('connection', (socket: WebSocket): void => {
+    wsServer.on('connection', (socket: WebSocketClient): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
       hook(kernelId, clientId, socket);
@@ -201,7 +205,7 @@ export class Kernels implements IKernels {
   }
 
   private _kernels = new ObservableMap<IKernel>();
-  private _clients = new ObservableMap<WebSocket>();
+  private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
 }
