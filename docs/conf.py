@@ -8,6 +8,8 @@ from pathlib import Path
 
 from sphinx.application import Sphinx
 
+os.environ.update(IN_SPHINX="1")
+
 CONF_PY = Path(__file__)
 HERE = CONF_PY.parent
 ROOT = HERE.parent

@@ -576,49 +576,43 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
 
-    def _clean_dupe_ids():
-        all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
+    if C.IN_SPHINX:
 
-        if not all_schema_html:
-            return
+        def _clean_dupe_ids():
+            all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
 
-        for schema_html in all_schema_html:
-            print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
-            text = schema_html.read_text(encoding="utf-8")
-            new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
-            if text != new_text:
-                schema_html.write_text(new_text, encoding="utf-8")
+            if not all_schema_html:
+                return
 
-    yield dict(
-        name="post:schema",
-        doc="clean sphinx-jsonschema duplicate ids",
-        actions=[_clean_dupe_ids],
-    )
+            for schema_html in all_schema_html:
+                print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
+                text = schema_html.read_text(encoding="utf-8")
+                new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
+                if text != new_text:
+                    schema_html.write_text(new_text, encoding="utf-8")
 
-    def _optimize_images():
-        all_svg = sorted(B.DOCS.glob("_static/*.svg"))
-
-        if not all_svg:
-            return
-
-        subprocess.check_call(
-            [
-                "yarn",
-                "svgo",
-                "--pretty",
-                "--indent=2",
-                *all_svg,
-                "-o",
-                *all_svg
-            ],
-            cwd=str(P.ROOT)
+        yield dict(
+            name="post:schema",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_clean_dupe_ids],
         )
 
-    yield dict(
-        name="post:images",
-        doc="clean sphinx-jsonschema duplicate ids",
-        actions=[_optimize_images],
-    )
+        def _optimize_images():
+            all_svg = sorted(B.DOCS.glob("_static/*.svg"))
+
+            if not all_svg:
+                return
+
+            subprocess.check_call(
+                ["yarn", "svgo", "--pretty", "--indent=2", *all_svg, "-o", *all_svg],
+                cwd=str(P.ROOT),
+            )
+
+        yield dict(
+            name="post:images",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_optimize_images],
+        )
 
 
 def task_check():
@@ -789,6 +783,7 @@ class C:
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
+    IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "[]"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
