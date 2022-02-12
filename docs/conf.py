@@ -2,10 +2,8 @@
 import datetime
 import json
 import os
-import re
 import subprocess
 import sys
-import shutil
 from pathlib import Path
 
 from sphinx.application import Sphinx

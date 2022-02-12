@@ -245,6 +245,7 @@ def task_build():
             U.do(
                 "yarn",
                 "svgo",
+                "--multipass",
                 "--pretty",
                 "--indent=2",
                 P.DOCS_ICON,
@@ -573,7 +574,12 @@ def task_docs():
     )
 
     def _clean_dupe_ids():
-        for schema_html in B.DOCS.glob("schema-v*.html"):
+        all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
+
+        if not all_schema_html:
+            return
+
+        for schema_html in all_schema_html:
             print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
             text = schema_html.read_text(encoding="utf-8")
             new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
@@ -583,23 +589,32 @@ def task_docs():
     yield dict(
         name="post:schema",
         doc="clean sphinx-jsonschema duplicate ids",
-        actions=[_clean_dupe_ids]
+        actions=[_clean_dupe_ids],
     )
 
     def _optimize_images():
-        all_svg = B.DOCS.glob("_static/*.svg")
-        subprocess.check_call([
-            "yarn",
-            "svgo",
-            "--pretty",
-            "--indent=2",
-            *all_svg,
-        ])
+        all_svg = sorted(B.DOCS.glob("_static/*.svg"))
+
+        if not all_svg:
+            return
+
+        subprocess.check_call(
+            [
+                "yarn",
+                "svgo",
+                "--pretty",
+                "--indent=2",
+                *all_svg,
+                "-o",
+                *all_svg
+            ],
+            cwd=str(P.ROOT)
+        )
 
     yield dict(
         name="post:images",
         doc="clean sphinx-jsonschema duplicate ids",
-        actions=[_optimize_images]
+        actions=[_optimize_images],
     )
 
 
