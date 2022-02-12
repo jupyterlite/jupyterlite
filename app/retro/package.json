@@ -142,7 +142,6 @@
     "fs-extra": "^8.1.0",
     "jest": "^26.4.2",
     "rimraf": "~3.0.2",
-    "watch": "~1.0.2",
     "whatwg-fetch": "^3.0.0"
   },
   "jupyterlab": {

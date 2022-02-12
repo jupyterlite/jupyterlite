@@ -156,7 +156,6 @@
     "@jupyterlab/testutils": "~3.2.9",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
-    "watch": "~1.0.2",
     "whatwg-fetch": "^3.0.0"
   },
   "jupyterlab": {
