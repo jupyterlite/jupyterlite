@@ -121,7 +121,11 @@ def do_tasks(label, tasks):
 
     for task in tasks:
         print(f"[jupyterlite-docs] running {label} {task}", flush=True)
-        rc = subprocess.call(["doit", task], cwd=str(ROOT))
+        rc = subprocess.call(["doit", "-n4", task], cwd=str(ROOT))
+
+        if rc != 0:
+            rc = subprocess.call(["doit", task], cwd=str(ROOT))
+
         print(f"[jupyterlite-docs] ... ran {label} {task}: returned {rc}", flush=True)
         task_rcs += [rc]
 
