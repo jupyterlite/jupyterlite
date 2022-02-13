@@ -8,6 +8,7 @@
   "references": [
     { "path": "../application" },
     { "path": "../application-extension" },
+    { "path": "../console-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
     { "path": "../javascript-kernel" },

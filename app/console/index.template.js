@@ -40,7 +40,7 @@ async function main() {
   let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
-    require('@jupyterlite/retro-application-extension'),
+    require('@jupyterlite/console-extension'),
 
     // @jupyterlab plugins
     require('@jupyterlab/application-extension').default.filter(({ id }) =>
@@ -211,7 +211,7 @@ async function main() {
   const { SingleWidgetApp } = require('@jupyterlite/application');
   const app = new SingleWidgetApp({ serviceManager, mimeExtensions });
 
-  app.name = PageConfig.getOption('appName') || 'RetroLite';
+  app.name = PageConfig.getOption('appName') || 'ConsoLite';
 
   app.registerPluginModules(mods);
 
