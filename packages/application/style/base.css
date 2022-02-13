@@ -16,3 +16,7 @@ body {
   right: 0;
   bottom: 0;
 }
+
+#single-widget-panel {
+  height: 100%;
+}

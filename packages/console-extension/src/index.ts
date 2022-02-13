@@ -22,7 +22,9 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
   requires: [ITranslator],
   activate: (app: JupyterFrontEnd, translator: ITranslator): void => {
     const { commands } = app;
-    commands.execute('console:create', { kernelPreference: { name: 'javascript' } });
+    app.started.then(() => {
+      commands.execute('console:create', { kernelPreference: { name: 'javascript' } });
+    });
   }
 };
 

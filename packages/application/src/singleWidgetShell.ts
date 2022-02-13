@@ -35,7 +35,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
 
     const rootLayout = new PanelLayout();
     this._main = new Panel();
-    this._main.id = 'main-panel';
+    this._main.id = 'single-widget-panel';
     rootLayout.addWidget(this._main);
     this.layout = rootLayout;
   }
