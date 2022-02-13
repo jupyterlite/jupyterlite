@@ -27,7 +27,7 @@ import { Panel, Widget } from '@lumino/widgets';
  * A plugin to add buttons to the console toolbar.
  */
 const buttons: JupyterFrontEndPlugin<void> = {
-  id: 'replite:buttons',
+  id: '@jupyterlite/console-application:buttons',
   autoStart: true,
   requires: [ITranslator],
   optional: [IConsoleTracker],
@@ -44,7 +44,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
     const trans = translator.load('jupyterlab');
 
     // wrapper commands to be able to override the icon
-    const runCommand = 'replite:run';
+    const runCommand = 'repl:run';
     commands.addCommand(runCommand, {
       caption: trans.__('Run'),
       icon: runIcon,
@@ -58,7 +58,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
       id: runCommand
     });
 
-    const restartCommand = 'replite:restart';
+    const restartCommand = 'repl:restart';
     commands.addCommand(restartCommand, {
       caption: trans.__('Restart'),
       icon: refreshIcon,
@@ -72,7 +72,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
       id: restartCommand
     });
 
-    const clearCommand = 'replite:clear';
+    const clearCommand = 'repl:clear';
     commands.addCommand(clearCommand, {
       caption: trans.__('Clear'),
       icon: clearIcon,
