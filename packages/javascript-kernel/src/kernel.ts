@@ -111,12 +111,12 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
         user_expressions: {},
       };
     } catch (e) {
-      const { name, stack, message } = e;
+      const { name, stack, message } = e as any as Error;
 
       this.publishExecuteError({
         ename: name,
         evalue: message,
-        traceback: [stack],
+        traceback: [`${stack}`],
       });
 
       return {
@@ -124,7 +124,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
         execution_count: this.executionCount,
         ename: name,
         evalue: message,
-        traceback: [stack],
+        traceback: [`${stack}`],
       };
     }
   }
