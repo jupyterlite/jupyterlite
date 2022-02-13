@@ -21,7 +21,7 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import { Panel, Widget } from '@lumino/widgets';
+import { Widget } from '@lumino/widgets';
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -95,9 +95,6 @@ const buttons: JupyterFrontEndPlugin<void> = {
 
       toolbar.addItem('spacer', Toolbar.createSpacerItem());
 
-      const wrapper = new Panel();
-      wrapper.addClass('jp-PoweredBy');
-
       const node = document.createElement('a');
       node.title = trans.__('Powered by JupyterLite');
       node.href = 'https://github.com/jupyterlite/jupyterlite';
@@ -112,8 +109,8 @@ const buttons: JupyterFrontEndPlugin<void> = {
         width: '16px'
       });
 
-      wrapper.addWidget(poweredBy);
-      toolbar.insertAfter('spacer', 'powered-by', wrapper);
+      poweredBy.addClass('jp-PoweredBy');
+      toolbar.insertAfter('spacer', 'powered-by', poweredBy);
     });
   }
 };
