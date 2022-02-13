@@ -112,7 +112,7 @@ export class Kernels implements IKernels {
     if (runningKernel) {
       return {
         id: runningKernel.id,
-        name: runningKernel.name
+        name: runningKernel.name,
       };
     }
 
@@ -129,7 +129,7 @@ export class Kernels implements IKernels {
       // process iopub messages
       if (msg.channel === 'iopub') {
         const clients = this._kernelClients.get(kernelId);
-        clients?.forEach(id => {
+        clients?.forEach((id) => {
           this._clients.get(id)?.send(message);
         });
         return;
@@ -140,7 +140,7 @@ export class Kernels implements IKernels {
     const kernel = await factory({
       id: kernelId,
       sendMessage,
-      name
+      name,
     });
 
     await kernel.ready;
@@ -158,7 +158,7 @@ export class Kernels implements IKernels {
 
     // clean up closed connection
     wsServer.on('close', (): void => {
-      this._clients.keys().forEach(clientId => {
+      this._clients.keys().forEach((clientId) => {
         const socket = this._clients.get(clientId);
         if (socket?.readyState === WebSocket.CLOSED) {
           this._clients.delete(clientId);
@@ -176,7 +176,7 @@ export class Kernels implements IKernels {
 
     return {
       id: kernel.id,
-      name: kernel.name
+      name: kernel.name,
     };
   }
 

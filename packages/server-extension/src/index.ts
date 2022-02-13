@@ -11,7 +11,7 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   JupyterServer,
-  LiteServiceManager
+  LiteServiceManager,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -30,7 +30,7 @@ const contents: JupyterLiteServerPlugin<IContents> = {
   activate: (app: JupyterLiteServer) => {
     const contentsStorageName = PageConfig.getOption('contentsStorageName');
     return new Contents({ contentsStorageName });
-  }
+  },
 };
 
 /**
@@ -43,7 +43,7 @@ const kernels: JupyterLiteServerPlugin<IKernels> = {
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     return new Kernels({ kernelspecs });
-  }
+  },
 };
 
 /**
@@ -55,7 +55,7 @@ const kernelSpec: JupyterLiteServerPlugin<IKernelSpecs> = {
   provides: IKernelSpecs,
   activate: (app: JupyterLiteServer) => {
     return new KernelSpecs({});
-  }
+  },
 };
 
 /**
@@ -68,7 +68,7 @@ const sessions: JupyterLiteServerPlugin<ISessions> = {
   requires: [IKernels],
   activate: (app: JupyterLiteServer, kernels: IKernels) => {
     return new Sessions({ kernels });
-  }
+  },
 };
 
 /**
@@ -93,11 +93,11 @@ const server: JupyterLiteServerPlugin<void> = {
       kernelspecs,
       sessions,
       settings,
-      translation
+      translation,
     });
     const serviceManager = new LiteServiceManager({ server: jupyterServer });
     app.registerServiceManager(serviceManager);
-  }
+  },
 };
 
 /**
@@ -110,7 +110,7 @@ const settings: JupyterLiteServerPlugin<ISettings> = {
   activate: (app: JupyterLiteServer) => {
     const settingsStorageName = PageConfig.getOption('settingsStorageName');
     return new Settings({ settingsStorageName });
-  }
+  },
 };
 
 /**
@@ -122,7 +122,7 @@ const translation: JupyterLiteServerPlugin<ITranslation> = {
   provides: ITranslation,
   activate: (app: JupyterLiteServer) => {
     return new Translation();
-  }
+  },
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [
@@ -132,7 +132,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   server,
   sessions,
   settings,
-  translation
+  translation,
 ];
 
 export default plugins;

@@ -242,7 +242,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -270,7 +270,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -295,7 +295,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -320,7 +320,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -345,7 +345,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -370,7 +370,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -395,7 +395,7 @@ export abstract class BaseKernel implements IKernel {
       // TODO: better handle this
       session: parentHeaderValue?.session ?? '',
       parentHeader: parentHeaderValue,
-      content
+      content,
     });
     this._sendMessage(message);
   }
@@ -424,7 +424,7 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: parentHeaderValue,
       content,
       metadata,
-      buffers
+      buffers,
     });
     this._sendMessage(message);
   }
@@ -441,8 +441,8 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: parent.header,
       channel: 'iopub',
       content: {
-        execution_state: 'idle'
-      }
+        execution_state: 'idle',
+      },
     });
     this._sendMessage(message);
   }
@@ -459,8 +459,8 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: parent.header,
       channel: 'iopub',
       content: {
-        execution_state: 'busy'
-      }
+        execution_state: 'busy',
+      },
     });
     this._sendMessage(message);
   }
@@ -478,7 +478,7 @@ export abstract class BaseKernel implements IKernel {
       channel: 'shell',
       session: parent.header.session,
       parentHeader: parent.header as KernelMessage.IHeader<'kernel_info_request'>,
-      content
+      content,
     });
 
     this._sendMessage(message);
@@ -498,8 +498,8 @@ export abstract class BaseKernel implements IKernel {
       session: msg.header.session,
       content: {
         status: 'ok',
-        history: this._history as KernelMessage.IHistoryReply['history']
-      }
+        history: this._history as KernelMessage.IHistoryReply['history'],
+      },
     });
     this._sendMessage(message);
   }
@@ -519,8 +519,8 @@ export abstract class BaseKernel implements IKernel {
       session: msg.header.session,
       content: {
         code,
-        execution_count: this._executionCount
-      }
+        execution_count: this._executionCount,
+      },
     });
     this._sendMessage(message);
   }
@@ -552,7 +552,7 @@ export abstract class BaseKernel implements IKernel {
       channel: 'shell',
       parentHeader: executeMsg.header,
       session: msg.header.session,
-      content: reply
+      content: reply,
     });
 
     this._sendMessage(message);
@@ -571,7 +571,7 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: completeMsg.header,
       channel: 'shell',
       session: msg.header.session,
-      content
+      content,
     });
 
     this._sendMessage(message);
@@ -590,7 +590,7 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: inspectMsg.header,
       channel: 'shell',
       session: msg.header.session,
-      content
+      content,
     });
 
     this._sendMessage(message);
@@ -609,7 +609,7 @@ export abstract class BaseKernel implements IKernel {
       parentHeader: isCompleteMsg.header,
       channel: 'shell',
       session: msg.header.session,
-      content
+      content,
     });
 
     this._sendMessage(message);
@@ -622,8 +622,7 @@ export abstract class BaseKernel implements IKernel {
   private _isDisposed = false;
   private _disposed = new Signal<this, void>(this);
   private _sendMessage: IKernel.SendMessage;
-  private _parentHeader:
-    | KernelMessage.IHeader<KernelMessage.MessageType>
-    | undefined = undefined;
+  private _parentHeader: KernelMessage.IHeader<KernelMessage.MessageType> | undefined =
+    undefined;
   private _parent: KernelMessage.IMessage | undefined = undefined;
 }

@@ -222,7 +222,7 @@ export function fixOneRelativeUrl(key, value, url, urlBase) {
     // themesUrls is joined in code with baseUrl, leave as-is: otherwise, clean
     return `${urlBase}${value.slice(2)}`;
   } else if (key.endsWith('Urls') && Array.isArray(value)) {
-    return value.map(v => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
+    return value.map((v) => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
   }
   return value;
 }

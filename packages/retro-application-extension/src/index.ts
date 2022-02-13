@@ -38,7 +38,7 @@ const consoles: JupyterFrontEndPlugin<void> = {
       // the widget is not needed anymore
       console.dispose();
     });
-  }
+  },
 };
 
 /**
@@ -71,7 +71,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       window.open(`${baseUrl}retro/${route}?path=${path}`);
       return undefined;
     };
-  }
+  },
 };
 
 /**
@@ -93,11 +93,11 @@ const logo: JupyterFrontEndPlugin<void> = {
       elementPosition: 'center',
       padding: '2px 2px 2px 8px',
       height: '28px',
-      width: 'auto'
+      width: 'auto',
     });
     logo.id = 'jp-RetroLogo';
     app.shell.add(logo, 'top', { rank: 0 });
-  }
+  },
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo];

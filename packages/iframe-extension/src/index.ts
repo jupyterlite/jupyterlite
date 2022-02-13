@@ -81,7 +81,7 @@ export const rendererFactory: IRenderMime.IRendererFactory = {
   safe: false,
   mimeTypes: [MIME_TYPE],
   defaultRank: 100,
-  createRenderer: options => new RenderedIFrame()
+  createRenderer: (options) => new RenderedIFrame(),
 };
 
 const extensions: IRenderMime.IExtension | IRenderMime.IExtension[] = [
@@ -93,9 +93,9 @@ const extensions: IRenderMime.IExtension | IRenderMime.IExtension[] = [
       name: 'IFrame',
       primaryFileType: 'IFrame',
       fileTypes: ['IFrame'],
-      defaultFor: ['IFrame']
-    }
-  }
+      defaultFor: ['IFrame'],
+    },
+  },
 ];
 
 export default extensions;

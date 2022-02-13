@@ -23,7 +23,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     super(options);
     const blob = new Blob([this.buildWorkerScript(options).join('\n')]);
     this._worker = new Worker(window.URL.createObjectURL(blob));
-    this._worker.onmessage = e => {
+    this._worker.onmessage = (e) => {
       this._processWorkerMessage(e.data);
     };
     this._ready.resolve();
@@ -60,7 +60,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       // ...but maybe not PyPI...
       `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)};`,
       // ...finally, the worker... which _must_ appear last!
-      worker.toString()
+      worker.toString(),
     ];
   }
 
@@ -144,7 +144,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       default:
         this._executeDelegate.resolve({
           data: {},
-          metadata: {}
+          metadata: {},
         });
         break;
     }
@@ -160,14 +160,14 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       language_info: {
         codemirror_mode: {
           name: 'python',
-          version: 3
+          version: 3,
         },
         file_extension: '.py',
         mimetype: 'text/x-python',
         name: 'python',
         nbconvert_exporter: 'python',
         pygments_lexer: 'ipython3',
-        version: '3.8'
+        version: '3.8',
       },
       protocol_version: '5.3',
       status: 'ok',
@@ -175,9 +175,9 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       help_links: [
         {
           text: 'Python (WASM) Kernel',
-          url: 'https://pyodide.org'
-        }
-      ]
+          url: 'https://pyodide.org',
+        },
+      ],
     };
     return content;
   }
@@ -194,7 +194,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     return {
       execution_count: this.executionCount,
-      ...result
+      ...result,
     };
   }
 
@@ -257,7 +257,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     this._worker.postMessage({
       type: 'input-reply',
       data: content,
-      parent: this.parent
+      parent: this.parent,
     });
   }
 

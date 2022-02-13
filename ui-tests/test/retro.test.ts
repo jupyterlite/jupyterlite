@@ -14,7 +14,7 @@ const test = base.extend({
       await page.waitForSelector('#filebrowser');
     };
     await use(waitIsReady);
-  }
+  },
 });
 
 test.describe('Retro Tests', () => {

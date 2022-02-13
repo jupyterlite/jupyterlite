@@ -91,7 +91,7 @@ export class JupyterServer {
     // GET /api/contents/{path} - Get contents of file or directory
     app.get('/api/contents(.*)', async (req: Router.IRequest, filename: string) => {
       const options: ServerContents.IFetchOptions = {
-        content: req.query?.content === '1'
+        content: req.query?.content === '1',
       };
       const nb = await this._contents.get(filename, options);
       if (!nb) {
