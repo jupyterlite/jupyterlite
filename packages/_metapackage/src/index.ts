@@ -1,5 +1,7 @@
+import '@jupyterlite/application';
 import '@jupyterlite/application-extension';
 import '@jupyterlite/contents';
+import '@jupyterlite/console-extension';
 import '@jupyterlite/iframe-extension';
 import '@jupyterlite/javascript-kernel-extension';
 import '@jupyterlite/javascript-kernel';
