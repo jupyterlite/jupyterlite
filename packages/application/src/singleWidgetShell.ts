@@ -17,7 +17,7 @@ import { Panel, Widget, PanelLayout } from '@lumino/widgets';
  * The single widget application shell token.
  */
 export const ISingleWidgetShell = new Token<ISingleWidgetShell>(
-  '@jupyterlite/:INotebookShell'
+  '@jupyterlite/:ISingleWidgetShell'
 );
 
 /**

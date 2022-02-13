@@ -1,15 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { NotebookShell, INotebookShell } from '@jupyter-notebook/application';
+import { SingleWidgetShell, ISingleWidgetShell } from '@jupyterlite/application';
 
 import { Widget } from '@lumino/widgets';
 
 describe('Shell', () => {
-  let shell: INotebookShell;
+  let shell: ISingleWidgetShell;
 
   beforeEach(() => {
-    shell = new NotebookShell();
+    shell = new SingleWidgetShell();
     Widget.attach(shell, document.body);
   });
 
@@ -18,8 +18,8 @@ describe('Shell', () => {
   });
 
   describe('#constructor()', () => {
-    it('should create a LabShell instance', () => {
-      expect(shell).toBeInstanceOf(NotebookShell);
+    it('should create a shell instance', () => {
+      expect(shell).toBeInstanceOf(SingleWidgetShell);
     });
   });
 });

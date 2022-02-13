@@ -18,11 +18,11 @@ import { ISingleWidgetShell, SingleWidgetShell } from './singleWidgetShell';
  */
 export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
   /**
-   * Construct a new NotebookApp object.
+   * Construct a new SingleWidgetApp object.
    *
    * @param options The instantiation options for an application.
    */
-  constructor(options: NotebookApp.IOptions = { shell: new SingleWidgetShell() }) {
+  constructor(options: SingleWidgetApp.IOptions = { shell: new SingleWidgetShell() }) {
     super({
       ...options,
       shell: options.shell ?? new SingleWidgetShell()
@@ -91,7 +91,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
    *
    * @param mod - The plugin module to register.
    */
-  registerPluginModule(mod: NotebookApp.IPluginModule): void {
+  registerPluginModule(mod: SingleWidgetApp.IPluginModule): void {
     let data = mod.default;
     // Handle commonjs exports.
     if (!Object.prototype.hasOwnProperty.call(mod, '__esModule')) {
@@ -114,7 +114,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
    *
    * @param mods - The plugin modules to register.
    */
-  registerPluginModules(mods: NotebookApp.IPluginModule[]): void {
+  registerPluginModules(mods: SingleWidgetApp.IPluginModule[]): void {
     mods.forEach(mod => {
       this.registerPluginModule(mod);
     });
@@ -124,7 +124,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
 /**
  * A namespace for App statics.
  */
-export namespace NotebookApp {
+export namespace SingleWidgetApp {
   /**
    * The instantiation options for an App application.
    */
