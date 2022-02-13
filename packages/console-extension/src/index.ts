@@ -1,7 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
+import {
+  ILabStatus,
+  IRouter,
+  JupyterFrontEndPlugin,
+  JupyterFrontEnd,
+  Router
+} from '@jupyterlab/application';
 
 import { ITranslator } from '@jupyterlab/translation';
 
@@ -21,7 +27,22 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * The default paths for a RetroLab app.
+ * The default JupyterLab application status provider.
+ */
+const status: JupyterFrontEndPlugin<ILabStatus> = {
+  id: '@retrolab/application-extension:status',
+  autoStart: true,
+  provides: ILabStatus,
+  activate: (app: JupyterFrontEnd) => {
+    if (!(app instanceof SingleWidgetApp)) {
+      throw new Error(`${status.id} must be activated in SingleWidgetApp.`);
+    }
+    return app.status;
+  }
+};
+
+/**
+ * The default paths for a single widget app.
  */
 const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
   id: '@jupyterlite/console-extension:paths',
@@ -35,6 +56,31 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
   }
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [consolePlugin, paths];
+/**
+ * The default URL router provider.
+ */
+const router: JupyterFrontEndPlugin<IRouter> = {
+  id: '@jupyterlite/console-extension:router',
+  autoStart: true,
+  provides: IRouter,
+  requires: [JupyterFrontEnd.IPaths],
+  activate: (app: JupyterFrontEnd, paths: JupyterFrontEnd.IPaths) => {
+    const { commands } = app;
+    const base = paths.urls.base;
+    const router = new Router({ base, commands });
+    void app.started.then(() => {
+      // Route the very first request on load.
+      void router.route();
+
+      // Route all pop state events.
+      window.addEventListener('popstate', () => {
+        void router.route();
+      });
+    });
+    return router;
+  }
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [consolePlugin, paths, router, status];
 
 export default plugins;

@@ -87,6 +87,7 @@
     "@jupyterlab/codemirror-extension": "~3.2.9",
     "@jupyterlab/completer-extension": "~3.2.9",
     "@jupyterlab/console-extension": "~3.2.9",
+    "@jupyterlab/docmanager-extension": "~3.2.9",
     "@jupyterlab/imageviewer-extension": "~3.2.9",
     "@jupyterlab/inspector-extension": "~3.2.9",
     "@jupyterlab/javascript-extension": "~3.2.9",
@@ -109,6 +110,7 @@
     "@jupyterlite/server": "^0.1.0-alpha.22",
     "@jupyterlite/server-extension": "^0.1.0-alpha.22",
     "@jupyterlite/ui-components": "^0.1.0-alpha.22",
+    "@retrolab/application-extension": "^0.3.19",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -121,6 +123,7 @@
       "@jupyterlab/codemirror-extension",
       "@jupyterlab/completer-extension",
       "@jupyterlab/console-extension",
+      "@jupyterlab/docmanager-extension",
       "@jupyterlab/imageviewer-extension",
       "@jupyterlab/inspector-extension",
       "@jupyterlab/json-extension",
@@ -139,7 +142,8 @@
       "@jupyterlite/console-extension",
       "@jupyterlite/iframe-extension",
       "@jupyterlite/javascript-kernel-extension",
-      "@jupyterlite/server-extension"
+      "@jupyterlite/server-extension",
+      "@retrolab/application-extension"
     ],
     "singletonPackages": [
       "@jupyterlab/application",

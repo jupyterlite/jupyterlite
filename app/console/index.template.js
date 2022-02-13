@@ -42,6 +42,13 @@ async function main() {
     require('@jupyterlite/application-extension'),
     require('@jupyterlite/console-extension'),
 
+    // @retrolab plugins
+    require('@retrolab/application-extension').default.filter(({ id }) =>
+      [
+        '@retrolab/application-extension:session-dialogs',
+      ].includes(id)
+    ),
+
     // @jupyterlab plugins
     require('@jupyterlab/application-extension').default.filter(({ id }) =>
       [
@@ -69,6 +76,9 @@ async function main() {
       ['@jupyterlab/completer-extension:manager'].includes(id)
     ),
     require('@jupyterlab/console-extension'),
+    require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
+      ['@jupyterlab/docmanager-extension:plugin'].includes(id)
+    ),
     require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
       [
         '@jupyterlab/filebrowser-extension:factory'
