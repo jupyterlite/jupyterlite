@@ -99,14 +99,13 @@ const buttons: JupyterFrontEndPlugin<void> = {
       wrapper.addClass('jp-PoweredBy');
 
       const node = document.createElement('a');
-      node.textContent = trans.__('Powered by JupyterLite');
+      node.title = trans.__('Powered by JupyterLite');
       node.href = 'https://github.com/jupyterlite/jupyterlite';
       node.target = '_blank';
       node.rel = 'noopener noreferrer';
       const poweredBy = new Widget({ node });
-      const icon = new Widget();
       liteIcon.element({
-        container: icon.node,
+        container: node,
         elementPosition: 'center',
         margin: '2px 2px 2px 8px',
         height: 'auto',
@@ -114,8 +113,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
       });
 
       wrapper.addWidget(poweredBy);
-      wrapper.addWidget(icon);
-      toolbar.addItem('powered-by', wrapper);
+      toolbar.insertAfter('spacer', 'powered-by', wrapper);
     });
   }
 };
