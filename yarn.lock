@@ -2631,13 +2631,9 @@
     "@jupyterlab/coreutils" "~5.2.9"
     "@jupyterlab/docregistry" "~3.2.9"
     "@jupyterlab/rendermime-interfaces" "~3.2.9"
-    "@jupyterlab/ui-components" "~3.2.9"
-    "@lumino/algorithm" "^1.9.1"
-    "@lumino/coreutils" "^1.11.1"
-    "@lumino/messaging" "^1.10.1"
-    "@lumino/polling" "^1.9.1"
+    "@lumino/coreutils" "^1.12.0"
     "@lumino/signaling" "^1.10.1"
-    "@lumino/widgets" "^1.30.1"
+    "@lumino/widgets" "^1.31.1"
 
 "@jupyterlite/console-extension@file:packages/console-extension":
   version "0.1.0-alpha.22"
@@ -3456,7 +3452,7 @@
     "@lumino/signaling" "^1.10.1"
     "@lumino/virtualdom" "^1.14.1"
 
-"@lumino/coreutils@^1.11.1", "@lumino/coreutils@^1.12.0", "@lumino/coreutils@^1.5.3", "@lumino/coreutils@^1.8.0":
+"@lumino/coreutils@^1.12.0", "@lumino/coreutils@^1.5.3", "@lumino/coreutils@^1.8.0":
   version "1.12.0"
   resolved "https://registry.npmjs.org/@lumino/coreutils/-/coreutils-1.12.0.tgz#fbdef760f736eaf2bd396a5c6fc3a68a4b449b15"
   integrity sha512-DSglh4ylmLi820CNx9soJmDJCpUgymckdWeGWuN0Ash5g60oQvrQDfosVxEhzmNvtvXv45WZEqSBzDP6E5SEmQ==
@@ -3510,7 +3506,7 @@
     "@lumino/algorithm" "^1.9.1"
     "@lumino/collections" "^1.9.1"
 
-"@lumino/polling@^1.3.3", "@lumino/polling@^1.6.0", "@lumino/polling@^1.9.1":
+"@lumino/polling@^1.3.3", "@lumino/polling@^1.6.0":
   version "1.10.0"
   resolved "https://registry.npmjs.org/@lumino/polling/-/polling-1.10.0.tgz#94a92811edf4c2534c741510b30f500d8c16a395"
   integrity sha512-ZNXObJQfugnS41Yrlr7yWcFiRK+xAGGOXO08JJ0Mctsg5mT30UEGFVWJY2AjZ6N5aQuLyGed/pMkBzLzrzt8OA==
