@@ -231,7 +231,7 @@ async function main() {
     for (let plugin of activePlugins(p)) {
       mods.push(plugin);
     }
-  })
+  });
 
   // Add the federated mime extensions.
   const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);

@@ -2,12 +2,6 @@
   "name": "@jupyterlite/app-console",
   "version": "0.1.0-alpha.22",
   "private": true,
-  "scripts": {
-    "build:test": "tsc --build tsconfig.test.json",
-    "test:cov": "jest --collect-coverage",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
-    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch"
-  },
   "resolutions": {
     "@jupyterlab/application": "~3.2.9",
     "@jupyterlab/application-extension": "~3.2.9",
@@ -119,14 +113,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "yjs": "^13.5.6"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.2.9",
-    "@types/jest": "^26.0.10",
-    "jest": "^26.4.2",
-    "whatwg-fetch": "^3.0.0"
   },
   "jupyterlab": {
     "extensions": [
