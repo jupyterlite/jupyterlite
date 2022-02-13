@@ -3123,6 +3123,12 @@
     "@lumino/signaling" "^1.10.1"
     "@lumino/widgets" "^1.30.1"
 
+"@jupyterlite/console-extension@file:packages/console-extension":
+  version "0.1.0-alpha.22"
+  dependencies:
+    "@jupyterlab/application" "~3.2.9"
+    "@jupyterlab/translation" "~3.2.9"
+
 "@jupyterlite/contents@file:packages/contents":
   version "0.1.0-alpha.22"
   dependencies:

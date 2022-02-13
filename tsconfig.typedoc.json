@@ -16,6 +16,9 @@
       "path": "./packages/application-extension"
     },
     {
+      "path": "./packages/console-extension"
+    },
+    {
       "path": "./packages/contents"
     },
     {
