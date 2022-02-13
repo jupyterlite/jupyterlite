@@ -17,8 +17,8 @@
   },
   "jupyterlite": {
     "apps": [
-      "console",
       "lab",
+      "repl",
       "retro"
     ]
   },

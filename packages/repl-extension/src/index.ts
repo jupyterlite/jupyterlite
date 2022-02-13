@@ -123,7 +123,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
  * parse custom parameters from the query string arguments.
  */
 const consolePlugin: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/console-extension:console',
+  id: '@jupyterlite/repl-extension:console',
   autoStart: true,
   optional: [IConsoleTracker, IThemeManager],
   activate: (
@@ -172,7 +172,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
  * The default JupyterLab application status provider.
  */
 const status: JupyterFrontEndPlugin<ILabStatus> = {
-  id: '@jupyterlite/console-extension:status',
+  id: '@jupyterlite/repl-extension:status',
   autoStart: true,
   provides: ILabStatus,
   activate: (app: JupyterFrontEnd) => {
@@ -187,7 +187,7 @@ const status: JupyterFrontEndPlugin<ILabStatus> = {
  * The default paths for a single widget app.
  */
 const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
-  id: '@jupyterlite/console-extension:paths',
+  id: '@jupyterlite/repl-extension:paths',
   autoStart: true,
   provides: JupyterFrontEnd.IPaths,
   activate: (app: JupyterFrontEnd): JupyterFrontEnd.IPaths => {
@@ -202,7 +202,7 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
  * The default URL router provider.
  */
 const router: JupyterFrontEndPlugin<IRouter> = {
-  id: '@jupyterlite/console-extension:router',
+  id: '@jupyterlite/repl-extension:router',
   autoStart: true,
   provides: IRouter,
   requires: [JupyterFrontEnd.IPaths],

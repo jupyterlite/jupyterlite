@@ -4,7 +4,7 @@
   "entryPoints": [
     "packages/application-extension/src/index.tsx",
     "packages/application/src/index.ts",
-    "packages/console-extension/src/index.ts",
+    "packages/repl-extension/src/index.ts",
     "packages/contents/src/index.ts",
     "packages/iframe-extension/src/index.ts",
     "packages/javascript-kernel-extension/src/index.ts",

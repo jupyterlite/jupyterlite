@@ -2635,18 +2635,6 @@
     "@lumino/signaling" "^1.10.1"
     "@lumino/widgets" "^1.31.1"
 
-"@jupyterlite/console-extension@file:packages/console-extension":
-  version "0.1.0-alpha.22"
-  dependencies:
-    "@jupyterlab/application" "~3.2.9"
-    "@jupyterlab/apputils" "~3.2.9"
-    "@jupyterlab/console" "~3.2.9"
-    "@jupyterlab/translation" "~3.2.9"
-    "@jupyterlab/ui-components" "~3.2.9"
-    "@jupyterlite/application" "^0.1.0-alpha.22"
-    "@jupyterlite/ui-components" "^0.1.0-alpha.22"
-    "@lumino/widgets" "^1.30.1"
-
 "@jupyterlite/contents@file:packages/contents":
   version "0.1.0-alpha.22"
   dependencies:
@@ -2698,6 +2686,18 @@
   version "0.1.0-alpha.22"
   dependencies:
     "@jupyterlite/kernel" "^0.1.0-alpha.22"
+
+"@jupyterlite/repl-extension@file:packages/repl-extension":
+  version "0.1.0-alpha.22"
+  dependencies:
+    "@jupyterlab/application" "~3.2.9"
+    "@jupyterlab/apputils" "~3.2.9"
+    "@jupyterlab/console" "~3.2.9"
+    "@jupyterlab/translation" "~3.2.9"
+    "@jupyterlab/ui-components" "~3.2.9"
+    "@jupyterlite/application" "^0.1.0-alpha.22"
+    "@jupyterlite/ui-components" "^0.1.0-alpha.22"
+    "@lumino/widgets" "^1.30.1"
 
 "@jupyterlite/retro-application-extension@file:packages/retro-application-extension":
   version "0.1.0-alpha.22"

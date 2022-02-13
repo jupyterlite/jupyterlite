@@ -1,5 +1,5 @@
 {
-  "name": "@jupyterlite/app-console",
+  "name": "@jupyterlite/app-repl",
   "version": "0.1.0-alpha.22",
   "private": true,
   "resolutions": {
@@ -138,7 +138,7 @@
       "@jupyterlab/translation-extension",
       "@jupyterlab/vega5-extension",
       "@jupyterlite/application-extension",
-      "@jupyterlite/console-extension",
+      "@jupyterlite/repl-extension",
       "@jupyterlite/iframe-extension",
       "@jupyterlite/javascript-kernel-extension",
       "@jupyterlite/server-extension",

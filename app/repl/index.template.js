@@ -40,7 +40,7 @@ async function main() {
   let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
-    require('@jupyterlite/console-extension'),
+    require('@jupyterlite/repl-extension'),
 
     // @retrolab plugins
     require('@retrolab/application-extension').default.filter(({ id }) =>

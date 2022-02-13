@@ -1,5 +1,5 @@
 {
-  "name": "@jupyterlite/console-extension",
+  "name": "@jupyterlite/repl-extension",
   "version": "0.1.0-alpha.22",
   "description": "JupyterLite - Console Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",

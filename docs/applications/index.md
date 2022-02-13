@@ -7,5 +7,5 @@
 
 lab
 retro
-console
+repl
 ```

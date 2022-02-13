@@ -8,8 +8,8 @@ jest-setup.js
 jest.config.js
 node_modules/
 publicpath.js
-console/build
 lab/build
+repl/build
 retro/build
 tsconfig.*
 webpack.*.js

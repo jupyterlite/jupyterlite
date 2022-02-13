@@ -15,9 +15,9 @@ const test = base.extend({
   }
 });
 
-test.describe('Console Tests', () => {
+test.describe('REPL Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('console/index.html?toolbar=1&kernel=javascript');
+    await page.goto('repl/index.html?toolbar=1&kernel=javascript');
   });
 
   test('Page', async ({ page }) => {
