@@ -73,7 +73,10 @@ async function main() {
       ].includes(id)
     ),
     require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-      ['@jupyterlab/completer-extension:manager'].includes(id)
+      [
+        '@jupyterlab/completer-extension:manager',
+        '@jupyterlab/completer-extension:consoles'
+      ].includes(id)
     ),
     require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
@@ -90,6 +93,12 @@ async function main() {
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
     require('@jupyterlab/theme-dark-extension'),
+    require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/tooltip-extension:manager',
+        '@jupyterlab/tooltip-extension:consoles'
+      ].includes(id)
+    ),
     require('@jupyterlab/translation-extension')
   ];
 
