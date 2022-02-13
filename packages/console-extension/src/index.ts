@@ -41,7 +41,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
     }
 
     const { commands } = app;
-    const trans = translator.load('retrolab');
+    const trans = translator.load('jupyterlab');
 
     // wrapper commands to be able to override the icon
     const runCommand = 'replite:run';
@@ -174,7 +174,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
  * The default JupyterLab application status provider.
  */
 const status: JupyterFrontEndPlugin<ILabStatus> = {
-  id: '@retrolab/application-extension:status',
+  id: '@jupyterlite/console-extension:status',
   autoStart: true,
   provides: ILabStatus,
   activate: (app: JupyterFrontEnd) => {
