@@ -28,7 +28,7 @@
     "build:python": "lerna run build:python",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
-    "deduplicate": "yarn yarn-deduplicate -s fewer --fail",
+    "deduplicate": "yarn-deduplicate -s fewer --fail",
     "docs": "typedoc",
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
