@@ -246,10 +246,7 @@ def task_build():
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
-                "yarn",
-                "svgo",
-                "--pretty",
-                "--indent=2",
+                *C.SVGO,
                 P.DOCS_ICON,
                 P.DOCS_WORDMARK,
                 "-o",
@@ -423,7 +420,6 @@ def task_build():
         )
 
 
-@doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
@@ -575,7 +571,49 @@ def task_docs():
         targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
 
+    if C.IN_SPHINX:
 
+        def _clean_dupe_ids():
+            all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
+
+            for schema_html in all_schema_html:
+                print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
+                text = schema_html.read_text(encoding="utf-8")
+                new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
+                if text != new_text:
+                    schema_html.write_text(new_text, encoding="utf-8")
+
+        yield dict(
+            name="post:schema",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_clean_dupe_ids],
+        )
+
+        def _skip_image(path):
+            as_posix = str(path.as_posix())
+            return (
+                "_static/extensions" in as_posix
+                or "_static/build" in as_posix
+                or "_static/vendor" in as_posix
+            )
+
+        def _optimize_images():
+            all_svg = [p for p in B.DOCS.rglob("*.svg") if not _skip_image(p)]
+
+            subprocess.check_call(
+                [*C.SVGO, *all_svg, "-o", *all_svg],
+                cwd=str(P.ROOT),
+            )
+
+        yield dict(
+            name="post:images",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_optimize_images],
+            file_dep=[B.YARN_INTEGRITY],
+        )
+
+
+@doit.create_after("docs")
 def task_check():
     """perform checks of built artifacts"""
     yield dict(
@@ -744,6 +782,7 @@ class C:
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
+    IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
@@ -803,6 +842,7 @@ class C:
         .decode("utf-8")
         .strip()
     )
+    SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["yarn", "prettier", "--write"]
     PRETTIER_IGNORE = [
         "_pypi.ts",
