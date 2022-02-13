@@ -533,14 +533,18 @@ export abstract class BaseKernel implements IKernel {
   private async _execute(msg: KernelMessage.IMessage): Promise<void> {
     const executeMsg = msg as KernelMessage.IExecuteRequestMsg;
     const content = executeMsg.content;
-    this._executionCount++;
+    if (content.store_history) {
+      this._executionCount++;
+    }
 
     // TODO: handle differently
     this._parentHeader = executeMsg.header;
 
     this._executeInput(executeMsg);
 
-    this._history.push([0, 0, content.code]);
+    if (content.store_history) {
+      this._history.push([0, 0, content.code]);
+    }
 
     const reply = await this.executeRequest(executeMsg.content);
     const message = KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
