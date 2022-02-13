@@ -86,13 +86,6 @@ async function main() {
     ),
     require('@jupyterlab/mainmenu-extension'),
     require('@jupyterlab/mathjax2-extension'),
-    require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
-      [
-        '@jupyterlab/notebook-extension:factory',
-        '@jupyterlab/notebook-extension:tracker',
-        '@jupyterlab/notebook-extension:widget-factory'
-      ].includes(id)
-    ),
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
