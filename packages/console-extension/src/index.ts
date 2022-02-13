@@ -9,21 +9,163 @@ import {
   Router
 } from '@jupyterlab/application';
 
+import { CommandToolbarButton, IThemeManager, Toolbar } from '@jupyterlab/apputils';
+
+import { IConsoleTracker } from '@jupyterlab/console';
+
 import { ITranslator } from '@jupyterlab/translation';
+
+import { clearIcon, refreshIcon, runIcon } from '@jupyterlab/ui-components';
 
 import { SingleWidgetApp } from '@jupyterlite/application';
 
+import { liteIcon } from '@jupyterlite/ui-components';
+
+import { Panel, Widget } from '@lumino/widgets';
+
 /**
- * Add a code console to the main area on startup
+ * A plugin to add buttons to the console toolbar.
+ */
+const buttons: JupyterFrontEndPlugin<void> = {
+  id: 'replite:buttons',
+  autoStart: true,
+  requires: [ITranslator],
+  optional: [IConsoleTracker],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    tracker: IConsoleTracker | null
+  ) => {
+    if (!tracker) {
+      return;
+    }
+
+    const { commands } = app;
+    const trans = translator.load('retrolab');
+
+    // wrapper commands to be able to override the icon
+    const runCommand = 'replite:run';
+    commands.addCommand(runCommand, {
+      caption: trans.__('Run'),
+      icon: runIcon,
+      execute: () => {
+        return commands.execute('console:run-forced');
+      }
+    });
+
+    const runButton = new CommandToolbarButton({
+      commands,
+      id: runCommand
+    });
+
+    const restartCommand = 'replite:restart';
+    commands.addCommand(restartCommand, {
+      caption: trans.__('Restart'),
+      icon: refreshIcon,
+      execute: () => {
+        return commands.execute('console:restart-kernel');
+      }
+    });
+
+    const restartButton = new CommandToolbarButton({
+      commands,
+      id: restartCommand
+    });
+
+    const clearCommand = 'replite:clear';
+    commands.addCommand(clearCommand, {
+      caption: trans.__('Clear'),
+      icon: clearIcon,
+      execute: () => {
+        return commands.execute('console:clear');
+      }
+    });
+
+    const clearButton = new CommandToolbarButton({
+      commands,
+      id: clearCommand
+    });
+
+    tracker.widgetAdded.connect((_, console) => {
+      const { toolbar } = console;
+
+      console.toolbar.addItem('run', runButton);
+      console.toolbar.addItem('restart', restartButton);
+      console.toolbar.addItem('clear', clearButton);
+
+      toolbar.addItem('spacer', Toolbar.createSpacerItem());
+
+      const wrapper = new Panel();
+      wrapper.addClass('jp-PoweredBy');
+
+      const node = document.createElement('a');
+      node.textContent = trans.__('Powered by JupyterLite');
+      node.href = 'https://github.com/jupyterlite/jupyterlite';
+      node.target = '_blank';
+      node.rel = 'noopener noreferrer';
+      const poweredBy = new Widget({ node });
+      const icon = new Widget();
+      liteIcon.element({
+        container: icon.node,
+        elementPosition: 'center',
+        margin: '2px 2px 2px 8px',
+        height: 'auto',
+        width: '16px'
+      });
+
+      wrapper.addWidget(poweredBy);
+      wrapper.addWidget(icon);
+      toolbar.addItem('powered-by', wrapper);
+    });
+  }
+};
+
+/**
+ * A plugin to open a code console and
+ * parse custom parameters from the query string arguments.
  */
 const consolePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/console-extension:console',
   autoStart: true,
-  requires: [ITranslator],
-  activate: (app: JupyterFrontEnd, translator: ITranslator): void => {
+  optional: [IConsoleTracker, IThemeManager],
+  activate: (
+    app: JupyterFrontEnd,
+    tracker: IConsoleTracker | null,
+    themeManager: IThemeManager | null
+  ) => {
+    if (!tracker) {
+      return;
+    }
     const { commands } = app;
+
+    const search = window.location.search;
+    const urlParams = new URLSearchParams(search);
+    const code = urlParams.getAll('code');
+    const kernel = urlParams.get('kernel') || undefined;
+    const theme = urlParams.get('theme')?.trim();
+    const toolbar = urlParams.get('toolbar');
+
     app.started.then(() => {
-      commands.execute('console:create', { kernelPreference: { name: 'javascript' } });
+      commands.execute('console:create', { kernelPreference: { name: kernel } });
+    });
+
+    if (theme && themeManager) {
+      const themeName = decodeURIComponent(theme);
+      themeManager.setTheme(themeName);
+    }
+
+    tracker.widgetAdded.connect(async (_, widget) => {
+      const { console } = widget;
+
+      if (!toolbar) {
+        // hide the toolbar by default if not specified
+        widget.toolbar.dispose();
+      }
+
+      if (code) {
+        await console.sessionContext.ready;
+        code.forEach(line => console.inject(line));
+      }
     });
   }
 };
@@ -83,6 +225,12 @@ const router: JupyterFrontEndPlugin<IRouter> = {
   }
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [consolePlugin, paths, router, status];
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  buttons,
+  consolePlugin,
+  paths,
+  router,
+  status
+];
 
 export default plugins;
