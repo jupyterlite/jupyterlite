@@ -815,7 +815,7 @@
 
 ([full changelog](https://github.com/jupyterlite/jupyterlite/compare/20c89112b481d520946608f3dcd17c09b5bbe372...v0.1.0a0))
 
-## New features added
+### New features added
 
 - Add support for checkpoints [#47](https://github.com/jupyterlite/jupyterlite/pull/47)
   ([@jtpio](https://github.com/jtpio))
@@ -830,7 +830,7 @@
 - Add a Pyodide kernel [#14](https://github.com/jupyterlite/jupyterlite/pull/14)
   ([@jtpio](https://github.com/jtpio))
 
-## Enhancements made
+### Enhancements made
 
 - Add CI job to create GitHub releases and upload assets
   [#117](https://github.com/jupyterlite/jupyterlite/pull/117)
@@ -884,7 +884,7 @@
   [#2](https://github.com/jupyterlite/jupyterlite/pull/2)
   ([@jtpio](https://github.com/jtpio))
 
-## Bugs fixed
+### Bugs fixed
 
 - Send iopub messages to all clients
   [#52](https://github.com/jupyterlite/jupyterlite/pull/52)
@@ -901,7 +901,7 @@
   [#8](https://github.com/jupyterlite/jupyterlite/pull/8)
   ([@jtpio](https://github.com/jtpio))
 
-## Maintenance and upkeep improvements
+### Maintenance and upkeep improvements
 
 - Add the logconsole extension
   [#123](https://github.com/jupyterlite/jupyterlite/pull/123)
@@ -962,7 +962,7 @@
   [#4](https://github.com/jupyterlite/jupyterlite/pull/4)
   ([@jtpio](https://github.com/jtpio))
 
-## Documentation improvements
+### Documentation improvements
 
 - Mention the RTD preview in the contributing guide
   [#107](https://github.com/jupyterlite/jupyterlite/pull/107)
@@ -985,7 +985,7 @@
   [#49](https://github.com/jupyterlite/jupyterlite/pull/49)
   ([@kikocorreoso](https://github.com/kikocorreoso))
 
-## Other merged PRs
+### Other merged PRs
 
 - Add list of federated extensions for the demo site
   [#84](https://github.com/jupyterlite/jupyterlite/pull/84)
@@ -994,7 +994,7 @@
   [#3](https://github.com/jupyterlite/jupyterlite/pull/3)
   ([@jtpio](https://github.com/jtpio))
 
-## Contributors to this release
+### Contributors to this release
 
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2021-03-27&to=2021-06-02&type=c))
 
