@@ -12,7 +12,7 @@ const test = base.extend({
       await page.waitForSelector('.jp-InputArea');
     };
     await use(waitIsReady);
-  }
+  },
 });
 
 test.describe('REPL Tests', () => {

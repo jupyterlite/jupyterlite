@@ -58,7 +58,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
    * Activate a widget in its area.
    */
   activateById(id: string): void {
-    const widget = find(this.widgets('main'), w => w.id === id);
+    const widget = find(this.widgets('main'), (w) => w.id === id);
     if (widget) {
       widget.activate();
     }

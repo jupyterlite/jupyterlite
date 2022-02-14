@@ -6,7 +6,7 @@ import {
   IRouter,
   JupyterFrontEndPlugin,
   JupyterFrontEnd,
-  Router
+  Router,
 } from '@jupyterlab/application';
 
 import { CommandToolbarButton, IThemeManager, Toolbar } from '@jupyterlab/apputils';
@@ -50,12 +50,12 @@ const buttons: JupyterFrontEndPlugin<void> = {
       icon: runIcon,
       execute: () => {
         return commands.execute('console:run-forced');
-      }
+      },
     });
 
     const runButton = new CommandToolbarButton({
       commands,
-      id: runCommand
+      id: runCommand,
     });
 
     const restartCommand = 'repl:restart';
@@ -64,12 +64,12 @@ const buttons: JupyterFrontEndPlugin<void> = {
       icon: refreshIcon,
       execute: () => {
         return commands.execute('console:restart-kernel');
-      }
+      },
     });
 
     const restartButton = new CommandToolbarButton({
       commands,
-      id: restartCommand
+      id: restartCommand,
     });
 
     const clearCommand = 'repl:clear';
@@ -78,12 +78,12 @@ const buttons: JupyterFrontEndPlugin<void> = {
       icon: clearIcon,
       execute: () => {
         return commands.execute('console:clear');
-      }
+      },
     });
 
     const clearButton = new CommandToolbarButton({
       commands,
-      id: clearCommand
+      id: clearCommand,
     });
 
     tracker.widgetAdded.connect((_, console) => {
@@ -106,13 +106,13 @@ const buttons: JupyterFrontEndPlugin<void> = {
         elementPosition: 'center',
         margin: '2px 2px 2px 8px',
         height: 'auto',
-        width: '16px'
+        width: '16px',
       });
 
       poweredBy.addClass('jp-PoweredBy');
       toolbar.insertAfter('spacer', 'powered-by', poweredBy);
     });
-  }
+  },
 };
 
 /**
@@ -159,10 +159,10 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
 
       if (code) {
         await console.sessionContext.ready;
-        code.forEach(line => console.inject(line));
+        code.forEach((line) => console.inject(line));
       }
     });
-  }
+  },
 };
 
 /**
@@ -177,7 +177,7 @@ const status: JupyterFrontEndPlugin<ILabStatus> = {
       throw new Error(`${status.id} must be activated in SingleWidgetApp.`);
     }
     return app.status;
-  }
+  },
 };
 
 /**
@@ -192,7 +192,7 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
       throw new Error(`${paths.id} must be activated in SingleWidgetApp.`);
     }
     return app.paths;
-  }
+  },
 };
 
 /**
@@ -217,7 +217,7 @@ const router: JupyterFrontEndPlugin<IRouter> = {
       });
     });
     return router;
-  }
+  },
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
@@ -225,7 +225,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   consolePlugin,
   paths,
   router,
-  status
+  status,
 ];
 
 export default plugins;

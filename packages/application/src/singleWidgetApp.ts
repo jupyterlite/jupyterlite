@@ -25,7 +25,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
   constructor(options: SingleWidgetApp.IOptions = { shell: new SingleWidgetShell() }) {
     super({
       ...options,
-      shell: options.shell ?? new SingleWidgetShell()
+      shell: options.shell ?? new SingleWidgetShell(),
     });
     if (options.mimeExtensions) {
       for (const plugin of createRendermimePlugins(options.mimeExtensions)) {
@@ -71,7 +71,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
         hubHost: PageConfig.getOption('hubHost') || undefined,
         hubPrefix: PageConfig.getOption('hubPrefix') || undefined,
         hubUser: PageConfig.getOption('hubUser') || undefined,
-        hubServerName: PageConfig.getOption('hubServerName') || undefined
+        hubServerName: PageConfig.getOption('hubServerName') || undefined,
       },
       directories: {
         appSettings: PageConfig.getOption('appSettingsDir'),
@@ -81,8 +81,8 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
         themes: PageConfig.getOption('themesDir'),
         userSettings: PageConfig.getOption('userSettingsDir'),
         serverRoot: PageConfig.getOption('serverRoot'),
-        workspaces: PageConfig.getOption('workspacesDir')
-      }
+        workspaces: PageConfig.getOption('workspacesDir'),
+      },
     };
   }
 
@@ -100,7 +100,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
     if (!Array.isArray(data)) {
       data = [data];
     }
-    data.forEach(item => {
+    data.forEach((item) => {
       try {
         this.registerPlugin(item);
       } catch (error) {
@@ -115,7 +115,7 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
    * @param mods - The plugin modules to register.
    */
   registerPluginModules(mods: SingleWidgetApp.IPluginModule[]): void {
-    mods.forEach(mod => {
+    mods.forEach((mod) => {
       this.registerPluginModule(mod);
     });
   }
