@@ -63,14 +63,14 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       implementation_version: '0.1.0',
       language_info: {
         codemirror_mode: {
-          name: 'javascript'
+          name: 'javascript',
         },
         file_extension: '.js',
         mimetype: 'text/javascript',
         name: 'javascript',
         nbconvert_exporter: 'javascript',
         pygments_lexer: 'javascript',
-        version: 'es2017'
+        version: 'es2017',
       },
       protocol_version: '5.3',
       status: 'ok',
@@ -78,9 +78,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       help_links: [
         {
           text: 'JavaScript Kernel',
-          url: 'https://github.com/jupyterlite/jupyterlite'
-        }
-      ]
+          url: 'https://github.com/jupyterlite/jupyterlite',
+        },
+      ],
     };
     return content;
   }
@@ -100,23 +100,23 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       this.publishExecuteResult({
         execution_count: this.executionCount,
         data: {
-          'text/plain': result
+          'text/plain': result,
         },
-        metadata: {}
+        metadata: {},
       });
 
       return {
         status: 'ok',
         execution_count: this.executionCount,
-        user_expressions: {}
+        user_expressions: {},
       };
     } catch (e) {
-      const { name, stack, message } = e;
+      const { name, stack, message } = e as any as Error;
 
       this.publishExecuteError({
         ename: name,
         evalue: message,
-        traceback: [stack]
+        traceback: [`${stack}`],
       });
 
       return {
@@ -124,7 +124,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
         execution_count: this.executionCount,
         ename: name,
         evalue: message,
-        traceback: [stack]
+        traceback: [`${stack}`],
       };
     }
   }
@@ -146,14 +146,14 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     const { code, cursor_pos } = content;
     const words = code.slice(0, cursor_pos).match(/(\w+)$/) ?? [];
     const word = words[0] ?? '';
-    const matches = vars.filter(v => v.startsWith(word));
+    const matches = vars.filter((v) => v.startsWith(word));
 
     return {
       matches,
       cursor_start: cursor_pos - word.length,
       cursor_end: cursor_pos,
       metadata: {},
-      status: 'ok'
+      status: 'ok',
     };
   }
 

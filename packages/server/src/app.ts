@@ -78,7 +78,7 @@ export class JupyterLiteServer extends Application<never> {
     if (!Array.isArray(data)) {
       data = [data];
     }
-    data.forEach(item => {
+    data.forEach((item) => {
       try {
         this.registerPlugin(item);
       } catch (error) {
@@ -93,7 +93,7 @@ export class JupyterLiteServer extends Application<never> {
    * @param mods - The plugin modules to register.
    */
   registerPluginModules(mods: JupyterLiteServer.IPluginModule[]): void {
-    mods.forEach(mod => {
+    mods.forEach((mod) => {
       this.registerPluginModule(mod);
     });
   }

@@ -1,4 +1,6 @@
 {
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "Resolve",
   "entryPoints": [
     "packages/application-extension/src/index.tsx",
     "packages/contents/src/index.ts",
@@ -16,9 +18,10 @@
     "packages/translation/src/index.ts",
     "packages/ui-components/src/index.ts"
   ],
-  "exclude": ["*.spec.ts", "**/node_modules/**", "**/test/**", "**/lib/**"],
   "name": "@jupyterlite",
   "out": "build/typedoc",
   "readme": "none",
-  "tsconfig": "tsconfig.typedoc.json"
+  "githubPages": false,
+  "tsconfig": "tsconfig.typedoc.json",
+  "logLevel": "Verbose"
 }

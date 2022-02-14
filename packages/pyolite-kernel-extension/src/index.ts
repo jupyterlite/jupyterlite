@@ -46,12 +46,12 @@ const kernel: JupyterLiteServerPlugin<void> = {
           display_name: 'Pyolite',
           language: 'python',
           interrupt_mode: 'message',
-          metadata: {}
+          metadata: {},
         },
         resources: {
           'logo-32x32': 'TODO',
-          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png')
-        }
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png'),
+        },
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
         const { PyoliteKernel } = await import('@jupyterlite/pyolite-kernel');
@@ -60,11 +60,11 @@ const kernel: JupyterLiteServerPlugin<void> = {
           ...options,
           pyodideUrl,
           pipliteUrls,
-          disablePyPIFallback
+          disablePyPIFallback,
         });
-      }
+      },
     });
-  }
+  },
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [kernel];

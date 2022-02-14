@@ -4,7 +4,7 @@ import { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
 export async function createNewDirectory({
   page,
-  name
+  name,
 }: {
   page: IJupyterLabPageFixture;
   name: string;
@@ -17,7 +17,7 @@ export async function createNewDirectory({
 
 export async function deleteItem({
   page,
-  name
+  name,
 }: {
   page: IJupyterLabPageFixture;
   name: string;
@@ -31,7 +31,7 @@ export async function deleteItem({
 
 export async function download({
   page,
-  path
+  path,
 }: {
   page: IJupyterLabPageFixture;
   path: string;

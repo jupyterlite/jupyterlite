@@ -41,14 +41,14 @@ export class Translation {
       if (locale) {
         return {
           data: {},
-          message: `Language pack '${locale}' not installed!`
+          message: `Language pack '${locale}' not installed!`,
         };
       }
       return {
         data: {
-          en: { displayName: 'English', nativeName: 'English' }
+          en: { displayName: 'English', nativeName: 'English' },
         },
-        message: ''
+        message: '',
       };
     }
   }

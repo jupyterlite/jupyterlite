@@ -27,7 +27,7 @@ export class Sessions implements ISessions {
    * @param id The id of the session.
    */
   async get(id: string): Promise<Session.IModel> {
-    const session = this._sessions.find(s => s.id === id);
+    const session = this._sessions.find((s) => s.id === id);
     if (!session) {
       throw Error(`Session ${id} not found`);
     }
@@ -50,7 +50,7 @@ export class Sessions implements ISessions {
    */
   async patch(options: Session.IModel): Promise<Session.IModel> {
     const { id, path, name } = options;
-    const index = this._sessions.findIndex(s => s.id === id);
+    const index = this._sessions.findIndex((s) => s.id === id);
     const session = this._sessions[index];
     if (!session) {
       throw Error(`Session ${id} not found`);
@@ -58,7 +58,7 @@ export class Sessions implements ISessions {
     const patched = {
       ...session,
       path: path ?? session.path,
-      name: name ?? session.name
+      name: name ?? session.name,
     };
     this._sessions[index] = patched;
     return patched;
@@ -72,7 +72,7 @@ export class Sessions implements ISessions {
    */
   async startNew(options: Session.IModel): Promise<Session.IModel> {
     const { path, name } = options;
-    const running = this._sessions.find(s => s.name === name);
+    const running = this._sessions.find((s) => s.name === name);
     if (running) {
       return running;
     }
@@ -86,8 +86,8 @@ export class Sessions implements ISessions {
       type: 'notebook',
       kernel: {
         id: kernel.id,
-        name: kernel.name
-      }
+        name: kernel.name,
+      },
     };
     this._sessions.push(session);
     return session;
@@ -99,7 +99,7 @@ export class Sessions implements ISessions {
    * @param id The id of the session to shut down.
    */
   async shutdown(id: string): Promise<void> {
-    const session = this._sessions.find(s => s.id === id);
+    const session = this._sessions.find((s) => s.id === id);
     if (!session) {
       throw Error(`Session ${id} not found`);
     }
