@@ -1,9 +1,9 @@
 # Applications
 
+JupyterLite ships with a couple of applications by default:
+
 ```{toctree}
-:caption: JupyterLite Applications
 :maxdepth: 2
-:hidden:
 
 lab
 retro
