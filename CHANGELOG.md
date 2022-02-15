@@ -2,6 +2,53 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a23
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a22...cc54eefebfb73dd9de0dad4c130e44ac74a0ca14))
+
+### Enhancements made
+
+- Add a new `repl` app [#498](https://github.com/jupyterlite/jupyterlite/pull/498) ([@jtpio](https://github.com/jtpio))
+- add badge [#491](https://github.com/jupyterlite/jupyterlite/pull/491) ([@bollwyvl](https://github.com/bollwyvl))
+- Add cache busting, cut some fallback fonts [#477](https://github.com/jupyterlite/jupyterlite/pull/477) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Bugs fixed
+
+- Have pyolite kernel `execute_request` honor `store_history` option [#492](https://github.com/jupyterlite/jupyterlite/pull/492) ([@jobovy](https://github.com/jobovy))
+
+### Maintenance and upkeep improvements
+
+- Bump TypeScript to 4.5.x [#499](https://github.com/jupyterlite/jupyterlite/pull/499) ([@bollwyvl](https://github.com/bollwyvl))
+- Optimize docs images [#495](https://github.com/jupyterlite/jupyterlite/pull/495) ([@bollwyvl](https://github.com/bollwyvl))
+- Cleanup more dependencies [#494](https://github.com/jupyterlite/jupyterlite/pull/494) ([@jtpio](https://github.com/jtpio))
+- Update lite badge in the RTD PR comment [#493](https://github.com/jupyterlite/jupyterlite/pull/493) ([@jtpio](https://github.com/jtpio))
+- Update mock socket, lerna, use registry.npmjs.org [#490](https://github.com/jupyterlite/jupyterlite/pull/490) ([@bollwyvl](https://github.com/bollwyvl))
+- Bump tmpl from 1.0.4 to 1.0.5 [#489](https://github.com/jupyterlite/jupyterlite/pull/489) ([@dependabot](https://github.com/dependabot))
+- Update dependencies in `ui-tests/yarn.lock` [#488](https://github.com/jupyterlite/jupyterlite/pull/488) ([@jtpio](https://github.com/jtpio))
+- Bump nth-check from 2.0.0 to 2.0.1 [#487](https://github.com/jupyterlite/jupyterlite/pull/487) ([@dependabot](https://github.com/dependabot))
+- Bump shelljs from 0.8.4 to 0.8.5 [#485](https://github.com/jupyterlite/jupyterlite/pull/485) ([@dependabot](https://github.com/dependabot))
+- Bump node-fetch from 2.6.1 to 2.6.7 [#484](https://github.com/jupyterlite/jupyterlite/pull/484) ([@dependabot](https://github.com/dependabot))
+- Bump trim-off-newlines from 1.0.1 to 1.0.3 [#483](https://github.com/jupyterlite/jupyterlite/pull/483) ([@dependabot](https://github.com/dependabot))
+- Bump nanoid from 3.1.30 to 3.2.0 in /ui-tests [#482](https://github.com/jupyterlite/jupyterlite/pull/482) ([@dependabot](https://github.com/dependabot))
+- Bump simple-get from 3.1.0 to 3.1.1 in /ui-tests [#481](https://github.com/jupyterlite/jupyterlite/pull/481) ([@dependabot](https://github.com/dependabot))
+- Bump node-fetch from 2.6.6 to 2.6.7 in /ui-tests [#480](https://github.com/jupyterlite/jupyterlite/pull/480) ([@dependabot](https://github.com/dependabot))
+- Bump follow-redirects from 1.14.5 to 1.14.8 in /ui-tests [#479](https://github.com/jupyterlite/jupyterlite/pull/479) ([@dependabot](https://github.com/dependabot))
+- Add cache busting, cut some fallback fonts [#477](https://github.com/jupyterlite/jupyterlite/pull/477) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Fix headings in CHANGELOG.md [#500](https://github.com/jupyterlite/jupyterlite/pull/500) ([@jtpio](https://github.com/jtpio))
+- Optimize docs images [#495](https://github.com/jupyterlite/jupyterlite/pull/495) ([@bollwyvl](https://github.com/bollwyvl))
+- Add the lite now badge to the README [#486](https://github.com/jupyterlite/jupyterlite/pull/486) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-10&to=2022-02-15&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-10..2022-02-15&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-02-10..2022-02-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-10..2022-02-15&type=Issues) | [@jobovy](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajobovy+updated%3A2022-02-10..2022-02-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-10..2022-02-15&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a22
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a21...9c918ca6cbb1840dd37541e0274691b0a444d893))
@@ -20,8 +67,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-04&to=2022-02-10&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-04..2022-02-10&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-04..2022-02-10&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-04..2022-02-10&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a21
 
