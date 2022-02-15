@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/application-extension",
-  "version": "0.1.0-alpha.22",
+  "version": "0.1.0-alpha.23",
   "description": "JupyterLite - Application Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -47,7 +47,7 @@
     "@jupyterlab/services": "~6.2.9",
     "@jupyterlab/translation": "~3.2.9",
     "@jupyterlab/ui-components": "~3.2.9",
-    "@jupyterlite/ui-components": "^0.1.0-alpha.22",
+    "@jupyterlite/ui-components": "^0.1.0-alpha.23",
     "@lumino/algorithm": "^1.6.0",
     "@lumino/coreutils": "^1.8.0",
     "@lumino/widgets": "^1.23.0",
