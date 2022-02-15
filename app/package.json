@@ -10,15 +10,16 @@
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
   "scripts": {
-    "clean": "rimraf build lab/build retro/build",
+    "clean": "rimraf build **/build",
     "build": "webpack",
     "build:prod": "yarn clean && yarn build --mode=production",
     "watch": "webpack --config webpack.config.watch.js"
   },
   "jupyterlite": {
     "apps": [
-      "retro",
-      "lab"
+      "lab",
+      "repl",
+      "retro"
     ]
   },
   "devDependencies": {

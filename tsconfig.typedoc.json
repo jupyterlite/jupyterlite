@@ -10,6 +10,9 @@
   "extends": "./tsconfigbase",
   "references": [
     {
+      "path": "./packages/application"
+    },
+    {
       "path": "./packages/application-extension"
     },
     {
@@ -32,6 +35,9 @@
     },
     {
       "path": "./packages/pyolite-kernel-extension"
+    },
+    {
+      "path": "./packages/repl-extension"
     },
     {
       "path": "./packages/retro-application-extension"

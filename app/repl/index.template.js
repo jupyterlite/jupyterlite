@@ -40,17 +40,14 @@ async function main() {
   let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
-    require('@jupyterlite/retro-application-extension'),
+    require('@jupyterlite/repl-extension'),
+
     // @retrolab plugins
-    // do not enable the document opener from RetroLab
-    require('@retrolab/application-extension').default.filter(
-      ({ id }) => ![
-        '@retrolab/application-extension:logo',
-        '@retrolab/application-extension:opener'
+    require('@retrolab/application-extension').default.filter(({ id }) =>
+      [
+        '@retrolab/application-extension:session-dialogs',
       ].includes(id)
     ),
-    require('@retrolab/help-extension'),
-    require('@retrolab/notebook-extension'),
 
     // @jupyterlab plugins
     require('@jupyterlab/application-extension').default.filter(({ id }) =>
@@ -76,7 +73,10 @@ async function main() {
       ].includes(id)
     ),
     require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-      ['@jupyterlab/completer-extension:manager'].includes(id)
+      [
+        '@jupyterlab/completer-extension:manager',
+        '@jupyterlab/completer-extension:consoles'
+      ].includes(id)
     ),
     require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
@@ -89,85 +89,18 @@ async function main() {
     ),
     require('@jupyterlab/mainmenu-extension'),
     require('@jupyterlab/mathjax2-extension'),
-    require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
-      [
-        '@jupyterlab/notebook-extension:factory',
-        '@jupyterlab/notebook-extension:tracker',
-        '@jupyterlab/notebook-extension:widget-factory'
-      ].includes(id)
-    ),
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
     require('@jupyterlab/theme-dark-extension'),
+    require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
+      [
+        '@jupyterlab/tooltip-extension:manager',
+        '@jupyterlab/tooltip-extension:consoles'
+      ].includes(id)
+    ),
     require('@jupyterlab/translation-extension')
   ];
-
-  // The motivation here is to only load a specific set of plugins dependending on
-  // the current page
-  const page = PageConfig.getOption('retroPage');
-  switch (page) {
-    case 'tree': {
-      baseMods = baseMods.concat([
-        require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
-          [
-            '@jupyterlab/filebrowser-extension:browser',
-            '@jupyterlab/filebrowser-extension:file-upload-status',
-            '@jupyterlab/filebrowser-extension:open-with',
-          ].includes(id)
-        ),
-        // do not enable the new terminal button from RetroLab
-        require('@retrolab/tree-extension').default.filter(
-          ({ id }) => id !== '@retrolab/tree-extension:new-terminal'
-        )
-      ]);
-      break;
-    }
-    case 'notebooks': {
-      baseMods = baseMods.concat([
-        require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-          ['@jupyterlab/completer-extension:notebooks'].includes(id)
-        ),
-        require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
-          [
-            '@jupyterlab/tooltip-extension:manager',
-            '@jupyterlab/tooltip-extension:notebooks'
-          ].includes(id)
-        )
-      ]);
-      break;
-    }
-    case 'consoles': {
-      baseMods = baseMods.concat([
-        require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-          ['@jupyterlab/completer-extension:consoles'].includes(id)
-        ),
-        require('@jupyterlab/tooltip-extension').default.filter(({ id }) =>
-          [
-            '@jupyterlab/tooltip-extension:manager',
-            '@jupyterlab/tooltip-extension:consoles'
-          ].includes(id)
-        )
-      ]);
-      break;
-    }
-    case 'edit': {
-      baseMods = baseMods.concat([
-        require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-          ['@jupyterlab/completer-extension:files'].includes(id)
-        ),
-        require('@jupyterlab/fileeditor-extension').default.filter(({ id }) =>
-          ['@jupyterlab/fileeditor-extension:plugin'].includes(id)
-        ),
-        require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
-          [
-            '@jupyterlab/filebrowser-extension:browser'
-          ].includes(id)
-        ),
-      ]);
-      break;
-    }
-  }
 
   const mods = [];
   const federatedExtensionPromises = [];
@@ -231,7 +164,7 @@ async function main() {
     for (let plugin of activePlugins(p)) {
       mods.push(plugin);
     }
-  });
+  })
 
   // Add the federated mime extensions.
   const federatedMimeExtensions = await Promise.allSettled(federatedMimeExtensionPromises);
@@ -287,10 +220,10 @@ async function main() {
   const { serviceManager } = jupyterLiteServer;
 
   // create a RetroLab frontend
-  const { RetroApp } = require('@retrolab/application');
-  const app = new RetroApp({ serviceManager, mimeExtensions });
+  const { SingleWidgetApp } = require('@jupyterlite/application');
+  const app = new SingleWidgetApp({ serviceManager, mimeExtensions });
 
-  app.name = PageConfig.getOption('appName') || 'RetroLite';
+  app.name = PageConfig.getOption('appName') || 'ConsoLite';
 
   app.registerPluginModules(mods);
 

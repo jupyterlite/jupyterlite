@@ -20,6 +20,7 @@
     "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
+    "@jupyterlite/application": "file:../application",
     "@jupyterlite/application-extension": "file:../application-extension",
     "@jupyterlite/contents": "file:../contents",
     "@jupyterlite/iframe-extension": "file:../iframe-extension",
@@ -28,6 +29,7 @@
     "@jupyterlite/kernel": "file:../kernel",
     "@jupyterlite/pyolite-kernel": "file:../pyolite-kernel",
     "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
+    "@jupyterlite/repl-extension": "file:../repl-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/server": "file:../server-extension",
     "@jupyterlite/session": "file:../session",

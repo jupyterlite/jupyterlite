@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/retro-application-extension",
+  "name": "@jupyterlite/repl-extension",
   "version": "0.1.0-alpha.22",
-  "description": "JupyterLite - Retro Application Extension",
+  "description": "JupyterLite - Console Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
     "url": "https://github.com/jupyterlite/jupyterlite/issues"
@@ -38,11 +38,13 @@
   },
   "dependencies": {
     "@jupyterlab/application": "~3.2.9",
+    "@jupyterlab/apputils": "~3.2.9",
     "@jupyterlab/console": "~3.2.9",
-    "@jupyterlab/coreutils": "~5.2.9",
-    "@jupyterlab/docmanager": "~3.2.9",
-    "@jupyterlab/services": "~6.2.9",
-    "@jupyterlite/ui-components": "^0.1.0-alpha.22"
+    "@jupyterlab/translation": "~3.2.9",
+    "@jupyterlab/ui-components": "~3.2.9",
+    "@jupyterlite/application": "^0.1.0-alpha.22",
+    "@jupyterlite/ui-components": "^0.1.0-alpha.22",
+    "@lumino/widgets": "^1.30.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -51,7 +53,7 @@
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
-    "typescript": "~4.5.2"
+    "typescript": "~4.2.3"
   },
   "publishConfig": {
     "access": "public"
