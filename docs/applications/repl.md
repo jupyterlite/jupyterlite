@@ -6,11 +6,18 @@
 
 ## Embedding the REPL on another website
 
+```{hint}
+Check out [the documentation](../deploying.md) to learn how to deploy your own JupyterLite website
+and have full control on the environment and extensions installed.
+
+The snippets below use [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
+```
+
 You can embed the REPL on any website with the following code snippet:
 
 ```html
 <iframe
-  src="https://jupyterlite.rtfd.io/en/latest/_static/lab/index.html"
+  src="https://jupyterlite.github.io/demo/repl/index.html"
   width="100%"
   height="100%"
 ></iframe>
@@ -26,7 +33,7 @@ To avoid the kernel selection dialog and choose a given kernel by default:
 
 ```html
 <iframe
-  src="https://jupyterlite.rtfd.io/en/latest/_static/lab/index.html?kernel=python"
+  src="https://jupyterlite.github.io/demo/repl/index.html?kernel=python"
   width="100%"
   height="100%"
 ></iframe>
@@ -38,7 +45,7 @@ The toolbar can be enabled (opt-in) to add a couple of useful buttons:
 
 ```html
 <iframe
-  src="https://jupyterlite.rtfd.io/en/latest/_static/lab/index.html?toolbar=1"
+  src="https://jupyterlite.github.io/demo/repl/index.html?toolbar=1"
   width="100%"
   height="100%"
 ></iframe>
@@ -50,7 +57,7 @@ Custom code can automatically be executed on startup:
 
 ```html
 <iframe
-  src="https://jupyterlite.rtfd.io/en/latest/_static/lab/index.html?kernel=python&code=import numpy as np"
+  src="https://jupyterlite.github.io/demo/repl/index.html?kernel=python&code=import numpy as np"
   width="100%"
   height="100%"
 ></iframe>
@@ -62,7 +69,7 @@ It is also possible to select a theme, for example to use `JupyterLab Dark`:
 
 ```html
 <iframe
-  src="https://jupyterlite.rtfd.io/en/latest/_static/lab/index.html?theme=JupyterLab Dark"
+  src="https://jupyterlite.github.io/demo/repl/index.html?theme=JupyterLab Dark"
   width="100%"
   height="100%"
 ></iframe>
@@ -74,3 +81,6 @@ prebuilt extension. For example:
 ```bash
 pip install jupyterlab-gt-coar-theme
 ```
+
+See [configuring](../configuring.md) for more details on how to customize the
+environment and add more themes and extensions.
