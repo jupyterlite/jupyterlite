@@ -1,6 +1,10 @@
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": ["@jupyterlab/drawio-extension", "jupyterlab-kernel-spy"]
+    "disabledExtensions": [
+      "@jupyterlab/drawio-extension",
+      "jupyterlab-kernel-spy",
+      "jupyterlab-tour"
+    ]
   }
 }
