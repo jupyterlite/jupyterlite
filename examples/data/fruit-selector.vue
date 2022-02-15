@@ -5,7 +5,7 @@
       <v-btn @click="addBanana" :disabled="hasBanana">Add banana</v-btn>
       <v-btn @click="removeBanana" :disabled="!hasBanana">Remove banana</v-btn>
       <v-btn @click="add_fruit_python()" :disabled="!can_add_from_python"
-        >Add from Pyton</v-btn
+        >Add from Python</v-btn
       >
     </div>
     Available fruits

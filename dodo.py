@@ -280,7 +280,7 @@ def task_build():
         js_wheels += [wheel]
         yield dict(
             name=f"js:py:{name}",
-            doc=f"build the {name} python package for the brower with flit",
+            doc=f"build the {name} python package for the browser with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[(U.build_one_flit, [py_pkg])],
             # TODO: get version

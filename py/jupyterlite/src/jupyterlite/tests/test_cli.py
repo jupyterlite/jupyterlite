@@ -6,7 +6,7 @@ from pytest import mark
 from jupyterlite import __version__
 from jupyterlite.constants import HOOKS
 
-# TOOD: others?
+# TODO: others?
 LITE_INVOCATIONS = [
     ["jupyter-lite"],
     ["jupyter", "lite"],

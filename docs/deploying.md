@@ -106,7 +106,7 @@ Adapting the example above:
 html_extra_path = ["../upstream-jupyterlite", "../my-jupyterlite"]
 ```
 
-Again, the last-written `index.html` will "win" and be shown to vistors to `/`, which
+Again, the last-written `index.html` will "win" and be shown to visitors to `/`, which
 will immediately redirect to `appUrl` as defined in the [schema].
 
 [html_static_path]:

@@ -70,7 +70,7 @@ export abstract class BaseKernel implements IKernel {
   }
 
   /**
-   * Get the last parent message (mimick ipykernel's get_parent)
+   * Get the last parent message (mimic ipykernel's get_parent)
    */
   get parent(): KernelMessage.IMessage | undefined {
     return this._parent;
@@ -304,7 +304,7 @@ export abstract class BaseKernel implements IKernel {
    * Send an `execute_result` message.
    *
    * @param parentHeader The parent header.
-   * @param content The execut result content.
+   * @param content The execute result content.
    */
   protected publishExecuteResult(
     content: KernelMessage.IExecuteResultMsg['content'],

@@ -17,7 +17,7 @@ _PIPLITE_INDICES = {}
 #: don't fall back to pypi.org if a package is not found in _PIPLITE_URLS
 _PIPLITE_DISABLE_PYPI = False
 
-#: a well-known file name respected by the rest of the buld chain
+#: a well-known file name respected by the rest of the build chain
 ALL_JSON = "/all.json"
 
 
