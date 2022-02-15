@@ -2,7 +2,7 @@
 
 JupyterLite uses the same plugin architecture for server components as in JupyterLab.
 
-Server componnents allow for kernel and session management, handling user settings,
+Server components allow for kernel and session management, handling user settings,
 themes and display languages.
 
 For more information on how this fits within the whole application, check out the

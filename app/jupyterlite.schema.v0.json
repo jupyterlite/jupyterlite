@@ -239,7 +239,7 @@
     "npm-package-name": {
       "title": "An NPM Package Name",
       "type": "string",
-      "description": "package.json-compatible extension name, with an optional organziation prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
+      "description": "package.json-compatible extension name, with an optional organization prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
       "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
     },
     "lab-extension-plugin-name": {
