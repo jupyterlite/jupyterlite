@@ -31,6 +31,13 @@ export class JupyterServer {
   }
 
   /**
+   * Get the underlying `Router` instance.
+   */
+  get router(): Router {
+    return this._router;
+  }
+
+  /**
    * Handle an incoming request from the client.
    *
    * @param req The incoming request
