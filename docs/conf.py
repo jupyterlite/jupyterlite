@@ -61,6 +61,7 @@ rediraffe_redirects = {
     "try/index": "_static/index",
     "try/lab/index": "_static/lab/index",
     "try/retro/index": "_static/retro/tree/index",
+    "try/repl/index": "_static/repl/index",
 }
 
 # files
