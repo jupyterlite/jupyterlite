@@ -2,6 +2,38 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0a24
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a23...81ce3b7924e86e05e41f2c340aa01b9c4bad04d9))
+
+### Enhancements made
+
+- Expose the Router to be able to add new routes from third-party plugins [#506](https://github.com/jupyterlite/jupyterlite/pull/506) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix handling of unicode characters on upload [#512](https://github.com/jupyterlite/jupyterlite/pull/512) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- FIx various typos [#507](https://github.com/jupyterlite/jupyterlite/pull/507) ([@luzpaz](https://github.com/luzpaz))
+
+### Documentation improvements
+
+- Add `repl` to `rediraffe_redirects` [#505](https://github.com/jupyterlite/jupyterlite/pull/505) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Expose the Router to be able to add new routes from third-party plugins [#506](https://github.com/jupyterlite/jupyterlite/pull/506) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-15&to=2022-02-19&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-15..2022-02-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-15..2022-02-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-15..2022-02-19&type=Issues) | [@luzpaz](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aluzpaz+updated%3A2022-02-15..2022-02-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a23
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a22...cc54eefebfb73dd9de0dad4c130e44ac74a0ca14))
@@ -46,8 +78,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-10&to=2022-02-15&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-10..2022-02-15&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-02-10..2022-02-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-10..2022-02-15&type=Issues) | [@jobovy](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajobovy+updated%3A2022-02-10..2022-02-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-10..2022-02-15&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a22
 
