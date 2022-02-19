@@ -18,7 +18,7 @@ lite_flags = {
     ),
     "no-sourcemaps": {
         {"LiteBuildConfig": {"no_sourcemaps": True}},
-        "Strip all sourcemaps from applications and extensions"
+        "Strip all sourcemaps from applications and extensions",
     },
     **{
         flag: value

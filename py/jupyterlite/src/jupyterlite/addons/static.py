@@ -7,6 +7,8 @@ from pathlib import Path
 import doit
 from traitlets import Instance, default
 
+from py.jupyterlite.src.jupyterlite.config import LiteBuildConfig
+
 from ..constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED, JUPYTERLITE_JSON
 from .base import BaseAddon
 
@@ -50,7 +52,14 @@ class StaticAddon(BaseAddon):
             name="output_dir",
             doc="clean out the lite directory",
             file_dep=[self.app_archive],
-            uptodate=[doit.tools.config_changed(dict(apps=self.manager.apps))],
+            uptodate=[
+                doit.tools.config_changed(
+                    dict(
+                        apps=self.manager.apps,
+                        no_sourcemaps=self.manager.no_sourcemaps,
+                    )
+                )
+            ],
             actions=[
                 lambda: [output_dir.exists() and shutil.rmtree(output_dir), None][-1],
                 (doit.tools.create_folder, [output_dir]),
@@ -67,8 +76,8 @@ class StaticAddon(BaseAddon):
             targets=[manager.output_dir / JUPYTERLITE_JSON],
         )
 
-    def post_init(self, manager):
-        """remove static assets if the app is not installed"""
+    def post_init(self, manager: LiteBuildConfig):
+        """maybe remove sourcemaps, or all static assets if an app is not installed"""
         output_dir = manager.output_dir
         all_apps = set(JUPYTERLITE_APPS)
         req_apps = set(JUPYTERLITE_APPS_REQUIRED)
@@ -90,6 +99,9 @@ class StaticAddon(BaseAddon):
         """
         output_dir = self.manager.output_dir
 
+        def _ignore_sourcemaps(path, children):
+            return [c for c in children if self.is_ignored_sourcemap(c)]
+
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
             with tarfile.open(str(self.app_archive), "r:gz") as tar:
@@ -101,7 +113,9 @@ class StaticAddon(BaseAddon):
                         dest.parent.mkdir(exist_ok=True, parents=True)
                     try:
                         if child.is_dir():
-                            shutil.copytree(child, dest)
+                            shutil.copytree(child, dest, ignore=_ignore_sourcemaps)
+                        elif self.is_ignored_sourcemap(child.name):
+                            continue
                         else:
                             shutil.copy2(child, dest)
                         self.maybe_timestamp(dest)

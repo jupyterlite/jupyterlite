@@ -111,3 +111,7 @@ HOOK_PARENTS = dict(
 
 #: the lifecycle stages inside a hook
 PHASES = ["pre_", "", "post_"]
+
+
+#: extensions to be considered sourcemaps
+SOURCEMAPS = ["*.js.map"]

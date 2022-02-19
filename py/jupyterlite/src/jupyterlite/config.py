@@ -94,8 +94,7 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     no_sourcemaps: bool = Bool(
-        False,
-        help="Strip all sourcemaps from applications and extensions"
+        False, help="Strip all sourcemaps from applications and extensions"
     ).tag(config=True)
 
     # serving

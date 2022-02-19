@@ -80,7 +80,11 @@ class FederatedExtensionAddon(BaseAddon):
         pkg_path = pkg_json.parent
         stem = json.loads(pkg_json.read_text(**UTF8))["name"]
         dest = self.output_extensions / stem
-        file_dep = [p for p in pkg_path.rglob("*") if not p.is_dir()]
+        file_dep = [
+            p
+            for p in pkg_path.rglob("*")
+            if not (p.is_dir() or self.is_ignored_sourcemap(p))
+        ]
         targets = [dest / p.relative_to(pkg_path) for p in file_dep]
 
         yield dict(

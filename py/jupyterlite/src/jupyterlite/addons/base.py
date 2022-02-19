@@ -18,6 +18,7 @@ from ..constants import (
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_METADATA,
     SETTINGS_OVERRIDES,
+    SOURCEMAPS,
     UTF8,
 )
 from ..manager import LiteManager
@@ -251,3 +252,11 @@ class BaseAddon(LoggingConfigurable):
             named[ext["name"]] = ext
 
         config[FEDERATED_EXTENSIONS] = sorted(named.values(), key=lambda x: x["name"])
+
+    def is_ignored_sourcemap(self, path_name):
+        if not self.manager.no_sourcemaps:
+            return False
+        for map_ext in SOURCEMAPS:
+            if path_name.endswith(map_ext):
+                return True
+        return False
