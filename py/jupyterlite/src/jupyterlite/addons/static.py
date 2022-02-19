@@ -7,8 +7,6 @@ from pathlib import Path
 import doit
 from traitlets import Instance, default
 
-from py.jupyterlite.src.jupyterlite.config import LiteBuildConfig
-
 from ..constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED, JUPYTERLITE_JSON
 from .base import BaseAddon
 
@@ -76,7 +74,7 @@ class StaticAddon(BaseAddon):
             targets=[manager.output_dir / JUPYTERLITE_JSON],
         )
 
-    def post_init(self, manager: LiteBuildConfig):
+    def post_init(self, manager):
         """maybe remove sourcemaps, or all static assets if an app is not installed"""
         output_dir = manager.output_dir
         all_apps = set(JUPYTERLITE_APPS)

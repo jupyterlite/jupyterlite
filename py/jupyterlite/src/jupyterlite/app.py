@@ -16,10 +16,10 @@ lite_flags = {
         {"LiteBuildConfig": {"ignore_sys_prefix": True}},
         "Do not copy anything from sys.prefix",
     ),
-    "no-sourcemaps": {
+    "no-sourcemaps": (
         {"LiteBuildConfig": {"no_sourcemaps": True}},
         "Strip all sourcemaps from applications and extensions",
-    },
+    ),
     **{
         flag: value
         for flag, value in base_flags.items()
