@@ -93,6 +93,11 @@ class LiteBuildConfig(LoggingConfigurable):
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
+    no_sourcemaps: bool = Bool(
+        False,
+        help="Strip all sourcemaps from applications and extensions"
+    ).tag(config=True)
+
     # serving
     port: int = CInt(
         help=(

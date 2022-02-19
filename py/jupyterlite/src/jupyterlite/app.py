@@ -16,6 +16,10 @@ lite_flags = {
         {"LiteBuildConfig": {"ignore_sys_prefix": True}},
         "Do not copy anything from sys.prefix",
     ),
+    "no-sourcemaps": {
+        {"LiteBuildConfig": {"no_sourcemaps": True}},
+        "Strip all sourcemaps from applications and extensions"
+    },
     **{
         flag: value
         for flag, value in base_flags.items()
@@ -43,16 +47,22 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
     aliases = dict(
         **base_aliases,
         **{
+            # meta options
+            "disable-addons": "LiteBuildConfig.disable_addons",
+            # input options
             "app-archive": "LiteBuildConfig.app_archive",
             "apps": "LiteBuildConfig.apps",
-            "contents": "LiteBuildConfig.contents",
-            "disable-addons": "LiteBuildConfig.disable_addons",
-            "mathjax-dir": "LiteBuildConfig.mathjax_dir",
-            "ignore-contents": "LiteBuildConfig.ignore_contents",
+            # top-level
             "lite-dir": "LiteBuildConfig.lite_dir",
+            # contents
+            "contents": "LiteBuildConfig.contents",
+            "ignore-contents": "LiteBuildConfig.ignore_contents",
+            # settings
+            "settings-overrides": "LiteBuildConfig.settings_overrides",
+            "mathjax-dir": "LiteBuildConfig.mathjax_dir",
+            # output options
             "output-dir": "LiteBuildConfig.output_dir",
             "output-archive": "LiteBuildConfig.output_archive",
-            "settings-overrides": "LiteBuildConfig.settings_overrides",
             "source-date-epoch": "LiteBuildConfig.source_date_epoch",
             # server-specific things
             "port": "LiteBuildConfig.port",
@@ -92,6 +102,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["settings_overrides"] = [Path(p) for p in self.settings_overrides]
         if self.apps:
             kwargs["apps"] = self.apps
+        if self.no_sourcemaps:
+            kwargs["no_sourcemaps"] = self.no_sourcemaps
         if self.output_archive:
             kwargs["output_archive"] = Path(self.output_archive)
         if self.disable_addons:
