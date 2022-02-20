@@ -209,6 +209,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert len(repl_files) < len(norm_files), "expected fewer files"
     assert len(repl_bundles) == 1, "only expected one bundle"
     assert "'foobarbaz' is not one of" in status.stderr
+    assert "pruning chunk" in status.stderr
 
     args = [*args, "--no-sourcemaps"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))

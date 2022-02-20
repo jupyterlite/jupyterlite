@@ -1,5 +1,6 @@
 """a JupyterLite addon for jupyterlab core"""
 import json
+import re
 import shutil
 import tarfile
 import tempfile
@@ -91,12 +92,21 @@ class StaticAddon(BaseAddon):
         for not_an_app in mgr_apps - all_apps:
             self.log.warn(f"[static] app '{not_an_app}' is not one of: {all_apps}")
 
-        for to_remove in all_apps - mgr_apps:
+        apps_to_remove = all_apps - mgr_apps
+        if apps_to_remove:
+            yield dict(
+                name="prune:chunks",
+                actions=[(self.prune_unused_chunks, [all_apps, apps_to_remove])],
+            )
+
+        for to_remove in apps_to_remove:
             app = output_dir / to_remove
             app_build = output_dir / "build" / to_remove
             if app.exists():
                 yield dict(
-                    name=f"prune:{app}", actions=[(self.delete_one, [app, app_build])]
+                    file_dep=[pkg_json],
+                    name=f"prune:{app}",
+                    actions=[(self.delete_one, [app, app_build])],
                 )
 
     @default("app_archive")
@@ -117,3 +127,31 @@ class StaticAddon(BaseAddon):
                 self.copy_one(tdp / "package", output_dir)
 
         self.maybe_timestamp(output_dir)
+
+    def prune_unused_chunks(self, all_apps, apps_to_remove):
+        """manually remove unused webpack chunks"""
+        chunk_pattern = r'(\d+):"([\da-f]+)"'
+        used_chunks = {}
+        removed_used_chunks = {}
+        build_dir = self.manager.output_dir / "build"
+
+        for app in all_apps:
+            bundle = build_dir / app / "bundle.js"
+            if not bundle.exists():
+                continue
+            bundle_txt = bundle.read_text(**UTF8)
+            chunks = dict(re.findall(chunk_pattern, bundle_txt, re.VERBOSE))
+            if app in apps_to_remove:
+                removed_used_chunks.update(chunks)
+            else:
+                used_chunks.update(chunks)
+
+        for chunk_id, chunk_hash in sorted(removed_used_chunks.items()):
+            if chunk_id in used_chunks:
+                continue
+            unused = sorted(build_dir.glob(f"{chunk_id}.{chunk_hash}.*"))
+            if unused:
+                self.log.info(
+                    f"[static] pruning chunk {chunk_id}: {len(unused)} files..."
+                )
+                self.delete_one()
