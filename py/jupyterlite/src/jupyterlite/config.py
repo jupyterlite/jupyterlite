@@ -39,10 +39,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     apps: _Tuple[_Text] = TypedTuple(
         Unicode(),
-        help=(
-            f"""the Lite apps: currently {C.JUPYTERLITE_APPS}. """
-            f"""Required: {C.JUPYTERLITE_APPS_REQUIRED}"""
-        ),
+        help=("""the Lite apps to explicitly include in build"""),
     ).tag(config=True)
 
     app_archive: Path = CPath(
@@ -122,7 +119,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("apps")
     def _default_apps(self):
-        return C.JUPYTERLITE_APPS
+        return []
 
     @default("disable_addons")
     def _default_disable_addons(self):

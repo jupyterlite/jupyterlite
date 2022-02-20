@@ -1,4 +1,5 @@
 """a JupyterLite addon for jupyterlab core"""
+import json
 import shutil
 import tarfile
 import tempfile
@@ -7,7 +8,7 @@ from pathlib import Path
 import doit
 from traitlets import Instance, default
 
-from ..constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED, JUPYTERLITE_JSON
+from ..constants import JUPYTERLITE_JSON, UTF8
 from .base import BaseAddon
 
 
@@ -81,11 +82,13 @@ class StaticAddon(BaseAddon):
     def post_init(self, manager):
         """maybe remove sourcemaps, or all static assets if an app is not installed"""
         output_dir = manager.output_dir
-        all_apps = set(JUPYTERLITE_APPS)
-        req_apps = set(JUPYTERLITE_APPS_REQUIRED)
-        mgr_apps = set(manager.apps)
+        pkg_json = manager.lite_dir / "package.json"
+        pkg_data = json.loads(pkg_json.read_text(**UTF8))
 
-        for to_remove in (all_apps - mgr_apps) - req_apps:
+        all_apps = set(pkg_data["jupyterlite"]["apps"])
+        mgr_apps = set(manager.apps if manager.apps else all_apps)
+
+        for to_remove in all_apps - mgr_apps:
             app = output_dir / to_remove
             if app.exists():
                 yield dict(name=f"prune:{app}", actions=[(self.delete_one, [app])])

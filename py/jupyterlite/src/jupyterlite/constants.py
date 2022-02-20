@@ -53,10 +53,6 @@ PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
 #: our schema
 JUPYTERLITE_SCHEMA = "jupyterlite.schema.v0.json"
 
-#: a set of apps we currently know _might_ be in an app archive
-JUPYTERLITE_APPS = ["lab", "retro", "repl"]
-JUPYTERLITE_APPS_REQUIRED = ["lab"]
-
 #: our configuration file
 JUPYTERLITE_JSON = "jupyter-lite.json"
 
