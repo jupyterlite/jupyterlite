@@ -200,7 +200,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert status.success
     assert [f for f in norm_files if f.name.endswith(".map")], "expected maps"
 
-    args = [*args, "--apps", "repl"]
+    args = [*args, "--apps", "repl", "--apps", "foobarbaz"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
     repl_files = sorted(out.rglob("*"))
     repl_bundles = sorted(out.glob("build/*/bundle.js"))
@@ -208,6 +208,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
 
     assert len(repl_files) < len(norm_files), "expected fewer files"
     assert len(repl_bundles) == 1, "only expected one bundle"
+    assert "'foobarbaz' is not one of" in status.stderr
 
     args = [*args, "--no-sourcemaps"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))

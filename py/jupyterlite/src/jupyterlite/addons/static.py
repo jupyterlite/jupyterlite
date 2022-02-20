@@ -88,6 +88,9 @@ class StaticAddon(BaseAddon):
         all_apps = set(pkg_data["jupyterlite"]["apps"])
         mgr_apps = set(manager.apps if manager.apps else all_apps)
 
+        for not_an_app in mgr_apps - all_apps:
+            self.log.warn(f"[static] app '{not_an_app}' is not one of: {all_apps}")
+
         for to_remove in all_apps - mgr_apps:
             app = output_dir / to_remove
             app_build = output_dir / "build" / to_remove
