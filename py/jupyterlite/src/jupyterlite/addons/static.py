@@ -90,8 +90,11 @@ class StaticAddon(BaseAddon):
 
         for to_remove in all_apps - mgr_apps:
             app = output_dir / to_remove
+            app_build = output_dir / "build" / to_remove
             if app.exists():
-                yield dict(name=f"prune:{app}", actions=[(self.delete_one, [app])])
+                yield dict(
+                    name=f"prune:{app}", actions=[(self.delete_one, [app, app_build])]
+                )
 
     @default("app_archive")
     def _default_app_archive(self):

@@ -203,9 +203,11 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     args = [*args, "--apps", "repl"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
     repl_files = sorted(out.rglob("*"))
+    repl_bundles = sorted(out.glob("build/*/bundle.js"))
     assert status.success
 
     assert len(repl_files) < len(norm_files), "expected fewer files"
+    assert len(repl_bundles) == 1, "only expected one bundle"
 
     args = [*args, "--no-sourcemaps"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))

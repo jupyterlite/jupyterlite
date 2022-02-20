@@ -8,6 +8,7 @@ jest-setup.js
 jest.config.js
 node_modules/
 publicpath.js
+publicpath.js.map
 lab/build
 repl/build
 retro/build

@@ -123,12 +123,13 @@ class BaseAddon(LoggingConfigurable):
             return
         return
 
-    def delete_one(self, src):
-        """delete... something"""
-        if src.is_dir():
-            shutil.rmtree(src)
-        elif src.exists():
-            src.unlink()
+    def delete_one(self, *src):
+        """delete... somethings"""
+        for src_dir in src:
+            if src_dir.is_dir():
+                shutil.rmtree(src_dir)
+            elif src_dir.exists():
+                src_dir.unlink()
 
     def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
         if path:
