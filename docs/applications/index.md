@@ -11,5 +11,5 @@ repl
 ```
 
 ```{note}
-Some JupyterLite sites might be configured to have [fewer default](../configuring.md#applications) apps... or even custom  ones!
+Some JupyterLite sites might be configured to have fewer [default apps](../configuring.md#applications)... or even custom ones!
 ```
