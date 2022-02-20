@@ -94,6 +94,10 @@ class LiteBuildConfig(LoggingConfigurable):
         False, help="Strip all sourcemaps from applications and extensions"
     ).tag(config=True)
 
+    no_unused_shared_packages: bool = Bool(
+        False, help="Remove any shared packages not used by --apps"
+    ).tag(config=True)
+
     # serving
     port: int = CInt(
         help=(

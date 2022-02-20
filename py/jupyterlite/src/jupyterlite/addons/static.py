@@ -32,16 +32,21 @@ class StaticAddon(BaseAddon):
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(
-                    f"""    tarball:      {self.app_archive.name} """
+                    f"""    tarball:         {self.app_archive.name} """
                     f"""{int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
                     if self.app_archive.exists()
-                    else "    tarball:      none"
+                    else "    tarball:        none"
                 ),
-                lambda: print(f"""    output:         {self.manager.output_dir}"""),
-                lambda: print(f"""    lite dir:       {self.manager.lite_dir}"""),
-                lambda: print(f"""    apps:           {self.manager.apps}"""),
+                lambda: print(f"""    output:          {self.manager.output_dir}"""),
+                lambda: print(f"""    lite dir:        {self.manager.lite_dir}"""),
                 lambda: print(
-                    f"""    sourcemaps:     {not self.manager.no_sourcemaps}"""
+                    f"""    apps:            {", ".join(self.manager.apps)}"""
+                ),
+                lambda: print(
+                    f"""    sourcemaps:      {not self.manager.no_sourcemaps}"""
+                ),
+                lambda: print(
+                    f"""    unused packages: {not self.manager.no_unused_shared_packages}"""
                 ),
             ],
         )
@@ -61,6 +66,7 @@ class StaticAddon(BaseAddon):
                     dict(
                         apps=self.manager.apps,
                         no_sourcemaps=self.manager.no_sourcemaps,
+                        no_unused_shared_packages=self.manager.no_unused_shared_packages,
                     )
                 )
             ],
@@ -93,21 +99,27 @@ class StaticAddon(BaseAddon):
             self.log.warn(f"[static] app '{not_an_app}' is not one of: {all_apps}")
 
         apps_to_remove = all_apps - mgr_apps
-        if apps_to_remove:
+
+        app_prune_task_dep = []
+        if apps_to_remove and self.manager.no_unused_shared_packages:
+            shared_prune_name = "prune:shared-packages"
+            app_prune_task_dep = [f"{self.manager.task_prefix}:{shared_prune_name}"]
             yield dict(
-                name="prune:chunks",
-                actions=[(self.prune_unused_chunks, [all_apps, apps_to_remove])],
+                name=shared_prune_name,
+                actions=[
+                    (self.prune_unused_shared_packages, [all_apps, apps_to_remove])
+                ],
             )
 
         for to_remove in apps_to_remove:
             app = output_dir / to_remove
             app_build = output_dir / "build" / to_remove
-            if app.exists():
-                yield dict(
-                    file_dep=[pkg_json],
-                    name=f"prune:{app}",
-                    actions=[(self.delete_one, [app, app_build])],
-                )
+            yield dict(
+                file_dep=[pkg_json],
+                task_dep=app_prune_task_dep,
+                name=f"prune:{app}",
+                actions=[(self.delete_one, [app, app_build])],
+            )
 
     @default("app_archive")
     def _default_app_archive(self):
@@ -128,8 +140,8 @@ class StaticAddon(BaseAddon):
 
         self.maybe_timestamp(output_dir)
 
-    def prune_unused_chunks(self, all_apps, apps_to_remove):
-        """manually remove unused webpack chunks"""
+    def prune_unused_shared_packages(self, all_apps, apps_to_remove):
+        """manually remove unused webpack chunks from shared packages"""
         chunk_pattern = r'(\d+):"([\da-f]+)"'
         used_chunks = {}
         removed_used_chunks = {}
@@ -152,6 +164,7 @@ class StaticAddon(BaseAddon):
             unused = sorted(build_dir.glob(f"{chunk_id}.{chunk_hash}.*"))
             if unused:
                 self.log.info(
-                    f"[static] pruning chunk {chunk_id}: {len(unused)} files..."
+                    f"[static] pruning shared package with chunk id {chunk_id}: "
+                    f"{len(unused)} files"
                 )
-                self.delete_one()
+                self.delete_one(*unused)

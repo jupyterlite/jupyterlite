@@ -20,6 +20,10 @@ lite_flags = {
         {"LiteBuildConfig": {"no_sourcemaps": True}},
         "Strip all sourcemaps from applications and extensions",
     ),
+    "no-unused-shared-packages": (
+        {"LiteBuildConfig": {"no_unused_shared_packages": True}},
+        "Remove shared packages not used by --apps",
+    ),
     **{
         flag: value
         for flag, value in base_flags.items()
@@ -104,6 +108,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["apps"] = self.apps
         if self.no_sourcemaps is not None:
             kwargs["no_sourcemaps"] = self.no_sourcemaps
+        if self.no_unused_shared_packages is not None:
+            kwargs["no_unused_shared_packages"] = self.no_unused_shared_packages
         if self.output_archive:
             kwargs["output_archive"] = Path(self.output_archive)
         if self.disable_addons:
