@@ -133,7 +133,7 @@ def do_tasks(label, tasks):
     if max(task_rcs) > 0:
         raise Exception("[jupyterlite-docs] ... FAIL, see log above")
 
-    print("[jupyterlite-docs] ... {label.upper()}} OK", flush=True)
+    print(f"[jupyterlite-docs] ... {label.upper()} OK", flush=True)
 
 
 def before_rtd_build(app: Sphinx, error):

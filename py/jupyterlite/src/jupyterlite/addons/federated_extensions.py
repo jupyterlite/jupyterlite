@@ -83,7 +83,7 @@ class FederatedExtensionAddon(BaseAddon):
         file_dep = [
             p
             for p in pkg_path.rglob("*")
-            if not (p.is_dir() or self.is_ignored_sourcemap(p))
+            if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
         ]
         targets = [dest / p.relative_to(pkg_path) for p in file_dep]
 
@@ -177,7 +177,8 @@ class FederatedExtensionAddon(BaseAddon):
         members = [
             p.filename
             for p in all_infos
-            if not p.is_dir() and p.filename.startswith(pkg_root_with_slash)
+            if not (p.is_dir() or self.is_ignored_sourcemap(p.filename))
+            and p.filename.startswith(pkg_root_with_slash)
         ]
         targets = [dest / m[prefix:] for m in members]
 
@@ -284,7 +285,13 @@ class FederatedExtensionAddon(BaseAddon):
             if not theme_dir.is_dir():
                 continue
             # this may be a package or an @org/package... same result
-            file_dep = sorted([p for p in theme_dir.rglob("*") if not p.is_dir()])
+            file_dep = sorted(
+                [
+                    p
+                    for p in theme_dir.rglob("*")
+                    if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
+                ]
+            )
             dest = app_themes / stem
             targets = [dest / p.relative_to(theme_dir) for p in file_dep]
             yield dict(

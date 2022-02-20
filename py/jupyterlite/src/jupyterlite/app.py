@@ -102,7 +102,7 @@ class ManagedApp(BaseLiteApp):
             kwargs["settings_overrides"] = [Path(p) for p in self.settings_overrides]
         if self.apps:
             kwargs["apps"] = self.apps
-        if self.no_sourcemaps:
+        if self.no_sourcemaps is not None:
             kwargs["no_sourcemaps"] = self.no_sourcemaps
         if self.output_archive:
             kwargs["output_archive"] = Path(self.output_archive)

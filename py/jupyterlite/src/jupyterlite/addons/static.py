@@ -30,13 +30,17 @@ class StaticAddon(BaseAddon):
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(
-                    f"""    tarball:  {self.app_archive.name} {int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
+                    f"""    tarball:      {self.app_archive.name} """
+                    f"""{int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
                     if self.app_archive.exists()
-                    else "    tarball:  none"
+                    else "    tarball:      none"
                 ),
-                lambda: print(f"""    output:   {self.manager.output_dir}"""),
-                lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
-                lambda: print(f"""    apps:     {self.manager.apps}"""),
+                lambda: print(f"""    output:         {self.manager.output_dir}"""),
+                lambda: print(f"""    lite dir:       {self.manager.lite_dir}"""),
+                lambda: print(f"""    apps:           {self.manager.apps}"""),
+                lambda: print(
+                    f"""    sourcemaps:     {not self.manager.no_sourcemaps}"""
+                ),
             ],
         )
 
@@ -97,27 +101,10 @@ class StaticAddon(BaseAddon):
         """
         output_dir = self.manager.output_dir
 
-        def _ignore_sourcemaps(path, children):
-            return [c for c in children if self.is_ignored_sourcemap(c)]
-
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
             with tarfile.open(str(self.app_archive), "r:gz") as tar:
                 tar.extractall(td)
-                for child in sorted((tdp / "package").glob("*")):
-                    self.log.debug(f"[lite] [jupyterlab] copying {child}")
-                    dest = output_dir / child.name
-                    if not dest.parent.exists():  # pragma: no cover
-                        dest.parent.mkdir(exist_ok=True, parents=True)
-                    try:
-                        if child.is_dir():
-                            shutil.copytree(child, dest, ignore=_ignore_sourcemaps)
-                        elif self.is_ignored_sourcemap(child.name):
-                            continue
-                        else:
-                            shutil.copy2(child, dest)
-                        self.maybe_timestamp(dest)
-                    except Exception as err:  # pragma: no cover
-                        self.log.error(f"ERR copying {child} to {dest}: {err}")
+                self.copy_one(tdp / "package", output_dir)
 
         self.maybe_timestamp(output_dir)

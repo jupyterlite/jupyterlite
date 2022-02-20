@@ -18,6 +18,7 @@ from ..constants import (
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_METADATA,
     SETTINGS_OVERRIDES,
+    SOURCEMAP_IGNORE_PATTERNS,
     SOURCEMAPS,
     UTF8,
 )
@@ -38,6 +39,9 @@ class BaseAddon(LoggingConfigurable):
 
     def copy_one(self, src, dest):
         """copy one Path (a file or folder)"""
+        if self.manager.no_sourcemaps and self.is_ignored_sourcemap(src.name):
+            return
+
         if dest.is_dir():
             shutil.rmtree(dest)
         elif dest.exists():
@@ -49,8 +53,13 @@ class BaseAddon(LoggingConfigurable):
 
         self.maybe_timestamp(dest.parent)
 
+        copytree_kwargs = {}
+
+        if self.manager.no_sourcemaps:
+            copytree_kwargs["ignore"] = SOURCEMAP_IGNORE_PATTERNS
+
         if src.is_dir():
-            shutil.copytree(src, dest)
+            shutil.copytree(src, dest, **copytree_kwargs)
         else:
             shutil.copy2(src, dest)
 
@@ -253,10 +262,11 @@ class BaseAddon(LoggingConfigurable):
 
         config[FEDERATED_EXTENSIONS] = sorted(named.values(), key=lambda x: x["name"])
 
-    def is_ignored_sourcemap(self, path_name):
-        if not self.manager.no_sourcemaps:
-            return False
-        for map_ext in SOURCEMAPS:
-            if path_name.endswith(map_ext):
-                return True
-        return False
+    def is_ignored_sourcemap(self, path_name: str):
+        is_ignored = False
+        if self.manager.no_sourcemaps:
+            for map_ext in SOURCEMAPS:
+                if path_name.endswith(map_ext):
+                    is_ignored = True
+                    break
+        return is_ignored
