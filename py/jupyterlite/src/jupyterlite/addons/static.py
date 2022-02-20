@@ -82,7 +82,7 @@ class StaticAddon(BaseAddon):
     def post_init(self, manager):
         """maybe remove sourcemaps, or all static assets if an app is not installed"""
         output_dir = manager.output_dir
-        pkg_json = manager.lite_dir / "package.json"
+        pkg_json = output_dir / "package.json"
         pkg_data = json.loads(pkg_json.read_text(**UTF8))
 
         all_apps = set(pkg_data["jupyterlite"]["apps"])

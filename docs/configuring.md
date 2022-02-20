@@ -125,6 +125,31 @@ Finally, the `--federated-extensions` CLI flag and the
 `LiteBuildConfig/federated_extensions` config entry allow for adding additional
 federated extensions, as packaged in Python `.whl` or conda `.tar.bz2` packages.
 
+## Applications
+
+### Removing Applications
+
+By default, all of the default [applications](../applications/index) will be shipped. To
+ship only a specific application, provide the `--apps` CLI argument (may be given
+multiple times).
+
+### Source Maps
+
+For better baseline performance, the core JupyterLite distribution, and some federated
+extensions, only ship optimized JavaScript code, which is hard to debug. To improve
+this,
+[source maps](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map),
+are also provided to provide pointers to the original source code, and while _much_
+larger, are only loaded when debugging in browser consoles. To prevent these from being
+included in the output folder, provide `--no-sourcemaps`, or configure `no_sourcemaps`
+in a config file.
+
+```{warning}
+Removing sourcemaps, in addition to making errors harder to debug, will _also_
+cause many `404` errors when a user does open the browser console, which
+can be _even more_ confusing.
+```
+
 ## Customizing Settings
 
 With the [CLI](./cli.ipynb), if you create an `overrides.json` in either the root, or a

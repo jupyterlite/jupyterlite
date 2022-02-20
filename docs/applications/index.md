@@ -1,6 +1,6 @@
 # Applications
 
-JupyterLite ships with a couple of applications by default:
+JupyterLite ships with a couple of applications by default.
 
 ```{toctree}
 :maxdepth: 2
@@ -8,4 +8,8 @@ JupyterLite ships with a couple of applications by default:
 lab
 retro
 repl
+```
+
+```{note}
+Some JupyterLite sites might be configured to have [fewer default](../configuring.md#applications) apps... or even custom  ones!
 ```
