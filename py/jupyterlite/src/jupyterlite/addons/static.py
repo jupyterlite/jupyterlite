@@ -99,11 +99,13 @@ class StaticAddon(BaseAddon):
             self.log.warn(f"[static] app '{not_an_app}' is not one of: {all_apps}")
 
         apps_to_remove = all_apps - mgr_apps
-
         app_prune_task_dep = []
+
         if apps_to_remove and self.manager.no_unused_shared_packages:
             shared_prune_name = "prune:shared-packages"
-            app_prune_task_dep = [f"{self.manager.task_prefix}:{shared_prune_name}"]
+            app_prune_task_dep = [
+                f"{self.manager.task_prefix}post_init:static:{shared_prune_name}"
+            ]
             yield dict(
                 name=shared_prune_name,
                 actions=[
@@ -115,7 +117,6 @@ class StaticAddon(BaseAddon):
             app = output_dir / to_remove
             app_build = output_dir / "build" / to_remove
             yield dict(
-                file_dep=[pkg_json],
                 task_dep=app_prune_task_dep,
                 name=f"prune:{app}",
                 actions=[(self.delete_one, [app, app_build])],
@@ -163,8 +164,8 @@ class StaticAddon(BaseAddon):
                 continue
             unused = sorted(build_dir.glob(f"{chunk_id}.{chunk_hash}.*"))
             if unused:
-                self.log.info(
-                    f"[static] pruning shared package with chunk id {chunk_id}: "
+                self.log.debug(
+                    f"[static] pruning unused shared package {chunk_id}: "
                     f"{len(unused)} files"
                 )
                 self.delete_one(*unused)

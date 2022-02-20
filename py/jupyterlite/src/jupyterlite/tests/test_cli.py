@@ -213,7 +213,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     args = [*args, "--no-unused-shared-packages"]
     status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
     no_chunk_files = sorted(out.rglob("*"))
-    assert "pruning unused shared package" in status.stderr
+    # assert "pruning unused shared package" in status.stderr
 
     unexpected = sorted(set(map(str, no_chunk_files)) - set(map(str, repl_files)))
 
