@@ -7,7 +7,7 @@ Deploying a JupyterLite site requires:
 - an option set of [configurations](./configuring.md) for the site and different apps
   - different options offer trade-offs between reproducibility, build speed, deployment
     size, and end-user performance, privacy, and security
-- a [local](#local), [on-premises](on-premises), or [hosted](#hosted) HTTP server
+- a [local](#local), [on-premises](#on-premises), or [hosted](#hosted) HTTP server
   (doesn't presently work with `file://` URLs)
 
 ```{warning}
