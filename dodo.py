@@ -624,6 +624,8 @@ def task_check():
             U.do(
                 "pytest-check-links",
                 B.DOCS,
+                "-n",
+                "auto",
                 "-p",
                 "no:warnings",
                 "--links-ext",
