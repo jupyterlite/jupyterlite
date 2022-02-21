@@ -50,7 +50,7 @@ class LiteAddon(BaseAddon):
         schema = manager.output_dir / JUPYTERLITE_SCHEMA
         file_dep = []
 
-        if not schema.exists():
+        if not schema.exists():  # pragma: no cover
             return
 
         file_dep += [schema]

@@ -10,7 +10,7 @@ ENV_VAR = "JUPYTERLITE_PYODIDE_URL"
 
 TEST_PYODIDE_URL = os.environ.get(f"TEST_{ENV_VAR}")
 
-if TEST_PYODIDE_URL is None:
+if TEST_PYODIDE_URL is None:  # pragma: no cover
     pytest.skip("skipping pyodide tests", allow_module_level=True)
 
 

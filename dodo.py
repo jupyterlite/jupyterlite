@@ -624,9 +624,12 @@ def task_check():
             U.do(
                 "pytest-check-links",
                 B.DOCS,
+                "-n",
+                "auto",
                 "-p",
                 "no:warnings",
-                "--links-ext=html",
+                "--links-ext",
+                "html",
                 "--check-anchors",
                 "--check-links-ignore",
                 "^https?://",
@@ -1100,7 +1103,9 @@ class BB:
             / (src.name.rsplit(".", 1)[0] + ".html")
         )
         for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
-        if P.DOCS in src.parents and "_static" not in str(src)
+        if P.DOCS in src.parents
+        and "_static" not in str(src)
+        and "ipynb_checkpoints" not in str(src)
     ]
 
 

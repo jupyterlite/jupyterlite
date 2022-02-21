@@ -18,6 +18,8 @@ from ..constants import (
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_METADATA,
     SETTINGS_OVERRIDES,
+    SOURCEMAP_IGNORE_PATTERNS,
+    SOURCEMAPS,
     UTF8,
 )
 from ..manager import LiteManager
@@ -37,6 +39,9 @@ class BaseAddon(LoggingConfigurable):
 
     def copy_one(self, src, dest):
         """copy one Path (a file or folder)"""
+        if self.manager.no_sourcemaps and self.is_ignored_sourcemap(src.name):
+            return
+
         if dest.is_dir():
             shutil.rmtree(dest)
         elif dest.exists():
@@ -48,8 +53,13 @@ class BaseAddon(LoggingConfigurable):
 
         self.maybe_timestamp(dest.parent)
 
+        copytree_kwargs = {}
+
+        if self.manager.no_sourcemaps:
+            copytree_kwargs["ignore"] = SOURCEMAP_IGNORE_PATTERNS
+
         if src.is_dir():
-            shutil.copytree(src, dest)
+            shutil.copytree(src, dest, **copytree_kwargs)
         else:
             shutil.copy2(src, dest)
 
@@ -69,7 +79,7 @@ class BaseAddon(LoggingConfigurable):
         if not dest.parent.exists():
             dest.parent.mkdir(parents=True)
 
-        if "anaconda.org/" in url:
+        if "anaconda.org/" in url:  # pragma: no cover
             self.log.error(
                 f"[lite][fetch] cannot reliably download from anaconda.org {url}"
             )
@@ -113,12 +123,13 @@ class BaseAddon(LoggingConfigurable):
             return
         return
 
-    def delete_one(self, src):
-        """delete... something"""
-        if src.is_dir():
-            shutil.rmtree(src)
-        elif src.exists():
-            src.unlink()
+    def delete_one(self, *src):
+        """delete... somethings"""
+        for src_dir in src:
+            if src_dir.is_dir():
+                shutil.rmtree(src_dir)
+            elif src_dir.exists():
+                src_dir.unlink()
 
     def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
         if path:
@@ -251,3 +262,12 @@ class BaseAddon(LoggingConfigurable):
             named[ext["name"]] = ext
 
         config[FEDERATED_EXTENSIONS] = sorted(named.values(), key=lambda x: x["name"])
+
+    def is_ignored_sourcemap(self, path_name: str):
+        is_ignored = False
+        if self.manager.no_sourcemaps:
+            for map_ext in SOURCEMAPS:
+                if path_name.endswith(map_ext):
+                    is_ignored = True
+                    break
+        return is_ignored
