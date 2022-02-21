@@ -214,28 +214,28 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * The licenses service plugin
  */
- const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
+const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
   id: '@jupyterlite/server-extension:licenses',
   autoStart: true,
   provides: ILicenses,
   activate: (app: JupyterLiteServer) => {
     return new Licenses();
-  }
+  },
 };
 
 /**
  * A plugin providing the routes for the licenses service.
  */
 const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
-  id:  '@jupyterlite/server-extension:licenses-routes',
+  id: '@jupyterlite/server-extension:licenses-routes',
   autoStart: true,
   activate(app: JupyterLiteServer, licenses: ILicenses) {
     app.router.get('/api/licenses', async (req: Router.IRequest) => {
       const res = await licenses.get();
       return new Response(JSON.stringify(res));
     });
-  }
-}
+  },
+};
 
 /**
  * A plugin providing the routes for the nbconvert service.

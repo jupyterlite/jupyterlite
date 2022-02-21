@@ -37,21 +37,13 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@jupyterlite/kernel": "^0.1.0-alpha.18",
-    "@jupyterlite/licenses": "^0.1.0-alpha.18",
-    "@jupyterlite/server": "^0.1.0-alpha.18",
-    "@jupyterlite/session": "^0.1.0-alpha.18",
-    "@jupyterlite/settings": "^0.1.0-alpha.18",
-    "@jupyterlite/translation": "^0.1.0-alpha.18"
-=======
     "@jupyterlab/coreutils": "~5.2.9",
     "@jupyterlite/kernel": "^0.1.0-alpha.24",
+    "@jupyterlite/licenses": "^0.1.0-alpha.24",
     "@jupyterlite/server": "^0.1.0-alpha.24",
     "@jupyterlite/session": "^0.1.0-alpha.24",
     "@jupyterlite/settings": "^0.1.0-alpha.24",
     "@jupyterlite/translation": "^0.1.0-alpha.24"
->>>>>>> upstream/main
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

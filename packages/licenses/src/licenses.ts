@@ -10,7 +10,7 @@ import {
   ILicenseBundles,
   ILicenseResponse,
   ILicenses,
-  THIRD_PARTY_LICENSES
+  THIRD_PARTY_LICENSES,
 } from './tokens';
 
 /**
@@ -29,8 +29,8 @@ export class Licenses implements ILicenses {
     return {
       bundles: {
         ...(await this._getFederated()),
-        [this.appName]: await this._getAppLicenses()
-      }
+        [this.appName]: await this._getAppLicenses(),
+      },
     };
   }
 
