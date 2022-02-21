@@ -24,7 +24,7 @@ export class KernelSpecs implements IKernelSpecs {
     }
     return {
       default: 'python',
-      kernelspecs: Object.fromEntries(this._specs)
+      kernelspecs: Object.fromEntries(this._specs),
     };
   }
 

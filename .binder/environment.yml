@@ -2,7 +2,6 @@ name: jupyterlite-dev
 # this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
-  - conda-forge/label/jupyterlab_rc
   - conda-forge
 
 dependencies:
@@ -14,8 +13,8 @@ dependencies:
   - twine
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3.1.9,<4
-  - retrolab
+  - jupyterlab >=3.2.9,<4
+  - retrolab >=0.3.19,<0.4
   # extra docs tools
   - sphinx-autobuild
 
@@ -32,14 +31,14 @@ dependencies:
   - theme-darcula >=3,<4
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
-  - bqplot ==0.12.30
-  - ipycanvas ==0.9.1
-  - ipycytoscape ==1.2.2
-  - ipyleaflet ==0.14.0
-  - ipympl ==0.7.0
-  - ipyvue ==1.5.0
-  - ipyvuetify ==1.8.1
-  - plotly ==5.1.0
+  - bqplot
+  - ipycanvas
+  - ipycytoscape
+  - ipyleaflet
+  - ipympl
+  - ipyvue
+  - ipyvuetify
+  - plotly
   ### FEDERATED EXTENSIONS ###
 
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`

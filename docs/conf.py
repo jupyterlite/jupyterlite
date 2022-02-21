@@ -2,12 +2,13 @@
 import datetime
 import json
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
 
 from sphinx.application import Sphinx
+
+os.environ.update(IN_SPHINX="1")
 
 CONF_PY = Path(__file__)
 HERE = CONF_PY.parent
@@ -17,7 +18,9 @@ APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
 RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
 
 # tasks that won't have been run prior to building the docs on RTD
-RTD_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
+RTD_PRE_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
+
+RTD_POST_TASKS = ["docs:post:schema", "docs:post:images"]
 
 # this is _not_ the way
 sys.path += [str(ROOT / "py/jupyterlite/src")]
@@ -58,6 +61,7 @@ rediraffe_redirects = {
     "try/index": "_static/index",
     "try/lab/index": "_static/lab/index",
     "try/retro/index": "_static/retro/tree/index",
+    "try/repl/index": "_static/repl/index",
 }
 
 # files
@@ -112,34 +116,36 @@ html_context = {
 }
 
 
-def after_build(app: Sphinx, error):
-    """sphinx-jsonschema makes duplicate ids. clean them"""
-    print("jupyterlite: Cleaning generated ids in JSON schema html...", flush=True)
-    outdir = Path(app.builder.outdir)
-    for schema_html in outdir.glob("schema-v*.html"):
-        print(f"... fixing: {schema_html.relative_to(outdir)}")
-        text = schema_html.read_text(encoding="utf-8")
-        new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
-        if text != new_text:
-            schema_html.write_text(new_text, encoding="utf-8")
+def do_tasks(label, tasks):
+    """Run some doit tasks before/after the build"""
+    task_rcs = []
+
+    for task in tasks:
+        print(f"[jupyterlite-docs] running {label} {task}", flush=True)
+        rc = subprocess.call(["doit", "-n4", task], cwd=str(ROOT))
+
+        if rc != 0:
+            rc = subprocess.call(["doit", task], cwd=str(ROOT))
+
+        print(f"[jupyterlite-docs] ... ran {label} {task}: returned {rc}", flush=True)
+        task_rcs += [rc]
+
+    if max(task_rcs) > 0:
+        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
+
+    print(f"[jupyterlite-docs] ... {label.upper()} OK", flush=True)
 
 
 def before_rtd_build(app: Sphinx, error):
     """ensure doit docs:sphinx precursors have been met on RTD"""
     print("[jupyterlite-docs] Staging files changed by RTD...", flush=True)
     subprocess.call(["git", "add", "."], cwd=str(ROOT))
-    task_rcs = []
-    print("[jupyterlite-docs] Ensuring built application...", flush=True)
-    for task in RTD_TASKS:
-        print(f"[jupyterlite-docs] running {task}", flush=True)
-        subprocess.call(["git", "diff", str(ROOT)], cwd=str(ROOT))
-        rc = subprocess.call(["doit", task], cwd=str(ROOT))
-        print(f"[jupyterlite-docs] ... ran {task}: returned {rc}", flush=True)
-        task_rcs += [rc]
+    do_tasks("post", RTD_PRE_TASKS)
 
-    if max(task_rcs) > 0:
-        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
-    print("[jupyterlite-docs] ... OK", flush=True)
+
+def after_build(app: Sphinx, error):
+    """sphinx-jsonschema makes duplicate ids. clean them"""
+    do_tasks("post", RTD_POST_TASKS)
 
 
 def setup(app):

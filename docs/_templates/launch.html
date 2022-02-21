@@ -1,7 +1,7 @@
 <strong>Try</strong>
 
 <a
-  href="{{ pathto('_static/lab/index.html', 1) }}"
+  href="{{ pathto('_static/lab/', 1) }}?path=intro.ipynb"
   class="btn btn-warning"
   target="_blank"
   data-toggle="tooltip"
@@ -13,19 +13,31 @@
 </a>
 
 <a
-  href="{{ pathto('_static/retro/index.html', 1) }}"
+  href="{{ pathto('_static/retro/notebooks/index.html', 1) }}?path=intro-retro.ipynb"
   class="btn btn-warning"
   target="_blank"
   data-toggle="tooltip"
   data-placement="bottom"
-  title="Try JupyterLab Retro Lite"
+  title="Try RetroLab Lite"
 >
   <i class="fas fa-book"></i>
   Retro
 </a>
 
+<a
+  href="{{ pathto('_static/repl/index.html', 1) }}?toolbar=1"
+  class="btn btn-warning"
+  target="_blank"
+  data-toggle="tooltip"
+  data-placement="bottom"
+  title="Try the JupyterLite REPL"
+>
+  <i class="fas fa-terminal"></i>
+  REPL
+</a>
+
 <script>
-  $(function() {
+  $(function () {
     $('[data-toggle="tooltip"]').tooltip();
   });
 </script>

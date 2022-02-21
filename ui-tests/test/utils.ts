@@ -4,7 +4,7 @@ import { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
 export async function createNewDirectory({
   page,
-  name
+  name,
 }: {
   page: IJupyterLabPageFixture;
   name: string;
@@ -17,21 +17,21 @@ export async function createNewDirectory({
 
 export async function deleteItem({
   page,
-  name
+  name,
 }: {
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<void> {
   const item = await page.$(`xpath=${page.filebrowser.xpBuildFileSelector(name)}`);
   await item.click({ button: 'right' });
-  await page.click('text="Delete"');
+  await page.click('[data-command="filebrowser:delete"]');
   const button = await page.$('.jp-mod-accept');
   await button.click();
 }
 
 export async function download({
   page,
-  path
+  path,
 }: {
   page: IJupyterLabPageFixture;
   path: string;

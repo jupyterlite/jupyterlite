@@ -1,15 +1,12 @@
 import pytest
 
-HAS_JSMX = False
-STATIC_ASSETS_PATH = None
-
 try:
     from jupyter_server_mathjax.app import STATIC_ASSETS_PATH
 
     HAS_JSMX = True
-except Exception:
-    pass
-
+except Exception:  # pragma: no cover
+    STATIC_ASSETS_PATH = None
+    HAS_JSMX = False
 
 EXCURSIONS = [
     [False, ["--ignore-sys-prefix"]],

@@ -6,6 +6,7 @@
   },
   "include": ["src/**/*"],
   "references": [
+    { "path": "../application" },
     { "path": "../application-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
@@ -15,6 +16,7 @@
     { "path": "../licenses" },
     { "path": "../pyolite-kernel" },
     { "path": "../pyolite-kernel-extension" },
+    { "path": "../repl-extension" },
     { "path": "../retro-application-extension" },
     { "path": "../server-extension" },
     { "path": "../session" },

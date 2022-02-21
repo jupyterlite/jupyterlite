@@ -5,7 +5,7 @@ import {
   IRouter,
   JupyterFrontEndPlugin,
   JupyterFrontEnd,
-  ILabShell
+  ILabShell,
 } from '@jupyterlab/application';
 
 import { Clipboard, ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
@@ -19,7 +19,7 @@ import {
   IDocumentProviderFactory,
   ProviderMock,
   getAnonymousUserName,
-  getRandomColor
+  getRandomColor,
 } from '@jupyterlab/docprovider';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
@@ -78,7 +78,7 @@ class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
     if (currState && !currState.name) {
       this.awareness.setLocalStateField('user', {
         name,
-        color
+        color,
       });
     }
   }
@@ -131,6 +131,15 @@ export namespace IWebRtcProvider {
     room: string;
     signalingUrls?: string[];
   }
+
+  export interface IYjsWebRtcOptions {
+    signaling: Array<string>;
+    password: string | null;
+    awareness: Awareness;
+    maxConns: number;
+    filterBcConns: boolean;
+    peerOpts: any;
+  }
 }
 
 /**
@@ -140,7 +149,9 @@ namespace WebRtcProvider {
   /**
    * Re-map Lab provider options to yjs ones.
    */
-  export function yProviderOptions(options: IWebRtcProvider.IOptions) {
+  export function yProviderOptions(
+    options: IWebRtcProvider.IOptions
+  ): IWebRtcProvider.IYjsWebRtcOptions {
     return {
       signaling:
         options.signalingUrls && options.signalingUrls.length
@@ -148,13 +159,13 @@ namespace WebRtcProvider {
           : [
               'wss://signaling.yjs.dev',
               'wss://y-webrtc-signaling-eu.herokuapp.com',
-              'wss://y-webrtc-signaling-us.herokuapp.com'
+              'wss://y-webrtc-signaling-us.herokuapp.com',
             ],
       password: null,
       awareness: new Awareness(options.ymodel.ydoc),
       maxConns: 20 + Math.floor(Math.random() * 15), // the random factor reduces the chance that n clients form a cluster
       filterBcConns: true,
-      peerOpts: {} // simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts
+      peerOpts: {}, // simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts
     };
   }
 }
@@ -250,11 +261,11 @@ const about: JupyterFrontEndPlugin<void> = {
           buttons: [
             Dialog.createButton({
               label: trans.__('Dismiss'),
-              className: 'jp-About-button jp-mod-reject jp-mod-styled'
-            })
-          ]
+              className: 'jp-About-button jp-mod-reject jp-mod-styled',
+            }),
+          ],
         });
-      }
+      },
     });
 
     if (palette) {
@@ -264,7 +275,7 @@ const about: JupyterFrontEndPlugin<void> = {
     if (menu) {
       menu.helpMenu.addGroup([{ command: CommandIDs.about }], 0);
     }
-  }
+  },
 };
 
 /**
@@ -288,12 +299,12 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
         ? new WebRtcProvider({
             room,
             ...options,
-            ...(signalingUrls && signalingUrls.length ? { signalingUrls } : {})
+            ...(signalingUrls && signalingUrls.length ? { signalingUrls } : {}),
           })
         : new ProviderMock();
     };
     return factory;
-  }
+  },
 };
 
 /**
@@ -352,12 +363,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           return showDialog({
             title: trans.__('Cannot Download'),
             body: trans.__('No context found for current widget!'),
-            buttons: [Dialog.okButton({ label: trans.__('OK') })]
+            buttons: [Dialog.okButton({ label: trans.__('OK') })],
           });
         }
         const content = await formatContent(context.path);
         downloadContent(content, context.path);
-      }
+      },
     });
 
     const category = trans.__('File Operations');
@@ -386,10 +397,10 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
-        label: trans.__('Download')
+        label: trans.__('Download'),
       });
     }
-  }
+  },
 };
 
 /**
@@ -410,11 +421,11 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
       elementPosition: 'center',
       margin: '2px 2px 2px 8px',
       height: 'auto',
-      width: '16px'
+      width: '16px',
     });
     logo.id = 'jp-MainLogo';
     labShell.add(logo, 'top', { rank: 0 });
-  }
+  },
 };
 
 /**
@@ -448,7 +459,7 @@ const opener: JupyterFrontEndPlugin<void> = {
         if (!paths) {
           return;
         }
-        const files = paths.map(path => decodeURIComponent(path));
+        const files = paths.map((path) => decodeURIComponent(path));
         app.restored.then(() => {
           const page = PageConfig.getOption('retroPage');
           const [file] = files;
@@ -459,19 +470,19 @@ const opener: JupyterFrontEndPlugin<void> = {
             }
             case 'notebooks': {
               docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-                ref: '_noref'
+                ref: '_noref',
               });
               return;
             }
             case 'edit': {
               docManager.open(file, EDITOR_FACTORY, undefined, {
-                ref: '_noref'
+                ref: '_noref',
               });
               return;
             }
             default: {
               // open all files in the lab interface
-              files.forEach(file => docManager.open(file));
+              files.forEach((file) => docManager.open(file));
               const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
               // only remove the path (to keep extra parameters like the RTC room)
               url.searchParams.delete('path');
@@ -481,11 +492,11 @@ const opener: JupyterFrontEndPlugin<void> = {
             }
           }
         });
-      }
+      },
     });
 
     router.register({ command, pattern: URL_PATTERN });
-  }
+  },
 };
 
 /**
@@ -520,9 +531,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
         const models = toArray(
-          filter(widget.selectedItems(), item => item.type !== 'directory')
+          filter(widget.selectedItems(), (item) => item.type !== 'directory')
         );
-        models.forEach(model => {
+        models.forEach((model) => {
           url.searchParams.append('path', model.path);
         });
         if (collaborative) {
@@ -534,9 +545,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
         !!tracker.currentWidget &&
         toArray(tracker.currentWidget.selectedItems()).length >= 1,
       icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
-      label: trans.__('Copy Shareable Link')
+      label: trans.__('Copy Shareable Link'),
     });
-  }
+  },
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
@@ -545,7 +556,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   downloadPlugin,
   liteLogo,
   opener,
-  shareFile
+  shareFile,
 ];
 
 export default plugins;

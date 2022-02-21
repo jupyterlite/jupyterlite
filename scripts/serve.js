@@ -20,7 +20,7 @@ const PORT = parseInt(process.env['PORT'] || '5000');
 const PREFIX = process.env['PREFIX'] || '/';
 const ERRORS = { ENOENT: 404 };
 const CUSTOM_ROUTES = {
-  '/favicon.ico': '/lab/favicon.ico'
+  '/favicon.ico': '/lab/favicon.ico',
 };
 
 const MIME_TYPES = {
@@ -170,7 +170,7 @@ const MIME_TYPES = {
   '.jupyterlab-workspace': 'application/json',
 
   // pyolite
-  '.data': 'application/wasm'
+  '.data': 'application/wasm',
 };
 
 function stripSlash(url) {

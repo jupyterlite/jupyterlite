@@ -91,7 +91,7 @@ export class Router {
         {
           pathname,
           body,
-          query: Object.fromEntries(url.searchParams)
+          query: Object.fromEntries(url.searchParams),
         },
         ...matches
       );
@@ -118,7 +118,7 @@ export class Router {
     this._routes.push({
       method,
       pattern,
-      callback
+      callback,
     });
   }
 

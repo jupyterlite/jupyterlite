@@ -72,7 +72,7 @@
         },
         "fullLabextensionsUrl": {
           "description": "path to federated extensions, a folder organized by `({:org}/){package}`",
-          "default": "./lab/extensions",
+          "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "fullMathjaxUrl": {
@@ -98,21 +98,31 @@
         "mathjaxConfig": {
           "type": "string",
           "default": "TeX-AMS_CHTML-full,Safe",
-          "description": "a valid MathJax configuration blob, a comma-delimted list of... something"
+          "description": "a valid MathJax configuration blob, a comma-delimited list of MathJax profiles"
         },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
-          "default": "./lab/build",
+          "default": "./build",
           "$ref": "#/definitions/non-trailing-slash-uri"
+        },
+        "contentsStorageName": {
+          "description": "name used to store Jupyter contents in the browser",
+          "type": "string",
+          "default": "JupyterLite Storage"
+        },
+        "settingsStorageName": {
+          "description": "name used to store Jupyter settings in the browser",
+          "type": "string",
+          "default": "JupyterLite Storage"
         },
         "settingsUrl": {
           "description": "relative path to bundled schemas",
-          "default": "./lab/build/schemas",
+          "default": "./build/schemas",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "themesUrl": {
           "description": "relative path to bundled themes",
-          "default": "./lab/build/themes",
+          "default": "./build/themes",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "licensesUrl": {
@@ -176,7 +186,7 @@
         "pyodideUrl": {
           "description": "The path to the main pyodide.js entry point",
           "type": "string",
-          "default": "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js",
+          "default": "https://cdn.jsdelivr.net/pyodide/v0.19.0/full/pyodide.js",
           "format": "uri"
         },
         "disablePyPIFallback": {
@@ -234,7 +244,7 @@
     "npm-package-name": {
       "title": "An NPM Package Name",
       "type": "string",
-      "description": "package.json-compatible extension name, with an optional organziation prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
+      "description": "package.json-compatible extension name, with an optional organization prefix. See https://github.com/dword-design/package-name-regex/blob/master/src/index.js",
       "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*$"
     },
     "lab-extension-plugin-name": {

@@ -1,9 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { ServerConnection, ServiceManager } from '@jupyterlab/services';
+
 import { Application, IPlugin } from '@lumino/application';
 
-import { LiteServiceManager } from './service';
+import { WebSocket } from 'mock-socket';
+
+import { Router } from './router';
 
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
 
@@ -18,6 +22,13 @@ export class JupyterLiteServer extends Application<never> {
    */
   constructor(options: Application.IOptions<never>) {
     super(options);
+    this._serviceManager = new ServiceManager({
+      serverSettings: {
+        ...ServerConnection.makeSettings(),
+        WebSocket,
+        fetch: this.fetch.bind(this) ?? undefined,
+      },
+    });
   }
 
   /**
@@ -36,10 +47,33 @@ export class JupyterLiteServer extends Application<never> {
   readonly version = 'unknown';
 
   /**
+   * Get the underlying `Router` instance.
+   */
+  get router(): Router {
+    return this._router;
+  }
+
+  /**
    * Get the underlying lite service manager for this app.
    */
-  get serviceManager(): LiteServiceManager | null {
+  get serviceManager(): ServiceManager {
     return this._serviceManager;
+  }
+
+  /**
+   * Handle an incoming request from the client.
+   *
+   * @param req The incoming request
+   * @param init The optional init request
+   */
+  async fetch(
+    req: RequestInfo,
+    init?: RequestInit | null | undefined
+  ): Promise<Response> {
+    if (!(req instanceof Request)) {
+      throw Error('Request info is not a Request');
+    }
+    return this._router.route(req);
   }
 
   /**
@@ -78,7 +112,7 @@ export class JupyterLiteServer extends Application<never> {
     if (!Array.isArray(data)) {
       data = [data];
     }
-    data.forEach(item => {
+    data.forEach((item) => {
       try {
         this.registerPlugin(item);
       } catch (error) {
@@ -93,21 +127,13 @@ export class JupyterLiteServer extends Application<never> {
    * @param mods - The plugin modules to register.
    */
   registerPluginModules(mods: JupyterLiteServer.IPluginModule[]): void {
-    mods.forEach(mod => {
+    mods.forEach((mod) => {
       this.registerPluginModule(mod);
     });
   }
 
-  /**
-   * Register the underlying lite service manager for this app.
-   *
-   * @param serviceManager The Service Manager for the app.
-   */
-  registerServiceManager(serviceManager: LiteServiceManager): void {
-    this._serviceManager = serviceManager;
-  }
-
-  private _serviceManager: LiteServiceManager | null = null;
+  private _router = new Router();
+  private _serviceManager: ServiceManager;
 }
 
 /**

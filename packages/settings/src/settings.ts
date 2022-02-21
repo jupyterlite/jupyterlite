@@ -11,12 +11,30 @@ import { IPlugin } from './tokens';
 /**
  * The name of the local storage.
  */
-const STORAGE_NAME = 'JupyterLite Storage';
+const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * A class to handle requests to /api/settings
  */
 export class Settings {
+  constructor(options?: Settings.IOptions) {
+    this._settingsStorageName =
+      (options || {}).settingsStorageName || DEFAULT_STORAGE_NAME;
+    this._storage = this.defaultSettingsStorage();
+  }
+
+  /**
+   * Create a settings store.
+   */
+  protected defaultSettingsStorage(): LocalForage {
+    return localforage.createInstance({
+      name: this._settingsStorageName,
+      description: 'Offline Storage for Settings',
+      storeName: 'settings',
+      version: 1,
+    });
+  }
+
   /**
    * Get settings by plugin id
    *
@@ -46,13 +64,13 @@ export class Settings {
       await fetch(URLExt.join(settingsUrl, 'all.json'))
     ).json()) as IPlugin[];
     const settings = await Promise.all(
-      all.map(async plugin => {
+      all.map(async (plugin) => {
         const { id } = plugin;
         const raw = ((await this._storage.getItem(id)) as string) ?? plugin.raw;
         return {
           ...Private.override(plugin),
           raw,
-          settings: json5.parse(raw)
+          settings: json5.parse(raw),
         };
       })
     );
@@ -100,16 +118,24 @@ export class Settings {
       raw,
       schema,
       settings,
-      version: packageJson.version || '3.0.8'
+      version: packageJson.version || '3.0.8',
     });
   }
 
-  private _storage = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Settings',
-    storeName: 'settings',
-    version: 1
-  });
+  private _settingsStorageName: string = DEFAULT_STORAGE_NAME;
+  private _storage: LocalForage;
+}
+
+/**
+ * A namespaces for settings metadata.
+ */
+namespace Settings {
+  /**
+   * Initialization options for settings.
+   */
+  export interface IOptions {
+    settingsStorageName?: string | null;
+  }
 }
 
 /**

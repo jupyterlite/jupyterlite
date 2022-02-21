@@ -13,7 +13,7 @@ import { IContents } from './tokens';
 /**
  * The name of the local storage.
  */
-const STORAGE_NAME = 'JupyterLite Storage';
+const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * The number of checkpoints to save.
@@ -29,13 +29,59 @@ const EXTRA_TEXT_MIME_TYPES = new Set([
   'application/manifest+json',
   'application/x-python-code',
   'application/xml',
-  'image/svg+xml'
+  'image/svg+xml',
 ]);
 
 /**
  * A class to handle requests to /api/contents
  */
 export class Contents implements IContents {
+  /**
+   * Construct a new localForage-powered contents provider
+   */
+  constructor(options?: Contents.IOptions) {
+    this._storageName = (options || {}).contentsStorageName || DEFAULT_STORAGE_NAME;
+    this._storage = this.createDefaultStorage();
+    this._counters = this.createDefaultCounters();
+    this._checkpoints = this.createDefaultCheckpoints();
+  }
+
+  /**
+   * Initialize the default storage for contents.
+   */
+  protected createDefaultStorage(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Offline Storage for Notebooks and Files',
+      storeName: 'files',
+      version: 1,
+    });
+  }
+
+  /**
+   * Initialize the default storage for counting file suffixes.
+   */
+  protected createDefaultCounters(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Store the current file suffix counters',
+      storeName: 'counters',
+      version: 1,
+    });
+  }
+
+  /**
+   * Create the default checkpoint storage.
+   */
+  protected createDefaultCheckpoints(): LocalForage {
+    return localforage.createInstance({
+      name: this._storageName,
+      description: 'Offline Storage for Checkpoints',
+      storeName: 'checkpoints',
+      version: 1,
+    });
+  }
+
   /**
    * Create a new untitled file or directory in the specified directory path.
    *
@@ -87,7 +133,7 @@ export class Contents implements IContents {
           content: null,
           size: undefined,
           writable: true,
-          type: 'directory'
+          type: 'directory',
         };
         break;
       }
@@ -106,7 +152,7 @@ export class Contents implements IContents {
           content: '',
           size: 0,
           writable: true,
-          type: 'file'
+          type: 'file',
         };
         break;
       }
@@ -123,7 +169,7 @@ export class Contents implements IContents {
           content: Private.EMPTY_NB,
           size: JSON.stringify(Private.EMPTY_NB).length,
           writable: true,
-          type: 'notebook'
+          type: 'notebook',
         };
         break;
       }
@@ -163,7 +209,7 @@ export class Contents implements IContents {
     item = {
       ...item,
       name,
-      path: toPath
+      path: toPath,
     };
     await this._storage.setItem(toPath, item);
     return item;
@@ -201,7 +247,7 @@ export class Contents implements IContents {
       return {
         ...model,
         content: null,
-        size: undefined
+        size: undefined,
       };
     }
 
@@ -209,7 +255,7 @@ export class Contents implements IContents {
     if (model.type === 'directory') {
       const contentMap = new Map<string, ServerContents.IModel>();
       await this._storage.iterate((item, key) => {
-        const file = (item as unknown) as ServerContents.IModel;
+        const file = item as unknown as ServerContents.IModel;
         // use an additional slash to not include the directory itself
         if (key === `${path}/${file.name}`) {
           contentMap.set(file.name, file);
@@ -237,7 +283,7 @@ export class Contents implements IContents {
         content,
         size: undefined,
         writable: true,
-        type: 'directory'
+        type: 'directory',
       };
     }
     return model;
@@ -266,7 +312,7 @@ export class Contents implements IContents {
       ...file,
       name,
       path: newLocalPath,
-      last_modified: modified
+      last_modified: modified,
     };
     await this._storage.setItem(newLocalPath, newFile);
     // remove the old file
@@ -309,20 +355,20 @@ export class Contents implements IContents {
     item = {
       ...item,
       ...options,
-      last_modified: modified
+      last_modified: modified,
     };
 
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
     if (options.content && options.format === 'base64') {
       // TODO: keep base64 if not a text file (image)
-      const content = atob(options.content);
+      const content = decodeURIComponent(escape(atob(options.content)));
       const nb = ext === '.ipynb';
       item = {
         ...item,
         content: nb ? JSON.parse(content) : content,
         format: nb ? 'json' : 'text',
-        type: nb ? 'notebook' : 'file'
+        type: nb ? 'notebook' : 'file',
       };
     }
 
@@ -345,10 +391,10 @@ export class Contents implements IContents {
       }
     });
     await Promise.all(
-      toDelete.map(async p => {
+      toDelete.map(async (p) => {
         return Promise.all([
           this._storage.removeItem(p),
-          this._checkpoints.removeItem(p)
+          this._checkpoints.removeItem(p),
         ]);
       })
     );
@@ -370,7 +416,7 @@ export class Contents implements IContents {
     }
     const copies = (
       ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? []
-    ).filter(item => !!item);
+    ).filter((item) => !!item);
     copies.push(item);
     // keep only a certain amount of checkpoints per file
     if (copies.length > N_CHECKPOINTS) {
@@ -380,7 +426,7 @@ export class Contents implements IContents {
     const id = `${copies.length - 1}`;
     return {
       id,
-      last_modified: (item as ServerContents.IModel).last_modified
+      last_modified: (item as ServerContents.IModel).last_modified,
     };
   }
 
@@ -396,11 +442,11 @@ export class Contents implements IContents {
     const copies = ((await this._checkpoints.getItem(path)) ||
       []) as ServerContents.IModel[];
     return copies
-      .filter(item => !!item)
+      .filter((item) => !!item)
       .map((file, id) => {
         return {
           id: id.toString(),
-          last_modified: file.last_modified
+          last_modified: file.last_modified,
         };
       });
   }
@@ -453,7 +499,7 @@ export class Contents implements IContents {
       if (key.includes('/')) {
         return;
       }
-      const file = (item as unknown) as ServerContents.IModel;
+      const file = item as unknown as ServerContents.IModel;
       content.set(file.path, file);
     });
 
@@ -478,7 +524,7 @@ export class Contents implements IContents {
       content: Array.from(content.values()),
       size: undefined,
       writable: true,
-      type: 'directory'
+      type: 'directory',
     };
   }
 
@@ -506,7 +552,7 @@ export class Contents implements IContents {
       mimetype: 'text/plain',
       type: 'file',
       writable: true,
-      content: null
+      content: null,
     };
 
     if (options?.content) {
@@ -530,7 +576,7 @@ export class Contents implements IContents {
             ...model,
             content: await response.json(),
             format: 'json',
-            mimetype: model.mimetype || 'application/json'
+            mimetype: model.mimetype || 'application/json',
           };
         } else if (
           mimetype.indexOf('text') !== -1 ||
@@ -540,7 +586,7 @@ export class Contents implements IContents {
             ...model,
             content: await response.text(),
             format: 'text',
-            mimetype: mimetype || 'text/plain'
+            mimetype: mimetype || 'text/plain',
           };
         } else {
           model = {
@@ -549,7 +595,7 @@ export class Contents implements IContents {
               String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
             ),
             format: 'base64',
-            mimetype: mimetype || 'octet/stream'
+            mimetype: mimetype || 'octet/stream',
           };
         }
       }
@@ -611,24 +657,22 @@ export class Contents implements IContents {
   }
 
   private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
-  private _storage = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Notebooks and Files',
-    storeName: 'files',
-    version: 1
-  });
-  private _counters = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Store the current file suffix counters',
-    storeName: 'counters',
-    version: 1
-  });
-  private _checkpoints = localforage.createInstance({
-    name: STORAGE_NAME,
-    description: 'Offline Storage for Checkpoints',
-    storeName: 'checkpoints',
-    version: 1
-  });
+  private _storageName: string = DEFAULT_STORAGE_NAME;
+  private _storage: LocalForage;
+  private _counters: LocalForage;
+  private _checkpoints: LocalForage;
+}
+
+/**
+ * A namespace for contents information.
+ */
+export namespace Contents {
+  export interface IOptions {
+    /**
+     * The name of the storage instance on e.g. IndexedDB, localStorage
+     */
+    contentsStorageName: string;
+  }
 }
 
 /**
@@ -640,10 +684,10 @@ namespace Private {
    */
   export const EMPTY_NB: INotebookContent = {
     metadata: {
-      orig_nbformat: 4
+      orig_nbformat: 4,
     },
     nbformat_minor: 4,
     nbformat: 4,
-    cells: []
+    cells: [],
   };
 }

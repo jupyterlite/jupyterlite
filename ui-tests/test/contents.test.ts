@@ -18,16 +18,16 @@ test.describe('Contents Tests', () => {
 
   // TODO: Galata should support uploading files via the serviceManager.contents API
   // so it works in JupyterLite
-  test.skip('Upload File', async ({ page, tmpPath }) => {
-    const file = 'package.json';
-    const renamed = 'renamed.json';
-    await page.contents.uploadFile(
-      path.resolve(__dirname, `../${file}`),
-      `${tmpPath}/${file}`
-    );
-    await page.contents.renameFile(`${tmpPath}/${file}`, `${tmpPath}/${renamed}`);
-    expect(await page.contents.fileExists(`${tmpPath}/${renamed}`)).toEqual(true);
-  });
+  // ('Upload File', async ({ page, tmpPath }) => {
+  //   const file = 'package.json';
+  //   const renamed = 'renamed.json';
+  //   await page.contents.uploadFile(
+  //     path.resolve(__dirname, `../${file}`),
+  //     `${tmpPath}/${file}`
+  //   );
+  //   await page.contents.renameFile(`${tmpPath}/${file}`, `${tmpPath}/${renamed}`);
+  //   expect(await page.contents.fileExists(`${tmpPath}/${renamed}`)).toEqual(true);
+  // });
 
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
@@ -60,7 +60,7 @@ test.describe('Contents Tests', () => {
     await page.notebook.run();
     await page.notebook.save();
 
-    expect((await page.notebook.getCellTextOutput(2))![0]).toBe('4');
+    expect((await page.notebook.getCellTextOutput(2))[0]).toBe('4');
 
     await page.reload();
     expect(
@@ -69,7 +69,7 @@ test.describe('Contents Tests', () => {
 
     await page.notebook.open(name);
 
-    expect((await page.notebook.getCellTextOutput(2))![0]).toBe('4');
+    expect((await page.notebook.getCellTextOutput(2))[0]).toBe('4');
   });
 
   test('Create a new notebook and delete it', async ({ page }) => {

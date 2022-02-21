@@ -87,20 +87,21 @@ class PipliteAddon(BaseAddon):
                 targets=[whl_meta],
             )
 
-        whl_index = self.manager.output_dir / PYPI_WHEELS / ALL_JSON
+        if whl_metas:
+            whl_index = self.manager.output_dir / PYPI_WHEELS / ALL_JSON
 
-        yield dict(
-            name="patch",
-            doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
-            file_dep=[*whl_metas, jupyterlite_json],
-            actions=[
-                (
-                    self.patch_jupyterlite_json,
-                    [jupyterlite_json, whl_index, whl_metas, pkg_jsons],
-                )
-            ],
-            targets=[whl_index],
-        )
+            yield dict(
+                name="patch",
+                doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
+                file_dep=[*whl_metas, jupyterlite_json],
+                actions=[
+                    (
+                        self.patch_jupyterlite_json,
+                        [jupyterlite_json, whl_index, whl_metas, pkg_jsons],
+                    )
+                ],
+                targets=[whl_index],
+            )
 
     def check(self, manager):
         """verify that all Wheel API are valid (sorta)"""

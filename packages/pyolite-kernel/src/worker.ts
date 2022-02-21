@@ -39,7 +39,7 @@ async function loadPyodideAndPackages() {
   // get piplite early enough to impact pyolite dependencies
   await pyodide.runPythonAsync(`
     import micropip
-    await micropip.install('${_pipliteWheelUrl}')
+    await micropip.install('${_pipliteWheelUrl}', keep_going=True)
     import piplite.piplite
     piplite.piplite._PIPLITE_DISABLE_PYPI = ${_disablePyPIFallback ? 'True' : 'False'}
     piplite.piplite._PIPLITE_URLS = ${JSON.stringify(_pipliteUrls)}
@@ -53,13 +53,13 @@ async function loadPyodideAndPackages() {
       'widgetsnbextension',
       'nbformat',
       'ipykernel',
-    ])
+    ], keep_going=True)
     await piplite.install([
       'pyolite',
-    ]);
+    ], keep_going=True);
     await piplite.install([
       'ipython',
-    ]);
+    ], keep_going=True);
     import pyolite
   `);
 
@@ -69,8 +69,6 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream.copy();
   interpreter = kernel.interpreter.copy();
   interpreter.send_comm = sendComm;
-  const version = pyodide.globals.get('pyolite').__version__;
-  console.log('Pyolite kernel initialized, version', version);
 }
 
 /**
@@ -127,14 +125,14 @@ async function sendComm(
     metadata: formatResult(metadata),
     ident: formatResult(ident),
     buffers: formatResult(buffers),
-    parentHeader: formatResult(kernel._parent_header)['header']
+    parentHeader: formatResult(kernel._parent_header)['header'],
   });
 }
 
 async function getpass(prompt: string) {
   prompt = typeof prompt === 'undefined' ? '' : prompt;
   await sendInputRequest(prompt, true);
-  const replyPromise = new Promise(resolve => {
+  const replyPromise = new Promise((resolve) => {
     resolveInputReply = resolve;
   });
   const result: any = await replyPromise;
@@ -144,7 +142,7 @@ async function getpass(prompt: string) {
 async function input(prompt: string) {
   prompt = typeof prompt === 'undefined' ? '' : prompt;
   await sendInputRequest(prompt, false);
-  const replyPromise = new Promise(resolve => {
+  const replyPromise = new Promise((resolve) => {
     resolveInputReply = resolve;
   });
   const result: any = await replyPromise;
@@ -160,12 +158,12 @@ async function input(prompt: string) {
 async function sendInputRequest(prompt: string, password: boolean) {
   const content = {
     prompt,
-    password
+    password,
   };
   postMessage({
     type: 'input_request',
     parentHeader: formatResult(kernel._parent_header)['header'],
-    content
+    content,
   });
 }
 
@@ -183,12 +181,12 @@ async function execute(content: any) {
     const bundle = {
       execution_count: prompt_count,
       data: formatResult(data),
-      metadata: formatResult(metadata)
+      metadata: formatResult(metadata),
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'execute_result'
+      type: 'execute_result',
     });
   };
 
@@ -196,23 +194,23 @@ async function execute(content: any) {
     const bundle = {
       ename: ename,
       evalue: evalue,
-      traceback: traceback
+      traceback: traceback,
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'execute_error'
+      type: 'execute_error',
     });
   };
 
   const clearOutputCallback = (wait: boolean): void => {
     const bundle = {
-      wait: formatResult(wait)
+      wait: formatResult(wait),
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'clear_output'
+      type: 'clear_output',
     });
   };
 
@@ -220,12 +218,12 @@ async function execute(content: any) {
     const bundle = {
       data: formatResult(data),
       metadata: formatResult(metadata),
-      transient: formatResult(transient)
+      transient: formatResult(transient),
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'display_data'
+      type: 'display_data',
     });
   };
 
@@ -237,24 +235,24 @@ async function execute(content: any) {
     const bundle = {
       data: formatResult(data),
       metadata: formatResult(metadata),
-      transient: formatResult(transient)
+      transient: formatResult(transient),
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'update_display_data'
+      type: 'update_display_data',
     });
   };
 
   const publishStreamCallback = (name: any, text: any): void => {
     const bundle = {
       name: formatResult(name),
-      text: formatResult(text)
+      text: formatResult(text),
     };
     postMessage({
       parentHeader: formatResult(kernel._parent_header)['header'],
       bundle,
-      type: 'stream'
+      type: 'stream',
     });
   };
 
@@ -320,7 +318,7 @@ function commInfo(content: any) {
 
   return {
     comms: results,
-    status: 'ok'
+    status: 'ok',
   };
 }
 
@@ -376,7 +374,6 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
   switch (messageType) {
     case 'execute-request':
-      console.log('Perform execution inside worker', data);
       results = await execute(messageContent);
       break;
 
@@ -419,7 +416,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
   const reply = {
     parentHeader: data.parent['header'],
     type: 'reply',
-    results
+    results,
   };
 
   postMessage(reply);

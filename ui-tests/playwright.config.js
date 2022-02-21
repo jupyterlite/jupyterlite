@@ -9,7 +9,7 @@ module.exports = {
     baseURL: 'http://localhost:8000',
     autoGoto: false,
     video: 'retain-on-failure',
-    acceptDownloads: true
+    acceptDownloads: true,
   },
-  retries: 1
+  retries: 1,
 };

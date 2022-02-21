@@ -247,7 +247,7 @@ To update the snapshots:
   and `jupyterlite-firefox-updated-snapshots` archives
 - extract the archives
 - copy the `-snapshots` directories to replace the existing ones
-- commmit and push the changes
+- commit and push the changes
 
 The generated snapshots can be found on the Summary page of the CI check:
 

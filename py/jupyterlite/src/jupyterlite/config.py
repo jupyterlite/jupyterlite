@@ -39,10 +39,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     apps: _Tuple[_Text] = TypedTuple(
         Unicode(),
-        help=(
-            f"""the Lite apps: currently {C.JUPYTERLITE_APPS}. """
-            f"""Required: {C.JUPYTERLITE_APPS_REQUIRED}"""
-        ),
+        help=("""the Lite apps to explicitly include in build e.g. lab, retro, repl"""),
     ).tag(config=True)
 
     app_archive: Path = CPath(
@@ -93,6 +90,14 @@ class LiteBuildConfig(LoggingConfigurable):
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
+    no_sourcemaps: bool = Bool(
+        False, help="Strip all sourcemaps from applications and extensions"
+    ).tag(config=True)
+
+    no_unused_shared_packages: bool = Bool(
+        False, help="Remove any shared packages not used by --apps"
+    ).tag(config=True)
+
     # serving
     port: int = CInt(
         help=(
@@ -118,7 +123,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("apps")
     def _default_apps(self):
-        return C.JUPYTERLITE_APPS
+        return []
 
     @default("disable_addons")
     def _default_disable_addons(self):

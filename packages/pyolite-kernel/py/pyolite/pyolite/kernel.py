@@ -11,7 +11,7 @@ class Pyolite:
         self._parent_header = None
 
     def get_parent(self):
-        # TODO mimick ipykernel's get_parent signature
+        # TODO mimic ipykernel's get_parent signature
         # (take a channel parameter)
         return self._parent_header
 

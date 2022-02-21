@@ -6,7 +6,7 @@ import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serializ
 
 import { UUID } from '@lumino/coreutils';
 
-import { Server as WebSocketServer, WebSocket } from 'mock-socket';
+import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
 
 import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
@@ -47,7 +47,11 @@ export class Kernels implements IKernels {
     const mutex = new Mutex();
 
     // hook a new client to a kernel
-    const hook = (kernelId: string, clientId: string, socket: WebSocket): void => {
+    const hook = (
+      kernelId: string,
+      clientId: string,
+      socket: WebSocketClient
+    ): void => {
       const kernel = this._kernels.get(kernelId);
 
       if (!kernel) {
@@ -108,7 +112,7 @@ export class Kernels implements IKernels {
     if (runningKernel) {
       return {
         id: runningKernel.id,
-        name: runningKernel.name
+        name: runningKernel.name,
       };
     }
 
@@ -125,7 +129,7 @@ export class Kernels implements IKernels {
       // process iopub messages
       if (msg.channel === 'iopub') {
         const clients = this._kernelClients.get(kernelId);
-        clients?.forEach(id => {
+        clients?.forEach((id) => {
           this._clients.get(id)?.send(message);
         });
         return;
@@ -136,7 +140,7 @@ export class Kernels implements IKernels {
     const kernel = await factory({
       id: kernelId,
       sendMessage,
-      name
+      name,
     });
 
     await kernel.ready;
@@ -146,7 +150,7 @@ export class Kernels implements IKernels {
 
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl);
-    wsServer.on('connection', (socket: WebSocket): void => {
+    wsServer.on('connection', (socket: WebSocketClient): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
       hook(kernelId, clientId, socket);
@@ -154,7 +158,7 @@ export class Kernels implements IKernels {
 
     // clean up closed connection
     wsServer.on('close', (): void => {
-      this._clients.keys().forEach(clientId => {
+      this._clients.keys().forEach((clientId) => {
         const socket = this._clients.get(clientId);
         if (socket?.readyState === WebSocket.CLOSED) {
           this._clients.delete(clientId);
@@ -172,7 +176,7 @@ export class Kernels implements IKernels {
 
     return {
       id: kernel.id,
-      name: kernel.name
+      name: kernel.name,
     };
   }
 
@@ -201,7 +205,7 @@ export class Kernels implements IKernels {
   }
 
   private _kernels = new ObservableMap<IKernel>();
-  private _clients = new ObservableMap<WebSocket>();
+  private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
 }

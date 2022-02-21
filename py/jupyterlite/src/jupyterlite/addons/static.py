@@ -1,4 +1,6 @@
 """a JupyterLite addon for jupyterlab core"""
+import json
+import re
 import shutil
 import tarfile
 import tempfile
@@ -7,7 +9,7 @@ from pathlib import Path
 import doit
 from traitlets import Instance, default
 
-from ..constants import JUPYTERLITE_APPS, JUPYTERLITE_APPS_REQUIRED, JUPYTERLITE_JSON
+from ..constants import JUPYTERLITE_JSON, UTF8
 from .base import BaseAddon
 
 
@@ -30,13 +32,22 @@ class StaticAddon(BaseAddon):
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(
-                    f"""    tarball:  {self.app_archive.name} {int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
+                    f"""    tarball:         {self.app_archive.name} """
+                    f"""{int(self.app_archive.stat().st_size / (1024 * 1024))}MB"""
                     if self.app_archive.exists()
-                    else "    tarball:  none"
+                    else "    tarball:        none"
                 ),
-                lambda: print(f"""    output:   {self.manager.output_dir}"""),
-                lambda: print(f"""    lite dir: {self.manager.lite_dir}"""),
-                lambda: print(f"""    apps:     {self.manager.apps}"""),
+                lambda: print(f"""    output:          {self.manager.output_dir}"""),
+                lambda: print(f"""    lite dir:        {self.manager.lite_dir}"""),
+                lambda: print(
+                    f"""    apps:            {", ".join(self.manager.apps)}"""
+                ),
+                lambda: print(
+                    f"""    sourcemaps:      {not self.manager.no_sourcemaps}"""
+                ),
+                lambda: print(
+                    f"""    unused packages: {not self.manager.no_unused_shared_packages}"""
+                ),
             ],
         )
 
@@ -50,7 +61,15 @@ class StaticAddon(BaseAddon):
             name="output_dir",
             doc="clean out the lite directory",
             file_dep=[self.app_archive],
-            uptodate=[doit.tools.config_changed(dict(apps=self.manager.apps))],
+            uptodate=[
+                doit.tools.config_changed(
+                    dict(
+                        apps=self.manager.apps,
+                        no_sourcemaps=self.manager.no_sourcemaps,
+                        no_unused_shared_packages=self.manager.no_unused_shared_packages,
+                    )
+                )
+            ],
             actions=[
                 lambda: [output_dir.exists() and shutil.rmtree(output_dir), None][-1],
                 (doit.tools.create_folder, [output_dir]),
@@ -68,16 +87,40 @@ class StaticAddon(BaseAddon):
         )
 
     def post_init(self, manager):
-        """remove static assets if the app is not installed"""
+        """maybe remove sourcemaps, or all static assets if an app is not installed"""
         output_dir = manager.output_dir
-        all_apps = set(JUPYTERLITE_APPS)
-        req_apps = set(JUPYTERLITE_APPS_REQUIRED)
-        mgr_apps = set(manager.apps)
+        pkg_json = output_dir / "package.json"
+        pkg_data = json.loads(pkg_json.read_text(**UTF8))
 
-        for to_remove in (all_apps - mgr_apps) - req_apps:
+        all_apps = set(pkg_data["jupyterlite"]["apps"])
+        mgr_apps = set(manager.apps if manager.apps else all_apps)
+
+        for not_an_app in mgr_apps - all_apps:
+            self.log.warn(f"[static] app '{not_an_app}' is not one of: {all_apps}")
+
+        apps_to_remove = all_apps - mgr_apps
+        app_prune_task_dep = []
+
+        if apps_to_remove and self.manager.no_unused_shared_packages:
+            shared_prune_name = "prune:shared-packages"
+            app_prune_task_dep = [
+                f"{self.manager.task_prefix}post_init:static:{shared_prune_name}"
+            ]
+            yield dict(
+                name=shared_prune_name,
+                actions=[
+                    (self.prune_unused_shared_packages, [all_apps, apps_to_remove])
+                ],
+            )
+
+        for to_remove in apps_to_remove:
             app = output_dir / to_remove
-            if app.exists():
-                yield dict(name=f"prune:{app}", actions=[(self.delete_one, [app])])
+            app_build = output_dir / "build" / to_remove
+            yield dict(
+                task_dep=app_prune_task_dep,
+                name=f"prune:{app}",
+                actions=[(self.delete_one, [app, app_build])],
+            )
 
     @default("app_archive")
     def _default_app_archive(self):
@@ -94,18 +137,35 @@ class StaticAddon(BaseAddon):
             tdp = Path(td)
             with tarfile.open(str(self.app_archive), "r:gz") as tar:
                 tar.extractall(td)
-                for child in sorted((tdp / "package").glob("*")):
-                    self.log.debug(f"[lite] [jupyterlab] copying {child}")
-                    dest = output_dir / child.name
-                    if not dest.parent.exists():  # pragma: no cover
-                        dest.parent.mkdir(exist_ok=True, parents=True)
-                    try:
-                        if child.is_dir():
-                            shutil.copytree(child, dest)
-                        else:
-                            shutil.copy2(child, dest)
-                        self.maybe_timestamp(dest)
-                    except Exception as err:  # pragma: no cover
-                        self.log.error(f"ERR copying {child} to {dest}: {err}")
+                self.copy_one(tdp / "package", output_dir)
 
         self.maybe_timestamp(output_dir)
+
+    def prune_unused_shared_packages(self, all_apps, apps_to_remove):
+        """manually remove unused webpack chunks from shared packages"""
+        chunk_pattern = r'(\d+):"([\da-f]+)"'
+        used_chunks = {}
+        removed_used_chunks = {}
+        build_dir = self.manager.output_dir / "build"
+
+        for app in all_apps:
+            bundle = build_dir / app / "bundle.js"
+            if not bundle.exists():
+                continue
+            bundle_txt = bundle.read_text(**UTF8)
+            chunks = dict(re.findall(chunk_pattern, bundle_txt, re.VERBOSE))
+            if app in apps_to_remove:
+                removed_used_chunks.update(chunks)
+            else:
+                used_chunks.update(chunks)
+
+        for chunk_id, chunk_hash in sorted(removed_used_chunks.items()):
+            if chunk_id in used_chunks:
+                continue
+            unused = sorted(build_dir.glob(f"{chunk_id}.{chunk_hash}.*"))
+            if unused:
+                self.log.debug(
+                    f"[static] pruning unused shared package {chunk_id}: "
+                    f"{len(unused)} files"
+                )
+                self.delete_one(*unused)

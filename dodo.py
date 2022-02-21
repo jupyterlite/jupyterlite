@@ -82,6 +82,15 @@ def task_setup():
         return
 
     args = ["yarn", "--prefer-offline", "--ignore-optional"]
+    file_dep = [
+        *P.APP_JSONS,
+        *P.PACKAGE_JSONS,
+        P.APP_PACKAGE_JSON,
+        P.ROOT_PACKAGE_JSON,
+    ]
+
+    if P.YARN_LOCK.exists():
+        file_dep += [P.YARN_LOCK]
 
     if C.CI:
         # .yarn-integrity will only exist on a full cache hit vs yarn.lock, saves 1min+
@@ -89,17 +98,16 @@ def task_setup():
             return
         args += ["--frozen-lockfile"]
 
+    actions = [U.do(*args)]
+
+    if not (C.CI or C.RTD):
+        actions += [U.do("yarn", "deduplicate")]
+
     yield dict(
         name="js",
         doc="install node packages",
-        file_dep=[
-            P.YARN_LOCK,
-            *P.PACKAGE_JSONS,
-            P.ROOT_PACKAGE_JSON,
-            P.APP_PACKAGE_JSON,
-            *P.APP_JSONS,
-        ],
-        actions=[U.do(*args)],
+        file_dep=file_dep,
+        actions=actions,
         targets=[B.YARN_INTEGRITY],
     )
 
@@ -178,17 +186,20 @@ def task_lint():
         actions=[(U.validate, [P.PIPLITE_SCHEMA])],
     )
 
-    yield dict(
-        name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
-        file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
-        actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
-    )
-
     for config in D.APP_CONFIGS:
+        if config.name.endswith(".ipynb"):
+            validate_args = [
+                P.APP_SCHEMA,
+                None,
+                json.loads(config.read_text(**C.ENC))["metadata"][C.IPYNB_METADATA],
+            ]
+        else:
+            validate_args = [P.APP_SCHEMA, config]
+
         yield dict(
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
             file_dep=[P.APP_SCHEMA, config],
-            actions=[(U.validate, (P.APP_SCHEMA, config))],
+            actions=[(U.validate, validate_args)],
         )
 
 
@@ -235,10 +246,7 @@ def task_build():
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
-                "yarn",
-                "svgo",
-                "--pretty",
-                "--indent=2",
+                *C.SVGO,
                 P.DOCS_ICON,
                 P.DOCS_WORDMARK,
                 "-o",
@@ -253,9 +261,10 @@ def task_build():
         doc="build .ts files into .js files",
         file_dep=[
             *L.ALL_ESLINT,
-            P.ROOT_PACKAGE_JSON,
             *P.PACKAGE_JSONS,
+            B.PYOLITE_WHEEL_TS,
             B.YARN_INTEGRITY,
+            P.ROOT_PACKAGE_JSON,
         ],
         actions=[
             U.do("yarn", "build:lib"),
@@ -271,7 +280,7 @@ def task_build():
         js_wheels += [wheel]
         yield dict(
             name=f"js:py:{name}",
-            doc=f"build the {name} python package for the brower with flit",
+            doc=f"build the {name} python package for the browser with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[(U.build_one_flit, [py_pkg])],
             # TODO: get version
@@ -288,7 +297,6 @@ def task_build():
         actions=[
             (doit.tools.create_folder, [B.PYOLITE_WHEELS]),
             (U.copy_wheels, [B.PYOLITE_WHEELS, js_wheels]),
-            # nasty
             U.do(
                 *C.PYM, "jupyterlite.app", "pip", "index", B.PYOLITE_WHEELS, env=bs_env
             ),
@@ -297,35 +305,46 @@ def task_build():
         targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
     )
 
-    app_deps = [B.META_BUILDINFO, P.WEBPACK_CONFIG, P.LITE_ICON, P.LITE_WORDMARK]
+    app_deps = [
+        B.META_BUILDINFO,
+        P.WEBPACK_CONFIG,
+        P.LITE_ICON,
+        P.LITE_WORDMARK,
+        P.APP_PACKAGE_JSON,
+        *[p for p in P.APP_HTMLS if p.name == "index.template.html"],
+    ]
+
     all_app_targets = []
+    extra_app_deps = []
 
     for app_json in P.APP_JSONS:
         app = app_json.parent
-        app_data = json.loads(app_json.read_text(**C.ENC))
         app_build = app / "build"
         app_targets = [
-            app_build / "bundle.js",
+            P.APP / "build" / app.name / "bundle.js",
             app_build / "index.js",
             app_build / "style.js",
         ]
         all_app_targets += app_targets
+        extra_app_deps += [
+            app / "index.template.js",
+            app_json,
+        ]
 
-        yield dict(
-            name=f"js:app:{app.name}",
-            doc=f"build JupyterLite {app.name.title()} with webpack",
-            file_dep=[
-                *app_deps,
-                B.PYOLITE_WHEEL_INDEX,
-                B.PYOLITE_WHEEL_TS,
-                app / "index.template.js",
-                app_json,
-            ],
-            actions=[
-                U.do("yarn", "lerna", "run", "build:prod", "--scope", app_data["name"])
-            ],
-            targets=[*app_targets],
-        )
+    yield dict(
+        name="js:app",
+        doc="build JupyterLite with webpack",
+        file_dep=[
+            *app_deps,
+            *extra_app_deps,
+            B.PYOLITE_WHEEL_INDEX,
+            B.PYOLITE_WHEEL_TS,
+        ],
+        actions=[
+            U.do("yarn", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
+        ],
+        targets=[*all_app_targets],
+    )
 
     yield dict(
         name="js:pack",
@@ -334,6 +353,7 @@ def task_build():
             *all_app_targets,
             *P.APP.glob("*.js"),
             *P.APP.glob("*.json"),
+            *P.APP.rglob("*.ipynb"),
             *P.APP.glob("*/*/index.html"),
             *P.APP.glob("*/build/schemas/**/.json"),
             B.PYOLITE_WHEEL_INDEX,
@@ -400,7 +420,6 @@ def task_build():
         )
 
 
-@doit.create_after("build")
 def task_dist():
     """fix up the state of the distribution directory"""
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
@@ -535,7 +554,7 @@ def task_docs():
         uptodate=uptodate,
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
-        targets=[B.DOCS_APP_ARCHIVE],
+        targets=[B.DOCS_APP_ARCHIVE, B.DOCS_APP_SHA256SUMS],
     )
 
     yield dict(
@@ -549,8 +568,49 @@ def task_docs():
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
-        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP],
+        targets=[B.DOCS_BUILDINFO, B.DOCS_STATIC_APP, *BB.ALL_DOCS_HTML],
     )
+
+    if C.IN_SPHINX:
+
+        def _clean_dupe_ids():
+            all_schema_html = sorted(B.DOCS.glob("schema-v*.html"))
+
+            for schema_html in all_schema_html:
+                print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
+                text = schema_html.read_text(encoding="utf-8")
+                new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
+                if text != new_text:
+                    schema_html.write_text(new_text, encoding="utf-8")
+
+        yield dict(
+            name="post:schema",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_clean_dupe_ids],
+        )
+
+        def _skip_image(path):
+            as_posix = str(path.as_posix())
+            return (
+                "_static/extensions" in as_posix
+                or "_static/build" in as_posix
+                or "_static/vendor" in as_posix
+            )
+
+        def _optimize_images():
+            all_svg = [p for p in B.DOCS.rglob("*.svg") if not _skip_image(p)]
+
+            subprocess.check_call(
+                [*C.SVGO, *all_svg, "-o", *all_svg],
+                cwd=str(P.ROOT),
+            )
+
+        yield dict(
+            name="post:images",
+            doc="clean sphinx-jsonschema duplicate ids",
+            actions=[_optimize_images],
+            file_dep=[B.YARN_INTEGRITY],
+        )
 
 
 @doit.create_after("docs")
@@ -559,20 +619,30 @@ def task_check():
     yield dict(
         name="docs:links",
         doc="check for broken (internal) links",
-        file_dep=[*B.DOCS.rglob("*.html")],
+        file_dep=[*BB.ALL_DOCS_HTML],
         actions=[
             U.do(
                 "pytest-check-links",
                 B.DOCS,
+                "-n",
+                "auto",
                 "-p",
                 "no:warnings",
-                "--links-ext=html",
+                "--links-ext",
+                "html",
                 "--check-anchors",
                 "--check-links-ignore",
                 "^https?://",
             )
         ],
     )
+
+    if not C.DOCS_IN_CI:
+        yield dict(
+            name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
+            file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
+            actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
+        )
 
     yield dict(
         name="app",
@@ -644,7 +714,7 @@ def task_test():
         "pytest",
         "--ff",
         "--script-launch-mode=subprocess",
-        "-n=4",
+        f"-n={C.PYTEST_PROCS}",
         "-vv",
         f"--cov-fail-under={C.COV_THRESHOLD}",
         "--cov-report=term-missing:skip-covered",
@@ -698,7 +768,7 @@ def task_test():
 
 
 def task_repo():
-    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in C.APPS]
+    pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in D.APPS]
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
@@ -709,14 +779,15 @@ def task_repo():
 
 class C:
     NAME = "jupyterlite"
-    APPS = ["retro", "lab"]
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
     CI = bool(json.loads(os.environ.get("CI", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
+    IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
+    PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
@@ -732,7 +803,7 @@ class C:
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-    PYODIDE_VERSION = "0.18.1"
+    PYODIDE_VERSION = "0.19.0"
     PYODIDE_JS = "pyodide.js"
     PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
@@ -744,9 +815,10 @@ class C:
     )
 
     JUPYTERLITE_JSON = "jupyter-lite.json"
-    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, "jupyter-lite.ipynb"]
+    JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
+    IPYNB_METADATA = "jupyter-lite"
+    LITE_CONFIG_FILES = [JUPYTERLITE_JSON, JUPYTERLITE_IPYNB]
     NO_TYPEDOC = ["_metapackage"]
-    LITE_CONFIG_FILES = ["jupyter-lite.json", "jupyter-lite.ipynb"]
     IGNORED_WHEEL_DEPS = [
         # our stuff
         "pyolite",
@@ -754,8 +826,10 @@ class C:
         # magic JS interop layer
         "js",
         "pyodide_js",
+        # broken?
+        "pathspec",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "nbformat", "ipykernel", "pyolite"]
+    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -771,6 +845,7 @@ class C:
         .decode("utf-8")
         .strip()
     )
+    SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["yarn", "prettier", "--write"]
     PRETTIER_IGNORE = [
         "_pypi.ts",
@@ -779,7 +854,7 @@ class C:
     ]
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 92 if FORCE_PYODIDE else 87
+    COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
 
 
 class P:
@@ -807,10 +882,20 @@ class P:
 
     APP = ROOT / "app"
     APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
+    APP_JUPYTERLITE_IPYNB = APP / C.JUPYTERLITE_IPYNB
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
-    APP_HTMLS = [APP / "index.html", *APP.glob("*/index.html")]
+    APP_HTMLS = [
+        APP / "index.html",
+        *APP.rglob("*/index.template.html"),
+        *[
+            p
+            for p in APP.rglob("*/index.html")
+            if not (p.parent / "index.template.html").exists()
+        ],
+    ]
+
     WEBPACK_CONFIG = APP / "webpack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_EXTRA_JSON = sorted(APP.glob("*/*.json"))
@@ -865,6 +950,8 @@ class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
+    APPS = APP["jupyterlite"]["apps"]
+
     # derive the PEP-compatible version
     PY_VERSION = (
         APP["version"]
@@ -969,7 +1056,7 @@ class B:
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
-    DOCS_APP_JS_BUNDLE = DOCS_APP / "lab/build/bundle.js"
+    DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
     DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{C.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
@@ -1003,6 +1090,23 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
+
+
+class BB:
+    """Built from other built files"""
+
+    # not exhaustive, because of per-class API pages
+    ALL_DOCS_HTML = [
+        (
+            B.DOCS
+            / src.parent.relative_to(P.DOCS)
+            / (src.name.rsplit(".", 1)[0] + ".html")
+        )
+        for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
+        if P.DOCS in src.parents
+        and "_static" not in str(src)
+        and "ipynb_checkpoints" not in str(src)
+    ]
 
 
 class U:
@@ -1466,7 +1570,7 @@ class U:
             # Write the package.json back to disk.
             app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
 
-        for app in C.APPS:
+        for app in D.APPS:
             _ensure_resolutions(app)
 
     @staticmethod

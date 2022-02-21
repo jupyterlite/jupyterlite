@@ -1,4 +1,5 @@
 """Well-known (and otherwise) constants used by JupyterLite"""
+import shutil
 from pathlib import Path
 
 #: a locale for reproducible file sorting
@@ -52,10 +53,6 @@ PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
 #: our schema
 JUPYTERLITE_SCHEMA = "jupyterlite.schema.v0.json"
 
-#: a set of apps we currently know _might_ be in an app archive
-JUPYTERLITE_APPS = ["lab", "retro"]
-JUPYTERLITE_APPS_REQUIRED = ["lab"]
-
 #: our configuration file
 JUPYTERLITE_JSON = "jupyter-lite.json"
 
@@ -87,7 +84,7 @@ NOARCH_WHL = "py3-none-any.whl"
 #: the Jupyter API route for Contents API
 API_CONTENTS = "api/contents"
 API_TRANSLATIONS = "api/translations"
-LAB_EXTENSIONS = "lab/extensions"
+LAB_EXTENSIONS = "extensions"
 
 #: our doit task-based plugin system
 HOOKS = [
@@ -111,3 +108,8 @@ HOOK_PARENTS = dict(
 
 #: the lifecycle stages inside a hook
 PHASES = ["pre_", "", "post_"]
+
+
+#: extensions to be considered sourcemaps
+SOURCEMAPS = [".js.map", ".mjs.map"]
+SOURCEMAP_IGNORE_PATTERNS = shutil.ignore_patterns(*[f"*{p}" for p in SOURCEMAPS])

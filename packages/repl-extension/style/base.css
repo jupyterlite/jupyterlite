@@ -1,0 +1,25 @@
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+.jp-CodeConsole-promptCell .jp-InputPrompt {
+  margin-right: 10px;
+}
+
+.jp-CodeConsole-input .jp-InputCollapser {
+  display: none;
+}
+
+.jp-InputArea {
+  flex-direction: row;
+}
+
+.jp-InputArea-editor,
+.jp-OutputArea-child .jp-OutputArea-output {
+  margin-left: unset;
+}
+
+.jp-OutputArea-child {
+  flex-direction: row;
+}

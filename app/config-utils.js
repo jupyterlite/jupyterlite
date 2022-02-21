@@ -33,7 +33,7 @@ const LITE_FILES = ['jupyter-lite.json', 'jupyter-lite.ipynb'];
  *  <link
  *    id="jupyter-lite-main"
  *    rel="preload"
- *    href="./build/bundle.js"
+ *    href="../build/bundle.js?_=bad4a54"
  *    main="index"
  *    as="script"
  *  />
@@ -231,7 +231,7 @@ export function fixOneRelativeUrl(key, value, url, urlBase) {
     // themesUrls is joined in code with baseUrl, leave as-is: otherwise, clean
     return `${urlBase}${value.slice(2)}`;
   } else if (key.endsWith('Urls') && Array.isArray(value)) {
-    return value.map(v => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
+    return value.map((v) => (v.startsWith('./') ? `${urlBase}${v.slice(2)}` : v));
   }
   return value;
 }

@@ -77,7 +77,7 @@ class ArchiveAddon(BaseAddon):
 
         * this takes longer than any other hook
             * while this pure-python implementation needs to be maintained,
-              a ``libarchive``-based build might be preferrable for e.g. CI performance.
+              a ``libarchive``-based build might be preferable for e.g. CI performance.
         * an npm-compatible ``.tgz`` is the only supported archive format, as this
           is compatible with the upstream ``webpack`` build and its native packaged format.
         """

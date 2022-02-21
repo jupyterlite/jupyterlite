@@ -67,6 +67,19 @@ Will be:
   - may have timestamps changed if `--source-date-epoch` is provided.
 - indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
 
+### Server Contents and Local Contents
+
+When a user changes a server-hosted file, a copy will be made to the browser's
+`IndexedDB`. A user's locally-modified copy will take precedence over any server
+contents, even if the server contents are newer.
+
+### Customizing Content Storage
+
+By default, all of a user's contents on the same domain will be available to all
+JupyterLite instances hosted there. To create separate content stores, change the
+`jupyter-lite.json#jupyter-config-data/contentsStorageName` from the default of
+`JupyterLite Storage`.
+
 ## Adding Extensions
 
 JupyterLab 3 [pre-built extensions] allow for adding new capabilities to JupyterLite
@@ -85,7 +98,7 @@ _might_ work is the JupyterLab issue _[Extension Compatibility with 3.0
 When you run `jupyter lite build`, all pre-built extensions in your JupyterLab
 environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
-- copied to `{output-dir}/lab/extensions`
+- copied to `{output-dir}/extensions`
 - have its theme information copied to `{output-dir}/{app/?}theme/`
 
 This discovery behavior can be disabled with the CLI flag `--ignore-sys-prefix` or
@@ -98,8 +111,8 @@ pre-built extensions will only be available for pages within that file tree.
 
 #### Custom Extensions
 
-By placing extensions under `{lite-dir}/lab/extensions/{org/?}{package}/`, these will
-also be copied into the `output-dir` _after_ any environment extensions, and all will be
+By placing extensions under `{lite-dir}/extensions/{org/?}{package}/`, these will also
+be copied into the `output-dir` _after_ any environment extensions, and all will be
 added to `{output-dir}/jupyter-lite.json#jupyter-config-data/federated_extensions`.
 
 ```{hint}
@@ -112,6 +125,47 @@ Finally, the `--federated-extensions` CLI flag and the
 `LiteBuildConfig/federated_extensions` config entry allow for adding additional
 federated extensions, as packaged in Python `.whl` or conda `.tar.bz2` packages.
 
+## Applications
+
+### Removing Applications
+
+Provide the `--apps` CLI argument once or multiple times, or configure
+`LiteBuildConfig/apps` to only copy select applications to the output folder: by
+default, all of the default [applications](../applications/index) will be copied to the
+output folder.
+
+### Removing Unused Shared Packages
+
+Provide the `--no-unused-shared-packages` or `LiteBuildConfig/no_unused_shared_packages`
+to prevent copying
+[shared packages](https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html#deduplication)
+used only by removed applications. For lightweight apps like `repl`, this can result in
+a much smaller on-disk build.
+
+```{warning}
+Some JupyterLab extensions may require shared packages from the full JupyterLab
+application, and will not load with this setting.
+```
+
+### Removing Source Maps
+
+Provide `--no-sourcemaps`, or configure `no_sourcemaps` in a config file to prevent any
+`.map` files from being copied to the output folder. This creates a _drastically_
+smaller overall build.
+
+```{warning}
+Removing sourcemaps, in addition to making errors harder to debug, will _also_
+cause many `404` errors when a user does open the browser console, which
+can be _even more_ confusing.
+```
+
+For better baseline performance, the core JupyterLite distribution, and some federated
+extensions, only ship optimized JavaScript code, which is hard to debug. To improve
+this,
+[source maps](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map),
+are also provided to provide pointers to the original source code, and while _much_
+larger, are only loaded when debugging in browser consoles.
+
 ## Customizing Settings
 
 With the [CLI](./cli.ipynb), if you create an `overrides.json` in either the root, or a
@@ -119,6 +173,13 @@ specific `app` directory, these will be:
 
 - merged into
   `{output-dir}/{app?}/jupyter-lite.json#/jupyter-config-data/settingsOverrides`
+
+### Settings Storage
+
+By default, all of a user's settings on the same domain will be available to all
+JupyterLite instances hosted there. To create separate settings stores, change the
+`jupyter-lite.json#jupyter-config-data/settingsStorageName` from the default of
+`JupyterLite Storage`.
 
 ## Adding pyolite wheels
 
@@ -288,8 +349,8 @@ Assuming you have a working JupyterLab 3 installation, look in your
 
 ```bash
 cd $YOUR_JUPYTERLITE
-mkdir -p lab/extensions
-cd lab/extensions
+mkdir -p extensions
+cd extensions
 cp -r $PREFIX/share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager .
 ```
 
@@ -307,14 +368,10 @@ The Theme Manager expects to be able to load theme CSS/font assets from
 Continuing the example above:
 
 ```bash
-cd $YOUR_JUPYTERLITE/lab/extensions
+cd $YOUR_JUPYTERLITE/extensions
 mkdir -p ../build/themes
 cp -r @*/*/themes/* ../build/themes/
 cp -r @*/themes/* ../build/themes/
-# To also ensure these are available for JupyterLite Retro:
-mkdir -p ../../retro/build/themes
-cp -r @*/*/themes/* ../../retro/build/themes/
-cp -r @*/themes/* ../../retro/build/themes/
 ```
 
 #### Fill Out `federated_extensions`

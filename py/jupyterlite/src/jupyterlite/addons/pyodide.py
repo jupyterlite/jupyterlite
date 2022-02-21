@@ -7,6 +7,8 @@ import tempfile
 import urllib.parse
 from pathlib import Path
 
+import doit.tools
+
 #: where we put wheels, for now
 PYODIDE_URL = "pyodideUrl"
 
@@ -83,7 +85,11 @@ class PyodideAddon(BaseAddon):
         if not the_pyodide:
             return
 
-        file_dep = [p for p in the_pyodide.rglob("*") if not p.is_dir()]
+        file_dep = [
+            p
+            for p in the_pyodide.rglob("*")
+            if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
+        ]
 
         yield dict(
             name="copy:pyodide",
@@ -208,6 +214,11 @@ class PyodideAddon(BaseAddon):
         task = dict(
             name="extract:pyodide",
             file_dep=[local_path],
+            uptodate=[
+                doit.tools.config_changed(
+                    dict(no_sourcemaps=self.manager.no_sourcemaps)
+                )
+            ],
             targets=[
                 # there are a lot of js/data files, but we actually talk about these...
                 dest / PYODIDE / PYODIDE_JS,

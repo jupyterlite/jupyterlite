@@ -5,6 +5,7 @@
 ```{toctree}
 :maxdepth: 2
 
+applications/index
 kernels/index
 rtc/index
 translation/index

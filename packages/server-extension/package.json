@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/server-extension",
-  "version": "0.1.0-alpha.18",
+  "version": "0.1.0-alpha.24",
   "description": "JupyterLite - Server Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -19,7 +19,6 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
-  "styleModule": "style/index.js",
   "directories": {
     "lib": "lib/"
   },
@@ -38,12 +37,21 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@jupyterlite/kernel": "^0.1.0-alpha.18",
     "@jupyterlite/licenses": "^0.1.0-alpha.18",
     "@jupyterlite/server": "^0.1.0-alpha.18",
     "@jupyterlite/session": "^0.1.0-alpha.18",
     "@jupyterlite/settings": "^0.1.0-alpha.18",
     "@jupyterlite/translation": "^0.1.0-alpha.18"
+=======
+    "@jupyterlab/coreutils": "~5.2.9",
+    "@jupyterlite/kernel": "^0.1.0-alpha.24",
+    "@jupyterlite/server": "^0.1.0-alpha.24",
+    "@jupyterlite/session": "^0.1.0-alpha.24",
+    "@jupyterlite/settings": "^0.1.0-alpha.24",
+    "@jupyterlite/translation": "^0.1.0-alpha.24"
+>>>>>>> upstream/main
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
@@ -52,10 +60,11 @@
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
-    "typescript": "~4.2.3"
+    "typescript": "~4.5.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "jupyterlab": {}
+  "jupyterlab": {},
+  "styleModule": "style/index.js"
 }

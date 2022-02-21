@@ -30,18 +30,18 @@ const kernel: JupyterLiteServerPlugin<void> = {
           display_name: 'JavaScript',
           language: 'javascript',
           interrupt_mode: 'message',
-          metadata: {}
+          metadata: {},
         },
         resources: {
           'logo-32x32': '',
-          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/javascript.svg')
-        }
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/javascript.svg'),
+        },
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
         return new JavaScriptKernel(options);
-      }
+      },
     });
-  }
+  },
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [kernel];

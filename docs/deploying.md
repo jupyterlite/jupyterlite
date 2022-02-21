@@ -1,8 +1,14 @@
 # Deploying
 
-Deploying your JupyterLite requires:
+Deploying a JupyterLite site requires:
 
-- an actual HTTP server (doesn't presently work with `file://` URLs)
+- a copy of the JupyterLite site assets
+  - often provided by the `pip`-installable python package `jupyterlite`
+- an option set of [configurations](./configuring.md) for the site and different apps
+  - different options offer trade-offs between reproducibility, build speed, deployment
+    size, and end-user performance, privacy, and security
+- a [local](#local), [on-premises](#on-premises), or [hosted](#hosted) HTTP server
+  (doesn't presently work with `file://` URLs)
 
 ```{warning}
 Serving some of the [kernels](./kernels/index.md) requires that your web server supports
@@ -15,8 +21,8 @@ An HTTPS-capable server is recommended for all but the simplest `localhost` case
 
 ## Get an Empty JupyterLite Site
 
-The minimum deployable site contains enough to run JupyterLab and RetroLab, but no
-content.
+The minimum deployable site archive contains enough to run all of the default
+[applications](./applications/index.md), but no content.
 
 ```{hint}
 Use of the CLI is optional, but **recommended**. It offers substantially better
@@ -60,7 +66,8 @@ be enough to deploy along with the rest of your content.
 
 ### WebPack
 
-> TBD
+At present, the core JupyterLite site and apps are not published as reusable packages.
+At some point in the future, a WebPack plugin might allow for integrating at this level.
 
 ### sphinx
 
@@ -106,7 +113,7 @@ Adapting the example above:
 html_extra_path = ["../upstream-jupyterlite", "../my-jupyterlite"]
 ```
 
-Again, the last-written `index.html` will "win" and be shown to vistors to `/`, which
+Again, the last-written `index.html` will "win" and be shown to visitors to `/`, which
 will immediately redirect to `appUrl` as defined in the [schema].
 
 [html_static_path]:
@@ -125,6 +132,12 @@ will immediately redirect to `appUrl` as defined in the [schema].
 
 Suitable for local development, many languages provide easy-to-use servers that can
 serve your JupyterLite locally while you get it working the way you want.
+
+#### `jupyter lite serve`
+
+The `jupyter lite serve` command offers either a web server powered by Python's built-in
+`http.server` or `tornado`, which is likely to be available if any other Jupyter tools
+are installed.
 
 #### Jupyter
 

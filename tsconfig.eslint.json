@@ -1,5 +1,0 @@
-{
-  "extends": "./tsconfigbase",
-  "include": ["packages/**/*", "app/**/*", "ui-tests"],
-  "types": ["jest"]
-}

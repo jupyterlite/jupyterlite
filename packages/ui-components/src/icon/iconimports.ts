@@ -11,10 +11,10 @@ import liteWordmarkSvgstr from '../../style/icons/liteWordmark.svg';
 
 export const liteIcon = new LabIcon({
   name: 'lite-ui-components:liteIcon',
-  svgstr: liteIconSvgstr
+  svgstr: liteIconSvgstr,
 });
 
 export const liteWordmark = new LabIcon({
   name: 'lite-ui-components:liteWordmark',
-  svgstr: liteWordmarkSvgstr
+  svgstr: liteWordmarkSvgstr,
 });

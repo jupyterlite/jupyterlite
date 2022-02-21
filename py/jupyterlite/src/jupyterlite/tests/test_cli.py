@@ -6,7 +6,7 @@ from pytest import mark
 from jupyterlite import __version__
 from jupyterlite.constants import HOOKS
 
-# TOOD: others?
+# TODO: others?
 LITE_INVOCATIONS = [
     ["jupyter-lite"],
     ["jupyter", "lite"],
@@ -188,3 +188,48 @@ def test_cli_raw_doit(an_empty_lite_dir, script_runner):
     )
     assert returned_status.success
     assert "http://pydoit.org" in returned_status.stdout
+
+
+def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
+    """does (re-)building create a predictable pattern of file counts"""
+    out = an_empty_lite_dir / "_output"
+
+    args = original_args = "jupyter", "lite", "build"
+    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    norm_files = sorted(out.rglob("*"))
+    assert status.success
+    assert [f for f in norm_files if f.name.endswith(".map")], "expected maps"
+
+    args = [*args, "--apps", "repl", "--apps", "foobarbaz"]
+    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    repl_files = sorted(out.rglob("*"))
+    repl_bundles = sorted(out.glob("build/*/bundle.js"))
+    assert status.success
+
+    assert len(repl_files) < len(norm_files), "expected fewer files"
+    assert len(repl_bundles) == 1, "only expected one bundle"
+    assert "'foobarbaz' is not one of" in status.stderr
+
+    args = [*args, "--no-unused-shared-packages"]
+    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    no_chunk_files = sorted(out.rglob("*"))
+    # assert "pruning unused shared package" in status.stderr
+
+    unexpected = sorted(set(map(str, no_chunk_files)) - set(map(str, repl_files)))
+
+    assert len(no_chunk_files) < len(repl_files), f"unexpected {unexpected}"
+
+    args = [*args, "--no-sourcemaps"]
+    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    min_files = sorted(out.rglob("*"))
+    assert status.success
+
+    assert not [f for f in min_files if f.name.endswith(".map")], "expected no maps"
+
+    assert len(min_files) < len(no_chunk_files), "expected fewer files still"
+
+    status = script_runner.run(*original_args, cwd=str(an_empty_lite_dir))
+    rebuild_files = sorted(out.rglob("*"))
+    assert status.success
+
+    assert len(norm_files) == len(rebuild_files), "expected the same files"
