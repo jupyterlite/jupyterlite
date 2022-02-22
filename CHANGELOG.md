@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a24...b7e9ebdf34393eb3ca32049c82885199271d4bd3))
+
+### Enhancements made
+
+- Improve selective app inclusion with `--apps`, add `--no-sourcemaps` [#515](https://github.com/jupyterlite/jupyterlite/pull/515) ([@bollwyvl](https://github.com/bollwyvl))
+- Add route for licenses, include licenses in app bundle [#431](https://github.com/jupyterlite/jupyterlite/pull/431) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Bump url-parse from 1.5.4 to 1.5.7 in /ui-tests [#514](https://github.com/jupyterlite/jupyterlite/pull/514) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Fix markdown table in the docs [#516](https://github.com/jupyterlite/jupyterlite/pull/516) ([@taigaozawa](https://github.com/taigaozawa))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-19&to=2022-02-22&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-19..2022-02-22&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-02-19..2022-02-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-19..2022-02-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-19..2022-02-22&type=Issues) | [@taigaozawa](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ataigaozawa+updated%3A2022-02-19..2022-02-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0a24
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0a23...81ce3b7924e86e05e41f2c340aa01b9c4bad04d9))
@@ -31,8 +56,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-02-15&to=2022-02-19&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-02-15..2022-02-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-02-15..2022-02-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-02-15..2022-02-19&type=Issues) | [@luzpaz](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aluzpaz+updated%3A2022-02-15..2022-02-19&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0a23
 
