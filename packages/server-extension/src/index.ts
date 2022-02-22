@@ -229,6 +229,7 @@ const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
 const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:licenses-routes',
   autoStart: true,
+  requires: [ILicenses],
   activate(app: JupyterLiteServer, licenses: ILicenses) {
     app.router.get('/api/licenses', async (req: Router.IRequest) => {
       const res = await licenses.get();
