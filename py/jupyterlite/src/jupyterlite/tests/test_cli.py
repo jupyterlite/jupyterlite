@@ -1,6 +1,6 @@
 """integration tests for overall CLI functionality"""
-import time
 import sys
+import time
 
 from pytest import mark
 
