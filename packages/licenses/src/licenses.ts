@@ -45,7 +45,7 @@ export class Licenses implements ILicenses {
    * Get the well-known URL of the app licenses.
    */
   protected get appLicensesUrl(): string {
-    return URLExt.join(PageConfig.getOption('appUrl'), 'build', THIRD_PARTY_LICENSES);
+    return URLExt.join(PageConfig.getBaseUrl(), 'build', THIRD_PARTY_LICENSES);
   }
 
   /**
