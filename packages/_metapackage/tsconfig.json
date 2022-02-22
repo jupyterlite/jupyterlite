@@ -13,6 +13,7 @@
     { "path": "../javascript-kernel" },
     { "path": "../javascript-kernel-extension" },
     { "path": "../kernel" },
+    { "path": "../licenses" },
     { "path": "../pyolite-kernel" },
     { "path": "../pyolite-kernel-extension" },
     { "path": "../repl-extension" },
@@ -21,6 +22,7 @@
     { "path": "../session" },
     { "path": "../settings" },
     { "path": "../translation" },
+    { "path": "../types" },
     { "path": "../ui-components" }
   ]
 }

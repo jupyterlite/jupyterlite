@@ -31,6 +31,9 @@
       "path": "./packages/kernel"
     },
     {
+      "path": "./packages/licenses"
+    },
+    {
       "path": "./packages/pyolite-kernel"
     },
     {
@@ -56,6 +59,9 @@
     },
     {
       "path": "./packages/translation"
+    },
+    {
+      "path": "./packages/types"
     },
     {
       "path": "./packages/ui-components"

@@ -9,6 +9,8 @@ import { Contents, IContents } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
+import { ILicenses, Licenses } from '@jupyterlite/licenses';
+
 import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
@@ -210,7 +212,34 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 /**
- * A pluing providing the routes for the nbconvert service.
+ * The licenses service plugin
+ */
+const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
+  id: '@jupyterlite/server-extension:licenses',
+  autoStart: true,
+  provides: ILicenses,
+  activate: (app: JupyterLiteServer) => {
+    return new Licenses();
+  },
+};
+
+/**
+ * A plugin providing the routes for the licenses service.
+ */
+const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:licenses-routes',
+  autoStart: true,
+  requires: [ILicenses],
+  activate(app: JupyterLiteServer, licenses: ILicenses) {
+    app.router.get('/api/licenses', async (req: Router.IRequest) => {
+      const res = await licenses.get();
+      return new Response(JSON.stringify(res));
+    });
+  },
+};
+
+/**
+ * A plugin providing the routes for the nbconvert service.
  * TODO: provide the service in a separate plugin?
  */
 const nbconvertRoutesPlugin: JupyterLiteServerPlugin<void> = {
@@ -372,6 +401,8 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   kernelsRoutesPlugin,
   kernelSpecPlugin,
   kernelSpecRoutesPlugin,
+  licensesPlugin,
+  licensesRoutesPlugin,
   nbconvertRoutesPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,

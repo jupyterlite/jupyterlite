@@ -9,6 +9,7 @@ const { ModuleFederationPlugin } = webpack.container;
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
+const WPPlugin = require('@jupyterlab/builder').WPPlugin;
 const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
 const topLevelData = require('./package.json');
@@ -263,6 +264,7 @@ module.exports = [
       moduleIds: 'deterministic',
     },
     plugins: [
+      new WPPlugin.JSONLicenseWebpackPlugin({}),
       new webpack.DefinePlugin({
         // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
         'process.env': '{}',
