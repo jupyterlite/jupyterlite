@@ -112,7 +112,7 @@ jobs:
             pytest-args: '[]'
           - python-version: 'pypy-3.7'
             # TODO: some instability with libarchive, might be better with pypy-3.8
-            # after https://github.com/cloudpipe/cloudpickle/pull/454
+            # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
     steps:
       - name: Checkout

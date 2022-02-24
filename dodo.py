@@ -718,15 +718,8 @@ def task_test():
         f"-n={C.PYTEST_PROCS}",
         "-vv",
         "--durations=5",
+        *(C.PYTEST_ARGS or []),
     ]
-
-    if not C.PYPY:
-        # coverage is very slow/finicky on pypy
-        pytest_args += [
-            f"--cov-fail-under={C.COV_THRESHOLD}",
-            "--cov-report=term-missing:skip-covered",
-            "--no-cov-on-fail",
-        ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
         if py_name != C.NAME:
@@ -734,16 +727,29 @@ def task_test():
             continue
 
         py_mod = py_name.replace("-", "_")
-        cov_path = B.BUILD / f"htmlcov/{py_name}"
-        cov_index = cov_path / "index.html"
         html_index = B.BUILD / f"pytest/{py_name}/index.html"
+        pkg_targets = [html_index]
+        pkg_args = [
+            f"--html={html_index}",
+            "--self-contained-html",
+        ]
+        cwd = setup_py.parent
 
         if C.CI:
             cwd = B.DIST
-            pkg_args = ["--pyargs", py_mod]
-        else:
-            cwd = setup_py.parent
-            pkg_args = []
+            pkg_args += ["--pyargs", py_mod]
+
+        if not C.PYPY:
+            # coverage is very slow/finicky on pypy
+            cov_path = B.BUILD / f"htmlcov/{py_name}"
+            pkg_args += [
+                "--cov-report=term-missing:skip-covered",
+                "--no-cov-on-fail",
+                f"--cov-fail-under={C.COV_THRESHOLD}",
+                f"--cov-report=html:{cov_path}",
+                f"--cov={py_mod}",
+            ]
+            pkg_targets += [cov_path / "index.html"]
 
         yield U.ok(
             B.OK_LITE_PYTEST,
@@ -754,22 +760,8 @@ def task_test():
                 *setup_py.parent.rglob("*.py"),
                 setup_py.parent / "pyproject.toml",
             ],
-            targets=[cov_index, html_index],
-            actions=[
-                U.do(
-                    *pytest_args,
-                    *(C.PYTEST_ARGS or []),
-                    "--cov",
-                    py_mod,
-                    "--cov-report",
-                    f"html:{cov_path}",
-                    f"--html={html_index}",
-                    "--self-contained-html",
-                    *pkg_args,
-                    env=env,
-                    cwd=cwd,
-                )
-            ],
+            targets=pkg_targets,
+            actions=[U.do(*pytest_args, *pkg_args, env=env, cwd=cwd)],
         )
 
 
