@@ -727,7 +727,6 @@ def task_test():
             "--no-cov-on-fail",
         ]
 
-
     for py_name, setup_py in P.PY_SETUP_PY.items():
         if py_name != C.NAME:
             # TODO: we'll get there
