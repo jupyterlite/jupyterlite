@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: '3.10'
       - name: Setup pip (base)
         run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
@@ -55,7 +55,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: '16.x'
       - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
@@ -93,11 +93,12 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     env:
       TESTING_IN_CI: 1
+      PYTEST_ARGS: ${{ matrix.pytest-args }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: [3.7, 3.9, pypy-3.7]
+        python-version: ['3.7', '3.10', 'pypy-3.7']
         include:
           - os: ubuntu
             pip-cache: ~/.cache/pip
@@ -105,6 +106,12 @@ jobs:
             pip-cache: ~/Library/Caches/pip
           - os: windows
             pip-cache: ~\AppData\Local\pip\Cache
+          - python-version: '3.7'
+            pytest-args: '[]'
+          - python-version: '3.10'
+            pytest-args: '[]'
+          - python-version: 'pypy-3.7'
+            pytest-args: '["-k", "not _archive_is_"]'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -187,11 +194,11 @@ jobs:
           path: ./docs/api/ts
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: '3.9'
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: '16.x'
       - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
