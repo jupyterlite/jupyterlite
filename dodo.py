@@ -1,5 +1,6 @@
 import json
 import os
+import platform
 import re
 import shutil
 import subprocess
@@ -788,7 +789,8 @@ class C:
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
     CI = bool(json.loads(os.environ.get("CI", "0")))
-    PYPY = "__pypy__" in sys.builtin_module_names
+    PY_IMPL = platform.python_implementation()
+    PYPY = "pypy" in PY_IMPL.lower()
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))

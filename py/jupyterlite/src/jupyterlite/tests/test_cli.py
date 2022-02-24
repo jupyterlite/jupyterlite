@@ -1,5 +1,5 @@
 """integration tests for overall CLI functionality"""
-import sys
+import platform
 import time
 
 from pytest import mark
@@ -7,7 +7,9 @@ from pytest import mark
 from jupyterlite import __version__
 from jupyterlite.constants import HOOKS
 
-IS_PYPY = "__pypy__" in sys.builtin_module_names
+PY_IMPL = platform.python_implementation()
+IS_PYPY = "pypy" in PY_IMPL.lower()
+
 
 # TODO: others?
 LITE_INVOCATIONS = [
