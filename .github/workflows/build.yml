@@ -119,6 +119,9 @@ jobs:
             # TODO: some instability with libarchive, might be better with pypy-3.8
             # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
+        exclude:
+          - os: windows
+            python-version: pypy-3.7
     steps:
       - name: Checkout
         uses: actions/checkout@v2
