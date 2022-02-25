@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: '3.10'
       - name: Setup pip (base)
         run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
@@ -55,7 +55,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: '16.x'
       - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
@@ -93,18 +93,35 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     env:
       TESTING_IN_CI: 1
+      PYTEST_ARGS: ${{ matrix.pytest-args }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: [3.7, 3.9, pypy-3.7]
+        python-version: ['3.7', '3.10', 'pypy-3.7']
         include:
+          # OS-specifics for running pip
           - os: ubuntu
             pip-cache: ~/.cache/pip
+            python-command: python3
           - os: macos
             pip-cache: ~/Library/Caches/pip
+            python-command: python3
           - os: windows
             pip-cache: ~\AppData\Local\pip\Cache
+            python-command: python
+          # python-specifics for tests
+          - python-version: '3.7'
+            pytest-args: '[]'
+          - python-version: '3.10'
+            pytest-args: '[]'
+          - python-version: 'pypy-3.7'
+            # TODO: some instability with libarchive, might be better with pypy-3.8
+            # after https://github.com/cloudpipe/cloudpickle/pull/461
+            pytest-args: '["-k", "not _archive_is_"]'
+        exclude:
+          - os: windows
+            python-version: pypy-3.7
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -112,7 +129,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Setup pip (base)
-        run: python3 -m pip install --user -U pip setuptools wheel
+        run: ${{ matrix.python-command }} -m pip install --user -U pip setuptools wheel
       - name: Download (dist)
         uses: actions/download-artifact@v2
         with:
@@ -130,9 +147,9 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Install (py)
         run: |
-          python3 -m pip install entrypoints doit jupyter_core
-          python3 -m pip install --find-links dist --no-index jupyterlite
-          python3 -m pip check
+          ${{ matrix.python-command }} -m pip install entrypoints doit jupyter_core
+          ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite
+          ${{ matrix.python-command }} -m pip check
       - name: Prepare smoke test folder
         shell: bash
         run: mkdir -p build/smoke-test
@@ -153,7 +170,7 @@ jobs:
           jupyter lite list || exit 1
           jupyter lite status --debug || exit 1
       - name: Setup pip (test)
-        run: python3 -m pip install -r requirements-test.txt
+        run: ${{ matrix.python-command }} -m pip install -r requirements-test.txt
       - name: Test (py)
         run: doit test:py:*
       - name: Upload (reports)
@@ -167,7 +184,7 @@ jobs:
             build/pytest
 
   docs:
-    needs: [build, lint-js-test]
+    needs: [build]
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
@@ -187,11 +204,11 @@ jobs:
           path: ./docs/api/ts
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: '3.9'
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: '16.x'
       - name: Cache (node_modules)
         uses: actions/cache@v2
         id: cache-node-modules
