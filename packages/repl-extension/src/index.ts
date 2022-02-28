@@ -218,7 +218,7 @@ const toolbarParamPlugin: JupyterFrontEndPlugin<void> = {
       schema: async () => {
         return {
           title: 'Toolbar',
-          description: `Whether to show the toolbar`,
+          description: 'Whether to show the toolbar',
           type: 'boolean',
         };
       },
@@ -250,7 +250,7 @@ const themeParamPlugin: JupyterFrontEndPlugin<void> = {
       schema: async () => {
         return {
           title: 'Theme',
-          description: `The JupyterLab theme to use`,
+          description: 'The JupyterLab theme to use',
           type: 'string',
         };
       },

@@ -27,7 +27,7 @@ export class ReplApi implements IReplApi {
    */
   addUrlParam(param: string, options: IReplUrlOptions): void {
     if (this.params.has(param)) {
-      throw new Error(this.trans.__(`%1 already registered`, param));
+      throw new Error(this.trans.__('%1 already registered', param));
     }
     this.params.set(param, options);
   }
@@ -38,7 +38,7 @@ export class ReplApi implements IReplApi {
   async getUrlSchema(): Promise<IParamAPISchema> {
     const properties: Record<string, IParamSchema> = {};
 
-    for (let [key, options] of this.params.entries()) {
+    for (const [key, options] of this.params.entries()) {
       const schema = await options.schema();
       properties[key] = {
         ...schema,
@@ -155,7 +155,7 @@ export class ReplApi implements IReplApi {
   /**
    * Reduce-like helper for handling hooks, etc.
    */
-  protected async forEachParam<T extends keyof IReplEvents, U extends any>(
+  protected async forEachParam<T extends keyof IReplEvents, U>(
     memo: U,
     event: T,
     handler: (memo: U, eventHandler: IReplUrlOptions[T]) => U,
@@ -163,7 +163,7 @@ export class ReplApi implements IReplApi {
   ): Promise<U> {
     for (const [key, options] of this.sortedParams) {
       const eventHandler = options[event];
-      if (eventHandler != null) {
+      if (eventHandler) {
         try {
           memo = await handler(memo, eventHandler);
         } catch (err) {
