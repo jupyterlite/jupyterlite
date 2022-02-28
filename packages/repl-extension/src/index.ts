@@ -24,8 +24,9 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import { IReplApi } from './tokens';
-import { ReplApi } from './urls';
+import { IReplUrlParams } from './tokens';
+
+import { ReplUrlParams } from './url-api';
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -122,18 +123,18 @@ const buttons: JupyterFrontEndPlugin<void> = {
 /**
  * A plugin to normalize the REPL GET param API
  */
-const paramApiPlugin: JupyterFrontEndPlugin<IReplApi> = {
+const paramApiPlugin: JupyterFrontEndPlugin<IReplUrlParams> = {
   id: '@jupyterlite/repl-extension:url-params',
   autoStart: true,
-  provides: IReplApi,
+  provides: IReplUrlParams,
   requires: [ITranslator],
   activate: (app: JupyterFrontEnd, translator: ITranslator) => {
     const trans = translator.load('jupyterlab');
-    const api = new ReplApi({
+    const urlParams = new ReplUrlParams({
       trans,
       defaultParams: new URLSearchParams(window.location.search),
     });
-    return api;
+    return urlParams;
   },
 };
 
@@ -143,16 +144,22 @@ const paramApiPlugin: JupyterFrontEndPlugin<IReplApi> = {
 const kernelParamPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:kernel-url-param',
   autoStart: true,
-  requires: [IReplApi],
-  activate: (app: JupyterFrontEnd, replApi: IReplApi) => {
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load('jupyterlab');
     const param = 'kernel';
-    replApi.addUrlParam(param, {
+    urlParams.addUrlParam(param, {
       schema: async () => {
+        const { specs } = app.serviceManager.kernelspecs;
         return {
-          title: 'Kernel',
-          description: 'The name of the kernel to use',
+          title: trans.__('Kernel'),
+          description: trans.__('The name of the kernel to use'),
           type: 'string',
-          // TODO: add enum
+          enum: Object.keys(specs?.kernelspecs || {}),
         };
       },
       beforeConsoleCreated: async (args, params) => {
@@ -174,21 +181,26 @@ const kernelParamPlugin: JupyterFrontEndPlugin<void> = {
 const codeParamPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:code-url-param',
   autoStart: true,
-  requires: [IReplApi],
-  activate: (app: JupyterFrontEnd, replApi: IReplApi) => {
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load('jupyterlab');
     const param = 'code';
-    replApi.addUrlParam(param, {
+    urlParams.addUrlParam(param, {
       schema: async () => {
         return {
-          title: 'Code',
-          description: `
-            Blocks of code to run as soon as possible.
-            Errors will _not_ prevent following blocks from running.
-          `,
+          title: trans.__('Code'),
+          description: trans.__(
+            [
+              'Blocks of code to enqueue to run as soon as possible.',
+              'Errors will _not_ prevent following blocks from running.',
+            ].join(' ')
+          ),
           type: 'array',
-          items: {
-            type: 'string',
-          },
+          items: { type: 'string' },
         };
       },
       afterConsoleCreated: async (widget, params) => {
@@ -211,15 +223,23 @@ const codeParamPlugin: JupyterFrontEndPlugin<void> = {
 const toolbarParamPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:toolbar-url-param',
   autoStart: true,
-  requires: [IReplApi],
-  activate: (app: JupyterFrontEnd, replApi: IReplApi) => {
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load('jupyterlab');
     const param = 'toolbar';
-    replApi.addUrlParam(param, {
+    urlParams.addUrlParam(param, {
       schema: async () => {
         return {
-          title: 'Toolbar',
-          description: 'Whether to show the toolbar',
-          type: 'boolean',
+          title: trans.__('Toolbar'),
+          description: trans.__(
+            'A JSON truthful value for whether to show the toolbar'
+          ),
+          type: 'string',
+          enum: ['true', 'false', '0', '1', 'null'],
         };
       },
       afterConsoleCreated: async (widget, params) => {
@@ -243,15 +263,22 @@ const toolbarParamPlugin: JupyterFrontEndPlugin<void> = {
 const themeParamPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:theme-url-param',
   autoStart: true,
-  requires: [IThemeManager, IReplApi],
-  activate: (app: JupyterFrontEnd, themeManager: IThemeManager, replApi: IReplApi) => {
+  requires: [IThemeManager, ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    themeManager: IThemeManager,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load('jupyterlab');
     const param = 'theme';
     const options = {
       schema: async () => {
         return {
-          title: 'Theme',
-          description: 'The JupyterLab theme to use',
+          title: trans.__('Theme'),
+          description: trans.__('The JupyterLab theme to use'),
           type: 'string',
+          enum: [...themeManager.themes],
         };
       },
       afterAppStarted: async (_app: JupyterFrontEnd, params: URLSearchParams) => {
@@ -262,10 +289,10 @@ const themeParamPlugin: JupyterFrontEndPlugin<void> = {
       },
     };
 
-    replApi.addUrlParam(param, options);
+    urlParams.addUrlParam(param, options);
 
     // TODO: investigate theme behavior vs. toolbar/collapser
-    options.afterAppStarted(app, replApi.defaultParams);
+    options.afterAppStarted(app, urlParams.defaultParams);
   },
 };
 
@@ -276,11 +303,11 @@ const themeParamPlugin: JupyterFrontEndPlugin<void> = {
 const consolePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:console',
   autoStart: true,
-  optional: [IConsoleTracker, IReplApi],
+  optional: [IConsoleTracker, IReplUrlParams],
   activate: (
     app: JupyterFrontEnd,
     tracker: IConsoleTracker | null,
-    urlApi: IReplApi | null
+    urlParams: IReplUrlParams | null
   ) => {
     if (!tracker) {
       return;
@@ -288,16 +315,20 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const { commands } = app;
 
     app.started.then(async () => {
-      urlApi && (await urlApi.afterAppStarted(app));
-      const args = urlApi
-        ? ((await urlApi.beforeConsoleCreated({})) as ReadonlyJSONObject)
-        : {};
+      let args: ReadonlyJSONObject = {};
+
+      if (urlParams) {
+        await urlParams.afterAppStarted(app);
+        args = (await urlParams.beforeConsoleCreated({})) as ReadonlyJSONObject;
+      }
       await commands.execute('console:create', args);
     });
 
     tracker.widgetAdded.connect(async (_, widget) => {
       await widget.revealed;
-      urlApi && (await urlApi.afterConsoleCreated(widget));
+      if (urlParams) {
+        await urlParams.afterConsoleCreated(widget);
+      }
     });
   },
 };

@@ -1,25 +1,30 @@
+import { PromiseDelegate } from '@lumino/coreutils';
+import { PageConfig } from '@jupyterlab/coreutils';
+import { JupyterFrontEnd } from '@jupyterlab/application';
 import { ConsolePanel } from '@jupyterlab/console';
 import { TranslationBundle } from '@jupyterlab/translation';
+
 import {
   IParamAPISchema,
   IParamSchema,
-  IReplApi,
+  IReplUrlParams,
   IReplUrlOptions,
   IReplEvents,
   ICreateConsoleCommandArgs,
 } from './tokens';
-import { PromiseDelegate } from '@lumino/coreutils';
-import { JupyterFrontEnd } from '@jupyterlab/application';
 
 /**
  * A class for managing the extensible events in the REPL app startup lifecycle.
  */
-export class ReplApi implements IReplApi {
-  constructor(options: ReplApi.IOptions) {
-    this.title = options.title || 'REPL URL Params';
-    this.description = options.description || 'The accepted API options for the REPL';
+export class ReplUrlParams implements IReplUrlParams {
+  constructor(options: ReplUrlParams.IOptions) {
     this.trans = options.trans;
     this.defaultParams = options.defaultParams;
+
+    const appName = PageConfig.getOption('appName');
+    this.title = options.title || this.trans.__('%1 URL Params', appName);
+    this.description =
+      options.description || this.trans.__('The URL params accepted by %1', appName);
   }
 
   /**
@@ -42,14 +47,14 @@ export class ReplApi implements IReplApi {
       const schema = await options.schema();
       properties[key] = {
         ...schema,
-        title: this.trans.__(schema.title),
-        description: this.trans.__(schema.description),
+        title: schema.title,
+        description: schema.description,
       };
     }
 
     return {
-      title: this.trans.__(this.title),
-      description: this.trans.__(this.description),
+      title: this.title,
+      description: this.description,
       type: 'object',
       properties,
     };
@@ -201,7 +206,7 @@ export class ReplApi implements IReplApi {
   protected trans: TranslationBundle;
 }
 
-export namespace ReplApi {
+export namespace ReplUrlParams {
   export interface IOptions {
     trans: TranslationBundle;
     title?: string;

@@ -7,12 +7,14 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 /**
  * The token for the REPL API service.
  */
-export const IReplApi = new Token<IReplApi>('@jupyterlite/repl:IReplAPI');
+export const IReplUrlParams = new Token<IReplUrlParams>(
+  '@jupyterlite/repl:IReplUrlParams'
+);
 
 /**
  * An extensible API for the REPL app
  */
-export interface IReplApi extends IReplEvents {
+export interface IReplUrlParams extends IReplEvents {
   /**
    *
    * @param param the GET parameter to expose
