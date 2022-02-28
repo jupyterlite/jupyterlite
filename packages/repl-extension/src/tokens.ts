@@ -2,6 +2,7 @@ import { Token } from '@lumino/coreutils';
 import { ISessionContext } from '@jupyterlab/apputils';
 import { ConsolePanel } from '@jupyterlab/console';
 import { ReadonlyJSONObject } from '@lumino/coreutils';
+import { JupyterFrontEnd } from '@jupyterlab/application';
 
 /**
  * The token for the REPL API service.
@@ -24,6 +25,11 @@ export interface IReplApi extends IReplEvents {
    * Retrieve the current JSON Schema for the URL params
    */
   getUrlSchema(): Promise<IParamAPISchema>;
+
+  /**
+   * The URL params at the time the API was created.
+   */
+  defaultParams: URLSearchParams;
 }
 
 /**
@@ -31,17 +37,22 @@ export interface IReplApi extends IReplEvents {
  */
 export interface IReplEvents {
   /**
+   * Modify the app after it has fully started.
+   */
+  afterAppStarted(app: JupyterFrontEnd, params?: URLSearchParams): Promise<void>;
+
+  /**
    * Modify the console creation options, such as by `kernel`
    */
-  createConsoleArgs(
-    params: URLSearchParams,
-    args: ICreateConsoleCommandArgs
+  beforeConsoleCreated(
+    args: ICreateConsoleCommandArgs,
+    params?: URLSearchParams
   ): Promise<ICreateConsoleCommandArgs>;
 
   /**
-   * Modify the console created.
+   * Modify the console after it's added to the tracker.
    */
-  consoleCreated(params: URLSearchParams, widget: ConsolePanel): Promise<void>;
+  afterConsoleCreated(widget: ConsolePanel, params?: URLSearchParams): Promise<void>;
 }
 
 /**
