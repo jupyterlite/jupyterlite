@@ -1,5 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
+import { ReadonlyJSONObject } from '@lumino/coreutils';
+
+import { Widget } from '@lumino/widgets';
 
 import {
   ILabStatus,
@@ -11,7 +14,7 @@ import {
 
 import { CommandToolbarButton, IThemeManager, Toolbar } from '@jupyterlab/apputils';
 
-import { IConsoleTracker } from '@jupyterlab/console';
+import { ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
 
@@ -21,7 +24,8 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import { Widget } from '@lumino/widgets';
+import { IReplApi } from './tokens';
+import { ReplApi } from './urls';
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -116,17 +120,64 @@ const buttons: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin to normalize the REPL GET param API
+ */
+const paramApiPlugin: JupyterFrontEndPlugin<IReplApi> = {
+  id: '@jupyterlite/repl-extension:url-params',
+  autoStart: true,
+  provides: IReplApi,
+  requires: [ITranslator],
+  activate: (app: JupyterFrontEnd, translator: ITranslator) => {
+    const trans = translator.load('jupyterlab');
+    const api = new ReplApi({ trans });
+    return api;
+  },
+};
+
+/**
+ * A plugin that exposes the `kernel` URL param
+ */
+const kernelParamPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:kernel-url-param',
+  autoStart: true,
+  requires: [IReplApi],
+  activate: (app: JupyterFrontEnd, replApi: IReplApi) => {
+    const param = 'kernel';
+    replApi.addUrlParam(param, {
+      schema: async () => {
+        return {
+          title: 'Kernel',
+          description: 'The name of the kernel to use',
+          type: 'string',
+          // TODO: add enum
+        };
+      },
+      createConsoleArgs: async (params, args) => {
+        const name = params.get('kernel');
+        if (!name) {
+          return args;
+        }
+        let kernelPreference = args.kernelPreference || {};
+        kernelPreference = { ...kernelPreference, name };
+        return { ...args, kernelPreference };
+      },
+    });
+  },
+};
+
+/**
  * A plugin to open a code console and
  * parse custom parameters from the query string arguments.
  */
 const consolePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:console',
   autoStart: true,
-  optional: [IConsoleTracker, IThemeManager],
+  optional: [IConsoleTracker, IThemeManager, IReplApi],
   activate: (
     app: JupyterFrontEnd,
     tracker: IConsoleTracker | null,
-    themeManager: IThemeManager | null
+    themeManager: IThemeManager | null,
+    urlApi: IReplApi
   ) => {
     if (!tracker) {
       return;
@@ -136,12 +187,16 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const search = window.location.search;
     const urlParams = new URLSearchParams(search);
     const code = urlParams.getAll('code');
-    const kernel = urlParams.get('kernel') || undefined;
     const theme = urlParams.get('theme')?.trim();
     const toolbar = urlParams.get('toolbar');
 
-    app.started.then(() => {
-      commands.execute('console:create', { kernelPreference: { name: kernel } });
+    app.started.then(async () => {
+      const args = (await urlApi.createConsoleArgs(
+        urlParams,
+        {}
+      )) as ReadonlyJSONObject;
+      const widget: ConsolePanel = await commands.execute('console:create', args);
+      await urlApi.consoleCreated(urlParams, widget);
     });
 
     if (theme && themeManager) {
@@ -222,6 +277,8 @@ const router: JupyterFrontEndPlugin<IRouter> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   buttons,
+  paramApiPlugin,
+  kernelParamPlugin,
   consolePlugin,
   paths,
   router,
