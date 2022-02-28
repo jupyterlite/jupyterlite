@@ -2606,7 +2606,7 @@
     vega-lite "^5.1.0"
 
 "@jupyterlite/application-extension@file:packages/application-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/application" "~3.2.9"
     "@jupyterlab/apputils" "~3.2.9"
@@ -2618,14 +2618,14 @@
     "@jupyterlab/services" "~6.2.9"
     "@jupyterlab/translation" "~3.2.9"
     "@jupyterlab/ui-components" "~3.2.9"
-    "@jupyterlite/ui-components" "^0.1.0-alpha.24"
+    "@jupyterlite/ui-components" "^0.1.0-beta.0"
     "@lumino/algorithm" "^1.6.0"
     "@lumino/coreutils" "^1.8.0"
     "@lumino/widgets" "^1.23.0"
     y-webrtc "^10.2.0"
 
 "@jupyterlite/application@file:packages/application":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/application" "~3.2.9"
     "@jupyterlab/coreutils" "~5.2.9"
@@ -2636,7 +2636,7 @@
     "@lumino/widgets" "^1.31.1"
 
 "@jupyterlite/contents@file:packages/contents":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/nbformat" "~3.2.9"
     "@jupyterlab/services" "~6.2.9"
@@ -2644,27 +2644,27 @@
     localforage "^1.9.0"
 
 "@jupyterlite/iframe-extension@file:packages/iframe-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/rendermime-interfaces" "~3.2.9"
     "@lumino/coreutils" "^1.8.0"
     "@lumino/widgets" "^1.19.0"
 
 "@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/coreutils" "~5.2.9"
-    "@jupyterlite/javascript-kernel" "^0.1.0-alpha.24"
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
-    "@jupyterlite/server" "^0.1.0-alpha.24"
+    "@jupyterlite/javascript-kernel" "^0.1.0-beta.0"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
+    "@jupyterlite/server" "^0.1.0-beta.0"
 
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
 
 "@jupyterlite/kernel@file:packages/kernel":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/observables" "~4.2.9"
     "@jupyterlab/services" "~6.2.9"
@@ -2675,61 +2675,61 @@
     mock-socket "^9.1.0"
 
 "@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/coreutils" "~5.2.9"
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
-    "@jupyterlite/pyolite-kernel" "^0.1.0-alpha.24"
-    "@jupyterlite/server" "^0.1.0-alpha.24"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
+    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.0"
+    "@jupyterlite/server" "^0.1.0-beta.0"
 
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
 
 "@jupyterlite/repl-extension@file:packages/repl-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/application" "~3.2.9"
     "@jupyterlab/apputils" "~3.2.9"
     "@jupyterlab/console" "~3.2.9"
     "@jupyterlab/translation" "~3.2.9"
     "@jupyterlab/ui-components" "~3.2.9"
-    "@jupyterlite/application" "^0.1.0-alpha.24"
-    "@jupyterlite/ui-components" "^0.1.0-alpha.24"
+    "@jupyterlite/application" "^0.1.0-beta.0"
+    "@jupyterlite/ui-components" "^0.1.0-beta.0"
     "@lumino/widgets" "^1.30.1"
 
 "@jupyterlite/retro-application-extension@file:packages/retro-application-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/application" "~3.2.9"
     "@jupyterlab/console" "~3.2.9"
     "@jupyterlab/coreutils" "~5.2.9"
     "@jupyterlab/docmanager" "~3.2.9"
     "@jupyterlab/services" "~6.2.9"
-    "@jupyterlite/ui-components" "^0.1.0-alpha.24"
+    "@jupyterlite/ui-components" "^0.1.0-beta.0"
 
 "@jupyterlite/server@file:packages/server-extension":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/coreutils" "~5.2.9"
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
-    "@jupyterlite/licenses" "^0.1.0-alpha.24"
-    "@jupyterlite/server" "^0.1.0-alpha.24"
-    "@jupyterlite/session" "^0.1.0-alpha.24"
-    "@jupyterlite/settings" "^0.1.0-alpha.24"
-    "@jupyterlite/translation" "^0.1.0-alpha.24"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
+    "@jupyterlite/licenses" "^0.1.0-beta.0"
+    "@jupyterlite/server" "^0.1.0-beta.0"
+    "@jupyterlite/session" "^0.1.0-beta.0"
+    "@jupyterlite/settings" "^0.1.0-beta.0"
+    "@jupyterlite/translation" "^0.1.0-beta.0"
 
 "@jupyterlite/session@file:packages/session":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/services" "~6.2.9"
-    "@jupyterlite/kernel" "^0.1.0-alpha.24"
+    "@jupyterlite/kernel" "^0.1.0-beta.0"
     "@lumino/algorithm" "^1.6.0"
     "@lumino/coreutils" "^1.8.0"
 
 "@jupyterlite/settings@file:packages/settings":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/coreutils" "~5.2.9"
     "@jupyterlab/settingregistry" "~3.2.9"
@@ -2738,13 +2738,13 @@
     localforage "^1.9.0"
 
 "@jupyterlite/translation@file:packages/translation":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/coreutils" "~5.2.9"
     "@lumino/coreutils" "^1.8.0"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
-  version "0.1.0-alpha.24"
+  version "0.1.0-beta.0"
   dependencies:
     "@jupyterlab/ui-components" "^3.2.9"
 
@@ -13325,9 +13325,9 @@ url-parse-lax@^3.0.0:
     prepend-http "^2.0.0"
 
 url-parse@~1.5.1:
-  version "1.5.6"
-  resolved "https://registry.npmjs.org/url-parse/-/url-parse-1.5.6.tgz#b2a41d5a233645f3c31204cc8be60e76a15230a2"
-  integrity sha512-xj3QdUJ1DttD1LeSfvJlU1eiF1RvBSBfUu8GplFGdUzSO28y5yUtEl7wb//PI4Af6qh0o/K8545vUmucRrfWsw==
+  version "1.5.10"
+  resolved "https://registry.npmjs.org/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
+  integrity sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
