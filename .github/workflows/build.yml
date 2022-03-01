@@ -184,7 +184,7 @@ jobs:
             build/pytest
 
   docs:
-    needs: [build]
+    needs: [build, lint-js-test]
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
