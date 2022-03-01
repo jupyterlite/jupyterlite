@@ -5,6 +5,11 @@ import { ReadonlyJSONObject } from '@lumino/coreutils';
 import { JupyterFrontEnd } from '@jupyterlab/application';
 
 /**
+ * The name of the translation bundle to use for localized text
+ */
+export const TRANSLATION_BUNDLE = 'jupyterlite';
+
+/**
  * The token for the REPL API service.
  */
 export const IReplUrlParams = new Token<IReplUrlParams>(

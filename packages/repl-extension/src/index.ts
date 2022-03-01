@@ -24,7 +24,7 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import { IReplUrlParams } from './tokens';
+import { IReplUrlParams, TRANSLATION_BUNDLE } from './tokens';
 
 import { ReplUrlParams } from './url-api';
 
@@ -46,7 +46,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
     }
 
     const { commands } = app;
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
 
     // wrapper commands to be able to override the icon
     const runCommand = 'repl:run';
@@ -129,7 +129,7 @@ const paramApiPlugin: JupyterFrontEndPlugin<IReplUrlParams> = {
   provides: IReplUrlParams,
   requires: [ITranslator],
   activate: (app: JupyterFrontEnd, translator: ITranslator) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
     const urlParams = new ReplUrlParams({
       trans,
       defaultParams: new URLSearchParams(window.location.search),
@@ -150,7 +150,7 @@ const kernelParamPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     urlParams: IReplUrlParams
   ) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
     const param = 'kernel';
     urlParams.addUrlParam(param, {
       schema: async () => {
@@ -187,7 +187,7 @@ const codeParamPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     urlParams: IReplUrlParams
   ) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
     const param = 'code';
     urlParams.addUrlParam(param, {
       schema: async () => {
@@ -229,7 +229,7 @@ const toolbarParamPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     urlParams: IReplUrlParams
   ) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
     const param = 'toolbar';
     urlParams.addUrlParam(param, {
       schema: async () => {
@@ -270,7 +270,7 @@ const themeParamPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     urlParams: IReplUrlParams
   ) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
     const param = 'theme';
     const options = {
       schema: async () => {
