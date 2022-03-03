@@ -15,7 +15,7 @@
     "test:update": "playwright test --update-snapshots"
   },
   "dependencies": {
-    "@jupyterlab/galata": "~4.0.2"
+    "@jupyterlab/galata": "~4.2.0"
   },
   "resolutions": {
     "@playwright/test": "~1.16.2"
