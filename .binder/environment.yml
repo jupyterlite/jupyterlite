@@ -13,8 +13,8 @@ dependencies:
   - twine
   # demo stuff
   - jupyter-server-proxy
-  - jupyterlab >=3.2.9,<4
-  - retrolab >=0.3.19,<0.4
+  - jupyterlab >=3.3.0,<4
+  - retrolab >=0.3.20,<0.4
   # extra docs tools
   - sphinx-autobuild
 

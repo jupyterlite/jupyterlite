@@ -37,11 +37,11 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~3.2.9",
-    "@jupyterlab/apputils": "~3.2.9",
-    "@jupyterlab/console": "~3.2.9",
-    "@jupyterlab/translation": "~3.2.9",
-    "@jupyterlab/ui-components": "~3.2.9",
+    "@jupyterlab/application": "~3.3.0",
+    "@jupyterlab/apputils": "~3.3.0",
+    "@jupyterlab/console": "~3.3.0",
+    "@jupyterlab/translation": "~3.3.0",
+    "@jupyterlab/ui-components": "~3.3.0",
     "@jupyterlite/application": "^0.1.0-beta.0",
     "@jupyterlite/ui-components": "^0.1.0-beta.0",
     "@lumino/widgets": "^1.30.1"
