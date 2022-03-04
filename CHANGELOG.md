@@ -9,10 +9,10 @@
 ### Enhancements made
 
 - Update to Pyodide 0.19.1 [#519](https://github.com/jupyterlite/jupyterlite/pull/519) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 3.3.0 and RetroLab 0.3.20 [#528](https://github.com/jupyterlite/jupyterlite/pull/528) ([@jtpio](https://github.com/jtpio))
 
 ### Maintenance and upkeep improvements
 
-- Update to JupyterLab 3.3.0 and RetroLab 0.3.20 [#528](https://github.com/jupyterlite/jupyterlite/pull/528) ([@jtpio](https://github.com/jtpio))
 - Ensure TypeDoc before docs job [#526](https://github.com/jupyterlite/jupyterlite/pull/526) ([@bollwyvl](https://github.com/bollwyvl))
 - Bump url-parse from 1.5.7 to 1.5.10 in /ui-tests [#524](https://github.com/jupyterlite/jupyterlite/pull/524) ([@dependabot](https://github.com/dependabot))
 - Bump url-parse from 1.5.6 to 1.5.10 [#523](https://github.com/jupyterlite/jupyterlite/pull/523) ([@dependabot](https://github.com/dependabot))
