@@ -662,6 +662,17 @@ def task_check():
             yield from U.check_one_ipynb(example)
 
 
+def task_serve():
+    """serve sites"""
+    yield dict(
+        name="docs:app",
+        doc="serve the as-deployed docs app with jupyter lite serve",
+        uptodate=[lambda: False],
+        file_dep=[B.OK_DOCS_APP],
+        actions=[(U.docs_app, ["serve"])],
+    )
+
+
 def task_watch():
     """watch sources and rebuild on change"""
     yield dict(
@@ -671,6 +682,7 @@ def task_watch():
         file_dep=[B.YARN_INTEGRITY],
         actions=[U.do("yarn", "watch")],
     )
+
     if shutil.which("sphinx-autobuild"):
         yield dict(
             name="docs",
