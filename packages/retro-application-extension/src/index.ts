@@ -17,6 +17,8 @@ import { liteWordmark } from '@jupyterlite/ui-components';
 
 import { Widget } from '@lumino/widgets';
 
+import { IRetroShell } from '@retrolab/application';
+
 /**
  * Open consoles in a new tab.
  */
@@ -100,6 +102,27 @@ const logo: JupyterFrontEndPlugin<void> = {
   },
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [consoles, docmanager, logo];
+/**
+ * A plugin to trigger a refresh of the commands when the shell layout changes.
+ */
+const notifyCommands: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/retro-application-extension:notify-commands',
+  autoStart: true,
+  optional: [IRetroShell],
+  activate: (app: JupyterFrontEnd, retroShell: IRetroShell | null) => {
+    if (retroShell) {
+      retroShell.currentChanged.connect(() => {
+        app.commands.notifyCommandChanged();
+      });
+    }
+  },
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  consoles,
+  docmanager,
+  logo,
+  notifyCommands,
+];
 
 export default plugins;
