@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.1.0b0",
+  "version": "0.1.0b1",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -51,8 +51,12 @@
       "pre-commit": "lint-staged"
     }
   },
+  "resolutions": {
+    "json-schema": "^0.4.0",
+    "validator": "^13.7.0"
+  },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~3.2.9",
+    "@jupyterlab/buildutils": "~3.3.0",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^8.9.0",
@@ -77,9 +81,5 @@
     "typedoc-plugin-markdown": "~3.11.13",
     "typescript": "~4.5.2",
     "yarn-deduplicate": "^3.1.0"
-  },
-  "resolutions": {
-    "json-schema": "^0.4.0",
-    "validator": "^13.7.0"
   }
 }

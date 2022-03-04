@@ -66,7 +66,8 @@ async function main() {
         '@jupyterlab/apputils-extension:settings',
         '@jupyterlab/apputils-extension:state',
         '@jupyterlab/apputils-extension:themes',
-        '@jupyterlab/apputils-extension:themes-palette-menu'
+        '@jupyterlab/apputils-extension:themes-palette-menu',
+        '@jupyterlab/apputils-extension:toolbar-registry'
       ].includes(id)
     ),
     require('@jupyterlab/codemirror-extension').default.filter(({ id }) =>

@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/app",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0-beta.1",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
     "url": "https://github.com/jupyterlite/jupyterlite/issues"
@@ -9,21 +9,16 @@
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
   "scripts": {
-    "clean": "rimraf build **/build",
     "build": "webpack",
     "build:prod": "yarn clean && yarn build --mode=production",
+    "clean": "rimraf build **/build",
     "watch": "webpack --config webpack.config.watch.js"
   },
-  "jupyterlite": {
-    "apps": [
-      "lab",
-      "repl",
-      "retro"
-    ]
-  },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.2.9",
+    "@jupyterlab/builder": "^3.3.0",
     "css-loader": "^6.6.0",
     "file-loader": "^6.2.0",
     "fs-extra": "^9.0.1",
@@ -42,6 +37,11 @@
     "webpack-cli": "^4.9.2",
     "webpack-merge": "^5.8.0"
   },
-  "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors"
+  "jupyterlite": {
+    "apps": [
+      "lab",
+      "repl",
+      "retro"
+    ]
+  }
 }
