@@ -9,7 +9,7 @@ home-page = "https://github.com/jupyterlite/jupyterlite"
 requires-python = ">=3.6"
 
 [tool.tbump.version]
-current = "0.1.0b0"
+current = "0.1.0b1"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
