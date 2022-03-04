@@ -429,6 +429,22 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin to trigger a refresh of the commands when the shell layout changes.
+ */
+const notifyCommands: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:notify-commands',
+  autoStart: true,
+  optional: [ILabShell],
+  activate: (app: JupyterFrontEnd, labShell: ILabShell | null) => {
+    if (labShell) {
+      labShell.layoutModified.connect(() => {
+        app.commands.notifyCommandChanged();
+      });
+    }
+  },
+};
+
+/**
  * A custom opener plugin to pass the path to documents as
  * query string parameters.
  */
@@ -555,6 +571,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   docProviderPlugin,
   downloadPlugin,
   liteLogo,
+  notifyCommands,
   opener,
   shareFile,
 ];
