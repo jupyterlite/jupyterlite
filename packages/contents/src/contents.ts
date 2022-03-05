@@ -589,11 +589,14 @@ export class Contents implements IContents {
             mimetype: mimetype || 'text/plain',
           };
         } else {
+          const byteToString = (data: string, byte: number) =>
+            data + String.fromCharCode(byte);
+          const content = btoa(
+            new Uint8Array(await response.arrayBuffer()).reduce(byteToString, '')
+          );
           model = {
             ...model,
-            content: btoa(
-              String.fromCharCode(...new Uint8Array(await response.arrayBuffer()))
-            ),
+            content,
             format: 'base64',
             mimetype: mimetype || 'octet/stream',
           };
