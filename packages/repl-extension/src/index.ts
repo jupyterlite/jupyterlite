@@ -1,5 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
+import { ReadonlyJSONObject } from '@lumino/coreutils';
+
+import { Widget } from '@lumino/widgets';
 
 import {
   ILabStatus,
@@ -21,7 +24,9 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import { Widget } from '@lumino/widgets';
+import { IReplUrlParams, TRANSLATION_BUNDLE } from './tokens';
+
+import { ReplUrlParams } from './url-api';
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -41,7 +46,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
     }
 
     const { commands } = app;
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(TRANSLATION_BUNDLE);
 
     // wrapper commands to be able to override the icon
     const runCommand = 'repl:run';
@@ -89,9 +94,9 @@ const buttons: JupyterFrontEndPlugin<void> = {
     tracker.widgetAdded.connect((_, console) => {
       const { toolbar } = console;
 
-      console.toolbar.addItem('run', runButton);
-      console.toolbar.addItem('restart', restartButton);
-      console.toolbar.addItem('clear', clearButton);
+      toolbar.addItem('run', runButton);
+      toolbar.addItem('restart', restartButton);
+      toolbar.addItem('clear', clearButton);
 
       toolbar.addItem('spacer', Toolbar.createSpacerItem());
 
@@ -116,50 +121,213 @@ const buttons: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin to normalize the REPL GET param API
+ */
+const paramApiPlugin: JupyterFrontEndPlugin<IReplUrlParams> = {
+  id: '@jupyterlite/repl-extension:url-params',
+  autoStart: true,
+  provides: IReplUrlParams,
+  requires: [ITranslator],
+  activate: (app: JupyterFrontEnd, translator: ITranslator) => {
+    const trans = translator.load(TRANSLATION_BUNDLE);
+    const urlParams = new ReplUrlParams({
+      trans,
+      defaultParams: new URLSearchParams(window.location.search),
+    });
+    return urlParams;
+  },
+};
+
+/**
+ * A plugin that exposes the `kernel` URL param
+ */
+const kernelParamPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:kernel-url-param',
+  autoStart: true,
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load(TRANSLATION_BUNDLE);
+    const param = 'kernel';
+    urlParams.addUrlParam(param, {
+      schema: async () => {
+        const { specs } = app.serviceManager.kernelspecs;
+        return {
+          title: trans.__('Kernel'),
+          description: trans.__('The name of the kernel to use'),
+          type: 'string',
+          enum: Object.keys(specs?.kernelspecs || {}),
+        };
+      },
+      beforeConsoleCreated: async (args, params) => {
+        const name = params && params.get('kernel');
+        if (!name) {
+          return args;
+        }
+        let kernelPreference = args.kernelPreference || {};
+        kernelPreference = { ...kernelPreference, name };
+        return { ...args, kernelPreference };
+      },
+    });
+  },
+};
+
+/**
+ * A plugin that exposes the `code` URL param
+ */
+const codeParamPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:code-url-param',
+  autoStart: true,
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load(TRANSLATION_BUNDLE);
+    const param = 'code';
+    urlParams.addUrlParam(param, {
+      schema: async () => {
+        return {
+          title: trans.__('Code'),
+          description: trans.__(
+            [
+              'Blocks of code to enqueue to run as soon as possible.',
+              'Errors will _not_ prevent following blocks from running.',
+            ].join(' ')
+          ),
+          type: 'array',
+          items: { type: 'string' },
+        };
+      },
+      afterConsoleCreated: async (widget, params) => {
+        const code = params && params.getAll(param);
+        if (code && code.length) {
+          widget.sessionContext.ready.then(() => {
+            for (const line of code) {
+              widget.console.inject(line);
+            }
+          });
+        }
+      },
+    });
+  },
+};
+
+/**
+ * A plugin that exposes the `toolbar` URL param
+ */
+const toolbarParamPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:toolbar-url-param',
+  autoStart: true,
+  requires: [ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load(TRANSLATION_BUNDLE);
+    const param = 'toolbar';
+    urlParams.addUrlParam(param, {
+      schema: async () => {
+        return {
+          title: trans.__('Toolbar'),
+          description: trans.__(
+            'A JSON truthful value for whether to show the toolbar'
+          ),
+          type: 'string',
+          enum: ['true', 'false', '0', '1', 'null'],
+        };
+      },
+      afterConsoleCreated: async (widget, params) => {
+        const showToolbar =
+          params && JSON.parse((params.get(param) || '0').trim().toLowerCase());
+        if (!showToolbar) {
+          widget.toolbar.hide();
+        } else {
+          widget.toolbar.show();
+        }
+        widget.toolbar.update();
+        widget.update();
+      },
+    });
+  },
+};
+
+/**
+ * A plugin that exposes the `theme` URL param
+ */
+const themeParamPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:theme-url-param',
+  autoStart: true,
+  requires: [IThemeManager, ITranslator, IReplUrlParams],
+  activate: (
+    app: JupyterFrontEnd,
+    themeManager: IThemeManager,
+    translator: ITranslator,
+    urlParams: IReplUrlParams
+  ) => {
+    const trans = translator.load(TRANSLATION_BUNDLE);
+    const param = 'theme';
+    const options = {
+      schema: async () => {
+        return {
+          title: trans.__('Theme'),
+          description: trans.__('The JupyterLab theme to use'),
+          type: 'string',
+          enum: [...themeManager.themes],
+        };
+      },
+      afterAppStarted: async (_app: JupyterFrontEnd, params: URLSearchParams) => {
+        const theme = params && decodeURIComponent(params.get(param) || '');
+        if (theme && themeManager.theme !== theme) {
+          themeManager.setTheme(theme);
+        }
+      },
+    };
+
+    urlParams.addUrlParam(param, options);
+
+    // TODO: investigate theme behavior vs. toolbar/collapser
+    options.afterAppStarted(app, urlParams.defaultParams);
+  },
+};
+
+/**
  * A plugin to open a code console and
  * parse custom parameters from the query string arguments.
  */
 const consolePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:console',
   autoStart: true,
-  optional: [IConsoleTracker, IThemeManager],
+  optional: [IConsoleTracker, IReplUrlParams],
   activate: (
     app: JupyterFrontEnd,
     tracker: IConsoleTracker | null,
-    themeManager: IThemeManager | null
+    urlParams: IReplUrlParams | null
   ) => {
     if (!tracker) {
       return;
     }
     const { commands } = app;
 
-    const search = window.location.search;
-    const urlParams = new URLSearchParams(search);
-    const code = urlParams.getAll('code');
-    const kernel = urlParams.get('kernel') || undefined;
-    const theme = urlParams.get('theme')?.trim();
-    const toolbar = urlParams.get('toolbar');
+    app.started.then(async () => {
+      let args: ReadonlyJSONObject = {};
 
-    app.started.then(() => {
-      commands.execute('console:create', { kernelPreference: { name: kernel } });
+      if (urlParams) {
+        await urlParams.afterAppStarted(app);
+        args = (await urlParams.beforeConsoleCreated({})) as ReadonlyJSONObject;
+      }
+      await commands.execute('console:create', args);
     });
 
-    if (theme && themeManager) {
-      const themeName = decodeURIComponent(theme);
-      themeManager.setTheme(themeName);
-    }
-
     tracker.widgetAdded.connect(async (_, widget) => {
-      const { console } = widget;
-
-      if (!toolbar) {
-        // hide the toolbar by default if not specified
-        widget.toolbar.dispose();
-      }
-
-      if (code) {
-        await console.sessionContext.ready;
-        code.forEach((line) => console.inject(line));
+      await widget.revealed;
+      if (urlParams) {
+        await urlParams.afterConsoleCreated(widget);
       }
     });
   },
@@ -222,6 +390,11 @@ const router: JupyterFrontEndPlugin<IRouter> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   buttons,
+  paramApiPlugin,
+  kernelParamPlugin,
+  codeParamPlugin,
+  toolbarParamPlugin,
+  themeParamPlugin,
   consolePlugin,
   paths,
   router,

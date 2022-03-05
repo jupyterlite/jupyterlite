@@ -15,6 +15,8 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
+  IMemoryStorage,
+  ensureMemoryStorage,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -24,13 +26,29 @@ import { ISettings, Settings } from '@jupyterlite/settings';
 import { ITranslation, Translation } from '@jupyterlite/translation';
 
 /**
+ * A volatile memory storage fallback.
+ *
+ * Disable this plugin to fail hard when persistent storage is not available
+ */
+const memoryStoragePlugin: JupyterLiteServerPlugin<IMemoryStorage> = {
+  id: '@jupyterlite/server-extension:memory-storage',
+  autoStart: true,
+  provides: IMemoryStorage,
+  activate: async (app: JupyterLiteServer) => {
+    const memoryStorage = await ensureMemoryStorage();
+    return memoryStorage;
+  },
+};
+
+/**
  * The contents service plugin.
  */
 const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   id: '@jupyterlite/server-extension:contents',
   autoStart: true,
+  optional: [IMemoryStorage],
   provides: IContents,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: JupyterLiteServer, _memoryStorage?: IMemoryStorage) => {
     const contentsStorageName = PageConfig.getOption('contentsStorageName');
     return new Contents({ contentsStorageName });
   },
@@ -317,7 +335,8 @@ const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
   id: '@jupyterlite/server-extension:settings',
   autoStart: true,
   provides: ISettings,
-  activate: (app: JupyterLiteServer) => {
+  optional: [IMemoryStorage],
+  activate: (app: JupyterLiteServer, _memoryStorage: IMemoryStorage) => {
     const settingsStorageName = PageConfig.getOption('settingsStorageName');
     return new Settings({ settingsStorageName });
   },
@@ -403,6 +422,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   kernelSpecRoutesPlugin,
   licensesPlugin,
   licensesRoutesPlugin,
+  memoryStoragePlugin,
   nbconvertRoutesPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,

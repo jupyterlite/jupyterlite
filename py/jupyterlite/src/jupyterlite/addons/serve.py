@@ -9,6 +9,13 @@ from .base import BaseAddon
 # we _really_ don't want to be in the server-running business, so hardcode, now...
 HOST = "127.0.0.1"
 
+# allow self-hosted iframes, etc.
+DEFAULT_HEADERS = {
+    "Access-Control-Allow-Headers": "x-requested-with",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Origin": "*",
+}
+
 
 class ServeAddon(BaseAddon):
     __all__ = ["status", "serve"]
@@ -73,6 +80,10 @@ class ServeAddon(BaseAddon):
         from tornado import ioloop, web
 
         class Handler(web.StaticFileHandler):
+            def set_default_headers(self):
+                for header, value in DEFAULT_HEADERS.items():
+                    self.set_header(header, value)
+
             def parse_url_path(self, url_path):
                 if not url_path or url_path.endswith("/"):
                     url_path = url_path + "index.html"
