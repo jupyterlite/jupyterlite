@@ -112,7 +112,9 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd, retroShell: IRetroShell | null) => {
     if (retroShell) {
       retroShell.currentChanged.connect(() => {
-        app.commands.notifyCommandChanged();
+        requestAnimationFrame(() => {
+          app.commands.notifyCommandChanged();
+        });
       });
     }
   },
