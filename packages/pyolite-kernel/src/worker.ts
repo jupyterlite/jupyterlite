@@ -63,6 +63,9 @@ async function loadPyodideAndPackages() {
     import pyolite
   `);
 
+  // execute prerun codes
+  await pyodide.runPythonAsync(`${_prerunCodes.join('\n')}`);
+
   // make copies of these so they don't get garbage collected
   kernel = pyodide.globals.get('pyolite').kernel_instance.copy();
   stdout_stream = pyodide.globals.get('pyolite').stdout_stream.copy();
