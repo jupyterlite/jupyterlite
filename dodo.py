@@ -101,7 +101,7 @@ def task_setup():
 
     actions = [U.do(*args)]
 
-    if not (C.CI or C.RTD):
+    if not (C.CI or C.RTD or C.BINDER):
         actions += [U.do("yarn", "deduplicate")]
 
     yield dict(
@@ -781,6 +781,7 @@ class C:
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
     CI = bool(json.loads(os.environ.get("CI", "0")))
+    BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     PY_IMPL = platform.python_implementation()
     PYPY = "pypy" in PY_IMPL.lower()
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))

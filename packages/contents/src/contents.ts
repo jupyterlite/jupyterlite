@@ -8,7 +8,9 @@ import { PathExt } from '@jupyterlab/coreutils';
 
 import localforage from 'localforage';
 
-import { IContents } from './tokens';
+import { IContents, MIME } from './tokens';
+
+export type IModel = ServerContents.IModel;
 
 /**
  * The name of the local storage.
@@ -19,18 +21,6 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
  * The number of checkpoints to save.
  */
 const N_CHECKPOINTS = 5;
-
-/**
- * A list of mime types of text files
- */
-const EXTRA_TEXT_MIME_TYPES = new Set([
-  'application/javascript',
-  'application/json',
-  'application/manifest+json',
-  'application/x-python-code',
-  'application/xml',
-  'image/svg+xml',
-]);
 
 /**
  * A class to handle requests to /api/contents
@@ -89,9 +79,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the created file content when the file is created.
    */
-  async newUntitled(
-    options?: ServerContents.ICreateOptions
-  ): Promise<ServerContents.IModel | null> {
+  async newUntitled(options?: ServerContents.ICreateOptions): Promise<IModel | null> {
     const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
@@ -118,7 +106,7 @@ export class Contents implements IContents {
       name = path;
     }
 
-    let file: ServerContents.IModel;
+    let file: IModel;
     switch (type) {
       case 'directory': {
         const counter = await this._incrementCounter('directory');
@@ -128,7 +116,7 @@ export class Contents implements IContents {
           path: `${dirname}${name}`,
           last_modified: created,
           created,
-          format: 'text',
+          format: 'json',
           mimetype: '',
           content: null,
           size: undefined,
@@ -148,7 +136,7 @@ export class Contents implements IContents {
           created,
           format: 'text',
           // TODO: handle mimetypes
-          mimetype: 'text/plain',
+          mimetype: MIME.PLAIN_TEXT,
           content: '',
           size: 0,
           writable: true,
@@ -165,7 +153,7 @@ export class Contents implements IContents {
           last_modified: created,
           created,
           format: 'json',
-          mimetype: 'application/json',
+          mimetype: MIME.JSON,
           content: Private.EMPTY_NB,
           size: JSON.stringify(Private.EMPTY_NB).length,
           writable: true,
@@ -192,7 +180,7 @@ export class Contents implements IContents {
    * #### Notes
    * The server will select the name of the copied file.
    */
-  async copy(path: string, toDir: string): Promise<ServerContents.IModel> {
+  async copy(path: string, toDir: string): Promise<IModel> {
     let name = PathExt.basename(path);
     toDir = toDir === '' ? '' : `${toDir.slice(1)}/`;
     // TODO: better handle naming collisions with existing files
@@ -226,7 +214,7 @@ export class Contents implements IContents {
   async get(
     path: string,
     options?: ServerContents.IFetchOptions
-  ): Promise<ServerContents.IModel | null> {
+  ): Promise<IModel | null> {
     // remove leading slash
     path = decodeURIComponent(path.replace(/^\//, ''));
 
@@ -237,7 +225,7 @@ export class Contents implements IContents {
     const item = await this._storage.getItem(path);
     const serverItem = await this._getServerContents(path, options);
 
-    const model = (item || serverItem) as ServerContents.IModel | null;
+    const model = (item || serverItem) as IModel | null;
 
     if (!model) {
       return null;
@@ -253,16 +241,15 @@ export class Contents implements IContents {
 
     // for directories, find all files with the path as the prefix
     if (model.type === 'directory') {
-      const contentMap = new Map<string, ServerContents.IModel>();
-      await this._storage.iterate((item, key) => {
-        const file = item as unknown as ServerContents.IModel;
+      const contentMap = new Map<string, IModel>();
+      await this._storage.iterate<IModel, void>((file, key) => {
         // use an additional slash to not include the directory itself
         if (key === `${path}/${file.name}`) {
           contentMap.set(file.name, file);
         }
       });
 
-      const serverContents: ServerContents.IModel[] = serverItem
+      const serverContents: IModel[] = serverItem
         ? serverItem.content
         : Array.from((await this._getServerDirectory(path)).values());
       for (const file of serverContents) {
@@ -279,7 +266,7 @@ export class Contents implements IContents {
         last_modified: model.last_modified,
         created: model.created,
         format: 'json',
-        mimetype: 'application/json',
+        mimetype: MIME.JSON,
         content,
         size: undefined,
         writable: true,
@@ -297,10 +284,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the new file content model when the file is renamed.
    */
-  async rename(
-    oldLocalPath: string,
-    newLocalPath: string
-  ): Promise<ServerContents.IModel> {
+  async rename(oldLocalPath: string, newLocalPath: string): Promise<IModel> {
     const path = decodeURIComponent(oldLocalPath);
     const file = await this.get(path, { content: true });
     if (!file) {
@@ -321,7 +305,7 @@ export class Contents implements IContents {
     await this._checkpoints.removeItem(path);
     // if a directory, recurse through all children
     if (file.type === 'directory') {
-      let child: ServerContents.IModel;
+      let child: IModel;
       for (child of file.content) {
         await this.rename(
           URLExt.join(oldLocalPath, child.name),
@@ -341,10 +325,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the file content model when the file is saved.
    */
-  async save(
-    path: string,
-    options: Partial<ServerContents.IModel> = {}
-  ): Promise<ServerContents.IModel | null> {
+  async save(path: string, options: Partial<IModel> = {}): Promise<IModel | null> {
     path = decodeURIComponent(path);
     let item = (await this.get(path)) || (await this.newUntitled({ path }));
     if (!item) {
@@ -377,27 +358,32 @@ export class Contents implements IContents {
   }
 
   /**
-   * Delete a file.
+   * Delete a file from browser storage.
+   *
+   * Has no effect on server-backed files, which will re-appear with their
+   * original timestamp.
    *
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
     path = decodeURIComponent(path);
-    const toDelete: string[] = [];
-    // handle deleting directories recursively
-    await this._storage.iterate((item, key) => {
-      if (key === path || key.startsWith(`${path}/`)) {
-        toDelete.push(key);
-      }
-    });
-    await Promise.all(
-      toDelete.map(async (p) => {
-        return Promise.all([
-          this._storage.removeItem(p),
-          this._checkpoints.removeItem(p),
-        ]);
-      })
+    const slashed = `${path}/`;
+    const toDelete = (await this._storage.keys()).filter(
+      (key) => key === path || key.startsWith(slashed)
     );
+    await Promise.all(toDelete.map(this.forgetPath, this));
+  }
+
+  /**
+   * Remove the localForage and checkpoints for a path.
+   *
+   * @param path - The path to the file
+   */
+  protected async forgetPath(path: string): Promise<void> {
+    await Promise.all([
+      this._storage.removeItem(path),
+      this._checkpoints.removeItem(path),
+    ]);
   }
 
   /**
@@ -414,9 +400,9 @@ export class Contents implements IContents {
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
     }
-    const copies = (
-      ((await this._checkpoints.getItem(path)) as ServerContents.IModel[]) ?? []
-    ).filter((item) => !!item);
+    const copies = (((await this._checkpoints.getItem(path)) as IModel[]) ?? []).filter(
+      Boolean
+    );
     copies.push(item);
     // keep only a certain amount of checkpoints per file
     if (copies.length > N_CHECKPOINTS) {
@@ -424,10 +410,7 @@ export class Contents implements IContents {
     }
     await this._checkpoints.setItem(path, copies);
     const id = `${copies.length - 1}`;
-    return {
-      id,
-      last_modified: (item as ServerContents.IModel).last_modified,
-    };
+    return { id, last_modified: (item as IModel).last_modified };
   }
 
   /**
@@ -439,16 +422,15 @@ export class Contents implements IContents {
    *    the file.
    */
   async listCheckpoints(path: string): Promise<ServerContents.ICheckpointModel[]> {
-    const copies = ((await this._checkpoints.getItem(path)) ||
-      []) as ServerContents.IModel[];
-    return copies
-      .filter((item) => !!item)
-      .map((file, id) => {
-        return {
-          id: id.toString(),
-          last_modified: file.last_modified,
-        };
-      });
+    const copies: IModel[] = (await this._checkpoints.getItem(path)) || [];
+    return copies.filter(Boolean).map(this.normalizeCheckpoint, this);
+  }
+
+  protected normalizeCheckpoint(
+    model: IModel,
+    id: number
+  ): ServerContents.ICheckpointModel {
+    return { id: id.toString(), last_modified: model.last_modified };
   }
 
   /**
@@ -461,8 +443,7 @@ export class Contents implements IContents {
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
     path = decodeURIComponent(path);
-    const copies = ((await this._checkpoints.getItem(path)) ||
-      []) as ServerContents.IModel[];
+    const copies = ((await this._checkpoints.getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];
     await this._storage.setItem(path, item);
@@ -478,8 +459,7 @@ export class Contents implements IContents {
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
     path = decodeURIComponent(path);
-    const copies = ((await this._checkpoints.getItem(path)) ||
-      []) as ServerContents.IModel[];
+    const copies = ((await this._checkpoints.getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
     await this._checkpoints.setItem(path, copies);
@@ -493,13 +473,12 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
-  private async _getFolder(path: string): Promise<ServerContents.IModel | null> {
-    const content = new Map<string, ServerContents.IModel>();
-    await this._storage.iterate((item, key) => {
+  private async _getFolder(path: string): Promise<IModel | null> {
+    const content = new Map<string, IModel>();
+    await this._storage.iterate<IModel, void>((file, key) => {
       if (key.includes('/')) {
         return;
       }
-      const file = item as unknown as ServerContents.IModel;
       content.set(file.path, file);
     });
 
@@ -520,7 +499,7 @@ export class Contents implements IContents {
       last_modified: new Date(0).toISOString(),
       created: new Date(0).toISOString(),
       format: 'json',
-      mimetype: 'application/json',
+      mimetype: MIME.JSON,
       content: Array.from(content.values()),
       size: undefined,
       writable: true,
@@ -536,7 +515,7 @@ export class Contents implements IContents {
   private async _getServerContents(
     path: string,
     options?: ServerContents.IFetchOptions
-  ): Promise<ServerContents.IModel | null> {
+  ): Promise<IModel | null> {
     const name = PathExt.basename(path);
     const parentContents = await this._getServerDirectory(URLExt.join(path, '..'));
     let model = parentContents.get(name);
@@ -549,7 +528,7 @@ export class Contents implements IContents {
       last_modified: new Date(0).toISOString(),
       created: new Date(0).toISOString(),
       format: 'text',
-      mimetype: 'text/plain',
+      mimetype: MIME.PLAIN_TEXT,
       type: 'file',
       writable: true,
       content: null,
@@ -576,29 +555,29 @@ export class Contents implements IContents {
             ...model,
             content: await response.json(),
             format: 'json',
-            mimetype: model.mimetype || 'application/json',
+            mimetype: model.mimetype || MIME.JSON,
           };
         } else if (
           mimetype.indexOf('text') !== -1 ||
-          EXTRA_TEXT_MIME_TYPES.has(mimetype)
+          MIME.KNOWN_TEXT_TYPES.has(mimetype)
         ) {
           model = {
             ...model,
             content: await response.text(),
             format: 'text',
-            mimetype: mimetype || 'text/plain',
+            mimetype: mimetype || MIME.PLAIN_TEXT,
           };
         } else {
-          const byteToString = (data: string, byte: number) =>
-            data + String.fromCharCode(byte);
-          const content = btoa(
-            new Uint8Array(await response.arrayBuffer()).reduce(byteToString, '')
-          );
           model = {
             ...model,
-            content,
+            content: btoa(
+              new Uint8Array(await response.arrayBuffer()).reduce(
+                this.reduceBytesToString,
+                ''
+              )
+            ),
             format: 'base64',
-            mimetype: mimetype || 'octet/stream',
+            mimetype: mimetype || MIME.OCTET_STREAM,
           };
         }
       }
@@ -608,6 +587,13 @@ export class Contents implements IContents {
   }
 
   /**
+   * A reducer for turning arbitrary binary into a string
+   */
+  protected reduceBytesToString = (data: string, byte: number): string => {
+    return data + String.fromCharCode(byte);
+  };
+
+  /**
    * retrieve the contents for this path from `__index__.json` in the appropriate
    * folder.
    *
@@ -615,9 +601,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
-  private async _getServerDirectory(
-    path: string
-  ): Promise<Map<string, ServerContents.IModel>> {
+  private async _getServerDirectory(path: string): Promise<Map<string, IModel>> {
     const content = this._serverContents.get(path) || new Map();
 
     if (!this._serverContents.has(path)) {
@@ -631,7 +615,7 @@ export class Contents implements IContents {
       try {
         const response = await fetch(apiURL);
         const json = JSON.parse(await response.text());
-        for (const file of json['content'] as ServerContents.IModel[]) {
+        for (const file of json['content'] as IModel[]) {
           content.set(file.name, file);
         }
       } catch (err) {
@@ -659,7 +643,7 @@ export class Contents implements IContents {
     return counter;
   }
 
-  private _serverContents = new Map<string, Map<string, ServerContents.IModel>>();
+  private _serverContents = new Map<string, Map<string, IModel>>();
   private _storageName: string = DEFAULT_STORAGE_NAME;
   private _storage: LocalForage;
   private _counters: LocalForage;

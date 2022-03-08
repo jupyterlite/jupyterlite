@@ -119,3 +119,23 @@ export interface IContents {
    */
   deleteCheckpoint(path: string, checkpointID: string): Promise<void>;
 }
+
+/**
+ * Commonly-used mimetypes
+ */
+export namespace MIME {
+  export const JS = 'application/javascript';
+  export const JSON = 'application/json';
+  export const MANIFEST_JSON = 'application/manifest+json';
+  export const PLAIN_TEXT = 'text/plain';
+  export const PYTHON = 'application/x-python-code';
+  export const SVG = 'image/svg+xml';
+  export const XML = 'application/xml';
+
+  /**
+   * A list of mime types of common text file types
+   */
+  export const KNOWN_TEXT_TYPES = new Set([JSON, JS, MANIFEST_JSON, PYTHON, XML, SVG]);
+
+  export const OCTET_STREAM = 'octet/stream';
+}

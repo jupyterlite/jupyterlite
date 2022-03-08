@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eux
+export BINDER=1
 
 doit build dev
 
