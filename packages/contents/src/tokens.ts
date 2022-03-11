@@ -12,6 +12,11 @@ export const IContents = new Token<IContents>('@jupyterlite/contents:IContents')
  */
 export interface IContents {
   /**
+   * A promise that resolves after the contents have been full initialized.
+   */
+  ready: Promise<void>;
+
+  /**
    * Create a new untitled file or directory in the specified directory path.
    *
    * @param options: The options used to create the file.

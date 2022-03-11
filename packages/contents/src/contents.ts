@@ -6,9 +6,10 @@ import { INotebookContent } from '@jupyterlab/nbformat';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import localforage from 'localforage';
+import type localforage from 'localforage';
 
 import { IContents, MIME } from './tokens';
+import { PromiseDelegate } from '@lumino/coreutils';
 
 export type IModel = ServerContents.IModel;
 
@@ -29,18 +30,55 @@ export class Contents implements IContents {
   /**
    * Construct a new localForage-powered contents provider
    */
-  constructor(options?: Contents.IOptions) {
+  constructor(options: Contents.IOptions) {
+    this._localforage = options.localforage;
     this._storageName = (options || {}).contentsStorageName || DEFAULT_STORAGE_NAME;
+    this._ready = new PromiseDelegate();
+  }
+
+  /**
+   * Initialize all storage instances
+   */
+  async initStorage(): Promise<void> {
     this._storage = this.createDefaultStorage();
     this._counters = this.createDefaultCounters();
     this._checkpoints = this.createDefaultCheckpoints();
+    this._ready.resolve(void 0);
+  }
+
+  /**
+   * A promise that resolves once all storage is fully initialized.
+   */
+  get ready(): Promise<void> {
+    return this._ready.promise;
+  }
+
+  /**
+   * A lazy reference to the underlying storage.
+   */
+  protected get storage(): Promise<LocalForage> {
+    return this.ready.then(() => this._storage as LocalForage);
+  }
+
+  /**
+   * A lazy reference to the underlying counters.
+   */
+  protected get counters(): Promise<LocalForage> {
+    return this.ready.then(() => this._counters as LocalForage);
+  }
+
+  /**
+   * A lazy reference to the underlying checkpoints.
+   */
+  protected get checkpoints(): Promise<LocalForage> {
+    return this.ready.then(() => this._checkpoints as LocalForage);
   }
 
   /**
    * Initialize the default storage for contents.
    */
   protected createDefaultStorage(): LocalForage {
-    return localforage.createInstance({
+    return this._localforage.createInstance({
       name: this._storageName,
       description: 'Offline Storage for Notebooks and Files',
       storeName: 'files',
@@ -52,7 +90,7 @@ export class Contents implements IContents {
    * Initialize the default storage for counting file suffixes.
    */
   protected createDefaultCounters(): LocalForage {
-    return localforage.createInstance({
+    return this._localforage.createInstance({
       name: this._storageName,
       description: 'Store the current file suffix counters',
       storeName: 'counters',
@@ -64,7 +102,7 @@ export class Contents implements IContents {
    * Create the default checkpoint storage.
    */
   protected createDefaultCheckpoints(): LocalForage {
-    return localforage.createInstance({
+    return this._localforage.createInstance({
       name: this._storageName,
       description: 'Offline Storage for Checkpoints',
       storeName: 'checkpoints',
@@ -164,7 +202,7 @@ export class Contents implements IContents {
     }
 
     const key = file.path;
-    await this._storage.setItem(key, file);
+    await (await this.storage).setItem(key, file);
     return file;
   }
 
@@ -199,7 +237,7 @@ export class Contents implements IContents {
       name,
       path: toPath,
     };
-    await this._storage.setItem(toPath, item);
+    await (await this.storage).setItem(toPath, item);
     return item;
   }
 
@@ -222,7 +260,8 @@ export class Contents implements IContents {
       return await this._getFolder(path);
     }
 
-    const item = await this._storage.getItem(path);
+    const storage = await this.storage;
+    const item = await storage.getItem(path);
     const serverItem = await this._getServerContents(path, options);
 
     const model = (item || serverItem) as IModel | null;
@@ -242,7 +281,7 @@ export class Contents implements IContents {
     // for directories, find all files with the path as the prefix
     if (model.type === 'directory') {
       const contentMap = new Map<string, IModel>();
-      await this._storage.iterate<IModel, void>((file, key) => {
+      await storage.iterate<IModel, void>((file, key) => {
         // use an additional slash to not include the directory itself
         if (key === `${path}/${file.name}`) {
           contentMap.set(file.name, file);
@@ -298,11 +337,12 @@ export class Contents implements IContents {
       path: newLocalPath,
       last_modified: modified,
     };
-    await this._storage.setItem(newLocalPath, newFile);
+    const storage = await this.storage;
+    await storage.setItem(newLocalPath, newFile);
     // remove the old file
-    await this._storage.removeItem(path);
+    await storage.removeItem(path);
     // remove the corresponding checkpoint
-    await this._checkpoints.removeItem(path);
+    await (await this.checkpoints).removeItem(path);
     // if a directory, recurse through all children
     if (file.type === 'directory') {
       let child: IModel;
@@ -353,7 +393,7 @@ export class Contents implements IContents {
       };
     }
 
-    await this._storage.setItem(path, item);
+    await (await this.storage).setItem(path, item);
     return item;
   }
 
@@ -368,7 +408,7 @@ export class Contents implements IContents {
   async delete(path: string): Promise<void> {
     path = decodeURIComponent(path);
     const slashed = `${path}/`;
-    const toDelete = (await this._storage.keys()).filter(
+    const toDelete = (await (await this.storage).keys()).filter(
       (key) => key === path || key.startsWith(slashed)
     );
     await Promise.all(toDelete.map(this.forgetPath, this));
@@ -381,8 +421,8 @@ export class Contents implements IContents {
    */
   protected async forgetPath(path: string): Promise<void> {
     await Promise.all([
-      this._storage.removeItem(path),
-      this._checkpoints.removeItem(path),
+      (await this.storage).removeItem(path),
+      (await this.checkpoints).removeItem(path),
     ]);
   }
 
@@ -395,12 +435,13 @@ export class Contents implements IContents {
    *   checkpoint is created.
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
+    const checkpoints = await this.checkpoints;
     path = decodeURIComponent(path);
     const item = await this.get(path, { content: true });
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
     }
-    const copies = (((await this._checkpoints.getItem(path)) as IModel[]) ?? []).filter(
+    const copies = (((await checkpoints.getItem(path)) as IModel[]) ?? []).filter(
       Boolean
     );
     copies.push(item);
@@ -408,7 +449,7 @@ export class Contents implements IContents {
     if (copies.length > N_CHECKPOINTS) {
       copies.splice(0, copies.length - N_CHECKPOINTS);
     }
-    await this._checkpoints.setItem(path, copies);
+    await checkpoints.setItem(path, copies);
     const id = `${copies.length - 1}`;
     return { id, last_modified: (item as IModel).last_modified };
   }
@@ -422,7 +463,7 @@ export class Contents implements IContents {
    *    the file.
    */
   async listCheckpoints(path: string): Promise<ServerContents.ICheckpointModel[]> {
-    const copies: IModel[] = (await this._checkpoints.getItem(path)) || [];
+    const copies: IModel[] = (await (await this.checkpoints).getItem(path)) || [];
     return copies.filter(Boolean).map(this.normalizeCheckpoint, this);
   }
 
@@ -443,10 +484,10 @@ export class Contents implements IContents {
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
     path = decodeURIComponent(path);
-    const copies = ((await this._checkpoints.getItem(path)) || []) as IModel[];
+    const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];
-    await this._storage.setItem(path, item);
+    await (await this.storage).setItem(path, item);
   }
 
   /**
@@ -459,10 +500,10 @@ export class Contents implements IContents {
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
     path = decodeURIComponent(path);
-    const copies = ((await this._checkpoints.getItem(path)) || []) as IModel[];
+    const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
-    await this._checkpoints.setItem(path, copies);
+    await (await this.checkpoints).setItem(path, copies);
   }
 
   /**
@@ -475,7 +516,8 @@ export class Contents implements IContents {
    */
   private async _getFolder(path: string): Promise<IModel | null> {
     const content = new Map<string, IModel>();
-    await this._storage.iterate<IModel, void>((file, key) => {
+    const storage = await this.storage;
+    await storage.iterate<IModel, void>((file, key) => {
       if (key.includes('/')) {
         return;
       }
@@ -620,7 +662,7 @@ export class Contents implements IContents {
         }
       } catch (err) {
         console.warn(
-          `don't worry, about ${err}... nothing's broken. if there had been a
+          `don't worry, about ${err}... nothing's broken. If there had been a
           file at ${apiURL}, you might see some more files.`
         );
       }
@@ -637,17 +679,20 @@ export class Contents implements IContents {
    * @param type The file type to increment the counter for.
    */
   private async _incrementCounter(type: ServerContents.ContentType): Promise<number> {
-    const current = ((await this._counters.getItem(type)) as number) ?? -1;
+    const counters = await this.counters;
+    const current = ((await counters.getItem(type)) as number) ?? -1;
     const counter = current + 1;
-    await this._counters.setItem(type, counter);
+    await counters.setItem(type, counter);
     return counter;
   }
 
   private _serverContents = new Map<string, Map<string, IModel>>();
   private _storageName: string = DEFAULT_STORAGE_NAME;
-  private _storage: LocalForage;
-  private _counters: LocalForage;
-  private _checkpoints: LocalForage;
+  private _ready: PromiseDelegate<void>;
+  private _storage: LocalForage | undefined;
+  private _counters: LocalForage | undefined;
+  private _checkpoints: LocalForage | undefined;
+  private _localforage: typeof localforage;
 }
 
 /**
@@ -659,6 +704,7 @@ export namespace Contents {
      * The name of the storage instance on e.g. IndexedDB, localStorage
      */
     contentsStorageName: string;
+    localforage: typeof localforage;
   }
 }
 

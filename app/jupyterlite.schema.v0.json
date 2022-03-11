@@ -105,6 +105,11 @@
           "default": "./build",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "enableMemoryStorage": {
+          "description": "enable memory storage fallback which will can lose data if the page is reloaded",
+          "type": "boolean",
+          "default": false
+        },
         "contentsStorageName": {
           "description": "name used to store Jupyter contents in the browser",
           "type": "string",

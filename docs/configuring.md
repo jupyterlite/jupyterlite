@@ -69,9 +69,9 @@ Will be:
 
 ### Server Contents and Local Contents
 
-When a user changes a server-hosted file, a copy will be made to the browser's
-`IndexedDB`. A user's locally-modified copy will take precedence over any server
-contents, even if the server contents are newer.
+When a user changes a server-hosted file, a copy will be made to the browser's storage,
+usually in `IndexedDB`. A user's locally-modified copy will take precedence over any
+server contents, even if the server contents are newer.
 
 ### Customizing Content Storage
 
@@ -79,6 +79,12 @@ By default, all of a user's contents on the same domain will be available to all
 JupyterLite instances hosted there. To create separate content stores, change the
 `jupyter-lite.json#jupyter-config-data/contentsStorageName` from the default of
 `JupyterLite Storage`.
+
+### Enabling Volatile Storage
+
+If a user's data cannot be stored due to browser security settings, the app will
+generally fail to load. To enable a volatile memory fallback, set
+`jupyter-lite.json#jupyter-config-data/enableMemoryStorage` to `true`.
 
 ## Adding Extensions
 
@@ -180,6 +186,12 @@ By default, all of a user's settings on the same domain will be available to all
 JupyterLite instances hosted there. To create separate settings stores, change the
 `jupyter-lite.json#jupyter-config-data/settingsStorageName` from the default of
 `JupyterLite Storage`.
+
+### Enabling Volatile Storage
+
+If a user's settings cannot be stored due to browser security settings, the app will
+generally fail to load. To enable a volatile memory fallback, set
+`jupyter-lite.json#jupyter-config-data/enableMemoryStorage` to `true`.
 
 ## Adding pyolite wheels
 
