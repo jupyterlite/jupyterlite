@@ -46,12 +46,12 @@ const localforageMemoryPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:localforage-memory-storage',
   autoStart: true,
   requires: [ILocalForage],
-  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+  activate: async (app: JupyterLiteServer, forage: ILocalForage) => {
     if (JSON.parse(PageConfig.getOption('enableMemoryStorage') || 'false')) {
       console.warn(
         'Memory storage fallback enabled: contents and settings may not be saved'
       );
-      ensureMemoryStorage(forage.localforage);
+      await ensureMemoryStorage(forage.localforage);
     }
   },
 };
@@ -65,9 +65,16 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   autoStart: true,
   provides: IContents,
   activate: (app: JupyterLiteServer, forage: ILocalForage) => {
-    const contentsStorageName = PageConfig.getOption('contentsStorageName');
+    const storageName = PageConfig.getOption('contentsStorageName');
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('contentsStorageDrivers') || 'null'
+    );
     const { localforage } = forage;
-    const contents = new Contents({ contentsStorageName, localforage });
+    const contents = new Contents({
+      storageName,
+      storageDrivers,
+      localforage,
+    });
     app.started.then(() => contents.initStorage().catch(console.warn));
     return contents;
   },
@@ -356,9 +363,12 @@ const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
   requires: [ILocalForage],
   provides: ISettings,
   activate: (app: JupyterLiteServer, forage: ILocalForage) => {
-    const settingsStorageName = PageConfig.getOption('settingsStorageName');
+    const storageName = PageConfig.getOption('settingsStorageName');
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('settingsStorageDrivers') || 'null'
+    );
     const { localforage } = forage;
-    const settings = new Settings({ settingsStorageName, localforage });
+    const settings = new Settings({ storageName, storageDrivers, localforage });
     app.started.then(() => settings.initStorage().catch(console.warn));
     return settings;
   },

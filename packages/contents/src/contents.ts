@@ -32,7 +32,8 @@ export class Contents implements IContents {
    */
   constructor(options: Contents.IOptions) {
     this._localforage = options.localforage;
-    this._storageName = (options || {}).contentsStorageName || DEFAULT_STORAGE_NAME;
+    this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
+    this._storageDrivers = options.storageDrivers || null;
     this._ready = new PromiseDelegate();
   }
 
@@ -75,14 +76,26 @@ export class Contents implements IContents {
   }
 
   /**
+   * Get default options for localForage instances
+   */
+  protected get defaultStorageOptions(): LocalForageOptions {
+    const driver =
+      this._storageDrivers && this._storageDrivers.length ? this._storageDrivers : null;
+    return {
+      version: 1,
+      name: this._storageName,
+      ...(driver ? { driver } : {}),
+    };
+  }
+
+  /**
    * Initialize the default storage for contents.
    */
   protected createDefaultStorage(): LocalForage {
     return this._localforage.createInstance({
-      name: this._storageName,
       description: 'Offline Storage for Notebooks and Files',
       storeName: 'files',
-      version: 1,
+      ...this.defaultStorageOptions,
     });
   }
 
@@ -91,10 +104,9 @@ export class Contents implements IContents {
    */
   protected createDefaultCounters(): LocalForage {
     return this._localforage.createInstance({
-      name: this._storageName,
       description: 'Store the current file suffix counters',
       storeName: 'counters',
-      version: 1,
+      ...this.defaultStorageOptions,
     });
   }
 
@@ -103,10 +115,9 @@ export class Contents implements IContents {
    */
   protected createDefaultCheckpoints(): LocalForage {
     return this._localforage.createInstance({
-      name: this._storageName,
       description: 'Offline Storage for Checkpoints',
       storeName: 'checkpoints',
-      version: 1,
+      ...this.defaultStorageOptions,
     });
   }
 
@@ -688,6 +699,7 @@ export class Contents implements IContents {
 
   private _serverContents = new Map<string, Map<string, IModel>>();
   private _storageName: string = DEFAULT_STORAGE_NAME;
+  private _storageDrivers: string[] | null = null;
   private _ready: PromiseDelegate<void>;
   private _storage: LocalForage | undefined;
   private _counters: LocalForage | undefined;
@@ -703,7 +715,8 @@ export namespace Contents {
     /**
      * The name of the storage instance on e.g. IndexedDB, localStorage
      */
-    contentsStorageName: string;
+    storageName?: string | null;
+    storageDrivers?: string[] | null;
     localforage: typeof localforage;
   }
 }

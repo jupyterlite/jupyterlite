@@ -20,17 +20,10 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 export class Settings implements ISettings {
   constructor(options: Settings.IOptions) {
     this._localforage = options.localforage;
-    this._settingsStorageName =
-      (options || {}).settingsStorageName || DEFAULT_STORAGE_NAME;
-    this._ready = new PromiseDelegate();
-  }
+    this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
+    this._storageDrivers = options.storageDrivers || null;
 
-  /**
-   * Prepare the storage
-   */
-  async initStorage() {
-    this._storage = this.defaultSettingsStorage();
-    this._ready.resolve(void 0);
+    this._ready = new PromiseDelegate();
   }
 
   /**
@@ -48,14 +41,32 @@ export class Settings implements ISettings {
   }
 
   /**
+   * Prepare the storage
+   */
+  async initStorage() {
+    this._storage = this.defaultSettingsStorage();
+    this._ready.resolve(void 0);
+  }
+  /**
+   * Get default options for localForage instances
+   */
+  protected get defaultStorageOptions(): LocalForageOptions {
+    const driver = this._storageDrivers?.length ? this._storageDrivers : null;
+    return {
+      version: 1,
+      name: this._storageName,
+      ...(driver ? { driver } : {}),
+    };
+  }
+
+  /**
    * Create a settings store.
    */
   protected defaultSettingsStorage(): LocalForage {
     return this._localforage.createInstance({
-      name: this._settingsStorageName,
       description: 'Offline Storage for Settings',
       storeName: 'settings',
-      version: 1,
+      ...this.defaultStorageOptions,
     });
   }
 
@@ -147,7 +158,8 @@ export class Settings implements ISettings {
     });
   }
 
-  private _settingsStorageName: string = DEFAULT_STORAGE_NAME;
+  private _storageName: string = DEFAULT_STORAGE_NAME;
+  private _storageDrivers: string[] | null = null;
   private _storage: LocalForage | undefined;
   private _localforage: typeof localforage;
   private _ready: PromiseDelegate<void>;
@@ -162,7 +174,8 @@ namespace Settings {
    */
   export interface IOptions {
     localforage: typeof localforage;
-    settingsStorageName?: string | null;
+    storageName?: string | null;
+    storageDrivers?: string[] | null;
   }
 }
 

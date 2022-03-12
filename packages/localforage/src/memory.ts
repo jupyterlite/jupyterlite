@@ -8,6 +8,8 @@ import memoryStorageDriver from 'localforage-memoryStorageDriver';
 /**
  * Ensure a localforage singleton has had the memory storage driver installed
  */
-export function ensureMemoryStorage(theLocalforage: typeof localforage): void {
-  theLocalforage.defineDriver(memoryStorageDriver);
+export async function ensureMemoryStorage(
+  theLocalforage: typeof localforage
+): Promise<void> {
+  return await theLocalforage.defineDriver(memoryStorageDriver);
 }
