@@ -38,13 +38,20 @@ export class Contents implements IContents {
   }
 
   /**
+   * Finish any initialization after server has started and all extensions are applied.
+   */
+  async initialize() {
+    await this.initStorage();
+    this._ready.resolve(void 0);
+  }
+
+  /**
    * Initialize all storage instances
    */
-  async initStorage(): Promise<void> {
+  protected async initStorage(): Promise<void> {
     this._storage = this.createDefaultStorage();
     this._counters = this.createDefaultCounters();
     this._checkpoints = this.createDefaultCheckpoints();
-    this._ready.resolve(void 0);
   }
 
   /**

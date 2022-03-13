@@ -41,12 +41,20 @@ export class Settings implements ISettings {
   }
 
   /**
-   * Prepare the storage
+   * Finish any initialization after server has started and all extensions are applied.
    */
-  async initStorage() {
-    this._storage = this.defaultSettingsStorage();
+  async initialize() {
+    await this.initStorage();
     this._ready.resolve(void 0);
   }
+
+  /**
+   * Prepare the storage
+   */
+  protected async initStorage() {
+    this._storage = this.defaultSettingsStorage();
+  }
+
   /**
    * Get default options for localForage instances
    */
