@@ -4,15 +4,16 @@
   "entryPoints": [
     "packages/application-extension/src/index.tsx",
     "packages/application/src/index.ts",
-    "packages/repl-extension/src/index.ts",
     "packages/contents/src/index.ts",
     "packages/iframe-extension/src/index.ts",
     "packages/javascript-kernel-extension/src/index.ts",
     "packages/javascript-kernel/src/index.ts",
     "packages/kernel/src/index.ts",
     "packages/licenses/src/index.ts",
+    "packages/localforage/src/index.ts",
     "packages/pyolite-kernel-extension/src/index.ts",
     "packages/pyolite-kernel/src/index.ts",
+    "packages/repl-extension/src/index.ts",
     "packages/retro-application-extension/src/index.ts",
     "packages/server-extension/src/index.ts",
     "packages/server/src/index.ts",
@@ -22,10 +23,10 @@
     "packages/types/src/index.ts",
     "packages/ui-components/src/index.ts"
   ],
+  "githubPages": false,
+  "logLevel": "Verbose",
   "name": "@jupyterlite",
   "out": "build/typedoc",
   "readme": "none",
-  "githubPages": false,
-  "tsconfig": "tsconfig.typedoc.json",
-  "logLevel": "Verbose"
+  "tsconfig": "tsconfig.typedoc.json"
 }

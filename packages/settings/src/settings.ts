@@ -2,11 +2,12 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import * as json5 from 'json5';
 
-import localforage from 'localforage';
+import type localforage from 'localforage';
 
 import { IFederatedExtension } from '@jupyterlite/types';
 
-import { IPlugin } from './tokens';
+import { IPlugin, ISettings } from './tokens';
+import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
  * The name of the local storage.
@@ -16,22 +17,64 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 /**
  * A class to handle requests to /api/settings
  */
-export class Settings {
-  constructor(options?: Settings.IOptions) {
-    this._settingsStorageName =
-      (options || {}).settingsStorageName || DEFAULT_STORAGE_NAME;
+export class Settings implements ISettings {
+  constructor(options: Settings.IOptions) {
+    this._localforage = options.localforage;
+    this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
+    this._storageDrivers = options.storageDrivers || null;
+
+    this._ready = new PromiseDelegate();
+  }
+
+  /**
+   * A promise that resolves when the settings storage is fully initialized
+   */
+  get ready(): Promise<void> {
+    return this._ready.promise;
+  }
+
+  /**
+   * A lazy reference to initialized storage
+   */
+  protected get storage(): Promise<LocalForage> {
+    return this.ready.then(() => this._storage as LocalForage);
+  }
+
+  /**
+   * Finish any initialization after server has started and all extensions are applied.
+   */
+  async initialize() {
+    await this.initStorage();
+    this._ready.resolve(void 0);
+  }
+
+  /**
+   * Prepare the storage
+   */
+  protected async initStorage() {
     this._storage = this.defaultSettingsStorage();
+  }
+
+  /**
+   * Get default options for localForage instances
+   */
+  protected get defaultStorageOptions(): LocalForageOptions {
+    const driver = this._storageDrivers?.length ? this._storageDrivers : null;
+    return {
+      version: 1,
+      name: this._storageName,
+      ...(driver ? { driver } : {}),
+    };
   }
 
   /**
    * Create a settings store.
    */
   protected defaultSettingsStorage(): LocalForage {
-    return localforage.createInstance({
-      name: this._settingsStorageName,
+    return this._localforage.createInstance({
       description: 'Offline Storage for Settings',
       storeName: 'settings',
-      version: 1,
+      ...this.defaultStorageOptions,
     });
   }
 
@@ -60,13 +103,14 @@ export class Settings {
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
+    const storage = await this.storage;
     const all = (await (
       await fetch(URLExt.join(settingsUrl, 'all.json'))
     ).json()) as IPlugin[];
     const settings = await Promise.all(
       all.map(async (plugin) => {
         const { id } = plugin;
-        const raw = ((await this._storage.getItem(id)) as string) ?? plugin.raw;
+        const raw = ((await storage.getItem(id)) as string) ?? plugin.raw;
         return {
           ...Private.override(plugin),
           raw,
@@ -85,7 +129,7 @@ export class Settings {
    *
    */
   async save(pluginId: string, raw: string): Promise<void> {
-    await this._storage.setItem(pluginId, raw);
+    await (await this.storage).setItem(pluginId, raw);
   }
 
   /**
@@ -111,7 +155,7 @@ export class Settings {
     const packageUrl = URLExt.join(labExtensionsUrl, packageName, 'package.json');
     const schema = await (await fetch(schemaUrl)).json();
     const packageJson = await (await fetch(packageUrl)).json();
-    const raw = ((await this._storage.getItem(pluginId)) as string) ?? '{}';
+    const raw = ((await (await this.storage).getItem(pluginId)) as string) ?? '{}';
     const settings = json5.parse(raw) || {};
     return Private.override({
       id: pluginId,
@@ -122,8 +166,11 @@ export class Settings {
     });
   }
 
-  private _settingsStorageName: string = DEFAULT_STORAGE_NAME;
-  private _storage: LocalForage;
+  private _storageName: string = DEFAULT_STORAGE_NAME;
+  private _storageDrivers: string[] | null = null;
+  private _storage: LocalForage | undefined;
+  private _localforage: typeof localforage;
+  private _ready: PromiseDelegate<void>;
 }
 
 /**
@@ -134,7 +181,9 @@ namespace Settings {
    * Initialization options for settings.
    */
   export interface IOptions {
-    settingsStorageName?: string | null;
+    localforage: typeof localforage;
+    storageName?: string | null;
+    storageDrivers?: string[] | null;
   }
 }
 

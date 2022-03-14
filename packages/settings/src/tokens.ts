@@ -42,6 +42,11 @@ export interface IPlugin extends PartialJSONObject {
  */
 export interface ISettings {
   /**
+   * A promise that resolves after the settings have been full initialized
+   */
+  ready: Promise<void>;
+
+  /**
    * Get settings by plugin id
    *
    * @param pluginId the id of the plugin

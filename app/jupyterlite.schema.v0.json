@@ -105,10 +105,23 @@
           "default": "./build",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "enableMemoryStorage": {
+          "description": "enable memory storage fallback which can lose data if the page is reloaded",
+          "type": "boolean",
+          "default": false
+        },
+        "contentsStorageDrivers": {
+          "description": "names of the localforage driver for contents, or `null` for the best available",
+          "$ref": "#/definitions/localforage-driver-set"
+        },
         "contentsStorageName": {
           "description": "name used to store Jupyter contents in the browser",
           "type": "string",
           "default": "JupyterLite Storage"
+        },
+        "settingsStorageDrivers": {
+          "description": "names of the localforage driver for settings, or `null` for the best available",
+          "$ref": "#/definitions/localforage-driver-set"
         },
         "settingsStorageName": {
           "description": "name used to store Jupyter settings in the browser",
@@ -159,7 +172,10 @@
         "retroPage": {
           "description": "The page corresponding the named Notebook Classic UI section",
           "anyOf": [
-            { "type": "string", "description": "an unknown retro page" },
+            {
+              "type": "string",
+              "description": "an unknown retro page"
+            },
             {
               "type": "string",
               "enum": ["consoles", "notebooks", "edit", "tree"],
@@ -252,6 +268,57 @@
       "type": "string",
       "description": "a package.json-compatible extension name followed by a colon (:) and a specific plugin name",
       "pattern": "^(@[a-z0-9-~][a-z0-9-._~]*/)?[a-z0-9-~][a-z0-9-._~]*:(.*)$"
+    },
+    "localforage-driver-set": {
+      "title": "A LocalForage Driver Set",
+      "anyOf": [
+        {
+          "type": "null",
+          "title": "detect",
+          "description": "choose the best available driver"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/localforage-driver"
+          }
+        }
+      ]
+    },
+    "localforage-driver": {
+      "title": "A LocalForage Driver",
+      "description": "choose a storage driver from any number of localForage drivers",
+      "anyOf": [
+        {
+          "type": "string",
+          "title": "custom",
+          "description": "use a custom driver added by a third-party plugin"
+        },
+        {
+          "title": "IndexedDB",
+          "description": "use the broadly-compatible IndexedDB key/value persistent store",
+          "type": "string",
+          "enum": ["asyncStorage"]
+        },
+        {
+          "title": "WebSQL",
+          "description": "use the WebSQL persistent store",
+          "type": "string",
+          "enum": ["webSQLStorage"]
+        },
+        {
+          "title": "localStorage",
+          "description": "use the localStorage persistent store",
+          "type": "string",
+          "enum": ["localStorageWrapper"]
+        },
+        {
+          "title": "memory",
+          "description": "use the memory-based, volatile store: must be enabled with enableMemoryStorage",
+          "type": "string",
+          "enum": ["localStorageWrapper"]
+        }
+      ]
     }
   }
 }

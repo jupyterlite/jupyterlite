@@ -5,6 +5,9 @@
       "@jupyterlab/drawio-extension",
       "jupyterlab-kernel-spy",
       "jupyterlab-tour"
-    ]
+    ],
+    "enableMemoryStorage": true,
+    "settingsStorageDrivers": ["memoryStorageDriver"],
+    "contentsStorageDrivers": ["memoryStorageDriver"]
   }
 }

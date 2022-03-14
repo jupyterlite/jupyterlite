@@ -23,16 +23,60 @@ import { ISettings, Settings } from '@jupyterlite/settings';
 
 import { ITranslation, Translation } from '@jupyterlite/translation';
 
+import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
+
+import localforage from 'localforage';
+
+/**
+ * The localforage plugin
+ */
+const localforagePlugin: JupyterLiteServerPlugin<ILocalForage> = {
+  id: '@jupyterlite/server-extension:localforage',
+  autoStart: true,
+  provides: ILocalForage,
+  activate: (app: JupyterLiteServer) => {
+    return { localforage };
+  },
+};
+
+/**
+ * The volatile localforage memory plugin
+ */
+const localforageMemoryPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:localforage-memory-storage',
+  autoStart: true,
+  requires: [ILocalForage],
+  activate: async (app: JupyterLiteServer, forage: ILocalForage) => {
+    if (JSON.parse(PageConfig.getOption('enableMemoryStorage') || 'false')) {
+      console.warn(
+        'Memory storage fallback enabled: contents and settings may not be saved'
+      );
+      await ensureMemoryStorage(forage.localforage);
+    }
+  },
+};
+
 /**
  * The contents service plugin.
  */
 const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   id: '@jupyterlite/server-extension:contents',
+  requires: [ILocalForage],
   autoStart: true,
   provides: IContents,
-  activate: (app: JupyterLiteServer) => {
-    const contentsStorageName = PageConfig.getOption('contentsStorageName');
-    return new Contents({ contentsStorageName });
+  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+    const storageName = PageConfig.getOption('contentsStorageName');
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('contentsStorageDrivers') || 'null'
+    );
+    const { localforage } = forage;
+    const contents = new Contents({
+      storageName,
+      storageDrivers,
+      localforage,
+    });
+    app.started.then(() => contents.initialize().catch(console.warn));
+    return contents;
   },
 };
 
@@ -316,10 +360,17 @@ const sessionsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
   id: '@jupyterlite/server-extension:settings',
   autoStart: true,
+  requires: [ILocalForage],
   provides: ISettings,
-  activate: (app: JupyterLiteServer) => {
-    const settingsStorageName = PageConfig.getOption('settingsStorageName');
-    return new Settings({ settingsStorageName });
+  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+    const storageName = PageConfig.getOption('settingsStorageName');
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('settingsStorageDrivers') || 'null'
+    );
+    const { localforage } = forage;
+    const settings = new Settings({ storageName, storageDrivers, localforage });
+    app.started.then(() => settings.initialize().catch(console.warn));
+    return settings;
   },
 };
 
@@ -403,6 +454,8 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   kernelSpecRoutesPlugin,
   licensesPlugin,
   licensesRoutesPlugin,
+  localforageMemoryPlugin,
+  localforagePlugin,
   nbconvertRoutesPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,
