@@ -106,7 +106,7 @@
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "enableMemoryStorage": {
-          "description": "enable memory storage fallback which will can lose data if the page is reloaded",
+          "description": "enable memory storage fallback which can lose data if the page is reloaded",
           "type": "boolean",
           "default": false
         },
