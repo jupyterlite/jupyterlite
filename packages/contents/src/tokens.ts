@@ -140,7 +140,15 @@ export namespace MIME {
   /**
    * A list of mime types of common text file types
    */
-  export const KNOWN_TEXT_TYPES = new Set([JSON, JS, MANIFEST_JSON, PYTHON, XML, SVG]);
+  export const KNOWN_TEXT_TYPES = new Set([
+    JS,
+    JSON,
+    MANIFEST_JSON,
+    PLAIN_TEXT,
+    PYTHON,
+    SVG,
+    XML,
+  ]);
 
   export const OCTET_STREAM = 'octet/stream';
 }
