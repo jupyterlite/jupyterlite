@@ -12,7 +12,6 @@ api/index
 architecture
 extensions
 doit
-contributing
 ```
 
 ## Frequently-Asked Questions

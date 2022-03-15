@@ -13,5 +13,6 @@
 
 user-guide
 developer-guide
+contributing
 changelog
 ```
