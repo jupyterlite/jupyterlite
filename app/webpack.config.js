@@ -238,22 +238,15 @@ function filterDeprecatedRule(rule) {
   return true;
 }
 
-/**
- * Tweak under-specified rules to avoid catch unexpected files e.g. json
- */
-function transformUnderspecifiedRule(rule) {
-  const { test } = rule;
-  if (test === /\.m?js/) {
-    rule.test = /\.m?js$/;
-  } else if (test === /\.c?js/) {
-    rule.test = /\.c?js$/;
-  }
-  return rule;
-}
-
-baseConfig.module.rules = baseConfig.module.rules
-  .filter(filterDeprecatedRule)
-  .map(transformUnderspecifiedRule);
+baseConfig.module.rules = [
+  // add this before e.g. file-loader rules
+  {
+    test: /\.json$/,
+    use: ['json-loader'],
+    type: 'javascript/auto',
+  },
+  ...baseConfig.module.rules.filter(filterDeprecatedRule),
+];
 
 module.exports = [
   merge(baseConfig, {
