@@ -8,6 +8,9 @@ on:
     branches:
       - '*'
 
+env:
+  CACHE_EPOCH: 1
+
 jobs:
   win-dev:
     runs-on: windows-latest
