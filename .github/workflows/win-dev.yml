@@ -18,6 +18,10 @@ jobs:
       run:
         shell: cmd /C CALL {0}
     steps:
+     - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - name: Checkout
         uses: actions/checkout@v2
       - name: Conda
@@ -42,4 +46,4 @@ jobs:
       - name: Dev
         run: doit dev
       - name: Lint
-        run: doit lint || echo not really testing lint here
+        run: doit lint
