@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/contents",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "JupyterLite - Contents",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -44,17 +44,17 @@
   "dependencies": {
     "@jupyterlab/nbformat": "~3.3.2",
     "@jupyterlab/services": "~6.3.2",
-    "@jupyterlite/localforage": "^0.1.0-beta.2",
+    "@jupyterlite/localforage": "^0.1.0-beta.3",
     "@lumino/coreutils": "^1.12.0",
     "localforage": "^1.9.0",
     "mime": "^3.0.0"
   },
   "devDependencies": {
-    "@types/mime": "^2.0.3",
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
     "@jupyterlab/testutils": "~3.3.2",
     "@types/jest": "^26.0.10",
+    "@types/mime": "^2.0.3",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
