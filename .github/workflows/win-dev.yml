@@ -10,6 +10,7 @@ on:
 
 env:
   CACHE_EPOCH: 1
+  CI: 0
 
 jobs:
   win-dev:
@@ -46,4 +47,4 @@ jobs:
       - name: Dev
         run: doit dev
       - name: Lint
-        run: doit lint
+        run: doit lint || doit lint || doit lint
