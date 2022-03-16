@@ -228,12 +228,32 @@ class CompileSchemasPlugin {
   }
 }
 
-baseConfig.module.rules = baseConfig.module.rules.filter((rule) => {
+/**
+ * A helper for filtering deprecated webpack loaders, to be replaced with assets
+ */
+function filterDeprecatedRule(rule) {
   if (typeof rule.use === 'string' && rule.use.match(/^(file|url)-loader/)) {
     return false;
   }
   return true;
-});
+}
+
+/**
+ * Tweak under-specified rules to avoid catch unexpected files e.g. json
+ */
+function transformUnderspecifiedRule(rule) {
+  const { test } = rule;
+  if (test === /\.m?js/) {
+    rule.test = /\.m?js$/;
+  } else if (test === /\.c?js/) {
+    rule.test = /\.c?js$/;
+  }
+  return rule;
+}
+
+baseConfig.module.rules = baseConfig.module.rules
+  .filter(filterDeprecatedRule)
+  .map(transformUnderspecifiedRule);
 
 module.exports = [
   merge(baseConfig, {
