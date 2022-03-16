@@ -2,6 +2,35 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b2...229f11f99e9408a398ccb50a4b43c7a9ae8ddd74))
+
+### Enhancements made
+
+- Add localforage memory fallback [#547](https://github.com/jupyterlite/jupyterlite/pull/547) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- WebPack tweaks for fonts, licenses, Windows [#557](https://github.com/jupyterlite/jupyterlite/pull/557) ([@bollwyvl](https://github.com/bollwyvl))
+- Update to JupyterLab 3.3.2 packages [#554](https://github.com/jupyterlite/jupyterlite/pull/554) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- More Contributing to the top-level documentation [#552](https://github.com/jupyterlite/jupyterlite/pull/552) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Add localforage memory fallback [#547](https://github.com/jupyterlite/jupyterlite/pull/547) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-03-08&to=2022-03-16&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-03-08..2022-03-16&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-03-08..2022-03-16&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-03-08..2022-03-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b1...fb4f063daadebd1d6a85af7cdd2dae65d1e454aa))
@@ -20,8 +49,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-03-04&to=2022-03-08&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-03-04..2022-03-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-03-04..2022-03-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-03-04..2022-03-08&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2022-03-04..2022-03-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b1
 
