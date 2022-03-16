@@ -18,7 +18,7 @@
     "watch": "webpack --config webpack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "^3.3.0",
+    "@jupyterlab/builder": "^3.3.2",
     "css-loader": "^6.6.0",
     "file-loader": "^6.2.0",
     "fs-extra": "^9.0.1",
@@ -31,6 +31,7 @@
     "rimraf": "^3.0.2",
     "style-loader": "^3.3.1",
     "svg-url-loader": "^7.1.1",
+    "json-loader": "^0.5.7",
     "url-loader": "^4.1.1",
     "webpack": "^5.68.0",
     "webpack-bundle-analyzer": "^4.5.0",

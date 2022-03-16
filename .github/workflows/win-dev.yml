@@ -1,0 +1,50 @@
+name: Windows Dev
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  CACHE_EPOCH: 1
+  CI: 0
+
+jobs:
+  win-dev:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd /C CALL {0}
+    steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          environment-file: .binder/environment.yml
+          miniforge-variant: Mambaforge
+          use-mamba: true
+      - name: Cache (node_modules)
+        uses: actions/cache@v2
+        id: cache-node-modules
+        with:
+          path: node_modules/
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+      - name: Node
+        run: doit setup:js || doit setup:js || doit setup:js
+      - name: Build
+        run: doit build
+      - name: Dist
+        run: doit dist
+      - name: Dev
+        run: doit dev
+      - name: Lint
+        run: doit lint || doit lint || doit lint

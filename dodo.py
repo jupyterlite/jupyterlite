@@ -783,6 +783,7 @@ class C:
     CI = bool(json.loads(os.environ.get("CI", "0")))
     BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     PY_IMPL = platform.python_implementation()
+    WIN = platform.system() == "Windows"
     PYPY = "pypy" in PY_IMPL.lower()
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
@@ -1615,6 +1616,13 @@ os.environ.update(
     PYTHONIOENCODING=C.ENC["encoding"],
     PIP_DISABLE_PIP_VERSION_CHECK="1",
 )
+
+if C.WIN:
+    os.environ.update(
+        # reasses after https://github.com/xz64/license-webpack-plugin/issues/111
+        NO_WEBPACK_LICENSES="1",
+    )
+
 
 # doit configuration
 DOIT_CONFIG = {

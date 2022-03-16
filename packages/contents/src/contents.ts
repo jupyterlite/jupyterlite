@@ -10,6 +10,7 @@ import type localforage from 'localforage';
 
 import { IContents, MIME } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
+import mime from 'mime';
 
 export type IModel = ServerContents.IModel;
 
@@ -399,20 +400,32 @@ export class Contents implements IContents {
 
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
+    const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
+
     if (options.content && options.format === 'base64') {
-      // TODO: keep base64 if not a text file (image)
-      const content = decodeURIComponent(escape(atob(options.content)));
-      const nb = ext === '.ipynb';
-      item = {
-        ...item,
-        content: nb ? JSON.parse(content) : content,
-        format: nb ? 'json' : 'text',
-        type: nb ? 'notebook' : 'file',
-      };
+      if (ext === '.ipynb') {
+        item = {
+          ...item,
+          content: JSON.parse(this.unescapeContent(options.content)),
+          format: 'json',
+          type: 'notebook',
+        };
+      } else if (MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+        item = {
+          ...item,
+          content: this.unescapeContent(options.content),
+          format: 'text',
+          type: 'file',
+        };
+      }
     }
 
     await (await this.storage).setItem(path, item);
     return item;
+  }
+
+  unescapeContent(content: string): string {
+    return decodeURIComponent(escape(atob(content)));
   }
 
   /**

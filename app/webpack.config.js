@@ -19,6 +19,12 @@ const liteAppData = topLevelData.jupyterlite.apps.reduce(
   {}
 );
 
+const licensePlugins = [];
+
+if (!process.env.NO_WEBPACK_LICENSES) {
+  licensePlugins.push(new WPPlugin.JSONLicenseWebpackPlugin({}));
+}
+
 /**
  * Create the webpack ``shared`` configuration
  *
@@ -222,6 +228,26 @@ class CompileSchemasPlugin {
   }
 }
 
+/**
+ * A helper for filtering deprecated webpack loaders, to be replaced with assets
+ */
+function filterDeprecatedRule(rule) {
+  if (typeof rule.use === 'string' && rule.use.match(/^(file|url)-loader/)) {
+    return false;
+  }
+  return true;
+}
+
+baseConfig.module.rules = [
+  // add this before e.g. file-loader rules
+  {
+    test: /\.json$/,
+    use: ['json-loader'],
+    type: 'javascript/auto',
+  },
+  ...baseConfig.module.rules.filter(filterDeprecatedRule),
+];
+
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
@@ -265,13 +291,17 @@ module.exports = [
           test: /fontawesome-free.*\.(svg|eot|ttf|woff)$/,
           loader: 'ignore-loader',
         },
+        {
+          test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
+          type: 'asset/resource',
+        },
       ],
     },
     optimization: {
       moduleIds: 'deterministic',
     },
     plugins: [
-      new WPPlugin.JSONLicenseWebpackPlugin({}),
+      ...licensePlugins,
       new webpack.DefinePlugin({
         // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
         'process.env': '{}',
