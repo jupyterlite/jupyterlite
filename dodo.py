@@ -656,7 +656,10 @@ def task_serve():
 
     def _lab():
         args = [
-            which("jupyter-lab"), "--no-browser", "--debug", "--expose-app-in-browser"
+            which("jupyter-lab"),
+            "--no-browser",
+            "--debug",
+            "--expose-app-in-browser",
         ]
         proc = subprocess.Popen(list(map(str, args)), stdin=subprocess.PIPE)
 
