@@ -48,7 +48,7 @@ def test_serve(
     try:
         assert not errors
     finally:
-        server.terminate()
+        _fetch_without_errors(f"{url}shutdown")
         server.wait(timeout=10)
 
 

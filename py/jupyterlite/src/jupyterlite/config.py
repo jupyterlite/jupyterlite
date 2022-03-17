@@ -11,7 +11,7 @@ from typing import Optional as _Optional
 from typing import Text as _Text
 from typing import Tuple as _Tuple
 
-from traitlets import Bool, CInt, Tuple, Unicode, default
+from traitlets import Bool, CInt, Dict, Tuple, Unicode, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
@@ -121,6 +121,14 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Trigger reproducible builds, clamping timestamps to this value",
     ).tag(config=True)
 
+    http_headers: dict = Dict(
+        help="the HTTP headers to add to all served responses"
+    ).tag(config=True)
+
+    extra_http_headers: dict = Dict(
+        help="the HTTP headers to add to default headers on all served responses"
+    ).tag(config=True)
+
     @default("apps")
     def _default_apps(self):
         return []
@@ -219,3 +227,11 @@ class LiteBuildConfig(LoggingConfigurable):
     @default("pyodide_url")
     def _default_pyodide_url(self):
         return os.environ.get("JUPYTERLITE_PYODIDE_URL")
+
+    @default("http_headers")
+    def _default_http_headers(self):
+        return {}
+
+    @default("extra_http_headers")
+    def _default_extra_http_header(self):
+        return {}

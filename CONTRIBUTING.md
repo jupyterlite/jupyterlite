@@ -87,6 +87,18 @@ changes.
 > confusing to IDEs (or the `watch:docs` and `watch:js` tasks) that might be performing
 > their own watching, or run up against file system limits.
 
+#### `doit serve:*`
+
+A number of development servers can be started, each on separate ports:
+
+- core assets from `./app`:
+  - `doit serve:js`
+  - `doit serve:py`
+- example site it `./build/docs-app`:
+  - `doit serve:docs:app`
+- jupyterlab
+  - `doit serve:lab`
+
 ### Core JavaScript development
 
 The JupyterLite core JS development workflow builds:
