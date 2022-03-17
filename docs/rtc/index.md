@@ -27,8 +27,21 @@ The main differences compared to JupyterLab are:
 
 ## Enabling RTC in JupyterLite
 
-To enable RTC in JupyterLite, you need to set the `collaborative` flag in the
-`jupyter-config-data`. This follows the same behavior as in JupyterLab 3.1 where real
+To enable RTC in JupyterLite, you need to set the `collaborative` flag setting in
+`jupyter-config-data` in the appropriate `jupyter-lite.json` configuration file:
+
+```json
+{
+  "jupyter-config-data": {
+    "collaborative": true
+  }
+}
+```
+
+_Note that each JupyterLite application - JupyterLab, RetroLab, REPL – can use its own
+`jupyter-lite.json` file to override global defaults._
+
+Enabling RTC in JupyterLite follows the same behavior as in JupyterLab 3.1 where real
 time collaboration is an opt-in feature.
 
 In addition to the `collaborative` flag, end users must specify the `room` query
