@@ -16,12 +16,14 @@ import pkginfo
 
 def which(cmd):
     """find a command, maybe with a weird windows extension"""
-    return Path(
-        shutil.which(cmd)
-        or shutil.which(f"{cmd}.exe")
-        or shutil.which(f"{cmd}.cmd")
-        or shutil.which(f"{cmd}.bat")
-    ).resolve()
+    return str(
+        Path(
+            shutil.which(cmd)
+            or shutil.which(f"{cmd}.exe")
+            or shutil.which(f"{cmd}.cmd")
+            or shutil.which(f"{cmd}.bat")
+        ).resolve()
+    )
 
 
 def task_env():
