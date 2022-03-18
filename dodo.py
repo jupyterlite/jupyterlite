@@ -657,12 +657,7 @@ def task_serve():
     )
 
     def _lab():
-        args = [
-            which("jupyter-lab"),
-            "--no-browser",
-            "--debug",
-            "--expose-app-in-browser",
-        ]
+        args = [which("jupyter-lab"), *C.LAB_ARGS]
         proc = subprocess.Popen(list(map(str, args)), stdin=subprocess.PIPE)
 
         try:
@@ -859,6 +854,11 @@ class C:
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
+    LAB_ARGS = json.loads(
+        os.environ.get(
+            "LAB_ARGS", """["--no-browser","--debug","--expose-app-in-browser"]"""
+        )
+    )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
