@@ -1,12 +1,22 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = ["flit_core >=3.7.1,<4"]
 build-backend = "flit_core.buildapi"
 
-[tool.flit.metadata]
-module = "pyolite"
-author = "JupyterLite Contributors"
-home-page = "https://github.com/jupyterlite/jupyterlite"
-requires-python = ">=3.6"
+[project]
+name = "pyolite"
+authors = [
+    {name = "JupyterLite Contributors"},
+]
+readme = "README.md"
+requires-python = ">=3.9"
+dynamic = ["version", "description"]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+]
+
+[project.urls]
+Source = "https://github.com/jupyterlite/jupyterlite"
+
 
 [tool.tbump.version]
 current = "0.1.0b3"

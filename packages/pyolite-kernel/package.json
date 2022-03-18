@@ -67,8 +67,8 @@
     "packages": {
       "py/pyolite": "0.1.0b3",
       "py/piplite": "0.1.0b3",
-      "py/ipykernel": "5.5.5",
-      "py/widgetsnbextension": "3.5.0"
+      "py/ipykernel": "6.9.2",
+      "py/widgetsnbextension": "3.6.0"
     }
   },
   "styleModule": "style/index.js"
