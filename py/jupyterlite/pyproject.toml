@@ -12,13 +12,24 @@ dependencies = [
     "entrypoints",
     "jupyter_core >=4.7",
 ]
-keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"
+keywords = [
+    "browser",
+    "doit",
+    "js",
+    "jupyter",
+    "jupyterlab",
+    "notebook",
+    "pyodide",
+    "schema",
+]
 readme = "README.md"
 requires-python = ">=3.7"
 dynamic = ["version", "description"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 3",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
