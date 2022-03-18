@@ -19,6 +19,7 @@ index.template.js
 # generated
 _pypi.ts
 **/pypi/all.json
+app/**/*.html
 
 # The changelog is updated by the releaser
 CHANGELOG.md

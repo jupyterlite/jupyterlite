@@ -25,14 +25,19 @@ class ServeAddon(BaseAddon):
             return False
 
     def status(self, manager):
-        yield dict(
-            name="contents",
-            actions=[
-                lambda: print(
-                    f"""    will serve {manager.port} with: {"tornado" if self.has_tornado else "stdlib"}"""
-                )
-            ],
+        yield dict(name="contents", actions=[self._print_status])
+
+    def _print_status(self):
+        print(
+            f"""    url: {self.url}"""
+            "\n"
+            f"""    server: {"tornado" if self.has_tornado else "stdlib"}"""
         )
+
+        print("""    headers:""")
+        for headers in [self.manager.http_headers, self.manager.extra_http_headers]:
+            for header, value in headers.items():
+                print(f"""        {header}: {value}""")
 
     @property
     def url(self):
@@ -70,30 +75,54 @@ class ServeAddon(BaseAddon):
         )
 
     def _serve_tornado(self):
-        from tornado import ioloop, web
+        from tornado import httpserver, ioloop, web
 
-        class Handler(web.StaticFileHandler):
+        manager = self.manager
+
+        def shutdown():
+            http_server.stop()
+            ioloop.IOLoop.current().stop()
+
+        class ShutdownHandler(web.RequestHandler):
+            def get(self):
+                ioloop.IOLoop.instance().add_callback(shutdown)
+
+        class StaticHandler(web.StaticFileHandler):
+            def set_default_headers(self):
+                for headers in [manager.http_headers, manager.extra_http_headers]:
+                    for header, value in headers.items():
+                        if value is not None:
+                            self.set_header(header, value)
+
             def parse_url_path(self, url_path):
                 if not url_path or url_path.endswith("/"):
                     url_path = url_path + "index.html"
                 return url_path
 
-        path = str(self.manager.output_dir)
-        routes = [(self.manager.base_url + "(.*)", Handler, {"path": path})]
-        app = web.Application(routes, debug=True)
+        path = str(manager.output_dir)
+        app = web.Application(
+            [
+                (manager.base_url + "shutdown", ShutdownHandler),
+                (manager.base_url + "(.*)", StaticHandler, {"path": path}),
+            ],
+            debug=True,
+        )
         self.log.warning(
             f"""
 
-        Serving JupyterLite from:
+        Serving JupyterLite Debug Server from:
             {path}
         on:
             {self.url}index.html
 
-        *** Press Ctrl+C to exit **
+        *** Exit by: ***
+            - Pressing Ctrl+C
+            - Visiting {self.manager.base_url}shutdown
         """
         )
-        app.listen(self.manager.port)
+        http_server = httpserver.HTTPServer(app)
+        http_server.listen(manager.port)
         try:
             ioloop.IOLoop.instance().start()
-        except KeyboardInterrupt:
+        except KeyboardInterrupt:  # pragma: no cover
             self.log.warning(f"Stopping {self.url}")

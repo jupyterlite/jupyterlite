@@ -87,6 +87,23 @@ changes.
 > confusing to IDEs (or the `watch:docs` and `watch:js` tasks) that might be performing
 > their own watching, or run up against file system limits.
 
+#### `doit serve`
+
+A number of development servers can be started for interactive local development and
+documentation authoring.
+
+Offering different assets and tools, and obey different environment variables:
+
+- `5000`: core assets from `./app`:
+  - `doit serve:core:js`
+  - `doit serve:core:py`
+- `8000`: example site `./build/docs-app` on :
+  - `doit serve:docs:app`
+    - `LITE_ARGS` (a JSON list of strings) controls CLI arguments to `jupyter lite`
+- `8888`: JupyterLab
+  - `doit serve:lab`
+    - `LAB_ARGS` (a JSON list of strings) controls CLI arguments to `jupyter lab`
+
 ### Core JavaScript development
 
 The JupyterLite core JS development workflow builds:
@@ -286,6 +303,10 @@ site.
 The documentation site, served on [jupyterlite.rtfd.io], uses information from different
 parts of the software lifecycle (e.g. contains an archive of the built `app` directory),
 so using the [doit](#doit) tools are recommended.
+
+Additionally, some of the documentation is written in executable `.ipynb` which are
+converted by [myst](https://myst-nb.readthedocs.io): use of `doit serve:lab` is
+encouraged for editing these.
 
 [jupyterlite.rtfd.io]: https://jupyterlite.rtfd.io
 

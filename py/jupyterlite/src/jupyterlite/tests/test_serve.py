@@ -1,5 +1,6 @@
 """Test that various serving options work"""
 
+import json
 import subprocess
 import time
 
@@ -22,6 +23,20 @@ def test_serve(
     """verify that serving kinda works"""
     args = ["jupyter", "lite", "serve", "--port", f"{an_unused_port}"]
 
+    http_headers = {"x-foo": "bar"}
+    extra_http_headers = {"x-baz": "boo"}
+    all_headers = {**http_headers, **extra_http_headers}
+
+    config = {
+        "LiteBuildConfig": {
+            "http_headers": http_headers,
+            "extra_http_headers": extra_http_headers,
+        }
+    }
+
+    config_path = an_empty_lite_dir / "jupyter_lite_config.json"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
     if base_url:
         args += ["--base-url", base_url]
     else:
@@ -33,7 +48,7 @@ def test_serve(
     time.sleep(2)
 
     app_urls = [""]
-    for app in ["lab", "retro"]:
+    for app in ["lab", "retro", "repl"]:
         app_urls += [
             f"{app}/",
             f"{app}/index.html",
@@ -41,31 +56,45 @@ def test_serve(
         if app == "retro":
             app_urls += [f"{app}/tree/", f"{app}/tree/index.html"]
 
-    maybe_errors = [_fetch_without_errors(f"{url}{frag}") for frag in app_urls]
+    maybe_errors = [
+        _fetch_without_errors(f"{url}{frag}", expect_headers=all_headers)
+        for frag in app_urls
+    ]
 
-    errors = [e for e in maybe_errors if e is not None]
+    errors = [e for e in maybe_errors if e]
 
     try:
         assert not errors
     finally:
-        server.terminate()
+        _fetch_without_errors(f"{url}shutdown")
         server.wait(timeout=10)
 
 
-def _fetch_without_errors(url, retries=10):  # pragma: no cover
+def _fetch_without_errors(url, retries=10, expect_headers=None):  # pragma: no cover
     retries = 10
-    last_error = None
+    errors = []
 
     while retries:
         retries -= 1
-        last_error = None
+        response = None
         try:
             client = httpclient.HTTPClient()
-            r = client.fetch(url)
-            assert b"jupyter-config-data" in r.body
+            response = client.fetch(url)
+            assert b"jupyter-config-data" in response.body
+            # it worked, eventually: clear errors
+            errors = []
             break
         except Exception as err:  # pragma: no cover
             print(f"{err}: {retries} retries left...")
             time.sleep(0.5)
-            last_error = err
-    return last_error
+            errors = [err]
+
+    if response and expect_headers:
+        errors = []
+        for header, value in expect_headers.items():
+            try:
+                assert response.headers[header] == value
+            except Exception as err:  # pragma: no cover
+                errors += [err]
+
+    return errors
