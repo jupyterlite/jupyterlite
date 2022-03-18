@@ -25,14 +25,19 @@ class ServeAddon(BaseAddon):
             return False
 
     def status(self, manager):
-        yield dict(
-            name="contents",
-            actions=[
-                lambda: print(
-                    f"""    will serve {manager.port} with: {"tornado" if self.has_tornado else "stdlib"}"""
-                )
-            ],
+        yield dict(name="contents", actions=[self._print_status])
+
+    def _print_status(self):
+        print(
+            f"""    url: {self.url}"""
+            "\n"
+            f"""    server: {"tornado" if self.has_tornado else "stdlib"}"""
         )
+
+        print("""    headers:""")
+        for headers in [self.manager.http_headers, self.manager.extra_http_headers]:
+            for header, value in headers.items():
+                print(f"""        {header}: {value}""")
 
     @property
     def url(self):
@@ -119,5 +124,5 @@ class ServeAddon(BaseAddon):
         http_server.listen(manager.port)
         try:
             ioloop.IOLoop.instance().start()
-        except KeyboardInterrupt:
+        except KeyboardInterrupt:  # pragma: no cover
             self.log.warning(f"Stopping {self.url}")
