@@ -73,7 +73,7 @@ class PyodideAddon(BaseAddon):
 
     def build(self, manager):
         """copy a local (cached or well-known) pyodide into the output_dir"""
-        cached_pyodide = self.pyodide_cache / PYODIDE / PYODIDE
+        cached_pyodide = self.pyodide_cache / PYODIDE
 
         the_pyodide = None
 
