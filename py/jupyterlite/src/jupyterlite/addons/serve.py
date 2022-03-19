@@ -53,19 +53,17 @@ class ServeAddon(BaseAddon):
                 lambda: self.log.info(
                     "Using python's built-in http.server: "
                     "install tornado for a snappier experience and base_url"
+                    f"""
+
+                Serving JupyterLite from:
+                    {self.manager.output_dir}
+                on:
+                    {self.url}index.html
+
+                *** Press Ctrl+C to exit **
+            """
                 ),
-                doit.tools.Interactive(
-                    [
-                        sys.executable,
-                        "-m",
-                        "http.server",
-                        "-b",
-                        HOST,
-                        f"{self.manager.port}",
-                    ],
-                    cwd=str(self.manager.output_dir),
-                    shell=False,
-                ),
+                (self._serve_http_server, []),
             ]
         yield dict(
             name=name,
@@ -73,6 +71,30 @@ class ServeAddon(BaseAddon):
             uptodate=[lambda: False],
             actions=actions,
         )
+
+    def _serve_http_server(self):
+        from functools import partial
+        from http.server import SimpleHTTPRequestHandler
+        import socketserver
+        class HttpRequestHandler(SimpleHTTPRequestHandler):
+            extensions_map = {
+                '': 'application/octet-stream',
+                '.manifest': 'text/cache-manifest',
+                '.html': 'text/html',
+                '.png': 'image/png',
+                '.jpg': 'image/jpg',
+                '.svg': 'image/svg+xml',
+                '.css': 'text/css',
+                '.js':'application/x-javascript',
+                '.wasm': 'application/wasm',
+                '.json': 'application/json',
+                '.xml': 'application/xml',
+            }
+        httpd = socketserver.TCPServer((HOST, self.manager.port), partial(HttpRequestHandler, directory=str(self.manager.output_dir)))
+        try:
+            httpd.serve_forever()
+        except Exception as e:
+            self.log.warning(f"Stopping {self.url}")
 
     def _serve_tornado(self):
         from tornado import httpserver, ioloop, web
@@ -98,6 +120,11 @@ class ServeAddon(BaseAddon):
                 if not url_path or url_path.endswith("/"):
                     url_path = url_path + "index.html"
                 return url_path
+
+            def get_content_type(self):
+                if self.absolute_path.endswith('.js'):
+                    return 'application/x-javascript'
+                return super().get_content_type()
 
         path = str(manager.output_dir)
         app = web.Application(
