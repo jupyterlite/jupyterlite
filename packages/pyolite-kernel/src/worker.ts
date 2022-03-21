@@ -49,9 +49,6 @@ async function loadPyodideAndPackages() {
   await pyodide.runPythonAsync(`
     await piplite.install([
       'matplotlib',
-      'traitlets',
-      'widgetsnbextension',
-      'nbformat',
       'ipykernel',
     ], keep_going=True)
     await piplite.install([

@@ -1,24 +1,35 @@
 [build-system]
 build-backend = "flit_core.buildapi"
-requires = ["flit_core >=3.1,<4"]
+requires = ["flit_core >=3.7.1,<4"]
 
-[tool.flit.metadata]
-module = "jupyterlite"
-author = "JupyterLite Contributors"
-author-email = ""
-description-file = "README.md"
-license = "BSD-3-Clause"
-home-page = "https://github.com/jupyterlite/jupyterlite"
-requires-python = ">=3.7"
-requires = [
+[project]
+name = "jupyterlite"
+authors = [
+    {name = "JupyterLite Contributors"},
+]
+dependencies = [
     "doit",
     "entrypoints",
     "jupyter_core >=4.7",
 ]
-keywords = "jupyterlab,jupyter,notebook,schema,pyodide,browser,js,p5.js,doit"
+keywords = [
+    "browser",
+    "doit",
+    "js",
+    "jupyter",
+    "jupyterlab",
+    "notebook",
+    "pyodide",
+    "schema",
+]
+readme = "README.md"
+requires-python = ">=3.7"
+dynamic = ["version", "description"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 3",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
@@ -26,21 +37,20 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python",
     "Topic :: Software Development :: Documentation",
     "Topic :: Software Development :: Pre-processors",
     "Topic :: Text Processing :: Markup :: HTML",
 ]
 
-[tool.flit.scripts]
+[project.urls]
+Source = "https://github.com/jupyterlite/jupyterlite"
+
+[project.scripts]
 jupyter-lite = "jupyterlite.app:main"
 
-[tool.flit.sdist]
-include = [
-    "src/jupyterlite/jupyterlite-*.tgz",
-]
-
-[tool.flit.metadata.requires-extra]
+[project.optional-dependencies]
 test = [
     "ansi2html",
     "diffoscope; sys_platform == 'linux'",
@@ -80,7 +90,7 @@ all = [
     "tornado >=6.1",
 ]
 
-[tool.flit.entrypoints."jupyterlite.addon.v0"]
+[project.entry-points."jupyterlite.addon.v0"]
 static = "jupyterlite.addons.static:StaticAddon"
 federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
 settings = "jupyterlite.addons.settings:SettingsAddon"
@@ -93,6 +103,11 @@ archive = "jupyterlite.addons.archive:ArchiveAddon"
 piplite = "jupyterlite.addons.piplite:PipliteAddon"
 pyodide = "jupyterlite.addons.pyodide:PyodideAddon"
 mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
+
+[tool.flit.sdist]
+include = [
+    "src/jupyterlite/jupyterlite-*.tgz",
+]
 
 [tool.pytest.ini_options]
 filterwarnings = [
