@@ -73,7 +73,7 @@ class PyodideAddon(BaseAddon):
 
     def build(self, manager):
         """copy a local (cached or well-known) pyodide into the output_dir"""
-        cached_pyodide = self.pyodide_cache / PYODIDE
+        cached_pyodide = self.pyodide_cache
 
         the_pyodide = None
 
@@ -169,7 +169,7 @@ class PyodideAddon(BaseAddon):
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
-            dest = self.pyodide_cache / name
+            dest = self.pyodide_cache.parent / name
             local_path = dest
             if not dest.exists():
                 yield dict(
@@ -181,7 +181,7 @@ class PyodideAddon(BaseAddon):
                 will_fetch = True
         else:
             local_path = (self.manager.lite_dir / path_or_url).resolve()
-            dest = self.pyodide_cache / local_path.name
+            dest = self.pyodide_cache
 
         if local_path.is_dir():
             all_paths = sorted([p for p in local_path.rglob("*") if not p.is_dir()])
@@ -194,7 +194,7 @@ class PyodideAddon(BaseAddon):
 
         elif local_path.exists() or will_fetch:
             suffix = local_path.suffix
-            extracted = self.pyodide_cache / PYODIDE
+            extracted = self.pyodide_cache
 
             if suffix == ".bz2":
                 yield from self.extract_pyodide(local_path, extracted)
@@ -209,7 +209,8 @@ class PyodideAddon(BaseAddon):
             with tempfile.TemporaryDirectory() as td:
                 with tarfile.open(local_path, "r:bz2") as zf:
                     zf.extractall(td)
-                self.copy_one(Path(td), dest)
+                # the bz2 compressed file already has a top level `pyodide`.
+                self.copy_one(Path(td) / PYODIDE, dest)
 
         task = dict(
             name="extract:pyodide",
@@ -221,8 +222,8 @@ class PyodideAddon(BaseAddon):
             ],
             targets=[
                 # there are a lot of js/data files, but we actually talk about these...
-                dest / PYODIDE / PYODIDE_JS,
-                dest / PYODIDE / PYODIDE_PACKAGES,
+                dest / PYODIDE_JS,
+                dest / PYODIDE_PACKAGES,
             ],
             actions=[_extract],
         )
