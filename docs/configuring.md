@@ -232,7 +232,7 @@ customized python wheels, which in turn require other wheels and pre-built WASM 
 and other JavaScript.
 
 Extra wheels that can be installed via `piplite` in a running kernel can be added via
-the `--piplite-urls` CLI flag or `LiteBuildConfig/piplite_urls` config value, or simply
+the `--piplite-wheels` CLI flag or `LiteBuildConfig/piplite_urls` config value, or simply
 left in-place in `lite_dir/pypi`.
 
 These will be:
