@@ -2,7 +2,7 @@
 
 It is also possible to extend the underlying `jupyter lite` CLI by means of _Addons_.
 
-```{info}
+```{note}
 Addon was chosen to distinguish these pieces from browser-based _Plugins_ and
 _Extensions_.
 ```
