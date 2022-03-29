@@ -111,7 +111,7 @@ python -m pip install myliteextension
 In most cases, this would mean adding the extension to a `requirements.txt` file:
 
 ```
-jupyterlite==0.1.0a12
+jupyterlite==0.1.0b4
 myliteextension
 ```
 

@@ -91,18 +91,18 @@ all = [
 ]
 
 [project.entry-points."jupyterlite.addon.v0"]
-static = "jupyterlite.addons.static:StaticAddon"
-federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
-settings = "jupyterlite.addons.settings:SettingsAddon"
-contents = "jupyterlite.addons.contents:ContentsAddon"
-translation = "jupyterlite.addons.translation:TranslationAddon"
-lite = "jupyterlite.addons.lite:LiteAddon"
-report = "jupyterlite.addons.report:ReportAddon"
-serve = "jupyterlite.addons.serve:ServeAddon"
 archive = "jupyterlite.addons.archive:ArchiveAddon"
+contents = "jupyterlite.addons.contents:ContentsAddon"
+federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
+lite = "jupyterlite.addons.lite:LiteAddon"
+mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
 piplite = "jupyterlite.addons.piplite:PipliteAddon"
 pyodide = "jupyterlite.addons.pyodide:PyodideAddon"
-mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
+report = "jupyterlite.addons.report:ReportAddon"
+serve = "jupyterlite.addons.serve:ServeAddon"
+settings = "jupyterlite.addons.settings:SettingsAddon"
+static = "jupyterlite.addons.static:StaticAddon"
+translation = "jupyterlite.addons.translation:TranslationAddon"
 
 [tool.flit.sdist]
 include = [

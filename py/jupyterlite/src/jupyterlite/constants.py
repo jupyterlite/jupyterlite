@@ -93,9 +93,7 @@ HOOKS = [
     "build",
     "check",
     "serve",
-    "archive"
-    # TODO: decide how much of publish to take one
-    # "publish"
+    "archive",
 ]
 
 #: the name of the previous hook
