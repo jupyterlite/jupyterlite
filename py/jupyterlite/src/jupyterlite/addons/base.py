@@ -33,6 +33,11 @@ class BaseAddon(LoggingConfigurable):
 
     manager: LiteManager = Instance(LiteManager)
 
+    def __init__(self, manager, *args, **kwargs):
+        kwargs["parent"] = manager
+        kwargs["manager"] = manager
+        super().__init__(*args, **kwargs)
+
     @property
     def log(self):
         return self.manager.log

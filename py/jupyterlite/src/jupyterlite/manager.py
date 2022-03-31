@@ -14,73 +14,9 @@ from .constants import ADDON_ENTRYPOINT, HOOK_PARENTS, HOOKS, PHASES
 class LiteManager(LiteBuildConfig):
     """a manager for building jupyterlite sites
 
-    .. todo::
-
-        verify the following documentation snippets in test
 
     This primarily handles the business of mapping _addons_ to ``doit`` _tasks_,
     and then calling the ``doit`` API.
-
-    **Packaging an Addon**
-
-    An Addon is advertised via ``entry_points`` e.g. in ``pyproject.toml``:
-
-    .. code-block: toml
-
-        [tool.flit.entrypoints."jupyterlite.addon.v0"]
-        static = "jupyterlite.addons.static:StaticAddon"
-        federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
-        settings = "jupyterlite.addons.settings:SettingsAddon"
-        contents = "jupyterlite.addons.contents:ContentsAddon"
-        translation = "jupyterlite.addons.translation:TranslationAddon"
-        lite = "jupyterlite.addons.lite:LiteAddon"
-        report = "jupyterlite.addons.report:ReportAddon"
-        serve = "jupyterlite.addons.serve:ServeAddon"
-        archive = "jupyterlite.addons.archive:ArchiveAddon"
-
-    **Structure of an Addon**
-
-    An Addon is initialized with a signature like:
-
-    .. code-block: python
-
-        def my_addon(manager):
-            return {
-                "__all__": ["status"],
-                "status": [
-                    dict(name="hello", actions=[lambda: print("world")])
-                ]
-            }
-
-    A convenience class, ``jupyterlite.addons.base.BaseAddon`` provides a number
-    of useful features.
-
-    The ``__all__`` member list `hooks`. Hooks may also be prefixed with `pre_`
-    and ``post_`` `phase` which go in roughly logical order. Of note:
-
-    * The ``init`` phase is mostly reserved for "gold master" content
-    * The ``build`` is mostly reserved for user-authored content
-    * A ``status`` method to give one-line reporting, and should have no side-effects
-
-    `See the existing examples in this directory for other hook implementations.`
-
-    **The Task Generator**
-
-    Each method is expected to return an iterable of ``doit`` tasks, of the minimal form:
-
-    .. code-block: python
-
-        def post_build(manager):
-            yield dict(
-                name="a:unique:name", # will have the addon name prepended
-                actions=[["things", "to", "do"]]
-                file_dep=["a-file", Path("another-file")],
-                targets=["an-output-file"],
-            )
-
-    The top-level tasks usually have ``doit.create_after`` configured based on their
-    `hook parent`, which means a task can `confidently` rely on files from that
-    parent (by `any` addons) would already exist.
     """
 
     strict = Bool(
