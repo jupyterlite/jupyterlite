@@ -2635,7 +2635,7 @@
     vega-lite "^5.1.0"
 
 "@jupyterlite/application-extension@file:packages/application-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/application" "~3.3.2"
     "@jupyterlab/apputils" "~3.3.2"
@@ -2647,14 +2647,14 @@
     "@jupyterlab/services" "~6.3.2"
     "@jupyterlab/translation" "~3.3.2"
     "@jupyterlab/ui-components" "~3.3.2"
-    "@jupyterlite/ui-components" "^0.1.0-beta.2"
+    "@jupyterlite/ui-components" "^0.1.0-beta.4"
     "@lumino/algorithm" "^1.9.1"
     "@lumino/coreutils" "^1.12.0"
     "@lumino/widgets" "^1.31.1"
     y-webrtc "^10.2.0"
 
 "@jupyterlite/application@file:packages/application":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/application" "~3.3.2"
     "@jupyterlab/coreutils" "~5.3.2"
@@ -2665,37 +2665,37 @@
     "@lumino/widgets" "^1.31.1"
 
 "@jupyterlite/contents@file:packages/contents":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/nbformat" "~3.3.2"
     "@jupyterlab/services" "~6.3.2"
-    "@jupyterlite/localforage" "^0.1.0-beta.2"
+    "@jupyterlite/localforage" "^0.1.0-beta.4"
     "@lumino/coreutils" "^1.12.0"
     localforage "^1.9.0"
     mime "^3.0.0"
 
 "@jupyterlite/iframe-extension@file:packages/iframe-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/rendermime-interfaces" "~3.3.2"
     "@lumino/coreutils" "^1.12.0"
     "@lumino/widgets" "^1.31.1"
 
 "@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "~5.3.2"
-    "@jupyterlite/javascript-kernel" "^0.1.0-beta.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
-    "@jupyterlite/server" "^0.1.0-beta.2"
+    "@jupyterlite/javascript-kernel" "^0.1.0-beta.4"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
+    "@jupyterlite/server" "^0.1.0-beta.4"
 
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
 
 "@jupyterlite/kernel@file:packages/kernel":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/observables" "~4.3.2"
     "@jupyterlab/services" "~6.3.2"
@@ -2706,12 +2706,12 @@
     mock-socket "^9.1.0"
 
 "@jupyterlite/licenses@file:packages/licenses":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "^5.3.2"
 
 "@jupyterlite/localforage@file:packages/localforage":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "^5.3.2"
     "@lumino/coreutils" "^1.5.3"
@@ -2719,79 +2719,79 @@
     localforage-memoryStorageDriver "^0.9.2"
 
 "@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "~5.3.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
-    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.2"
-    "@jupyterlite/server" "^0.1.0-beta.2"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
+    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.4"
+    "@jupyterlite/server" "^0.1.0-beta.4"
 
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
 
 "@jupyterlite/repl-extension@file:packages/repl-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/application" "~3.3.2"
     "@jupyterlab/apputils" "~3.3.2"
     "@jupyterlab/console" "~3.3.2"
     "@jupyterlab/translation" "~3.3.2"
     "@jupyterlab/ui-components" "~3.3.2"
-    "@jupyterlite/application" "^0.1.0-beta.2"
-    "@jupyterlite/ui-components" "^0.1.0-beta.2"
+    "@jupyterlite/application" "^0.1.0-beta.4"
+    "@jupyterlite/ui-components" "^0.1.0-beta.4"
     "@lumino/widgets" "^1.31.1"
 
 "@jupyterlite/retro-application-extension@file:packages/retro-application-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/application" "~3.3.2"
     "@jupyterlab/console" "~3.3.2"
     "@jupyterlab/coreutils" "~5.3.2"
     "@jupyterlab/docmanager" "~3.3.2"
     "@jupyterlab/services" "~6.3.2"
-    "@jupyterlite/ui-components" "^0.1.0-beta.2"
+    "@jupyterlite/ui-components" "^0.1.0-beta.4"
     "@retrolab/application" "^0.3.20"
 
 "@jupyterlite/server@file:packages/server-extension":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "~5.3.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
-    "@jupyterlite/licenses" "^0.1.0-beta.2"
-    "@jupyterlite/localforage" "^0.1.0-beta.2"
-    "@jupyterlite/server" "^0.1.0-beta.2"
-    "@jupyterlite/session" "^0.1.0-beta.2"
-    "@jupyterlite/settings" "^0.1.0-beta.2"
-    "@jupyterlite/translation" "^0.1.0-beta.2"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
+    "@jupyterlite/licenses" "^0.1.0-beta.4"
+    "@jupyterlite/localforage" "^0.1.0-beta.4"
+    "@jupyterlite/server" "^0.1.0-beta.4"
+    "@jupyterlite/session" "^0.1.0-beta.4"
+    "@jupyterlite/settings" "^0.1.0-beta.4"
+    "@jupyterlite/translation" "^0.1.0-beta.4"
 
 "@jupyterlite/session@file:packages/session":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/services" "~6.3.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.2"
+    "@jupyterlite/kernel" "^0.1.0-beta.4"
     "@lumino/algorithm" "^1.9.1"
     "@lumino/coreutils" "^1.12.0"
 
 "@jupyterlite/settings@file:packages/settings":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "~5.3.2"
     "@jupyterlab/settingregistry" "~3.3.2"
-    "@jupyterlite/localforage" "^0.1.0-beta.2"
+    "@jupyterlite/localforage" "^0.1.0-beta.4"
     "@lumino/coreutils" "^1.12.0"
     json5 "^2.2.0"
     localforage "^1.9.0"
 
 "@jupyterlite/translation@file:packages/translation":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/coreutils" "~5.3.2"
     "@lumino/coreutils" "^1.12.0"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
-  version "0.1.0-beta.2"
+  version "0.1.0-beta.4"
   dependencies:
     "@jupyterlab/ui-components" "^3.3.2"
 
@@ -10033,9 +10033,9 @@ minimist-options@4.1.0:
     kind-of "^6.0.3"
 
 minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5, minimist@~1.2.0:
-  version "1.2.5"
-  resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
-  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+  version "1.2.6"
+  resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz#8637a5b759ea0d6e98702cfb3a9283323c93af44"
+  integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
 minipass-collect@^1.0.2:
   version "1.0.2"
