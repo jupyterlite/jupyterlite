@@ -61,7 +61,7 @@ def postbump():
     run(f"yarn prettier --write {ROOT_PACKAGE_JSON}")
 
     # save the new version to the top-level pyproject.toml
-    root_pyproject = toml.load(ROOT_PYPROJECT_TOML.read_text(**ENC))
+    root_pyproject = toml.load(ROOT_PYPROJECT_TOML)
     root_pyproject["version"] = py_version
     ROOT_PYPROJECT_TOML.write_text(toml.dumps(root_pyproject), **ENC)
 
