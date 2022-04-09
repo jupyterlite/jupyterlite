@@ -62,7 +62,7 @@ def postbump():
 
     # save the new version to the top-level pyproject.toml
     root_pyproject = toml.load(ROOT_PYPROJECT_TOML)
-    root_pyproject["version"] = py_version
+    root_pyproject["project"]["version"] = py_version
     ROOT_PYPROJECT_TOML.write_text(toml.dumps(root_pyproject), **ENC)
 
     run("doit repo:integrity", cwd=ROOT)
