@@ -17,6 +17,7 @@ OPTIONS = ["major", "minor", "release", "build"]
 
 ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
+ROOT_PACKAGE_JSON = ROOT / "package.json"
 ROOT_PYPROJECT_TOML = ROOT / "pyproject.toml"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
@@ -52,6 +53,12 @@ def postbump():
     jupyterlite_json["jupyter-config-data"]["appVersion"] = new_version
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
     run(f"yarn prettier --write {APP_JUPYTERLITE_JSON}")
+
+    # save the new version to the top-level package.json
+    root_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
+    root_json["version"] = py_version
+    ROOT_PACKAGE_JSON.write_text(json.dumps(root_json), **ENC)
+    run(f"yarn prettier --write {ROOT_PACKAGE_JSON}")
 
     # save the new version to the top-level pyproject.toml
     root_pyproject = toml.load(ROOT_PYPROJECT_TOML)
