@@ -7,6 +7,7 @@
 # - https://github.com/voila-dashboards/voila/blob/master/scripts/bump-version.py
 
 import json
+import toml
 from pathlib import Path
 
 import click
@@ -17,6 +18,7 @@ OPTIONS = ["major", "minor", "release", "build"]
 ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
+ROOT_PYPROJECT_TOML = ROOT / "pyproject.toml"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
@@ -57,6 +59,11 @@ def postbump():
     root_json["version"] = py_version
     ROOT_PACKAGE_JSON.write_text(json.dumps(root_json), **ENC)
     run(f"yarn prettier --write {ROOT_PACKAGE_JSON}")
+
+    # save the new version to the top-level pyproject.toml
+    root_pyproject = toml.load(ROOT_PYPROJECT_TOML)
+    root_pyproject["project"]["version"] = py_version
+    ROOT_PYPROJECT_TOML.write_text(toml.dumps(root_pyproject), **ENC)
 
     run("doit repo:integrity", cwd=ROOT)
 

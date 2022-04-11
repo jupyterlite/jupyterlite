@@ -1,3 +1,6 @@
+[project]
+version = "0.1.0b4"
+
 [tool.isort]
 profile = "black"
 multi_line_output = 3

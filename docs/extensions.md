@@ -36,6 +36,12 @@ conda activate myliteextension
 python -m pip install jupyterlite
 ```
 
+```{note}
+It is recommended to use a [Long Term Support (LTS)][lts] release of NodeJS: the simple rule
+of thumb is stick to **even** numbered releases.
+[lts]: https://nodejs.org/en/about/releases/
+```
+
 Then let's generate a new extension from the [cookiecutter]:
 
 ```bash
@@ -65,7 +71,7 @@ following command:
 
 ```bash
 $ jupyter labextension list
-JupyterLab v3.1.17
+JupyterLab v3.*.*
 /home/user/miniforge3/envs/tmp/share/jupyter/labextensions
         myliteextension v0.1.0 enabled OK
 ```
@@ -111,12 +117,26 @@ python -m pip install myliteextension
 In most cases, this would mean adding the extension to a `requirements.txt` file:
 
 ```
-jupyterlite==0.1.0a12
+jupyterlite
 myliteextension
 ```
 
 For more information on adding extensions to a JupyterLite website, check out the
 [deployment documentation](./configuring.md#adding-extensions).
+
+If a lot of customization is required, it may also be worth
+[extending the JupyterLite CLI](./cli-addons.md) in your package.
+
+However the build environment is built, once it works _well_, it is _highly recommended_
+to generate and check in a full list of locked package versions. Some package managers,
+such as `poetry` and `pipenv`, support this out of the box.
+
+```{hint}
+Some lightweight tools for locking requirements in formats for common package
+manager tools are also available:
+- [pip-tools](https://github.com/jazzband/pip-tools)
+- [conda-lock](https://github.com/conda-incubator/conda-lock)
+```
 
 ## References
 

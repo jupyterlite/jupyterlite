@@ -11,6 +11,7 @@ deploying
 api/index
 architecture
 extensions
+cli-addons
 doit
 ```
 
