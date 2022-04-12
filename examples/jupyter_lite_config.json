@@ -25,6 +25,7 @@
     "ignore_sys_prefix": true,
     "output_dir": "../build/docs-app",
     "piplite_urls": [
+      "https://files.pythonhosted.org/packages/e6/0b/24795939622d60f4b453aa7040f23c6a6f8b44c7c026c3b42d9842e6cc31/fastjsonschema-2.15.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/bqplot/bqplot-0.12.33-py2.py3-none-any.whl",
@@ -58,7 +59,6 @@
       "https://files.pythonhosted.org/packages/py3/b/branca/branca-0.4.2-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/c/charset-normalizer/charset_normalizer-2.0.12-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/e/entrypoints/entrypoints-0.4-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/e6/0b/24795939622d60f4b453aa7040f23c6a6f8b44c7c026c3b42d9842e6cc31/fastjsonschema-2.15.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/i/idna/idna-3.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/i/ipython/ipython-8.2.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jsonschema/jsonschema-4.4.0-py3-none-any.whl",
