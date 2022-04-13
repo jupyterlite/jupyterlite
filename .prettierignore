@@ -26,3 +26,6 @@ CHANGELOG.md
 
 # UI tests
 ui-tests/ui-tests-app
+
+# vendored
+app/vendor/int64-buffer.min.js

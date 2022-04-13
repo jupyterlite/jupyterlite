@@ -295,6 +295,22 @@ module.exports = [
           test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
           type: 'asset/resource',
         },
+        // Fix WebRTC buffered transmission: https://github.com/yjs/y-webrtc/pull/25
+        {
+          test: /y-webrtc\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: 'simple-peer/simplepeer.min.js',
+            replace: [
+              '..',
+              '..',
+              '..',
+              'app',
+              'vendor',
+              'SimplePeerExtended.js'
+            ].join(path.sep),
+          },
+        },
       ],
     },
     optimization: {
