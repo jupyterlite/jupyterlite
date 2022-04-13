@@ -301,14 +301,9 @@ module.exports = [
           loader: 'string-replace-loader',
           options: {
             search: 'simple-peer/simplepeer.min.js',
-            replace: [
-              '..',
-              '..',
-              '..',
-              'app',
-              'vendor',
-              'SimplePeerExtended.js'
-            ].join(path.sep),
+            replace: ['..', '..', '..', 'app', 'vendor', 'SimplePeerExtended.js']
+              .join(path.sep)
+              .replace(/\\/g, '\\\\'),
           },
         },
       ],
