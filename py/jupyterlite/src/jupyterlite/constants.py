@@ -76,8 +76,14 @@ SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 #: this is arrived at by inspection
 NPM_SOURCE_DATE_EPOCH = 499162500
 
-#: the only kind of wheel piplite understands
+#: the only kind of noarch wheel piplite understands
 NOARCH_WHL = "py3-none-any.whl"
+
+#: the only kind of binary wheel piplite understands
+WASM_WHL = "emscripten_wasm32.whl"
+
+#: the only kinds of wheels piplite understands
+ALL_WHL = [NOARCH_WHL, WASM_WHL]
 
 ### URLs
 

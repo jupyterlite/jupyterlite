@@ -20,12 +20,12 @@ PYPI_WHEELS = "pypi"
 
 from ..constants import (
     ALL_JSON,
+    ALL_WHL,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
     LITE_PLUGIN_SETTINGS,
-    NOARCH_WHL,
     PYOLITE_PLUGIN_ID,
     UTF8,
 )
@@ -57,7 +57,7 @@ class PipliteAddon(BaseAddon):
 
     def build(self, manager):
         """yield a doit task to copy each local wheel into the output_dir"""
-        for wheel in (manager.lite_dir / PYPI_WHEELS).glob(f"*{NOARCH_WHL}"):
+        for wheel in list_wheels(manager.lite_dir / PYPI_WHEELS):
             yield from self.resolve_one_wheel(str(wheel.resolve()))
 
     def post_build(self, manager):
@@ -65,7 +65,7 @@ class PipliteAddon(BaseAddon):
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
         whl_metas = []
 
-        wheels = sorted(self.output_wheels.glob(f"*{NOARCH_WHL}"))
+        wheels = list_wheels(self.output_wheels)
         pkg_jsons = sorted(
             [
                 *self.output_extensions.glob("*/package.json"),
@@ -159,7 +159,7 @@ class PipliteAddon(BaseAddon):
             local_path = (self.manager.lite_dir / path_or_url).resolve()
 
         if local_path.is_dir():
-            for wheel in local_path.glob(f"*{NOARCH_WHL}"):
+            for wheel in list_wheels(local_path):
                 yield from self.copy_wheel(wheel)
         elif local_path.exists() or will_fetch:
             suffix = local_path.suffix
@@ -257,6 +257,11 @@ class PipliteAddon(BaseAddon):
         self.maybe_timestamp(whl_meta)
 
 
+def list_wheels(wheel_dir):
+    """get all wheels we know how to handle in a directory"""
+    return sorted(sum([[*wheel_dir.glob(f"*{whl}")] for whl in ALL_WHL], []))
+
+
 def get_wheel_fileinfo(whl_path):
     """Generate a minimal Warehouse-like JSON API entry from a wheel"""
     import pkginfo
@@ -316,6 +321,6 @@ def get_wheel_index(wheels, metadata=None):
 def write_wheel_index(whl_dir, metadata=None):
     """Write out an all.json for a directory of wheels"""
     wheel_index = Path(whl_dir) / ALL_JSON
-    index_data = get_wheel_index([*whl_dir.glob(f"*{NOARCH_WHL}")], metadata)
+    index_data = get_wheel_index(list_wheels(whl_dir), metadata)
     wheel_index.write_text(json.dumps(index_data, **JSON_FMT), **UTF8)
     return wheel_index
