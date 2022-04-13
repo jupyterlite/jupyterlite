@@ -1118,11 +1118,7 @@ class B:
     PYOLITE_WHEEL_INDEX = PYOLITE_WHEELS / "all.json"
     PYOLITE_WHEEL_TS = P.PYOLITE_TS / "src/_pypi.ts"
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
-    SESSION = requests_cache.CachedSession(
-        str(BUILD / "requests-cache"),
-        allowable_methods=["GET", "POST", "HEAD"],
-        allowable_codes=[200, 302, 404],
-    )
+    REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
 
@@ -1187,6 +1183,21 @@ class BB:
 
 
 class U:
+    _SESSION = None
+
+    @staticmethod
+    def session():
+        if U._SESSION is None:
+            if not B.BUILD.exists():
+                B.BUILD.mkdir()
+
+            U._SESSION = requests_cache.CachedSession(
+                str(B.BUILD / B.REQ_CACHE.stem),
+                allowable_methods=["GET", "POST", "HEAD"],
+                allowable_codes=[200, 302, 404],
+            )
+        return U._SESSION
+
     @staticmethod
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency (e.g. on windows)"""
@@ -1334,13 +1345,13 @@ class U:
         url = "/".join([C.PYTHON_HOSTED, python_tag, name[0], name, wheel_name])
 
         print(".", end="", flush=True)
-        r = B.SESSION.head(url)
+        r = U.session().head(url)
 
         if r.status_code < 400:
             print(".", end="", flush=True)
             return url
 
-        dists = B.SESSION.get(f"{C.PYPI_API}/{name}/json").json()["releases"][version]
+        dists = U.session().get(f"{C.PYPI_API}/{name}/json").json()["releases"][version]
         print("!", end="", flush=True)
         for dist in dists:
             if dist.get("yanked"):
@@ -1668,7 +1679,7 @@ class U:
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
         url = props["pyodideUrl"]["default"].replace(C.PYODIDE_JS, "packages.json")
-        packages = B.SESSION.get(url).json()
+        packages = U.session().get(url).json()
         B.PYODIDE_PACKAGES.parent.mkdir(exist_ok=True, parents=True)
         B.PYODIDE_PACKAGES.write_text(json.dumps(packages, **C.JSON))
 
