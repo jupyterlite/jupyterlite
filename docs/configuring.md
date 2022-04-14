@@ -103,7 +103,8 @@ See the [MDN][mdn] documentation for more information.
 
 [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API
 [filesystem-access-pypi]: https://pypi.org/project/jupyterlab-filesystem-access/
-[filesystem-access-github]: https://github.com/jtpio/jupyterlab-filesystem-access
+[filesystem-access-github]:
+  https://github.com/jupyterlab-contrib/jupyterlab-filesystem-access
 
 ## Adding Extensions
 
