@@ -5,8 +5,9 @@ from jupyter_core.application import JupyterApp, base_aliases, base_flags
 from traitlets import Bool, Instance, Unicode, default
 
 from . import __version__
+from .addons.piplite import list_wheels
 from .config import LiteBuildConfig
-from .constants import NOARCH_WHL, PHASES
+from .constants import PHASES
 from .manager import LiteManager
 from .trait_types import CPath
 
@@ -266,7 +267,7 @@ class PipliteIndex(DescribedMixin, JupyterApp):
     def start(self):
         if not self.wheel_dir.exists():
             raise ValueError(f"{self.wheel_dir} does not exist")
-        if not [*self.wheel_dir.glob(f"*{NOARCH_WHL}")]:
+        if not list_wheels(self.wheel_dir):
             raise ValueError(f"no wheels found in {self.wheel_dir}")
         from .addons.piplite import write_wheel_index
 

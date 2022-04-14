@@ -3,19 +3,24 @@ import sys
 import types
 
 
+def mock_fcntl():
+    sys.modules["fcntl"] = types.ModuleType("fcntl")
+
+
+def mock_pexpect():
+    pexpect_mock = types.ModuleType("pexpect")
+    sys.modules["pexpect"] = pexpect_mock
+
+
+def mock_resource():
+    sys.modules["resource"] = types.ModuleType("resource")
+
+
 def mock_termios():
     termios_mock = types.ModuleType("termios")
     termios_mock.TCSAFLUSH = 2
 
     sys.modules["termios"] = termios_mock
-
-
-def mock_fcntl():
-    sys.modules["fcntl"] = types.ModuleType("fcntl")
-
-
-def mock_resource():
-    sys.modules["resource"] = types.ModuleType("resource")
 
 
 def mock_tornado():
@@ -31,12 +36,12 @@ def mock_tornado():
     tornado.gen = gen
 
 
-# order is probably important
 ALL_MOCKS = [
     mock_termios,
     mock_fcntl,
     mock_resource,
     mock_tornado,
+    mock_pexpect,
 ]
 
 

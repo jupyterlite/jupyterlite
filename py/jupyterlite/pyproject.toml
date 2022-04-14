@@ -60,7 +60,7 @@ test = [
     "pytest-xdist",
 ]
 lab = [
-    "jupyterlab >=3.1,<4",
+    "jupyterlab >=3.3,<4",
 ]
 contents = [
     "jupyter_server",

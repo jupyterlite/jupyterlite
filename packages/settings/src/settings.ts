@@ -174,9 +174,9 @@ export class Settings implements ISettings {
 }
 
 /**
- * A namespaces for settings metadata.
+ * A namespace for settings metadata.
  */
-namespace Settings {
+export namespace Settings {
   /**
    * Initialization options for settings.
    */

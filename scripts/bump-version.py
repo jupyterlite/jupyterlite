@@ -7,10 +7,10 @@
 # - https://github.com/voila-dashboards/voila/blob/master/scripts/bump-version.py
 
 import json
-import toml
 from pathlib import Path
 
 import click
+import toml
 from jupyter_releaser.util import get_version, is_prerelease, run
 
 OPTIONS = ["major", "minor", "release", "build"]
