@@ -8,7 +8,7 @@
 
 ### Enhancements made
 
-- [#86] Update the "try lite now" SVG badge and add a "launch lite" SVG badge [#580](https://github.com/jupyterlite/jupyterlite/pull/580) ([@xiaohk](https://github.com/xiaohk))
+- Update the "try lite now" SVG badge and add a "launch lite" SVG badge [#580](https://github.com/jupyterlite/jupyterlite/pull/580) ([@xiaohk](https://github.com/xiaohk))
 - Update to pyodide 0.20.0 [#578](https://github.com/jupyterlite/jupyterlite/pull/578) ([@bollwyvl](https://github.com/bollwyvl))
 
 ### Maintenance and upkeep improvements
@@ -24,7 +24,7 @@
 - Mention `jupyterlab-filesystem-access` in the documentation [#603](https://github.com/jupyterlite/jupyterlite/pull/603) ([@jtpio](https://github.com/jtpio))
 - Add FAQ item about accessing content from Python [#601](https://github.com/jupyterlite/jupyterlite/pull/601) ([@jtpio](https://github.com/jtpio))
 - Update overview diagram in the documentation [#593](https://github.com/jupyterlite/jupyterlite/pull/593) ([@jtpio](https://github.com/jtpio))
-- ensure addons can be configured, more docs [#583](https://github.com/jupyterlite/jupyterlite/pull/583) ([@bollwyvl](https://github.com/bollwyvl))
+- Ensure addons can be configured, more docs [#583](https://github.com/jupyterlite/jupyterlite/pull/583) ([@bollwyvl](https://github.com/bollwyvl))
 - Fix typo for the `--piplite-wheels` CLI flag in the docs [#573](https://github.com/jupyterlite/jupyterlite/pull/573) ([@jtpio](https://github.com/jtpio))
 
 ### Contributors to this release
