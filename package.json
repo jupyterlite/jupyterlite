@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.1.0b4",
+  "version": "0.1.0b5",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
