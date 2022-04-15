@@ -2,6 +2,39 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b5
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.0-beta.4...b11dc2f7f9d427ce53b2b5e32b9ba368486f6bed))
+
+### Enhancements made
+
+- [#86] Update the "try lite now" SVG badge and add a "launch lite" SVG badge [#580](https://github.com/jupyterlite/jupyterlite/pull/580) ([@xiaohk](https://github.com/xiaohk))
+- Update to pyodide 0.20.0 [#578](https://github.com/jupyterlite/jupyterlite/pull/578) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Bump moment from 2.29.1 to 2.29.2 [#596](https://github.com/jupyterlite/jupyterlite/pull/596) ([@dependabot](https://github.com/dependabot))
+- Bump moment from 2.29.1 to 2.29.2 in /ui-tests [#595](https://github.com/jupyterlite/jupyterlite/pull/595) ([@dependabot](https://github.com/dependabot))
+- Fix handling of `get_version()` [#594](https://github.com/jupyterlite/jupyterlite/pull/594) ([@jtpio](https://github.com/jtpio))
+- Bump minimist from 1.2.5 to 1.2.6 [#587](https://github.com/jupyterlite/jupyterlite/pull/587) ([@dependabot](https://github.com/dependabot))
+- Bump minimist from 1.2.5 to 1.2.6 in /ui-tests [#586](https://github.com/jupyterlite/jupyterlite/pull/586) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Mention `jupyterlab-filesystem-access` in the documentation [#603](https://github.com/jupyterlite/jupyterlite/pull/603) ([@jtpio](https://github.com/jtpio))
+- Add FAQ item about accessing content from Python [#601](https://github.com/jupyterlite/jupyterlite/pull/601) ([@jtpio](https://github.com/jtpio))
+- Update overview diagram in the documentation [#593](https://github.com/jupyterlite/jupyterlite/pull/593) ([@jtpio](https://github.com/jtpio))
+- ensure addons can be configured, more docs [#583](https://github.com/jupyterlite/jupyterlite/pull/583) ([@bollwyvl](https://github.com/bollwyvl))
+- Fix typo for the `--piplite-wheels` CLI flag in the docs [#573](https://github.com/jupyterlite/jupyterlite/pull/573) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-03-22&to=2022-04-15&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-03-22..2022-04-15&type=Issues) | [@datakurre](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adatakurre+updated%3A2022-03-22..2022-04-15&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-03-22..2022-04-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-03-22..2022-04-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-03-22..2022-04-15&type=Issues) | [@xiaohk](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Axiaohk+updated%3A2022-03-22..2022-04-15&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b3...1bba605397ad4e2f35d6b877dc5fda1de6850b12))
@@ -20,8 +53,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-03-16&to=2022-03-22&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-03-16..2022-03-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-03-16..2022-03-22&type=Issues) | [@psychemedia](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Apsychemedia+updated%3A2022-03-16..2022-03-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b3
 
