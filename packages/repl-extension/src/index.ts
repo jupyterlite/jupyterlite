@@ -136,7 +136,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     if (!tracker) {
       return;
     }
-    const { commands } = app;
+    const { commands, serviceManager, started } = app;
 
     const search = window.location.search;
     const urlParams = new URLSearchParams(search);
@@ -145,7 +145,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const theme = urlParams.get('theme')?.trim();
     const toolbar = urlParams.get('toolbar');
 
-    app.started.then(() => {
+    Promise.all([started, serviceManager.ready]).then(async () => {
       commands.execute('console:create', { kernelPreference: { name: kernel } });
     });
 
