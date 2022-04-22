@@ -18,8 +18,6 @@ import {
   IDocumentProvider,
   IDocumentProviderFactory,
   ProviderMock,
-  getAnonymousUserName,
-  getRandomColor,
 } from '@jupyterlab/docprovider';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
@@ -36,15 +34,9 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { filter, toArray } from '@lumino/algorithm';
 
-import { UUID, PromiseDelegate } from '@lumino/coreutils';
-
 import { Widget } from '@lumino/widgets';
 
 import { getParam } from 'lib0/environment';
-
-import { WebrtcProvider } from 'y-webrtc';
-
-import { Awareness } from 'y-protocols/awareness';
 
 import React from 'react';
 
@@ -62,113 +54,6 @@ const EDITOR_FACTORY = 'Editor';
  * A regular expression to match path to notebooks, documents and consoles
  */
 const URL_PATTERN = new RegExp('/(lab|notebooks|edit|consoles)\\/?');
-
-class WebRtcProvider extends WebrtcProvider implements IDocumentProvider {
-  constructor(options: IWebRtcProvider.IOptions) {
-    super(
-      `${options.room}${options.path}`,
-      options.ymodel.ydoc,
-      WebRtcProvider.yProviderOptions(options)
-    );
-    this.awareness = options.ymodel.awareness;
-    const color = `#${getParam('--usercolor', getRandomColor().slice(1))}`;
-    const name = getParam('--username', getAnonymousUserName());
-    const currState = this.awareness.getLocalState();
-    // only set if this was not already set by another plugin
-    if (currState && !currState.name) {
-      this.awareness.setLocalStateField('user', {
-        name,
-        color,
-      });
-    }
-  }
-
-  setPath() {
-    // TODO: this seems super useful
-  }
-
-  requestInitialContent(): Promise<boolean> {
-    if (this._initialRequest) {
-      return this._initialRequest.promise;
-    }
-    let resolved = false;
-    this._initialRequest = new PromiseDelegate<boolean>();
-    this.on('synced', (event: any) => {
-      if (this._initialRequest) {
-        this._initialRequest.resolve(event.synced);
-        resolved = true;
-      }
-    });
-    // similar logic as in the upstream plugin
-    setTimeout(() => {
-      if (!resolved && this._initialRequest) {
-        this._initialRequest.resolve(false);
-      }
-    }, 1000);
-    return this._initialRequest.promise;
-  }
-
-  putInitializedState(): void {
-    // no-op
-  }
-
-  acquireLock(): Promise<number> {
-    return Promise.resolve(0);
-  }
-
-  releaseLock(lock: number): void {
-    // no-op
-  }
-
-  private _initialRequest: PromiseDelegate<boolean> | null = null;
-}
-
-/**
- * A public namespace for WebRTC options
- */
-export namespace IWebRtcProvider {
-  export interface IOptions extends IDocumentProviderFactory.IOptions {
-    room: string;
-    signalingUrls?: string[];
-  }
-
-  export interface IYjsWebRtcOptions {
-    signaling: Array<string>;
-    password: string | null;
-    awareness: Awareness;
-    maxConns: number;
-    filterBcConns: boolean;
-    peerOpts: any;
-  }
-}
-
-/**
- * A private (so far) namespace for Yjs/WebRTC implementation details
- */
-namespace WebRtcProvider {
-  /**
-   * Re-map Lab provider options to yjs ones.
-   */
-  export function yProviderOptions(
-    options: IWebRtcProvider.IOptions
-  ): IWebRtcProvider.IYjsWebRtcOptions {
-    return {
-      signaling:
-        options.signalingUrls && options.signalingUrls.length
-          ? options.signalingUrls
-          : [
-              'wss://signaling.yjs.dev',
-              'wss://y-webrtc-signaling-eu.herokuapp.com',
-              'wss://y-webrtc-signaling-us.herokuapp.com',
-            ],
-      password: null,
-      awareness: new Awareness(options.ymodel.ydoc),
-      maxConns: 20 + Math.floor(Math.random() * 15), // the random factor reduces the chance that n clients form a cluster
-      filterBcConns: true,
-      peerOpts: {}, // simple-peer options. See https://github.com/feross/simple-peer#peer--new-peeropts
-    };
-  }
-}
 
 /**
  * The command IDs used by the application extension.
@@ -284,24 +169,26 @@ const about: JupyterFrontEndPlugin<void> = {
 const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
-  activate: (app: JupyterFrontEnd): IDocumentProviderFactory => {
-    const roomName = getParam('--room', '').trim();
-    const host = window.location.host;
-    // enable if both the page config option (deployment wide) and the room name (user) are defined
-    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
-    const signalingUrls = JSON.parse(
-      PageConfig.getOption('fullWebRtcSignalingUrls') || 'null'
-    );
-    // default to a random id to not collaborate with others by default
-    const room = `${host}-${roomName || UUID.uuid4()}`;
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator
+  ): IDocumentProviderFactory => {
+    const trans = translator.load('jupyterlab');
+    const collaborative = PageConfig.getOption('collaborative') === 'true';
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
-      return collaborative
-        ? new WebRtcProvider({
-            room,
-            ...options,
-            ...(signalingUrls && signalingUrls.length ? { signalingUrls } : {}),
-          })
-        : new ProviderMock();
+      if (collaborative) {
+        console.warn(
+          trans.__(
+            'The `collaborative` feature was enabled, but no docprovider is available.'
+          )
+        );
+        console.info(
+          trans.__(
+            'Install `jupyterlab-webrtc-docprovider` to enable WebRTC-based collaboration.'
+          )
+        );
+      }
+      return new ProviderMock();
     };
     return factory;
   },

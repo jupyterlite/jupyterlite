@@ -324,26 +324,19 @@ The following generated configuration powers the Demo, and is generated prior to
 building the docs site, copied in during the build, and fetched by browsers from
 `/_static/jupyter-lite.json`.
 
-```{include} ../build/docs-app/jupyter-lite.json
-
+```{literalinclude} ../build/docs-app/jupyter-lite.json
+:language: json
 ```
 
 ### Demo Extension Notes
 
 The `federated_extensions` above are copied from the documentation environment prior to
 building this site with [Sphinx](deploying.md#sphinx), and are meant to exercise
-different kinds of extensions, including themes, MIME renderers, and Widgets. Some
-transient dependencies _also_ include labextensions, but don't work entirely correctly.
+different kinds of extensions, including themes, MIME renderers, Widgets, and an shared
+document provider for [RTC](./rtc/index.md).
 
-| extension                             | notes                        | working issue |
-| ------------------------------------- | ---------------------------- | ------------- |
-| `@jupyter-widgets/jupyterlab-manager` | needs [Jupyter Kernel Comms] | [#18]         |
-| `@jupyterlab/server-proxy`            | needs server extension       |               |
-| `nbdime`                              | needs server extension       |               |
-
-[#18]: https://github.com/jupyterlite/jupyterlite/issues/18
-[jupyter kernel comms]:
-  https://jupyter-client.readthedocs.io/en/stable/messaging.html?highlight=comms#custom-messages
+It disables autodetection of [environment extensions](#environment-extensions), as the
+outer environment includes a number of features that don't work
 
 ## The Hard Way
 
