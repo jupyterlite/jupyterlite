@@ -98,7 +98,15 @@ function formatResult(res: any): any {
 
 // eslint-disable-next-line
 // @ts-ignore: breaks typedoc
-const pyodideReadyPromise = loadPyodideAndPackages();
+const pyodideReadyPromise = loadPyodideAndPackages().then(() => {
+  // Let the client know the kernel has finished starting
+  // This is done after pyodideReadyPromise resolves to avoid race conditions
+  //
+  // TODO: This might be a great opportunity to report kernel startup errors to the user
+  postMessage({
+    type: 'kernel_started',
+  });
+});
 
 /**
  * Send a comm message to the front-end.
@@ -262,6 +270,15 @@ async function execute(content: any) {
   interpreter.input = input;
   interpreter.getpass = getpass;
 
+  // Check to see if the user clicked the interrupt button while the kernel
+  // wasn't executing code. If it's not caught here, it will cause the cell
+  // to fail to execute.
+  try {
+    pyodide.checkInterrupt();
+  } catch {
+    // Ignore
+  }
+
   const res = await kernel.run(content.code);
   const results = formatResult(res);
 
@@ -415,7 +432,7 @@ self.onmessage = async (event: MessageEvent): Promise<void> => {
 
     case 'set-interrupt-buffer':
       results = setInterruptBuffer(messageContent);
-      break;
+      return; // Do not reply. A reply would end any in-process cell execution
 
     default:
       break;
