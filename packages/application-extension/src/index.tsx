@@ -508,6 +508,7 @@ const opener: JupyterFrontEndPlugin<void> = {
               router.navigate(`${pathname}${search}`, { skipRouting: true });
 
               if (labShell) {
+                // open the folder where the files are located on startup
                 const showInBrowser = () => {
                   commands.execute('docmanager:show-in-file-browser');
                   labShell.currentChanged.disconnect(showInBrowser);
