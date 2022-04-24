@@ -452,10 +452,12 @@ const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
+  optional: [ILabShell],
   activate: (
     app: JupyterFrontEnd,
     router: IRouter,
-    docManager: IDocumentManager
+    docManager: IDocumentManager,
+    labShell: ILabShell | null
   ): void => {
     const { commands } = app;
 
@@ -504,6 +506,16 @@ const opener: JupyterFrontEndPlugin<void> = {
               url.searchParams.delete('path');
               const { pathname, search } = url;
               router.navigate(`${pathname}${search}`, { skipRouting: true });
+
+              if (labShell) {
+                // open the folder where the files are located on startup
+                const showInBrowser = () => {
+                  commands.execute('docmanager:show-in-file-browser');
+                  labShell.currentChanged.disconnect(showInBrowser);
+                };
+
+                labShell.currentChanged.connect(showInBrowser);
+              }
               break;
             }
           }
