@@ -223,7 +223,7 @@ async function main() {
   const { SingleWidgetApp } = require('@jupyterlite/application');
   const app = new SingleWidgetApp({ serviceManager, mimeExtensions });
 
-  app.name = PageConfig.getOption('appName') || 'ConsoLite';
+  app.name = PageConfig.getOption('appName') || 'REPLite';
 
   app.registerPluginModules(mods);
 
