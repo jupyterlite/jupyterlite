@@ -335,8 +335,9 @@ building this site with [Sphinx](deploying.md#sphinx), and are meant to exercise
 different kinds of extensions, including themes, MIME renderers, Widgets, and an shared
 document provider for [RTC](./rtc/index.md).
 
-It disables autodetection of [environment extensions](#environment-extensions), as the
-outer environment includes a number of features that don't work
+The demo disables autodetection of environment extensions with `ignore_sys_prefix`, as
+the outer development environment includes a number of extensions with features that
+don't work.
 
 ## The Hard Way
 
