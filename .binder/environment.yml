@@ -30,7 +30,7 @@ dependencies:
   - jupyterlab-markup
   - jupyterlab-myst
   - jupyterlab-tour >=3.1.0
-  - jupyterlab-webrtc-docprovider
+  - jupyterlab-webrtc-docprovider >=0.1.1
   - theme-darcula >=3,<4
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
