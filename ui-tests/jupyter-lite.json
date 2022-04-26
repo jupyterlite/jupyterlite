@@ -3,11 +3,6 @@
   "jupyter-config-data": {
     "appName": "JupyterLite UI Tests",
     "collaborative": true,
-    "exposeAppInBrowser": true,
-    "disabledExtensions": [
-      "@jupyterlab/server-proxy",
-      "jupyterlab-server-proxy",
-      "nbdime-jupyterlab"
-    ]
+    "exposeAppInBrowser": true
   }
 }

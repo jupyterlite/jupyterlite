@@ -87,7 +87,7 @@
             "type": "string",
             "format": "uri"
           },
-          "description": "WebSocket URLs to use for finding WebRTC peers",
+          "description": "WebSocket URLs to use for finding WebRTC peers. Requires `jupyterlab-webrtc-docprovider`.",
           "default": [
             "wss://signaling.yjs.dev",
             "wss://y-webrtc-signaling-eu.herokuapp.com",
