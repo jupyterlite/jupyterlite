@@ -64,9 +64,9 @@ class LiteBuildConfig(LoggingConfigurable):
         config=True
     )
 
-    ignore_sys_prefix: bool = Bool(
-        False,
-        help="ignore lab components from sys.prefix, such as federated_extensions",
+    ignore_sys_prefix: _Tuple[str] = TypedTuple(
+        Unicode(),
+        help="list of components from sys.prefix to ignore." "Values: ['federated_extensions', 'mathjax', 'translations']",
     ).tag(config=True)
 
     mathjax_dir: Path = CPath(

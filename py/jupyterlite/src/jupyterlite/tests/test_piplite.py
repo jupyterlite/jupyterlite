@@ -51,7 +51,7 @@ def test_piplite_urls(
 
     config = {
         "LiteBuildConfig": {
-            "ignore_sys_prefix": True,
+            "ignore_sys_prefix": ["federated_extensions"],
             "piplite_urls": piplite_urls,
             "apps": ["lab"],
         }

@@ -80,7 +80,7 @@ class TranslationAddon(BaseAddon):
         }
         packs = {"en": {"data": {}, "message": "Language pack 'en' not installed!"}}
 
-        if not self.manager.ignore_sys_prefix:
+        if not "translations" in self.manager.ignore_sys_prefix:
             try:
                 from jupyterlab_server.translation_utils import (
                     get_language_pack,
