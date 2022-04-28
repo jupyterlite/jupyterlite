@@ -64,12 +64,6 @@ class LiteBuildConfig(LoggingConfigurable):
         config=True
     )
 
-    ignore_sys_prefix: _Tuple[str] = TypedTuple(
-        Unicode(),
-        help="list of components from sys.prefix to ignore."
-        "Values: ['federated_extensions', 'mathjax', 'translations']",
-    ).tag(config=True)
-
     mathjax_dir: Path = CPath(
         help="A local path to a complete/sufficient installation of MathJax 2"
     ).tag(config=True)

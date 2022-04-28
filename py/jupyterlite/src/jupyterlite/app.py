@@ -15,9 +15,9 @@ from .trait_types import CPath
 lite_flags = {
     "ignore-sys-prefix": (
         {
-            "LiteBuildConfig": {
-                "ignore_sys_prefix": ["federated_extensions", "mathjax", "translations"]
-            }
+            "FederatedExtensionAddon": {"ignore_sys_prefix": True},
+            "TranslationAddon": {"ignore_sys_prefix": True},
+            "MathjaxAddon": {"ignore_sys_prefix": True},
         },
         "Do not copy anything from sys.prefix",
     ),
@@ -127,8 +127,6 @@ class ManagedApp(BaseLiteApp):
             kwargs["base_url"] = self.base_url
         if self.federated_extensions is not None:
             kwargs["federated_extensions"] = self.federated_extensions
-        if self.ignore_sys_prefix is not None:
-            kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
         if self.piplite_urls is not None:
             kwargs["piplite_urls"] = self.piplite_urls
         if self.pyodide_url is not None:

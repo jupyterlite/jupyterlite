@@ -50,11 +50,11 @@ def test_piplite_urls(
             piplite_urls = [WHEELS[0].name]
 
     config = {
+        "FederatedExtensionAddon": {"ignore_sys_prefix": True},
         "LiteBuildConfig": {
-            "ignore_sys_prefix": ["federated_extensions"],
             "piplite_urls": piplite_urls,
             "apps": ["lab"],
-        }
+        },
     }
     print("CONFIG", config)
 

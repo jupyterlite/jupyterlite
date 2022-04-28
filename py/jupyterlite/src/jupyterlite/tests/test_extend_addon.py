@@ -29,7 +29,7 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
 @pytest.fixture
 def a_configured_mock_addon(a_mock_addon, an_empty_lite_dir, monkeypatch):
     config = {
-        "LiteBuildConfig": {"ignore_sys_prefix": ["federated_extensions"]},
+        "FederatedExtensionAddon": {"ignore_sys_prefix": True},
         "MockAddon": {"some_feature": 42},
     }
     conf = an_empty_lite_dir / "jupyter_lite_config.json"
