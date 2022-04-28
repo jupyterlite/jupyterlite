@@ -130,6 +130,18 @@ environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 This discovery behavior can be disabled with the CLI flag `--ignore-sys-prefix` or
 `LiteBuildConfig/ignore_sys_prefix`.
 
+The `--ignore-sys-prefix` CLI flag will disable using components from the JupyterLab
+environment for _all_ addons. This behavior can be configured in a more granular way on
+a per-addon basis, for example:
+
+```json
+{
+  "LiteBuildConfig": {
+    "ignore_sys_prefix": ["federated_extensions"]
+  }
+}
+```
+
 #### Extensions for a Specific App
 
 Similar to the above, by updating `$YOUR_JUPYTERLITE/{app}/jupyter-lite.json`, the
