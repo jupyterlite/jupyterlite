@@ -24,6 +24,11 @@ import { liteIcon } from '@jupyterlite/ui-components';
 import { Widget } from '@lumino/widgets';
 
 /**
+ * The name of the translation bundle for internationalized strings.
+ */
+const I18N_BUNDLE = 'jupyterlite';
+
+/**
  * A plugin to add buttons to the console toolbar.
  */
 const buttons: JupyterFrontEndPlugin<void> = {
@@ -41,7 +46,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
     }
 
     const { commands } = app;
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(I18N_BUNDLE);
 
     // wrapper commands to be able to override the icon
     const runCommand = 'repl:run';
@@ -172,9 +177,11 @@ const status: JupyterFrontEndPlugin<ILabStatus> = {
   id: '@jupyterlite/repl-extension:status',
   autoStart: true,
   provides: ILabStatus,
-  activate: (app: JupyterFrontEnd) => {
+  requires: [ITranslator],
+  activate: (app: JupyterFrontEnd, translator: ITranslator) => {
     if (!(app instanceof SingleWidgetApp)) {
-      throw new Error(`${status.id} must be activated in SingleWidgetApp.`);
+      const trans = translator.load(I18N_BUNDLE);
+      throw new Error(trans.__('%1 must be activated in SingleWidgetApp.', status.id));
     }
     return app.status;
   },
@@ -187,9 +194,11 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
   id: '@jupyterlite/repl-extension:paths',
   autoStart: true,
   provides: JupyterFrontEnd.IPaths,
-  activate: (app: JupyterFrontEnd): JupyterFrontEnd.IPaths => {
+  requires: [ITranslator],
+  activate: (app: JupyterFrontEnd, translator: ITranslator): JupyterFrontEnd.IPaths => {
     if (!(app instanceof SingleWidgetApp)) {
-      throw new Error(`${paths.id} must be activated in SingleWidgetApp.`);
+      const trans = translator.load(I18N_BUNDLE);
+      throw new Error(trans.__('%1 must be activated in SingleWidgetApp.', paths.id));
     }
     return app.paths;
   },

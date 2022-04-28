@@ -69,6 +69,12 @@ namespace CommandIDs {
 }
 
 /**
+ * The name of the translation bundle for internationalized strings.
+ */
+
+const I18N_BUNDLE = 'jupyterlite';
+
+/**
  * Add a command to show an About dialog.
  */
 const about: JupyterFrontEndPlugin<void> = {
@@ -83,7 +89,7 @@ const about: JupyterFrontEndPlugin<void> = {
     menu: IMainMenu | null
   ): void => {
     const { commands } = app;
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Help');
 
     commands.addCommand(CommandIDs.about, {
@@ -169,14 +175,15 @@ const about: JupyterFrontEndPlugin<void> = {
 const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
   id: '@jupyterlite/application-extension:docprovider',
   provides: IDocumentProviderFactory,
+  requires: [ITranslator],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator
   ): IDocumentProviderFactory => {
-    const trans = translator.load('jupyterlab');
     const collaborative = PageConfig.getOption('collaborative') === 'true';
     const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       if (collaborative) {
+        const trans = translator.load(I18N_BUNDLE);
         console.warn(
           trans.__(
             'The `collaborative` feature was enabled, but no docprovider is available.'
@@ -209,7 +216,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     palette: ICommandPalette | null,
     factory: IFileBrowserFactory | null
   ) => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(I18N_BUNDLE);
     const { commands, serviceManager, shell } = app;
     const { contents } = serviceManager;
 
@@ -430,7 +437,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     factory: IFileBrowserFactory,
     translator: ITranslator
   ): void => {
-    const trans = translator.load('jupyterlab');
+    const trans = translator.load(I18N_BUNDLE);
     const { commands } = app;
     const { tracker } = factory;
 
