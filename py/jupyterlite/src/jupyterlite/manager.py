@@ -68,10 +68,7 @@ class LiteManager(LiteBuildConfig):
             self.log.debug(f"[lite] [addon] [{name}] load ...")
             try:
                 addon_inst = addon.load()(manager=self)
-                if (
-                    isinstance(self.ignore_sys_prefix, bool)
-                    and self.ignore_sys_prefix == True
-                ) or name in self.ignore_sys_prefix:
+                if self._is_sys_prefix_ignored(name):
                     self.log.debug(f"[lite] [addon] ignore sys prefix for [{name}] ...")
                     addon_inst.ignore_sys_prefix = True
                 addons[name] = addon_inst
@@ -137,3 +134,9 @@ class LiteManager(LiteBuildConfig):
                 yield task
 
         return _delayed_gather
+
+    def _is_sys_prefix_ignored(self, addon):
+        ignore = self.ignore_sys_prefix
+        all_ignored = isinstance(ignore, bool) and ignore == True
+        addon_ignored = isinstance(ignore, tuple) and addon in ignore
+        return all_ignored or addon_ignored
