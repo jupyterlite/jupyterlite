@@ -33,10 +33,7 @@ class BaseAddon(LoggingConfigurable):
 
     manager: LiteManager = Instance(LiteManager)
 
-    ignore_sys_prefix: bool = Bool(
-        False,
-        help="ignore components from sys.prefix",
-    ).tag(config=True)
+    ignore_sys_prefix: bool = Bool(False)
 
     def __init__(self, manager, *args, **kwargs):
         kwargs["parent"] = manager
