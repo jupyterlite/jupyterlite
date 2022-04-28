@@ -69,7 +69,7 @@ class LiteManager(LiteBuildConfig):
             try:
                 addon_kwargs = dict(manager=self)
                 if self._is_sys_prefix_ignored(name):
-                    self.log.debug(f"[lite] [addon] ignore sys prefix for [{name}] ...")
+                    self.log.debug(f"[lite] [addon] [{name}] ... ignore sys prefix")
                     addon_kwargs.update(ignore_sys_prefix=True)
                 addon_inst = addon.load()(**addon_kwargs)
                 addons[name] = addon_inst
