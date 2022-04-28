@@ -1,10 +1,4 @@
 {
-  "FederatedExtensionAddon": {
-    "ignore_sys_prefix": true
-  },
-  "MathjaxAddon": {
-    "ignore_sys_prefix": true
-  },
   "LiteBuildConfig": {
     "contents": ["."],
     "federated_extensions": [
@@ -30,6 +24,7 @@
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a12/jupyterlite_p5_kernel-0.1.0a12-py3-none-any.whl"
     ],
     "output_dir": "../build/docs-app",
+    "ignore_sys_prefix": ["federated_extensions", "mathjax"],
     "piplite_urls": [
       "https://files.pythonhosted.org/packages/e6/0b/24795939622d60f4b453aa7040f23c6a6f8b44c7c026c3b42d9842e6cc31/fastjsonschema-2.15.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
