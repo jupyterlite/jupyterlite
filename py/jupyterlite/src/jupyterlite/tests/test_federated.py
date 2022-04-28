@@ -29,9 +29,9 @@ def test_federated_extensions(
         federated_extensions = [ext.name]
 
     config = {
-        "FederatedExtensionAddon": {"ignore_sys_prefix": True},
         "LiteBuildConfig": {
             "federated_extensions": federated_extensions,
+            "ignore_sys_prefix": ["federated_extensions"],
             "overrides": ["overrides.json"],
             "apps": ["lab"],
         },

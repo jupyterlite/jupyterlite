@@ -68,7 +68,10 @@ class LiteManager(LiteBuildConfig):
             self.log.debug(f"[lite] [addon] [{name}] load ...")
             try:
                 addon_inst = addon.load()(manager=self)
-                if self.ignore_sys_prefix == True or name in self.ignore_sys_prefix:
+                if (
+                    isinstance(self.ignore_sys_prefix, bool)
+                    and self.ignore_sys_prefix == True
+                ) or name in self.ignore_sys_prefix:
                     self.log.debug(f"[lite] [addon] ignore sys prefix for [{name}] ...")
                     addon_inst.ignore_sys_prefix = True
                 addons[name] = addon_inst

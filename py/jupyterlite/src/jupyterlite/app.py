@@ -14,11 +14,7 @@ from .trait_types import CPath
 #: some flags we use
 lite_flags = {
     "ignore-sys-prefix": (
-        {
-            "FederatedExtensionAddon": {"ignore_sys_prefix": True},
-            "TranslationAddon": {"ignore_sys_prefix": True},
-            "MathjaxAddon": {"ignore_sys_prefix": True},
-        },
+        {"LiteBuildConfig": {"ignore_sys_prefix": True}},
         "Do not copy anything from sys.prefix",
     ),
     "no-sourcemaps": (
