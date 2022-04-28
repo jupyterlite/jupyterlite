@@ -7,7 +7,7 @@ import time
 import warnings
 from pathlib import Path
 
-from traitlets import Instance
+from traitlets import Bool, Instance
 from traitlets.config import LoggingConfigurable
 
 from ..constants import (
@@ -32,6 +32,8 @@ class BaseAddon(LoggingConfigurable):
     """
 
     manager: LiteManager = Instance(LiteManager)
+
+    ignore_sys_prefix: bool = Bool(False)
 
     def __init__(self, manager, *args, **kwargs):
         kwargs["parent"] = manager
@@ -276,3 +278,6 @@ class BaseAddon(LoggingConfigurable):
                     is_ignored = True
                     break
         return is_ignored
+
+    def is_sys_prefix_ignored(self):
+        return self.ignore_sys_prefix

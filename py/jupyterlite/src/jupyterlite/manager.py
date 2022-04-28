@@ -67,7 +67,11 @@ class LiteManager(LiteBuildConfig):
                 continue
             self.log.debug(f"[lite] [addon] [{name}] load ...")
             try:
-                addon_inst = addon.load()(manager=self)
+                addon_kwargs = dict(manager=self)
+                if self._is_sys_prefix_ignored(name):
+                    self.log.debug(f"[lite] [addon] [{name}] ... ignore sys prefix")
+                    addon_kwargs.update(ignore_sys_prefix=True)
+                addon_inst = addon.load()(**addon_kwargs)
                 addons[name] = addon_inst
                 for one in sorted(addon_inst.__all__):
                     self.log.debug(f"""[lite] [addon] [{name}] ... will {one}""")
@@ -131,3 +135,7 @@ class LiteManager(LiteBuildConfig):
                 yield task
 
         return _delayed_gather
+
+    def _is_sys_prefix_ignored(self, addon):
+        ignore = self.ignore_sys_prefix
+        return addon in ignore if isinstance(ignore, tuple) else ignore

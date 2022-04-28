@@ -10,8 +10,9 @@ from pathlib import Path
 from typing import Optional as _Optional
 from typing import Text as _Text
 from typing import Tuple as _Tuple
+from typing import Union as _Union
 
-from traitlets import Bool, CInt, Dict, Tuple, Unicode, default
+from traitlets import Bool, CInt, Dict, Tuple, Unicode, Union, default
 from traitlets.config import LoggingConfigurable
 
 from . import constants as C
@@ -64,9 +65,8 @@ class LiteBuildConfig(LoggingConfigurable):
         config=True
     )
 
-    ignore_sys_prefix: bool = Bool(
-        False,
-        help="ignore lab components from sys.prefix, such as federated_extensions",
+    ignore_sys_prefix: _Union[bool, _Tuple[_Text]] = Union(
+        [Bool(), TypedTuple(Unicode())], help="ignore components from sys.prefix"
     ).tag(config=True)
 
     mathjax_dir: Path = CPath(

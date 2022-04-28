@@ -57,7 +57,7 @@ class FederatedExtensionAddon(BaseAddon):
         """yield a doit task to copy each federated extension into the output_dir"""
         root = ENV_EXTENSIONS
 
-        if not manager.ignore_sys_prefix:
+        if not self.is_sys_prefix_ignored():
             for pkg_json in self.env_extensions(root):
                 yield from self.copy_one_extension(pkg_json)
 

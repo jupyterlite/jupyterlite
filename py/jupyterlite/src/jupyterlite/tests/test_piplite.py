@@ -51,10 +51,10 @@ def test_piplite_urls(
 
     config = {
         "LiteBuildConfig": {
-            "ignore_sys_prefix": True,
             "piplite_urls": piplite_urls,
             "apps": ["lab"],
-        }
+            "ignore_sys_prefix": ["federated_extensions"],
+        },
     }
     print("CONFIG", config)
 

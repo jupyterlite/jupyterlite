@@ -31,10 +31,10 @@ def test_federated_extensions(
     config = {
         "LiteBuildConfig": {
             "federated_extensions": federated_extensions,
-            "ignore_sys_prefix": True,
+            "ignore_sys_prefix": ["federated_extensions"],
             "overrides": ["overrides.json"],
             "apps": ["lab"],
-        }
+        },
     }
     overrides = {"the-smallest-extension:plugin": {}}
 

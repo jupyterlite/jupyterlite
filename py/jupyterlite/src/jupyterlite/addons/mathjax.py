@@ -44,7 +44,7 @@ class MathjaxAddon(BaseAddon):
 
         if manager_path is not None:
             path = manager_path
-        elif not self.manager.ignore_sys_prefix and MATHJAX_PATH:
+        elif not self.is_sys_prefix_ignored() and MATHJAX_PATH:
             path = MATHJAX_PATH
 
         if path and path.exists():
@@ -97,21 +97,7 @@ class MathjaxAddon(BaseAddon):
         )
 
     def log_status(self):
-        """
-
-        def mathjax_path(self):
-            path = None
-
-            if self.manager.mathjax_dir:
-                path = self.manager.mathjax_dir
-            elif not self.manager.ignore_sys_prefix and MATHJAX_PATH:
-                path = MATHJAX_PATH
-
-            if path and path.exists():
-                return path
-
-        """
-        ignore = self.manager.ignore_sys_prefix
+        ignore = self.is_sys_prefix_ignored()
         print(
             "     jupyter-server-mathjax:",
             MATHJAX_PATH,
