@@ -250,7 +250,6 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     app.router.get('/api/kernelspecs', async (req: Router.IRequest) => {
       const res = kernelspecs.specs;
-      console.log('KERNELSPECS', res);
       return new Response(JSON.stringify(res));
     });
   },
