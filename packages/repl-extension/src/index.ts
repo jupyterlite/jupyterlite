@@ -194,11 +194,9 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
   id: '@jupyterlite/repl-extension:paths',
   autoStart: true,
   provides: JupyterFrontEnd.IPaths,
-  requires: [ITranslator],
-  activate: (app: JupyterFrontEnd, translator: ITranslator): JupyterFrontEnd.IPaths => {
+  activate: (app: JupyterFrontEnd): JupyterFrontEnd.IPaths => {
     if (!(app instanceof SingleWidgetApp)) {
-      const trans = translator.load(I18N_BUNDLE);
-      throw new Error(trans.__('%1 must be activated in SingleWidgetApp.', paths.id));
+      throw new Error(`${paths.id} must be activated in SingleWidgetApp.`);
     }
     return app.paths;
   },
