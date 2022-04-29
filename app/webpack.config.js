@@ -176,7 +176,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
   const entryPoint = `./${name}/build/bootstrap.js`;
   fs.copySync('bootstrap.js', entryPoint);
   allEntryPoints[`${name}/bundle`] = entryPoint;
-  allEntryPoints[`${name}/publicpath`] = path.resolve(name, 'publicpath.js');
+  allEntryPoints[`${name}/publicpath`] = `./${name}/publicpath.js`;
 
   // Use templates to create cache-busting templates
   for (const page of data.jupyterlite.pages) {
@@ -190,8 +190,6 @@ for (const [name, data] of Object.entries(liteAppData)) {
     );
   }
 }
-
-// const name = path.basename(path.dirname(path.resolve(packageJson)));
 
 /**
  * Define a custom plugin to ensure schemas are statically compiled
