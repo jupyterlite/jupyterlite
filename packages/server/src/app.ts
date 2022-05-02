@@ -23,6 +23,7 @@ export class JupyterLiteServer extends Application<never> {
   constructor(options: Application.IOptions<never>) {
     super(options);
     this._serviceManager = new ServiceManager({
+      standby: 'never',
       serverSettings: {
         ...ServerConnection.makeSettings(),
         WebSocket,
