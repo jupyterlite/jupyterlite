@@ -34,7 +34,7 @@ async function createModule(scope, module) {
 /**
  * The main entry point for the application.
  */
-async function main() {
+export async function main() {
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
   let baseMods = [
@@ -238,5 +238,3 @@ async function main() {
   await app.start();
   await app.restored;
 }
-
-main();

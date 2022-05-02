@@ -236,7 +236,7 @@ const kernelSpecPlugin: JupyterLiteServerPlugin<IKernelSpecs> = {
   autoStart: true,
   provides: IKernelSpecs,
   activate: (app: JupyterLiteServer) => {
-    return new KernelSpecs({});
+    return new KernelSpecs();
   },
 };
 

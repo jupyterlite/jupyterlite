@@ -42,7 +42,7 @@ async function createModule(scope, module) {
 /**
  * The main entry point for the application.
  */
-async function main() {
+export async function main() {
   // Make sure the styles have loaded
   await styles;
 
@@ -215,5 +215,3 @@ async function main() {
   await lab.start();
   await lab.restored;
 }
-
-main();

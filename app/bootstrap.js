@@ -19,6 +19,7 @@
  * assumed that the page HTML includes a script tag with the id
  * `jupyter-config-data` containing the configuration as valid JSON.
  */
+
 let _CONFIG_DATA = null;
 function getOption(name) {
   if (_CONFIG_DATA === null) {
@@ -88,5 +89,5 @@ void (async function bootstrap() {
   // Now that all federated containers are initialized with the main
   // container, we can import the main function.
   let main = (await import('./index.js')).main;
-  window.addEventListener('load', main);
+  void main();
 })();

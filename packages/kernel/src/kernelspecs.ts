@@ -7,15 +7,6 @@ import { IKernel, IKernelSpecs } from './tokens';
  */
 export class KernelSpecs implements IKernelSpecs {
   /**
-   * Construct a new KernelSpecs.
-   *
-   * @param options The instantiation options.
-   */
-  constructor(options: KernelSpecs.IOptions) {
-    // no-op
-  }
-
-  /**
    * Get the kernel specs.
    */
   get specs(): KernelSpec.ISpecModels | null {
@@ -54,11 +45,6 @@ export class KernelSpecs implements IKernelSpecs {
  * A namespace for KernelSpecs statics.
  */
 export namespace KernelSpecs {
-  /**
-   * The instantiation options for a KernelSpecs
-   */
-  export interface IOptions {}
-
   /**
    * Registration options for a new kernel.
    */
