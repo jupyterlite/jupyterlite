@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/iframe-extension",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "description": "JupyterLite - IFrame Viewer",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
