@@ -1,5 +1,5 @@
 [project]
-version = "0.1.0b6"
+version = "0.1.0b7"
 
 [tool.isort]
 profile = "black"
