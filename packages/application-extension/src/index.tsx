@@ -260,6 +260,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })],
           });
         }
+        await context.save();
         const content = await formatContent(context.path);
         downloadContent(content, context.path);
       },
@@ -286,6 +287,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
+            await contents.save(item.path);
             const content = await formatContent(item.path);
             downloadContent(content, item.name);
           });
