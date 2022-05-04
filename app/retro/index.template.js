@@ -81,7 +81,10 @@ export async function main() {
     ),
     require('@jupyterlab/console-extension'),
     require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
-      ['@jupyterlab/docmanager-extension:plugin'].includes(id)
+      [
+        '@jupyterlab/docmanager-extension:plugin',
+        '@jupyterlab/docmanager-extension:manager'
+      ].includes(id)
     ),
     require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
       [
@@ -126,6 +129,7 @@ export async function main() {
     }
     case 'notebooks': {
       baseMods = baseMods.concat([
+        require('@jupyterlab/cell-toolbar-extension'),
         require('@jupyterlab/completer-extension').default.filter(({ id }) =>
           ['@jupyterlab/completer-extension:notebooks'].includes(id)
         ),
