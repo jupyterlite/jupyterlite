@@ -287,7 +287,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            await contents.save(item.path);
             const content = await formatContent(item.path);
             downloadContent(content, item.name);
           });
