@@ -260,6 +260,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             buttons: [Dialog.okButton({ label: trans.__('OK') })],
           });
         }
+        await context.save();
         const content = await formatContent(context.path);
         downloadContent(content, context.path);
       },
