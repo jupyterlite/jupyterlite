@@ -11,6 +11,7 @@
 ```{toctree}
 :maxdepth: 2
 
+install/index
 howto/index
 contributing
 changelog
