@@ -1744,6 +1744,18 @@
     "@lumino/widgets" "^1.30.0"
     yjs "^13.5.17"
 
+"@jupyterlab/documentsearch-extension@~3.4.1":
+  version "3.4.1"
+  resolved "https://registry.npmjs.org/@jupyterlab/documentsearch-extension/-/documentsearch-extension-3.4.1.tgz#1de70849763ae23e1f0d49f5fc806da6e8eefc24"
+  integrity sha512-IGrTGN0Z65LfILYdIWrn6lE4WOUiCBCR82o1NUtQBS+J1nOMdGBB0XdgIz+iTMnonLq6IJBMy3dnrsiR6mjc9w==
+  dependencies:
+    "@jupyterlab/application" "^3.4.1"
+    "@jupyterlab/apputils" "^3.4.1"
+    "@jupyterlab/documentsearch" "^3.4.1"
+    "@jupyterlab/settingregistry" "^3.4.1"
+    "@jupyterlab/translation" "^3.4.1"
+    "@lumino/widgets" "^1.30.0"
+
 "@jupyterlab/documentsearch@^3.4.1":
   version "3.4.1"
   resolved "https://registry.npmjs.org/@jupyterlab/documentsearch/-/documentsearch-3.4.1.tgz#5d9ad5413d9004c2a9586485377dd1b671292a17"
