@@ -11,8 +11,7 @@
 ```{toctree}
 :maxdepth: 2
 
-user-guide
-developer-guide
+howto/index
 contributing
 changelog
 ```
