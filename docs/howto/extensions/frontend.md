@@ -1,3 +1,3 @@
-# How to create a Frontend Extension
+# How to create a frontend extension
 
 TODO
