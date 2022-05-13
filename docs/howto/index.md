@@ -9,6 +9,7 @@ tools and extensions from the Jupyter ecosystem.
 :maxdepth: 1
 
 configure/simple_extensions
+configure/storage
 ```
 
 ## Contents
