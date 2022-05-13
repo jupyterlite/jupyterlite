@@ -11,12 +11,21 @@ tools and extensions from the Jupyter ecosystem.
 configure/simple_extensions
 ```
 
+## Contents
+
+```{toctree}
+:maxdepth: 1
+
+content/files
+```
+
 ## Configuring the Python environment
 
 ```{toctree}
 :maxdepth: 1
 
 python/packages
+python/wheels
 ```
 
 ## Extensions
@@ -30,6 +39,7 @@ more features and plugins, such as frontend extensions and new kernels.
 extensions/frontend
 extensions/server
 extensions/kernel
+extensions/cli-addons
 ```
 
 ## Advanced configuration

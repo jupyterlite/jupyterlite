@@ -13,6 +13,7 @@
 
 install/index
 howto/index
+reference/index
 contributing
 changelog
 ```

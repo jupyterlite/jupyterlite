@@ -7,7 +7,7 @@
 ## Embedding the REPL on another website
 
 ```{hint}
-Check out [the documentation](../deploying.md) to learn how to deploy your own JupyterLite website
+Check out the documentation (TODO: add link) to learn how to deploy your own JupyterLite website
 and have full control on the environment and extensions installed.
 
 The snippets below use [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
