@@ -1,4 +1,4 @@
-# Real Time Collaboration
+# Enable Real Time Collaboration
 
 JupyterLite can be extended to enable basic support for Real Time Collaboration over
 WebRTC.
