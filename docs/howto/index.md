@@ -47,6 +47,7 @@ extensions/cli-addons
 ```{toctree}
 :maxdepth: 1
 
+configure/advanced/optimizations
 configure/advanced/extensions
 configure/advanced/hard
 ```
