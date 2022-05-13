@@ -11,7 +11,7 @@
 ```{toctree}
 :maxdepth: 2
 
-install/index
+quickstart/index
 howto/index
 reference/index
 contributing
