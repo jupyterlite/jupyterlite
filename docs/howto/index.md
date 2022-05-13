@@ -18,6 +18,7 @@ configure/storage
 :maxdepth: 1
 
 content/files
+content/filesystem-access
 ```
 
 ## Configuring the Python environment

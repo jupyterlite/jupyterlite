@@ -1,4 +1,4 @@
-# How to configure JupyterLite "The Hard Way"
+# The Hard Way
 
 This is an **advanced** section and you should consider the other guides first before
 resorting to the Hard Way.
