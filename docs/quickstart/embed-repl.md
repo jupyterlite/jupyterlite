@@ -1,19 +1,21 @@
-# REPL
+# Embed a live REPL on a website
 
-`REPL` is a minimal application based on the JupyterLab code console.
+JupyterLite includes a minimal `REPL` application by default, based on the JupyterLab
+code console.
 
 ![image](https://user-images.githubusercontent.com/591645/153935929-23a5d380-363e-490b-aabd-f0a780140588.png)
 
-## Embedding the REPL on another website
-
 ```{hint}
-Check out the documentation (TODO: add link) to learn how to deploy your own JupyterLite website
+Check out the [Quick Start Guide](./quick-start.md) to learn how to deploy your own JupyterLite website
 and have full control on the environment and extensions installed.
 
-The snippets below use [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
+The snippets below use the public facing [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
 ```
 
-You can embed the REPL on any website with the following code snippet:
+## Embedding the REPL on another website
+
+Once you have a JupyterLite dpeloyment ready to use, you can embed the REPL on any
+website with the following code snippet:
 
 ```html
 <iframe
@@ -82,5 +84,5 @@ prebuilt extension. For example:
 pip install jupyterlab-gt-coar-theme
 ```
 
-See [configuring](../configuring.md) for more details on how to customize the
+See the [how-to guides](../howto/index.md) for more details on how to customize the
 environment and add more themes and extensions.

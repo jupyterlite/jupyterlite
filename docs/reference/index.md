@@ -2,7 +2,7 @@
 
 ```{note}
 If you are new to JupyterLite and want to create your first deployment,
-check out the [Guides](../howto/index.md) first.
+check out the [Quick-Start Guide](../quickstart/index.md) first.
 ```
 
 ```{toctree}

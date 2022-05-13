@@ -1,1 +1,1 @@
-# Deploying your first JupyterLite website on GitHub Pages
+# Deploying your first JupyterLite website

@@ -6,8 +6,11 @@ The most common and practical way is to deploy an archive and serve the static a
 with a plain HTTP server. Or just use an available deployment!
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 
+using
 quick-start
+embed-repl
 local
+faq
 ```
