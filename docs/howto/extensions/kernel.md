@@ -1,4 +1,4 @@
-# How to create a new kernel
+# Create a custom kernel
 
 TODO:
 

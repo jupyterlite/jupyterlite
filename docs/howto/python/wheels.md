@@ -1,4 +1,4 @@
-# How to ship additional pyolite wheels
+# Ship additional pyolite wheels at build time
 
 User-installable wheels can be included at extension build time. Wheel indices can be
 generated with the `jupyter lite pip index` [CLI](./cli.ipynb#pyolite-wheels) and then

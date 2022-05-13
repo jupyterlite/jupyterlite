@@ -1,4 +1,4 @@
-# How to create a server extension
+# Create a server extension
 
 JupyterLite uses the same plugin architecture for server components as in JupyterLab.
 

@@ -1,9 +1,9 @@
-# Extending the CLI
+# Create a new addon to extend the CLI
 
-While much of the behavior of a JupyterLite application can be
-[configured](./configuring.md) or otherwise modified by [extensions][frontend], this may
-not be enough for all needs. It is also possible to extend the underlying `jupyter lite`
-[CLI](./cli.ipynb) by means of _Addons_.
+While much of the behavior of a JupyterLite application can be configured or otherwise
+modified by [extensions][frontend], this may not be enough for all needs. It is also
+possible to extend the underlying `jupyter lite` [CLI](../../reference/cli.ipynb) by
+means of _Addons_.
 
 A custom Addon can do anything to the _output folder_ of a built lite application, as
 well as modify the behavior of other addons, including the ones that comprise the core

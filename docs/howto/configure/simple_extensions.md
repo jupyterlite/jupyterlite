@@ -1,4 +1,4 @@
-# How to add additional extensions to a JupyterLite website
+# Add additional extensions to a JupyterLite website
 
 JupyterLite reuses the same system of _prebuilt_ extensions as in JupyterLab 3.0+.
 Prebuilt extensions are also sometimes called _federated extensions_. In JupyterLab they
