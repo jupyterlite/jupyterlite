@@ -8,8 +8,7 @@ tools and extensions from the Jupyter ecosystem.
 ```{toctree}
 :maxdepth: 1
 
-configure/extensions
-configure/hard
+configure/simple_extensions
 ```
 
 ## Configuring the Python environment
@@ -31,4 +30,13 @@ more features and plugins, such as frontend extensions and new kernels.
 extensions/frontend
 extensions/server
 extensions/kernel
+```
+
+## Advanced configuration
+
+```{toctree}
+:maxdepth: 1
+
+configure/advanced/extensions
+configure/advanced/hard
 ```
