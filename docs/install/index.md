@@ -3,6 +3,11 @@
 JupyterLite can be used in a multiple variety of ways.
 
 The most common and practical way is to deploy an archive and serve the static assets
-with a plain HTTP server.
+with a plain HTTP server. Or just use an available deployment!
 
-## Deploying your first JupyterLite website
+```{toctree}
+:maxdepth: 2
+
+quick-start
+local
+```

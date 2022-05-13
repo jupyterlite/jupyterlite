@@ -107,5 +107,5 @@ this is the case, users can collaborate on documents together:
 
 ![rtc-rtd](https://user-images.githubusercontent.com/591645/125045331-2af33000-e09d-11eb-909b-a7d1d46910f6.gif)
 
-See the [configuring](../configuring.md) section of the docs for more details on how to
-configure `jupyter-lite.json`.
+See the [reference](../../reference/index.md) section of the docs for more details on
+how to configure `jupyter-lite.json`.
