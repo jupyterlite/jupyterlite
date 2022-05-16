@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://jupyterlite.readthedocs.org/en/latest/schema-v0.html#",
+  "$id": "https://jupyterlite.readthedocs.org/en/latest/reference/schema-v0.html#",
   "title": "JupyterLite Schema v0",
   "description": "a schema for user-serviceable customizaton of a JupyterLite",
   "$ref": "#/definitions/top",
