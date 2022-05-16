@@ -39,6 +39,7 @@ python/wheels
 
 deployment/sphinx
 deployment/vercel-netlify
+deployment/gitlab
 ```
 
 ## Extensions

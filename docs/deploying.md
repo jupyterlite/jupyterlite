@@ -180,83 +180,6 @@ automatically get a preview link when opening a new pull request:
 [autobuild documentation for pull requests]:
   https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
 
-### Netlify
-
-[Netlify](https://www.netlify.com/) makes it easy and convenient to host static websites
-from existing git repositories, and make them widely available via their CDN.
-
-To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
-generating a new repository from the template.
-
-Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
-dependency.
-
-Finally specify `jupyter lite build --output-dir dist` as the "Build Command", and
-`dist` as "Published Directory":
-
-![netlify-build](https://user-images.githubusercontent.com/591645/124728917-4846c380-df10-11eb-8256-65e60dd3f258.png)
-
-You might also want to specify the `--debug` flag to get extra log messages:
-
-![deploy-logs](https://user-images.githubusercontent.com/591645/124779931-79d88280-df42-11eb-8f94-93d5715c18bc.png)
-
-### Vercel
-
-Just like Netlify, [Vercel](https://vercel.com) can connect to an existing git
-repository and seamlessly deploy static files on push and PR events (previews).
-
-Unfortunately, their build image only includes Python 3.6 and JupyterLite requires
-Python 3.7+.
-
-Fortunately it is possible to run arbitrary bash scripts, which provides a convenient
-escape hatch.
-
-Specify the Python packages in a `requirements-deploy.txt` file with additional
-dependencies if needed:
-
-```
-jupyterlab~=3.1.0
-jupyterlite
-```
-
-Then create a new `deploy.sh` file with the following content:
-
-```bash
-#!/bin/bash
-
-yum install wget
-
-wget -qO- https://micromamba.snakepit.net/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
-
-./bin/micromamba shell init -s bash -p ~/micromamba
-source ~/.bashrc
-
-# activate the environment and install a new version of Python
-micromamba activate
-micromamba install python=3.9 -c conda-forge -y
-
-# install the dependencies
-python -m pip install -r requirements-deploy.txt
-
-# build the JupyterLite site
-jupyter lite --version
-jupyter lite build --output-dir dist
-```
-
-[Micromamba](https://github.com/mamba-org/mamba#micromamba) creates a new self-contained
-environment, which makes it very convenient to install any required package without
-being limited by the build image.
-
-Then configure the build command and output directory on Vercel:
-
-![image](https://user-images.githubusercontent.com/591645/135726080-93ca6930-19de-4371-ad13-78f5716b7299.png)
-
-You might also want to specify the `--debug` flag to get extra log messages:
-
-```bash
-jupyter lite build --debug
-```
-
 ### GitHub Pages
 
 JupyterLite can easily be deployed on GitHub Pages, using the `jupyterlite` CLI to add
@@ -267,41 +190,10 @@ See the [JupyterLite Demo] for an example. That repository is a GitHub template 
 which makes it convenient to generate a new JupyterLite site with a single click.
 ```
 
-### GitLab Pages
-
-JupyterLite can easily be deployed on GitLab Pages, using the `jupyterlite` CLI and
-setting the `output_path` to the `public` folder in your `.gitlab-ci.yml` file.
-
-Suppose that your notebooks are stored in the `content` folder; and you don't require
-any additional python dependencies and configuration overrides, the `.gitlab-ci.yml`
-could look like.
-
-```
-image: python
-pages:
-  stage: deploy
-  before_script:
-    - python -m pip install jupyterlite
-  script:
-    - jupyter lite build --contents content --output-dir public
-  artifacts:
-    paths:
-      - public # mandatory, other folder won't work
-  only:
-    - main # the branch you want to publish
-```
-
-```{hint}
-See the [gitlab pages template] for a more involved example.
-```
-
-[gitlab pages template]: https://gitlab.com/benabel/jupyterlite-template
-
 ### Heroku
 
 > TBD
 
-[jupyterlite demo]: https://github.com/jupyterlite/demo
 [releases]: https://github.com/jupyterlite/jupyterlite/releases
 [pypi]: https://pypi.org/project/jupyterlite
 [npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
