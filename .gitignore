@@ -140,7 +140,7 @@ app/retro/tree/index.html
 
 # generated
 docs/.jupyter_cache
-docs/api/ts
+docs/reference/api/ts
 docs/jupyter_execute
 .vercel
 *.bz2
