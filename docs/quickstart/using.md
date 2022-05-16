@@ -27,7 +27,8 @@ of extensions, packages and content:
   [jupyterlite](https://github.com/jupyterlite/jupyterlite) repo, deployed to
   ReadTheDocs:
   [https://jupyterlite.rtfd.io/en/latest/try/lab](https://jupyterlite.rtfd.io/en/latest/try/lab).
-  In fact it lives really next to this current documentation.
+  In fact it lives really next to this current documentation, and you can launch the
+  different interfaces via the `Try` buttons in the top left corner of the page.
 - The JupyterLite `demo` repository:
   [https://github.com/jupyterlite/demo](https://jupyterlite.github.io/demo/). This repo
   can also be used as a template to create a your website, see the
