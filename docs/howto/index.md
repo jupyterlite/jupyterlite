@@ -12,6 +12,7 @@ configure/simple_extensions
 configure/storage
 configure/translation
 configure/rtc
+configure/latex
 ```
 
 ## Contents
@@ -30,6 +31,7 @@ content/filesystem-access
 
 python/packages
 python/wheels
+python/pyodide
 ```
 
 ## Deploying

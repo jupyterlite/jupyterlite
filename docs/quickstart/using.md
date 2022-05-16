@@ -1,6 +1,7 @@
 # Using an existing JupyterLite deployment
 
-If this is the first you hear about JupyterLite, you might want to first try it out.
+If this is the first time you hear about JupyterLite, you might want to first try it
+out.
 
 ## How is JupyterLite different than JupyterLab?
 
