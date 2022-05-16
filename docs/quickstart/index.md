@@ -9,8 +9,8 @@ with a plain HTTP server. Or just use an available deployment!
 :maxdepth: 1
 
 using
-quick-start
+deploy
 embed-repl
-local
+standalone
 faq
 ```

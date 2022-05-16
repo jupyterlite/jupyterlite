@@ -1,4 +1,4 @@
-# Deploying
+# Deploy JupyterLite on a standalone server or locally
 
 Deploying a JupyterLite site requires:
 
@@ -101,99 +101,7 @@ python -m http.server -b 127.0.0.1
 If you are using a recently-released Python 3.7+, this will correctly serve
 `application/wasm` files for pyodide.
 
-##### sphinx-autobuild
-
-If using [Sphinx](#sphinx), [sphinx-autobuild][] provides a convenient way to manage
-both static content and rich interactive HTML like your JupyterLite.
-
-```bash
-sphinx-autobuild docs docs/_build
-```
-
-This will regenerate your docs site and automatically refresh any browsers you have
-open. As your JupyterLite is mostly comprised of static assets, changes will _not_
-trigger a refresh by default.
-
-Enabling the `-a` flag _will_ allow reloading when static assets change, but at the
-price rebuild the _whole_ site when _any_ file changes... this can be improved with the
-`-j<N>` flag, but is not compatible with all sphinx extensions.
-
-```bash
-sphinx-autobuild docs docs/_build -aj8
-```
-
-[sphinx-autobuild]: https://github.com/executablebooks/sphinx-autobuild
-
 #### NodeJS
 
 Most nodejs-based servers will be able to host JupyterLite without any problems. Note,
 however, that `http-server` does not support the `application/wasm` MIME type.
-
-## On-Premises
-
-### nginx
-
-> TBD
-
-### httpd
-
-> TBD
-
-### IIS
-
-> TBD
-
-## Hosted
-
-### Binder
-
-A JupyterLite can be deployed behind `jupyter-server-proxy` using any
-[local server](#local) method. This is a good way to preview deployment interactively of
-a e.g. Lab extension that can work in both the "full" binder experience, and as a static
-preview.
-
-```{hint}
-See the JupyterLite [binder configuration] for an example.
-```
-
-[binder configuration]: https://github.com/jupyterlite/jupyterlite/tree/main/.binder
-
-### ReadTheDocs
-
-The [Sphinx](#sphinx) deployment approach will work almost transparently with
-[ReadTheDocs](https://readthedocs.org), for the small price of a `.readthedocs.yml` file
-in the root of your repository.
-
-```{hint}
-See the JupyterLite [.readthedocs.yml] for an example.
-```
-
-```{hint}
-You might also want to enable the [Autobuild Documentation for Pull Requests] feature of Read The Docs to
-automatically get a preview link when opening a new pull request:
-
-![rtd-pr-preview](https://user-images.githubusercontent.com/591645/119787419-78db1c80-bed1-11eb-9a60-5808fea59614.png)
-```
-
-[.readthedocs.yml]:
-  https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml
-[autobuild documentation for pull requests]:
-  https://docs.readthedocs.io/en/stable/pull-requests.html#preview-documentation-from-pull-requests
-
-### GitHub Pages
-
-JupyterLite can easily be deployed on GitHub Pages, using the `jupyterlite` CLI to add
-content and extensions.
-
-```{hint}
-See the [JupyterLite Demo] for an example. That repository is a GitHub template repository
-which makes it convenient to generate a new JupyterLite site with a single click.
-```
-
-### Heroku
-
-> TBD
-
-[releases]: https://github.com/jupyterlite/jupyterlite/releases
-[pypi]: https://pypi.org/project/jupyterlite
-[npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
