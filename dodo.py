@@ -1002,7 +1002,11 @@ class P:
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
     DOCS_SRC_MD = sorted(
-        [p for p in DOCS.rglob("*.md") if "docs/reference/api/ts" not in str(p.as_posix())]
+        [
+            p
+            for p in DOCS.rglob("*.md")
+            if "docs/reference/api/ts" not in str(p.as_posix())
+        ]
     )
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
