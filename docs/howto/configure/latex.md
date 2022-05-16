@@ -1,4 +1,4 @@
-## LaTeX
+# LaTeX
 
 Rendering $\LaTeX$ is generally handled in a special way when compared with most other
 renderers in JupyterLab. For this reason, it is _not_ presently covered by a _pre-built

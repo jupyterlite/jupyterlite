@@ -40,6 +40,7 @@ python/pyodide
 ```{toctree}
 :maxdepth: 1
 
+../quickstart/deploy
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
@@ -66,6 +67,7 @@ extensions/cli-addons
 :maxdepth: 1
 
 configure/advanced/optimizations
+configure/advanced/offline
 configure/advanced/extensions
 configure/advanced/hard
 ```
