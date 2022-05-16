@@ -32,6 +32,15 @@ python/packages
 python/wheels
 ```
 
+## Deploying
+
+```{toctree}
+:maxdepth: 1
+
+deployment/sphinx
+deployment/vercel-netlify
+```
+
 ## Extensions
 
 JupyterLite uses the same extension system as in JupyterLab, and can be extended to add
