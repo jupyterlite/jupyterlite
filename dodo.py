@@ -1145,7 +1145,7 @@ class B:
     DOCS_TS = P.DOCS / "reference/api/ts"
     DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
     DOCS_TS_MODULES = [
-        P.ROOT / P.DOCS_TS / f"{p.parent.name}.md"
+        P.ROOT / "docs/reference/api/ts" / f"{p.parent.name}.md"
         for p in P.PACKAGE_JSONS
         if p.parent.name not in C.NO_TYPEDOC
     ]
