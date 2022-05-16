@@ -17,11 +17,11 @@ Some use cases:
 
 ```{note}
 _Addon_ was chosen to distinguish these pieces from browser-based _Plugins_ and
-_Extensions_ for the [frontend](./extensions.md), and all `jupyter lite` core
+_Extensions_ for the [frontend], and all `jupyter lite` core
 behavior is implemented as Addons.
 ```
 
-[frontend]: ./extensions.md
+[frontend]: ../../howto/configure/simple_extensions.md
 
 ## CLI Architecture
 

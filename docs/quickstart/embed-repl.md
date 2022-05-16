@@ -6,7 +6,7 @@ code console.
 ![image](https://user-images.githubusercontent.com/591645/153935929-23a5d380-363e-490b-aabd-f0a780140588.png)
 
 ```{hint}
-Check out the [Quick Start Guide](./quick-start.md) to learn how to deploy your own JupyterLite website
+Check out the [Quick Start Guide](../quickstart/deploy.md) to learn how to deploy your own JupyterLite website
 and have full control on the environment and extensions installed.
 
 The snippets below use the public facing [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.

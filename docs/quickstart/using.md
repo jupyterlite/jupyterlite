@@ -31,7 +31,7 @@ of extensions, packages and content:
 - The JupyterLite `demo` repository:
   [https://github.com/jupyterlite/demo](https://jupyterlite.github.io/demo/). This repo
   can also be used as a template to create a your website, see the
-  [quick-start guide](./quick-start.md) to learn how to deploy your own.
+  [quick-start guide](../quickstart/deploy.md) to learn how to deploy your own.
 - The [Try Jupyter](https://jupyter.org/try) deployment:
   [https://jupyter.org/try-jupyter/lab/](https://jupyter.org/try-jupyter/lab/)
 
@@ -61,3 +61,26 @@ The `REPL` application is a minimal UI based on the JupyterLab code console to e
 execute code in the browser.
 
 ![image](https://user-images.githubusercontent.com/591645/153935929-23a5d380-363e-490b-aabd-f0a780140588.png)
+
+## Kernels
+
+JupyterLite Kernels implement [Jupyter Kernel Messaging][jkm] in the browser with the
+help of [`mock-socket`][mock-socket].
+
+[jkm]: https://jupyter-client.readthedocs.io/en/stable/messaging.html
+[mock-socket]: https://github.com/thoov/mock-socket
+
+### A Python kernel powered by Pyodide
+
+By default JupyterLite ships with a Python kernel called Pyolite.
+
+Pyolite is built on top of [pyodide], and includes `piplite`, a wrapper around
+[micropip] which supports [customized wheels sources](../howto/python/wheels.md).
+
+[pyodide]: https://github.com/pyodide/pyodide
+[micropip]: https://pyodide.org/en/latest/usage/api/micropip-api.html
+
+### JavaScript
+
+By default JupyterLite also ships with a simple JavaScript kernel that runs in an
+`IFrame`.

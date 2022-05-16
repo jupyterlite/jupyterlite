@@ -6,7 +6,7 @@ Server components allow for kernel and session management, handling user setting
 themes and display languages.
 
 For more information on how this fits within the whole application, check out the
-[Architecture Diagram](./architecture.md).
+[Architecture Diagram](../../reference/architecture.md).
 
 ## Creating a new server extension
 
@@ -122,10 +122,10 @@ myliteextension
 ```
 
 For more information on adding extensions to a JupyterLite website, check out the
-[deployment documentation](./configuring.md#adding-extensions).
+[configuration guide](../configure/simple_extensions.md).
 
 If a lot of customization is required, it may also be worth
-[extending the JupyterLite CLI](./cli-addons.md) in your package.
+[extending the JupyterLite CLI](../extensions/cli-addons.md) in your package.
 
 However the build environment is built, once it works _well_, it is _highly recommended_
 to generate and check in a full list of locked package versions. Some package managers,

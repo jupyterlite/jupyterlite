@@ -7,8 +7,8 @@ size of the static assets and improve loading times.
 
 Provide the `--apps` CLI argument once or multiple times, or configure
 `LiteBuildConfig/apps` to only copy select applications to the output folder: by
-default, all of the default [applications](../applications/index) will be copied to the
-output folder.
+default, all of the default [applications](../../../quickstart/using.md#applications)
+will be copied to the output folder.
 
 ## Removing Unused Shared Packages
 

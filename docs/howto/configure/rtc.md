@@ -70,8 +70,8 @@ to set the `collaborative` flag setting in `jupyter-config-data` in the appropri
 }
 ```
 
-_Note that each [JupyterLite application](../applications/index.md) can use its own
-`jupyter-lite.json` file to override global defaults._
+_Note that each [JupyterLite application](../../quickstart/using.md#applications) can
+use its own `jupyter-lite.json` file to override global defaults._
 
 ### Configure Rooms and Identity
 

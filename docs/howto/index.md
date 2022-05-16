@@ -10,6 +10,7 @@ tools and extensions from the Jupyter ecosystem.
 
 configure/simple_extensions
 configure/storage
+configure/settings
 configure/translation
 configure/rtc
 configure/latex
@@ -42,6 +43,7 @@ python/pyodide
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
+deployment/binder
 ```
 
 ## Extensions

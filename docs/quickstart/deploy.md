@@ -28,12 +28,11 @@ Click on "Use this template" to generate a repository of your own from this temp
 
 ![an animated gif to show how to use the provide repo template to generate a new website](https://user-images.githubusercontent.com/21197331/125816904-5768008a-77de-4cb3-8013-f3999b135c02.gif)
 
-From the [_Actions_](./actions) tab on your repository, ensure that workflows are
-enabled. When you make a commit to the `main` branch, a Github Action will build your
-JupyterLite release and deploy it to the repository's Github Pages. By default, the
-Github Pages site will be found at
-`YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY-NAME`. _You can also check the URL from
-the Repository `Settings` tab `Pages` menu item._
+From the _Actions_ tab on your repository, ensure that workflows are enabled. When you
+make a commit to the `main` branch, a Github Action will build your JupyterLite release
+and deploy it to the repository's Github Pages. By default, the Github Pages site will
+be found at `YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY-NAME`. _You can also check
+the URL from the Repository `Settings` tab `Pages` menu item._
 
 If the deployment failed, go to "Settings - Actions - General", in the "Workflow
 permissions" section, check "Read and write permissions". Check that you have Github

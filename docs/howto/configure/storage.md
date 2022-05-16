@@ -43,7 +43,7 @@ frustrating, losing a user's unique data creation is _even more_ frustating.
 
 ```{warning}
 If persistence is **entirely** handled outside of JupyterLite, e.g. in an embedded
-[`repl`](./applications/repl.md) it is possible to disable all persistence, assuring
+[`repl`](../../quickstart/embed-repl.md) it is possible to disable all persistence, assuring
 **total user data loss** after every page/iframe reload:
 - set `enableMemoryStorage` to `true`
 - set `contentsStorageDrivers` and `settingsStorageDrivers` to `["memoryStorageDriver"]`

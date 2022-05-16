@@ -18,8 +18,8 @@ Use of the CLI is optional, but **recommended**. It offers substantially better
 integration with other Jupyter tools.
 ```
 
-To get the [Python CLI](../reference/cli.ipynb) and [API](./reference/api/index.md) from
-[PyPI]:
+To get the [Python CLI](../reference/cli.ipynb) and [API](../reference/api/index.md)
+from [PyPI]:
 
 ```bash
 python -m pip install --pre jupyterlite

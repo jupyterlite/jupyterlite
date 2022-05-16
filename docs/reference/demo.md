@@ -16,9 +16,9 @@ building the docs site, copied in during the build, and fetched by browsers from
 ## Demo Extension Notes
 
 The `federated_extensions` above are copied from the documentation environment prior to
-building this site with [Sphinx](deploying.md#sphinx), and are meant to exercise
-different kinds of extensions, including themes, MIME renderers, Widgets, and an shared
-document provider for [RTC](../howto/configure/rtc.md).
+building this site with [Sphinx](../howto/deployment/sphinx.md), and are meant to
+exercise different kinds of extensions, including themes, MIME renderers, Widgets, and
+an shared document provider for [RTC](../howto/configure/rtc.md).
 
 The demo disables autodetection of environment extensions with `ignore_sys_prefix`, as
 the outer development environment includes a number of extensions with features that

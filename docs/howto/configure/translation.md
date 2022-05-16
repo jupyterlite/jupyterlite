@@ -36,7 +36,8 @@ JupyterLab:
 
 [https://jupyterlab.readthedocs.io/en/stable/user/language.html#changing-the-display-language](https://jupyterlab.readthedocs.io/en/stable/user/language.html#changing-the-display-language)
 
-All of the core JupyterLite [apps](../applications/index.md) support localization:
+All of the core JupyterLite [apps](../../quickstart/using.md#applications) support
+localization:
 
 ![a screencast of selecting localization from the help menu](https://user-images.githubusercontent.com/591645/134638710-e99b9710-af61-43e0-856b-cb383b8e8181.gif 'JupyterLite and RetroLite localization')
 
