@@ -10,6 +10,7 @@ tools and extensions from the Jupyter ecosystem.
 
 configure/simple_extensions
 configure/storage
+configure/translation
 configure/rtc
 ```
 

@@ -359,3 +359,6 @@ See the [gitlab pages template] for a more involved example.
 > TBD
 
 [jupyterlite demo]: https://github.com/jupyterlite/demo
+[releases]: https://github.com/jupyterlite/jupyterlite/releases
+[pypi]: https://pypi.org/project/jupyterlite
+[npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app

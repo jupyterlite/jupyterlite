@@ -13,6 +13,3 @@ schema-v0
 ```
 
 [nbformat]: https://nbformat.readthedocs.io/en/latest/format_description.html
-[releases]: https://github.com/jupyterlite/jupyterlite/releases
-[pypi]: https://pypi.org/project/jupyterlite
-[npmjs.com]: https://www.npmjs.com/package/@jupyterlite/app
