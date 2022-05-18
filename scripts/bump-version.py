@@ -39,9 +39,7 @@ def bump(force, spec):
     app_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     py_version = app_json["version"]
     js_version = (
-        py_version.replace("a", "-alpha.")
-        .replace("b", "-beta.")
-        .replace("rc", "-rc.")
+        py_version.replace("a", "-alpha.").replace("b", "-beta.").replace("rc", "-rc.")
     )
 
     # bump pyolite js version
