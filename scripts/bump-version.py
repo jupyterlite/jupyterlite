@@ -10,7 +10,8 @@ import json
 from pathlib import Path
 
 import click
-from jupyter_releaser.util import run, bump_version as bump_py
+from jupyter_releaser.util import bump_version as bump_py
+from jupyter_releaser.util import run
 
 ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
