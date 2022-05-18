@@ -1,3 +1,6 @@
+[project]
+version = "0.1.0b7"
+
 [tool.isort]
 profile = "black"
 multi_line_output = 3
@@ -8,10 +11,13 @@ skip = [ "build-python", "check-links", "check-manifest",]
 
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt",]
-after-bump-version = [ "python scripts/bump-version.py", "doit repo:integrity", "doit lint", "yarn",]
+after-bump-version = [ "doit repo:integrity", "doit lint", "yarn",]
 before-build-npm = [ "doit build",]
 after-check-npm = [ "doit dist",]
 before-draft-release = [ "rm dist/jupyterlite-app-*.tgz",]
+
+[tool.jupyter-releaser.options]
+version-cmd = "python scripts/bump-version.py --force"
 
 [tool.tbump.version]
 current = "0.1.0b7"
@@ -19,26 +25,22 @@ regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
 '''
+
 [tool.tbump.git]
 message_template = "Bump to {new_version}"
 tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
-src = "app/package.json"
-version_template = '{major}.{minor}.{patch}-{channel}.{release}'
+src = "package.json"
 
 [[tool.tbump.file]]
-src = "app/jupyter-lite.json"
-version_template = '{major}.{minor}.{patch}-{channel}.{release}'
+src = "pyproject.toml"
 
 [[tool.tbump.file]]
 src = "packages/pyolite-kernel/py/piplite/piplite/__init__.py"
 
 [[tool.tbump.file]]
 src = "packages/pyolite-kernel/py/pyolite/pyolite/__init__.py"
-
-[[tool.tbump.file]]
-src = "packages/pyolite-kernel/package.json"
 
 [[tool.tbump.field]]
 name = "channel"
