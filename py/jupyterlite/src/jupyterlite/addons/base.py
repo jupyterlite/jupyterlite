@@ -86,12 +86,6 @@ class BaseAddon(LoggingConfigurable):
         if not dest.parent.exists():
             dest.parent.mkdir(parents=True)
 
-        if "anaconda.org/" in url:  # pragma: no cover
-            self.log.error(
-                f"[lite][fetch] cannot reliably download from anaconda.org {url}"
-            )
-            return False
-
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
             with urllib.request.urlopen(url) as response:
