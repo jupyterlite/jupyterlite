@@ -14,7 +14,7 @@ def patch_matplotlib():
     _old_show = matplotlib.pyplot.show
     assert _old_show, "matplotlib.pyplot.show"
 
-    def show():
+    def show(*,block=None):
         buf = BytesIO()
         matplotlib.pyplot.savefig(buf, format="png")
         buf.seek(0)
