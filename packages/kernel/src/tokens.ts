@@ -1,4 +1,9 @@
-import { Kernel, KernelMessage, KernelSpec } from '@jupyterlab/services';
+import {
+  ContentsManager,
+  Kernel,
+  KernelMessage,
+  KernelSpec,
+} from '@jupyterlab/services';
 
 import { Token } from '@lumino/coreutils';
 
@@ -56,7 +61,12 @@ export interface IKernel extends IObservableDisposable {
   /**
    * The location in the virtual filesystem from which the kernel was started.
    */
-  location: string;
+  readonly location: string;
+
+  /**
+   * The contents manager of the virtual filesystem.
+   */
+  readonly contentsManager: ContentsManager;
 
   /**
    * A promise that is fulfilled when the kernel is ready.
@@ -95,14 +105,19 @@ export namespace IKernel {
     name: string;
 
     /**
-     * The method to send messages back to the server.
-     */
-    sendMessage: SendMessage;
-
-    /**
      * The location in the virtual filesystem from which the kernel was started.
      */
     location: string;
+
+    /**
+     * The contents manager of the virtual filesystem.
+     */
+    contentsManager: ContentsManager;
+
+    /**
+     * The method to send messages back to the server.
+     */
+    sendMessage: SendMessage;
   }
 }
 

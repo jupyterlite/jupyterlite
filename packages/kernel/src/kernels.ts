@@ -1,6 +1,6 @@
 import { ObservableMap } from '@jupyterlab/observables';
 
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { ContentsManager, Kernel, KernelMessage } from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
@@ -34,7 +34,7 @@ export class Kernels implements IKernels {
    * @param options The kernel start options.
    */
   async startNew(options: Kernels.IKernelOptions): Promise<Kernel.IModel> {
-    const { id, name, location } = options;
+    const { id, name, contentsManager, location } = options;
 
     const factory = this._kernelspecs.factories.get(name);
     // bail if there is no factory associated with the requested kernel
@@ -141,7 +141,8 @@ export class Kernels implements IKernels {
       id: kernelId,
       sendMessage,
       name,
-      location
+      location,
+      contentsManager,
     });
 
     await kernel.ready;
@@ -191,9 +192,9 @@ export class Kernels implements IKernels {
     if (!kernel) {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
-    const { id, name, location } = kernel;
+    const { id, name, contentsManager, location } = kernel;
     kernel.dispose();
-    return this.startNew({ id, name, location });
+    return this.startNew({ id, name, location, contentsManager });
   }
 
   /**
@@ -243,6 +244,11 @@ export namespace Kernels {
      * The location in the virtual filesystem from which the kernel was started.
      */
     location: string;
+
+    /**
+     * The contents manager of the virtual filesystem.
+     */
+    contentsManager: ContentsManager;
   }
 
   /**

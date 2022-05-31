@@ -27,6 +27,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       this._processWorkerMessage(e.data);
     };
     console.log('this is location', this.location);
+    console.log('this is content manager', this.contentsManager);
     this._ready.resolve();
   }
 

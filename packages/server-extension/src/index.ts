@@ -330,7 +330,7 @@ const sessionsPlugin: JupyterLiteServerPlugin<ISessions> = {
   provides: ISessions,
   requires: [IKernels],
   activate: (app: JupyterLiteServer, kernels: IKernels) => {
-    return new Sessions({ kernels });
+    return new Sessions({ kernels, contentsManager: app.serviceManager.contents });
   },
 };
 
