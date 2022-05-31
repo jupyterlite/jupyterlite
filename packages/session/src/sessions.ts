@@ -1,5 +1,7 @@
 import { Session } from '@jupyterlab/services';
 
+import { PathExt } from '@jupyterlab/coreutils';
+
 import { IKernels } from '@jupyterlite/kernel';
 
 import { ArrayExt } from '@lumino/algorithm';
@@ -78,7 +80,7 @@ export class Sessions implements ISessions {
     }
     const kernelName = options.kernel?.name ?? '';
     const id = options.id ?? UUID.uuid4();
-    const kernel = await this._kernels.startNew({ id, name: kernelName });
+    const kernel = await this._kernels.startNew({ id, name: kernelName, location: PathExt.dirname(options.path) });
     const session: Session.IModel = {
       id,
       path,

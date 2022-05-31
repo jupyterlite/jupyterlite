@@ -34,7 +34,7 @@ export class Kernels implements IKernels {
    * @param options The kernel start options.
    */
   async startNew(options: Kernels.IKernelOptions): Promise<Kernel.IModel> {
-    const { id, name } = options;
+    const { id, name, location } = options;
 
     const factory = this._kernelspecs.factories.get(name);
     // bail if there is no factory associated with the requested kernel
@@ -141,6 +141,7 @@ export class Kernels implements IKernels {
       id: kernelId,
       sendMessage,
       name,
+      location
     });
 
     await kernel.ready;
@@ -190,9 +191,9 @@ export class Kernels implements IKernels {
     if (!kernel) {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
-    const { id, name } = kernel;
+    const { id, name, location } = kernel;
     kernel.dispose();
-    return this.startNew({ id, name });
+    return this.startNew({ id, name, location });
   }
 
   /**
@@ -237,6 +238,11 @@ export namespace Kernels {
      * The kernel name.
      */
     name: string;
+
+    /**
+     * The location in the virtual filesystem from which the kernel was started.
+     */
+    location: string;
   }
 
   /**

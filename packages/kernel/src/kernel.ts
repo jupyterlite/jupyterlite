@@ -14,9 +14,10 @@ export abstract class BaseKernel implements IKernel {
    * @param options The instantiation options for a BaseKernel.
    */
   constructor(options: IKernel.IOptions) {
-    const { id, name, sendMessage } = options;
+    const { id, name, location, sendMessage } = options;
     this._id = id;
     this._name = name;
+    this._location = location;
     this._sendMessage = sendMessage;
   }
 
@@ -53,6 +54,13 @@ export abstract class BaseKernel implements IKernel {
    */
   get name(): string {
     return this._name;
+  }
+
+  /**
+   * The location in the virtual filesystem from which the kernel was started.
+   */
+  get location(): string {
+    return this._location;
   }
 
   /**
@@ -617,6 +625,7 @@ export abstract class BaseKernel implements IKernel {
 
   private _id: string;
   private _name: string;
+  private _location: string;
   private _history: [number, number, string][] = [];
   private _executionCount = 0;
   private _isDisposed = false;

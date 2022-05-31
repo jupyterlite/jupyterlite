@@ -54,6 +54,11 @@ export interface IKernel extends IObservableDisposable {
   readonly name: string;
 
   /**
+   * The location in the virtual filesystem from which the kernel was started.
+   */
+  location: string;
+
+  /**
    * A promise that is fulfilled when the kernel is ready.
    */
   readonly ready: Promise<void>;
@@ -93,6 +98,11 @@ export namespace IKernel {
      * The method to send messages back to the server.
      */
     sendMessage: SendMessage;
+
+    /**
+     * The location in the virtual filesystem from which the kernel was started.
+     */
+    location: string;
   }
 }
 
