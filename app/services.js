@@ -24,8 +24,8 @@ self.addEventListener('fetch', async (event) => {
     // Forward request to main using the broadcast channel
     event.respondWith(new Promise(resolve => {
         broadcast.onmessage = (event) => {
-            console.log('Service Worker -- received answer from main', event);
-            resolve(new Response('hello world'));
+            console.log('Service Worker -- received answer from main', event.data);
+            resolve(new Response(JSON.stringify(event.data)));
         };
         broadcast.postMessage(url.pathname);
     }));

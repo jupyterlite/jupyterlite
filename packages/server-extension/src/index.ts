@@ -199,8 +199,9 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       requestUrl = requestUrl.replace("/api/drive", "/api/contents");
 
       const response = await app.router.route(new Request(requestUrl));
-      console.log(response);
-      broadcast.postMessage(response);
+      const responseJson = await response.json();
+      console.log(responseJson);
+      broadcast.postMessage(responseJson);
     };
 
   },
