@@ -117,7 +117,7 @@ of weeks ago, and new versions of the Python packages were released since. In th
 the frontend extension have not been updated since they are still available as static
 files as part of the deployment.
 
-One way to avoid this mismatch is to pin the dependencies more explicitely. For example:
+One way to avoid this mismatch is to pin the dependencies more explicitly. For example:
 
 ```text
 ipywidgets==7.7.0

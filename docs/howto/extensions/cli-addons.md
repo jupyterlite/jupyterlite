@@ -31,15 +31,15 @@ structure of the CLI they fit.
 In order to download, unpacking, and update static files and configurations from a
 number of sources, the CLI uses a number of layers.
 
-| Componet | Example              | Role                                           |
-| -------- | -------------------- | ---------------------------------------------- |
-| App      | [LiteBuildApp]       | load config and parse CLI parameters           |
-| Manager  | [LiteManager]        | load Addons, run `doit`                        |
-| Addon    | [StaticAddon]        | generate task plan, and implement actions      |
-| [Hook]   | `init`               | collect logical lifecycle tasks                |
-| [Phase]  | `pre_init`           | fine-grained ordering for tasks                |
-| [Task]   | `init:static:unpack` | set of actions with Task and file dependencies |
-| Action   | `_unpack_stdlib`     | actually move and update files                 |
+| Component | Example              | Role                                           |
+| --------- | -------------------- | ---------------------------------------------- |
+| App       | [LiteBuildApp]       | load config and parse CLI parameters           |
+| Manager   | [LiteManager]        | load Addons, run `doit`                        |
+| Addon     | [StaticAddon]        | generate task plan, and implement actions      |
+| [Hook]    | `init`               | collect logical lifecycle tasks                |
+| [Phase]   | `pre_init`           | fine-grained ordering for tasks                |
+| [Task]    | `init:static:unpack` | set of actions with Task and file dependencies |
+| Action    | `_unpack_stdlib`     | actually move and update files                 |
 
 [hook]: jupyterlite.constants.HOOKS
 [litebuildapp]: jupyterlite.app.LiteBuildApp

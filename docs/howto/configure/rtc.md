@@ -88,7 +88,7 @@ parameters. This can be useful when generating a link in an external application
 already provides identity.
 
 ```{hint}
-Alternately, these can be cofigured via `overrides.json`, as described in
+Alternately, these can be configured via `overrides.json`, as described in
 the `jupyterlab-webrtc-docprovider` repository.
 ```
 

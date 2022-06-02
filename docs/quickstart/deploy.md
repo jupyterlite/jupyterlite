@@ -49,7 +49,7 @@ website.
 After the build has completed, the site will be available on GitHub Pages. Go to
 `https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY-NAME` to access it:
 
-![an animated screencast of usng a JupyterLite website on GitHub Pages](https://user-images.githubusercontent.com/591645/120649478-18258400-c47d-11eb-80e5-185e52ff2702.gif)
+![an animated screencast of using a JupyterLite website on GitHub Pages](https://user-images.githubusercontent.com/591645/120649478-18258400-c47d-11eb-80e5-185e52ff2702.gif)
 
 ## Deploy a new version of JupyterLite
 
