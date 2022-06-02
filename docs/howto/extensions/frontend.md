@@ -71,8 +71,11 @@ Astronomy Picture of the Day (APOD) extension loaded:
 
 ![apod-tutorial]
 
-If you make a new change to the extension, re-run `jupyter lite build` and refresh the
-page.
+If you iterate and make new changes to the extension:
+
+- Rebuild the extension with `jlpm run build`
+- Re-run `jupyter lite build`
+- Refresh the page
 
 [apod-tutorial]:
   https://user-images.githubusercontent.com/591645/171583522-f5677259-b91a-4ab0-8812-9770807a088e.gif
