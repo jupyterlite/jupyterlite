@@ -143,9 +143,11 @@ function get(path: string) {
   } catch(e) {
     console.error(e);
   }
+  return xhr.responseText;
 }
 
-get("/dir");
+const dir = get("/dir");
+console.log('WORKER RECEIVED BACK DIR --- ', dir);
 
 /**
  * Load pyodide and initialize the interpreter.

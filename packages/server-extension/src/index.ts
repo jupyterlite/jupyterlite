@@ -185,6 +185,24 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         return new Response(null, { status: 204 });
       }
     );
+
+    // TODO Put this in a separate plugin
+    const broadcast = new BroadcastChannel('/api/drive');
+
+    broadcast.onmessage = async (event) => {
+      console.log('Main thread -- received!!', event);
+      let requestUrl: string = event.data;
+      if (!requestUrl.startsWith("/api/drive")) {
+        broadcast.postMessage('Error');
+      }
+
+      requestUrl = requestUrl.replace("/api/drive", "/api/contents");
+
+      const response = await app.router.route(new Request(requestUrl));
+      console.log(response);
+      broadcast.postMessage(response);
+    };
+
   },
 };
 
