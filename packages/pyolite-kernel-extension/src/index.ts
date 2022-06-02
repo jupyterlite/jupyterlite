@@ -34,6 +34,20 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     const disablePyPIFallback = !!config.disablePyPIFallback;
 
+    navigator.serviceWorker.register('/services.js').then(
+      registration => {
+        // Registration was successful
+        console.log(
+          'ServiceWorker registration successful with scope: ',
+          registration.scope
+        );
+      },
+      err => {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+      }
+    );
+
     kernelspecs.register({
       spec: {
         name: 'python',

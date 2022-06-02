@@ -8,6 +8,7 @@ declare module '!!file-loader*' {
   return res;
 }
 
+declare let baseURL: string;
 declare let indexURL: string;
 declare let _pipliteWheelUrl: any;
 declare let _pipliteUrls: string[];

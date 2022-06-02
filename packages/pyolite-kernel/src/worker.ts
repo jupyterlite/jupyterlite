@@ -23,8 +23,129 @@ let stderr_stream: any;
 let resolveInputReply: any;
 
 // TODO Import this locally
-declare var Comlink: any;
-importScripts("https://unpkg.com/comlink/dist/umd/comlink.js");
+declare let Comlink: any;
+importScripts('https://unpkg.com/comlink/dist/umd/comlink.js');
+
+// interface Stats {
+//   dev: number;
+//   ino: number;
+//   mode: number;
+//   nlink: number;
+//   uid: number;
+//   gid: number;
+//   rdev: number;
+//   size: number;
+//   blksize: number;
+//   blocks: number;
+//   atime: Date;
+//   mtime: Date;
+//   ctime: Date;
+//   timestamp?: number;
+// }
+
+// interface EmscriptenFSNode {
+//   name: string;
+//   mode: number;
+//   parent: EmscriptenFSNode;
+//   mount: {opts: {root: string}};
+//   stream_ops: EmscriptenStreamOps;
+//   node_ops: EmscriptenNodeOps;
+// }
+
+// interface EmscriptenStream {
+//   node: EmscriptenFSNode;
+//   nfd: any;
+//   flags: string;
+//   position: number;
+// }
+
+// interface EmscriptenNodeOps {
+//   getattr(node: EmscriptenFSNode): Stats;
+//   setattr(node: EmscriptenFSNode, attr: Stats): void;
+//   lookup(parent: EmscriptenFSNode, name: string): EmscriptenFSNode;
+//   mknod(parent: EmscriptenFSNode, name: string, mode: number, dev: any): EmscriptenFSNode;
+//   rename(oldNode: EmscriptenFSNode, newDir: EmscriptenFSNode, newName: string): void;
+//   unlink(parent: EmscriptenFSNode, name: string): void;
+//   rmdir(parent: EmscriptenFSNode, name: string): void;
+//   readdir(node: EmscriptenFSNode): string[];
+//   symlink(parent: EmscriptenFSNode, newName: string, oldPath: string): void;
+//   readlink(node: EmscriptenFSNode): string;
+// }
+
+// interface EmscriptenStreamOps {
+//   open(stream: EmscriptenStream): void;
+//   close(stream: EmscriptenStream): void;
+//   read(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number;
+//   write(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number;
+//   llseek(stream: EmscriptenStream, offset: number, whence: number): number;
+// }
+
+// class DriveFS {
+//   private FS: any;
+
+//   constructor(fs: any) {
+//     this.FS = fs;
+
+//     // this.node_ops = new BFSEmscriptenNodeOps(this);
+//     // this.stream_ops = new BFSEmscriptenStreamOps(this);
+//   }
+
+//   node_ops: EmscriptenNodeOps;
+//   stream_ops: EmscriptenStreamOps;
+
+//   mount(mount: {opts: {root: string}}): EmscriptenFSNode {
+//     console.log("DriveFS -- mount")
+//   };
+
+//   createNode(parent: EmscriptenFSNode, name: string, mode: number, dev?: any): EmscriptenFSNode {
+//     console.log("DriveFS -- createNode")
+//   };
+
+//   getMode(path: string): number {
+//     console.log("DriveFS -- getMode");
+//     return 0;
+//   };
+
+//   realPath(node: EmscriptenFSNode): string {
+//     console.log("DriveFS -- realPath")
+//     return "";
+//   };
+// }
+
+// class DriveFS implements EmscriptenFS
+// {
+//   private FS: any;
+
+//   constructor(fs: any) {
+//     this.FS = fs;
+
+//     // this.node_ops = new BFSEmscriptenNodeOps(this);
+//     // this.stream_ops = new BFSEmscriptenStreamOps(this);
+//   }
+
+//   public createNode(parent: EmscriptenFSNode | null, name: string, mode: number, dev?: any): EmscriptenFSNode {
+//     console.log('FS -- Create Node ', parent, name, mode);
+//   }
+
+//   public mount(m: {opts: {root: string}}): EmscriptenFSNode {
+//     console.log('FS -- mount ', m);
+//   }
+// }
+
+console.log('this is my worker');
+
+function get(path: string) {
+  const xhr = new XMLHttpRequest();
+  console.log('GET --- ', `${baseURL}api/drive${path}`);
+  xhr.open('GET', `${baseURL}api/drive${path}`, false);
+  try {
+    xhr.send();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+get("/dir");
 
 /**
  * Load pyodide and initialize the interpreter.
@@ -70,6 +191,12 @@ async function loadPyodideAndPackages() {
   stderr_stream = pyodide.globals.get('pyolite').stderr_stream.copy();
   interpreter = kernel.interpreter.copy();
   interpreter.send_comm = sendComm;
+
+  // Setup custom FileSystem
+  // const driveFS = new DriveFS(pyodide.FS);
+  // pyodide.FS.mkdir('/drive');
+  // pyodide.FS.mount(driveFS, {}, '/drive');
+  // pyodide.FS.chdir('/drive');
 }
 
 /**
@@ -304,7 +431,10 @@ const workerKernel = {
    *
    * @param content The incoming message with the code to inspect.
    */
-   async inspect(content: { code: string; cursor_pos: number; detail_level: 0 | 1 }, parent: any) {
+  async inspect(
+    content: { code: string; cursor_pos: number; detail_level: 0 | 1 },
+    parent: any
+  ) {
     await this.setup(parent);
 
     const res = kernel.inspect(content.code, content.cursor_pos, content.detail_level);
@@ -393,7 +523,7 @@ const workerKernel = {
     await this.setup(parent);
 
     resolveInputReply(content);
-  }
-}
+  },
+};
 
 Comlink.expose(workerKernel);

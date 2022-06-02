@@ -128,6 +128,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.get(
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
+        console.log('Router GET --- ', req, filename);
         const options: ServerContents.IFetchOptions = {
           content: req.query?.content === '1',
         };
