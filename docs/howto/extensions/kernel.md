@@ -6,7 +6,7 @@ We recommend checking out how to create a server extension first: [](./server.md
 
 ## Bootstrap the server extension
 
-Creating a new kernel is very similar to creating a [server extension](./server.md)
+Creating a new kernel is very similar to creating a [server extension](./server.md).
 
 Once you have your server extension set up, add the following plugin to register the
 kernel:
@@ -44,8 +44,8 @@ const kernel: JupyterLiteServerPlugin<void> = {
 As an alternative, a quick way to bootstrap a new kernel is to start from an existing
 one.
 
-The [jupyterlite-echo-kernel] is an example kernel that returns what the user submitted
-as input:
+The [jupyterlite-echo-kernel] is an example kernel that returns what the user submits as
+input:
 
 ![echo-kernel-demo]
 

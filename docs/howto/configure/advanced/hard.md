@@ -15,7 +15,7 @@ Open a browser:
 
 - view the
   [Contents API](https://jupyter-server.readthedocs.io/en/latest/developers/rest-api.html#get--api-contents-path),
-  e.g. `http://localhost:8888/api/contents`, which should look something like:
+  e.g. `http://localhost:8888/api/contents`, which should look like the following:
 
 ```json
 {
@@ -83,7 +83,7 @@ If that's the case, you will also need to copy the required extensions to the Ju
 
 ### Handle theme assets
 
-The Theme Manager expects to be able to load theme CSS/font assets from
+The Theme Manager expects to be able to load theme CSS / font assets from
 `{:app}/build/themes/({:org}/){:package}`, where `app` is usually `lab`.
 
 Continuing the example above:

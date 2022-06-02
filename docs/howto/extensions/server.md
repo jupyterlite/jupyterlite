@@ -39,7 +39,6 @@ python -m pip install jupyterlite
 ```{note}
 It is recommended to use a [Long Term Support (LTS)][lts] release of NodeJS: the simple rule
 of thumb is stick to **even** numbered releases.
-[lts]: https://nodejs.org/en/about/releases/
 ```
 
 Then let's generate a new extension from the [cookiecutter]:
@@ -50,6 +49,8 @@ cookiecutter https://github.com/jupyterlite/serverlite-cookiecutter-ts
 
 When prompted, enter values for your extension. This will create the structure to
 develop the JupyterLite extension.
+
+[lts]: https://nodejs.org/en/about/releases/
 
 ### Build
 

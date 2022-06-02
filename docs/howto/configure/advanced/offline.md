@@ -10,7 +10,8 @@ By default the Pyodide files are fetched from a CDN.
 The full Pyodide distribution can be pretty heavy (~180MB), but it's possible to
 self-host it.
 
-Use the `--pyodide` flag to specify the Pyodide distribution you would like to use:
+Use the `--pyodide` flag to specify the Pyodide distribution you would like to use. For
+example:
 
 ```bash
 jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.20.0/pyodide-build-0.20.0.tar.bz2
@@ -37,7 +38,7 @@ Concretely that means populating a list of URLs for downloading wheels. A good e
 for this is the configuration used for the JupyterLite demo website:
 [jupyter_lite_config.json][lite-demo-config]
 
-The relevant part is the `piplite_urls` which looks like the following:
+The relevant part is the `piplite_urls` list which looks like the following:
 
 ```json
 "piplite_urls": [
