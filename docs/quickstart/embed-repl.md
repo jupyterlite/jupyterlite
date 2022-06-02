@@ -1,7 +1,7 @@
 # Embed a live REPL on a website
 
 JupyterLite includes a minimal `REPL` application by default, based on the JupyterLab
-code console.
+Code Console.
 
 ![image](https://user-images.githubusercontent.com/591645/153935929-23a5d380-363e-490b-aabd-f0a780140588.png)
 
@@ -14,7 +14,7 @@ The snippets below use the public facing [jupyterlite.github.io/demo](https://ju
 
 ## Embedding the REPL on another website
 
-Once you have a JupyterLite dpeloyment ready to use, you can embed the REPL on any
+Once you have a JupyterLite deployment ready to use, you can embed the REPL on any
 website with the following code snippet:
 
 ```html

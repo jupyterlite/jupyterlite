@@ -93,7 +93,7 @@ python -m http.server -b 127.0.0.1
 ```
 
 If you are using a recently-released Python 3.7+, this will correctly serve
-`application/wasm` files for pyodide.
+`application/wasm` files for WebAssembly kernels.
 
 #### NodeJS
 
@@ -105,9 +105,13 @@ however, that `http-server` does not support the `application/wasm` MIME type.
 As an alternative to using the `jupyterlite` CLI, you can also download a release
 archive from the [GitHub Releases][releases] page.
 
+Download it an extract it, then use one of the approaches mentioned above to start the
+server.
+
 Nightly and work-in-progress archives are also available from [GitHub actions].
 
 [github actions]: https://github.com/jupyterlite/jupyterlite/actions
 [releases]: https://github.com/jupyterlite/jupyterlite/releases
 [pypi]: https://pypi.org/project/jupyterlite/
 [conda forge]: https://conda-forge.org/
+[jupyter server]: https://jupyter-server.readthedocs.io/en/latest/

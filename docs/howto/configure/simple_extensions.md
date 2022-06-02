@@ -46,8 +46,8 @@ jupyterlab-tour
 jupyterlab-night
 ```
 
-This file defines list two extensions, one of which is a theme. Run the following
-command to install them:
+This file defines list two extensions, one of them is a theme. Run the following command
+to install them:
 
 ```bash
 python -m pip install -r requirements.txt
@@ -63,7 +63,7 @@ Which should return something similar to the following:
 
 ```text
 JupyterLab v3.*.*
-/home/user/miniforge3/envs/tmp/share/jupyter/labextensions
+PREFIX/share/jupyter/labextensions
         jupyterlab-tour  v3.1.4 enabled OK
         jupyterlab-night v0.4.0 enabled OK
 ```
@@ -81,7 +81,7 @@ When you run `jupyter lite build`, all pre-built extensions in your JupyterLab
 environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
 - copied to `{output-dir}/extensions`
-- have its theme information copied to `{output-dir}/{app/?}theme/`
+- have their theme information copied to `{output-dir}/{app/?}theme/`
 
 ## The case of Jupyter Widgets and custom renderers
 
@@ -112,10 +112,10 @@ await piplite.install(["ipywidgets", "bqplot", "plotly"])
 
 In some situations, the versions of the packages installed at runtime with
 `piplite.install` might not be compatible with the deployed frontend extension anymore.
-This can for example happen when a JupyterLite has been built and deployed for a couple
-of weeks, and new versions of the Python packages have been released. In that case the
-frontend extension have not been updated since they are still available as static files
-as part of the deployment.
+This can for example happen when a JupyterLite website was built and deployed a couple
+of weeks ago, and new versions of the Python packages were released since. In that case
+the frontend extension have not been updated since they are still available as static
+files as part of the deployment.
 
 One way to avoid this mismatch is to pin the dependencies more explicitely. For example:
 
@@ -134,7 +134,7 @@ await piplite.install(["ipywidgets==7.7.0", "bqplot==0.12.30", "plotly==5.8.0"])
 ```
 
 This is unfortunately a little bit brittle but does the job for now. There is chance
-this will improve in future versions of JupyterLite.
+this will be improved in future versions of JupyterLite.
 
 Check out the [guide on configuring the piplite URLs](../python/wheels.md) if you want
 to have more control on your dependencies.

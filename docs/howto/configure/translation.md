@@ -44,7 +44,7 @@ localization:
 ## Ignoring language packs from the environment
 
 It is also possible to ignore the language packs installed in an existing environment to
-avoid side-effects when dpeloying the website.
+avoid side-effects when deploying the website.
 
 In your `jupyter_lite_config.json` file, ignore the `translation` addon as follow:
 

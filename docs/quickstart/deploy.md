@@ -15,14 +15,11 @@ Deploying to GitHub Pages requires a Github account.
 
 The [jupyterlite demo] repository is a template to easily:
 
-- build a JupyterLite website using prebuilt JupyterLite assets that bundles a
-  collection of pre-existing Jupyter Notebooks as part of the distribution
+- build a JupyterLite website using prebuilt JupyterLite assets bundling a collection of
+  pre-existing Jupyter Notebooks as part of the distribution
 - deploy the website to GitHub Pages
 
 The process is automated using Github Actions.
-
-- generate a new repository from this template repository and build and deploy your own
-  site to the corresponding Github Pages site;
 
 Click on "Use this template" to generate a repository of your own from this template:
 
@@ -49,7 +46,8 @@ website.
 
 ## Accessing the JupyterLite website
 
-After the build has completed, the site will be available on GitHub Pages:
+After the build has completed, the site will be available on GitHub Pages. Go to
+`https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPOSITORY-NAME` to access it:
 
 ![an animated screencast of usng a JupyterLite website on GitHub Pages](https://user-images.githubusercontent.com/591645/120649478-18258400-c47d-11eb-80e5-185e52ff2702.gif)
 
@@ -58,22 +56,22 @@ After the build has completed, the site will be available on GitHub Pages:
 To change the version of the prebuilt JupyterLite assets, update the `jupyterlite`
 package version in the `requirements.txt` file.
 
-Commit and push any changes. The site will be deployed on the next push to the `main`
+Commit and push the changes. The site will be deployed on the next push to the `main`
 branch.
 
 ## Add additional requirements to the deployment
 
 ### Extensions
 
-The `requirements.txt` file can be used to add extra prebuilt ("federated") JupyterLab
-extensions to the deployed JupyterLite website. Follow the
+The `requirements.txt` file can be used to add extra prebuilt (also called _federated_)
+JupyterLab extensions to the deployed JupyterLite website. Follow the
 [extension guide](../howto/configure/simple_extensions.md) to learn more.
 
 ### Contents
 
 You can add and update the default notebooks and files by clicking on the `contents`
 directory and dragging notebooks from your desktop onto the contents listing. Wait for
-the files to be uploaded and then save them ("commit" them) to the `main` branch of the
+the files to be uploaded and then save them (commit them) to the `main` branch of the
 repository.
 
 Check out the how-to guide on [managing content](../howto//content/files.md) to learn
