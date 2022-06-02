@@ -12,5 +12,4 @@ using
 deploy
 embed-repl
 standalone
-faq
 ```

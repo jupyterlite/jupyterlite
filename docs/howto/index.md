@@ -22,7 +22,9 @@ configure/latex
 :maxdepth: 1
 
 content/files
+content/python
 content/filesystem-access
+content/share
 ```
 
 ## Configuring the Python environment
