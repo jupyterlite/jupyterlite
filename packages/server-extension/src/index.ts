@@ -254,18 +254,18 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
         return new Response(null);
       }
       // follow the same format as in Jupyter Server
-      const kernels: {
+      const allKernelSpecs: {
         [name: string]: {
           name: string;
-          spec: KernelSpec.ISpecModel;
-          resources: { [name: string]: string };
+          spec: KernelSpec.ISpecModel | undefined;
+          resources: { [name: string]: string } | undefined;
         };
       } = {};
       const allSpecs = specs.kernelspecs;
       Object.keys(allSpecs).forEach((name) => {
-        const spec = allSpecs[name] as KernelSpec.ISpecModel;
-        const { resources } = spec;
-        kernels[name] = {
+        const spec = allSpecs[name];
+        const { resources } = spec ?? {};
+        allKernelSpecs[name] = {
           name,
           spec,
           resources,
@@ -273,7 +273,7 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
       });
       const res = {
         default: specs.default,
-        kernelspecs: kernels,
+        kernelspecs: allKernelSpecs,
       };
       return new Response(JSON.stringify(res));
     });
