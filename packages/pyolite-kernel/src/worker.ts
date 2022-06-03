@@ -31,7 +31,7 @@ function request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string): any {
   xhr.open(method, `${baseURL}api${path}`, false);
   try {
     xhr.send();
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
   return JSON.parse(xhr.responseText);
@@ -47,11 +47,12 @@ function rmdir(parent: string, name: string) {
 
 const DIR_MODE = 16895; // 040777
 const FILE_MODE = 33206; // 100666
+console.warn('FILE_MODE is not used yet', FILE_MODE);
 
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
 // https://github.com/jvilk/BrowserFS/blob/a96aa2d417995dac7d376987839bc4e95e218e06/src/generic/emscripten_fs.ts
-interface Stats {
+interface IStats {
   dev: number;
   ino: number;
   mode: number;
@@ -68,46 +69,61 @@ interface Stats {
   timestamp?: number;
 }
 
-interface EmscriptenFSNode {
+interface IEmscriptenFSNode {
   name: string;
   mode: number;
-  parent: EmscriptenFSNode | null;
-  mount: {opts: {root: string}};
-  stream_ops: EmscriptenStreamOps;
-  node_ops: EmscriptenNodeOps;
+  parent: IEmscriptenFSNode | null;
+  mount: { opts: { root: string } };
+  stream_ops: IEmscriptenStreamOps;
+  node_ops: IEmscriptenNodeOps;
 }
 
-interface EmscriptenStream {
-  node: EmscriptenFSNode;
+interface IEmscriptenStream {
+  node: IEmscriptenFSNode;
   nfd: any;
   flags: string;
   position: number;
 }
 
-interface EmscriptenNodeOps {
-  getattr(node: EmscriptenFSNode): Stats;
-  setattr(node: EmscriptenFSNode, attr: Stats): void;
-  lookup(parent: EmscriptenFSNode, name: string): EmscriptenFSNode;
-  mknod(parent: EmscriptenFSNode, name: string, mode: number, dev: any): EmscriptenFSNode;
-  rename(oldNode: EmscriptenFSNode, newDir: EmscriptenFSNode, newName: string): void;
-  unlink(parent: EmscriptenFSNode, name: string): void;
-  rmdir(parent: EmscriptenFSNode, name: string): void;
-  readdir(node: EmscriptenFSNode): string[];
-  symlink(parent: EmscriptenFSNode, newName: string, oldPath: string): void;
-  readlink(node: EmscriptenFSNode): string;
+interface IEmscriptenNodeOps {
+  getattr(node: IEmscriptenFSNode): IStats;
+  setattr(node: IEmscriptenFSNode, attr: IStats): void;
+  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode;
+  mknod(
+    parent: IEmscriptenFSNode,
+    name: string,
+    mode: number,
+    dev: any
+  ): IEmscriptenFSNode;
+  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
+  unlink(parent: IEmscriptenFSNode, name: string): void;
+  rmdir(parent: IEmscriptenFSNode, name: string): void;
+  readdir(node: IEmscriptenFSNode): string[];
+  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void;
+  readlink(node: IEmscriptenFSNode): string;
 }
 
-interface EmscriptenStreamOps {
-  open(stream: EmscriptenStream): void;
-  close(stream: EmscriptenStream): void;
-  read(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number;
-  write(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number;
-  llseek(stream: EmscriptenStream, offset: number, whence: number): number;
+interface IEmscriptenStreamOps {
+  open(stream: IEmscriptenStream): void;
+  close(stream: IEmscriptenStream): void;
+  read(
+    stream: IEmscriptenStream,
+    buffer: Uint8Array,
+    offset: number,
+    length: number,
+    position: number
+  ): number;
+  write(
+    stream: IEmscriptenStream,
+    buffer: Uint8Array,
+    offset: number,
+    length: number,
+    position: number
+  ): number;
+  llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
 
-
-class DriveFSEmscriptenStreamOps implements EmscriptenStreamOps {
-
+class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   private fs: DriveFS;
 
   constructor(fs: DriveFS) {
@@ -116,30 +132,58 @@ class DriveFSEmscriptenStreamOps implements EmscriptenStreamOps {
     this.fs;
   }
 
-  public open(stream: EmscriptenStream): void {
+  public open(stream: IEmscriptenStream): void {
     console.log('DriveFSEmscriptenStreamOps -- open', stream);
   }
 
-  public close(stream: EmscriptenStream): void {
+  public close(stream: IEmscriptenStream): void {
     console.log('DriveFSEmscriptenStreamOps -- close', stream);
   }
 
-  public read(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number {
-    console.log('DriveFSEmscriptenStreamOps -- read', stream, buffer, offset, length, position);
+  public read(
+    stream: IEmscriptenStream,
+    buffer: Uint8Array,
+    offset: number,
+    length: number,
+    position: number
+  ): number {
+    console.log(
+      'DriveFSEmscriptenStreamOps -- read',
+      stream,
+      buffer,
+      offset,
+      length,
+      position
+    );
     return 0;
   }
 
-  public write(stream: EmscriptenStream, buffer: Uint8Array, offset: number, length: number, position: number): number {
-    console.log('DriveFSEmscriptenStreamOps -- write', stream, buffer, offset, length, position);
+  public write(
+    stream: IEmscriptenStream,
+    buffer: Uint8Array,
+    offset: number,
+    length: number,
+    position: number
+  ): number {
+    console.log(
+      'DriveFSEmscriptenStreamOps -- write',
+      stream,
+      buffer,
+      offset,
+      length,
+      position
+    );
     return 0;
   }
 
-  public llseek(stream: EmscriptenStream, offset: number, whence: number): number {
+  public llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
     console.log('DriveFSEmscriptenStreamOps -- llseek', stream, offset, whence);
     let position = offset;
-    if (whence === 1) {  // SEEK_CUR.
+    if (whence === 1) {
+      // SEEK_CUR.
       position += stream.position;
-    } else if (whence === 2) {  // SEEK_END.
+    } else if (whence === 2) {
+      // SEEK_END.
       if (this.fs.FS.isFile(stream.node.mode)) {
         // TODO WAT?
         position += 500;
@@ -151,9 +195,7 @@ class DriveFSEmscriptenStreamOps implements EmscriptenStreamOps {
   }
 }
 
-
-class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
-
+class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   private fs: DriveFS;
 
   constructor(fs: DriveFS) {
@@ -161,7 +203,7 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
     this.fs = fs;
   }
 
-  public getattr(node: EmscriptenFSNode): Stats {
+  public getattr(node: IEmscriptenFSNode): IStats {
     console.log('DriveFSEmscriptenNodeOps -- getattr', node);
     return {
       dev: 0,
@@ -177,54 +219,62 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
       atime: new Date(),
       mtime: new Date(),
       ctime: new Date(),
-      timestamp: 0
+      timestamp: 0,
     };
   }
 
-  public setattr(node: EmscriptenFSNode, attr: Stats): void {
+  public setattr(node: IEmscriptenFSNode, attr: IStats): void {
     console.log('DriveFSEmscriptenNodeOps -- setattr', node, attr);
   }
 
-  public lookup(parent: EmscriptenFSNode, name: string): EmscriptenFSNode {
+  public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
     // TODO Push to service worker for creating file
     return this.fs.FS.createNode(parent, name, DIR_MODE);
   }
 
-  public mknod(parent: EmscriptenFSNode, name: string, mode: number, dev: any): EmscriptenFSNode {
+  public mknod(
+    parent: IEmscriptenFSNode,
+    name: string,
+    mode: number,
+    dev: any
+  ): IEmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- mknod', parent, name, mode, dev);
     // TODO WAT?
     return this.fs.FS.createNode(parent, name, mode);
   }
 
-  public rename(oldNode: EmscriptenFSNode, newDir: EmscriptenFSNode, newName: string): void {
+  public rename(
+    oldNode: IEmscriptenFSNode,
+    newDir: IEmscriptenFSNode,
+    newName: string
+  ): void {
     console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
   }
 
-  public unlink(parent: EmscriptenFSNode, name: string): void {
+  public unlink(parent: IEmscriptenFSNode, name: string): void {
     console.log('DriveFSEmscriptenNodeOps -- unlink', parent, name);
   }
 
-  public rmdir(parent: EmscriptenFSNode, name: string) {
+  public rmdir(parent: IEmscriptenFSNode, name: string) {
     rmdir(parent.name, name);
   }
 
-  public readdir(node: EmscriptenFSNode): string[] {
+  public readdir(node: IEmscriptenFSNode): string[] {
     return readdir(node.name);
   }
 
-  public symlink(parent: EmscriptenFSNode, newName: string, oldPath: string): void {
+  public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
     console.log('DriveFSEmscriptenNodeOps -- symlink', parent, newName, oldPath);
   }
 
-  public readlink(node: EmscriptenFSNode): string {
+  public readlink(node: IEmscriptenFSNode): string {
     console.log('DriveFSEmscriptenNodeOps -- readlink', node);
     return '';
   }
 }
 
 class DriveFS {
-
   FS: any;
 
   constructor(fs: any) {
@@ -234,30 +284,35 @@ class DriveFS {
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
   }
 
-  node_ops: EmscriptenNodeOps;
-  stream_ops: EmscriptenStreamOps;
+  node_ops: IEmscriptenNodeOps;
+  stream_ops: IEmscriptenStreamOps;
 
-  mount(mount: any): EmscriptenFSNode {
+  mount(mount: any): IEmscriptenFSNode {
     return this.createNode(null, mount.mountpoint, DIR_MODE | 511, 0);
-  };
+  }
 
-  createNode(parent: EmscriptenFSNode | null, name: string, mode: number, dev?: any): EmscriptenFSNode {
+  createNode(
+    parent: IEmscriptenFSNode | null,
+    name: string,
+    mode: number,
+    dev?: any
+  ): IEmscriptenFSNode {
     const FS = this.FS;
     const node = FS.createNode(parent, name, mode, dev);
     node.node_ops = this.node_ops;
     node.stream_ops = this.stream_ops;
     return node;
-  };
+  }
 
   getMode(path: string): number {
-    console.log("DriveFS -- getMode", path);
+    console.log('DriveFS -- getMode', path);
     return DIR_MODE;
-  };
+  }
 
-  realPath(node: EmscriptenFSNode): string {
-    console.log("DriveFS -- realPath", node)
-    return "";
-  };
+  realPath(node: IEmscriptenFSNode): string {
+    console.log('DriveFS -- realPath', node);
+    return '';
+  }
 }
 
 // const dir = get("/dir");

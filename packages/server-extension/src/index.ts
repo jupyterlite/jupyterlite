@@ -187,14 +187,15 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 
     // TODO Put this in a separate plugin
     const broadcast = new BroadcastChannel('/api/drive.v1');
+    let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      let request: {path: string, method: string} = event.data;
+      const request: { path: string; method: string } = event.data;
 
-      const requestPath = request.path.replace("/api/drive", "/api/contents");
+      const requestPath = request.path.replace('/api/drive', '/api/contents');
 
       let response: Response;
-      let responseJson: any;
+      let responseJson: ServerContents.IModel;
 
       // TODO Handle errors properly
       switch (request.method) {
@@ -207,19 +208,18 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
-          const subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
+          subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;
         case 'rmdir':
-            await app.router.route(new Request(
-              requestPath,
-              {
-                method: 'DELETE'
-              }
-            ));
+          await app.router.route(
+            new Request(requestPath, {
+              method: 'DELETE',
+            })
+          );
 
-            broadcast.postMessage({});
-            break;
+          broadcast.postMessage({});
+          break;
       }
     };
   },

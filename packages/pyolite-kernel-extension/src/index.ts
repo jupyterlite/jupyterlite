@@ -36,14 +36,14 @@ const kernel: JupyterLiteServerPlugin<void> = {
 
     // TODO Register the service worker from somewhere else?
     navigator.serviceWorker.register('/services.js').then(
-      registration => {
+      (registration) => {
         // Registration was successful
         console.log(
           'ServiceWorker registration successful with scope: ',
           registration.scope
         );
       },
-      err => {
+      (err) => {
         // registration failed :(
         console.log('ServiceWorker registration failed: ', err);
       }
