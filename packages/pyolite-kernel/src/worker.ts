@@ -26,6 +26,22 @@ let resolveInputReply: any;
 declare let Comlink: any;
 importScripts('https://unpkg.com/comlink/dist/umd/comlink.js');
 
+function request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string): any {
+  const xhr = new XMLHttpRequest();
+  console.log('Worker -- send request ', `/api${path}`)
+  xhr.open(method, `${baseURL}api${path}`, false);
+  try {
+    xhr.send();
+  } catch(e) {
+    console.error(e);
+  }
+  return JSON.parse(xhr.responseText);
+}
+
+function readdir(path: string) {
+  return request('GET', `${path}?m=readdir`);
+}
+
 enum Mode {
   file = 32768,
   dir = 16384
@@ -119,7 +135,18 @@ class DriveFSEmscriptenStreamOps implements EmscriptenStreamOps {
 
   public llseek(stream: EmscriptenStream, offset: number, whence: number): number {
     console.log('DriveFSEmscriptenStreamOps -- llseek', stream, offset, whence);
-    return 0;
+    let position = offset;
+    if (whence === 1) {  // SEEK_CUR.
+      position += stream.position;
+    } else if (whence === 2) {  // SEEK_END.
+      if (this.fs.FS.isFile(stream.node.mode)) {
+        // TODO WAT?
+        position += 500;
+      }
+    }
+
+    stream.position = position;
+    return position;
   }
 }
 
@@ -159,26 +186,14 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
 
   public lookup(parent: EmscriptenFSNode, name: string): EmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
-    return {
-      name: '',
-      mode: Mode.dir,
-      parent: null,
-      mount: {opts: {root: '/'}},
-      stream_ops: new DriveFSEmscriptenStreamOps(this.fs),
-      node_ops: new DriveFSEmscriptenNodeOps(this.fs)
-    }
+    // TODO Push to service worker for creating file
+    return this.fs.FS.createNode(parent, name, Mode.dir);
   }
 
   public mknod(parent: EmscriptenFSNode, name: string, mode: number, dev: any): EmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- mknod', parent, name, mode, dev);
-    return {
-      name: '',
-      mode,
-      parent: null,
-      mount: {opts: {root: '/'}},
-      stream_ops: new DriveFSEmscriptenStreamOps(this.fs),
-      node_ops: new DriveFSEmscriptenNodeOps(this.fs)
-    }
+    // TODO WAT?
+    return this.fs.FS.createNode(parent, name, mode);
   }
 
   public rename(oldNode: EmscriptenFSNode, newDir: EmscriptenFSNode, newName: string): void {
@@ -194,8 +209,7 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
   }
 
   public readdir(node: EmscriptenFSNode): string[] {
-    console.log('DriveFSEmscriptenNodeOps -- readdir', node);
-    return [];
+    return readdir(node.name);
   }
 
   public symlink(parent: EmscriptenFSNode, newName: string, oldPath: string): void {
@@ -210,7 +224,7 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
 
 class DriveFS {
 
-  private FS: any;
+  FS: any;
 
   constructor(fs: any) {
     this.FS = fs;
@@ -223,7 +237,6 @@ class DriveFS {
   stream_ops: EmscriptenStreamOps;
 
   mount(mount: any): EmscriptenFSNode {
-    console.log("DriveFS -- mount", mount);
     return this.createNode(null, mount.mountpoint, Mode.dir | 511, 0);
   };
 
@@ -244,17 +257,6 @@ class DriveFS {
     console.log("DriveFS -- realPath", node)
     return "";
   };
-}
-
-function get(path: string) {
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', `${baseURL}api/drive${path}`, false);
-  try {
-    xhr.send();
-  } catch(e) {
-    console.error(e);
-  }
-  return xhr.responseText;
 }
 
 // const dir = get("/dir");
@@ -307,11 +309,8 @@ async function loadPyodideAndPackages() {
 
   // Setup custom FileSystem
   const driveFS = new DriveFS(pyodide.FS);
-  console.log('Worker -- mkdir drive');
   pyodide.FS.mkdir('/drive');
-  console.log('Worker -- mount driveFS');
   pyodide.FS.mount(driveFS, {}, '/drive');
-  console.log('Worker -- chdir');
   pyodide.FS.chdir('/drive');
 }
 

@@ -5,7 +5,7 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
-import { Contents, IContents } from '@jupyterlite/contents';
+import { Contents, IContents, IModel } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
@@ -187,22 +187,31 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // TODO Put this in a separate plugin
-    const broadcast = new BroadcastChannel('/api/drive');
+    const broadcast = new BroadcastChannel('/api/drive.v1');
 
     broadcast.onmessage = async (event) => {
-      console.log('Main thread -- received!!', event);
-      let requestUrl: string = event.data;
-      if (!requestUrl.startsWith("/api/drive")) {
-        broadcast.postMessage('Error');
-      }
+      console.log('Main thread -- received from service worker', event);
+      let request: {path: string, method: string} = event.data;
 
-      requestUrl = requestUrl.replace("/api/drive", "/api/contents");
+      const requestPath = request.path.replace("/api/drive", "/api/contents");
 
       // TODO Handle errors properly
-      const response = await app.router.route(new Request(requestUrl));
-      const responseJson = await response.json();
-      console.log(responseJson);
-      broadcast.postMessage(responseJson);
+      switch (request.method) {
+        case 'readdir':
+          const response = await app.router.route(new Request(requestPath));
+          const responseJson: IModel = await response.json();
+          console.log('Main thread -- received from router', responseJson);
+
+          if (responseJson.type !== 'directory') {
+            // TODO Something smart
+            return;
+          }
+
+          console.log(responseJson);
+          const subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
+          broadcast.postMessage(subitems);
+          break;
+      }
     };
 
   },

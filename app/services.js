@@ -1,4 +1,4 @@
-const broadcast = new BroadcastChannel('/api/drive');
+const broadcast = new BroadcastChannel('/api/drive.v1');
 
 self.addEventListener("install", (event) => {
     console.log('Install JupyterLite service v1');
@@ -21,7 +21,11 @@ self.addEventListener('fetch', async (event) => {
         return;
     }
 
-    console.log('Service Worker -- send request to main ', url.pathname);
+    const messageData = {
+        path: url.pathname,
+        method: new URLSearchParams(url.search).get('m')
+    };
+    console.log('Service Worker -- send request to main ', messageData);
 
     // Forward request to main using the broadcast channel
     event.respondWith(new Promise(resolve => {
@@ -29,6 +33,6 @@ self.addEventListener('fetch', async (event) => {
             console.log('Service Worker -- received answer from main', event.data);
             resolve(new Response(JSON.stringify(event.data)));
         };
-        broadcast.postMessage(url.pathname);
+        broadcast.postMessage(messageData);
     }));
 });
