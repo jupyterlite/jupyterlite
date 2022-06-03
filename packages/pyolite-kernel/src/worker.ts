@@ -45,10 +45,8 @@ function rmdir(parent: string, name: string) {
   return request('GET', `${parent}/${name}?m=rmdir`);
 }
 
-enum Mode {
-  file = 32768,
-  dir = 16384
-}
+const DIR_MODE = 16895; // 040777
+const FILE_MODE = 33206; // 100666
 
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
@@ -190,7 +188,7 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
   public lookup(parent: EmscriptenFSNode, name: string): EmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
     // TODO Push to service worker for creating file
-    return this.fs.FS.createNode(parent, name, Mode.dir);
+    return this.fs.FS.createNode(parent, name, DIR_MODE);
   }
 
   public mknod(parent: EmscriptenFSNode, name: string, mode: number, dev: any): EmscriptenFSNode {
@@ -240,7 +238,7 @@ class DriveFS {
   stream_ops: EmscriptenStreamOps;
 
   mount(mount: any): EmscriptenFSNode {
-    return this.createNode(null, mount.mountpoint, Mode.dir | 511, 0);
+    return this.createNode(null, mount.mountpoint, DIR_MODE | 511, 0);
   };
 
   createNode(parent: EmscriptenFSNode | null, name: string, mode: number, dev?: any): EmscriptenFSNode {
@@ -253,7 +251,7 @@ class DriveFS {
 
   getMode(path: string): number {
     console.log("DriveFS -- getMode", path);
-    return Mode.dir;
+    return DIR_MODE;
   };
 
   realPath(node: EmscriptenFSNode): string {
