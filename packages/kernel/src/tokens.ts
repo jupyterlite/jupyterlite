@@ -1,3 +1,8 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
+import type { Remote } from 'comlink';
+
 import {
   ContentsManager,
   Kernel,
@@ -147,3 +152,54 @@ export interface IKernelSpecs {
    */
   register: (options: KernelSpecs.IKernelOptions) => void;
 }
+
+/**
+ * An interface for a comlink-based worker kernel
+ */
+export interface IWorkerKernel {
+  /**
+   * Handle any lazy setup activities.
+   */
+  initialize(options: IWorkerKernel.IOptions): Promise<void>;
+  execute(
+    content: KernelMessage.IExecuteRequestMsg['content'],
+    parent: any
+  ): Promise<KernelMessage.IExecuteReplyMsg['content']>;
+  complete(
+    content: KernelMessage.ICompleteRequestMsg['content'],
+    parent: any
+  ): Promise<KernelMessage.ICompleteReplyMsg['content']>;
+  inspect(
+    content: KernelMessage.IInspectRequestMsg['content'],
+    parent: any
+  ): Promise<KernelMessage.IInspectReplyMsg['content']>;
+  isComplete(
+    content: KernelMessage.IIsCompleteRequestMsg['content'],
+    parent: any
+  ): Promise<KernelMessage.IIsCompleteReplyMsg['content']>;
+  commInfo(
+    content: KernelMessage.ICommInfoRequestMsg['content'],
+    parent: any
+  ): Promise<KernelMessage.ICommInfoReplyMsg['content']>;
+  commOpen(content: KernelMessage.ICommOpenMsg, parent: any): Promise<void>;
+  commMsg(content: KernelMessage.ICommMsgMsg, parent: any): Promise<void>;
+  commClose(content: KernelMessage.ICommCloseMsg, parent: any): Promise<void>;
+  inputReply(
+    content: KernelMessage.IInputReplyMsg['content'],
+    parent: any
+  ): Promise<void>;
+}
+
+/**
+ * A namespace for worker kernels.
+ **/
+export namespace IWorkerKernel {
+  /**
+   * Common values likely to be required by all kernels.
+   */
+  export interface IOptions {
+    baseUrl: string;
+  }
+}
+
+export interface IRemoteKernel extends Remote<IWorkerKernel> {}

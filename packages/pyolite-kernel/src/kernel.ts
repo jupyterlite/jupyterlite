@@ -1,46 +1,16 @@
-import { URLExt, PageConfig } from '@jupyterlab/coreutils';
+import { PromiseDelegate } from '@lumino/coreutils';
 
+import { URLExt, PageConfig } from '@jupyterlab/coreutils';
 import { KernelMessage } from '@jupyterlab/services';
 
 import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 
-import { PromiseDelegate } from '@lumino/coreutils';
+import { wrap } from 'comlink';
 
-import * as Comlink from 'comlink';
+import { IPyoliteWorkerKernel, IRemotePyoliteWorkerKernel } from './tokens';
 
 import worker from './worker?raw';
-
 import { PIPLITE_WHEEL } from './_pypi';
-
-interface IWorkerKernel {
-  execute(
-    content: KernelMessage.IExecuteRequestMsg['content'],
-    parent: any
-  ): Promise<KernelMessage.IExecuteReplyMsg['content']>;
-  complete(
-    content: KernelMessage.ICompleteRequestMsg['content'],
-    parent: any
-  ): Promise<KernelMessage.ICompleteReplyMsg['content']>;
-  inspect(
-    content: KernelMessage.IInspectRequestMsg['content'],
-    parent: any
-  ): Promise<KernelMessage.IInspectReplyMsg['content']>;
-  isComplete(
-    content: KernelMessage.IIsCompleteRequestMsg['content'],
-    parent: any
-  ): Promise<KernelMessage.IIsCompleteReplyMsg['content']>;
-  commInfo(
-    content: KernelMessage.ICommInfoRequestMsg['content'],
-    parent: any
-  ): Promise<KernelMessage.ICommInfoReplyMsg['content']>;
-  commOpen(content: KernelMessage.ICommOpenMsg, parent: any): Promise<void>;
-  commMsg(content: KernelMessage.ICommMsgMsg, parent: any): Promise<void>;
-  commClose(content: KernelMessage.ICommCloseMsg, parent: any): Promise<void>;
-  inputReply(
-    content: KernelMessage.IInputReplyMsg['content'],
-    parent: any
-  ): Promise<void>;
-}
 
 /**
  * A kernel that executes Python code with Pyodide.
@@ -53,14 +23,60 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   constructor(options: PyoliteKernel.IOptions) {
     super(options);
-    const blob = new Blob([this.buildWorkerScript(options).join('\n')]);
-    this._worker = new Worker(window.URL.createObjectURL(blob));
-    this._worker.onmessage = (e) => {
-      this._processWorkerMessage(e.data);
-    };
-    this._workerKernel = Comlink.wrap<IWorkerKernel>(this._worker);
+    this._worker = this.initWorker(options);
+    this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
+    this._remoteKernel = this.initRemote(options);
+  }
 
-    // this.contentsManager.fileChanged.connect(this._fileChanged.bind(this));
+  /**
+   * Load the worker.
+   *
+   * ### Note
+   *
+   * Subclasses must implement this typographically almost _exactly_ for
+   * webpack to find it.
+   */
+  protected initWorker(options: PyoliteKernel.IOptions): Worker {
+    return new Worker(new URL('./comlink.worker.js', import.meta.url), {
+      type: 'module',
+    });
+  }
+
+  protected initRemote(options: PyoliteKernel.IOptions): IRemotePyoliteWorkerKernel {
+    const remote: IRemotePyoliteWorkerKernel = wrap(this._worker);
+    const remoteOptions = this.initRemoteOptions(options);
+    remote.initialize(remoteOptions).then(() => this.onRemoteSetup());
+    return remote;
+  }
+
+  protected initRemoteOptions(
+    options: PyoliteKernel.IOptions
+  ): IPyoliteWorkerKernel.IOptions {
+    const { pyodideUrl } = options;
+
+    const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
+
+    const baseUrl = PageConfig.getBaseUrl();
+
+    const pypi = URLExt.join(baseUrl, 'build/pypi');
+
+    const pipliteUrls = [...(options.pipliteUrls || []), URLExt.join(pypi, 'all.json')];
+
+    const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
+
+    const disablePyPIFallback = !!options.disablePyPIFallback;
+
+    return {
+      baseUrl,
+      pyodideUrl,
+      indexUrl,
+      pipliteWheelUrl,
+      pipliteUrls,
+      disablePyPIFallback,
+    };
+  }
+
+  protected async onRemoteSetup() {
     this._ready.resolve();
   }
 
@@ -111,6 +127,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       return;
     }
     this._worker.terminate();
+    (this._worker as any) = null;
     super.dispose();
   }
 
@@ -222,7 +239,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
-    const result = await this._workerKernel.execute(content, this.parent);
+    const result = await this._remoteKernel.execute(content, this.parent);
     result.execution_count = this.executionCount;
     return result;
   }
@@ -235,7 +252,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async completeRequest(
     content: KernelMessage.ICompleteRequestMsg['content']
   ): Promise<KernelMessage.ICompleteReplyMsg['content']> {
-    return await this._workerKernel.complete(content, this.parent);
+    return await this._remoteKernel.complete(content, this.parent);
   }
 
   /**
@@ -248,7 +265,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async inspectRequest(
     content: KernelMessage.IInspectRequestMsg['content']
   ): Promise<KernelMessage.IInspectReplyMsg['content']> {
-    return await this._workerKernel.inspect(content, this.parent);
+    return await this._remoteKernel.inspect(content, this.parent);
   }
 
   /**
@@ -261,7 +278,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async isCompleteRequest(
     content: KernelMessage.IIsCompleteRequestMsg['content']
   ): Promise<KernelMessage.IIsCompleteReplyMsg['content']> {
-    return await this._workerKernel.isComplete(content, this.parent);
+    return await this._remoteKernel.isComplete(content, this.parent);
   }
 
   /**
@@ -274,7 +291,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async commInfoRequest(
     content: KernelMessage.ICommInfoRequestMsg['content']
   ): Promise<KernelMessage.ICommInfoReplyMsg['content']> {
-    return await this._workerKernel.commInfo(content, this.parent);
+    return await this._remoteKernel.commInfo(content, this.parent);
   }
 
   /**
@@ -283,7 +300,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg - The comm_open message.
    */
   async commOpen(msg: KernelMessage.ICommOpenMsg): Promise<void> {
-    return await this._workerKernel.commOpen(msg, this.parent);
+    return await this._remoteKernel.commOpen(msg, this.parent);
   }
 
   /**
@@ -292,7 +309,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param msg - The comm_msg message.
    */
   async commMsg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
-    return await this._workerKernel.commMsg(msg, this.parent);
+    return await this._remoteKernel.commMsg(msg, this.parent);
   }
 
   /**
@@ -301,7 +318,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param close - The comm_close message.
    */
   async commClose(msg: KernelMessage.ICommCloseMsg): Promise<void> {
-    return await this._workerKernel.commClose(msg, this.parent);
+    return await this._remoteKernel.commClose(msg, this.parent);
   }
 
   /**
@@ -310,11 +327,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * @param content - The content of the reply.
    */
   async inputReply(content: KernelMessage.IInputReplyMsg['content']): Promise<void> {
-    return await this._workerKernel.inputReply(content, this.parent);
+    return await this._remoteKernel.inputReply(content, this.parent);
   }
 
   private _worker: Worker;
-  private _workerKernel: Comlink.Remote<IWorkerKernel>;
+  private _remoteKernel: IRemotePyoliteWorkerKernel;
   private _ready = new PromiseDelegate<void>();
 }
 
