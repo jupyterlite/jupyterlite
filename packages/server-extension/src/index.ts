@@ -3,7 +3,7 @@
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { Contents as ServerContents } from '@jupyterlab/services';
+import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
 import { Contents, IContents } from '@jupyterlite/contents';
 
@@ -249,7 +249,32 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
   requires: [IKernelSpecs],
   activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     app.router.get('/api/kernelspecs', async (req: Router.IRequest) => {
-      const res = kernelspecs.specs;
+      const { specs } = kernelspecs;
+      if (!specs) {
+        return new Response(null);
+      }
+      // follow the same format as in Jupyter Server
+      const allKernelSpecs: {
+        [name: string]: {
+          name: string;
+          spec: KernelSpec.ISpecModel | undefined;
+          resources: { [name: string]: string } | undefined;
+        };
+      } = {};
+      const allSpecs = specs.kernelspecs;
+      Object.keys(allSpecs).forEach((name) => {
+        const spec = allSpecs[name];
+        const { resources } = spec ?? {};
+        allKernelSpecs[name] = {
+          name,
+          spec,
+          resources,
+        };
+      });
+      const res = {
+        default: specs.default,
+        kernelspecs: allKernelSpecs,
+      };
       return new Response(JSON.stringify(res));
     });
   },
