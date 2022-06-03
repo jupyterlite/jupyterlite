@@ -14,6 +14,8 @@ self.addEventListener('fetch', async (event) => {
     const url = new URL(event.request.url);
 
     // TODO Relying on the pathname only is weak
+    // we should probably check that it's a same origin request
+
     // Bail early if the request is not a content request
     if (!url.pathname.startsWith('/api/drive')) {
         return;

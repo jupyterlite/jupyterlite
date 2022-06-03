@@ -34,6 +34,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     const disablePyPIFallback = !!config.disablePyPIFallback;
 
+    // TODO Register the service worker from somewhere else?
     navigator.serviceWorker.register('/services.js').then(
       registration => {
         // Registration was successful
