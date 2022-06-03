@@ -16,7 +16,7 @@ self.addEventListener('fetch', async (event) => {
     // TODO Relying on the pathname only is weak
     // we should probably check that it's a same origin request
 
-    // Bail early if the request is not a content request
+    // Bail early if the request is not a drive content request
     if (!url.pathname.startsWith('/api/drive')) {
         return;
     }
@@ -25,12 +25,10 @@ self.addEventListener('fetch', async (event) => {
         path: url.pathname,
         method: new URLSearchParams(url.search).get('m')
     };
-    console.log('Service Worker -- send request to main ', messageData);
 
     // Forward request to main using the broadcast channel
     event.respondWith(new Promise(resolve => {
         broadcast.onmessage = (event) => {
-            console.log('Service Worker -- received answer from main', event.data);
             resolve(new Response(JSON.stringify(event.data)));
         };
         broadcast.postMessage(messageData);

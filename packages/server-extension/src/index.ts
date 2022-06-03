@@ -128,7 +128,6 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.get(
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
-        console.log('Router GET --- ', req, filename);
         const options: ServerContents.IFetchOptions = {
           content: req.query?.content === '1',
         };
@@ -190,7 +189,6 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     const broadcast = new BroadcastChannel('/api/drive.v1');
 
     broadcast.onmessage = async (event) => {
-      console.log('Main thread -- received from service worker', event);
       let request: {path: string, method: string} = event.data;
 
       const requestPath = request.path.replace("/api/drive", "/api/contents");
@@ -209,7 +207,6 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
-          console.log(responseJson);
           const subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;

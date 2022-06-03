@@ -28,7 +28,6 @@ importScripts('https://unpkg.com/comlink/dist/umd/comlink.js');
 
 function request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string): any {
   const xhr = new XMLHttpRequest();
-  console.log('Worker -- send request ', `/api${path}`)
   xhr.open(method, `${baseURL}api${path}`, false);
   try {
     xhr.send();
