@@ -195,12 +195,14 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 
       const requestPath = request.path.replace("/api/drive", "/api/contents");
 
+      let response: Response;
+      let responseJson: any;
+
       // TODO Handle errors properly
       switch (request.method) {
         case 'readdir':
-          const response = await app.router.route(new Request(requestPath));
-          const responseJson: IModel = await response.json();
-          console.log('Main thread -- received from router', responseJson);
+          response = await app.router.route(new Request(requestPath));
+          responseJson = await response.json();
 
           if (responseJson.type !== 'directory') {
             // TODO Something smart
@@ -211,9 +213,18 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           const subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;
+        case 'rmdir':
+            await app.router.route(new Request(
+              requestPath,
+              {
+                method: 'DELETE'
+              }
+            ));
+
+            broadcast.postMessage({});
+            break;
       }
     };
-
   },
 };
 

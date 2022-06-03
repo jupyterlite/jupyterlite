@@ -42,6 +42,10 @@ function readdir(path: string) {
   return request('GET', `${path}?m=readdir`);
 }
 
+function rmdir(parent: string, name: string) {
+  return request('GET', `${parent}/${name}?m=rmdir`);
+}
+
 enum Mode {
   file = 32768,
   dir = 16384
@@ -205,7 +209,7 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
   }
 
   public rmdir(parent: EmscriptenFSNode, name: string) {
-    console.log('DriveFSEmscriptenNodeOps -- rmdir', parent, name);
+    rmdir(parent.name, name);
   }
 
   public readdir(node: EmscriptenFSNode): string[] {
