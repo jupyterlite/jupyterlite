@@ -26,6 +26,11 @@ let resolveInputReply: any;
 declare let Comlink: any;
 importScripts('https://unpkg.com/comlink/dist/umd/comlink.js');
 
+enum Mode {
+  file = 32768,
+  dir = 16384
+}
+
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
 // https://github.com/jvilk/BrowserFS/blob/a96aa2d417995dac7d376987839bc4e95e218e06/src/generic/emscripten_fs.ts
@@ -156,9 +161,9 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
     console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
     return {
       name: '',
-      mode: 0,
+      mode: Mode.dir,
       parent: null,
-      mount: {opts: {root: ''}},
+      mount: {opts: {root: '/'}},
       stream_ops: new DriveFSEmscriptenStreamOps(this.fs),
       node_ops: new DriveFSEmscriptenNodeOps(this.fs)
     }
@@ -168,9 +173,9 @@ class DriveFSEmscriptenNodeOps implements EmscriptenNodeOps {
     console.log('DriveFSEmscriptenNodeOps -- mknod', parent, name, mode, dev);
     return {
       name: '',
-      mode: 0,
+      mode,
       parent: null,
-      mount: {opts: {root: ''}},
+      mount: {opts: {root: '/'}},
       stream_ops: new DriveFSEmscriptenStreamOps(this.fs),
       node_ops: new DriveFSEmscriptenNodeOps(this.fs)
     }
@@ -209,7 +214,6 @@ class DriveFS {
 
   constructor(fs: any) {
     this.FS = fs;
-    this.FS;
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
@@ -218,33 +222,22 @@ class DriveFS {
   node_ops: EmscriptenNodeOps;
   stream_ops: EmscriptenStreamOps;
 
-  mount(mount: {opts: {root: string}}): EmscriptenFSNode {
+  mount(mount: any): EmscriptenFSNode {
     console.log("DriveFS -- mount", mount);
-    return {
-      name: '',
-      mode: 0,
-      parent: null,
-      mount,
-      stream_ops: new DriveFSEmscriptenStreamOps(this),
-      node_ops: new DriveFSEmscriptenNodeOps(this)
-    }
+    return this.createNode(null, mount.mountpoint, Mode.dir | 511, 0);
   };
 
-  createNode(parent: EmscriptenFSNode, name: string, mode: number, dev?: any): EmscriptenFSNode {
-    console.log("DriveFS -- createNode", parent, name, mode, dev);
-    return {
-      name: '',
-      mode: 0,
-      parent: null,
-      mount: {opts: {root: ''}},
-      stream_ops: new DriveFSEmscriptenStreamOps(this),
-      node_ops: new DriveFSEmscriptenNodeOps(this)
-    }
+  createNode(parent: EmscriptenFSNode | null, name: string, mode: number, dev?: any): EmscriptenFSNode {
+    const FS = this.FS;
+    const node = FS.createNode(parent, name, mode, dev);
+    node.node_ops = this.node_ops;
+    node.stream_ops = this.stream_ops;
+    return node;
   };
 
   getMode(path: string): number {
     console.log("DriveFS -- getMode", path);
-    return 0;
+    return Mode.dir;
   };
 
   realPath(node: EmscriptenFSNode): string {
@@ -319,7 +312,7 @@ async function loadPyodideAndPackages() {
   console.log('Worker -- mount driveFS');
   pyodide.FS.mount(driveFS, {}, '/drive');
   console.log('Worker -- chdir');
-  pyodide.FS.chdir('');
+  pyodide.FS.chdir('/drive');
 }
 
 /**
