@@ -185,7 +185,6 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
-      // I wish Javascript had inner exceptions
       throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES["ENOENT"]];
     }
     return this.fs.createNode(parent, name, result.data === null ? DIR_MODE : FILE_MODE);

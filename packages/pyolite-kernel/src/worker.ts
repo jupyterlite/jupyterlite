@@ -80,6 +80,8 @@ export class PyoliteRemoteKernel {
   ): Promise<void> {
     const { FS } = this._pyodide;
     const { baseUrl } = options;
+    // TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
+    // We'll be able to acces PATH and ERRNO_CODES from this._pyodide directly (not through _module)
     const driveFS = new DriveFS({
       FS,
       PATH: this._pyodide._module.PATH,
