@@ -86,7 +86,7 @@ export class PyoliteRemoteKernel {
       FS,
       PATH: this._pyodide._module.PATH,
       ERRNO_CODES: this._pyodide._module.ERRNO_CODES,
-      baseUrl
+      baseUrl,
     });
     FS.mkdir('/drive');
     FS.mount(driveFS, {}, '/drive');

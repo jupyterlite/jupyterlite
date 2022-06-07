@@ -5,7 +5,13 @@ import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
-import { Contents, DIR_MODE, FILE_MODE, IContents, IModel } from '@jupyterlite/contents';
+import {
+  Contents,
+  DIR_MODE,
+  FILE_MODE,
+  IContents,
+  IModel,
+} from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
@@ -190,7 +196,8 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      const request: { path: string; method: string, args: string[] | null } = event.data;
+      const request: { path: string; method: string; args: string[] | null } =
+        event.data;
       const contentManager = app.serviceManager.contents;
 
       const path = request.path.replace('/api/drive', '');
@@ -199,7 +206,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 
       // TODO Handle errors properly
       switch (request.method) {
-        case 'readdir':
+        case 'readdir': {
           model = await contentManager.get(path);
 
           if (model.type !== 'directory') {
@@ -210,11 +217,13 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           subitems = model.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;
-        case 'rmdir':
+        }
+        case 'rmdir': {
           await contentManager.delete(path);
           broadcast.postMessage({});
           break;
-        case 'rename':
+        }
+        case 'rename': {
           if (request.args === null) {
             // TODO Something smart
             return;
@@ -223,7 +232,8 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           await contentManager.rename(path, request.args[0].replace('/drive', ''));
           broadcast.postMessage({});
           break;
-        case 'getmode':
+        }
+        case 'getmode': {
           model = await contentManager.get(path);
 
           if (model.type === 'directory') {
@@ -232,23 +242,25 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             broadcast.postMessage(FILE_MODE);
           }
           break;
-        case 'lookup':
+        }
+        case 'lookup': {
           try {
             model = await contentManager.get(path);
 
             broadcast.postMessage({
               ok: true,
-              data: model.type === 'directory' ? null : model.content
+              data: model.type === 'directory' ? null : model.content,
             });
           } catch (e) {
             broadcast.postMessage({
               ok: false,
-              data: null
+              data: null,
             });
           }
 
           break;
-        case 'mknod':
+        }
+        case 'mknod': {
           if (request.args === null) {
             // TODO Something smart
             return;
@@ -259,12 +271,13 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           model = await contentManager.newUntitled({
             path: PathExt.dirname(path),
             type: mode === DIR_MODE ? 'directory' : 'file',
-            ext: PathExt.extname(path)
-          })
+            ext: PathExt.extname(path),
+          });
           await contentManager.rename(model.path, path);
 
           broadcast.postMessage({});
           break;
+        }
       }
     };
   },

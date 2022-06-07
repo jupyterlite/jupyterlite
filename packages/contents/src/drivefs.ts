@@ -185,9 +185,13 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
-      throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES["ENOENT"]];
+      throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
     }
-    return this.fs.createNode(parent, name, result.data === null ? DIR_MODE : FILE_MODE);
+    return this.fs.createNode(
+      parent,
+      name,
+      result.data === null ? DIR_MODE : FILE_MODE
+    );
   }
 
   public mknod(
@@ -210,7 +214,9 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   ): void {
     console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
     this.fs.API.rename(
-      oldNode.parent ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name) : oldNode.name,
+      oldNode.parent
+        ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name)
+        : oldNode.name,
       this.fs.PATH.join2(this.fs.realPath(newDir), newName)
     );
   }
@@ -346,12 +352,11 @@ export class DriveFS {
  * A namespace for DriveFS configurations, etc.
  */
 export namespace DriveFS {
-
   /**
    * The response to a lookup request;
    */
   export interface ILookup {
-    ok: boolean,
+    ok: boolean;
     data: any;
   }
 

@@ -25,14 +25,14 @@ self.addEventListener('fetch', async (event) => {
 
   const method = new URLSearchParams(url.search).get('m');
   let args = new URLSearchParams(url.search).get('args');
-  if (args !== null ) {
+  if (args !== null) {
     args = args.split(',');
   }
 
   const messageData = {
     path: url.pathname,
     method,
-    args
+    args,
   };
 
   // Forward request to main using the broadcast channel
