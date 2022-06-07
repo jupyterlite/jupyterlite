@@ -278,6 +278,27 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           broadcast.postMessage({});
           break;
         }
+        case 'getattr': {
+          model = await contentManager.get(path);
+
+          broadcast.postMessage({
+            dev: 0,
+            ino: 0,
+            mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
+            nlink: 0,
+            uid: 0,
+            gid: 0,
+            rdev: 0,
+            size: model.size,
+            blksize: 0,
+            blocks: 0,
+            atime: model.last_modified,  // TODO Get the proper atime?
+            mtime: model.last_modified,
+            ctime: model.last_modified,  // TODO Get the proper ctime?
+            timestamp: 0,
+          });
+          break;
+        }
       }
     };
   },

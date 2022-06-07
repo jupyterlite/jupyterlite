@@ -157,22 +157,8 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   public getattr(node: IEmscriptenFSNode): IStats {
     console.log('DriveFSEmscriptenNodeOps -- getattr', node);
-    return {
-      dev: 0,
-      ino: 0,
-      mode: 0,
-      nlink: 0,
-      uid: 0,
-      gid: 0,
-      rdev: 0,
-      size: 0,
-      blksize: 0,
-      blocks: 0,
-      atime: new Date(),
-      mtime: new Date(),
-      ctime: new Date(),
-      timestamp: 0,
-    };
+
+    return this.fs.API.getattr(this.fs.realPath(node));
   }
 
   public setattr(node: IEmscriptenFSNode, attr: IStats): void {
@@ -288,6 +274,15 @@ export class ContentsAPI {
     return this.request('GET', `${path}?m=rmdir`);
   }
 
+  getattr(path: string): IStats {
+    const stats = this.request('GET', `${path}?m=getattr`);
+    // Turn datetimes into proper objects
+    stats.atime = new Date(stats.atime);
+    stats.mtime = new Date(stats.mtime);
+    stats.ctime = new Date(stats.ctime);
+    return stats;
+  }
+
   private _baseUrl: string;
 }
 
@@ -339,8 +334,8 @@ export class DriveFS {
 
     parts.push(currentNode.name);
     while (currentNode.parent !== currentNode) {
-      parts.push(currentNode.name);
       currentNode = currentNode.parent;
+      parts.push(currentNode.name);
     }
     parts.reverse();
 
