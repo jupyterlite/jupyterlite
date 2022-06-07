@@ -75,6 +75,10 @@ export interface IEmscriptenStreamOps {
   llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
 
+function join(...paths: string[]) {
+  return paths.join('/');
+}
+
 export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   private fs: DriveFS;
 
@@ -202,6 +206,10 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     newName: string
   ): void {
     console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
+    this.fs.API.rename(
+      oldNode.parent ? join(oldNode.parent.name, oldNode.name) : oldNode.name,
+      join(newDir.name, newName)
+    );
   }
 
   public unlink(parent: IEmscriptenFSNode, name: string): void {
@@ -209,10 +217,12 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public rmdir(parent: IEmscriptenFSNode, name: string) {
-    this.fs.API.rmdir(parent.name, name);
+    console.log('DriveFSEmscriptenNodeOps -- rmdir', parent, name);
+    this.fs.API.rmdir(join(parent.name, name));
   }
 
   public readdir(node: IEmscriptenFSNode): string[] {
+    console.log('DriveFSEmscriptenNodeOps -- readdir', node);
     return this.fs.API.readdir(node.name);
   }
 
@@ -245,12 +255,16 @@ export class ContentsAPI {
     return JSON.parse(xhr.responseText);
   }
 
+  rename(oldPath: string, newPath: string) {
+    return this.request('GET', `${oldPath}?m=rename&args=${newPath}`);
+  }
+
   readdir(path: string) {
     return this.request('GET', `${path}?m=readdir`);
   }
 
-  rmdir(parent: string, name: string) {
-    return this.request('GET', `${parent}/${name}?m=rmdir`);
+  rmdir(path: string) {
+    return this.request('GET', `${path}?m=rmdir`);
   }
 
   private _baseUrl: string;

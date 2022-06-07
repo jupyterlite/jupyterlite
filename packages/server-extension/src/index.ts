@@ -190,34 +190,37 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      const request: { path: string; method: string } = event.data;
+      const request: { path: string; method: string, args: string[] | null } = event.data;
+      const contentManager = app.serviceManager.contents;
 
-      const requestPath = request.path.replace('/api/drive', '/api/contents');
+      const path = request.path.replace('/api/drive', '');
 
-      let response: Response;
-      let responseJson: ServerContents.IModel;
+      let models: ServerContents.IModel;
 
       // TODO Handle errors properly
       switch (request.method) {
         case 'readdir':
-          response = await app.router.route(new Request(requestPath));
-          responseJson = await response.json();
+          models = await contentManager.get(path);
 
-          if (responseJson.type !== 'directory') {
+          if (models.type !== 'directory') {
             // TODO Something smart
             return;
           }
 
-          subitems = responseJson.content.map((subcontent: IModel) => subcontent.name);
+          subitems = models.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;
         case 'rmdir':
-          await app.router.route(
-            new Request(requestPath, {
-              method: 'DELETE',
-            })
-          );
+          await contentManager.delete(path);
+          broadcast.postMessage({});
+          break;
+        case 'rename':
+          if (request.args === null) {
+            // TODO Something smart
+            return;
+          }
 
+          await contentManager.rename(path, request.args[0].replace('/drive', ''));
           broadcast.postMessage({});
           break;
       }
