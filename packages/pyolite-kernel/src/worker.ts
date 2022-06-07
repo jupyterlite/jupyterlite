@@ -80,7 +80,7 @@ export class PyoliteRemoteKernel {
   ): Promise<void> {
     const { FS } = this._pyodide;
     const { baseUrl } = options;
-    const driveFS = new DriveFS({ FS, baseUrl });
+    const driveFS = new DriveFS({ FS, baseUrl, PATH: this._pyodide._module.PATH });
     FS.mkdir('/drive');
     FS.mount(driveFS, {}, '/drive');
     FS.chdir('/drive');

@@ -75,10 +75,6 @@ export interface IEmscriptenStreamOps {
   llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
 
-function join(...paths: string[]) {
-  return paths.join('/');
-}
-
 export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   private fs: DriveFS;
 
@@ -207,8 +203,8 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   ): void {
     console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
     this.fs.API.rename(
-      oldNode.parent ? join(oldNode.parent.name, oldNode.name) : oldNode.name,
-      join(newDir.name, newName)
+      oldNode.parent ? this.fs.PATH.join2(oldNode.parent.name, oldNode.name) : oldNode.name,
+      this.fs.PATH.join2(newDir.name, newName)
     );
   }
 
@@ -218,7 +214,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   public rmdir(parent: IEmscriptenFSNode, name: string) {
     console.log('DriveFSEmscriptenNodeOps -- rmdir', parent, name);
-    this.fs.API.rmdir(join(parent.name, name));
+    this.fs.API.rmdir(this.fs.PATH.join2(parent.name, name));
   }
 
   public readdir(node: IEmscriptenFSNode): string[] {
@@ -255,15 +251,15 @@ export class ContentsAPI {
     return JSON.parse(xhr.responseText);
   }
 
-  rename(oldPath: string, newPath: string) {
+  rename(oldPath: string, newPath: string): void {
     return this.request('GET', `${oldPath}?m=rename&args=${newPath}`);
   }
 
-  readdir(path: string) {
+  readdir(path: string): string[] {
     return this.request('GET', `${path}?m=readdir`);
   }
 
-  rmdir(path: string) {
+  rmdir(path: string): void {
     return this.request('GET', `${path}?m=rmdir`);
   }
 
@@ -273,10 +269,12 @@ export class ContentsAPI {
 export class DriveFS {
   FS: any;
   API: ContentsAPI;
+  PATH: DriveFS.IPath;
 
   constructor(options: DriveFS.IOptions) {
     this.FS = options.FS;
     this.API = new ContentsAPI(options.baseUrl);
+    this.PATH = options.PATH;
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
@@ -317,11 +315,21 @@ export class DriveFS {
  * A namespace for DriveFS configurations, etc.
  */
 export namespace DriveFS {
+
+  export interface IPath {
+    basename: (path: string) => string;
+    dirname: (path: string) => string;
+    join2: (l: string, r: string) => string;
+    normalize: (path: string) => string;
+    splitPath: (filename: string) => string;
+  }
+
   /**
    * Initialization options for a drive;
    */
   export interface IOptions {
     FS: any;
+    PATH: IPath
     baseUrl: string;
   }
 }
