@@ -24,7 +24,7 @@ export interface IStats {
 export interface IEmscriptenFSNode {
   name: string;
   mode: number;
-  parent: IEmscriptenFSNode | null;
+  parent: IEmscriptenFSNode;
   mount: { opts: { root: string } };
   stream_ops: IEmscriptenStreamOps;
   node_ops: IEmscriptenNodeOps;
@@ -181,8 +181,14 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
-    // TODO Push to service worker for creating file
-    return this.fs.FS.createNode(parent, name, DIR_MODE);
+
+    const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
+    const result = this.fs.API.lookup(path);
+    if (!result.ok) {
+      // I wish Javascript had inner exceptions
+      throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES["ENOENT"]];
+    }
+    return this.fs.createNode(parent, name, result.data === null ? DIR_MODE : FILE_MODE);
   }
 
   public mknod(
@@ -192,7 +198,9 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     dev: any
   ): IEmscriptenFSNode {
     console.log('DriveFSEmscriptenNodeOps -- mknod', parent, name, mode, dev);
-    // TODO WAT?
+
+    const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
+    this.fs.API.mknod(path, mode);
     return this.fs.FS.createNode(parent, name, mode);
   }
 
@@ -203,8 +211,8 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   ): void {
     console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
     this.fs.API.rename(
-      oldNode.parent ? this.fs.PATH.join2(oldNode.parent.name, oldNode.name) : oldNode.name,
-      this.fs.PATH.join2(newDir.name, newName)
+      oldNode.parent ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name) : oldNode.name,
+      this.fs.PATH.join2(this.fs.realPath(newDir), newName)
     );
   }
 
@@ -214,12 +222,12 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   public rmdir(parent: IEmscriptenFSNode, name: string) {
     console.log('DriveFSEmscriptenNodeOps -- rmdir', parent, name);
-    this.fs.API.rmdir(this.fs.PATH.join2(parent.name, name));
+    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
   public readdir(node: IEmscriptenFSNode): string[] {
     console.log('DriveFSEmscriptenNodeOps -- readdir', node);
-    return this.fs.API.readdir(node.name);
+    return this.fs.API.readdir(this.fs.realPath(node));
   }
 
   public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
@@ -249,6 +257,18 @@ export class ContentsAPI {
       console.error(e);
     }
     return JSON.parse(xhr.responseText);
+  }
+
+  lookup(path: string): DriveFS.ILookup {
+    return this.request('GET', `${path}?m=lookup`);
+  }
+
+  getmode(path: string): number {
+    return Number.parseInt(this.request('GET', `${path}?m=getmode`));
+  }
+
+  mknod(path: string, mode: number) {
+    return this.request('GET', `${path}?m=mknod&args=${mode}`);
   }
 
   rename(oldPath: string, newPath: string): void {
@@ -304,12 +324,22 @@ export class DriveFS {
 
   getMode(path: string): number {
     console.log('DriveFS -- getMode', path);
-    return DIR_MODE;
+    return this.API.getmode(path);
   }
 
   realPath(node: IEmscriptenFSNode): string {
     console.log('DriveFS -- realPath', node);
-    return '';
+    const parts: string[] = [];
+    let currentNode: IEmscriptenFSNode = node;
+
+    parts.push(currentNode.name);
+    while (currentNode.parent !== currentNode) {
+      parts.push(currentNode.name);
+      currentNode = currentNode.parent;
+    }
+    parts.reverse();
+
+    return this.PATH.join.apply(null, parts);
   }
 }
 
@@ -318,9 +348,21 @@ export class DriveFS {
  */
 export namespace DriveFS {
 
+  /**
+   * The response to a lookup request;
+   */
+  export interface ILookup {
+    ok: boolean,
+    data: any;
+  }
+
+  /**
+   * The emscripten FS Path API;
+   */
   export interface IPath {
     basename: (path: string) => string;
     dirname: (path: string) => string;
+    join: (...parts: string[]) => string;
     join2: (l: string, r: string) => string;
     normalize: (path: string) => string;
     splitPath: (filename: string) => string;

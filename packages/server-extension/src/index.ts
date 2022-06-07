@@ -1,11 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
-import { Contents, IContents, IModel } from '@jupyterlite/contents';
+import { Contents, DIR_MODE, FILE_MODE, IContents, IModel } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
@@ -195,19 +195,19 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 
       const path = request.path.replace('/api/drive', '');
 
-      let models: ServerContents.IModel;
+      let model: ServerContents.IModel;
 
       // TODO Handle errors properly
       switch (request.method) {
         case 'readdir':
-          models = await contentManager.get(path);
+          model = await contentManager.get(path);
 
-          if (models.type !== 'directory') {
+          if (model.type !== 'directory') {
             // TODO Something smart
             return;
           }
 
-          subitems = models.content.map((subcontent: IModel) => subcontent.name);
+          subitems = model.content.map((subcontent: IModel) => subcontent.name);
           broadcast.postMessage(subitems);
           break;
         case 'rmdir':
@@ -221,6 +221,48 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           }
 
           await contentManager.rename(path, request.args[0].replace('/drive', ''));
+          broadcast.postMessage({});
+          break;
+        case 'getmode':
+          model = await contentManager.get(path);
+
+          if (model.type === 'directory') {
+            broadcast.postMessage(DIR_MODE);
+          } else {
+            broadcast.postMessage(FILE_MODE);
+          }
+          break;
+        case 'lookup':
+          try {
+            model = await contentManager.get(path);
+
+            broadcast.postMessage({
+              ok: true,
+              data: model.type === 'directory' ? null : model.content
+            });
+          } catch (e) {
+            broadcast.postMessage({
+              ok: false,
+              data: null
+            });
+          }
+
+          break;
+        case 'mknod':
+          if (request.args === null) {
+            // TODO Something smart
+            return;
+          }
+
+          const mode = Number.parseInt(request.args[0]);
+
+          model = await contentManager.newUntitled({
+            path: PathExt.dirname(path),
+            type: mode === DIR_MODE ? 'directory' : 'file',
+            ext: PathExt.extname(path)
+          })
+          await contentManager.rename(model.path, path);
+
           broadcast.postMessage({});
           break;
       }
