@@ -270,11 +270,13 @@ export class DriveFS {
   FS: any;
   API: ContentsAPI;
   PATH: DriveFS.IPath;
+  ERRNO_CODES: any;
 
   constructor(options: DriveFS.IOptions) {
     this.FS = options.FS;
     this.API = new ContentsAPI(options.baseUrl);
     this.PATH = options.PATH;
+    this.ERRNO_CODES = options.ERRNO_CODES;
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
@@ -329,7 +331,8 @@ export namespace DriveFS {
    */
   export interface IOptions {
     FS: any;
-    PATH: IPath
+    PATH: IPath;
+    ERRNO_CODES: any;
     baseUrl: string;
   }
 }
