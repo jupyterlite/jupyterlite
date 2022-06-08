@@ -1,9 +1,15 @@
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
+export const SEEK_CUR = 1;
+export const SEEK_END = 2;
+
+const encoder = new TextEncoder();
+// const decoder = new TextDecoder("utf-8");
 
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
 // https://github.com/jvilk/BrowserFS/blob/a96aa2d417995dac7d376987839bc4e95e218e06/src/generic/emscripten_fs.ts
+// And from https://github.com/gzuidhof/starboard-notebook
 export interface IStats {
   dev: number;
   ino: number;
@@ -35,6 +41,7 @@ export interface IEmscriptenStream {
   nfd: any;
   flags: string;
   position: number;
+  fileData?: Uint8Array;
 }
 
 export interface IEmscriptenNodeOps {
@@ -86,6 +93,15 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
   public open(stream: IEmscriptenStream): void {
     console.log('DriveFSEmscriptenStreamOps -- open', stream);
+
+    const path = this.fs.realPath(stream.node);
+    if (this.fs.FS.isFile(stream.node.mode)) {
+      const result = this.fs.API.get(path);
+      if (result === null) {
+        return;
+      }
+      stream.fileData = encoder.encode(result);
+    }
   }
 
   public close(stream: IEmscriptenStream): void {
@@ -131,18 +147,23 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   public llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
     console.log('DriveFSEmscriptenStreamOps -- llseek', stream, offset, whence);
     let position = offset;
-    if (whence === 1) {
-      // SEEK_CUR.
+    if (whence === SEEK_CUR) {
       position += stream.position;
-    } else if (whence === 2) {
-      // SEEK_END.
+    } else if (whence === SEEK_END) {
       if (this.fs.FS.isFile(stream.node.mode)) {
-        // TODO WAT?
-        position += 500;
+        try {
+          // Not sure, but let's see
+          position += stream.fileData!.length;
+        } catch (e) {
+          throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
+        }
       }
     }
 
-    stream.position = position;
+    if (position < 0) {
+      throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EINVAL"]);
+    }
+
     return position;
   }
 }
@@ -232,7 +253,7 @@ export class ContentsAPI {
     this._baseUrl = baseUrl;
   }
 
-  request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string): any {
+  request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, jsonParse: boolean = true): any {
     const xhr = new XMLHttpRequest();
     xhr.open(method, `${this._baseUrl}api${path}`, false);
     try {
@@ -240,7 +261,11 @@ export class ContentsAPI {
     } catch (e) {
       console.error(e);
     }
-    return JSON.parse(xhr.responseText);
+    if (jsonParse) {
+      return JSON.parse(xhr.responseText);
+    } else {
+      return xhr.responseText;
+    }
   }
 
   lookup(path: string): DriveFS.ILookup {
@@ -268,6 +293,10 @@ export class ContentsAPI {
 
   rmdir(path: string): void {
     return this.request('GET', `${path}?m=rmdir`);
+  }
+
+  get(path: string): any {
+    return this.request('GET', `${path}?m=get`, false);
   }
 
   getattr(path: string): IStats {

@@ -192,6 +192,21 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // TODO Put this in a separate plugin
+    navigator.serviceWorker.register('/services.js').then(
+      (registration) => {
+        // Registration was successful
+        console.log(
+          'ServiceWorker registration successful with scope: ',
+          registration.scope
+        );
+      },
+      (err) => {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+      }
+    );
+
+    // Setup communication with service worker for the virtual fs
     const broadcast = new BroadcastChannel('/api/drive.v1');
     let subitems: [];
 
@@ -297,6 +312,17 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             ctime: model.last_modified,  // TODO Get the proper ctime?
             timestamp: 0,
           });
+          break;
+        }
+        case 'get': {
+          model = await contentManager.get(path);
+
+          if (model.type === 'directory') {
+            broadcast.postMessage(null);
+            return;
+          }
+
+          broadcast.postMessage(model.content);
           break;
         }
       }
