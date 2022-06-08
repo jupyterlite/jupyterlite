@@ -23,21 +23,27 @@ self.addEventListener('fetch', async (event) => {
     return;
   }
 
-  const method = new URLSearchParams(url.search).get('m');
-  let args = new URLSearchParams(url.search).get('args');
-  if (args !== null) {
-    args = args.split(',');
-  }
-
-  const messageData = {
-    path: url.pathname,
-    method,
-    args,
-  };
-
   // Forward request to main using the broadcast channel
   event.respondWith(
-    new Promise((resolve) => {
+    new Promise(async (resolve) => {
+      const method = new URLSearchParams(url.search).get('m');
+      let args = new URLSearchParams(url.search).get('args');
+      if (args !== null) {
+        args = args.split(',');
+      }
+
+      let content = "";
+      if (event.request.method === "PUT") {
+        content = await event.request.text();
+      }
+
+      const messageData = {
+        path: url.pathname,
+        method,
+        args,
+        content,
+      };
+
       broadcast.onmessage = (event) => {
         resolve(new Response(JSON.stringify(event.data)));
       };

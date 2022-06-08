@@ -211,7 +211,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      const request: { path: string; method: string; args: string[] | null } =
+      const request: { path: string; method: string; args: string[] | null, content: string } =
         event.data;
       const contentManager = app.serviceManager.contents;
 
@@ -264,12 +264,11 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 
             broadcast.postMessage({
               ok: true,
-              data: model.type === 'directory' ? null : model.content,
+              mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
             });
           } catch (e) {
             broadcast.postMessage({
-              ok: false,
-              data: null,
+              ok: false
             });
           }
 
@@ -323,6 +322,15 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           }
 
           broadcast.postMessage(model.content);
+          break;
+        }
+        case 'put': {
+          await contentManager.save(path, {
+            content: request.content,
+            type: 'file',
+          })
+
+          broadcast.postMessage(null);
           break;
         }
       }

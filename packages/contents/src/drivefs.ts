@@ -4,7 +4,7 @@ export const SEEK_CUR = 1;
 export const SEEK_END = 2;
 
 const encoder = new TextEncoder();
-// const decoder = new TextDecoder("utf-8");
+const decoder = new TextDecoder("utf-8");
 
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
@@ -34,6 +34,7 @@ export interface IEmscriptenFSNode {
   mount: { opts: { root: string } };
   stream_ops: IEmscriptenStreamOps;
   node_ops: IEmscriptenNodeOps;
+  timestamp: number;
 }
 
 export interface IEmscriptenStream {
@@ -106,6 +107,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
   public close(stream: IEmscriptenStream): void {
     console.log('DriveFSEmscriptenStreamOps -- close', stream);
+
+    const path = this.fs.realPath(stream.node);
+    if (this.fs.FS.isFile(stream.node.mode) && stream.fileData) {
+      const text = decoder.decode(stream.fileData);
+      stream.fileData = undefined;
+      this.fs.API.put(path, text);
+    }
   }
 
   public read(
@@ -123,7 +131,16 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
       length,
       position
     );
-    return 0;
+
+    if (length <= 0) return 0;
+
+    const size = Math.min((stream.fileData?.length ?? 0) - position, length);
+    try {
+      buffer.set(stream.fileData!.subarray(position, position + size), offset);
+    } catch (e) {
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+    }
+    return size;
   }
 
   public write(
@@ -141,7 +158,23 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
       length,
       position
     );
-    return 0;
+    if (length <= 0) return 0;
+
+    stream.node.timestamp = Date.now();
+
+    try {
+      if (position + length > (stream.fileData?.length ?? 0)) {
+        const oldData = stream.fileData ?? new Uint8Array();
+        stream.fileData = new Uint8Array(position + length);
+        stream.fileData.set(oldData);
+      }
+
+      stream.fileData!.set(buffer.subarray(offset, offset + length), position);
+
+      return length;
+    } catch (e) {
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+    }
   }
 
   public llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
@@ -155,13 +188,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
           // Not sure, but let's see
           position += stream.fileData!.length;
         } catch (e) {
-          throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
+          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
         }
       }
     }
 
     if (position < 0) {
-      throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EINVAL"]);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EINVAL"]);
     }
 
     return position;
@@ -180,19 +213,19 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public setattr(node: IEmscriptenFSNode, attr: IStats): void {
-    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
+    console.log('setattr', node, attr);
   }
 
   public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
-      throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
+      throw new this.fs.FS.ErrnoError[this.fs.ERRNO_CODES['ENOENT']];
     }
     return this.fs.createNode(
       parent,
       name,
-      result.data === null ? DIR_MODE : FILE_MODE
+      result.mode
     );
   }
 
@@ -204,7 +237,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   ): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
-    return this.fs.FS.createNode(parent, name, mode);
+    return this.fs.FS.createNode(parent, name, mode, dev);
   }
 
   public rename(
@@ -237,11 +270,11 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
-    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
+    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
   }
 
   public readlink(node: IEmscriptenFSNode): string {
-    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
+    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
   }
 }
 
@@ -253,11 +286,15 @@ export class ContentsAPI {
     this._baseUrl = baseUrl;
   }
 
-  request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, jsonParse: boolean = true): any {
+  request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, jsonParse: boolean = true, data: string | null = null): any {
     const xhr = new XMLHttpRequest();
     xhr.open(method, `${this._baseUrl}api${path}`, false);
     try {
-      xhr.send();
+      if (data === null) {
+        xhr.send();
+      } else {
+        xhr.send(data);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -297,6 +334,10 @@ export class ContentsAPI {
 
   get(path: string): any {
     return this.request('GET', `${path}?m=get`, false);
+  }
+
+  put(path: string, value: string) {
+    return this.request('PUT', `${path}?m=put`, false, value);
   }
 
   getattr(path: string): IStats {
@@ -341,6 +382,9 @@ export class DriveFS {
     dev?: any
   ): IEmscriptenFSNode {
     const FS = this.FS;
+    if (!FS.isDir(mode) && !FS.isFile(mode)) {
+      throw new FS.ErrnoError(this.ERRNO_CODES["EINVAL"]);
+    }
     const node = FS.createNode(parent, name, mode, dev);
     node.node_ops = this.node_ops;
     node.stream_ops = this.stream_ops;
@@ -375,7 +419,7 @@ export namespace DriveFS {
    */
   export interface ILookup {
     ok: boolean;
-    data: any;
+    mode: number;
   }
 
   /**
