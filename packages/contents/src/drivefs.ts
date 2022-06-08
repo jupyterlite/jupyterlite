@@ -151,23 +151,18 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   private fs: DriveFS;
 
   constructor(fs: DriveFS) {
-    console.log('DriveFSEmscriptenNodeOps -- ctor');
     this.fs = fs;
   }
 
   public getattr(node: IEmscriptenFSNode): IStats {
-    console.log('DriveFSEmscriptenNodeOps -- getattr', node);
-
     return this.fs.API.getattr(this.fs.realPath(node));
   }
 
   public setattr(node: IEmscriptenFSNode, attr: IStats): void {
-    console.log('DriveFSEmscriptenNodeOps -- setattr', node, attr);
+    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
   }
 
   public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
-    console.log('DriveFSEmscriptenNodeOps -- lookup', parent, name);
-
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
@@ -186,8 +181,6 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     mode: number,
     dev: any
   ): IEmscriptenFSNode {
-    console.log('DriveFSEmscriptenNodeOps -- mknod', parent, name, mode, dev);
-
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
     return this.fs.FS.createNode(parent, name, mode);
@@ -198,7 +191,6 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     newDir: IEmscriptenFSNode,
     newName: string
   ): void {
-    console.log('DriveFSEmscriptenNodeOps -- rename', oldNode, newDir, newName);
     this.fs.API.rename(
       oldNode.parent
         ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name)
@@ -212,27 +204,23 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public unlink(parent: IEmscriptenFSNode, name: string): void {
-    console.log('DriveFSEmscriptenNodeOps -- unlink', parent, name);
     this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
   public rmdir(parent: IEmscriptenFSNode, name: string) {
-    console.log('DriveFSEmscriptenNodeOps -- rmdir', parent, name);
     this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
   public readdir(node: IEmscriptenFSNode): string[] {
-    console.log('DriveFSEmscriptenNodeOps -- readdir', node);
     return this.fs.API.readdir(this.fs.realPath(node));
   }
 
   public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
-    console.log('DriveFSEmscriptenNodeOps -- symlink', parent, newName, oldPath);
+    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
   }
 
   public readlink(node: IEmscriptenFSNode): string {
-    console.log('DriveFSEmscriptenNodeOps -- readlink', node);
-    return '';
+    throw this.fs.FS.genericErrors(this.fs.ERRNO_CODES["EPERM"]);
   }
 }
 
@@ -331,12 +319,10 @@ export class DriveFS {
   }
 
   getMode(path: string): number {
-    console.log('DriveFS -- getMode', path);
     return this.API.getmode(path);
   }
 
   realPath(node: IEmscriptenFSNode): string {
-    console.log('DriveFS -- realPath', node);
     const parts: string[] = [];
     let currentNode: IEmscriptenFSNode = node;
 
