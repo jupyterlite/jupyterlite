@@ -40,14 +40,6 @@ const kernel: JupyterLiteServerPlugin<void> = {
         display_name: 'Pyolite',
         language: 'python',
         argv: [],
-        spec: {
-          argv: [],
-          env: {},
-          display_name: 'Pyolite',
-          language: 'python',
-          interrupt_mode: 'message',
-          metadata: {},
-        },
         resources: {
           'logo-32x32': 'TODO',
           'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png'),

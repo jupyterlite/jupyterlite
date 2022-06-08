@@ -24,14 +24,6 @@ const kernel: JupyterLiteServerPlugin<void> = {
         display_name: 'JavaScript',
         language: 'javascript',
         argv: [],
-        spec: {
-          argv: [],
-          env: {},
-          display_name: 'JavaScript',
-          language: 'javascript',
-          interrupt_mode: 'message',
-          metadata: {},
-        },
         resources: {
           'logo-32x32': '',
           'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/javascript.svg'),
