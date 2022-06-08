@@ -314,7 +314,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           break;
         }
         case 'get': {
-          model = await contentManager.get(path);
+          model = await contentManager.get(path, { content: true });
 
           if (model.type === 'directory') {
             broadcast.postMessage(null);
