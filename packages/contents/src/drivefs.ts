@@ -275,7 +275,7 @@ export class ContentsAPI {
     const dirlist = this.request('GET', `${path}?m=readdir`);
     dirlist.push('.');
     dirlist.push('..');
-    return this.request('GET', `${path}?m=readdir`);
+    return dirlist;
   }
 
   rmdir(path: string): void {
