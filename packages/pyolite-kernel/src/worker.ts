@@ -128,7 +128,7 @@ const ERRNO_CODES = {
   EUSERS: 136,
   EWOULDBLOCK: 6,
   EXDEV: 75,
-  EXFULL: 115
+  EXFULL: 115,
 };
 
 export class PyoliteRemoteKernel {

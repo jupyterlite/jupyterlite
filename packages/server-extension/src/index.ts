@@ -211,8 +211,12 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      const request: { path: string; method: string; args: string[] | null, content: string } =
-        event.data;
+      const request: {
+        path: string;
+        method: string;
+        args: string[] | null;
+        content: string;
+      } = event.data;
       const contentManager = app.serviceManager.contents;
 
       const path = request.path.replace('/api/drive', '');
@@ -268,7 +272,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             });
           } catch (e) {
             broadcast.postMessage({
-              ok: false
+              ok: false,
             });
           }
 
@@ -306,9 +310,9 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
             size: model.size,
             blksize: 0,
             blocks: 0,
-            atime: model.last_modified,  // TODO Get the proper atime?
+            atime: model.last_modified, // TODO Get the proper atime?
             mtime: model.last_modified,
-            ctime: model.last_modified,  // TODO Get the proper ctime?
+            ctime: model.last_modified, // TODO Get the proper ctime?
             timestamp: 0,
           });
           break;
@@ -328,7 +332,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           await contentManager.save(path, {
             content: request.content,
             type: 'file',
-          })
+          });
 
           broadcast.postMessage(null);
           break;

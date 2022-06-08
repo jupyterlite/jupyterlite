@@ -4,7 +4,7 @@ export const SEEK_CUR = 1;
 export const SEEK_END = 2;
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder("utf-8");
+const decoder = new TextDecoder('utf-8');
 
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
@@ -87,14 +87,10 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   private fs: DriveFS;
 
   constructor(fs: DriveFS) {
-    console.log('DriveFSEmscriptenStreamOps -- ctor');
     this.fs = fs;
-    this.fs;
   }
 
   public open(stream: IEmscriptenStream): void {
-    console.log('DriveFSEmscriptenStreamOps -- open', stream);
-
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
       const result = this.fs.API.get(path);
@@ -106,8 +102,6 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   }
 
   public close(stream: IEmscriptenStream): void {
-    console.log('DriveFSEmscriptenStreamOps -- close', stream);
-
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode) && stream.fileData) {
       const text = decoder.decode(stream.fileData);
@@ -123,22 +117,15 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     length: number,
     position: number
   ): number {
-    console.log(
-      'DriveFSEmscriptenStreamOps -- read',
-      stream,
-      buffer,
-      offset,
-      length,
-      position
-    );
+    if (length <= 0 || stream.fileData === undefined) {
+      return 0;
+    }
 
-    if (length <= 0) return 0;
-
-    const size = Math.min((stream.fileData?.length ?? 0) - position, length);
+    const size = Math.min((stream.fileData.length ?? 0) - position, length);
     try {
-      buffer.set(stream.fileData!.subarray(position, position + size), offset);
+      buffer.set(stream.fileData.subarray(position, position + size), offset);
     } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
     }
     return size;
   }
@@ -150,35 +137,31 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     length: number,
     position: number
   ): number {
-    console.log(
-      'DriveFSEmscriptenStreamOps -- write',
-      stream,
-      buffer,
-      offset,
-      length,
-      position
-    );
-    if (length <= 0) return 0;
+    if (length <= 0) {
+      return 0;
+    }
 
     stream.node.timestamp = Date.now();
 
     try {
-      if (position + length > (stream.fileData?.length ?? 0)) {
+      if (
+        position + length > (stream.fileData?.length ?? 0) ||
+        stream.fileData === undefined
+      ) {
         const oldData = stream.fileData ?? new Uint8Array();
         stream.fileData = new Uint8Array(position + length);
         stream.fileData.set(oldData);
       }
 
-      stream.fileData!.set(buffer.subarray(offset, offset + length), position);
+      stream.fileData.set(buffer.subarray(offset, offset + length), position);
 
       return length;
     } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
     }
   }
 
   public llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
-    console.log('DriveFSEmscriptenStreamOps -- llseek', stream, offset, whence);
     let position = offset;
     if (whence === SEEK_CUR) {
       position += stream.position;
@@ -188,13 +171,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
           // Not sure, but let's see
           position += stream.fileData!.length;
         } catch (e) {
-          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
         }
       }
     }
 
     if (position < 0) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EINVAL"]);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EINVAL']);
     }
 
     return position;
@@ -213,20 +196,16 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public setattr(node: IEmscriptenFSNode, attr: IStats): void {
-    console.log('setattr', node, attr);
+    // TODO
   }
 
   public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
-      throw new this.fs.FS.ErrnoError[this.fs.ERRNO_CODES['ENOENT']];
+      throw new this.fs.FS.ErrnoError[this.fs.ERRNO_CODES['ENOENT']]();
     }
-    return this.fs.createNode(
-      parent,
-      name,
-      result.mode
-    );
+    return this.fs.createNode(parent, name, result.mode);
   }
 
   public mknod(
@@ -270,11 +249,11 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
-    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 
   public readlink(node: IEmscriptenFSNode): string {
-    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES["EPERM"]);
+    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 }
 
@@ -286,7 +265,12 @@ export class ContentsAPI {
     this._baseUrl = baseUrl;
   }
 
-  request(method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, jsonParse: boolean = true, data: string | null = null): any {
+  request(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    path: string,
+    jsonParse = true,
+    data: string | null = null
+  ): any {
     const xhr = new XMLHttpRequest();
     xhr.open(method, `${this._baseUrl}api${path}`, false);
     try {
@@ -383,7 +367,7 @@ export class DriveFS {
   ): IEmscriptenFSNode {
     const FS = this.FS;
     if (!FS.isDir(mode) && !FS.isFile(mode)) {
-      throw new FS.ErrnoError(this.ERRNO_CODES["EINVAL"]);
+      throw new FS.ErrnoError(this.ERRNO_CODES['EINVAL']);
     }
     const node = FS.createNode(parent, name, mode, dev);
     node.node_ops = this.node_ops;

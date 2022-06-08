@@ -32,8 +32,8 @@ self.addEventListener('fetch', async (event) => {
         args = args.split(',');
       }
 
-      let content = "";
-      if (event.request.method === "PUT") {
+      let content = '';
+      if (event.request.method === 'PUT') {
         content = await event.request.text();
       }
 
