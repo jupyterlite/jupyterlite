@@ -1002,7 +1002,11 @@ class P:
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
     DOCS_SRC_MD = sorted(
-        [p for p in DOCS.rglob("*.md") if "docs/api/ts" not in str(p.as_posix())]
+        [
+            p
+            for p in DOCS.rglob("*.md")
+            if "docs/reference/api/ts" not in str(p.as_posix())
+        ]
     )
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
@@ -1142,10 +1146,10 @@ class B:
     # typedoc
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
     DOCS_RAW_TYPEDOC_README = DOCS_RAW_TYPEDOC / "README.md"
-    DOCS_TS = P.DOCS / "api/ts"
+    DOCS_TS = P.DOCS / "reference/api/ts"
     DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
     DOCS_TS_MODULES = [
-        P.ROOT / "docs/api/ts" / f"{p.parent.name}.md"
+        P.ROOT / "docs/reference/api/ts" / f"{p.parent.name}.md"
         for p in P.PACKAGE_JSONS
         if p.parent.name not in C.NO_TYPEDOC
     ]
