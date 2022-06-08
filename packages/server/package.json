@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/server",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.8",
   "description": "JupyterLite - Server",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -48,11 +48,11 @@
     "@jupyterlab/services": "~6.4.2",
     "@jupyterlab/settingregistry": "~3.4.2",
     "@jupyterlab/statedb": "~3.4.2",
-    "@jupyterlite/contents": "^0.1.0-beta.7",
-    "@jupyterlite/kernel": "^0.1.0-beta.7",
-    "@jupyterlite/session": "^0.1.0-beta.7",
-    "@jupyterlite/settings": "^0.1.0-beta.7",
-    "@jupyterlite/translation": "^0.1.0-beta.7",
+    "@jupyterlite/contents": "^0.1.0-beta.8",
+    "@jupyterlite/kernel": "^0.1.0-beta.8",
+    "@jupyterlite/session": "^0.1.0-beta.8",
+    "@jupyterlite/settings": "^0.1.0-beta.8",
+    "@jupyterlite/translation": "^0.1.0-beta.8",
     "@lumino/application": "^1.28.1",
     "@lumino/coreutils": "^1.12.0",
     "mock-socket": "^9.1.0"

@@ -44,35 +44,14 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 
 ## 🏗️ Build your own JupyterLite 🏗️
 
-Install `jupyterlite` from PyPI, which comes with the CLI and a pre-built, empty site
-archive.
+You can build your own JupyterLite website in a couple of minutes, with custom
+extensions and packages.
 
-```bash
-python -m pip install --pre jupyterlite
-```
-
-Use the [`jupyter lite` CLI][cli] to `build`, `check`, or create a [reproducible],
-remixable `archive` of your site, then [publish] your built site to any static host,
-such as GitHub Pages or ReadTheDocs.
-
-| `jupyter lite` | description                                         | extras                                |
-| -------------: | --------------------------------------------------- | ------------------------------------- |
-|         `init` | build an empty site from the bundled app archive    |                                       |
-|        `build` | add your own notebooks, labextensions, and settings | `jupyter_server` for indexing content |
-|        `serve` | try out your site locally                           | `tornado` for snappier serving        |
-|        `check` | check your site's metadata                          | `jsonschema` for schema validation    |
-|      `archive` | create a single-file archive                        |                                       |
-
-[cli]: https://jupyterlite.readthedocs.io/en/latest/cli.html
-[publish]: https://jupyterlite.readthedocs.io/en/latest/deploying.html
-[reproducible]:
-  https://jupyterlite.readthedocs.io/en/latest/cli.html#reproducible-archives
-
-## Features
-
-> For more details, see the [JupyterLite documentation](https://jupyterlite.rtfd.io).
+See the [documentation](https://jupyterlite.rtfd.io) for more details.
 
 ### Browser-based Interactive Computing
+
+JupyterLite is all about accessible browser-based interactive computing:
 
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
   - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
@@ -92,10 +71,7 @@ such as GitHub Pages or ReadTheDocs.
 - Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained [configurability] of page settings, including reuse of federated
-  extensions
-
-[configurability]: https://jupyterlite.readthedocs.io/en/latest/configuring.html
+- Fine-grained configurability of page settings, including reuse of federated extensions
 
 ## Showcase
 

@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/localforage",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.8",
   "description": "JupyterLite - Localforage singleton",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
