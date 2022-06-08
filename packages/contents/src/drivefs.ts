@@ -205,10 +205,15 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         : oldNode.name,
       this.fs.PATH.join2(this.fs.realPath(newDir), newName)
     );
+
+    // Updating the in-memory node
+    oldNode.name = newName;
+    oldNode.parent = newDir;
   }
 
   public unlink(parent: IEmscriptenFSNode, name: string): void {
     console.log('DriveFSEmscriptenNodeOps -- unlink', parent, name);
+    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
   public rmdir(parent: IEmscriptenFSNode, name: string) {
@@ -267,6 +272,9 @@ export class ContentsAPI {
   }
 
   readdir(path: string): string[] {
+    const dirlist = this.request('GET', `${path}?m=readdir`);
+    dirlist.push('.');
+    dirlist.push('..');
     return this.request('GET', `${path}?m=readdir`);
   }
 
