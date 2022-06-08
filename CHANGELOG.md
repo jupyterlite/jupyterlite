@@ -2,6 +2,37 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b8
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b7...6b71743d5640a11d3c669556f09f0e47df17cc45))
+
+### Enhancements made
+
+- Fix signature for pyplot.show in Matplotlib [#654](https://github.com/jupyterlite/jupyterlite/pull/654) ([@joemarshall](https://github.com/joemarshall))
+- Save files before downloading [#629](https://github.com/jupyterlite/jupyterlite/pull/629) ([@HighDiceRoller](https://github.com/HighDiceRoller))
+
+### Bugs fixed
+
+- Fix the kernelspecs response [#657](https://github.com/jupyterlite/jupyterlite/pull/657) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Drop bumpversion for bumping versions, fix conda extensions [#644](https://github.com/jupyterlite/jupyterlite/pull/644) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 3.4.2, add `documentsearch-extension` [#640](https://github.com/jupyterlite/jupyterlite/pull/640) ([@jtpio](https://github.com/jtpio))
+- Allow bot PRs to be automatically labeled [#634](https://github.com/jupyterlite/jupyterlite/pull/634) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Restructure the documentation with how-to guides and tutorials [#641](https://github.com/jupyterlite/jupyterlite/pull/641) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-05-04&to=2022-06-08&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-05-04..2022-06-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-05-04..2022-06-08&type=Issues) | [@HighDiceRoller](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AHighDiceRoller+updated%3A2022-05-04..2022-06-08&type=Issues) | [@joemarshall](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajoemarshall+updated%3A2022-05-04..2022-06-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-05-04..2022-06-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-05-04..2022-06-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b7
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b6...5ced05bfc5e0758a8fdbb3342a4941102562d8d2))
@@ -15,8 +46,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-05-02&to=2022-05-04&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-05-02..2022-05-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-05-02..2022-05-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b6
 
