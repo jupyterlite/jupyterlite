@@ -4,8 +4,8 @@
 This set of how-to guides is geared towards creating and configuring a custom JupyterLite website at *build time*.
 
 To learn more about using an already deployed JupyterLite website, check out the [Quickstart Guide](../quickstart/using.md).
-More how-to guides on using and configuring  an existing JupyterLite at *runtime*
-(focused on accessing content, working with settings) website will be soon.
+More how-to guides on using and configuring an existing JupyterLite website at *runtime*
+(focused on accessing content, working with settings) will soon be added.
 ```
 
 ## Configuring a JupyterLite deployment
