@@ -261,8 +261,10 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * Wrap serviceworker requests for an Emscripten-compatible syncronous API.
  */
 export class ContentsAPI {
-  constructor(baseUrl: string) {
+  constructor(baseUrl: string, FS: any, ERRNO_CODES: any) {
     this._baseUrl = baseUrl;
+    this.FS = FS;
+    this.ERRNO_CODES = ERRNO_CODES;
   }
 
   request(
@@ -273,6 +275,7 @@ export class ContentsAPI {
   ): any {
     const xhr = new XMLHttpRequest();
     xhr.open(method, `${this._baseUrl}api${path}`, false);
+
     try {
       if (data === null) {
         xhr.send();
@@ -282,6 +285,11 @@ export class ContentsAPI {
     } catch (e) {
       console.error(e);
     }
+
+    if (xhr.status >= 400) {
+      throw new this.FS.ErrnoError(this.ERRNO_CODES["EINVAL"]);
+    }
+
     if (jsonParse) {
       return JSON.parse(xhr.responseText);
     } else {
@@ -334,6 +342,8 @@ export class ContentsAPI {
   }
 
   private _baseUrl: string;
+  private FS: any;
+  private ERRNO_CODES: any;
 }
 
 export class DriveFS {
@@ -344,9 +354,9 @@ export class DriveFS {
 
   constructor(options: DriveFS.IOptions) {
     this.FS = options.FS;
-    this.API = new ContentsAPI(options.baseUrl);
     this.PATH = options.PATH;
     this.ERRNO_CODES = options.ERRNO_CODES;
+    this.API = new ContentsAPI(options.baseUrl, this.FS, this.ERRNO_CODES);
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
