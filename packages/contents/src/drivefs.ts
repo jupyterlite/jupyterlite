@@ -6,6 +6,34 @@ export const SEEK_END = 2;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
+// Mapping flag -> do we need to overwrite the file upon closing it
+const flagNeedsWrite: {[flag: number]: boolean} = {
+  0/*O_RDONLY*/: false,
+  1/*O_WRONLY*/: true,
+  2/*O_RDWR*/: true,
+  64/*O_CREAT*/: true,
+  65/*O_WRONLY|O_CREAT*/: true,
+  66/*O_RDWR|O_CREAT*/: true,
+  129/*O_WRONLY|O_EXCL*/: true,
+  193/*O_WRONLY|O_CREAT|O_EXCL*/: true,
+  514/*O_RDWR|O_TRUNC*/: true,
+  577/*O_WRONLY|O_CREAT|O_TRUNC*/: true,
+  578/*O_CREAT|O_RDWR|O_TRUNC*/: true,
+  705/*O_WRONLY|O_CREAT|O_EXCL|O_TRUNC*/: true,
+  706/*O_RDWR|O_CREAT|O_EXCL|O_TRUNC*/: true,
+  1024/*O_APPEND*/: true,
+  1025/*O_WRONLY|O_APPEND*/: true,
+  1026/*O_RDWR|O_APPEND*/: true,
+  1089/*O_WRONLY|O_CREAT|O_APPEND*/: true,
+  1090/*O_RDWR|O_CREAT|O_APPEND*/: true,
+  1153/*O_WRONLY|O_EXCL|O_APPEND*/: true,
+  1154/*O_RDWR|O_EXCL|O_APPEND*/: true,
+  1217/*O_WRONLY|O_CREAT|O_EXCL|O_APPEND*/: true,
+  1218/*O_RDWR|O_CREAT|O_EXCL|O_APPEND*/: true,
+  4096/*O_RDONLY|O_DSYNC*/: true,
+  4098/*O_RDWR|O_DSYNC*/: true
+};
+
 // Types and implementation inspired from
 // https://github.com/jvilk/BrowserFS
 // https://github.com/jvilk/BrowserFS/blob/a96aa2d417995dac7d376987839bc4e95e218e06/src/generic/emscripten_fs.ts
@@ -42,7 +70,7 @@ export interface IEmscriptenStream {
   nfd: any;
   flags: string;
   position: number;
-  fileData?: Uint8Array;
+  file?: DriveFS.IFile;
 }
 
 export interface IEmscriptenNodeOps {
@@ -93,15 +121,29 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   public open(stream: IEmscriptenStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
-      stream.fileData = this.fs.API.get(path);
+      stream.file = this.fs.API.get(path);
     }
   }
 
   public close(stream: IEmscriptenStream): void {
+    if (!this.fs.FS.isFile(stream.node.mode) || !stream.file) {
+      return;
+    }
+
     const path = this.fs.realPath(stream.node);
-    if (this.fs.FS.isFile(stream.node.mode) && stream.fileData) {
-      this.fs.API.put(path, stream.fileData);
-      stream.fileData = undefined;
+
+    const flags = stream.flags;
+    let parsedFlags = (typeof flags === "string") ? parseInt(flags, 10) : flags;
+    parsedFlags &= 0x1FFF;
+
+    let needsWrite = true;
+    if (parsedFlags in flagNeedsWrite) {
+      needsWrite = flagNeedsWrite[parsedFlags];
+    }
+
+    if (needsWrite) {
+      this.fs.API.put(path, stream.file);
+      stream.file = undefined;
     }
   }
 
@@ -112,13 +154,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     length: number,
     position: number
   ): number {
-    if (length <= 0 || stream.fileData === undefined) {
+    if (length <= 0 || stream.file === undefined) {
       return 0;
     }
 
-    const size = Math.min((stream.fileData.length ?? 0) - position, length);
+    const size = Math.min((stream.file.data.length ?? 0) - position, length);
     try {
-      buffer.set(stream.fileData.subarray(position, position + size), offset);
+      buffer.set(stream.file.data.subarray(position, position + size), offset);
     } catch (e) {
       throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
     }
@@ -132,7 +174,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     length: number,
     position: number
   ): number {
-    if (length <= 0) {
+    if (length <= 0 || stream.file === undefined) {
       return 0;
     }
 
@@ -140,15 +182,14 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     try {
       if (
-        position + length > (stream.fileData?.length ?? 0) ||
-        stream.fileData === undefined
+        position + length > (stream.file?.data.length ?? 0)
       ) {
-        const oldData = stream.fileData ?? new Uint8Array();
-        stream.fileData = new Uint8Array(position + length);
-        stream.fileData.set(oldData);
+        const oldData = stream.file.data ? stream.file.data : new Uint8Array();
+        stream.file.data = new Uint8Array(position + length);
+        stream.file.data.set(oldData);
       }
 
-      stream.fileData.set(buffer.subarray(offset, offset + length), position);
+      stream.file.data.set(buffer.subarray(offset, offset + length), position);
 
       return length;
     } catch (e) {
@@ -163,8 +204,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     } else if (whence === SEEK_END) {
       if (this.fs.FS.isFile(stream.node.mode)) {
         try {
-          // Not sure, but let's see
-          position += stream.fileData!.length;
+          position += stream.file!.data.length;
         } catch (e) {
           throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
         }
@@ -211,7 +251,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   ): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
-    return this.fs.FS.createNode(parent, name, mode, dev);
+    return this.fs.createNode(parent, name, mode, dev);
   }
 
   public rename(
@@ -314,7 +354,7 @@ export class ContentsAPI {
     return this.request('GET', `${path}?m=rmdir`);
   }
 
-  get(path: string): Uint8Array {
+  get(path: string): DriveFS.IFile {
     const response = this.request('GET', `${path}?m=get`);
 
     const serializedContent = response.content;
@@ -323,22 +363,38 @@ export class ContentsAPI {
     switch (format) {
       case 'json':
       case 'text':
-        return encoder.encode(serializedContent);
+        return {
+          data: encoder.encode(serializedContent),
+          format
+        };
       case 'base64':
         const binString = atob(serializedContent);
         const len = binString.length;
-        const bytes = new Uint8Array(len);
+        const data = new Uint8Array(len);
         for (let i = 0; i < len; i++) {
-            bytes[i] = binString.charCodeAt(i);
+            data[i] = binString.charCodeAt(i);
         }
-        return bytes;
+        return {
+          data,
+          format
+        };
       default:
         throw new this.FS.ErrnoError(this.ERRNO_CODES['ENOENT']);
     }
   }
 
-  put(path: string, value: Uint8Array) {
-    return this.request('PUT', `${path}?m=put`, decoder.decode(value));
+  put(path: string, value: DriveFS.IFile) {
+    switch (value.format) {
+      case 'json':
+      case 'text':
+        return this.request('PUT', `${path}?m=put&args=${value.format}`, decoder.decode(value.data));
+      case 'base64':
+        let binary = '';
+        for (let i = 0; i < value.data.byteLength; i++) {
+          binary += String.fromCharCode(value.data[i]);
+        }
+        return this.request('PUT', `${path}?m=put&args=${value.format}`, btoa(binary));
+    }
   }
 
   getattr(path: string): IStats {
@@ -417,6 +473,14 @@ export class DriveFS {
  * A namespace for DriveFS configurations, etc.
  */
 export namespace DriveFS {
+  /**
+   * A file representation;
+   */
+  export interface IFile {
+    data: Uint8Array;
+    format: 'json' | 'text' | 'base64';
+  }
+
   /**
    * The response to a lookup request;
    */

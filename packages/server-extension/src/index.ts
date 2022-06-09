@@ -341,9 +341,17 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
           break;
         }
         case 'put': {
+          if (request.args === null) {
+            // TODO Something smart
+            return;
+          }
+
+          console.log('saving ', request.content);
+
           await contentManager.save(path, {
             content: request.content,
             type: 'file',
+            format: request.args[0] as ServerContents.FileFormat
           });
 
           broadcast.postMessage(null);
