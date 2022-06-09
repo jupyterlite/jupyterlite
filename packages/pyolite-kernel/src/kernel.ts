@@ -78,6 +78,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   }
 
   protected async onRemoteSetup() {
+    console.log('remote setup done!');
     this._ready.resolve();
   }
 

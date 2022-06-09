@@ -13,6 +13,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', async (event) => {
   const url = new URL(event.request.url);
 
+  console.log('service worker intercepted', url);
+  console.log('location', location);
+
   // Not same origin, we let the request continue
   if (url.origin !== location.origin) {
     return;
