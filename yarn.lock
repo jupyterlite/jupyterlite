@@ -1615,7 +1615,7 @@
     "@lumino/signaling" "^1.10.0"
     "@lumino/widgets" "^1.30.0"
 
-"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.3", "@jupyterlab/coreutils@~5.4.3":
+"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.2", "@jupyterlab/coreutils@^5.4.3", "@jupyterlab/coreutils@~5.4.3":
   version "5.4.3"
   resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-5.4.3.tgz#9a9ed66b045a9f7cee2064cb8b29e0bcc759f8c1"
   integrity sha512-9X021xXTDVnCSYGXsRsMsxCaoHk28oHC/fUTytc5DRgTcpzOGPBO/mVpgJfyejOdy4HxBbAovJSnkBlPwjm1yA==
@@ -2744,6 +2744,7 @@
     "@lumino/disposable" "^1.10.1"
     "@lumino/signaling" "^1.10.1"
     async-mutex "^0.3.1"
+    comlink "^4.3.1"
     mock-socket "^9.1.0"
 
 "@jupyterlite/licenses@file:packages/licenses":
@@ -2770,6 +2771,7 @@
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
   version "0.1.0-beta.8"
   dependencies:
+    "@jupyterlite/contents" "^0.1.0-beta.8"
     "@jupyterlite/kernel" "^0.1.0-beta.8"
     comlink "^4.3.1"
 
