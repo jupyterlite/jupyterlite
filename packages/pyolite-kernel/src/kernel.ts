@@ -9,7 +9,6 @@ import { wrap } from 'comlink';
 
 import { IPyoliteWorkerKernel, IRemotePyoliteWorkerKernel } from './tokens';
 
-import worker from './worker?raw';
 import { PIPLITE_WHEEL } from './_pypi';
 
 /**
@@ -80,45 +79,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   protected async onRemoteSetup() {
     console.log('remote setup done!');
     this._ready.resolve();
-  }
-
-  /**
-   * Build a list of literal strings to use in the worker
-   *
-   * Subclasses could use overload this to customize pre-loaded behavior, replace
-   * the worker, or any number of other tricks.
-   *
-   * @param options The instantiation options for a new PyodideKernel
-   */
-  protected buildWorkerScript(options: PyoliteKernel.IOptions): string[] {
-    const { pyodideUrl } = options;
-
-    const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
-
-    const baseUrl = PageConfig.getBaseUrl();
-
-    const pypi = URLExt.join(baseUrl, 'build/pypi');
-
-    const pipliteUrls = [...(options.pipliteUrls || []), URLExt.join(pypi, 'all.json')];
-
-    const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
-
-    return [
-      // first we need the pyodide initialization scripts...
-      `importScripts("${options.pyodideUrl}");`,
-      // we need the base url
-      `var baseURL = "${baseUrl}";`,
-      // ...we also need the location of the index of pyodide-built js/WASM...
-      `var indexURL = "${indexUrl}";`,
-      // ...and the piplite wheel...
-      `var _pipliteWheelUrl = "${pipliteWheelUrl}";`,
-      // ...and the locations of custom wheel APIs and indices...
-      `var _pipliteUrls = ${JSON.stringify(pipliteUrls)};`,
-      // ...but maybe not PyPI...
-      `var _disablePyPIFallback = ${JSON.stringify(!!options.disablePyPIFallback)};`,
-      // ...finally, the worker... which _must_ appear last!
-      worker.toString(),
-    ];
   }
 
   /**
