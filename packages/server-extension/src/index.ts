@@ -193,7 +193,6 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   },
 };
 
-
 /**
  * A plugin installing the service worker for and handles communication with the Emscpriten file system.
  */
@@ -349,8 +348,8 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
         }
       }
     };
-  }
-}
+  },
+};
 
 /**
  * The kernels service plugin.
@@ -495,7 +494,7 @@ const sessionsPlugin: JupyterLiteServerPlugin<ISessions> = {
   provides: ISessions,
   requires: [IKernels],
   activate: (app: JupyterLiteServer, kernels: IKernels) => {
-    return new Sessions({ kernels, contentsManager: app.serviceManager.contents });
+    return new Sessions({ kernels });
   },
 };
 

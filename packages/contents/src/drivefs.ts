@@ -287,7 +287,7 @@ export class ContentsAPI {
     }
 
     if (xhr.status >= 400) {
-      throw new this.FS.ErrnoError(this.ERRNO_CODES["EINVAL"]);
+      throw new this.FS.ErrnoError(this.ERRNO_CODES['EINVAL']);
     }
 
     if (jsonParse) {

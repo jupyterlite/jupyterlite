@@ -1,4 +1,4 @@
-import { ContentsManager, KernelMessage } from '@jupyterlab/services';
+import { KernelMessage } from '@jupyterlab/services';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
@@ -14,11 +14,10 @@ export abstract class BaseKernel implements IKernel {
    * @param options The instantiation options for a BaseKernel.
    */
   constructor(options: IKernel.IOptions) {
-    const { id, name, location, contentsManager, sendMessage } = options;
+    const { id, name, location, sendMessage } = options;
     this._id = id;
     this._name = name;
     this._location = location;
-    this._contentsManager = contentsManager;
     this._sendMessage = sendMessage;
   }
 
@@ -62,13 +61,6 @@ export abstract class BaseKernel implements IKernel {
    */
   get location(): string {
     return this._location;
-  }
-
-  /**
-   * The file contents manager.
-   */
-  get contentsManager(): ContentsManager {
-    return this._contentsManager;
   }
 
   /**
@@ -634,7 +626,6 @@ export abstract class BaseKernel implements IKernel {
   private _id: string;
   private _name: string;
   private _location: string;
-  private _contentsManager: ContentsManager;
   private _history: [number, number, string][] = [];
   private _executionCount = 0;
   private _isDisposed = false;

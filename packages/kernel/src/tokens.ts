@@ -3,12 +3,7 @@
 
 import type { Remote } from 'comlink';
 
-import {
-  ContentsManager,
-  Kernel,
-  KernelMessage,
-  KernelSpec,
-} from '@jupyterlab/services';
+import { Kernel, KernelMessage, KernelSpec } from '@jupyterlab/services';
 
 import { Token } from '@lumino/coreutils';
 
@@ -69,11 +64,6 @@ export interface IKernel extends IObservableDisposable {
   readonly location: string;
 
   /**
-   * The contents manager of the virtual filesystem.
-   */
-  readonly contentsManager: ContentsManager;
-
-  /**
    * A promise that is fulfilled when the kernel is ready.
    */
   readonly ready: Promise<void>;
@@ -113,11 +103,6 @@ export namespace IKernel {
      * The location in the virtual filesystem from which the kernel was started.
      */
     location: string;
-
-    /**
-     * The contents manager of the virtual filesystem.
-     */
-    contentsManager: ContentsManager;
 
     /**
      * The method to send messages back to the server.

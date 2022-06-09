@@ -1,4 +1,4 @@
-import { ContentsManager, Session } from '@jupyterlab/services';
+import { Session } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
@@ -21,7 +21,6 @@ export class Sessions implements ISessions {
    */
   constructor(options: Sessions.IOptions) {
     this._kernels = options.kernels;
-    this._contentsManager = options.contentsManager;
   }
 
   /**
@@ -85,7 +84,6 @@ export class Sessions implements ISessions {
       id,
       name: kernelName,
       location: PathExt.dirname(options.path),
-      contentsManager: this._contentsManager,
     });
     const session: Session.IModel = {
       id,
@@ -119,7 +117,6 @@ export class Sessions implements ISessions {
   }
 
   private _kernels: IKernels;
-  private _contentsManager: ContentsManager;
   // TODO: offload to a database
   private _sessions: Session.IModel[] = [];
 }
@@ -136,10 +133,5 @@ export namespace Sessions {
      * A reference to the kernels service.
      */
     kernels: IKernels;
-
-    /**
-     * The file content manager
-     */
-    contentsManager: ContentsManager;
   }
 }
