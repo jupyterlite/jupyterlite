@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PageConfig, PathExt } from '@jupyterlab/coreutils';
+import { PageConfig, PathExt, URLExt } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
@@ -201,19 +201,21 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [],
   activate: (app: JupyterLiteServer) => {
-    navigator.serviceWorker.register('/services.js').then(
-      (registration) => {
-        // Registration was successful
-        console.log(
-          'ServiceWorker registration successful with scope: ',
-          registration.scope
-        );
-      },
-      (err) => {
-        // registration failed :(
-        console.log('ServiceWorker registration failed: ', err);
-      }
-    );
+    navigator.serviceWorker
+      .register(URLExt.join(PageConfig.getBaseUrl(), 'services.js'))
+      .then(
+        (registration) => {
+          // Registration was successful
+          console.log(
+            'ServiceWorker registration successful with scope: ',
+            registration.scope
+          );
+        },
+        (err) => {
+          // registration failed :(
+          console.log('ServiceWorker registration failed: ', err);
+        }
+      );
 
     // Setup communication with service worker for the virtual fs
     const broadcast = new BroadcastChannel('/api/drive.v1');
