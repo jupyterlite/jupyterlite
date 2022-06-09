@@ -190,8 +190,18 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         return new Response(null, { status: 204 });
       }
     );
+  },
+};
 
-    // TODO Put this in a separate plugin
+
+/**
+ * A plugin installing the service worker for and handles communication with the Emscpriten file system.
+ */
+const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:service-worker',
+  autoStart: true,
+  requires: [],
+  activate: (app: JupyterLiteServer) => {
     navigator.serviceWorker.register('/services.js').then(
       (registration) => {
         // Registration was successful
@@ -339,8 +349,8 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         }
       }
     };
-  },
-};
+  }
+}
 
 /**
  * The kernels service plugin.
@@ -637,6 +647,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   localforageMemoryPlugin,
   localforagePlugin,
   nbconvertRoutesPlugin,
+  serviceWorkerPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,
   settingsPlugin,
