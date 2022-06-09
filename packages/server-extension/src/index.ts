@@ -334,7 +334,10 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
-          broadcast.postMessage(model.content);
+          broadcast.postMessage({
+            content: model.content,
+            format: model.format,
+          });
           break;
         }
         case 'put': {

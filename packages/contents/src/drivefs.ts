@@ -93,20 +93,15 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   public open(stream: IEmscriptenStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
-      const result = this.fs.API.get(path);
-      if (result === null) {
-        return;
-      }
-      stream.fileData = encoder.encode(result);
+      stream.fileData = this.fs.API.get(path);
     }
   }
 
   public close(stream: IEmscriptenStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode) && stream.fileData) {
-      const text = decoder.decode(stream.fileData);
+      this.fs.API.put(path, stream.fileData);
       stream.fileData = undefined;
-      this.fs.API.put(path, text);
     }
   }
 
@@ -319,12 +314,31 @@ export class ContentsAPI {
     return this.request('GET', `${path}?m=rmdir`);
   }
 
-  get(path: string): any {
-    return this.request('GET', `${path}?m=get`);
+  get(path: string): Uint8Array {
+    const response = this.request('GET', `${path}?m=get`);
+
+    const serializedContent = response.content;
+    const format: 'json' | 'text' | 'base64' | null = response.format;
+
+    switch (format) {
+      case 'json':
+      case 'text':
+        return encoder.encode(serializedContent);
+      case 'base64':
+        const binString = atob(serializedContent);
+        const len = binString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binString.charCodeAt(i);
+        }
+        return bytes;
+      default:
+        throw new this.FS.ErrnoError(this.ERRNO_CODES['ENOENT']);
+    }
   }
 
-  put(path: string, value: string) {
-    return this.request('PUT', `${path}?m=put`, value);
+  put(path: string, value: Uint8Array) {
+    return this.request('PUT', `${path}?m=put`, decoder.decode(value));
   }
 
   getattr(path: string): IStats {
