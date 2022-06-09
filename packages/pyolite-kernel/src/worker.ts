@@ -144,10 +144,10 @@ export class PyoliteRemoteKernel {
   async initialize(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     this._options = options;
     await this.initRuntime(options);
+    await this.initFilesystem(options);
     await this.initPackageManager(options);
     await this.initKernel(options);
     await this.initGlobals(options);
-    await this.initFilesystem(options);
     this._initializer?.resolve();
   }
 
