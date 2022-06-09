@@ -188,11 +188,9 @@ export class Contents implements IContents {
         const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
 
         let format: ServerContents.FileFormat;
-        if (mimetype.indexOf('text') !== -1 ||
-          MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+        if (mimetype.indexOf('text') !== -1 || MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
           format = 'text';
-        } else if (ext.indexOf('json') !== -1 ||
-            ext.indexOf('ipynb') !== -1) {
+        } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
           format = 'json';
         } else {
           format = 'base64';

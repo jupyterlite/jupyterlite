@@ -7,31 +7,31 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
 // Mapping flag -> do we need to overwrite the file upon closing it
-const flagNeedsWrite: {[flag: number]: boolean} = {
-  0/*O_RDONLY*/: false,
-  1/*O_WRONLY*/: true,
-  2/*O_RDWR*/: true,
-  64/*O_CREAT*/: true,
-  65/*O_WRONLY|O_CREAT*/: true,
-  66/*O_RDWR|O_CREAT*/: true,
-  129/*O_WRONLY|O_EXCL*/: true,
-  193/*O_WRONLY|O_CREAT|O_EXCL*/: true,
-  514/*O_RDWR|O_TRUNC*/: true,
-  577/*O_WRONLY|O_CREAT|O_TRUNC*/: true,
-  578/*O_CREAT|O_RDWR|O_TRUNC*/: true,
-  705/*O_WRONLY|O_CREAT|O_EXCL|O_TRUNC*/: true,
-  706/*O_RDWR|O_CREAT|O_EXCL|O_TRUNC*/: true,
-  1024/*O_APPEND*/: true,
-  1025/*O_WRONLY|O_APPEND*/: true,
-  1026/*O_RDWR|O_APPEND*/: true,
-  1089/*O_WRONLY|O_CREAT|O_APPEND*/: true,
-  1090/*O_RDWR|O_CREAT|O_APPEND*/: true,
-  1153/*O_WRONLY|O_EXCL|O_APPEND*/: true,
-  1154/*O_RDWR|O_EXCL|O_APPEND*/: true,
-  1217/*O_WRONLY|O_CREAT|O_EXCL|O_APPEND*/: true,
-  1218/*O_RDWR|O_CREAT|O_EXCL|O_APPEND*/: true,
-  4096/*O_RDONLY|O_DSYNC*/: true,
-  4098/*O_RDWR|O_DSYNC*/: true
+const flagNeedsWrite: { [flag: number]: boolean } = {
+  0 /*O_RDONLY*/: false,
+  1 /*O_WRONLY*/: true,
+  2 /*O_RDWR*/: true,
+  64 /*O_CREAT*/: true,
+  65 /*O_WRONLY|O_CREAT*/: true,
+  66 /*O_RDWR|O_CREAT*/: true,
+  129 /*O_WRONLY|O_EXCL*/: true,
+  193 /*O_WRONLY|O_CREAT|O_EXCL*/: true,
+  514 /*O_RDWR|O_TRUNC*/: true,
+  577 /*O_WRONLY|O_CREAT|O_TRUNC*/: true,
+  578 /*O_CREAT|O_RDWR|O_TRUNC*/: true,
+  705 /*O_WRONLY|O_CREAT|O_EXCL|O_TRUNC*/: true,
+  706 /*O_RDWR|O_CREAT|O_EXCL|O_TRUNC*/: true,
+  1024 /*O_APPEND*/: true,
+  1025 /*O_WRONLY|O_APPEND*/: true,
+  1026 /*O_RDWR|O_APPEND*/: true,
+  1089 /*O_WRONLY|O_CREAT|O_APPEND*/: true,
+  1090 /*O_RDWR|O_CREAT|O_APPEND*/: true,
+  1153 /*O_WRONLY|O_EXCL|O_APPEND*/: true,
+  1154 /*O_RDWR|O_EXCL|O_APPEND*/: true,
+  1217 /*O_WRONLY|O_CREAT|O_EXCL|O_APPEND*/: true,
+  1218 /*O_RDWR|O_CREAT|O_EXCL|O_APPEND*/: true,
+  4096 /*O_RDONLY|O_DSYNC*/: true,
+  4098 /*O_RDWR|O_DSYNC*/: true,
 };
 
 // Types and implementation inspired from
@@ -133,8 +133,8 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     const path = this.fs.realPath(stream.node);
 
     const flags = stream.flags;
-    let parsedFlags = (typeof flags === "string") ? parseInt(flags, 10) : flags;
-    parsedFlags &= 0x1FFF;
+    let parsedFlags = typeof flags === 'string' ? parseInt(flags, 10) : flags;
+    parsedFlags &= 0x1fff;
 
     let needsWrite = true;
     if (parsedFlags in flagNeedsWrite) {
@@ -181,9 +181,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     stream.node.timestamp = Date.now();
 
     try {
-      if (
-        position + length > (stream.file?.data.length ?? 0)
-      ) {
+      if (position + length > (stream.file?.data.length ?? 0)) {
         const oldData = stream.file.data ? stream.file.data : new Uint8Array();
         stream.file.data = new Uint8Array(position + length);
         stream.file.data.set(oldData);
@@ -204,7 +202,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     } else if (whence === SEEK_END) {
       if (this.fs.FS.isFile(stream.node.mode)) {
         try {
-          position += stream.file!.data.length;
+          position += stream.file.data.length;
         } catch (e) {
           throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
         }
@@ -365,19 +363,20 @@ export class ContentsAPI {
       case 'text':
         return {
           data: encoder.encode(serializedContent),
-          format
+          format,
         };
-      case 'base64':
+      case 'base64': {
         const binString = atob(serializedContent);
         const len = binString.length;
         const data = new Uint8Array(len);
         for (let i = 0; i < len; i++) {
-            data[i] = binString.charCodeAt(i);
+          data[i] = binString.charCodeAt(i);
         }
         return {
           data,
-          format
+          format,
         };
+      }
       default:
         throw new this.FS.ErrnoError(this.ERRNO_CODES['ENOENT']);
     }
@@ -387,13 +386,18 @@ export class ContentsAPI {
     switch (value.format) {
       case 'json':
       case 'text':
-        return this.request('PUT', `${path}?m=put&args=${value.format}`, decoder.decode(value.data));
-      case 'base64':
+        return this.request(
+          'PUT',
+          `${path}?m=put&args=${value.format}`,
+          decoder.decode(value.data)
+        );
+      case 'base64': {
         let binary = '';
         for (let i = 0; i < value.data.byteLength; i++) {
           binary += String.fromCharCode(value.data[i]);
         }
         return this.request('PUT', `${path}?m=put&args=${value.format}`, btoa(binary));
+      }
     }
   }
 

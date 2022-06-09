@@ -351,7 +351,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
           await contentManager.save(path, {
             content: request.content,
             type: 'file',
-            format: request.args[0] as ServerContents.FileFormat
+            format: request.args[0] as ServerContents.FileFormat,
           });
 
           broadcast.postMessage(null);
