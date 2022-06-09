@@ -73,6 +73,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       pipliteWheelUrl,
       pipliteUrls,
       disablePyPIFallback,
+      location: this.location
     };
   }
 

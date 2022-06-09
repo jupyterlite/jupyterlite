@@ -218,6 +218,13 @@ export class PyoliteRemoteKernel {
     FS.mount(driveFS, {}, '/drive');
     FS.chdir('/drive');
     this._driveFS = driveFS;
+    // Not using FS.chdir here as it does not do what's intended
+    if (options.location) {
+      await this._pyodide.runPythonAsync(`
+        import os;
+        os.chdir("${options.location}");
+      `);
+    }
   }
 
   /**

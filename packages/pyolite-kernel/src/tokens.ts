@@ -21,5 +21,6 @@ export namespace IPyoliteWorkerKernel {
     pipliteWheelUrl: string;
     pipliteUrls: string[];
     disablePyPIFallback: boolean;
+    location: string;
   }
 }
