@@ -270,7 +270,6 @@ export class ContentsAPI {
   request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     path: string,
-    jsonParse = true,
     data: string | null = null
   ): any {
     const xhr = new XMLHttpRequest();
@@ -290,11 +289,7 @@ export class ContentsAPI {
       throw new this.FS.ErrnoError(this.ERRNO_CODES['EINVAL']);
     }
 
-    if (jsonParse) {
-      return JSON.parse(xhr.responseText);
-    } else {
-      return xhr.responseText;
-    }
+    return JSON.parse(xhr.responseText);
   }
 
   lookup(path: string): DriveFS.ILookup {
@@ -325,11 +320,11 @@ export class ContentsAPI {
   }
 
   get(path: string): any {
-    return this.request('GET', `${path}?m=get`, false);
+    return this.request('GET', `${path}?m=get`);
   }
 
   put(path: string, value: string) {
-    return this.request('PUT', `${path}?m=put`, false, value);
+    return this.request('PUT', `${path}?m=put`, value);
   }
 
   getattr(path: string): IStats {
