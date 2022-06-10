@@ -1,3 +1,7 @@
+// Types and implementation inspired from https://github.com/jvilk/BrowserFS
+// LICENSE: https://github.com/jvilk/BrowserFS/blob/8977a704ea469d05daf857e4818bef1f4f498326/LICENSE
+// And from https://github.com/gzuidhof/starboard-notebook
+// LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
@@ -34,10 +38,6 @@ const flagNeedsWrite: { [flag: number]: boolean } = {
   4098 /*O_RDWR|O_DSYNC*/: true,
 };
 
-// Types and implementation inspired from
-// https://github.com/jvilk/BrowserFS
-// https://github.com/jvilk/BrowserFS/blob/a96aa2d417995dac7d376987839bc4e95e218e06/src/generic/emscripten_fs.ts
-// And from https://github.com/gzuidhof/starboard-notebook
 export interface IStats {
   dev: number;
   ino: number;
