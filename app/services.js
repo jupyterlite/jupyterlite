@@ -13,22 +13,25 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', async (event) => {
   const url = new URL(event.request.url);
 
-  console.log('service worker intercepted', url);
-  console.log('location', location);
-
   // Not same origin, we let the request continue
   if (url.origin !== location.origin) {
     return;
   }
 
+  console.log('intercepting request', url, location);
+
   // Bail early if the request is not a drive content request
-  if (!url.pathname.startsWith('/api/drive')) {
+  if (!url.pathname.includes('/api/drive')) {
     return;
   }
 
   // Forward request to main using the broadcast channel
   event.respondWith(
     new Promise(async (resolve) => {
+      const path = url.pathname.slice(
+        url.pathname.indexOf('/api/drive')
+      );
+
       const method = new URLSearchParams(url.search).get('m');
       let args = new URLSearchParams(url.search).get('args');
       if (args !== null) {
@@ -41,7 +44,7 @@ self.addEventListener('fetch', async (event) => {
       }
 
       const messageData = {
-        path: url.pathname,
+        path,
         method,
         args,
         content,
