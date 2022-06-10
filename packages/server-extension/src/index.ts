@@ -199,20 +199,17 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:service-worker',
   autoStart: true,
-  activate: (app: JupyterLiteServer) => {
-    navigator.serviceWorker
+  activate: async (app: JupyterLiteServer) => {
+    if (!('serviceWorker' in navigator)) {
+      throw `ServiceWorker registration failed: Service Workers not supported in this browser`;
+    }
+
+    await navigator.serviceWorker
       .register(URLExt.join(PageConfig.getBaseUrl(), 'services.js'))
       .then(
-        (registration) => {
-          // Registration was successful
-          console.log(
-            'ServiceWorker registration successful with scope: ',
-            registration.scope
-          );
-        },
+        (registration) => {},
         (err) => {
-          // registration failed :(
-          console.log('ServiceWorker registration failed: ', err);
+          throw `ServiceWorker registration failed: ${err}`;
         }
       );
 

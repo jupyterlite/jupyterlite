@@ -26,7 +26,10 @@ self.addEventListener('fetch', async (event) => {
   // Forward request to main using the broadcast channel
   event.respondWith(
     new Promise(async (resolve) => {
-      const path = url.pathname.slice(url.pathname.indexOf('/api/drive'));
+      let path = url.pathname.slice(url.pathname.indexOf('/api/drive'));
+      if (!path) {
+        path = '';
+      }
 
       const method = new URLSearchParams(url.search).get('m');
       let args = new URLSearchParams(url.search).get('args');
