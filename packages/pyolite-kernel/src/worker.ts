@@ -187,6 +187,13 @@ export class PyoliteRemoteKernel {
       await piplite.install(['ipython'], keep_going=True);
       import pyolite
     `);
+    // cd to the kernel location
+    if (options.location) {
+      await this._pyodide.runPythonAsync(`
+        import os;
+        os.chdir("${options.location}");
+      `);
+    }
   }
 
   protected async initGlobals(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
@@ -218,15 +225,6 @@ export class PyoliteRemoteKernel {
     FS.mount(driveFS, {}, '/drive');
     FS.chdir('/drive');
     this._driveFS = driveFS;
-    console.log('changing dir to ', options.location);
-    // Not using FS.chdir here as it does not do what's intended
-    if (options.location) {
-      await this._pyodide.runPythonAsync(`
-        import os;
-        os.chdir("${options.location}");
-      `);
-    }
-    console.log('changed dir to ', options.location);
   }
 
   /**
