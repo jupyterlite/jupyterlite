@@ -233,17 +233,11 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
 
       let model: ServerContents.IModel;
 
-      // TODO Handle errors properly
       switch (request.method) {
         case 'readdir': {
           model = await contentManager.get(path, { content: true });
 
-          if (model.type !== 'directory') {
-            // TODO Something smart
-            return;
-          }
-
-          if (model.content) {
+          if (model.type === 'directory' && model.content) {
             subitems = model.content.map((subcontent: IModel) => subcontent.name);
             broadcast.postMessage(subitems);
           } else {
@@ -253,17 +247,17 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
         }
         case 'rmdir': {
           await contentManager.delete(path);
-          broadcast.postMessage({});
+          broadcast.postMessage(null);
           break;
         }
         case 'rename': {
           if (request.args === null) {
-            // TODO Something smart
+            broadcast.postMessage(null);
             return;
           }
 
           await contentManager.rename(path, request.args[0].replace('/drive', ''));
-          broadcast.postMessage({});
+          broadcast.postMessage(null);
           break;
         }
         case 'getmode': {
@@ -294,7 +288,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
         }
         case 'mknod': {
           if (request.args === null) {
-            // TODO Something smart
+            broadcast.postMessage(null);
             return;
           }
 
@@ -307,7 +301,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
           });
           await contentManager.rename(model.path, path);
 
-          broadcast.postMessage({});
+          broadcast.postMessage(null);
           break;
         }
         case 'getattr': {
@@ -347,7 +341,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
         }
         case 'put': {
           if (request.args === null) {
-            // TODO Something smart
+            broadcast.postMessage(null);
             return;
           }
 
