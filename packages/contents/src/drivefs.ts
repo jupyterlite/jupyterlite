@@ -125,7 +125,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     }
   }
 
-  public close(stream: IEmscriptenStream): void {
+  close(stream: IEmscriptenStream): void {
     if (!this.fs.FS.isFile(stream.node.mode) || !stream.file) {
       return;
     }
@@ -147,7 +147,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     }
   }
 
-  public read(
+  read(
     stream: IEmscriptenStream,
     buffer: Uint8Array,
     offset: number,
@@ -167,7 +167,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     return size;
   }
 
-  public write(
+  write(
     stream: IEmscriptenStream,
     buffer: Uint8Array,
     offset: number,
@@ -195,7 +195,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     }
   }
 
-  public llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
+  llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
     let position = offset;
     if (whence === SEEK_CUR) {
       position += stream.position;
@@ -224,15 +224,15 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     this.fs = fs;
   }
 
-  public getattr(node: IEmscriptenFSNode): IStats {
+  getattr(node: IEmscriptenFSNode): IStats {
     return this.fs.API.getattr(this.fs.realPath(node));
   }
 
-  public setattr(node: IEmscriptenFSNode, attr: IStats): void {
+  setattr(node: IEmscriptenFSNode, attr: IStats): void {
     // TODO
   }
 
-  public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
+  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
@@ -241,7 +241,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     return this.fs.createNode(parent, name, result.mode);
   }
 
-  public mknod(
+  mknod(
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
@@ -252,7 +252,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     return this.fs.createNode(parent, name, mode, dev);
   }
 
-  public rename(
+  rename(
     oldNode: IEmscriptenFSNode,
     newDir: IEmscriptenFSNode,
     newName: string
@@ -269,23 +269,23 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     oldNode.parent = newDir;
   }
 
-  public unlink(parent: IEmscriptenFSNode, name: string): void {
+  unlink(parent: IEmscriptenFSNode, name: string): void {
     this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
-  public rmdir(parent: IEmscriptenFSNode, name: string) {
+  rmdir(parent: IEmscriptenFSNode, name: string) {
     this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
   }
 
-  public readdir(node: IEmscriptenFSNode): string[] {
+  readdir(node: IEmscriptenFSNode): string[] {
     return this.fs.API.readdir(this.fs.realPath(node));
   }
 
-  public symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
+  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
     throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 
-  public readlink(node: IEmscriptenFSNode): string {
+  readlink(node: IEmscriptenFSNode): string {
     throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 }
