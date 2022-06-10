@@ -234,9 +234,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   public lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
-    console.log('trying a lookup on path', path);
     const result = this.fs.API.lookup(path);
-    console.log('lookup', result);
     if (!result.ok) {
       throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
     }

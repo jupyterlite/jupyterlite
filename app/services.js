@@ -18,8 +18,6 @@ self.addEventListener('fetch', async (event) => {
     return;
   }
 
-  console.log('intercepting request', url, location);
-
   // Bail early if the request is not a drive content request
   if (!url.pathname.includes('/api/drive')) {
     return;
