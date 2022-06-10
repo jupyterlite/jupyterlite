@@ -237,15 +237,19 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
       // TODO Handle errors properly
       switch (request.method) {
         case 'readdir': {
-          model = await contentManager.get(path);
+          model = await contentManager.get(path, { content: true });
 
           if (model.type !== 'directory') {
             // TODO Something smart
             return;
           }
 
-          subitems = model.content.map((subcontent: IModel) => subcontent.name);
-          broadcast.postMessage(subitems);
+          if (model.content) {
+            subitems = model.content.map((subcontent: IModel) => subcontent.name);
+            broadcast.postMessage(subitems);
+          } else {
+            broadcast.postMessage([]);
+          }
           break;
         }
         case 'rmdir': {
