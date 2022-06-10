@@ -25,6 +25,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     this._worker = this.initWorker(options);
     this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
     this._remoteKernel = this.initRemote(options);
+    this._ready.resolve();
   }
 
   /**
@@ -44,7 +45,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   protected initRemote(options: PyoliteKernel.IOptions): IRemotePyoliteWorkerKernel {
     const remote: IRemotePyoliteWorkerKernel = wrap(this._worker);
     const remoteOptions = this.initRemoteOptions(options);
-    remote.initialize(remoteOptions).then(() => this.onRemoteSetup());
+    remote.initialize(remoteOptions);
     return remote;
   }
 
@@ -74,10 +75,6 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       disablePyPIFallback,
       location: this.location,
     };
-  }
-
-  protected async onRemoteSetup() {
-    this._ready.resolve();
   }
 
   /**
