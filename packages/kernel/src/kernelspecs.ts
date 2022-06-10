@@ -1,6 +1,4 @@
 import { KernelSpec } from '@jupyterlab/services';
-import { ISignal, Signal } from '@lumino/signaling';
-
 import { IKernel, IKernelSpecs } from './tokens';
 
 /**
@@ -28,13 +26,6 @@ export class KernelSpecs implements IKernelSpecs {
   }
 
   /**
-   * A signal emitted when the spec changes.
-   */
-  get specChanged(): ISignal<KernelSpecs, void> {
-    return this._specChanged;
-  }
-
-  /**
    * Register a new kernel.
    *
    * @param options The options to register a new kernel.
@@ -43,12 +34,10 @@ export class KernelSpecs implements IKernelSpecs {
     const { spec, create } = options;
     this._specs.set(spec.name, spec);
     this._factories.set(spec.name, create);
-    this._specChanged.emit(void 0);
   }
 
   private _specs = new Map<string, KernelSpec.ISpecModel>();
   private _factories = new Map<string, KernelSpecs.KernelFactory>();
-  private _specChanged = new Signal<this, void>(this);
 }
 
 /**

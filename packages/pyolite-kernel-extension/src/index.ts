@@ -66,6 +66,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         });
       },
     });
+    app.serviceManager.kernelspecs.refreshSpecs();
   },
 };
 

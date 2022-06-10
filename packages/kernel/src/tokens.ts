@@ -12,7 +12,6 @@ import { IObservableDisposable } from '@lumino/disposable';
 import { Kernels } from './kernels';
 
 import { KernelSpecs } from './kernelspecs';
-import { ISignal } from '@lumino/signaling';
 
 /**
  * The token for the kernels service.
@@ -130,11 +129,6 @@ export interface IKernelSpecs {
    * Get the kernel factories for the current kernels.
    */
   readonly factories: KernelSpecs.KernelFactories;
-
-  /**
-   * Get the specChanged signal.
-   */
-  readonly specChanged: ISignal<KernelSpecs, void>;
 
   /**
    * Register a new kernel spec

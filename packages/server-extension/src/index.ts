@@ -450,8 +450,9 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:kernelspec-routes',
   autoStart: true,
   requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  activate: async (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     app.router.get('/api/kernelspecs', async (req: Router.IRequest) => {
+      console.log('Hi!', req);
       const { specs } = kernelspecs;
       if (!specs) {
         return new Response(null);
@@ -479,14 +480,6 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
         kernelspecs: allKernelSpecs,
       };
       return new Response(JSON.stringify(res));
-    });
-
-    // The kernelspec manager doesn't update itself when we register new kernels??
-    // @ts-ignore
-    app.serviceManager.kernelspecs.requestSpecs();
-    kernelspecs.specChanged.connect(() => {
-      // @ts-ignore
-      app.serviceManager.kernelspecs.requestSpecs();
     });
   },
 };
