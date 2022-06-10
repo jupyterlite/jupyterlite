@@ -21,6 +21,7 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
+  IServiceWorker,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -194,24 +195,57 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 /**
- * A plugin installing the service worker for and handles communication with the Emscpriten file system.
+ * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorker> = {
   id: '@jupyterlite/server-extension:service-worker',
   autoStart: true,
+  provides: IServiceWorker,
   activate: async (app: JupyterLiteServer) => {
     if (!('serviceWorker' in navigator)) {
-      throw `ServiceWorker registration failed: Service Workers not supported in this browser`;
+      console.error(
+        'ServiceWorker registration failed: Service Workers not supported in this browser'
+      );
+
+      return { registration: null };
     }
 
-    await navigator.serviceWorker
+    if (navigator.serviceWorker.controller) {
+      const registration = await navigator.serviceWorker.getRegistration(
+        navigator.serviceWorker.controller.scriptURL
+      );
+
+      if (registration) {
+        return { registration };
+      }
+    }
+
+    return await navigator.serviceWorker
       .register(URLExt.join(PageConfig.getBaseUrl(), 'services.js'))
       .then(
-        (registration) => {},
+        (registration) => {
+          return { registration };
+        },
         (err) => {
-          throw `ServiceWorker registration failed: ${err}`;
+          console.error(`ServiceWorker registration failed: ${err}`);
+          return { registration: null };
         }
       );
+  },
+};
+
+/**
+ * A plugin handling communication with the Emscpriten file system.
+ */
+const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:emscripten-filesystem',
+  autoStart: true,
+  requires: [IServiceWorker],
+  activate: async (app: JupyterLiteServer, serviceWorker: IServiceWorker) => {
+    if (serviceWorker.registration === null) {
+      // Bail early, the service worker failed to activate, we cannot communicate with it
+      return;
+    }
 
     // Setup communication with service worker for the virtual fs
     const broadcast = new BroadcastChannel('/api/drive.v1');
@@ -405,7 +439,11 @@ const kernelSpecPlugin: JupyterLiteServerPlugin<IKernelSpecs> = {
   autoStart: true,
   provides: IKernelSpecs,
   activate: (app: JupyterLiteServer) => {
-    return new KernelSpecs();
+    const kernelspecs = new KernelSpecs();
+    kernelspecs.specChanged.connect(() =>
+      app.serviceManager.kernelspecs.refreshSpecs()
+    );
+    return kernelspecs;
   },
 };
 
@@ -642,6 +680,7 @@ const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const plugins: JupyterLiteServerPlugin<any>[] = [
   contentsPlugin,
   contentsRoutesPlugin,
+  emscriptenFileSystemPlugin,
   kernelsPlugin,
   kernelsRoutesPlugin,
   kernelSpecPlugin,

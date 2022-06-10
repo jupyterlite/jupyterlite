@@ -252,11 +252,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     return this.fs.createNode(parent, name, mode, dev);
   }
 
-  rename(
-    oldNode: IEmscriptenFSNode,
-    newDir: IEmscriptenFSNode,
-    newName: string
-  ): void {
+  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void {
     this.fs.API.rename(
       oldNode.parent
         ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name)

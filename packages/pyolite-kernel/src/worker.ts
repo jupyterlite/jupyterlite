@@ -188,7 +188,7 @@ export class PyoliteRemoteKernel {
       import pyolite
     `);
     // cd to the kernel location
-    if (options.location) {
+    if (options.mountDrive && options.location) {
       await this._pyodide.runPythonAsync(`
         import os;
         os.chdir("${options.location}");
@@ -211,20 +211,22 @@ export class PyoliteRemoteKernel {
   protected async initFilesystem(
     options: IPyoliteWorkerKernel.IOptions
   ): Promise<void> {
-    const { FS } = this._pyodide;
-    const { baseUrl } = options;
-    // TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
-    // We'll be able to acces PATH and ERRNO_CODES from this._pyodide directly (not through _module)
-    const driveFS = new DriveFS({
-      FS,
-      PATH: this._pyodide._module.PATH,
-      ERRNO_CODES: ERRNO_CODES,
-      baseUrl,
-    });
-    FS.mkdir('/drive');
-    FS.mount(driveFS, {}, '/drive');
-    FS.chdir('/drive');
-    this._driveFS = driveFS;
+    if (options.mountDrive) {
+      const { FS } = this._pyodide;
+      const { baseUrl } = options;
+      // TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
+      // We'll be able to acces PATH and ERRNO_CODES from this._pyodide directly (not through _module)
+      const driveFS = new DriveFS({
+        FS,
+        PATH: this._pyodide._module.PATH,
+        ERRNO_CODES: ERRNO_CODES,
+        baseUrl,
+      });
+      FS.mkdir('/drive');
+      FS.mount(driveFS, {}, '/drive');
+      FS.chdir('/drive');
+      this._driveFS = driveFS;
+    }
   }
 
   /**

@@ -36,25 +36,35 @@ export namespace IPyoliteWorkerKernel {
      * The URL of the main `pyodide.js` file in the standard pyodide layout.
      */
     pyodideUrl: string;
+
     /**
      * The URL of a pyodide index file in the standard pyodide layout.
      */
     indexUrl: string;
+
     /**
      * The URL of the `piplite` wheel for bootstrapping.
      */
     pipliteWheelUrl: string;
+
     /**
      * The URLs of additional warehouse-like wheel listings.
      */
     pipliteUrls: string[];
+
     /**
      * Whether `piplite` should fall back to the hard-coded `pypi.org` for resolving packages.
      */
     disablePyPIFallback: boolean;
+
     /**
      * The current working directory in which to start the kernel.
      */
     location: string;
+
+    /**
+     * Whether or not to mount the Emscripten drive
+     */
+    mountDrive: boolean;
   }
 }

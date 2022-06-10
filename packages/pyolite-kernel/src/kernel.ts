@@ -74,6 +74,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       pipliteUrls,
       disablePyPIFallback,
       location: this.location,
+      mountDrive: options.mountDrive,
     };
   }
 
@@ -315,5 +316,10 @@ export namespace PyoliteKernel {
      * Do not try pypi.org if `piplite.install` fails against local URLs
      */
     disablePyPIFallback: boolean;
+
+    /**
+     * Whether or not to mount the Emscripten drive
+     */
+    mountDrive: boolean;
   }
 }
