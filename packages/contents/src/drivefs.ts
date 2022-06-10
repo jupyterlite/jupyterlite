@@ -118,7 +118,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     this.fs = fs;
   }
 
-  public open(stream: IEmscriptenStream): void {
+  open(stream: IEmscriptenStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
       stream.file = this.fs.API.get(path);
