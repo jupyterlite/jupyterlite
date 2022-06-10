@@ -33,7 +33,6 @@ const kernel: JupyterLiteServerPlugin<void> = {
         return new JavaScriptKernel(options);
       },
     });
-    app.serviceManager.kernelspecs.refreshSpecs();
   },
 };
 

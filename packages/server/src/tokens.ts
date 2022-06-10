@@ -1,18 +1,25 @@
 import { Token } from '@lumino/coreutils';
 
+import { ISignal } from '@lumino/signaling';
+
 /**
  * The token for the ServiceWorker.
  */
-export const IServiceWorker = new Token<IServiceWorker>(
-  '@jupyterlite/server-extension:IServiceWorker'
+export const IServiceWorkerRegistrationWrapper = new Token<IServiceWorkerRegistrationWrapper>(
+  '@jupyterlite/server-extension:IServiceWorkerRegistrationWrapper'
 );
 
 /**
- * The interface for the ServiceWorker.
+ * The interface for the ServiceWorkerRegistration.
  */
-export interface IServiceWorker {
+export interface IServiceWorkerRegistrationWrapper {
   /**
-   * The ServiceWorker registration, or null if it failed to register.
+   * Signal fired when the registration changed.
    */
-  registration: ServiceWorkerRegistration | null;
+  readonly registrationChanged: ISignal<IServiceWorkerRegistrationWrapper, ServiceWorkerRegistration | null>;
+
+  /**
+   * Whether the ServiceWorker is enabled or not.
+   */
+  readonly enabled: boolean;
 }

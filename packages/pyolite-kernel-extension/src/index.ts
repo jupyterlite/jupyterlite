@@ -4,7 +4,7 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
-  IServiceWorker,
+  IServiceWorkerRegistrationWrapper,
   JupyterLiteServer,
   JupyterLiteServerPlugin,
 } from '@jupyterlite/server';
@@ -27,11 +27,11 @@ const PLUGIN_ID = '@jupyterlite/pyolite-kernel-extension:kernel';
 const kernel: JupyterLiteServerPlugin<void> = {
   id: PLUGIN_ID,
   autoStart: true,
-  requires: [IKernelSpecs, IServiceWorker],
+  requires: [IKernelSpecs, IServiceWorkerRegistrationWrapper],
   activate: (
     app: JupyterLiteServer,
     kernelspecs: IKernelSpecs,
-    serviceWorker: IServiceWorker
+    serviceWorkerRegistrationWrapper: IServiceWorkerRegistrationWrapper
   ) => {
     const baseUrl = PageConfig.getBaseUrl();
     const config =
@@ -41,7 +41,6 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const rawPipUrls = config.pipliteUrls || [];
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     const disablePyPIFallback = !!config.disablePyPIFallback;
-    const mountDrive = serviceWorker.registration !== null;
 
     kernelspecs.register({
       spec: {
@@ -62,11 +61,10 @@ const kernel: JupyterLiteServerPlugin<void> = {
           pyodideUrl,
           pipliteUrls,
           disablePyPIFallback,
-          mountDrive,
+          mountDrive: serviceWorkerRegistrationWrapper.enabled,
         });
       },
     });
-    app.serviceManager.kernelspecs.refreshSpecs();
   },
 };
 
