@@ -1,11 +1,12 @@
 import { ISignal, Signal } from '@lumino/signaling';
 
-import { PageConfig, URLExt } from "@jupyterlab/coreutils";
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { IServiceWorkerRegistrationWrapper } from "./tokens";
+import { IServiceWorkerRegistrationWrapper } from './tokens';
 
-export class ServiceWorkerRegistrationWrapper implements IServiceWorkerRegistrationWrapper {
-
+export class ServiceWorkerRegistrationWrapper
+  implements IServiceWorkerRegistrationWrapper
+{
   constructor() {
     this.initialize();
   }
@@ -13,7 +14,10 @@ export class ServiceWorkerRegistrationWrapper implements IServiceWorkerRegistrat
   /**
    * A signal emitted when the registration changes.
    */
-  get registrationChanged(): ISignal<IServiceWorkerRegistrationWrapper, ServiceWorkerRegistration | null> {
+  get registrationChanged(): ISignal<
+    IServiceWorkerRegistrationWrapper,
+    ServiceWorkerRegistration | null
+  > {
     return this._registrationChanged;
   }
 
@@ -61,6 +65,7 @@ export class ServiceWorkerRegistrationWrapper implements IServiceWorkerRegistrat
   }
 
   private _registration: ServiceWorkerRegistration | null = null;
-  private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(this);
-
+  private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
+    this
+  );
 }

@@ -22,7 +22,7 @@ import {
   JupyterLiteServerPlugin,
   Router,
   IServiceWorkerRegistrationWrapper,
-  ServiceWorkerRegistrationWrapper
+  ServiceWorkerRegistrationWrapper,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -198,14 +198,15 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> = {
-  id: '@jupyterlite/server-extension:service-worker',
-  autoStart: true,
-  provides: IServiceWorkerRegistrationWrapper,
-  activate: (app: JupyterLiteServer) => {
-    return new ServiceWorkerRegistrationWrapper();
-  },
-};
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> =
+  {
+    id: '@jupyterlite/server-extension:service-worker',
+    autoStart: true,
+    provides: IServiceWorkerRegistrationWrapper,
+    activate: (app: JupyterLiteServer) => {
+      return new ServiceWorkerRegistrationWrapper();
+    },
+  };
 
 /**
  * A plugin handling communication with the Emscpriten file system.
