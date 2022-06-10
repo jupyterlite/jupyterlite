@@ -302,7 +302,7 @@ export class ContentsAPI {
     data: string | null = null
   ): any {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, `${this._baseUrl}api${path}`, false);
+    xhr.open(method, encodeURI(`${this._baseUrl}api${path}`), false);
 
     try {
       if (data === null) {
