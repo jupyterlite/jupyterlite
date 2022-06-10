@@ -352,8 +352,6 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
-          console.log('saving ', request.content);
-
           await contentManager.save(path, {
             content: request.content,
             type: 'file',
