@@ -439,11 +439,7 @@ const kernelSpecPlugin: JupyterLiteServerPlugin<IKernelSpecs> = {
   autoStart: true,
   provides: IKernelSpecs,
   activate: (app: JupyterLiteServer) => {
-    const kernelspecs = new KernelSpecs();
-    kernelspecs.specChanged.connect(() =>
-      app.serviceManager.kernelspecs.refreshSpecs()
-    );
-    return kernelspecs;
+    return new KernelSpecs();
   },
 };
 
@@ -483,6 +479,14 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
         kernelspecs: allKernelSpecs,
       };
       return new Response(JSON.stringify(res));
+    });
+
+    // The kernelspec manager doesn't update itself when we register new kernels??
+    // @ts-ignore
+    app.serviceManager.kernelspecs.requestSpecs();
+    kernelspecs.specChanged.connect(() => {
+      // @ts-ignore
+      app.serviceManager.kernelspecs.requestSpecs();
     });
   },
 };
