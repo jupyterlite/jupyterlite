@@ -332,8 +332,13 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
+          let content = model.content;
+          if (model.format === 'json') {
+            content = JSON.stringify(model.content);
+          }
+
           broadcast.postMessage({
-            content: model.content,
+            content,
             format: model.format,
           });
           break;
