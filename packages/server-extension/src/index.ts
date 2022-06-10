@@ -199,7 +199,6 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const serviceWorkerPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:service-worker',
   autoStart: true,
-  requires: [],
   activate: (app: JupyterLiteServer) => {
     navigator.serviceWorker
       .register(URLExt.join(PageConfig.getBaseUrl(), 'services.js'))
