@@ -214,7 +214,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWra
 const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:emscripten-filesystem',
   autoStart: true,
-  activate: async (app: JupyterLiteServer) => {
+  activate: (app: JupyterLiteServer) => {
     // Setup communication with service worker for the virtual fs
     const broadcast = new BroadcastChannel('/api/drive.v1');
     let subitems: [];
@@ -423,7 +423,7 @@ const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:kernelspec-routes',
   autoStart: true,
   requires: [IKernelSpecs],
-  activate: async (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
     app.router.get('/api/kernelspecs', async (req: Router.IRequest) => {
       const { specs } = kernelspecs;
       if (!specs) {
