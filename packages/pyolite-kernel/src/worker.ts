@@ -202,7 +202,7 @@ export class PyoliteRemoteKernel {
     this._stdout_stream = globals.get('pyolite').stdout_stream.copy();
     this._stderr_stream = globals.get('pyolite').stderr_stream.copy();
     this._interpreter = this._kernel.interpreter.copy();
-    this._interpreter.send_comm = this.sendComm;
+    this._interpreter.send_comm = this.sendComm.bind(this);
   }
 
   /**
