@@ -1,12 +1,10 @@
 const broadcast = new BroadcastChannel('/api/drive.v1');
 
 self.addEventListener('install', (event) => {
-  console.log('Install JupyterLite service v1');
   event.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('Activate JupyterLite service v1');
   event.waitUntil(self.clients.claim());
 });
 
