@@ -129,10 +129,14 @@ export interface IContents {
  * Commonly-used mimetypes
  */
 export namespace MIME {
-  export const JS = 'application/javascript';
   export const JSON = 'application/json';
   export const MANIFEST_JSON = 'application/manifest+json';
   export const PLAIN_TEXT = 'text/plain';
+  export const CSV = 'text/csv';
+  export const CALENDAR = 'text/calendar';
+  export const CSS = 'text/css';
+  export const HTML = 'text/html';
+  export const JS = 'text/javascript';
   export const PYTHON = 'application/x-python-code';
   export const SVG = 'image/svg+xml';
   export const XML = 'application/xml';
@@ -141,10 +145,14 @@ export namespace MIME {
    * A list of mime types of common text file types
    */
   export const KNOWN_TEXT_TYPES = new Set([
-    JS,
     JSON,
     MANIFEST_JSON,
     PLAIN_TEXT,
+    CSV,
+    CALENDAR,
+    CSS,
+    HTML,
+    JS,
     PYTHON,
     SVG,
     XML,
