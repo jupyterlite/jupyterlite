@@ -136,7 +136,7 @@ export namespace MIME {
   export const CALENDAR = 'text/calendar';
   export const CSS = 'text/css';
   export const HTML = 'text/html';
-  export const JS = 'text/javascript';
+  export const JS = 'application/javascript';
   export const PYTHON = 'application/x-python-code';
   export const SVG = 'image/svg+xml';
   export const XML = 'application/xml';
