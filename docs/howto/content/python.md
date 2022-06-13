@@ -18,6 +18,7 @@ which communicates with the JupyterLite content manager through a service worker
 
 ```{note}
 This only works if your browser supports service workers, see https://caniuse.com/serviceworkers
+
 There is a known issue that prevents service workers to work in Firefox private mode: https://bugzilla.mozilla.org/show_bug.cgi?id=1320796
 ```
 
