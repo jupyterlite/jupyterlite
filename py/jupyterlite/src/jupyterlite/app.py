@@ -75,6 +75,9 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             # pyolite things likely to move away
             "piplite-wheels": "LiteBuildConfig.piplite_urls",
             "pyodide": "LiteBuildConfig.pyodide_url",
+            # mime types
+            "file-types": "LiteBuildConfig.file_types",
+            "extra-file-types": "LiteBuildConfig.extra_file_types",
         },
     )
 
@@ -99,6 +102,10 @@ class ManagedApp(BaseLiteApp):
             kwargs["output_dir"] = self.output_dir
         if self.mathjax_dir:
             kwargs["mathjax_dir"] = self.mathjax_dir
+        if self.file_types:
+            kwargs["file_types"] = self.file_types
+        if self.extra_file_types:
+            kwargs["extra_file_types"] = self.extra_file_types
         if self.contents:
             kwargs["contents"] = [Path(p) for p in self.contents]
         if self.ignore_contents:

@@ -865,7 +865,7 @@ class C:
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
     GH = "https://github.com"
-    CONDA_FORGE_RELEASE = f"{GH}/conda-forge/releases/releases/download"
+    CONDA_FORGE_RELEASE = "https://conda.anaconda.org/conda-forge"
     LITE_GH_ORG = f"{GH}/{NAME}"
     P5_GH_REPO = f"{LITE_GH_ORG}/p5-kernel"
     P5_MOD = "jupyterlite_p5_kernel"
@@ -1279,9 +1279,7 @@ class U:
 
             for ext in ext_packages:
                 if pkg.startswith(ext):
-                    tarball_urls += [
-                        "/".join([C.CONDA_FORGE_RELEASE, subdir, pkg, pkg])
-                    ]
+                    tarball_urls += ["/".join([C.CONDA_FORGE_RELEASE, subdir, pkg])]
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
