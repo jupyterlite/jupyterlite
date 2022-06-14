@@ -265,6 +265,7 @@
     },
     "file-type": {
       "type": "object",
+      "description": "description of a named contents file format, with extensions and mime types.",
       "required": ["name", "mimeTypes", "extensions", "fileFormat"],
       "properties": {
         "name": {
