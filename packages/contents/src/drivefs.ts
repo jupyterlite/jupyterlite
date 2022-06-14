@@ -6,6 +6,7 @@ export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
 export const SEEK_END = 2;
+export const DRIVE_SEPARATOR = ':';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
@@ -304,7 +305,7 @@ export class ContentsAPI {
     data: string | null = null
   ): any {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, encodeURI(`${this._baseUrl}api/drive/${path}`), false);
+    xhr.open(method, encodeURI(`${this.endpoint}${path}`), false);
 
     try {
       if (data === null) {
@@ -430,10 +431,17 @@ export class ContentsAPI {
 
     // Add JupyterLab drive name
     if (this._driveName) {
-      path = `${this._driveName}:${path}`;
+      path = `${this._driveName}${DRIVE_SEPARATOR}${path}`;
     }
 
     return path;
+  }
+
+  /**
+   * Get the api/drive endpoint
+   */
+  get endpoint(): string {
+    return `${this._baseUrl}api/drive/`;
   }
 
   private _baseUrl: string;
