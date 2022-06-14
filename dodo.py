@@ -865,7 +865,7 @@ class C:
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
     GH = "https://github.com"
-    CONDA_FORGE_RELEASE = f"{GH}/conda-forge/releases/releases/download"
+    CONDA_FORGE_RELEASE = "https://conda.anaconda.org/conda-forge"
     LITE_GH_ORG = f"{GH}/{NAME}"
     P5_GH_REPO = f"{LITE_GH_ORG}/p5-kernel"
     P5_MOD = "jupyterlite_p5_kernel"
@@ -1260,7 +1260,15 @@ class U:
     @staticmethod
     def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
         """use conda list to derive tarball names for federated_extensions"""
-        raw_lock = subprocess.check_output([which("conda"), "list", "--explicit"])
+        try:
+            # try with micromamba first
+            raw_lock = subprocess.check_output(
+                [which("micromamba"), "env", "export", "--explicit"]
+            )
+        except:
+            # default to using conda
+            raw_lock = subprocess.check_output([which("conda"), "list", "--explicit"])
+
         ext_packages = [
             p.strip().split(" ")[0]
             for p in from_env.read_text(**C.ENC).split(marker)[1].split(" - ")
