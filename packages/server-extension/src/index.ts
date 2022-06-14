@@ -255,7 +255,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
             return;
           }
 
-          await contentManager.rename(path, request.args[0].replace('/drive', ''));
+          await contentManager.rename(path, request.args[0]);
           broadcast.postMessage(null);
           break;
         }

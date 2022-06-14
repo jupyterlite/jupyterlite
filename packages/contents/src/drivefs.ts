@@ -290,9 +290,10 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * Wrap ServiceWorker requests for an Emscripten-compatible synchronous API.
  */
 export class ContentsAPI {
-  constructor(baseUrl: string, driveName: string, FS: any, ERRNO_CODES: any) {
+  constructor(baseUrl: string, driveName: string, mountpoint: string, FS: any, ERRNO_CODES: any) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;
+    this._mountpoint = mountpoint;
     this.FS = FS;
     this.ERRNO_CODES = ERRNO_CODES;
   }
@@ -422,12 +423,12 @@ export class ContentsAPI {
    * @param path: the path relatively to the Emscripten drive
    */
   normalizePath(path: string): string {
-    // Remove drive prefix
-    // The following check should always be true but for safety we check
-    if (path.startsWith('/drive')) {
-      path = path.slice('/drive'.length);
+    // Remove mountpoint prefix
+    if (path.startsWith(this._mountpoint)) {
+      path = path.slice(this._mountpoint.length);
     }
 
+    // Add JupyterLab drive name
     if (this._driveName) {
       path = `${this._driveName}:${path}`;
     }
@@ -437,6 +438,7 @@ export class ContentsAPI {
 
   private _baseUrl: string;
   private _driveName: string;
+  private _mountpoint: string;
   private FS: any;
   private ERRNO_CODES: any;
 }
@@ -455,6 +457,7 @@ export class DriveFS {
     this.API = new ContentsAPI(
       options.baseUrl,
       options.driveName,
+      options.mountpoint,
       this.FS,
       this.ERRNO_CODES
     );
@@ -547,5 +550,6 @@ export namespace DriveFS {
     ERRNO_CODES: any;
     baseUrl: string;
     driveName: string;
+    mountpoint: string;
   }
 }

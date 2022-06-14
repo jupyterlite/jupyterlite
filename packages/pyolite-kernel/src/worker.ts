@@ -222,6 +222,7 @@ export class PyoliteRemoteKernel {
     options: IPyoliteWorkerKernel.IOptions
   ): Promise<void> {
     if (options.mountDrive) {
+      const mountpoint = '/drive';
       const { FS } = this._pyodide;
       const { baseUrl } = options;
       // TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
@@ -232,10 +233,11 @@ export class PyoliteRemoteKernel {
         ERRNO_CODES: ERRNO_CODES,
         baseUrl,
         driveName: this._driveName,
+        mountpoint
       });
-      FS.mkdir('/drive');
-      FS.mount(driveFS, {}, '/drive');
-      FS.chdir('/drive');
+      FS.mkdir(mountpoint);
+      FS.mount(driveFS, {}, mountpoint);
+      FS.chdir(mountpoint);
       this._driveFS = driveFS;
     }
   }
