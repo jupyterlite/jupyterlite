@@ -290,8 +290,9 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * Wrap ServiceWorker requests for an Emscripten-compatible synchronous API.
  */
 export class ContentsAPI {
-  constructor(baseUrl: string, FS: any, ERRNO_CODES: any) {
+  constructor(baseUrl: string, driveName: string, FS: any, ERRNO_CODES: any) {
     this._baseUrl = baseUrl;
+    this._driveName = driveName;
     this.FS = FS;
     this.ERRNO_CODES = ERRNO_CODES;
   }
@@ -302,7 +303,7 @@ export class ContentsAPI {
     data: string | null = null
   ): any {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, encodeURI(`${this._baseUrl}api${path}`), false);
+    xhr.open(method, encodeURI(`${this._baseUrl}api/drive/${path}`), false);
 
     try {
       if (data === null) {
@@ -322,34 +323,39 @@ export class ContentsAPI {
   }
 
   lookup(path: string): DriveFS.ILookup {
-    return this.request('GET', `${path}?m=lookup`);
+    return this.request('GET', `${this.normalizePath(path)}?m=lookup`);
   }
 
   getmode(path: string): number {
-    return Number.parseInt(this.request('GET', `${path}?m=getmode`));
+    return Number.parseInt(
+      this.request('GET', `${this.normalizePath(path)}?m=getmode`)
+    );
   }
 
   mknod(path: string, mode: number) {
-    return this.request('GET', `${path}?m=mknod&args=${mode}`);
+    return this.request('GET', `${this.normalizePath(path)}?m=mknod&args=${mode}`);
   }
 
   rename(oldPath: string, newPath: string): void {
-    return this.request('GET', `${oldPath}?m=rename&args=${newPath}`);
+    return this.request(
+      'GET',
+      `${this.normalizePath(oldPath)}?m=rename&args=${this.normalizePath(newPath)}`
+    );
   }
 
   readdir(path: string): string[] {
-    const dirlist = this.request('GET', `${path}?m=readdir`);
+    const dirlist = this.request('GET', `${this.normalizePath(path)}?m=readdir`);
     dirlist.push('.');
     dirlist.push('..');
     return dirlist;
   }
 
   rmdir(path: string): void {
-    return this.request('GET', `${path}?m=rmdir`);
+    return this.request('GET', `${this.normalizePath(path)}?m=rmdir`);
   }
 
   get(path: string): DriveFS.IFile {
-    const response = this.request('GET', `${path}?m=get`);
+    const response = this.request('GET', `${this.normalizePath(path)}?m=get`);
 
     const serializedContent = response.content;
     const format: 'json' | 'text' | 'base64' | null = response.format;
@@ -384,7 +390,7 @@ export class ContentsAPI {
       case 'text':
         return this.request(
           'PUT',
-          `${path}?m=put&args=${value.format}`,
+          `${this.normalizePath(path)}?m=put&args=${value.format}`,
           decoder.decode(value.data)
         );
       case 'base64': {
@@ -392,13 +398,17 @@ export class ContentsAPI {
         for (let i = 0; i < value.data.byteLength; i++) {
           binary += String.fromCharCode(value.data[i]);
         }
-        return this.request('PUT', `${path}?m=put&args=${value.format}`, btoa(binary));
+        return this.request(
+          'PUT',
+          `${this.normalizePath(path)}?m=put&args=${value.format}`,
+          btoa(binary)
+        );
       }
     }
   }
 
   getattr(path: string): IStats {
-    const stats = this.request('GET', `${path}?m=getattr`);
+    const stats = this.request('GET', `${this.normalizePath(path)}?m=getattr`);
     // Turn datetimes into proper objects
     stats.atime = new Date(stats.atime);
     stats.mtime = new Date(stats.mtime);
@@ -406,7 +416,27 @@ export class ContentsAPI {
     return stats;
   }
 
+  /**
+   * Normalize a Path by making it compliant for the content manager
+   *
+   * @param path: the path relatively to the Emscripten drive
+   */
+  normalizePath(path: string): string {
+    // Remove drive prefix
+    // The following check should always be true but for safety we check
+    if (path.startsWith('/drive')) {
+      path = path.slice('/drive'.length);
+    }
+
+    if (this._driveName) {
+      path = `${this._driveName}:${path}`;
+    }
+
+    return path;
+  }
+
   private _baseUrl: string;
+  private _driveName: string;
   private FS: any;
   private ERRNO_CODES: any;
 }
@@ -416,12 +446,19 @@ export class DriveFS {
   API: ContentsAPI;
   PATH: DriveFS.IPath;
   ERRNO_CODES: any;
+  driveName: string;
 
   constructor(options: DriveFS.IOptions) {
     this.FS = options.FS;
     this.PATH = options.PATH;
     this.ERRNO_CODES = options.ERRNO_CODES;
-    this.API = new ContentsAPI(options.baseUrl, this.FS, this.ERRNO_CODES);
+    this.API = new ContentsAPI(
+      options.baseUrl,
+      options.driveName,
+      this.FS,
+      this.ERRNO_CODES
+    );
+    this.driveName = options.driveName;
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
@@ -509,5 +546,6 @@ export namespace DriveFS {
     PATH: IPath;
     ERRNO_CODES: any;
     baseUrl: string;
+    driveName: string;
   }
 }

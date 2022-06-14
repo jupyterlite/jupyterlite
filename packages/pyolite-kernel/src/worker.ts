@@ -143,6 +143,16 @@ export class PyoliteRemoteKernel {
    **/
   async initialize(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     this._options = options;
+
+    if (options.location.includes(':')) {
+      const parts = options.location.split(':');
+      this._driveName = parts[0];
+      this._localPath = parts[1];
+    } else {
+      this._driveName = '';
+      this._localPath = options.location;
+    }
+
     await this.initRuntime(options);
     await this.initFilesystem(options);
     await this.initPackageManager(options);
@@ -188,10 +198,10 @@ export class PyoliteRemoteKernel {
       import pyolite
     `);
     // cd to the kernel location
-    if (options.mountDrive && options.location) {
+    if (options.mountDrive && this._localPath) {
       await this._pyodide.runPythonAsync(`
         import os;
-        os.chdir("${options.location}");
+        os.chdir("${this._localPath}");
       `);
     }
   }
@@ -221,6 +231,7 @@ export class PyoliteRemoteKernel {
         PATH: this._pyodide._module.PATH,
         ERRNO_CODES: ERRNO_CODES,
         baseUrl,
+        driveName: this._driveName,
       });
       FS.mkdir('/drive');
       FS.mount(driveFS, {}, '/drive');
@@ -565,6 +576,8 @@ export class PyoliteRemoteKernel {
     resolve: () => void;
   } | null = null;
   /** TODO: real typing */
+  protected _localPath = '';
+  protected _driveName = '';
   protected _pyodide: any;
   protected _kernel: any;
   protected _interpreter: any;

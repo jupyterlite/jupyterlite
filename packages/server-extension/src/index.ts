@@ -228,7 +228,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
       } = event.data;
       const contentManager = app.serviceManager.contents;
 
-      const path = request.path.replace('/api/drive', '');
+      const path = request.path.replace('/api/drive/', '');
 
       let model: ServerContents.IModel;
 
