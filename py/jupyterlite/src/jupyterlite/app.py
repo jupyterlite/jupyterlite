@@ -75,9 +75,6 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             # pyolite things likely to move away
             "piplite-wheels": "LiteBuildConfig.piplite_urls",
             "pyodide": "LiteBuildConfig.pyodide_url",
-            # mime types
-            "file-types": "LiteBuildConfig.file_types",
-            "extra-file-types": "LiteBuildConfig.extra_file_types",
         },
     )
 

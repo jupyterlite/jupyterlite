@@ -265,7 +265,7 @@
     },
     "file-type": {
       "type": "object",
-      "required": ["name", "mimeTypes", "extensions"],
+      "required": ["name", "mimeTypes", "extensions", "fileFormat"],
       "properties": {
         "name": {
           "type": "string"
