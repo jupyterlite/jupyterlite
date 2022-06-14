@@ -8,9 +8,8 @@ import { PathExt } from '@jupyterlab/coreutils';
 
 import type localforage from 'localforage';
 
-import { IContents, MIME } from './tokens';
+import { IContents, MIME, FILE } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
-import mime from 'mime';
 
 export type IModel = ServerContents.IModel;
 
@@ -410,7 +409,6 @@ export class Contents implements IContents {
 
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
-    const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
 
     if (options.content && options.format === 'base64') {
       if (ext === '.ipynb') {
@@ -420,7 +418,14 @@ export class Contents implements IContents {
           format: 'json',
           type: 'notebook',
         };
-      } else if (MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+      } else if (FILE.hasFormat(ext, 'json')) {
+        item = {
+          ...item,
+          content: this.unescapeContent(options.content),
+          format: 'json',
+          type: 'file',
+        };
+      } else if (FILE.hasFormat(ext, 'text')) {
         item = {
           ...item,
           content: this.unescapeContent(options.content),
@@ -628,9 +633,11 @@ export class Contents implements IContents {
           return null;
         }
         const mimetype = model.mimetype || response.headers.get('Content-Type');
+        const ext = PathExt.extname(name);
 
         if (
           model.type === 'notebook' ||
+          FILE.hasFormat(ext, 'json') ||
           mimetype?.indexOf('json') !== -1 ||
           path.match(/\.(ipynb|[^/]*json[^/]*)$/)
         ) {
@@ -640,10 +647,7 @@ export class Contents implements IContents {
             format: 'json',
             mimetype: model.mimetype || MIME.JSON,
           };
-        } else if (
-          mimetype.indexOf('text') !== -1 ||
-          MIME.KNOWN_TEXT_TYPES.has(mimetype)
-        ) {
+        } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           model = {
             ...model,
             content: await response.text(),
