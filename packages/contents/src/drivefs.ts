@@ -291,7 +291,13 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * Wrap ServiceWorker requests for an Emscripten-compatible synchronous API.
  */
 export class ContentsAPI {
-  constructor(baseUrl: string, driveName: string, mountpoint: string, FS: any, ERRNO_CODES: any) {
+  constructor(
+    baseUrl: string,
+    driveName: string,
+    mountpoint: string,
+    FS: any,
+    ERRNO_CODES: any
+  ) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;
     this._mountpoint = mountpoint;

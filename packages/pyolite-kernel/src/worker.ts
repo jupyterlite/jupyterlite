@@ -233,7 +233,7 @@ export class PyoliteRemoteKernel {
         ERRNO_CODES: ERRNO_CODES,
         baseUrl,
         driveName: this._driveName,
-        mountpoint
+        mountpoint,
       });
       FS.mkdir(mountpoint);
       FS.mount(driveFS, {}, mountpoint);
