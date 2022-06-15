@@ -421,7 +421,7 @@ export class Contents implements IContents {
       } else if (FILE.hasFormat(ext, 'json')) {
         item = {
           ...item,
-          content: this.unescapeContent(options.content),
+          content: JSON.parse(this.unescapeContent(options.content)),
           format: 'json',
           type: 'file',
         };
