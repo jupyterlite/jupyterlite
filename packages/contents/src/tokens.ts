@@ -172,7 +172,7 @@ export namespace FILE {
     fileFormat: 'base64' | 'text' | 'json'
   ): boolean {
     for (const fileType of Object.values(TYPES)) {
-      if (fileType.fileFormat !== 'text') {
+      if (fileType.fileFormat !== fileFormat) {
         continue;
       }
       for (const fileExt of fileType.extensions || []) {
