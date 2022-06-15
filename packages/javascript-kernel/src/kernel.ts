@@ -37,6 +37,13 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
+   * Interrupt the kernel.
+   */
+  interrupt(): void {
+    throw new Error('Not implemented');
+  }
+
+  /**
    * Dispose the kernel.
    */
   dispose(): void {

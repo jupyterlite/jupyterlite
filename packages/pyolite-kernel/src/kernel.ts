@@ -10,6 +10,10 @@ import worker from './worker?raw';
 
 import { PIPLITE_WHEEL } from './_pypi';
 
+const INTERRUPT_WARNING = `The interrupt button is currently not functional.
+For the button to function, JupyterLite must be deployed with the correct HTTP headers.
+For more information, see: https://jupyterlite.readthedocs.io/en/latest/deploying.html#http_headers`;
+
 /**
  * A kernel that executes Python code with Pyodide.
  */
@@ -26,6 +30,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     this._worker.onmessage = (e) => {
       this._processWorkerMessage(e.data);
     };
+    this.setupInterruptBuffer();
     this._ready.resolve();
   }
 
@@ -80,6 +85,41 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   get ready(): Promise<void> {
     return this._ready.promise;
+  }
+
+  /**
+   * Interrupt the kernel.
+   */
+  async interrupt(): Promise<void> {
+    // Display a warning to the user if the the interrupt button wasn't configured
+    if (!this._interruptBuffer) {
+      const bundle: KernelMessage.IStreamMsg['content'] = {
+        name: 'stderr',
+        text: INTERRUPT_WARNING,
+      };
+      this.stream(bundle, undefined);
+
+      return;
+    }
+
+    // Interrupting kernel startup will cause the UI to hang
+    await this._kernelStarted.promise;
+
+    this._interruptBuffer[0] = 2; //Send SIGINT
+  }
+
+  private setupInterruptBuffer(): void {
+    if (!window.crossOriginIsolated) {
+      console.warn(INTERRUPT_WARNING);
+      return;
+    }
+
+    this._interruptBuffer = new Uint8Array(new SharedArrayBuffer(1));
+    this._worker.postMessage({
+      type: 'set-interrupt-buffer',
+      data: this._interruptBuffer,
+      parent: {},
+    });
   }
 
   /**
@@ -139,6 +179,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
           msg.buffers,
           msg.parentHeader
         );
+        break;
+      }
+      case 'kernel_started': {
+        this._kernelStarted.resolve();
         break;
       }
       default:
@@ -303,6 +347,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   private _executeDelegate = new PromiseDelegate<any>();
   private _worker: Worker;
   private _ready = new PromiseDelegate<void>();
+  private _kernelStarted = new PromiseDelegate<void>();
+  private _interruptBuffer: Uint8Array | null = null;
 }
 
 /**

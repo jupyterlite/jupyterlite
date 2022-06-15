@@ -32,6 +32,13 @@ export interface IKernels {
   restart: (id: string) => Promise<Kernel.IModel>;
 
   /**
+   * Interrupt a kernel.
+   *
+   * @param id The kernel id.
+   */
+  interrupt: (id: string) => void;
+
+  /**
    * Shut down a kernel.
    *
    * @param id The kernel id.
@@ -64,6 +71,11 @@ export interface IKernel extends IObservableDisposable {
    * @param msg The message to handle
    */
   handleMessage(msg: KernelMessage.IMessage): Promise<void>;
+
+  /**
+   * Interrupt the kernel.
+   */
+  interrupt: () => void;
 }
 
 /**
