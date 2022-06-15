@@ -202,9 +202,9 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
       position += stream.position;
     } else if (whence === SEEK_END) {
       if (this.fs.FS.isFile(stream.node.mode)) {
-        try {
-          position += stream.file!.data.length;
-        } catch (e) {
+        if (stream.file !== undefined) {
+          position += stream.file.data.length;
+        } else {
           throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
         }
       }
