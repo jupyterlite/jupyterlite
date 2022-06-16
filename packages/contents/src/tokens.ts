@@ -153,6 +153,7 @@ export namespace FILE {
    * Get a mimetype (or fallback).
    */
   export function getType(ext: string, defaultType: string | null = null): string {
+    ext = ext.toLowerCase();
     for (const fileType of Object.values(TYPES)) {
       for (const fileExt of fileType.extensions || []) {
         if (fileExt === ext && fileType.mimeTypes && fileType.mimeTypes.length) {
@@ -171,6 +172,7 @@ export namespace FILE {
     ext: string,
     fileFormat: 'base64' | 'text' | 'json'
   ): boolean {
+    ext = ext.toLowerCase();
     for (const fileType of Object.values(TYPES)) {
       if (fileType.fileFormat !== fileFormat) {
         continue;

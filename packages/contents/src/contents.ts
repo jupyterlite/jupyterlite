@@ -181,7 +181,24 @@ export class Contents implements IContents {
         };
         break;
       }
-      case 'file': {
+      case 'notebook': {
+        const counter = await this._incrementCounter('notebook');
+        name = name || `Untitled${counter || ''}.ipynb`;
+        file = {
+          name,
+          path: `${dirname}${name}`,
+          last_modified: created,
+          created,
+          format: 'json',
+          mimetype: MIME.JSON,
+          content: Private.EMPTY_NB,
+          size: JSON.stringify(Private.EMPTY_NB).length,
+          writable: true,
+          type: 'notebook',
+        };
+        break;
+      }
+      default: {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
         const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
@@ -207,23 +224,6 @@ export class Contents implements IContents {
           size: 0,
           writable: true,
           type: 'file',
-        };
-        break;
-      }
-      default: {
-        const counter = await this._incrementCounter('notebook');
-        name = name || `Untitled${counter || ''}.ipynb`;
-        file = {
-          name,
-          path: `${dirname}${name}`,
-          last_modified: created,
-          created,
-          format: 'json',
-          mimetype: MIME.JSON,
-          content: Private.EMPTY_NB,
-          size: JSON.stringify(Private.EMPTY_NB).length,
-          writable: true,
-          type: 'notebook',
         };
         break;
       }
@@ -395,10 +395,20 @@ export class Contents implements IContents {
    */
   async save(path: string, options: Partial<IModel> = {}): Promise<IModel | null> {
     path = decodeURIComponent(path);
-    let item = (await this.get(path)) || (await this.newUntitled({ path }));
+
+    // process the file if coming from an upload
+    const ext = PathExt.extname(options.name ?? '');
+
+    let item: IModel | null = await this.get(path);
+
+    if (!item) {
+      item = await this.newUntitled({ path, ext, type: 'file' });
+    }
+
     if (!item) {
       return null;
     }
+
     // override with the new values
     const modified = new Date().toISOString();
     item = {
@@ -406,9 +416,6 @@ export class Contents implements IContents {
       ...options,
       last_modified: modified,
     };
-
-    // process the file if coming from an upload
-    const ext = PathExt.extname(options.name ?? '');
 
     if (options.content && options.format === 'base64') {
       if (ext === '.ipynb') {
