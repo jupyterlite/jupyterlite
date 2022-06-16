@@ -24,6 +24,7 @@ tasks:
   - name: watch
     command: |
       gp sync-await setup
+      source ~/.bashrc
       micromamba activate
       doit watch
 ports:
