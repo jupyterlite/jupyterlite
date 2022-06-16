@@ -1263,7 +1263,7 @@ class U:
         try:
             # try with micromamba first
             raw_lock = subprocess.check_output(
-                [which("micromamba"), "env", "export", "--explicit"]
+                [os.getenv("MAMBA_EXE"), "env", "export", "--explicit"]
             )
         except:
             # default to using conda

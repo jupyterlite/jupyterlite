@@ -8,7 +8,8 @@ github:
     addBadge: false
     addLabel: false
 tasks:
-  - init: |
+  - name: setup
+    init: |
       pushd ~
       wget -qO- https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
       ./bin/micromamba shell init -s bash -p ~/micromamba
@@ -16,9 +17,15 @@ tasks:
       popd
       micromamba create -y -f .binder/environment.yml
       micromamba activate jupyterlite-dev
+      gp sync-done setup
     command: |
       micromamba activate jupyterlite-dev
       doit serve
+  - name: watch
+    command: |
+      gp sync-await setup
+      micromamba activate jupyterlite-dev
+      doit watch
 ports:
   - port: 5000
   - port: 8000
