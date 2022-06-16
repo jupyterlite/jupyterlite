@@ -184,10 +184,10 @@ export class Contents implements IContents {
       case 'file': {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
-        const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
+        const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
 
         let format: ServerContents.FileFormat;
-        if (mimetype.indexOf('text') !== -1 || MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+        if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
           format = 'json';
