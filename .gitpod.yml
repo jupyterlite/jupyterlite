@@ -15,16 +15,16 @@ tasks:
       ./bin/micromamba shell init -s bash -p ~/micromamba
       source ~/.bashrc
       popd
-      micromamba create -y -f .binder/environment.yml
-      micromamba activate jupyterlite-dev
+      micromamba activate 
+      micromamba install -n base -y -f .binder/environment.yml
       gp sync-done setup
     command: |
-      micromamba activate jupyterlite-dev
+      micromamba activate
       doit serve
   - name: watch
     command: |
       gp sync-await setup
-      micromamba activate jupyterlite-dev
+      micromamba activate
       doit watch
 ports:
   - port: 5000
