@@ -1615,7 +1615,7 @@
     "@lumino/signaling" "^1.10.0"
     "@lumino/widgets" "^1.30.0"
 
-"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.3", "@jupyterlab/coreutils@~5.4.3":
+"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.2", "@jupyterlab/coreutils@^5.4.3", "@jupyterlab/coreutils@~5.4.3":
   version "5.4.3"
   resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-5.4.3.tgz#9a9ed66b045a9f7cee2064cb8b29e0bcc759f8c1"
   integrity sha512-9X021xXTDVnCSYGXsRsMsxCaoHk28oHC/fUTytc5DRgTcpzOGPBO/mVpgJfyejOdy4HxBbAovJSnkBlPwjm1yA==
@@ -2744,6 +2744,7 @@
     "@lumino/disposable" "^1.10.1"
     "@lumino/signaling" "^1.10.1"
     async-mutex "^0.3.1"
+    comlink "^4.3.1"
     mock-socket "^9.1.0"
 
 "@jupyterlite/licenses@file:packages/licenses":
@@ -2770,7 +2771,9 @@
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
   version "0.1.0-beta.8"
   dependencies:
+    "@jupyterlite/contents" "^0.1.0-beta.8"
     "@jupyterlite/kernel" "^0.1.0-beta.8"
+    comlink "^4.3.1"
 
 "@jupyterlite/repl-extension@file:packages/repl-extension":
   version "0.1.0-beta.8"
@@ -2810,6 +2813,7 @@
 "@jupyterlite/session@file:packages/session":
   version "0.1.0-beta.8"
   dependencies:
+    "@jupyterlab/coreutils" "^5.4.2"
     "@jupyterlab/services" "~6.4.3"
     "@jupyterlite/kernel" "^0.1.0-beta.8"
     "@lumino/algorithm" "^1.9.1"
@@ -5580,6 +5584,11 @@ combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   integrity sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==
   dependencies:
     delayed-stream "~1.0.0"
+
+comlink@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.npmjs.org/comlink/-/comlink-4.3.1.tgz#0c6b9d69bcd293715c907c33fe8fc45aecad13c5"
+  integrity sha512-+YbhUdNrpBZggBAHWcgQMLPLH1KDF3wJpeqrCKieWQ8RL7atmgsgTQko1XEBK6PsecfopWNntopJ+ByYG1lRaA==
 
 commander@2, commander@^2.20.0:
   version "2.20.3"

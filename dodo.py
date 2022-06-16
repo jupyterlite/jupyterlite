@@ -1287,9 +1287,7 @@ class U:
 
             for ext in ext_packages:
                 if pkg.startswith(ext):
-                    tarball_urls += [
-                        "/".join([C.CONDA_FORGE_RELEASE, subdir, pkg, pkg])
-                    ]
+                    tarball_urls += ["/".join([C.CONDA_FORGE_RELEASE, subdir, pkg])]
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))

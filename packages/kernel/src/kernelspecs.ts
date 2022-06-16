@@ -1,5 +1,4 @@
 import { KernelSpec } from '@jupyterlab/services';
-
 import { IKernel, IKernelSpecs } from './tokens';
 
 /**

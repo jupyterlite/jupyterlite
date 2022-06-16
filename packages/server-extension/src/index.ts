@@ -1,11 +1,17 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
-import { Contents, IContents } from '@jupyterlite/contents';
+import {
+  Contents,
+  DIR_MODE,
+  FILE_MODE,
+  IContents,
+  IModel,
+} from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
 
@@ -15,6 +21,8 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
+  IServiceWorkerRegistrationWrapper,
+  ServiceWorkerRegistrationWrapper,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -184,6 +192,174 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         return new Response(null, { status: 204 });
       }
     );
+  },
+};
+
+/**
+ * A plugin installing the service worker.
+ */
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> =
+  {
+    id: '@jupyterlite/server-extension:service-worker',
+    autoStart: true,
+    provides: IServiceWorkerRegistrationWrapper,
+    activate: (app: JupyterLiteServer) => {
+      return new ServiceWorkerRegistrationWrapper();
+    },
+  };
+
+/**
+ * A plugin handling communication with the Emscpriten file system.
+ */
+const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:emscripten-filesystem',
+  autoStart: true,
+  activate: (app: JupyterLiteServer) => {
+    // Setup communication with service worker for the virtual fs
+    const broadcast = new BroadcastChannel('/api/drive.v1');
+    let subitems: [];
+
+    broadcast.onmessage = async (event) => {
+      const request: {
+        path: string;
+        method: string;
+        args: string[] | null;
+        content: string;
+      } = event.data;
+      const contentManager = app.serviceManager.contents;
+
+      const path = request.path.replace('/api/drive/', '');
+
+      let model: ServerContents.IModel;
+
+      switch (request.method) {
+        case 'readdir': {
+          model = await contentManager.get(path, { content: true });
+
+          if (model.type === 'directory' && model.content) {
+            subitems = model.content.map((subcontent: IModel) => subcontent.name);
+            broadcast.postMessage(subitems);
+          } else {
+            broadcast.postMessage([]);
+          }
+          break;
+        }
+        case 'rmdir': {
+          await contentManager.delete(path);
+          broadcast.postMessage(null);
+          break;
+        }
+        case 'rename': {
+          if (request.args === null) {
+            broadcast.postMessage(null);
+            return;
+          }
+
+          await contentManager.rename(path, request.args[0]);
+          broadcast.postMessage(null);
+          break;
+        }
+        case 'getmode': {
+          model = await contentManager.get(path);
+
+          if (model.type === 'directory') {
+            broadcast.postMessage(DIR_MODE);
+          } else {
+            broadcast.postMessage(FILE_MODE);
+          }
+          break;
+        }
+        case 'lookup': {
+          try {
+            model = await contentManager.get(path);
+
+            broadcast.postMessage({
+              ok: true,
+              mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
+            });
+          } catch (e) {
+            broadcast.postMessage({
+              ok: false,
+            });
+          }
+
+          break;
+        }
+        case 'mknod': {
+          if (request.args === null) {
+            broadcast.postMessage(null);
+            return;
+          }
+
+          const mode = Number.parseInt(request.args[0]);
+
+          model = await contentManager.newUntitled({
+            path: PathExt.dirname(path),
+            type: mode === DIR_MODE ? 'directory' : 'file',
+            ext: PathExt.extname(path),
+          });
+          await contentManager.rename(model.path, path);
+
+          broadcast.postMessage(null);
+          break;
+        }
+        case 'getattr': {
+          model = await contentManager.get(path);
+
+          broadcast.postMessage({
+            dev: 0,
+            ino: 0,
+            mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
+            nlink: 0,
+            uid: 0,
+            gid: 0,
+            rdev: 0,
+            size: model.size,
+            blksize: 0,
+            blocks: 0,
+            atime: model.last_modified, // TODO Get the proper atime?
+            mtime: model.last_modified,
+            ctime: model.last_modified, // TODO Get the proper ctime?
+            timestamp: 0,
+          });
+          break;
+        }
+        case 'get': {
+          model = await contentManager.get(path, { content: true });
+
+          if (model.type === 'directory') {
+            broadcast.postMessage(null);
+            return;
+          }
+
+          let content = model.content;
+          if (model.format === 'json') {
+            content = JSON.stringify(model.content);
+          }
+
+          broadcast.postMessage({
+            content,
+            format: model.format,
+          });
+          break;
+        }
+        case 'put': {
+          if (request.args === null) {
+            broadcast.postMessage(null);
+            return;
+          }
+
+          await contentManager.save(path, {
+            content: request.content,
+            type: 'file',
+            format: request.args[0] as ServerContents.FileFormat,
+          });
+
+          broadcast.postMessage(null);
+          break;
+        }
+      }
+    };
   },
 };
 
@@ -473,6 +649,7 @@ const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const plugins: JupyterLiteServerPlugin<any>[] = [
   contentsPlugin,
   contentsRoutesPlugin,
+  emscriptenFileSystemPlugin,
   kernelsPlugin,
   kernelsRoutesPlugin,
   kernelSpecPlugin,
@@ -482,6 +659,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   localforageMemoryPlugin,
   localforagePlugin,
   nbconvertRoutesPlugin,
+  serviceWorkerPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,
   settingsPlugin,

@@ -3,7 +3,11 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server';
+import {
+  IServiceWorkerRegistrationWrapper,
+  JupyterLiteServer,
+  JupyterLiteServerPlugin,
+} from '@jupyterlite/server';
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 
@@ -23,8 +27,12 @@ const PLUGIN_ID = '@jupyterlite/pyolite-kernel-extension:kernel';
 const kernel: JupyterLiteServerPlugin<void> = {
   id: PLUGIN_ID,
   autoStart: true,
-  requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  requires: [IKernelSpecs, IServiceWorkerRegistrationWrapper],
+  activate: (
+    app: JupyterLiteServer,
+    kernelspecs: IKernelSpecs,
+    serviceWorkerRegistrationWrapper: IServiceWorkerRegistrationWrapper
+  ) => {
     const baseUrl = PageConfig.getBaseUrl();
     const config =
       JSON.parse(PageConfig.getOption('litePluginSettings') || '{}')[PLUGIN_ID] || {};
@@ -53,6 +61,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
           pyodideUrl,
           pipliteUrls,
           disablePyPIFallback,
+          mountDrive: serviceWorkerRegistrationWrapper.enabled,
         });
       },
     });

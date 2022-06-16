@@ -1,40 +1,34 @@
 # Accessing files and notebooks from the kernel
 
-Accessing contents like other files and notebooks from a kernel might be tricky.
+You can now access content from the Pyolite kernel.
 
-Currently the content visible by the end user is a mix of server provided files, and
-files saved locally in the web browser. This means that trying to access a server
-provided files from Python with paradigms like `open('data.csv')` will most likely fail.
-
-A common workaround for the Python kernel is be to manually fetch a file from a remote
-URL with the `fetch` method from the browser before manipulating its content:
+You can for example drag and drop a file `file.csv` into the JupyterLite UI, then load
+it in Python:
 
 ```py
 import pandas as pd
-from js import fetch
 
-URL = "https://yourdomain.com/path/to/file.csv"
+data = pd.read_csv('file.csv')
 
-res = await fetch(URL)
-text = await res.text()
-
-filename = 'data.csv'
-
-with open(filename, 'w') as f:
-    f.write(text)
-
-data = pd.read_csv(filename, sep=';')
 data
 ```
 
+The Pyolite kernel makes content available by mounting a custom Emscripten File-System
+which communicates with the JupyterLite content manager through a service worker.
+
 ```{note}
-See the following issues and discussions for more information:
+This only works if your browser supports service workers, see https://caniuse.com/serviceworkers
 
-- [#91](https://github.com/jupyterlite/jupyterlite/discussions/91)
-- [#119](https://github.com/jupyterlite/jupyterlite/issues/119)
+There is a known issue that prevents service workers to work in Firefox private mode: https://bugzilla.mozilla.org/show_bug.cgi?id=1320796
+```
 
-It is also possible to manipulate the data stored in `IndexedDB` from Python, but it can be pretty involved.
-See the [example notebook][emscripten-notebook] for more details.
+An easy way to check if the Emscripten File-System mounting was a success, is to check
+that the `cwd` starts with `"drive"`:
+
+```py
+import os
+
+os.getcwd()  # Should return "/drive/path/to/notebook"
 ```
 
 [emscripten-notebook]:
