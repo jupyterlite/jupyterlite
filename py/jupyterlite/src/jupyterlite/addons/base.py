@@ -172,10 +172,6 @@ class BaseAddon(LoggingConfigurable):
     def merge_one_jupyterlite(self, out_path, in_paths):
         """write the ``out_path`` with the merge content of ``in_paths``, where
         all are valid ``jupyter-lite.*`` files.
-
-        .. todo::
-
-            Notebooks
         """
         self.log.debug(f"[lite][config][merge] {out_path}")
         config = None
@@ -225,6 +221,8 @@ class BaseAddon(LoggingConfigurable):
             out_path.write_text(json.dumps(doc, **JSON_FMT), **UTF8)
         else:
             out_path.write_text(json.dumps(config, **JSON_FMT), **UTF8)
+
+        print("MERGED", out_path, "from", in_paths)
 
     def merge_jupyter_config_data(self, config, in_config):
         """merge well-known ``jupyter-config-data`` fields"""

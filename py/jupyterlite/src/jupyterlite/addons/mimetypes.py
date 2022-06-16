@@ -16,9 +16,10 @@ from .base import BaseAddon
 class MimetypesAddon(BaseAddon):
     """Handle custom MIME types."""
 
-    __all__ = ["pre_build", "status"]
+    __all__ = ["post_build", "status"]
 
     def status(self, manager):
+        """Yield status about file types."""
         yield dict(
             name=JUPYTERLITE_JSON,
             actions=[
@@ -28,12 +29,14 @@ class MimetypesAddon(BaseAddon):
 
     @property
     def file_types(self):
+        """A merged view of all configured file types."""
         file_types = dict()
         file_types.update(self.manager.file_types)
         file_types.update(self.manager.extra_file_types)
         return file_types
 
-    def pre_build(self, manager):
+    def post_build(self, manager):
+        """Yield ``doit`` tasks to update with file type config."""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
 
         yield dict(

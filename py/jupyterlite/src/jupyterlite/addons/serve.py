@@ -63,25 +63,28 @@ class ServeAddon(BaseAddon):
         )
 
     def _patch_mime(self):
-        """install extra mime types"""
+        """install extra mime types if configured"""
         import mimetypes
         import os
 
-        if os.name == "nt":
-            # do not trust windows registry, which regularly has bad info
-            mimetypes.init(files=[])
-        # ensure css, js are correct, which are required for pages to function
         jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
         config = json.loads(jupyterlite_json.read_text(**UTF8))
+        file_types = config[JUPYTER_CONFIG_DATA].get(SETTINGS_FILE_TYPES)
 
-        mime_map = dict()
+        if file_types:
+            if os.name == "nt":
+                # do not trust windows registry, which regularly has bad info
+                mimetypes.init(files=[])
+            # ensure css, js are correct, which are required for pages to function
 
-        for file_type in config[JUPYTER_CONFIG_DATA][SETTINGS_FILE_TYPES].values():
-            for ext in file_type["extensions"]:
-                mimetypes.add_type(file_type["mimeTypes"][0], ext)
-                mime_map[ext] = file_type["mimeTypes"][0]
+            mime_map = dict()
 
-        return mime_map
+            for file_type in file_types.values():
+                for ext in file_type["extensions"]:
+                    mimetypes.add_type(file_type["mimeTypes"][0], ext)
+                    mime_map[ext] = file_type["mimeTypes"][0]
+
+            return mime_map
 
     def _serve_tornado(self):
         from tornado import httpserver, ioloop, web
@@ -130,14 +133,18 @@ class ServeAddon(BaseAddon):
         from functools import partial
         from http.server import SimpleHTTPRequestHandler
 
-        mime_map = self._patch_mime()
-        path = str(self.manager.output_dir)
+        HttpRequestHandler = SimpleHTTPRequestHandler
 
-        class HttpRequestHandler(SimpleHTTPRequestHandler):
-            extensions_map = {
-                "": "application/octet-stream",
-                **mime_map,
-            }
+        mime_map = self._patch_mime()
+
+        if mime_map:
+            path = str(self.manager.output_dir)
+
+            class HttpRequestHandler(SimpleHTTPRequestHandler):
+                extensions_map = {
+                    "": "application/octet-stream",
+                    **mime_map,
+                }
 
         httpd = socketserver.TCPServer(
             (HOST, self.manager.port), partial(HttpRequestHandler, directory=path)
