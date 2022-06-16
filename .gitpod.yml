@@ -17,13 +17,14 @@ tasks:
       popd
       micromamba activate 
       micromamba install -n base -y -f .binder/environment.yml
+      doit
+      gp sync-done setup
     command: |
       micromamba activate
       doit watch
-      gp sync-done watch
   - name: watch
     command: |
-      gp sync-await watch
+      gp sync-await setup
       source ~/.bashrc
       micromamba activate
       doit serve
