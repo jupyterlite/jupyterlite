@@ -17,16 +17,16 @@ tasks:
       popd
       micromamba activate 
       micromamba install -n base -y -f .binder/environment.yml
-      gp sync-done setup
     command: |
-      micromamba activate
-      doit serve
-  - name: watch
-    command: |
-      gp sync-await setup
-      source ~/.bashrc
       micromamba activate
       doit watch
+      gp sync-done watch
+  - name: watch
+    command: |
+      gp sync-await watch
+      source ~/.bashrc
+      micromamba activate
+      doit serve
 ports:
   - port: 5000
   - port: 8000
