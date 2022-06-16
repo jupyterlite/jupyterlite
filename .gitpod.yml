@@ -28,6 +28,12 @@ tasks:
       source ~/.bashrc
       micromamba activate
       doit serve
+  - name: docs
+    command: |
+      gp sync-await setup
+      source ~/.bashrc
+      micromamba activate
+      doit watch:docs
 ports:
   - port: 5000
   - port: 8000
