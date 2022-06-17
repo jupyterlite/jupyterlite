@@ -129,6 +129,14 @@ class LiteBuildConfig(LoggingConfigurable):
         help="the HTTP headers to add to default headers on all served responses"
     ).tag(config=True)
 
+    file_types: dict = Dict(
+        help="JupyterLab-compatible file types for the server and browser"
+    ).tag(config=True)
+
+    extra_file_types: dict = Dict(
+        help="extra JupyterLab-compatible file types for the server and browser"
+    ).tag(config=True)
+
     @default("apps")
     def _default_apps(self):
         return []
@@ -234,4 +242,43 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("extra_http_headers")
     def _default_extra_http_header(self):
+        return {}
+
+    @default("file_types")
+    def _default_file_types(self):
+        """Partial definitions of file types used by the browser server contents manager.
+
+        Cosmetic fields, such as ``displayName``, will _not_ propagate to the UI.
+
+        @jupyterlab/rendermime-interfaces:src/index.ts#L167
+        export const JSON = 'application/json';
+        export const MANIFEST_JSON = 'application/manifest+json';
+        export const PLAIN_TEXT = 'text/plain';
+        export const CSV = 'text/csv';
+        export const CALENDAR = 'text/calendar';
+        export const CSS = 'text/css';
+        export const HTML = 'text/html';
+        export const JS = 'application/javascript';
+        export const PYTHON = 'application/x-python-code';
+        export const SVG = 'image/svg+xml';
+        export const XML = 'application/xml';
+        """
+
+        format_pairs = [
+            (
+                name,
+                dict(
+                    name=name,
+                    fileFormat=fileFormat,
+                    mimeTypes=ext_mime[1],
+                    extensions=ext_mime[0],
+                ),
+            )
+            for fileFormat, formats in C.DEFAULT_FILE_TYPES.items()
+            for name, ext_mime in formats.items()
+        ]
+        return dict(format_pairs)
+
+    @default("extra_file_types")
+    def _default_extra_file_types(self):
         return {}

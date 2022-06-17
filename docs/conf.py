@@ -89,9 +89,9 @@ exclude_patterns = [
     "tsconfig.*",
     "webpack.config.*",
 ]
-jupyter_execute_notebooks = "auto"
+nb_execution_mode = "auto"
 
-execution_excludepatterns = [
+nb_execution_excludepatterns = [
     "_static/**/*",
 ]
 html_css_files = [

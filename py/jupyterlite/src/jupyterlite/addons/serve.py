@@ -1,9 +1,11 @@
 """a JupyterLite addon for serving"""
-import sys
+import json
+import os
 
 import doit
 from traitlets import Bool, default
 
+from ..constants import JUPYTER_CONFIG_DATA, JUPYTERLITE_JSON, SETTINGS_FILE_TYPES, UTF8
 from .base import BaseAddon
 
 # we _really_ don't want to be in the server-running business, so hardcode, now...
@@ -17,6 +19,8 @@ class ServeAddon(BaseAddon):
 
     @default("has_tornado")
     def _default_has_tornado(self):
+        if json.loads(os.environ.get("JUPYTERLITE_NO_TORNADO", "0")):
+            return False
         try:
             __import__("tornado")
 
@@ -46,27 +50,11 @@ class ServeAddon(BaseAddon):
     def serve(self, manager):
         if self.has_tornado:
             name = "tornado"
-            actions = [(self._serve_tornado, [])]
+            actions = [doit.tools.PythonInteractiveAction(self._serve_tornado)]
         else:
             name = "stdlib"
-            actions = [
-                lambda: self.log.info(
-                    "Using python's built-in http.server: "
-                    "install tornado for a snappier experience and base_url"
-                ),
-                doit.tools.Interactive(
-                    [
-                        sys.executable,
-                        "-m",
-                        "http.server",
-                        "-b",
-                        HOST,
-                        f"{self.manager.port}",
-                    ],
-                    cwd=str(self.manager.output_dir),
-                    shell=False,
-                ),
-            ]
+            actions = [doit.tools.PythonInteractiveAction(self._serve_stdlib)]
+
         yield dict(
             name=name,
             doc=f"run server at {self.url} for {manager.output_dir}",
@@ -74,8 +62,34 @@ class ServeAddon(BaseAddon):
             actions=actions,
         )
 
+    def _patch_mime(self):
+        """install extra mime types if configured"""
+        import mimetypes
+        import os
+
+        jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
+        config = json.loads(jupyterlite_json.read_text(**UTF8))
+        file_types = config[JUPYTER_CONFIG_DATA].get(SETTINGS_FILE_TYPES)
+
+        if file_types:
+            if os.name == "nt":
+                # do not trust windows registry, which regularly has bad info
+                mimetypes.init(files=[])
+            # ensure css, js are correct, which are required for pages to function
+
+            mime_map = dict()
+
+            for file_type in file_types.values():
+                for ext in file_type["extensions"]:
+                    mimetypes.add_type(file_type["mimeTypes"][0], ext)
+                    mime_map[ext] = file_type["mimeTypes"][0]
+
+            return mime_map
+
     def _serve_tornado(self):
         from tornado import httpserver, ioloop, web
+
+        self._patch_mime()
 
         manager = self.manager
 
@@ -107,8 +121,47 @@ class ServeAddon(BaseAddon):
             ],
             debug=True,
         )
-        self.log.warning(
-            f"""
+        http_server = httpserver.HTTPServer(app)
+        http_server.listen(manager.port)
+
+        self._serve_forever(path, ioloop.IOLoop.instance().start)
+
+    def _serve_stdlib(self):
+        """Serve the site with python's standard library HTTP server."""
+
+        import socketserver
+        from functools import partial
+        from http.server import SimpleHTTPRequestHandler
+
+        HttpRequestHandler = SimpleHTTPRequestHandler
+
+        mime_map = self._patch_mime()
+
+        if mime_map:
+            path = str(self.manager.output_dir)
+
+            class HttpRequestHandler(SimpleHTTPRequestHandler):
+                extensions_map = {
+                    "": "application/octet-stream",
+                    **mime_map,
+                }
+
+        httpd = socketserver.TCPServer(
+            (HOST, self.manager.port), partial(HttpRequestHandler, directory=path)
+        )
+
+        self._serve_forever(path, httpd.serve_forever)
+
+    def _serve_forever(self, path, handler):
+        """Serve the site forever, or the user presses ``Ctrl+C``."""
+
+        shutdown_url = ""
+
+        if self.has_tornado:
+            shutdown_url = f"""
+            - Visiting {self.manager.base_url}shutdown"""
+
+        banner = f"""
 
         Serving JupyterLite Debug Server from:
             {path}
@@ -116,13 +169,11 @@ class ServeAddon(BaseAddon):
             {self.url}index.html
 
         *** Exit by: ***
-            - Pressing Ctrl+C
-            - Visiting {self.manager.base_url}shutdown
-        """
-        )
-        http_server = httpserver.HTTPServer(app)
-        http_server.listen(manager.port)
+            - Pressing Ctrl+C{shutdown_url}"""
+
+        self.log.warning(banner)
+
         try:
-            ioloop.IOLoop.instance().start()
-        except KeyboardInterrupt:  # pragma: no cover
+            handler()
+        except KeyboardInterrupt:
             self.log.warning(f"Stopping {self.url}")

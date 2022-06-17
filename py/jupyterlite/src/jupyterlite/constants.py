@@ -38,9 +38,18 @@ SHA256SUMS = "SHA256SUMS"
 
 #: a script DOM ID on most jupyter pages
 JUPYTER_CONFIG_DATA = "jupyter-config-data"
+
+#: configuration key for prebuilt extensions
 FEDERATED_EXTENSIONS = "federated_extensions"
+
+#: configuration key for disabled extensions
 DISABLED_EXTENSIONS = "disabledExtensions"
+
+#: configuration key for extension settings overrides
 SETTINGS_OVERRIDES = "settingsOverrides"
+
+#: configuration key for file types
+SETTINGS_FILE_TYPES = "fileTypes"
 
 #: the top-level key for lite plugin settings
 LITE_PLUGIN_SETTINGS = "litePluginSettings"
@@ -117,3 +126,39 @@ PHASES = ["pre_", "", "post_"]
 #: extensions to be considered sourcemaps
 SOURCEMAPS = [".js.map", ".mjs.map"]
 SOURCEMAP_IGNORE_PATTERNS = shutil.ignore_patterns(*[f"*{p}" for p in SOURCEMAPS])
+
+#: enough file types to serve all our demo files
+DEFAULT_FILE_TYPES = dict(
+    text=dict(
+        css=[[".css"], ["text/css"]],
+        csv=[[".csv"], ["text/csv"]],
+        fasta=[[".fasta"], ["text/plain"]],
+        html=[[".html"], ["text/html"]],
+        ical=[[".ical", ".ics", ".ifb", ".icalendar"], ["text/calendar"]],
+        js=[[".js", ".mjs"], ["application/javascript"]],
+        manifest=[[".manifest"], ["text/cache-manifest"]],
+        md=[[".md", ".markdown"], ["text/markdown"]],
+        plain=[[".txt"], ["text/plain"]],
+        py=[[".py"], ["text/x-python", "application/x-python-code"]],
+        svg=[[".svg"], ["image/svg+xml"]],
+        toml=[[".toml"], ["application/toml"]],
+        vue=[[".vue"], ["text/plain"]],
+        xml=[[".xml"], ["application/xml"]],
+        yaml=[[".yaml", ".yml"], ["application/x-yaml"]],
+    ),
+    json=dict(
+        geojson=[[".geojson"], ["application/geo+json"]],
+        ipynb=[[".ipynb"], ["application/x-ipynb+json"]],
+        jsmap=[[".map"], ["application/json"]],
+        json=[[".json"], ["application/json"]],
+    ),
+    base64=dict(
+        gzip=[[".tgz", ".gz", ".gzip"], ["application/gzip"]],
+        ico=[[".ico"], ["image/x-icon"]],
+        jpeg=[[".jpeg", ".jpg"], ["image/jpeg"]],
+        pdf=[[".pdf"], ["application/pdf"]],
+        png=[[".png"], ["image/png"]],
+        wasm=[[".wasm"], ["application/wasm"]],
+        wheel=[[".whl"], ["octet/stream", "application/x-wheel+zip"]],
+    ),
+)

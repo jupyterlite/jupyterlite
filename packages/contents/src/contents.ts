@@ -8,9 +8,8 @@ import { PathExt } from '@jupyterlab/coreutils';
 
 import type localforage from 'localforage';
 
-import { IContents, MIME } from './tokens';
+import { IContents, MIME, FILE } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
-import mime from 'mime';
 
 export type IModel = ServerContents.IModel;
 
@@ -182,13 +181,30 @@ export class Contents implements IContents {
         };
         break;
       }
-      case 'file': {
+      case 'notebook': {
+        const counter = await this._incrementCounter('notebook');
+        name = name || `Untitled${counter || ''}.ipynb`;
+        file = {
+          name,
+          path: `${dirname}${name}`,
+          last_modified: created,
+          created,
+          format: 'json',
+          mimetype: MIME.JSON,
+          content: Private.EMPTY_NB,
+          size: JSON.stringify(Private.EMPTY_NB).length,
+          writable: true,
+          type: 'notebook',
+        };
+        break;
+      }
+      default: {
         const ext = options?.ext ?? '.txt';
         const counter = await this._incrementCounter('file');
-        const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
+        const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
 
         let format: ServerContents.FileFormat;
-        if (mimetype.indexOf('text') !== -1 || MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+        if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
           format = 'json';
@@ -208,23 +224,6 @@ export class Contents implements IContents {
           size: 0,
           writable: true,
           type: 'file',
-        };
-        break;
-      }
-      default: {
-        const counter = await this._incrementCounter('notebook');
-        name = name || `Untitled${counter || ''}.ipynb`;
-        file = {
-          name,
-          path: `${dirname}${name}`,
-          last_modified: created,
-          created,
-          format: 'json',
-          mimetype: MIME.JSON,
-          content: Private.EMPTY_NB,
-          size: JSON.stringify(Private.EMPTY_NB).length,
-          writable: true,
-          type: 'notebook',
         };
         break;
       }
@@ -396,10 +395,20 @@ export class Contents implements IContents {
    */
   async save(path: string, options: Partial<IModel> = {}): Promise<IModel | null> {
     path = decodeURIComponent(path);
-    let item = (await this.get(path)) || (await this.newUntitled({ path }));
+
+    // process the file if coming from an upload
+    const ext = PathExt.extname(options.name ?? '');
+
+    let item: IModel | null = await this.get(path);
+
+    if (!item) {
+      item = await this.newUntitled({ path, ext, type: 'file' });
+    }
+
     if (!item) {
       return null;
     }
+
     // override with the new values
     const modified = new Date().toISOString();
     item = {
@@ -407,10 +416,6 @@ export class Contents implements IContents {
       ...options,
       last_modified: modified,
     };
-
-    // process the file if coming from an upload
-    const ext = PathExt.extname(options.name ?? '');
-    const mimetype = mime.getType(ext) || MIME.OCTET_STREAM;
 
     if (options.content && options.format === 'base64') {
       if (ext === '.ipynb') {
@@ -420,7 +425,14 @@ export class Contents implements IContents {
           format: 'json',
           type: 'notebook',
         };
-      } else if (MIME.KNOWN_TEXT_TYPES.has(mimetype)) {
+      } else if (FILE.hasFormat(ext, 'json')) {
+        item = {
+          ...item,
+          content: JSON.parse(this.unescapeContent(options.content)),
+          format: 'json',
+          type: 'file',
+        };
+      } else if (FILE.hasFormat(ext, 'text')) {
         item = {
           ...item,
           content: this.unescapeContent(options.content),
@@ -628,9 +640,11 @@ export class Contents implements IContents {
           return null;
         }
         const mimetype = model.mimetype || response.headers.get('Content-Type');
+        const ext = PathExt.extname(name);
 
         if (
           model.type === 'notebook' ||
+          FILE.hasFormat(ext, 'json') ||
           mimetype?.indexOf('json') !== -1 ||
           path.match(/\.(ipynb|[^/]*json[^/]*)$/)
         ) {
@@ -640,10 +654,7 @@ export class Contents implements IContents {
             format: 'json',
             mimetype: model.mimetype || MIME.JSON,
           };
-        } else if (
-          mimetype.indexOf('text') !== -1 ||
-          MIME.KNOWN_TEXT_TYPES.has(mimetype)
-        ) {
+        } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           model = {
             ...model,
             content: await response.text(),

@@ -1,3 +1,7 @@
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import { PageConfig } from '@jupyterlab/coreutils';
+import mime from 'mime';
+
 import { Contents as ServerContents } from '@jupyterlab/services';
 
 import { Token } from '@lumino/coreutils';
@@ -130,33 +134,55 @@ export interface IContents {
  */
 export namespace MIME {
   export const JSON = 'application/json';
-  export const MANIFEST_JSON = 'application/manifest+json';
   export const PLAIN_TEXT = 'text/plain';
-  export const CSV = 'text/csv';
-  export const CALENDAR = 'text/calendar';
-  export const CSS = 'text/css';
-  export const HTML = 'text/html';
-  export const JS = 'application/javascript';
-  export const PYTHON = 'application/x-python-code';
-  export const SVG = 'image/svg+xml';
-  export const XML = 'application/xml';
+  export const OCTET_STREAM = 'octet/stream';
+}
+
+/**
+ * A namespace for file constructs.
+ */
+export namespace FILE {
+  /**
+   * Build-time configured file types.
+   */
+  const TYPES: Record<string, Partial<IRenderMime.IFileType>> = JSON.parse(
+    PageConfig.getOption('fileTypes') || '{}'
+  );
 
   /**
-   * A list of mime types of common text file types
+   * Get a mimetype (or fallback).
    */
-  export const KNOWN_TEXT_TYPES = new Set([
-    JSON,
-    MANIFEST_JSON,
-    PLAIN_TEXT,
-    CSV,
-    CALENDAR,
-    CSS,
-    HTML,
-    JS,
-    PYTHON,
-    SVG,
-    XML,
-  ]);
+  export function getType(ext: string, defaultType: string | null = null): string {
+    ext = ext.toLowerCase();
+    for (const fileType of Object.values(TYPES)) {
+      for (const fileExt of fileType.extensions || []) {
+        if (fileExt === ext && fileType.mimeTypes && fileType.mimeTypes.length) {
+          return fileType.mimeTypes[0];
+        }
+      }
+    }
 
-  export const OCTET_STREAM = 'octet/stream';
+    return mime.getType(ext) || defaultType || MIME.OCTET_STREAM;
+  }
+
+  /**
+   * Determine whether the given extension matches a given fileFormat.
+   */
+  export function hasFormat(
+    ext: string,
+    fileFormat: 'base64' | 'text' | 'json'
+  ): boolean {
+    ext = ext.toLowerCase();
+    for (const fileType of Object.values(TYPES)) {
+      if (fileType.fileFormat !== fileFormat) {
+        continue;
+      }
+      for (const fileExt of fileType.extensions || []) {
+        if (fileExt === ext) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 }
