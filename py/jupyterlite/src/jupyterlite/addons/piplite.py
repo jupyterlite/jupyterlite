@@ -120,6 +120,8 @@ class PipliteAddon(BaseAddon):
             if not wheel_index_url.startswith("./"):
                 continue
 
+            wheel_index_url = wheel_index_url.split("?")[0].split("#")[0]
+
             path = manager.output_dir / wheel_index_url
 
             if not path.exists():
