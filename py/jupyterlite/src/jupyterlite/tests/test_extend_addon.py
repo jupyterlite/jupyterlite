@@ -18,8 +18,11 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
 
     assert addon.some_feature == 42, "didn't configure"
 
-    app.start()
+    with pytest.raises(SystemExit) as exit:
+        app.start()
 
+    assert exit.type == SystemExit
+    assert exit.value.code == 0
     cap = capsys.readouterr()
     assert "hello world" in cap.out
 
