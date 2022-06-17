@@ -75,6 +75,12 @@ def test_cli_help(lite_args, help, script_runner):
     assert returned_version.stderr == ""
 
 
+@mark.parametrize("lite_args", LITE_INVOCATIONS)
+def test_nonzero_rc(lite_args, script_runner):
+    a_step = script_runner.run(*lite_args, "doit", "this-is-not-a-step")
+    assert not a_step.success
+
+
 @mark.parametrize("lite_hook", ["list", "status"])
 def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
     """do the "side-effect-free" commands create exactly one file?"""

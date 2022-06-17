@@ -148,7 +148,7 @@ class LiteDoitApp(ManagedApp):
 
     def start(self):
         super().start()
-        self.lite_manager.doit_run(*self._doit_cmd)
+        self.exit(self.lite_manager.doit_run(*self._doit_cmd))
 
 
 # special non-task apps
