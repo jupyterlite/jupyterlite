@@ -47,7 +47,7 @@ class LiteManager(LiteBuildConfig):
         loader = doit.cmd_base.ModuleTaskLoader(self._doit_tasks)
         config = dict(GLOBAL=self._doit_config)
         runner = doit.doit_cmd.DoitMain(task_loader=loader, extra_config=config)
-        runner.run([task, *args])
+        return runner.run([task, *args])
 
     @default("log")
     def _default_log(self):
