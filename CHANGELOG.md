@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b9
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b8...59dd0655acfb446a3546c7896d2f7501de9c9330))
+
+### Enhancements made
+
+- Propagate doit return codes to CLI [#674](https://github.com/jupyterlite/jupyterlite/pull/674) ([@bollwyvl](https://github.com/bollwyvl))
+- Add configurable fileTypes for upload and HTTP serving [#670](https://github.com/jupyterlite/jupyterlite/pull/670) ([@bollwyvl](https://github.com/bollwyvl))
+- Fix CSV file upload [#666](https://github.com/jupyterlite/jupyterlite/pull/666) ([@martinRenou](https://github.com/martinRenou))
+- Update to JupyterLab 3.4.3 [#661](https://github.com/jupyterlite/jupyterlite/pull/661) ([@jtpio](https://github.com/jtpio))
+- Implement a custom Emscripten File System which communicates with the JupyterLab Content Manager, giving file access to pyolite [#655](https://github.com/jupyterlite/jupyterlite/pull/655) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Allow for using `micromamba` for the dev setup [#669](https://github.com/jupyterlite/jupyterlite/pull/669) ([@jtpio](https://github.com/jtpio))
+- Simplify kernelspecs [#660](https://github.com/jupyterlite/jupyterlite/pull/660) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-06-08&to=2022-06-17&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-06-08..2022-06-17&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-06-08..2022-06-17&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-06-08..2022-06-17&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-06-08..2022-06-17&type=Issues) | [@psychemedia](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Apsychemedia+updated%3A2022-06-08..2022-06-17&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b8
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b7...6b71743d5640a11d3c669556f09f0e47df17cc45))
@@ -30,8 +55,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-05-04&to=2022-06-08&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-05-04..2022-06-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-05-04..2022-06-08&type=Issues) | [@HighDiceRoller](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AHighDiceRoller+updated%3A2022-05-04..2022-06-08&type=Issues) | [@joemarshall](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajoemarshall+updated%3A2022-05-04..2022-06-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-05-04..2022-06-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-05-04..2022-06-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b7
 
