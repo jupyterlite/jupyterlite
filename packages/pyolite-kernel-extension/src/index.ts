@@ -45,7 +45,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     kernelspecs.register({
       spec: {
         name: 'python',
-        display_name: 'Pyolite',
+        display_name: 'Python (Pyodide)',
         language: 'python',
         argv: [],
         resources: {
