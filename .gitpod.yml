@@ -1,0 +1,40 @@
+github:
+  prebuilds:
+    master: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: false
+    addComment: false
+    addBadge: false
+    addLabel: false
+tasks:
+  - name: setup
+    init: |
+      pushd ~
+      wget -qO- https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
+      ./bin/micromamba shell init -s bash -p ~/micromamba
+      source ~/.bashrc
+      popd
+      micromamba activate 
+      micromamba install -n base -y -f .binder/environment.yml
+      doit
+      gp sync-done setup
+    command: |
+      micromamba activate
+      doit watch
+  - name: watch
+    command: |
+      gp sync-await setup
+      source ~/.bashrc
+      micromamba activate
+      doit serve
+  - name: docs
+    command: |
+      gp sync-await setup
+      source ~/.bashrc
+      micromamba activate
+      doit watch:docs
+ports:
+  - port: 5000
+  - port: 8000
+  - port: 8888
