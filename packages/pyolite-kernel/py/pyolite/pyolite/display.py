@@ -14,6 +14,8 @@ class Image:
 
 
 class LiteStream:
+    encoding = "utf-8"
+
     def __init__(self, name):
         self.name = name
         self.publish_stream_callback = None
