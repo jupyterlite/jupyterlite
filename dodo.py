@@ -1261,13 +1261,13 @@ class U:
     def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
         """use conda list to derive tarball names for federated_extensions"""
         try:
-            # try with micromamba first
+            # try with conda first
+            raw_lock = subprocess.check_output([which("conda"), "list", "--explicit"])
+        except:
+            # try with micromamba
             raw_lock = subprocess.check_output(
                 [os.getenv("MAMBA_EXE"), "env", "export", "--explicit"]
             )
-        except:
-            # default to using conda
-            raw_lock = subprocess.check_output([which("conda"), "list", "--explicit"])
 
         ext_packages = [
             p.strip().split(" ")[0]
