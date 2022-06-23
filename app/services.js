@@ -1,7 +1,18 @@
+// This is the service worker with the Cache-first network
+const CACHE = 'precache';
+
+// Communication channel for drive access
 const broadcast = new BroadcastChannel('/api/drive.v1');
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
+  self.skipWaiting();
+
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => {
+      // this is where we should (try to) add all relevant files
+      return cache.addAll([]);
+    })
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -11,46 +22,93 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', async (event) => {
   const url = new URL(event.request.url);
 
-  // Not same origin, we let the request continue
-  if (url.origin !== location.origin) {
+  if (url.origin === location.origin && url.pathname.includes('/api/drive')) {
+    // Forward request to main using the broadcast channel
+    event.respondWith(
+      new Promise(async (resolve) => {
+        let path = decodeURI(url.pathname.slice(url.pathname.indexOf('/api/drive')));
+        if (!path) {
+          path = '';
+        }
+
+        const method = new URLSearchParams(url.search).get('m');
+        let args = new URLSearchParams(url.search).get('args');
+        if (args !== null) {
+          args = args.split(',');
+        }
+
+        let content = '';
+        if (event.request.method === 'PUT') {
+          content = await event.request.text();
+        }
+
+        const messageData = {
+          path,
+          method,
+          args,
+          content,
+        };
+
+        broadcast.onmessage = (event) => {
+          resolve(new Response(JSON.stringify(event.data)));
+        };
+        broadcast.postMessage(messageData);
+      })
+    );
     return;
   }
 
-  // Bail early if the request is not a drive content request
-  if (!url.pathname.includes('/api/drive')) {
+  if (
+    event.request.method !== 'GET' ||
+    event.request.url.match(/^http/) === null ||
+    url.pathname.includes('/api/')
+  ) {
     return;
   }
 
-  // Forward request to main using the broadcast channel
   event.respondWith(
-    new Promise(async (resolve) => {
-      let path = decodeURI(url.pathname.slice(url.pathname.indexOf('/api/drive')));
-      if (!path) {
-        path = '';
+    fromCache(event.request).then(
+      (response) => {
+        // The response was found in the cache so we respond with it and update the entry
+        // This is where we call the server to get the newest version of the
+        // file to use the next time we show view
+        event.waitUntil(
+          fetch(event.request).then((response) => {
+            return updateCache(event.request, response);
+          })
+        );
+
+        return response;
+      },
+      () => {
+        // The response was not found in the cache so we look for it on the server
+        return fetch(event.request).then((response) => {
+          // If request was success, add or update it in the cache
+          event.waitUntil(updateCache(event.request, response.clone()));
+
+          return response;
+        });
       }
-
-      const method = new URLSearchParams(url.search).get('m');
-      let args = new URLSearchParams(url.search).get('args');
-      if (args !== null) {
-        args = args.split(',');
-      }
-
-      let content = '';
-      if (event.request.method === 'PUT') {
-        content = await event.request.text();
-      }
-
-      const messageData = {
-        path,
-        method,
-        args,
-        content,
-      };
-
-      broadcast.onmessage = (event) => {
-        resolve(new Response(JSON.stringify(event.data)));
-      };
-      broadcast.postMessage(messageData);
-    })
+    )
   );
 });
+
+function fromCache(request) {
+  // Check to see if you have it in the cache
+  // Return response
+  // If not in the cache, then return
+  return caches.open(CACHE).then((cache) => {
+    return cache.match(request).then((matching) => {
+      if (!matching || matching.status === 404) {
+        return Promise.reject('no-match');
+      }
+      return matching;
+    });
+  });
+}
+
+function updateCache(request, response) {
+  return caches.open(CACHE).then((cache) => {
+    return cache.put(request, response);
+  });
+}
