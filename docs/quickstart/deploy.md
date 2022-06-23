@@ -51,6 +51,13 @@ After the build has completed, the site will be available on GitHub Pages. Go to
 
 ![an animated screencast of using a JupyterLite website on GitHub Pages](https://user-images.githubusercontent.com/591645/120649478-18258400-c47d-11eb-80e5-185e52ff2702.gif)
 
+```{note}
+By default the deployment provided by the `jupyterlite/demo` repo includes a `.nojekyll` file
+to bypass Jekyll processing on GitHub Pages.
+
+See this [blog post](https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/) for more information.
+```
+
 ## Deploy a new version of JupyterLite
 
 To change the version of the prebuilt JupyterLite assets, update the `jupyterlite`
