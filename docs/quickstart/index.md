@@ -12,4 +12,5 @@ using
 deploy
 embed-repl
 standalone
+configure
 ```
