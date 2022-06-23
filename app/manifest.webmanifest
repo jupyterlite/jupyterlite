@@ -25,7 +25,7 @@
     },
     {
       "name": "Replite",
-      "url": "/repl",
+      "url": "/repl?toolbar=1",
       "description": "A single-cell interface for JupyterLite"
     }
   ]
