@@ -23,8 +23,8 @@ Not all the usual features available in JupyterLab and the Classic Notebook will
 with JupyterLite, but many already do!
 
 Don't hesitate to check out the
-[documentation](https://jupyterlite.readthedocs.io/en/latest/user-guide.html#frequently-asked-questions)
-for more information and project updates.
+[documentation](https://jupyterlite.readthedocs.io/en/latest/howto/index.html) for more
+information and project updates.
 
 ## ✨ Try it in your browser ✨
 
