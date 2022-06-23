@@ -4,13 +4,8 @@
     "description": "WASM powered Jupyter running in the browser",
     "icons": [
       {
-        "src": "../icon-120x120.png",
-        "type": "image/png",
-        "sizes": "120x120"
-      }, {
-        "src": "../icon-512x512.png",
-        "type": "image/png",
-        "sizes": "512x512"
+        "src": "../icon.svg",
+        "type": "image/svg+xml"
       }
     ],
     "start_url": "./",
