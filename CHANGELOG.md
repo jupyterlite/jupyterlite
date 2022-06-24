@@ -2,6 +2,39 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b10
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b9...8f29f4ea79c54e3f47b945625f75ed566495e0cb))
+
+### Enhancements made
+
+- Caching service worker [#686](https://github.com/jupyterlite/jupyterlite/pull/686) ([@martinRenou](https://github.com/martinRenou))
+- Add Gitpod configuration [#672](https://github.com/jupyterlite/jupyterlite/pull/672) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Add encoding to LiteStream [#680](https://github.com/jupyterlite/jupyterlite/pull/680) ([@eagleoflqj](https://github.com/eagleoflqj))
+
+### Maintenance and upkeep improvements
+
+- Change the Pyolite display name [#685](https://github.com/jupyterlite/jupyterlite/pull/685) ([@martinRenou](https://github.com/martinRenou))
+- Bump jpeg-js from 0.4.3 to 0.4.4 in /ui-tests [#675](https://github.com/jupyterlite/jupyterlite/pull/675) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- add config docs to getting started [#691](https://github.com/jupyterlite/jupyterlite/pull/691) ([@stevejpurves](https://github.com/stevejpurves))
+- Add a note about `.nojekyll` to the documentation [#689](https://github.com/jupyterlite/jupyterlite/pull/689) ([@jtpio](https://github.com/jtpio))
+- Fix broken link to documentation in README [#688](https://github.com/jupyterlite/jupyterlite/pull/688) ([@kolibril13](https://github.com/kolibril13))
+- Add Gitpod configuration [#672](https://github.com/jupyterlite/jupyterlite/pull/672) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-06-17&to=2022-06-24&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-06-17..2022-06-24&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-06-17..2022-06-24&type=Issues) | [@eagleoflqj](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aeagleoflqj+updated%3A2022-06-17..2022-06-24&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-06-17..2022-06-24&type=Issues) | [@joemarshall](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajoemarshall+updated%3A2022-06-17..2022-06-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-06-17..2022-06-24&type=Issues) | [@kolibril13](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akolibril13+updated%3A2022-06-17..2022-06-24&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-06-17..2022-06-24&type=Issues) | [@stevejpurves](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Astevejpurves+updated%3A2022-06-17..2022-06-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b9
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b8...59dd0655acfb446a3546c7896d2f7501de9c9330))
@@ -24,8 +57,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-06-08&to=2022-06-17&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-06-08..2022-06-17&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-06-08..2022-06-17&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-06-08..2022-06-17&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-06-08..2022-06-17&type=Issues) | [@psychemedia](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Apsychemedia+updated%3A2022-06-08..2022-06-17&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b8
 
