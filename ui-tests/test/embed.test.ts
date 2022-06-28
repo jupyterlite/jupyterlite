@@ -9,7 +9,7 @@ import { expect } from '@playwright/test';
 const test = base.extend({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
     const waitIsReady = async (page): Promise<void> => {
-      await page.frameLocator('iframe');
+      const iframe = await page.frameLocator('iframe');
       await iframe.waitForSelector('.jp-InputArea');
     };
     await use(waitIsReady);
