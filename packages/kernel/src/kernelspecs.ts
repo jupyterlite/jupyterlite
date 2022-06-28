@@ -1,4 +1,5 @@
 import { KernelSpec } from '@jupyterlab/services';
+
 import { IKernel, IKernelSpecs } from './tokens';
 
 /**
@@ -13,7 +14,7 @@ export class KernelSpecs implements IKernelSpecs {
       return null;
     }
     return {
-      default: 'python',
+      default: this._getDefaultKernel(),
       kernelspecs: Object.fromEntries(this._specs),
     };
   }
@@ -34,6 +35,20 @@ export class KernelSpecs implements IKernelSpecs {
     const { spec, create } = options;
     this._specs.set(spec.name, spec);
     this._factories.set(spec.name, create);
+  }
+
+  /**
+   * Get the default kernel
+   */
+  private _getDefaultKernel(): string {
+    // find a kernel for the Python language
+    for (const spec of this._specs.values()) {
+      if (spec.language === 'python') {
+        return spec.name;
+      }
+    }
+    // otherwise pick the first one
+    return this._specs.values().next().value;
   }
 
   private _specs = new Map<string, KernelSpec.ISpecModel>();
