@@ -6,7 +6,7 @@
   "license": "BSD-3-Clause",
   "description": "JupyterLite UI Tests",
   "scripts": {
-    "build": "jupyter lite build",
+    "build": "jupyter lite build && cp -r embed ui-tests-app",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
     "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1",
     "start:detached": "yarn run start&",
