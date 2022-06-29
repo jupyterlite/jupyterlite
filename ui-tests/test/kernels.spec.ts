@@ -11,7 +11,7 @@ test.describe('Kernels', () => {
     await page.route('jupyter-lite.json', async (route, request) => {
       const response = await page.request.fetch(route.request());
       const body = await response.json();
-      body['jupyter-config-data'].defaultKernelName = 'python';
+      body['jupyter-config-data'].defaultKernelName = 'javascript';
       return route.fulfill({
         response,
         body: JSON.stringify(body),
