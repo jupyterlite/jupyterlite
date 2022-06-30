@@ -116,7 +116,7 @@ jobs:
           - python-version: '3.10'
             pytest-args: '[]'
           - python-version: 'pypy-3.7'
-            # TODO: some instability with libarchive, might be better with pypy-3.8
+            # TODO: some instability with libarchive, might be better with pypy-3.7
             # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
         exclude:
