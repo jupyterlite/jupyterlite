@@ -19,6 +19,11 @@ import { KernelSpecs } from './kernelspecs';
 export const IKernels = new Token<IKernels>('@jupyterlite/kernel:IKernels');
 
 /**
+ * The kernel name of last resort.
+ */
+export const FALLBACK_KERNEL = 'javascript';
+
+/**
  * An interface for the Kernels service.
  */
 export interface IKernels {
@@ -124,6 +129,11 @@ export interface IKernelSpecs {
    * Get the kernel specs.
    */
   readonly specs: KernelSpec.ISpecModels | null;
+
+  /**
+   * Get the default kernel name.
+   */
+  readonly defaultKernelName: string;
 
   /**
    * Get the kernel factories for the current kernels.

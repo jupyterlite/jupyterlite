@@ -55,7 +55,7 @@
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
         "defaultKernelName": {
-          "description": "The name of the default kernel",
+          "description": "The name of the default kernel. If not available, the first kernel (by alphabetic ordering) will be chosen.",
           "default": "python",
           "type": "string"
         },
