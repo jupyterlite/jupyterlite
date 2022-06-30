@@ -2,7 +2,7 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { KernelSpec } from '@jupyterlab/services';
 
-import { IKernel, IKernelSpecs } from './tokens';
+import { IKernel, IKernelSpecs, FALLBACK_KERNEL } from './tokens';
 
 /**
  * A class to handle requests to /api/kernelspecs
@@ -15,13 +15,23 @@ export class KernelSpecs implements IKernelSpecs {
     if (this._specs.size === 0) {
       return null;
     }
-    // pick the first kernel if there is no default
-    const defaultKernelName =
-      PageConfig.getOption('defaultKernelName') || this._specs.keys().next().value;
+
     return {
-      default: defaultKernelName,
+      default: this.defaultKernelName,
       kernelspecs: Object.fromEntries(this._specs),
     };
+  }
+
+  /**
+   * Get the default kernel name.
+   */
+  get defaultKernelName(): string {
+    let defaultKernelName = PageConfig.getOption('defaultKernelName');
+
+    if (!defaultKernelName && this._specs.size) {
+      defaultKernelName = this._specs.keys().next().value;
+    }
+    return defaultKernelName || FALLBACK_KERNEL;
   }
 
   /**
