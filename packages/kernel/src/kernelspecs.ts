@@ -29,8 +29,11 @@ export class KernelSpecs implements IKernelSpecs {
     let defaultKernelName = PageConfig.getOption('defaultKernelName');
 
     if (!defaultKernelName && this._specs.size) {
-      defaultKernelName = this._specs.keys().next().value;
+      const keys = Array.from(this._specs.keys());
+      keys.sort();
+      defaultKernelName = keys[0];
     }
+
     return defaultKernelName || FALLBACK_KERNEL;
   }
 
