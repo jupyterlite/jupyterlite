@@ -131,90 +131,141 @@ def task_lint():
     if C.RTD or C.BUILDING_IN_CI or C.DOCS_IN_CI:
         return
 
-    yield U.ok(
-        B.OK_LITE_VERSION,
-        name="version:js:lite",
-        doc="check jupyter-lite.json version vs package.json",
-        file_dep=[P.APP_JUPYTERLITE_JSON, P.APP_PACKAGE_JSON],
-        actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
-    )
+    if "lite" not in C.SKIP_LINT:
+        yield U.ok(
+            B.OK_LITE_VERSION,
+            name="version:js:lite",
+            doc="check jupyter-lite.json version vs package.json",
+            file_dep=[P.APP_JUPYTERLITE_JSON, P.APP_PACKAGE_JSON],
+            actions=[
+                lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)
+            ],
+        )
 
-    yield U.ok(
-        B.OK_PYODIDE_VERSION,
-        name="version:js:pyodide",
-        doc="check pyodide version vs schema, ts, etc",
-        file_dep=[
-            P.APP_SCHEMA,
-            P.PYOLITE_EXT_TS,
-        ],
-        actions=[
-            lambda: C.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
-            lambda: C.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
-        ],
-    )
-
-    yield U.ok(
-        B.OK_PRETTIER,
-        name="prettier",
-        doc="format .ts, .md, .json, etc. files with prettier",
-        file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier:check" if C.CI else "prettier:fix")],
-    )
-
-    yield U.ok(
-        B.OK_ESLINT,
-        name="eslint",
-        doc="format and verify .ts, .js files with eslint",
-        file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-        actions=[U.do("yarn", "eslint:check" if C.CI else "eslint:fix")],
-    )
-
-    yield U.ok(
-        B.OK_BLACK,
-        name="black",
-        doc="format python files with black",
-        file_dep=L.ALL_BLACK,
-        actions=[
-            U.do(*C.PYM, "isort", *L.ALL_BLACK),
-            U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
-        ],
-    )
-
-    yield U.ok(
-        B.OK_PYFLAKES,
-        name="pyflakes",
-        doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
-    )
-
-    yield dict(
-        name="schema:self",
-        file_dep=[P.APP_SCHEMA],
-        actions=[(U.validate, [P.APP_SCHEMA])],
-    )
-
-    yield dict(
-        name="schema:piplite",
-        file_dep=[P.PIPLITE_SCHEMA],
-        actions=[(U.validate, [P.PIPLITE_SCHEMA])],
-    )
-
-    for config in D.APP_CONFIGS:
-        if config.name.endswith(".ipynb"):
-            validate_args = [
+    if "pyodide" not in C.SKIP_LINT:
+        yield U.ok(
+            B.OK_PYODIDE_VERSION,
+            name="version:js:pyodide",
+            doc="check pyodide version vs schema, ts, etc",
+            file_dep=[
                 P.APP_SCHEMA,
-                None,
-                json.loads(config.read_text(**C.ENC))["metadata"][C.IPYNB_METADATA],
+                P.PYOLITE_EXT_TS,
+            ],
+            actions=[
+                lambda: C.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
+                lambda: C.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
+            ],
+        )
+
+    if "prettier" not in C.SKIP_LINT:
+        yield U.ok(
+            B.OK_PRETTIER,
+            name="prettier",
+            doc="format .ts, .md, .json, etc. files with prettier",
+            file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
+            actions=[U.do("yarn", "prettier:check" if C.CI else "prettier:fix")],
+        )
+
+    if "eslint" not in C.SKIP_LINT:
+        all_eslint_ok = []
+        for pkg_json in P.PACKAGE_JSONS:
+            pkg_dir = pkg_json.parent
+            pkg_name = pkg_dir.name
+            if pkg_name == "_metapackage":
+                continue
+
+            ok = B.OK / f"eslint-{pkg_name}"
+            all_eslint_ok += [ok]
+
+            pkg_src = pkg_dir / "src"
+            eslint_cache = B.BUILD / f".eslintcache/{pkg_name}"
+            eslint_args = [
+                pkg_src,
+                "--ext",
+                ".ts,.tsx",
+                "--cache",
+                "--cache-location",
+                eslint_cache,
             ]
-        else:
-            validate_args = [P.APP_SCHEMA, config]
+
+            eslint_files = [*pkg_src.rglob("*.ts"), *pkg_src.rglob("*.tsx")]
+
+            if not C.CI:
+                eslint_args += ["--fix"]
+
+            yield U.ok(
+                ok,
+                name=f"eslint:{pkg_name}",
+                doc=f"format and verify {pkg_name} .ts(x) files with eslint",
+                file_dep=[
+                    B.OK_PRETTIER,
+                    P.ESLINT_CONFIG,
+                    P.ESLINT_IGNORE,
+                    *eslint_files,
+                ],
+                targets=[eslint_cache],
+                actions=[U.do("yarn", "eslint", *eslint_args)],
+            )
+
+        yield U.ok(
+            B.OK_ESLINT,
+            name="eslint",
+            doc="all the eslint",
+            actions=[["echo", "ESLINT OK"]],
+            file_dep=all_eslint_ok,
+        )
+
+    ok_black = []
+    if "black" not in C.SKIP_LINT:
+        ok_black = [B.OK_BLACK]
+        yield U.ok(
+            B.OK_BLACK,
+            name="black",
+            doc="format python files with black",
+            file_dep=L.ALL_BLACK,
+            actions=[
+                U.do(*C.PYM, "isort", *L.ALL_BLACK),
+                U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
+            ],
+        )
+
+    if "pyflakes" not in C.SKIP_LINT:
+        yield U.ok(
+            B.OK_PYFLAKES,
+            name="pyflakes",
+            doc="ensure python code style with pyflakes",
+            file_dep=[*L.ALL_BLACK, *ok_black],
+            actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
+        )
+
+    if "schema" not in C.SKIP_LINT:
+        yield dict(
+            name="schema:self",
+            file_dep=[P.APP_SCHEMA],
+            actions=[(U.validate, [P.APP_SCHEMA])],
+        )
 
         yield dict(
-            name=f"schema:validate:{config.relative_to(P.ROOT)}",
-            file_dep=[P.APP_SCHEMA, config],
-            actions=[(U.validate, validate_args)],
+            name="schema:piplite",
+            file_dep=[P.PIPLITE_SCHEMA],
+            actions=[(U.validate, [P.PIPLITE_SCHEMA])],
         )
+
+        for config in D.APP_CONFIGS:
+            if config.name.endswith(".ipynb"):
+                validate_args = [
+                    P.APP_SCHEMA,
+                    None,
+                    json.loads(config.read_text(**C.ENC))["metadata"][C.IPYNB_METADATA],
+                ]
+            else:
+                validate_args = [P.APP_SCHEMA, config]
+
+            yield dict(
+                name=f"schema:validate:{config.relative_to(P.ROOT)}",
+                file_dep=[P.APP_SCHEMA, config],
+                actions=[(U.validate, validate_args)],
+            )
 
 
 def task_build():
@@ -851,6 +902,7 @@ class C:
     PYPY = "pypy" in PY_IMPL.lower()
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
+    SKIP_LINT = json.loads(os.environ.get("SKIP_LINT", "[]"))
     IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
     PYTEST_ARGS = json.loads(os.environ.get("PYTEST_ARGS", "[]"))
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
@@ -979,6 +1031,8 @@ class P:
     LAB_FAVICON = APP / "lab/favicon.ico"
     LITE_ICON = UI_COMPONENTS_ICONS / "liteIcon.svg"
     LITE_WORDMARK = UI_COMPONENTS_ICONS / "liteWordmark.svg"
+    ESLINT_IGNORE = ROOT / ".eslintignore"
+    ESLINT_CONFIG = ROOT / ".eslintrc.js"
 
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}

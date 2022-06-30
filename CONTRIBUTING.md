@@ -66,7 +66,8 @@ doit info build:js:app:retro
 
 #### Task and Action Defaults
 
-The default `doit` _action_ is `run` which... runs the named _tasks_.
+The default `doit` _action_ is `run` which... runs the named _tasks_, but crucially any
+tasks needed to created the _file dependencies_ of the task to be up-to-date.
 
 The default tasks are `lint`, `build` and `docs:app:build`, so the following are
 equivalent:
@@ -76,6 +77,20 @@ doit
 doit lint build docs:app:build
 doit run lint build docs:app:build
 ```
+
+and entails building nearly the whole non-documentation stack.
+
+#### Running Just One Task
+
+It is possible to run a _single_ task, ignoring any dependencies.
+
+```bash
+doit --single serve:core:js
+doit -s serve:core:js
+```
+
+Note: this may not leave the system in a working state, but re-running _without_ `-s`
+will usually restore everything.
 
 #### `doit auto`
 
@@ -103,6 +118,18 @@ Offering different assets and tools, and obey different environment variables:
 - `8888`: JupyterLab
   - `doit serve:lab`
     - `LAB_ARGS` (a JSON list of strings) controls CLI arguments to `jupyter lab`
+
+#### More task options
+
+- `doit lint`
+  - `SKIP_LINT` (a JSON list of strings) skips a number of linters.
+    - Some options include: `black`, `pyflakes`, `pyodide`, `schema`, `prettier`, `lite`
+- `doit test`
+  - `PYTEST_ARGS` (a JSON list of strings) passes arguments to `pytest`
+  - `PYTEST_PROCS` (an integer) uses a different number of processes to test
+- `doit docs`
+  - `SPHINX_ARGS` (a JSON list of strings) passes arguments to `sphinx-build`
+  - `LITE_ARGS` (a JSON list of strings) passes arguments to `jupyter-lite`
 
 ### Core JavaScript development
 
