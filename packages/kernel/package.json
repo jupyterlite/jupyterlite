@@ -42,6 +42,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@jupyterlab/coreutils": "~5.4.3",
     "@jupyterlab/observables": "~4.4.3",
     "@jupyterlab/services": "~6.4.3",
     "@lumino/coreutils": "^1.12.0",
