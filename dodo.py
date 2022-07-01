@@ -12,7 +12,6 @@ from pathlib import Path
 
 import doit
 import pkginfo
-import requests_cache
 
 
 def which(cmd):
@@ -1193,15 +1192,30 @@ class U:
 
     @staticmethod
     def session():
-        if U._SESSION is None:
-            if not B.BUILD.exists():
-                B.BUILD.mkdir()
+        try:
+            import requests_cache
 
-            U._SESSION = requests_cache.CachedSession(
-                str(B.BUILD / B.REQ_CACHE.stem),
-                allowable_methods=["GET", "POST", "HEAD"],
-                allowable_codes=[200, 302, 404],
-            )
+            HAS_REQUESTS_CACHE = True
+        except Exception as err:
+            print(f"requests_cache not available: {err}")
+            HAS_REQUESTS_CACHE = False
+
+        if U._SESSION is None:
+            if HAS_REQUESTS_CACHE:
+                if not B.BUILD.exists():
+                    B.BUILD.mkdir()
+
+                U._SESSION = requests_cache.CachedSession(
+                    str(B.BUILD / B.REQ_CACHE.stem),
+                    allowable_methods=["GET", "POST", "HEAD"],
+                    allowable_codes=[200, 302, 404],
+                )
+            else:
+                import requests
+
+                U._SESSION = requests.Session()
+                print("Using uncached requests session, not recommended")
+
         return U._SESSION
 
     @staticmethod
