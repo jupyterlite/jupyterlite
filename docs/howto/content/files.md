@@ -64,22 +64,19 @@ provided by
 ```
 
 For example, to ensure the `.fasta` file format is served correctly as `text/plain`:
+`jupyter_lite_config.json`:
 
-```yaml
-# jupyter_lite_config.json
+```json
 {
-  'LiteBuildConfig':
-    {
-      'extra_file_types':
-        {
-          'fasta':
-            {
-              'name': 'fasta',
-              'extensions': ['.fasta'],
-              'mimetypes': ['text/plain'],
-              'fileFormat': 'text',
-            },
-        },
-    },
+  "LiteBuildConfig": {
+    "extra_file_types": {
+      "fasta": {
+        "name": "fasta",
+        "extensions": [".fasta"],
+        "mimetypes": ["text/plain"],
+        "fileFormat": "text"
+      }
+    }
+  }
 }
 ```
