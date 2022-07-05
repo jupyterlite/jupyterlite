@@ -214,40 +214,42 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
       return;
     }
 
+    const parentHeader = msg.parentHeader || this.parentHeader;
+
     switch (msg.type) {
       case 'stream': {
         const bundle = msg.bundle ?? { name: 'stdout', text: '' };
-        this.stream(bundle, msg.parentHeader);
+        this.stream(bundle, parentHeader);
         break;
       }
       case 'input_request': {
         const bundle = msg.content ?? { prompt: '', password: false };
-        this.inputRequest(bundle, msg.parentHeader);
+        this.inputRequest(bundle, parentHeader);
         break;
       }
       case 'display_data': {
         const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
-        this.displayData(bundle, msg.parentHeader);
+        this.displayData(bundle, parentHeader);
         break;
       }
       case 'update_display_data': {
         const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
-        this.updateDisplayData(bundle, msg.parentHeader);
+        this.updateDisplayData(bundle, parentHeader);
         break;
       }
       case 'clear_output': {
         const bundle = msg.bundle ?? { wait: false };
-        this.clearOutput(bundle, msg.parentHeader);
+        this.clearOutput(bundle, parentHeader);
         break;
       }
       case 'execute_result': {
         const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
-        this.publishExecuteResult(bundle, msg.parentHeader);
+        this.publishExecuteResult(bundle, parentHeader);
         break;
       }
       case 'execute_error': {
         const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
-        this.publishExecuteError(bundle, msg.parentHeader);
+        this.publishExecuteError(bundle, parentHeader);
         break;
       }
       case 'comm_msg':
