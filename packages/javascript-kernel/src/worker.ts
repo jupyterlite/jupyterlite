@@ -1,8 +1,39 @@
 import { IJavaScriptWorkerKernel } from './tokens';
 
 export class JavaScriptRemoteKernel {
+  /**
+   * Initialize the remote kernel.
+   *
+   * @param options The options for the kernel.
+   */
   async initialize(options: IJavaScriptWorkerKernel.IOptions) {
-    this.initKernel(options);
+    console.log = function (...args) {
+      const bundle = {
+        name: 'stdout',
+        text: args.join(' ') + '\n',
+      };
+      postMessage({
+        type: 'stream',
+        bundle,
+      });
+    };
+    console.info = console.log;
+
+    console.error = function (...args) {
+      const bundle = {
+        name: 'stderr',
+        text: args.join(' ') + '\n',
+      };
+      postMessage({
+        type: 'stream',
+        bundle,
+      });
+    };
+    console.warn = console.error;
+
+    self.onerror = function (message, source, lineno, colno, error) {
+      console.error(message);
+    };
   }
 
   /**
@@ -52,6 +83,9 @@ export class JavaScriptRemoteKernel {
     }
   }
 
+  /**
+   * Handle the complete message
+   */
   async complete(content: any, parent: any) {
     // naive completion on window names only
     // TODO: improve and move logic to the iframe
@@ -67,36 +101,6 @@ export class JavaScriptRemoteKernel {
       cursor_end: cursor_pos,
       metadata: {},
       status: 'ok',
-    };
-  }
-
-  protected async initKernel(options: IJavaScriptWorkerKernel.IOptions): Promise<void> {
-    console.log = function (...args) {
-      const bundle = {
-        name: 'stdout',
-        text: args.join(' ') + '\n',
-      };
-      postMessage({
-        type: 'stream',
-        bundle,
-      });
-    };
-    console.info = console.log;
-
-    console.error = function (...args) {
-      const bundle = {
-        name: 'stderr',
-        text: args.join(' ') + '\n',
-      };
-      postMessage({
-        type: 'stream',
-        bundle,
-      });
-    };
-    console.warn = console.error;
-
-    self.onerror = function (message, source, lineno, colno, error) {
-      console.error(message);
     };
   }
 
