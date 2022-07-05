@@ -7,7 +7,7 @@ import type { DriveFS } from '@jupyterlite/contents';
 
 import type { IPyoliteWorkerKernel } from './tokens';
 
-export class PyoliteRemoteKernel {
+export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
   constructor() {
     this._initialized = new Promise((resolve, reject) => {
       this._initializer = { resolve, reject };
@@ -329,16 +329,13 @@ export class PyoliteRemoteKernel {
    *
    * @param content The incoming message with the comm target name.
    */
-  async commInfo(content: any, parent: any) {
+  async commInfo(content: { target_name: string }, parent: any) {
     await this.setup(parent);
 
     const res = this._kernel.comm_info(content.target_name);
     const results = this.formatResult(res);
 
-    return {
-      comms: results,
-      status: 'ok',
-    };
+    return results;
   }
 
   /**
