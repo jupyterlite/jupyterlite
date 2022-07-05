@@ -42,7 +42,7 @@ export class JavaScriptRemoteKernel {
   async execute(content: any, parent: any) {
     const { code } = content;
     try {
-      const result = eval(code);
+      const result = self.eval(code);
       this._executionCount++;
 
       const bundle = {
