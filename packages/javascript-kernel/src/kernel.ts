@@ -205,7 +205,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Process a message coming from the pyodide web worker.
+   * Process a message coming from the JavaScript web worker.
    *
    * @param msg The worker message to process.
    */
@@ -272,6 +272,12 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   private _ready = new PromiseDelegate<void>();
 }
 
+/**
+ * A namespace for JavaScriptKernel statics
+ */
 namespace JavaScriptKernel {
+  /**
+   * The instantiation options for a JavaScript kernel.
+   */
   export interface IOptions extends IKernel.IOptions {}
 }
