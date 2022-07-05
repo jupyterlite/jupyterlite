@@ -89,7 +89,7 @@ export class JavaScriptRemoteKernel {
   async complete(content: any, parent: any) {
     // naive completion on window names only
     // TODO: improve and move logic to the iframe
-    const vars = Object.keys(self);
+    const vars = Object.getOwnPropertyNames(self);
     const { code, cursor_pos } = content;
     const words = code.slice(0, cursor_pos).match(/(\w+)$/) ?? [];
     const word = words[0] ?? '';
