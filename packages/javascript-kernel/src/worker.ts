@@ -1,8 +1,6 @@
 import { IJavaScriptWorkerKernel } from './tokens';
 
 export class JavaScriptRemoteKernel {
-  constructor() {}
-
   async initialize(options: IJavaScriptWorkerKernel.IOptions) {
     this.initKernel(options);
   }
@@ -73,8 +71,7 @@ export class JavaScriptRemoteKernel {
   }
 
   protected async initKernel(options: IJavaScriptWorkerKernel.IOptions): Promise<void> {
-    console.log = function () {
-      const args = Array.prototype.slice.call(arguments);
+    console.log = function (...args) {
       postMessage({
         event: 'stream',
         name: 'stdout',
@@ -83,8 +80,7 @@ export class JavaScriptRemoteKernel {
     };
     console.info = console.log;
 
-    console.error = function () {
-      const args = Array.prototype.slice.call(arguments);
+    console.error = function (...args) {
       postMessage({
         event: 'stream',
         name: 'stderr',
