@@ -72,19 +72,25 @@ export class JavaScriptRemoteKernel {
 
   protected async initKernel(options: IJavaScriptWorkerKernel.IOptions): Promise<void> {
     console.log = function (...args) {
-      postMessage({
-        event: 'stream',
+      const bundle = {
         name: 'stdout',
-        text: args.join(' ') + '\\n',
+        text: args.join(' ') + '\n',
+      };
+      postMessage({
+        type: 'stream',
+        bundle,
       });
     };
     console.info = console.log;
 
     console.error = function (...args) {
-      postMessage({
-        event: 'stream',
+      const bundle = {
         name: 'stderr',
-        text: args.join(' ') + '\\n',
+        text: args.join(' ') + '\n',
+      };
+      postMessage({
+        type: 'stream',
+        bundle,
       });
     };
     console.warn = console.error;
