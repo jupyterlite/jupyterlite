@@ -193,6 +193,9 @@ export namespace IWorkerKernel {
    * Common values likely to be required by all kernels.
    */
   export interface IOptions {
+    /**
+     * The base URL of the kernel server.
+     */
     baseUrl: string;
   }
 }
