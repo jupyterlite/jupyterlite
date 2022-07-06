@@ -163,10 +163,10 @@ export class PyoliteRemoteKernel {
 
   protected async initRuntime(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     const { pyodideUrl, indexUrl } = options;
-    if(pyodideUrl.endsWith(".mjs")){
-      let pyodideModule:any=await import(/* webpackIgnore: true */ pyodideUrl);
-      this._pyodide = await (pyodideModule as any).loadPyodide({ indexURL: indexUrl });       
-    }else{
+    if (pyodideUrl.endsWith('.mjs')) {
+      const pyodideModule: any = await import(/* webpackIgnore: true */ pyodideUrl);
+      this._pyodide = await (pyodideModule as any).loadPyodide({ indexURL: indexUrl });
+    } else {
       importScripts(pyodideUrl);
       this._pyodide = await (self as any).loadPyodide({ indexURL: indexUrl });
     }
