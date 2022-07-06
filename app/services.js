@@ -39,7 +39,11 @@ self.addEventListener('fetch', async (event) => {
 
         let content = '';
         if (event.request.method === 'PUT') {
-          content = await event.request.text();
+          if (args.includes('json')) {
+            content = await event.request.json();
+          } else {
+            content = await event.request.text();
+          }
         }
 
         const messageData = {
