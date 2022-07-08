@@ -652,7 +652,7 @@ def task_serve():
         name="core:py",
         doc="serve the core app (no extensions) with python",
         uptodate=[lambda: False],
-        actions=[U.do("yarn", "serve")],
+        actions=[U.do("yarn", "serve:py")],
         file_dep=app_indexes,
     )
 
