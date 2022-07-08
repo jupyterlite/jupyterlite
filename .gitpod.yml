@@ -10,29 +10,32 @@ github:
 tasks:
   - name: setup
     init: |
-      pushd ~
+      pushd /workspace
       wget -qO- https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
-      ./bin/micromamba shell init -s bash -p ~/micromamba
-      source ~/.bashrc
       popd
-      micromamba activate 
-      micromamba install -n base -y -f .binder/environment.yml
-      doit
-      gp sync-done setup
-    command: |
+      # bootstrap activation commands for other tasks to reuse
+      cat <<EOT > /workspace/bin/activate-env.sh
+      export MAMBA_ROOT_PREFIX=/workspace/.micromamba
+      export MAMBA_EXE=/workspace/bin/micromamba
+      $(/workspace/bin/micromamba shell hook --shell=bash)
       micromamba activate
+      EOT
+      source /workspace/bin/activate-env.sh
+      micromamba install -n base -y -f .binder/environment.yml
+      doit build
+    command: |
+      gp sync-done setup
+      source /workspace/bin/activate-env.sh
       doit watch
   - name: watch
     command: |
       gp sync-await setup
-      source ~/.bashrc
-      micromamba activate
+      source /workspace/bin/activate-env.sh
       doit serve
   - name: docs
     command: |
       gp sync-await setup
-      source ~/.bashrc
-      micromamba activate
+      source /workspace/bin/activate-env.sh
       doit watch:docs
 ports:
   - port: 5000
