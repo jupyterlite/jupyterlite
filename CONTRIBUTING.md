@@ -76,7 +76,17 @@ doit
 doit lint build docs:app:build
 doit run lint build docs:app:build
 ```
-
+> 
+> Deault doit tasks can defined in DOIT_CONFIG dict variable.
+>
+> ```python
+> # dodo.py
+> DOIT_CONFIG = {
+>       ...
+>       "default_tasks": ["lint", "build", "docs:app:build"]
+>       }
+> ```
+> 
 #### `doit auto`
 
 On Linux and MacOS, `doit auto` (which can also accept task names) will watch all files
