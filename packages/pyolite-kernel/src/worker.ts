@@ -383,8 +383,8 @@ export class PyoliteRemoteKernel {
     this._interpreter.display_pub.update_display_data_callback =
       updateDisplayDataCallback;
     this._interpreter.displayhook.publish_execution_result = publishExecutionResult;
-    this._interpreter.input = this.input;
-    this._interpreter.getpass = this.getpass;
+    this._interpreter.input = this.input.bind(this);
+    this._interpreter.getpass = this.getpass.bind(this);
 
     const res = await this._kernel.run(content.code);
     const results = this.formatResult(res);
