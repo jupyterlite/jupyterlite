@@ -39,7 +39,7 @@
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "publish": "yarn clean && yarn build && lerna publish",
     "serve": "node scripts/serve.js",
-    "serve:py": "cd app && python -m http.server -b 127.0.0.1 8000 && echo \nServing at http://127.0.0.1:8000",
+    "serve:py": "cd app && python -m http.server -b 127.0.0.1 8000",
     "test": "lerna run test",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
     "watch": "run-p watch:lib watch:app",
