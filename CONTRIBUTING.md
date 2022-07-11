@@ -77,6 +77,10 @@ doit lint build docs:app:build
 doit run lint build docs:app:build
 ```
 
+```{note}
+For reference the default `doit` tasks are defined in the `DOIT_CONFIG` variable in the [dodo.py][dodo] file.
+```
+
 #### `doit auto`
 
 On Linux and MacOS, `doit auto` (which can also accept task names) will watch all files
@@ -400,3 +404,4 @@ page, including:
 [repo]: https://github.com/jupyterlite/jupyterlite
 [coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
 [mambaforge]: https://github.com/conda-forge/miniforge
+[dodo]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
