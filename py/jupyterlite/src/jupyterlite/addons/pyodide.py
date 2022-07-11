@@ -182,6 +182,7 @@ class PyodideAddon(BaseAddon):
         else:
             local_path = (self.manager.lite_dir / path_or_url).resolve()
             dest = self.pyodide_cache / local_path.name
+            will_fetch = False
 
         if local_path.is_dir():
             all_paths = sorted([p for p in local_path.rglob("*") if not p.is_dir()])
