@@ -24,6 +24,7 @@ import {
   Router,
   IServiceWorkerRegistrationWrapper,
   ServiceWorkerRegistrationWrapper,
+  ServiceWorker,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -199,13 +200,18 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
+const serviceWorkerPluginID = '@jupyterlite/server-extension:service-worker';
 const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> =
   {
-    id: '@jupyterlite/server-extension:service-worker',
+    id: serviceWorkerPluginID,
     autoStart: true,
     provides: IServiceWorkerRegistrationWrapper,
     activate: (app: JupyterLiteServer) => {
-      return new ServiceWorkerRegistrationWrapper();
+      const config: ServiceWorker.IConfig =
+        JSON.parse(PageConfig.getOption('litePluginSettings') || '{}')[
+          serviceWorkerPluginID
+        ] || {};
+      return new ServiceWorkerRegistrationWrapper(config);
     },
   };
 
