@@ -103,9 +103,10 @@ export abstract class BaseKernel implements IKernel {
   async handleMessage(msg: KernelMessage.IMessage): Promise<void> {
     this._busy(msg);
 
-    this._parent = msg;
-
     const msgType = msg.header.msg_type;
+    if(msgType=='execute_request'){
+      this._parent = msg;
+    }    
     switch (msgType) {
       case 'kernel_info_request':
         await this._kernelInfo(msg);
