@@ -104,9 +104,9 @@ export abstract class BaseKernel implements IKernel {
     this._busy(msg);
 
     const msgType = msg.header.msg_type;
-    if(msgType=='execute_request'){
+    if (msgType === 'execute_request') {
       this._parent = msg;
-    }    
+    }
     switch (msgType) {
       case 'kernel_info_request':
         await this._kernelInfo(msg);
