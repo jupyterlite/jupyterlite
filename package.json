@@ -53,8 +53,7 @@
   },
   "resolutions": {
     "json-schema": "^0.4.0",
-    "validator": "^13.7.0",
-    "@lumino/application": "~1.28.1"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "~3.4.4",
