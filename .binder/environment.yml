@@ -26,6 +26,7 @@ dependencies:
   - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
+  - jupyterlab-github
   - jupyterlab-kernelspy
   - jupyterlab-markup
   - jupyterlab-myst
