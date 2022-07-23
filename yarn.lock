@@ -3557,14 +3557,14 @@
   resolved "https://registry.npmjs.org/@lumino/algorithm/-/algorithm-1.9.1.tgz#a870598e031f5ee85e20e77ce7bfffbb0dffd7f5"
   integrity sha512-d0rj7IYRzYj6WbWSrbJbKvrfO4H0NUnXT2yjSWS/sCklpTpSp0IGmndK/X4r6gG+ev5lb5+wBg9ofUDBvoAlAw==
 
-"@lumino/application@^1.27.0", "@lumino/application@^1.28.1":
-  version "1.29.2"
-  resolved "https://registry.npmjs.org/@lumino/application/-/application-1.29.2.tgz#c7b3b19ee8244f51f756d696e0fff67a2da49da0"
-  integrity sha512-Ub8NNaWqYTrM8fdJt4+GKaAMjCO4OYHmO/aOBX1uzOqj/ZXHm3d8hFxmrfcijrRbTdiTZkVEZ8zyJorNDJZSEg==
+"@lumino/application@^1.27.0", "@lumino/application@^1.28.1", "@lumino/application@~1.28.1":
+  version "1.28.1"
+  resolved "https://registry.npmjs.org/@lumino/application/-/application-1.28.1.tgz#dfefe82ad414f51659e5931e3d07989364d7625e"
+  integrity sha512-BRRtWJ3mG2abZ9XwB/olGJWXeJjtflDGB/uW6ZsG53Pfu7ekyXKv0wUcijvW+HM9o3bMR+PwM7ELyXtHKkodig==
   dependencies:
     "@lumino/commands" "^1.20.0"
     "@lumino/coreutils" "^1.12.0"
-    "@lumino/widgets" "^1.33.0"
+    "@lumino/widgets" "^1.31.1"
 
 "@lumino/collections@^1.9.1":
   version "1.9.1"
@@ -6554,9 +6554,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.188:
-  version "1.4.198"
-  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.198.tgz#36a8e7871046f7f94c01dc0133912fd5cf226c6a"
-  integrity sha512-jwqQPdKGeAslcq8L+1SZZgL6uDiIDmTe9Gq4brsdWAH27y7MJ2g9Ue6MyST3ogmSM49EAQP7bype1V5hsuNrmQ==
+  version "1.4.199"
+  resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.199.tgz#e0384fde79fdda89880e8be58196a9153e04db3b"
+  integrity sha512-WIGME0Cs7oob3mxsJwHbeWkH0tYkIE/sjkJ8ML2BYmuRcjhRl/q5kVDXG7W9LOOKwzPU5M0LBlXRq9rlSgnNlg==
 
 emittery@^0.7.1:
   version "0.7.2"
