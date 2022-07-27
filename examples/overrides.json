@@ -13,5 +13,8 @@
         "options": {}
       }
     ]
+  },
+  "@jupyterlab/github:drive": {
+    "defaultRepo": "jupyterlite/jupyterlite"
   }
 }

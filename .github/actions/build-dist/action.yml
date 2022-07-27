@@ -48,15 +48,16 @@ runs:
         restore-keys: |
           ${{ env.CACHE_EPOCH }}-yarn-packages-
 
-    - name: Cache (wepback)
-      uses: actions/cache@v2
-      with:
-        path: build/webpack
-        key: |
-          ${{ env.CACHE_EPOCH }}-webpack-${{ hashFiles('yarn.lock') }}-${{ hashFiles('app/webpack.config.js') }}
-        restore-keys: |
-          ${{ env.CACHE_EPOCH }}-webpack-${{ hashFiles('yarn.lock') }}-
-          ${{ env.CACHE_EPOCH }}-webpack-
+    # TODO: investigate fails observed in https://github.com/jupyterlite/jupyterlite/pull/746
+    # - name: Cache (wepback)
+    #   uses: actions/cache@v2
+    #   with:
+    #     path: build/webpack
+    #     key: |
+    #       ${{ env.CACHE_EPOCH }}-webpack-${{ hashFiles('yarn.lock') }}-${{ hashFiles('app/webpack.config.js') }}
+    #     restore-keys: |
+    #       ${{ env.CACHE_EPOCH }}-webpack-${{ hashFiles('yarn.lock') }}-
+    #       ${{ env.CACHE_EPOCH }}-webpack-
 
     - name: Install
       shell: bash
