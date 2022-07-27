@@ -1083,6 +1083,7 @@ class L:
     ALL_ESLINT = _clean_paths(
         P.PACKAGES.rglob("*/src/**/*.js"),
         P.PACKAGES.rglob("*/src/**/*.ts"),
+        P.PACKAGES.rglob("*/src/**/*.tsx"),
     )
     ALL_JSON = _clean_paths(
         P.PACKAGE_JSONS,
