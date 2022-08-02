@@ -221,14 +221,13 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
 
     broadcast.onmessage = async (event) => {
       const request: {
-        path: string;
         method: string;
-        args: string[] | null;
-        content: string;
+        path: string;
+        data: any;
       } = event.data;
       const contentManager = app.serviceManager.contents;
 
-      const path = request.path.replace('/api/drive/', '');
+      const path = request.path;
 
       let model: ServerContents.IModel;
 
@@ -250,12 +249,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
           break;
         }
         case 'rename': {
-          if (request.args === null) {
-            broadcast.postMessage(null);
-            return;
-          }
-
-          await contentManager.rename(path, request.args[0]);
+          await contentManager.rename(path, request.data.newPath);
           broadcast.postMessage(null);
           break;
         }
@@ -286,12 +280,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
           break;
         }
         case 'mknod': {
-          if (request.args === null) {
-            broadcast.postMessage(null);
-            return;
-          }
-
-          const mode = Number.parseInt(request.args[0]);
+          const mode = Number.parseInt(request.data.mode);
 
           model = await contentManager.newUntitled({
             path: PathExt.dirname(path),
@@ -343,15 +332,13 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
           break;
         }
         case 'put': {
-          if (request.args === null) {
-            broadcast.postMessage(null);
-            return;
-          }
-
           await contentManager.save(path, {
-            content: request.content,
+            content:
+              request.data.format === 'json'
+                ? JSON.parse(request.data.data)
+                : request.data.data,
             type: 'file',
-            format: request.args[0] as ServerContents.FileFormat,
+            format: request.data.format as ServerContents.FileFormat,
           });
 
           broadcast.postMessage(null);
