@@ -94,7 +94,13 @@ def task_setup():
     if C.TESTING_IN_CI:
         return
 
-    args = ["yarn", "--prefer-offline", "--ignore-optional"]
+    args = [
+        "yarn",
+        "--prefer-offline",
+        "--ignore-optional",
+        "--registry",
+        C.YARN_REGISTRY,
+    ]
     file_dep = [
         *P.APP_JSONS,
         *P.PACKAGE_JSONS,
@@ -863,6 +869,7 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
+    YARN_REGISTRY = "https://registry.npmjs.org/"
     GH = "https://github.com"
     CONDA_FORGE_RELEASE = "https://conda.anaconda.org/conda-forge"
     LITE_GH_ORG = f"{GH}/{NAME}"
