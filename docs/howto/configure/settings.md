@@ -2,7 +2,7 @@
 
 With the [CLI](../../reference/cli.ipynb), if you create an `{lite-dir}/overrides.json`
 in either the root, or a specific `{lite-dir}/{app}/` directory, these will be merged
-into `{output-dir}/{app?/}jupyter-lite.json#/jupyter-config-data/settingsOverrides`
+into `{output-dir}/{app?/}jupyter-lite.json#/jupyter-config-data/settingsOverrides`.
 
 ## Example
 
