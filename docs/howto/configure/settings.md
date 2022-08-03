@@ -10,7 +10,7 @@ Let's say you would like to customize the behavior of the `REPL` app, and use th
 terminal interaction mode.
 
 You can create the following `overrides.json` file in
-`{output-dir}/repl/jupyter-lite.json`:
+`{output-dir}/repl/:
 
 ```json
 {
