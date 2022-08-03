@@ -41,6 +41,11 @@ class PipliteAddon(BaseAddon):
         return self.manager.output_dir / PYPI_WHEELS
 
     @property
+    def builtin_wheels(self):
+        """where built-in wheels will go in the output folder"""
+        return self.manager.output_dir / "build" / PYPI_WHEELS
+
+    @property
     def wheel_cache(self):
         """where wheels will go in the cache folder"""
         return self.manager.cache_dir / "wheels"
@@ -101,6 +106,13 @@ class PipliteAddon(BaseAddon):
                     )
                 ],
                 targets=[whl_index],
+            )
+
+        if self.manager.ignore_piplite_builtins:
+            yield dict(
+                name="ignore-builtins",
+                doc="clean out ignored builtin packages",
+                actions=[(self.clean_builtins, [self.manager.ignore_piplite_builtins])],
             )
 
     def check(self, manager):
@@ -183,6 +195,15 @@ class PipliteAddon(BaseAddon):
             targets=[dest],
             actions=[(self.copy_one, [wheel, dest])],
         )
+
+    def clean_builtins(self, ignore_piplite_builtins):
+        all_json = self.builtin_wheels / "all.json"
+        all_json_data = json.loads(all_json.read_text(**UTF8))
+        for pkg in ignore_piplite_builtins:
+            all_json_data.pop(pkg, None)
+            for whl in self.builtin_wheels.glob(f"{pkg}-*.whl"):
+                whl.unlink()
+        all_json.write_text(json.dumps(all_json_data, indent=2, sort_keys=True))
 
     def patch_jupyterlite_json(self, jupyterlite_json, whl_index, whl_metas, pkg_jsons):
         """add the piplite wheels to jupyter-lite.json"""
@@ -304,7 +325,7 @@ def get_wheel_fileinfo(whl_path):
 def get_wheel_index(wheels, metadata=None):
     """Get the raw python object representing a wheel index for a bunch of wheels
 
-    If given, metadata should be a dictionary of the form:
+    If given, ``metadata`` should be a dictionary of the form:
 
         {Path: (name, version, metadata)}
     """

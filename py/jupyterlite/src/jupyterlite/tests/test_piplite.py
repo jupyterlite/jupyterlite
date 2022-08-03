@@ -4,10 +4,10 @@ import shutil
 
 from pytest import mark
 
-from .conftest import WHEELS
+from .conftest import THE_NOTEBOOK_WHEEL, WHEELS
 
 
-def has_wheel_after_build(an_empty_lite_dir, script_runner):
+def has_wheel_after_build(an_empty_lite_dir, script_runner, ignore_notebook=False):
     """run a build, expecting the fixture wheel to be there"""
     build = script_runner.run("jupyter", "lite", "build", cwd=str(an_empty_lite_dir))
     assert build.success
@@ -29,13 +29,28 @@ def has_wheel_after_build(an_empty_lite_dir, script_runner):
     wheel_index_text = wheel_index.read_text(encoding="utf-8")
     assert WHEELS[0].name in wheel_index_text, wheel_index_text
 
+    builtin_wheels = output / "build/pypi"
+    builtin_index = builtin_wheels / "all.json"
+    builtin_index_text = builtin_index.read_text(encoding="utf-8")
+
+    if ignore_notebook:
+        assert THE_NOTEBOOK_WHEEL not in builtin_index_text, builtin_index_text
+        assert not (builtin_wheels / THE_NOTEBOOK_WHEEL).exists()
+    else:
+        assert THE_NOTEBOOK_WHEEL in builtin_index_text, builtin_index_text
+        assert (builtin_wheels / THE_NOTEBOOK_WHEEL).exists()
+
 
 @mark.parametrize(
-    "remote,folder",
-    [[True, False], [False, False], [False, True]],
+    "remote,folder,ignore_notebook",
+    [
+        [True, False, None],
+        [False, False, True],
+        [False, True, None],
+    ],
 )
 def test_piplite_urls(
-    an_empty_lite_dir, script_runner, remote, folder, a_fixture_server
+    an_empty_lite_dir, script_runner, remote, folder, a_fixture_server, ignore_notebook
 ):
     """can we include a single wheel?"""
     ext = WHEELS[0]
@@ -56,11 +71,15 @@ def test_piplite_urls(
             "ignore_sys_prefix": ["federated_extensions"],
         },
     }
+
+    if ignore_notebook:
+        config["LiteBuildConfig"]["ignore_piplite_builtins"] = ["notebook"]
+
     print("CONFIG", config)
 
     (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
 
-    has_wheel_after_build(an_empty_lite_dir, script_runner)
+    has_wheel_after_build(an_empty_lite_dir, script_runner, ignore_notebook)
 
 
 def test_lite_dir_wheel(an_empty_lite_dir, script_runner):

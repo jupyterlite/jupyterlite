@@ -82,6 +82,11 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Local paths or URLs of piplite-compatible wheels to copy and index",
     ).tag(config=True)
 
+    ignore_piplite_builtins: _Tuple[str] = TypedTuple(
+        Unicode(),
+        help="Names of python distributions to ignore from the built-in distribution",
+    ).tag(config=True)
+
     pyodide_url: str = Unicode(
         allow_none=True, help="Local path or URL of a pyodide distribution tarball"
     ).tag(config=True)

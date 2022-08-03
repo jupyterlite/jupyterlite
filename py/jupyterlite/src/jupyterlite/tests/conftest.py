@@ -15,8 +15,9 @@ from jupyterlite.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
 WHEELS = [*FIXTURES.glob("*.whl")]
+# TODO: properly automate this
+THE_NOTEBOOK_WHEEL = "notebook-6.4.12-py3-none-any.whl"
 CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
-
 
 CI = os.environ.get("CI", None)
 DARWIN = sys.platform.startswith("darwin")
