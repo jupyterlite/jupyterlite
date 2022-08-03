@@ -4,7 +4,7 @@ import json
 from typing import List, Union
 from unittest.mock import patch
 
-from micropip._micropip import PACKAGE_MANAGER as _MP_PACKAGE_MANAGER
+from micropip import _micropip
 from micropip._micropip import _get_pypi_json as _MP_GET_PYPI_JSON
 from micropip._micropip import fetch_string as _MP_FETCH_STRING
 
@@ -51,7 +51,7 @@ async def _get_pypi_json_from_index(pkgname, piplite_url):
     return pkg
 
 
-async def _get_pypi_json(pkgname):
+async def _get_pypi_json(pkgname, fetch_kwargs):
     for piplite_url in _PIPLITE_URLS:
         if piplite_url.split("?")[0].split("#")[0].endswith(ALL_JSON):
             pypi_json_from_index = await _get_pypi_json_from_index(pkgname, piplite_url)
@@ -69,20 +69,20 @@ async def _get_pypi_json(pkgname):
         raise PiplitePyPIDisabled(
             f"{pkgname} could not be installed: PyPI fallback is disabled"
         )
-    return await _MP_GET_PYPI_JSON(pkgname)
+    return await _MP_GET_PYPI_JSON(pkgname, fetch_kwargs)
 
 
-class _PackageManager:
-    async def install(
-        self, requirements: Union[str, List[str]], ctx=None, keep_going: bool = False
-    ):
-        with patch("micropip._micropip._get_pypi_json", _get_pypi_json):
-            return await _MP_PACKAGE_MANAGER.install(requirements, ctx, keep_going)
-
-
-# Make PACKAGE_MANAGER singleton
-PACKAGE_MANAGER = _PackageManager()
-del _PackageManager
+async def _install(
+    requirements: Union[str, List[str]],
+    keep_going: bool = False,
+    deps: bool = True,
+    credentials: str | None = None,
+    pre: bool = False,
+):
+    importlib.invalidate_caches()
+    assert not hasattr(_micropip, "PACKAGE_MANAGER")
+    with patch("micropip._micropip._get_pypi_json", _get_pypi_json):
+        return await _micropip.install(requirements, keep_going, deps, credentials, pre)
 
 
 def install(requirements: Union[str, List[str]], keep_going: bool = False):
@@ -119,10 +119,9 @@ def install(requirements: Union[str, List[str]], keep_going: bool = False):
         A ``Future`` that resolves to ``None`` when all packages have been
         downloaded and installed.
     """
-    importlib.invalidate_caches()
-    return asyncio.ensure_future(
-        PACKAGE_MANAGER.install(requirements, keep_going=keep_going)
-    )
+    print("Installing", requirements)
+    return asyncio.ensure_future(_install(requirements, keep_going=keep_going))
 
-
+import pyodide
+print(f"piplite for pyodide {pyodide.__version__}")
 __all__ = ["install"]
