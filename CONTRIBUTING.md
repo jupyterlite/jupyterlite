@@ -108,6 +108,25 @@ Offering different assets and tools, and obey different environment variables:
   - `doit serve:lab`
     - `LAB_ARGS` (a JSON list of strings) controls CLI arguments to `jupyter lab`
 
+#### Environment Variables
+
+##### `CHECK_MOCK_VERSIONS`
+
+Setting `CHECK_MOCK_VERSIONS=1` before `doit lint` will ensure that the mock packages
+delivered are the same as the versions installed. This is helpful when upgrading an
+upstream such as `jupyterlab`, `notebook`, or `ipykernel`.
+
+##### `FORCE_PYODIDE`
+
+Setting `FORCE_PYODIDE=1` before `doit docs` enables downloading and testing against the
+current `pyodide`. This is disabled by default because of the size of the pyodide
+distribution.
+
+##### `PYTEST_PROCS`
+
+Setting `PYTEST_PROCS=1` before `doit test` will force tests to run in a single process,
+which can help with memory/disk consumption, especially with `FORCE_PYODIDE`.
+
 ### Core JavaScript development
 
 The JupyterLite core JS development workflow builds:

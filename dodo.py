@@ -230,14 +230,15 @@ def task_lint():
             ],
             file_dep=[init_py],
         )
-        if py_pkg.name not in ["piplite", "pyolite"]:
-            yield dict(
-                name=f"pypkg:{py_pkg.name}:installed-version",
-                actions=[
-                    (U.check_py_version, [py_pkg.name, version]),
-                ],
-                file_dep=[init_py],
-            )
+        if C.CHECK_MOCK_VERSIONS:
+            if py_pkg.name not in ["piplite", "pyolite"]:
+                yield dict(
+                    name=f"pypkg:{py_pkg.name}:installed-version",
+                    actions=[
+                        (U.check_py_version, [py_pkg.name, version]),
+                    ],
+                    file_dep=[init_py],
+                )
 
 
 def task_build():
@@ -944,6 +945,7 @@ class C:
     FORCE_PYODIDE = "JUPYTERLITE_PYODIDE_URL" in os.environ or bool(
         json.loads(os.environ.get("FORCE_PYODIDE", "0"))
     )
+    CHECK_MOCK_VERSIONS = json.loads(os.environ.get("CHECK_MOCK_VERSIONS", "0"))
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
     SOURCE_DATE_EPOCH = (
