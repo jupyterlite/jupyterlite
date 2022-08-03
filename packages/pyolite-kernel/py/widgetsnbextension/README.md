@@ -1,4 +1,4 @@
-# widgetsnbextension mock
+# `widgetsnbextension` mock
 
-This is an widgetsnbextension mock that provides nothing. It's only there so that
-`micropip.install('widgetsnbextension')` does not fail (for ipywidgets support)
+This is an mock package that provides nothing. It's only there so that
+`piplite.install('widgetsnbextension')` does not fail (for `ipywidgets` support).

@@ -1,4 +1,4 @@
-# piplite
+# `piplite`
 
 This is a companion package to
 [micropip](https://github.com/pyodide/pyodide/tree/main/packages/micropip) which only

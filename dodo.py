@@ -911,7 +911,13 @@ class C:
         # broken?
         "pathspec",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
+    IGNORED_WHEELS = [
+        "widgetsnbextension",
+        "ipykernel",
+        "pyolite",
+        "jupyterlab",
+        "notebook",
+    ]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -1102,7 +1108,11 @@ class L:
         (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
     )
     ALL_HTML = [*P.APP_HTMLS]
-    ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
+    ALL_MD = [
+        *P.CI.rglob("*.md"),
+        *P.DOCS_MD,
+        *sum([[*p.rglob("*.md")] for p in P.PYOLITE_PACKAGES.keys()], []),
+    ]
     ALL_YAML = _clean_paths(
         P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml")
     )
