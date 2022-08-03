@@ -12,9 +12,23 @@ export const DRIVE_SEPARATOR = ':';
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
+/**
+ * Interface of a request on the /api/drive endpoint
+ */
 export interface IDriveRequest {
+  /**
+   * The method of the request (rmdir, readdir etc)
+   */
   method: string;
+
+  /**
+   * The path to the file/directory for which the request was sent
+   */
   path: string;
+
+  /**
+   * Extra data on the request
+   */
   data?: any;
 }
 

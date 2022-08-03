@@ -10,6 +10,7 @@ import {
   DIR_MODE,
   FILE_MODE,
   IContents,
+  IDriveRequest,
   IModel,
 } from '@jupyterlite/contents';
 
@@ -220,11 +221,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
     let subitems: [];
 
     broadcast.onmessage = async (event) => {
-      const request: {
-        method: string;
-        path: string;
-        data: any;
-      } = event.data;
+      const request = event.data as IDriveRequest;
       const contentManager = app.serviceManager.contents;
 
       const path = request.path;
