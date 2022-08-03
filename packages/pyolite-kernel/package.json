@@ -69,10 +69,10 @@
     "packages": {
       "py/ipykernel": "6.15.1",
       "py/jupyterlab": "3.4.4",
-      "py/notebook": "6.4.2",
+      "py/notebook": "6.4.12",
       "py/piplite": "0.1.0b11",
       "py/pyolite": "0.1.0b11",
-      "py/widgetsnbextension": "3.6.0"
+      "py/widgetsnbextension": "3.6.1"
     }
   },
   "styleModule": "style/index.js"

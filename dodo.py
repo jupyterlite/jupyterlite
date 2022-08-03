@@ -221,6 +221,24 @@ def task_lint():
             actions=[(U.validate, validate_args)],
         )
 
+    for py_pkg, version in P.PYOLITE_PACKAGES.items():
+        init_py = py_pkg / py_pkg.name / "__init__.py"
+        yield dict(
+            name=f"pyolite:{py_pkg.name}:init-version",
+            actions=[
+                (U.check_file, [init_py, f'__version__ = "{version}"']),
+            ],
+            file_dep=[init_py],
+        )
+        if py_pkg.name not in ["piplite", "pyolite"]:
+            yield dict(
+                name=f"pypkg:{py_pkg.name}:installed-version",
+                actions=[
+                    (U.check_py_version, [py_pkg.name, version]),
+                ],
+                file_dep=[init_py],
+            )
+
 
 def task_build():
     """build code and intermediate packages"""
@@ -1747,6 +1765,32 @@ class U:
                 f"?name=pypi/[name].[ext]&context=.{bang}';"
             ]
         B.PYOLITE_WHEEL_TS.write_text("\n".join(sorted(lines) + [""]))
+
+    def check_file(path, pattern):
+        text = path.read_text(**C.ENC)
+        if pattern not in text:
+            print(pattern, "not found in", path, "\n")
+            print(text, "\n")
+            return False
+
+    def check_py_version(pkg_name, version):
+        installed_version = None
+
+        try:
+            installed_version = __import__(pkg_name).__version__
+        except Exception as err:
+            print(f"{pkg_name} not installed, can't check for version {version}: {err}")
+            return False
+
+        if installed_version != version:
+            print(
+                f"{pkg_name}",
+                "\n",
+                f"installed: {installed_version}",
+                "\n",
+                f"package.json: {version}",
+            )
+            return False
 
 
 # environment overloads
