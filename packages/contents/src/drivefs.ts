@@ -1,6 +1,7 @@
 // Types and implementation inspired from https://github.com/jvilk/BrowserFS
 // LICENSE: https://github.com/jvilk/BrowserFS/blob/8977a704ea469d05daf857e4818bef1f4f498326/LICENSE
 // And from https://github.com/gzuidhof/starboard-notebook
+
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
@@ -10,6 +11,26 @@ export const DRIVE_SEPARATOR = ':';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
+
+/**
+ * Interface of a request on the /api/drive endpoint
+ */
+export interface IDriveRequest {
+  /**
+   * The method of the request (rmdir, readdir etc)
+   */
+  method: string;
+
+  /**
+   * The path to the file/directory for which the request was sent
+   */
+  path: string;
+
+  /**
+   * Extra data on the request
+   */
+  data?: any;
+}
 
 // Mapping flag -> do we need to overwrite the file upon closing it
 const flagNeedsWrite: { [flag: number]: boolean } = {
@@ -305,20 +326,12 @@ export class ContentsAPI {
     this.ERRNO_CODES = ERRNO_CODES;
   }
 
-  request(
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-    path: string,
-    data: string | null = null
-  ): any {
+  request(data: IDriveRequest): any {
     const xhr = new XMLHttpRequest();
-    xhr.open(method, encodeURI(`${this.endpoint}${path}`), false);
+    xhr.open('POST', encodeURI(this.endpoint), false);
 
     try {
-      if (data === null) {
-        xhr.send();
-      } else {
-        xhr.send(data);
-      }
+      xhr.send(JSON.stringify(data));
     } catch (e) {
       console.error(e);
     }
@@ -331,39 +344,47 @@ export class ContentsAPI {
   }
 
   lookup(path: string): DriveFS.ILookup {
-    return this.request('GET', `${this.normalizePath(path)}?m=lookup`);
+    return this.request({ method: 'lookup', path: this.normalizePath(path) });
   }
 
   getmode(path: string): number {
     return Number.parseInt(
-      this.request('GET', `${this.normalizePath(path)}?m=getmode`)
+      this.request({ method: 'getmode', path: this.normalizePath(path) })
     );
   }
 
   mknod(path: string, mode: number) {
-    return this.request('GET', `${this.normalizePath(path)}?m=mknod&args=${mode}`);
+    return this.request({
+      method: 'mknod',
+      path: this.normalizePath(path),
+      data: { mode },
+    });
   }
 
   rename(oldPath: string, newPath: string): void {
-    return this.request(
-      'GET',
-      `${this.normalizePath(oldPath)}?m=rename&args=${this.normalizePath(newPath)}`
-    );
+    return this.request({
+      method: 'rename',
+      path: this.normalizePath(oldPath),
+      data: { newPath: this.normalizePath(newPath) },
+    });
   }
 
   readdir(path: string): string[] {
-    const dirlist = this.request('GET', `${this.normalizePath(path)}?m=readdir`);
+    const dirlist = this.request({
+      method: 'readdir',
+      path: this.normalizePath(path),
+    });
     dirlist.push('.');
     dirlist.push('..');
     return dirlist;
   }
 
   rmdir(path: string): void {
-    return this.request('GET', `${this.normalizePath(path)}?m=rmdir`);
+    return this.request({ method: 'rmdir', path: this.normalizePath(path) });
   }
 
   get(path: string): DriveFS.IFile {
-    const response = this.request('GET', `${this.normalizePath(path)}?m=get`);
+    const response = this.request({ method: 'get', path: this.normalizePath(path) });
 
     const serializedContent = response.content;
     const format: 'json' | 'text' | 'base64' | null = response.format;
@@ -396,27 +417,33 @@ export class ContentsAPI {
     switch (value.format) {
       case 'json':
       case 'text':
-        return this.request(
-          'PUT',
-          `${this.normalizePath(path)}?m=put&args=${value.format}`,
-          decoder.decode(value.data)
-        );
+        return this.request({
+          method: 'put',
+          path: this.normalizePath(path),
+          data: {
+            format: value.format,
+            data: decoder.decode(value.data),
+          },
+        });
       case 'base64': {
         let binary = '';
         for (let i = 0; i < value.data.byteLength; i++) {
           binary += String.fromCharCode(value.data[i]);
         }
-        return this.request(
-          'PUT',
-          `${this.normalizePath(path)}?m=put&args=${value.format}`,
-          btoa(binary)
-        );
+        return this.request({
+          method: 'put',
+          path: this.normalizePath(path),
+          data: {
+            format: value.format,
+            data: btoa(binary),
+          },
+        });
       }
     }
   }
 
   getattr(path: string): IStats {
-    const stats = this.request('GET', `${this.normalizePath(path)}?m=getattr`);
+    const stats = this.request({ method: 'getattr', path: this.normalizePath(path) });
     // Turn datetimes into proper objects
     stats.atime = new Date(stats.atime);
     stats.mtime = new Date(stats.mtime);
@@ -447,7 +474,7 @@ export class ContentsAPI {
    * Get the api/drive endpoint
    */
   get endpoint(): string {
-    return `${this._baseUrl}api/drive/`;
+    return `${this._baseUrl}api/drive`;
   }
 
   private _baseUrl: string;
