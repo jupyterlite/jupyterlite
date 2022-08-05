@@ -43,13 +43,6 @@ export class ServiceWorkerRegistrationWrapper
       this.setRegistration(null);
     }
 
-    if (!('serviceWorker' in navigator)) {
-      console.error(
-        'ServiceWorker registration failed: Service Workers not supported in this browser'
-      );
-      this.setRegistration(null);
-    }
-
     if (navigator.serviceWorker.controller) {
       const registration = await navigator.serviceWorker.getRegistration(
         navigator.serviceWorker.controller.scriptURL
