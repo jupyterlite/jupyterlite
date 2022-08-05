@@ -83,7 +83,7 @@ export class Sessions implements ISessions {
         });
 
         if (newKernel) {
-          patched['kernel'] = newKernel;
+          patched.kernel = newKernel;
         }
       }
     }
