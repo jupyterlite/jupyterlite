@@ -73,7 +73,7 @@ export class Sessions implements ISessions {
           (session) => session.kernel?.id === kernel?.id
         );
         if (session) {
-          patched['kernel'] = session?.kernel;
+          patched.kernel = session.kernel;
         }
       } else if (kernel.name) {
         const newKernel = await this._kernels.startNew({
