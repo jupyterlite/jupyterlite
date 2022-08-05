@@ -46,7 +46,6 @@ export class Sessions implements ISessions {
   /**
    * Path an existing session.
    * This can be used to rename a session.
-   * TODO: read path and name
    *
    * - path updates session to track renamed paths
    * - kernel.name starts a new kernel with a given kernelspec
