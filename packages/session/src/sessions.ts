@@ -46,12 +46,14 @@ export class Sessions implements ISessions {
   /**
    * Path an existing session.
    * This can be used to rename a session.
-   * TODO: read path and name
+   *
+   * - path updates session to track renamed paths
+   * - kernel.name starts a new kernel with a given kernelspec
    *
    * @param options The options to patch the session.
    */
   async patch(options: Session.IModel): Promise<Session.IModel> {
-    const { id, path, name } = options;
+    const { id, path, name, kernel } = options;
     const index = this._sessions.findIndex((s) => s.id === id);
     const session = this._sessions[index];
     if (!session) {
@@ -62,6 +64,29 @@ export class Sessions implements ISessions {
       path: path ?? session.path,
       name: name ?? session.name,
     };
+
+    if (kernel) {
+      // Kernel id takes precedence over name.
+      if (kernel.id) {
+        const session = this._sessions.find(
+          (session) => session.kernel?.id === kernel?.id
+        );
+        if (session) {
+          patched.kernel = session.kernel;
+        }
+      } else if (kernel.name) {
+        const newKernel = await this._kernels.startNew({
+          id: UUID.uuid4(),
+          name: kernel.name,
+          location: PathExt.dirname(patched.path),
+        });
+
+        if (newKernel) {
+          patched.kernel = newKernel;
+        }
+      }
+    }
+
     this._sessions[index] = patched;
     return patched;
   }
