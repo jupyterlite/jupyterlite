@@ -34,7 +34,9 @@ the URL from the Repository `Settings` tab `Pages` menu item._
 If the deployment failed, go to "Settings - Actions - General", in the "Workflow
 permissions" section, check "Read and write permissions". Check that you have Github
 Pages enabled for your repository: from your repository _Settings_ tab, select the
-_Pages_ menu item and ensure that the source is set to `gh-pages`.
+_Pages_ menu item and ensure that the source is set to `GitHub Actions`:
+
+![a screenshot showing the GitHub Actions configuration option for deploying to GitHub Pages](https://user-images.githubusercontent.com/591645/183384744-d7e08150-8f5f-4a50-bd53-5c99b1fd99a1.png)
 
 When you commit a file, an updated website will be built and published on Github Pages.
 
