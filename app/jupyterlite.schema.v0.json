@@ -54,6 +54,11 @@
           "default": "./lab",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "defaultKernelName": {
+          "description": "The name of the default kernel. If not available, the first kernel (by alphabetic ordering) will be chosen.",
+          "default": "python",
+          "type": "string"
+        },
         "faviconUrl": {
           "description": "browser tab icon to show",
           "type": "string",

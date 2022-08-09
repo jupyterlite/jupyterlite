@@ -7,6 +7,7 @@
   "description": "JupyterLite UI Tests",
   "scripts": {
     "build": "jupyter lite build",
+    "deduplicate": "yarn-deduplicate -s fewer --fail",
     "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1",
     "start:detached": "yarn run start&",
     "test": "playwright test",
@@ -15,7 +16,8 @@
     "test:update": "playwright test --update-snapshots"
   },
   "dependencies": {
-    "@jupyterlab/galata": "~4.3.1"
+    "@jupyterlab/galata": "~4.3.4",
+    "yarn-deduplicate": "^3.1.0"
   },
   "resolutions": {
     "@playwright/test": "~1.16.2"

@@ -26,33 +26,10 @@ self.addEventListener('fetch', async (event) => {
     // Forward request to main using the broadcast channel
     event.respondWith(
       new Promise(async (resolve) => {
-        let path = decodeURI(url.pathname.slice(url.pathname.indexOf('/api/drive')));
-        if (!path) {
-          path = '';
-        }
-
-        const method = new URLSearchParams(url.search).get('m');
-        let args = new URLSearchParams(url.search).get('args');
-        if (args !== null) {
-          args = args.split(',');
-        }
-
-        let content = '';
-        if (event.request.method === 'PUT') {
-          content = await event.request.text();
-        }
-
-        const messageData = {
-          path,
-          method,
-          args,
-          content,
-        };
-
         broadcast.onmessage = (event) => {
           resolve(new Response(JSON.stringify(event.data)));
         };
-        broadcast.postMessage(messageData);
+        broadcast.postMessage(await event.request.json());
       })
     );
     return;

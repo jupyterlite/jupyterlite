@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/iframe-extension",
-  "version": "0.1.0-beta.10",
+  "version": "0.1.0-beta.11",
   "description": "JupyterLite - IFrame Viewer",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -37,9 +37,9 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/rendermime-interfaces": "~3.4.3",
+    "@jupyterlab/rendermime-interfaces": "~3.4.4",
     "@lumino/coreutils": "^1.12.0",
-    "@lumino/widgets": "^1.31.1"
+    "@lumino/widgets": "^1.33.0"
   },
   "devDependencies": {
     "rimraf": "~3.0.0",

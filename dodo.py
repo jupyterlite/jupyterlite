@@ -12,7 +12,6 @@ from pathlib import Path
 
 import doit
 import pkginfo
-import requests_cache
 
 
 def which(cmd):
@@ -95,7 +94,13 @@ def task_setup():
     if C.TESTING_IN_CI:
         return
 
-    args = ["yarn", "--prefer-offline", "--ignore-optional"]
+    args = [
+        "yarn",
+        "--prefer-offline",
+        "--ignore-optional",
+        "--registry",
+        C.YARN_REGISTRY,
+    ]
     file_dep = [
         *P.APP_JSONS,
         *P.PACKAGE_JSONS,
@@ -653,7 +658,7 @@ def task_serve():
         name="core:py",
         doc="serve the core app (no extensions) with python",
         uptodate=[lambda: False],
-        actions=[U.do("yarn", "serve")],
+        actions=[U.do("yarn", "serve:py")],
         file_dep=app_indexes,
     )
 
@@ -864,6 +869,7 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
+    YARN_REGISTRY = "https://registry.npmjs.org/"
     GH = "https://github.com"
     CONDA_FORGE_RELEASE = "https://conda.anaconda.org/conda-forge"
     LITE_GH_ORG = f"{GH}/{NAME}"
@@ -1193,15 +1199,30 @@ class U:
 
     @staticmethod
     def session():
-        if U._SESSION is None:
-            if not B.BUILD.exists():
-                B.BUILD.mkdir()
+        try:
+            import requests_cache
 
-            U._SESSION = requests_cache.CachedSession(
-                str(B.BUILD / B.REQ_CACHE.stem),
-                allowable_methods=["GET", "POST", "HEAD"],
-                allowable_codes=[200, 302, 404],
-            )
+            HAS_REQUESTS_CACHE = True
+        except Exception as err:
+            print(f"requests_cache not available: {err}")
+            HAS_REQUESTS_CACHE = False
+
+        if U._SESSION is None:
+            if HAS_REQUESTS_CACHE:
+                if not B.BUILD.exists():
+                    B.BUILD.mkdir()
+
+                U._SESSION = requests_cache.CachedSession(
+                    str(B.BUILD / B.REQ_CACHE.stem),
+                    allowable_methods=["GET", "POST", "HEAD"],
+                    allowable_codes=[200, 302, 404],
+                )
+            else:
+                import requests
+
+                U._SESSION = requests.Session()
+                print("Using uncached requests session, not recommended")
+
         return U._SESSION
 
     @staticmethod
