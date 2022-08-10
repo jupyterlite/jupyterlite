@@ -122,6 +122,8 @@ def install(requirements: Union[str, List[str]], keep_going: bool = False):
     print("Installing", requirements)
     return asyncio.ensure_future(_install(requirements, keep_going=keep_going))
 
+
 import pyodide
+
 print(f"piplite for pyodide {pyodide.__version__}")
 __all__ = ["install"]
