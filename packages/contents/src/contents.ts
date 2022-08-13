@@ -175,7 +175,7 @@ export class Contents implements IContents {
           format: 'json',
           mimetype: '',
           content: null,
-          size: undefined,
+          size: 0,
           writable: true,
           type: 'directory',
         };
@@ -302,7 +302,7 @@ export class Contents implements IContents {
       return {
         ...model,
         content: null,
-        size: undefined,
+        size: 0,
       };
     }
 
@@ -335,7 +335,7 @@ export class Contents implements IContents {
         format: 'json',
         mimetype: MIME.JSON,
         content,
-        size: undefined,
+        size: 0,
         writable: true,
         type: 'directory',
       };
@@ -596,7 +596,7 @@ export class Contents implements IContents {
       format: 'json',
       mimetype: MIME.JSON,
       content: Array.from(content.values()),
-      size: undefined,
+      size: 0,
       writable: true,
       type: 'directory',
     };
