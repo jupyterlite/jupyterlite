@@ -89,7 +89,7 @@ NPM_SOURCE_DATE_EPOCH = 499162500
 NOARCH_WHL = "py3-none-any.whl"
 
 #: the only kind of binary wheel piplite understands
-WASM_WHL = "emscripten_wasm32.whl"
+WASM_WHL = "emscripten_*_wasm32.whl"
 
 #: the only kinds of wheels piplite understands
 ALL_WHL = [NOARCH_WHL, WASM_WHL]
