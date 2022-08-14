@@ -300,7 +300,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
             uid: 0,
             gid: 0,
             rdev: 0,
-            size: model.size,
+            size: model.size || 0,
             blksize: 0,
             blocks: 0,
             atime: model.last_modified, // TODO Get the proper atime?
