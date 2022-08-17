@@ -448,6 +448,7 @@ export class ContentsAPI {
     stats.atime = new Date(stats.atime);
     stats.mtime = new Date(stats.mtime);
     stats.ctime = new Date(stats.ctime);
+    stats.size = stats.size || 0;
     return stats;
   }
 

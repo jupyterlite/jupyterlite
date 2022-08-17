@@ -44,11 +44,11 @@ def task_env():
         all_deps = []
 
         yield dict(
-            name="pyodide:packages",
-            doc="fetch the pyodide packages.json",
+            name="pyodide:repodata",
+            doc="fetch the pyodide repodata.json",
             file_dep=[P.APP_SCHEMA],
-            targets=[B.PYODIDE_PACKAGES],
-            actions=[U.fetch_pyodide_packages],
+            targets=[B.PYODIDE_REPODATA],
+            actions=[U.fetch_pyodide_repodata],
         )
 
         for nb in P.ALL_EXAMPLES:
@@ -71,7 +71,7 @@ def task_env():
         yield dict(
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
-            file_dep=[P.BINDER_ENV, B.PYODIDE_PACKAGES, *all_deps],
+            file_dep=[P.BINDER_ENV, B.PYODIDE_REPODATA, *all_deps],
             targets=[B.RAW_WHEELS_REQS],
             actions=[
                 (
@@ -884,7 +884,7 @@ class C:
     PYPI_SRC = f"{PYPI}/packages/source"
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-    PYODIDE_VERSION = "0.20.0"
+    PYODIDE_VERSION = "0.21.0"
     PYODIDE_JS = "pyodide.js"
     PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
@@ -1134,7 +1134,7 @@ class B:
 
     EXAMPLE_DEPS = BUILD / "depfinder"
 
-    PYODIDE_PACKAGES = BUILD / "pyodide-packages.json"
+    PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
     RAW_WHEELS = BUILD / "wheels"
     RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
     DOCS_APP = BUILD / "docs-app"
@@ -1328,7 +1328,7 @@ class U:
         required_deps = ["ipykernel", "notebook"]
         ignored_deps = [
             p
-            for p in json.loads(B.PYODIDE_PACKAGES.read_text(**C.ENC))[
+            for p in json.loads(B.PYODIDE_REPODATA.read_text(**C.ENC))[
                 "packages"
             ].keys()
         ]
@@ -1708,13 +1708,14 @@ class U:
             _ensure_resolutions(app)
 
     @staticmethod
-    def fetch_pyodide_packages():
+    def fetch_pyodide_repodata():
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
-        url = props["pyodideUrl"]["default"].replace(C.PYODIDE_JS, "packages.json")
+        url = props["pyodideUrl"]["default"].replace(C.PYODIDE_JS, "repodata.json")
+        print(f"fetching pyodide packages from {url}")
         packages = U.session().get(url).json()
-        B.PYODIDE_PACKAGES.parent.mkdir(exist_ok=True, parents=True)
-        B.PYODIDE_PACKAGES.write_text(json.dumps(packages, **C.JSON))
+        B.PYODIDE_REPODATA.parent.mkdir(exist_ok=True, parents=True)
+        B.PYODIDE_REPODATA.write_text(json.dumps(packages, **C.JSON))
 
     @staticmethod
     def make_pyolite_wheel_js():
