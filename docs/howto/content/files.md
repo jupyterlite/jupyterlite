@@ -21,8 +21,14 @@ Will be:
   - may have timestamps changed if `--source-date-epoch` is provided.
 - indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
 
-If no contents are provided when building jupyterlite this leads to an error message which can be safely ignored: 
-`Failed to load resource: the server responded with a status of 404 (File not found) :8000/api/contents/all.json:1`
+````{note}
+If no contents are provided when building the JupyterLite website,
+the following error message might be logged in the browser console and can be safely ignored:
+
+```
+Failed to load resource: the server responded with a status of 404 (File not found) :8000/api/contents/all.json:1
+```
+````
 
 ## Server Contents and Local Contents
 
