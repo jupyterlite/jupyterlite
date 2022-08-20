@@ -225,21 +225,30 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       return !!(currentWidget && docManager.contextForWidget(currentWidget));
     };
 
-    const downloadContent = (content: string, path: string) => {
+    const downloadContent = async (contentPath: string, fileName: string) => {
+      const model = await contents.get(contentPath, { content: true });
       const element = document.createElement('a');
-      element.href = `data:text/json;charset=utf-8,${encodeURIComponent(content)}`;
-      element.download = path;
+      if (model.type === 'notebook' || model.format === 'json') {
+        const mime = model.mimetype ?? 'text/json';
+        const content = JSON.stringify(model.content, null, 2);
+        element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
+      } else if (model.type === 'file') {
+        if (model.format === 'base64') {
+          const mime = model.mimetype ?? 'application/octet-stream';
+          element.href = `data:${mime};base64,${model.content}`;
+        } else {
+          const mime = model.mimetype ?? 'text/plain';
+          element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
+            model.content
+          )}`;
+        }
+      } else {
+        throw new Error(`Content whose type is "${model.type}" cannot be downloaded`);
+      }
+      element.download = fileName;
       document.body.appendChild(element);
       element.click();
       document.body.removeChild(element);
-    };
-
-    const formatContent = async (path: string) => {
-      const model = await contents.get(path, { content: true });
-      if (model.type === 'notebook' || model.mimetype.indexOf('json') !== -1) {
-        return JSON.stringify(model.content, null, 2);
-      }
-      return model.content;
     };
 
     commands.addCommand(CommandIDs.docmanagerDownload, {
@@ -261,8 +270,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           });
         }
         await context.save();
-        const content = await formatContent(context.path);
-        downloadContent(content, context.path);
+        await downloadContent(context.path, context.path);
       },
     });
 
@@ -287,8 +295,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             if (item.type === 'directory') {
               return;
             }
-            const content = await formatContent(item.path);
-            downloadContent(content, item.name);
+            await downloadContent(item.path, item.name);
           });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
