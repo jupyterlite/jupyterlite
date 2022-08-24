@@ -133,6 +133,8 @@ app/retro/consoles/index.html
 app/retro/edit/index.html
 app/retro/notebooks/index.html
 app/retro/tree/index.html
+app/voila/tree/index.html
+app/voila/render/index.html
 
 *.log
 
