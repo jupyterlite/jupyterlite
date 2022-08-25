@@ -68,12 +68,12 @@ export async function main() {
     // ),
     // require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
     //   [
-    //     '@jupyterlab/apputils-extension:palette',
+    //     // '@jupyterlab/apputils-extension:palette',
     //     '@jupyterlab/apputils-extension:settings',
-    //     '@jupyterlab/apputils-extension:state',
-    //     '@jupyterlab/apputils-extension:themes',
-    //     '@jupyterlab/apputils-extension:themes-palette-menu',
-    //     '@jupyterlab/apputils-extension:toolbar-registry'
+    //     // '@jupyterlab/apputils-extension:state',
+    //     // '@jupyterlab/apputils-extension:themes',
+    //     // '@jupyterlab/apputils-extension:themes-palette-menu',
+    //     // '@jupyterlab/apputils-extension:toolbar-registry'
     //   ].includes(id)
     // ),
     // require('@jupyterlab/codemirror-extension').default.filter(({ id }) =>
@@ -281,13 +281,36 @@ export async function main() {
 
   app.registerPluginModules(mods);
 
+  await app.start();
+  await app.restored;
+
+  await serviceManager.ready;
+
+  console.log('App', app);
+  console.log('jupyterLiteServer', jupyterLiteServer);
+
+  const search = window.location.search;
+  const urlParams = new URLSearchParams(search);
+  const notebookName = urlParams.get('notebook')?.trim();
+
+  let notebook;
+  try {
+    notebook = await app.serviceManager.contents.get(decodeURIComponent(notebookName));
+  } catch(e) {
+    // TODO Do this earlier and maybe differently
+    const errordiv = document.createElement('div');
+    errordiv.innerHTML = `404 ${notebookName} not found ${e}`;
+    document.body.appendChild(errordiv);
+    return;
+  }
+
+  console.log('notebook', notebook);
+
   // TODO Fill the HTML body with the requested template
   // TODO Spawn a kernel
   // 1) Find the requested notebook path
   // 2) Load the Notebook cells content and get kernel name
   // 3) Spawn kernel and render cell outputs in the right places
-
-  // await serviceManager.ready;
 
   // const sessionManager = serviceManager.sessions;
   // await sessionManager.ready;
@@ -305,7 +328,4 @@ export async function main() {
   // window.voiliteKernel = connection.kernel;
 
   window.jupyterapp = app;
-
-  await app.start();
-  await app.restored;
 }
