@@ -12,6 +12,7 @@ publicpath.js.map
 lab/build
 repl/build
 retro/build
+voila/build
 tsconfig.*
 webpack.*.js
 webpack.config.*

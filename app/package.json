@@ -42,7 +42,8 @@
     "apps": [
       "lab",
       "repl",
-      "retro"
+      "retro",
+      "voila"
     ]
   }
 }
