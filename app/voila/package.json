@@ -130,7 +130,7 @@
     "@retrolab/notebook-extension": "^0.3.21",
     "@retrolab/tree-extension": "^0.3.21",
     "@retrolab/ui-components": "^0.3.21",
-    "@voila-dashboards/voila": "*",
+    "@voila-dashboards/voila": "link:/home/martin/github/voila/packages/voila",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
