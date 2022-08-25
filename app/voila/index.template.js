@@ -15,11 +15,13 @@ const serverExtensions = [
 ];
 
 const mimeExtensionsMods = [
-  import('@jupyterlite/iframe-extension'),
-  import('@jupyterlab/javascript-extension'),
+  // import('@jupyterlite/iframe-extension'),
+  // import('@jupyterlab/javascript-extension'),
   import('@jupyterlab/json-extension'),
-  import('@jupyterlab/vega5-extension')
+  // import('@jupyterlab/vega5-extension')
 ];
+
+const disabled = ['@jupyter-widgets/jupyterlab-manager'];
 
 async function createModule(scope, module) {
   try {
@@ -105,7 +107,7 @@ export async function main() {
     // require('@jupyterlab/shortcuts-extension'),
     // require('@jupyterlab/theme-light-extension'),
     // require('@jupyterlab/theme-dark-extension'),
-    require('@jupyterlab/translation-extension')
+    // require('@jupyterlab/translation-extension')
   ];
 
   // The motivation here is to only load a specific set of plugins dependending on
@@ -196,7 +198,11 @@ export async function main() {
 
     let plugins = Array.isArray(exports) ? exports : [exports];
     for (let plugin of plugins) {
-      if (PageConfig.Extension.isDisabled(plugin.id)) {
+      if (
+        PageConfig.Extension.isDisabled(plugin.id) ||
+        disabled.includes(plugin.id) ||
+        disabled.includes(plugin.id.split(':')[0])
+      ) {
         continue;
       }
       yield plugin;
