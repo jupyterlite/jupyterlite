@@ -6,6 +6,8 @@ import { JupyterLiteServer } from '@jupyterlite/server';
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 
+import { VoilaApp, plugins } from '@voila-dashboards/voila';
+
 require('./style.js');
 
 const serverExtensions = [
@@ -40,6 +42,8 @@ export async function main() {
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
   let baseMods = [
+    // Voila plugins
+    plugins,
     // @jupyterlite plugins
     // require('@jupyterlite/application-extension'),
     // require('@jupyterlite/retro-application-extension'),
@@ -271,7 +275,6 @@ export async function main() {
   const { serviceManager } = jupyterLiteServer;
 
   // create a RetroLab frontend
-  const { VoilaApp } = require('@voila-dashboards/voila');
   const app = new VoilaApp({ serviceManager, mimeExtensions });
 
   app.name = PageConfig.getOption('appName') || 'Voilite';
