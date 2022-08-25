@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>JupyterLite Voila - Tree</title>
+    <title>JupyterLite Voila - Notebook</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- <link
+    <link
       id="jupyter-lite-main"
       rel="preload"
-      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1)[0] %>"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('voila/bundle') !== -1)[0] %>"
       main="index"
       as="script"
-    /> -->
+    />
     <script
       id="jupyter-config-data"
       type="application/json"
@@ -18,7 +18,7 @@
     >
       {}
     </script>
-    <!-- <script>
+    <script>
       (async function () {
         const { pathname, origin, search, hash } = window.location;
         if (pathname.match(/(index.html|\/)$/) == null) {
@@ -27,12 +27,10 @@
         }
 
         await import(
-          '../../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("retro/bundle") !== -1)[0].split("?")[1] %>'
+          '../../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("voila/bundle") !== -1)[0].split("?")[1] %>'
         );
       })();
-    </script> -->
+    </script>
   </head>
-  <body>
-    <h1>NOT IMPLEMENTED YET</h1>
-  </body>
+  <body></body>
 </html>

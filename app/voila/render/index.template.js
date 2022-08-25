@@ -272,7 +272,29 @@ export async function main() {
 
   app.registerPluginModules(mods);
 
-  window.voiliteKernel = connection.kernel;
+  // TODO Fill the HTML body with the requested template
+  // TODO Spawn a kernel
+  // 1) Find the requested notebook path
+  // 2) Load the Notebook cells content and get kernel name
+  // 3) Spawn kernel and render cell outputs in the right places
+
+  // await serviceManager.ready;
+
+  // const sessionManager = serviceManager.sessions;
+  // await sessionManager.ready;
+
+  // const connection = await sessionManager.startNew({
+  //   // name: 'notebook.ipynb',
+  //   // path: kernelOptions.path,
+  //   type: 'notebook',
+  //   path: '',
+  //   kernel: {
+  //     name: 'python',
+  //   },
+  // });
+  // await connection.kernel.ready;
+  // window.voiliteKernel = connection.kernel;
+
   window.jupyterapp = app;
 
   await app.start();
