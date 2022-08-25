@@ -114,7 +114,7 @@
     "@jupyterlite/server": "^0.1.0-beta.12",
     "@jupyterlite/server-extension": "^0.1.0-beta.12",
     "@jupyterlite/types": "^0.1.0-beta.12",
-    "@voila-dashboards/voila": "link:/home/martin/github/voila/packages/voila",
+    "@voila-dashboards/voila": "link:/home/martinrenou/github/voila/packages/voila",
     "es6-promise": "~4.2.8",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
