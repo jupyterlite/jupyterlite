@@ -66,16 +66,16 @@ export async function main() {
     //     '@jupyterlab/application-extension:faviconbusy'
     //   ].includes(id)
     // ),
-    // require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
-    //   [
-    //     // '@jupyterlab/apputils-extension:palette',
-    //     '@jupyterlab/apputils-extension:settings',
-    //     // '@jupyterlab/apputils-extension:state',
-    //     // '@jupyterlab/apputils-extension:themes',
-    //     // '@jupyterlab/apputils-extension:themes-palette-menu',
-    //     // '@jupyterlab/apputils-extension:toolbar-registry'
-    //   ].includes(id)
-    // ),
+    require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
+      [
+        // '@jupyterlab/apputils-extension:palette',
+        '@jupyterlab/apputils-extension:settings',
+        // '@jupyterlab/apputils-extension:state',
+        '@jupyterlab/apputils-extension:themes',
+        // '@jupyterlab/apputils-extension:themes-palette-menu',
+        // '@jupyterlab/apputils-extension:toolbar-registry'
+      ].includes(id)
+    ),
     // require('@jupyterlab/codemirror-extension').default.filter(({ id }) =>
     //   [
     //     '@jupyterlab/codemirror-extension:services',
@@ -109,7 +109,7 @@ export async function main() {
     require('@jupyterlab/markdownviewer-extension'),
     require('@jupyterlab/rendermime-extension'),
     // require('@jupyterlab/shortcuts-extension'),
-    // require('@jupyterlab/theme-light-extension'),
+    require('@jupyterlab/theme-light-extension'),
     // require('@jupyterlab/theme-dark-extension'),
     // require('@jupyterlab/translation-extension')
   ];
@@ -286,16 +286,16 @@ export async function main() {
 
   await serviceManager.ready;
 
-  console.log('App', app);
-  console.log('jupyterLiteServer', jupyterLiteServer);
-
   const search = window.location.search;
   const urlParams = new URLSearchParams(search);
   const notebookName = urlParams.get('notebook')?.trim();
 
   let notebook;
   try {
-    notebook = await app.serviceManager.contents.get(decodeURIComponent(notebookName));
+    notebook = await app.serviceManager.contents.get(
+      decodeURIComponent(notebookName),
+      { content: true }
+    );
   } catch(e) {
     // TODO Do this earlier and maybe differently
     const errordiv = document.createElement('div');
@@ -306,26 +306,40 @@ export async function main() {
 
   console.log('notebook', notebook);
 
+  const sessionManager = serviceManager.sessions;
+  await sessionManager.ready;
+
+  // TODO Spawn the right kernel depending on what's in the Notebook metadata
+  // Find the right jupyterlite plugin for doing this
+  const connection = await sessionManager.startNew({
+    // name: 'notebook.ipynb',
+    // path: kernelOptions.path,
+    type: 'notebook',
+    path: '',
+    kernel: {
+      name: 'python',
+    },
+  });
+  await connection.kernel.ready;
+
+  for (const cell of notebook.content.cells) {
+    switch (cell.cell_type) {
+      case 'code': {
+        const result = connection.kernel.requestExecute({
+          code: cell.source
+        });
+        result.done
+        break;
+      }
+    }
+  }
+
+  window.voiliteKernel = connection.kernel;
+  window.jupyterapp = app;
+
   // TODO Fill the HTML body with the requested template
   // TODO Spawn a kernel
   // 1) Find the requested notebook path
   // 2) Load the Notebook cells content and get kernel name
   // 3) Spawn kernel and render cell outputs in the right places
-
-  // const sessionManager = serviceManager.sessions;
-  // await sessionManager.ready;
-
-  // const connection = await sessionManager.startNew({
-  //   // name: 'notebook.ipynb',
-  //   // path: kernelOptions.path,
-  //   type: 'notebook',
-  //   path: '',
-  //   kernel: {
-  //     name: 'python',
-  //   },
-  // });
-  // await connection.kernel.ready;
-  // window.voiliteKernel = connection.kernel;
-
-  window.jupyterapp = app;
 }
