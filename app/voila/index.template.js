@@ -8,6 +8,11 @@ import { JupyterLiteServer } from '@jupyterlite/server';
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
+import {
+  IRenderMimeRegistry,
+  RenderMimeRegistry,
+  standardRendererFactories
+} from '@jupyterlab/rendermime';
 
 import { VoilaApp, plugins } from '@voila-dashboards/voila';
 
@@ -325,7 +330,9 @@ export async function main() {
   });
   await connection.kernel.ready;
 
-  const rendermime = new RenderMimeRegistry(RENDERERS);
+  const rendermime = new RenderMimeRegistry({
+    initialFactories: standardRendererFactories
+  });
 
   // Execute Notebook
   for (const cell of notebook.content.cells) {
