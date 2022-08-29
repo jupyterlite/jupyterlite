@@ -1,10 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { Widget } from '@lumino/widgets';
+
 import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
+import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 
 import { VoilaApp, plugins } from '@voila-dashboards/voila';
 
@@ -17,10 +20,10 @@ const serverExtensions = [
 ];
 
 const mimeExtensionsMods = [
-  // import('@jupyterlite/iframe-extension'),
-  // import('@jupyterlab/javascript-extension'),
+  import('@jupyterlite/iframe-extension'),
+  import('@jupyterlab/javascript-extension'),
   import('@jupyterlab/json-extension'),
-  // import('@jupyterlab/vega5-extension')
+  import('@jupyterlab/vega5-extension')
 ];
 
 const disabled = ['@jupyter-widgets/jupyterlab-manager'];
@@ -42,8 +45,6 @@ export async function main() {
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
   let baseMods = [
-    // Voila plugins
-    plugins,
     // @jupyterlite plugins
     // require('@jupyterlite/application-extension'),
     // require('@jupyterlite/retro-application-extension'),
@@ -111,7 +112,9 @@ export async function main() {
     // require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
     // require('@jupyterlab/theme-dark-extension'),
-    // require('@jupyterlab/translation-extension')
+    // require('@jupyterlab/translation-extension'),
+    // Voila plugins
+    plugins,
   ];
 
   // The motivation here is to only load a specific set of plugins dependending on
@@ -322,13 +325,26 @@ export async function main() {
   });
   await connection.kernel.ready;
 
+  const rendermime = new RenderMimeRegistry(RENDERERS);
+
+  // Execute Notebook
   for (const cell of notebook.content.cells) {
     switch (cell.cell_type) {
       case 'code': {
-        const result = connection.kernel.requestExecute({
+        const model = new OutputAreaModel({ trusted: true });
+        const area = new OutputArea({
+          model,
+          rendermime,
+        });
+
+        area.future = connection.kernel.requestExecute({
           code: cell.source
         });
-        result.done
+        const result = await area.future.done;
+
+        Widget.attach(area, app.shell.node);
+
+        console.log(result);
         break;
       }
     }
