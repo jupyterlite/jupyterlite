@@ -9,14 +9,23 @@ import { JupyterLiteServer } from '@jupyterlite/server';
 import { PageConfig } from '@jupyterlab/coreutils';
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import {
-  IRenderMimeRegistry,
   RenderMimeRegistry,
   standardRendererFactories
 } from '@jupyterlab/rendermime';
 
-import { VoilaApp, plugins } from '@voila-dashboards/voila';
+import {
+  KernelWidgetManager,
+  WidgetRenderer,
+  output,
+} from '@jupyter-widgets/jupyterlab-manager';
+import * as base from '@jupyter-widgets/base';
+import * as controls from '@jupyter-widgets/controls';
+
+import { VoilaApp, OutputModel, plugins } from '@voila-dashboards/voila';
 
 require('./style.js');
+
+const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 const serverExtensions = [
   import('@jupyterlite/javascript-kernel-extension'),
@@ -31,7 +40,54 @@ const mimeExtensionsMods = [
   import('@jupyterlab/vega5-extension')
 ];
 
-const disabled = ['@jupyter-widgets/jupyterlab-manager'];
+const disabled = [];
+
+
+class CustomWidgetManager extends KernelWidgetManager {
+  constructor(kernel, rendermime) {
+    super(kernel, rendermime);
+    rendermime.addFactory(
+      {
+        safe: false,
+        mimeTypes: [WIDGET_MIMETYPE],
+        createRenderer: options => new WidgetRenderer(options, this)
+      },
+      1
+    );
+    this._registerWidgets();
+  }
+
+  create_view(model) {
+    console.log('create view for ', model);
+    return super.create_view(model);
+  }
+
+  get_model(model) {
+    console.log('get model for ', model);
+    return super.get_model(model);
+  }
+
+  _registerWidgets() {
+    this.register({
+      name: '@jupyter-widgets/base',
+      version: base.JUPYTER_WIDGETS_VERSION,
+      exports: base
+    });
+    this.register({
+      name: '@jupyter-widgets/controls',
+      version: controls.JUPYTER_CONTROLS_VERSION,
+      exports: controls
+    });
+    this.register({
+      name: '@jupyter-widgets/output',
+      version: output.OUTPUT_WIDGET_VERSION,
+      exports: {
+        ...output,
+        OutputModel
+      }
+    });
+  }
+}
 
 async function createModule(scope, module) {
   try {
@@ -119,8 +175,17 @@ export async function main() {
     // require('@jupyterlab/theme-dark-extension'),
     // require('@jupyterlab/translation-extension'),
     // Voila plugins
-    plugins,
+    plugins.default.filter(({ id }) =>
+      [
+        // '@voila-dashboards/voila:widget-manager',
+        // '@voila-dashboards/voila:stop-polling',
+        '@voila-dashboards/voila:translator',
+        '@voila-dashboards/voila:paths',
+      ].includes(id)
+    ),
   ];
+
+  console.log('voila plugins', plugins);
 
   // The motivation here is to only load a specific set of plugins dependending on
   // the current page
@@ -273,6 +338,9 @@ export async function main() {
     }
   });
 
+  console.log('plugins: ', litePluginsToRegister);
+  console.log('mods: ', mods);
+
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(litePluginsToRegister);
@@ -320,42 +388,50 @@ export async function main() {
   // TODO Spawn the right kernel depending on what's in the Notebook metadata
   // Find the right jupyterlite plugin for doing this
   const connection = await sessionManager.startNew({
-    // name: 'notebook.ipynb',
-    // path: kernelOptions.path,
+    name: notebook.name,
+    path: notebook.name,
     type: 'notebook',
-    path: '',
     kernel: {
-      name: 'python',
+      name: 'xeus-python',
     },
   });
-  await connection.kernel.ready;
 
-  const rendermime = new RenderMimeRegistry({
-    initialFactories: standardRendererFactories
-  });
+  connection.kernel.connectionStatusChanged.connect(async (_, status) => {
+    if (status === 'connected') {
+      await connection.kernel.requestKernelInfo();
 
-  // Execute Notebook
-  for (const cell of notebook.content.cells) {
-    switch (cell.cell_type) {
-      case 'code': {
-        const model = new OutputAreaModel({ trusted: true });
-        const area = new OutputArea({
-          model,
-          rendermime,
-        });
+      const rendermime = new RenderMimeRegistry({
+        initialFactories: standardRendererFactories
+      });
 
-        area.future = connection.kernel.requestExecute({
-          code: cell.source
-        });
-        const result = await area.future.done;
+      // Create Voila widget manager
+      const widgetManager = new CustomWidgetManager(connection.kernel, rendermime);
+      console.log(widgetManager);
 
-        Widget.attach(area, app.shell.node);
+      // Execute Notebook
+      for (const cell of notebook.content.cells) {
+        switch (cell.cell_type) {
+          case 'code': {
+            const model = new OutputAreaModel({ trusted: true });
+            const area = new OutputArea({
+              model,
+              rendermime,
+            });
 
-        console.log(result);
-        break;
+            area.future = connection.kernel.requestExecute({
+              code: cell.source
+            });
+            const result = await area.future.done;
+
+            Widget.attach(area, app.shell.node);
+
+            console.log(result);
+            break;
+          }
+        }
       }
     }
-  }
+  })
 
   window.voiliteKernel = connection.kernel;
   window.jupyterapp = app;
