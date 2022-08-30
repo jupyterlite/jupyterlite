@@ -1,0 +1,18 @@
+[build-system]
+requires = ["flit_core >=3.7.1,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "widgetsnbextension"
+authors = [
+    {name = "JupyterLite Contributors"},
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dynamic = ["version", "description"]
+classifiers = [
+    "License :: OSI Approved :: BSD License",
+]
+
+[project.urls]
+Source = "https://github.com/jupyterlite/jupyterlite"
