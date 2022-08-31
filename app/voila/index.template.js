@@ -1,14 +1,16 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Widget } from '@lumino/widgets';
+import { Panel, Widget } from '@lumino/widgets';
 
 import { JupyterLiteServer } from '@jupyterlite/server';
 
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
+
 import { OutputArea, OutputAreaModel } from '@jupyterlab/outputarea';
 import {
+  IRenderMimeRegistry,
   RenderMimeRegistry,
   standardRendererFactories
 } from '@jupyterlab/rendermime';
@@ -40,10 +42,16 @@ const mimeExtensionsMods = [
   import('@jupyterlab/vega5-extension')
 ];
 
-const disabled = [];
+const disabled = ['@jupyter-widgets/jupyterlab-manager'];
 
 
-class CustomWidgetManager extends KernelWidgetManager {
+let resolveManager;
+const managerPromise = new Promise((resolve) => {
+  resolveManager = resolve;
+})
+
+
+class VoilaWidgetManager extends KernelWidgetManager {
   constructor(kernel, rendermime) {
     super(kernel, rendermime);
     rendermime.addFactory(
@@ -52,19 +60,9 @@ class CustomWidgetManager extends KernelWidgetManager {
         mimeTypes: [WIDGET_MIMETYPE],
         createRenderer: options => new WidgetRenderer(options, this)
       },
-      1
+      -10
     );
     this._registerWidgets();
-  }
-
-  create_view(model) {
-    console.log('create view for ', model);
-    return super.create_view(model);
-  }
-
-  get_model(model) {
-    console.log('get model for ', model);
-    return super.get_model(model);
   }
 
   _registerWidgets() {
@@ -88,6 +86,33 @@ class CustomWidgetManager extends KernelWidgetManager {
     });
   }
 }
+
+
+/**
+ * The Voila widgets manager plugin.
+ */
+ const widgetManager = {
+  id: '@voila-dashboards/voila:widget-manager',
+  autoStart: true,
+  requires: [IRenderMimeRegistry],
+  provides: base.IJupyterWidgetRegistry,
+  activate: async (
+    app,
+    rendermime
+  ) => {
+    console.log('Voila manager activated!!!!!!!');
+
+    return {
+      registerWidget: async (data) => {
+        console.log('register data', data);
+        const manager = await managerPromise;
+
+        manager.register(data);
+      }
+    };
+  }
+};
+
 
 async function createModule(scope, module) {
   try {
@@ -177,12 +202,13 @@ export async function main() {
     // Voila plugins
     plugins.default.filter(({ id }) =>
       [
+        // Not including Voila's widget manager
         // '@voila-dashboards/voila:widget-manager',
-        // '@voila-dashboards/voila:stop-polling',
         '@voila-dashboards/voila:translator',
         '@voila-dashboards/voila:paths',
       ].includes(id)
     ),
+    widgetManager,
   ];
 
   console.log('voila plugins', plugins);
@@ -396,6 +422,11 @@ export async function main() {
     },
   });
 
+  const mainLayout = new Panel();
+
+  document.body.style.background = 'var(--jp-layout-color1)';
+  document.body.style.height = '100%';
+
   connection.kernel.connectionStatusChanged.connect(async (_, status) => {
     if (status === 'connected') {
       await connection.kernel.requestKernelInfo();
@@ -405,8 +436,8 @@ export async function main() {
       });
 
       // Create Voila widget manager
-      const widgetManager = new CustomWidgetManager(connection.kernel, rendermime);
-      console.log(widgetManager);
+      const widgetManager = new VoilaWidgetManager(connection.kernel, rendermime);
+      resolveManager(widgetManager);
 
       // Execute Notebook
       for (const cell of notebook.content.cells) {
@@ -423,22 +454,16 @@ export async function main() {
             });
             const result = await area.future.done;
 
-            Widget.attach(area, app.shell.node);
-
-            console.log(result);
+            mainLayout.addWidget(area);
             break;
           }
         }
       }
+
+      Widget.attach(mainLayout, app.shell.node);
     }
   })
 
   window.voiliteKernel = connection.kernel;
   window.jupyterapp = app;
-
-  // TODO Fill the HTML body with the requested template
-  // TODO Spawn a kernel
-  // 1) Find the requested notebook path
-  // 2) Load the Notebook cells content and get kernel name
-  // 3) Spawn kernel and render cell outputs in the right places
 }

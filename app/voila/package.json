@@ -3,6 +3,9 @@
   "version": "0.1.0-beta.12",
   "private": true,
   "resolutions": {
+    "@jupyter-widgets/base": "^6.0.0",
+    "@jupyter-widgets/controls": "^5.0.0",
+    "@jupyter-widgets/output": "^6.0.0",
     "@jupyterlab/application": "~3.4.5",
     "@jupyterlab/application-extension": "~3.4.5",
     "@jupyterlab/apputils": "~3.4.5",
@@ -84,6 +87,9 @@
     "yjs": "^13.5.41"
   },
   "dependencies": {
+    "@jupyter-widgets/base": "^6.0.0",
+    "@jupyter-widgets/controls": "^5.0.0",
+    "@jupyter-widgets/output": "^6.0.0",
     "@jupyterlab/application-extension": "~3.4.5",
     "@jupyterlab/apputils-extension": "~3.4.5",
     "@jupyterlab/cell-toolbar-extension": "~3.4.5",
@@ -148,6 +154,9 @@
       "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
+      "@jupyter-widgets/base",
+      "@jupyter-widgets/controls",
+      "@jupyter-widgets/output",
       "@jupyterlab/application",
       "@jupyterlab/apputils",
       "@jupyterlab/cell-toolbar",
