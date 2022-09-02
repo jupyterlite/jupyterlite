@@ -100,11 +100,8 @@ class VoilaWidgetManager extends KernelWidgetManager {
     app,
     rendermime
   ) => {
-    console.log('Voila manager activated!!!!!!!');
-
     return {
       registerWidget: async (data) => {
-        console.log('register data', data);
         const manager = await managerPromise;
 
         manager.register(data);
@@ -131,74 +128,16 @@ export async function main() {
   const mimeExtensions = await Promise.all(mimeExtensionsMods);
 
   let baseMods = [
-    // @jupyterlite plugins
-    // require('@jupyterlite/application-extension'),
-    // require('@jupyterlite/retro-application-extension'),
-    // @retrolab plugins
-    // do not enable the document opener from RetroLab
-    // require('@retrolab/application-extension').default.filter(
-    //   ({ id }) => ![
-    //     '@retrolab/application-extension:logo',
-    //     '@retrolab/application-extension:opener'
-    //   ].includes(id)
-    // ),
-    // require('@retrolab/help-extension'),
-    // require('@retrolab/notebook-extension'),
-
-    // @jupyterlab plugins
-    // require('@jupyterlab/application-extension').default.filter(({ id }) =>
-    //   [
-    //     '@jupyterlab/application-extension:commands',
-    //     '@jupyterlab/application-extension:context-menu',
-    //     '@jupyterlab/application-extension:faviconbusy'
-    //   ].includes(id)
-    // ),
     require('@jupyterlab/apputils-extension').default.filter(({ id }) =>
       [
-        // '@jupyterlab/apputils-extension:palette',
         '@jupyterlab/apputils-extension:settings',
-        // '@jupyterlab/apputils-extension:state',
         '@jupyterlab/apputils-extension:themes',
-        // '@jupyterlab/apputils-extension:themes-palette-menu',
-        // '@jupyterlab/apputils-extension:toolbar-registry'
       ].includes(id)
     ),
-    // require('@jupyterlab/codemirror-extension').default.filter(({ id }) =>
-    //   [
-    //     '@jupyterlab/codemirror-extension:services',
-    //     '@jupyterlab/codemirror-extension:codemirror'
-    //   ].includes(id)
-    // ),
-    // require('@jupyterlab/completer-extension').default.filter(({ id }) =>
-    //   ['@jupyterlab/completer-extension:manager'].includes(id)
-    // ),
-    // require('@jupyterlab/console-extension'),
-    // require('@jupyterlab/docmanager-extension').default.filter(({ id }) =>
-    //   [
-    //     '@jupyterlab/docmanager-extension:plugin',
-    //     '@jupyterlab/docmanager-extension:manager'
-    //   ].includes(id)
-    // ),
-    // require('@jupyterlab/filebrowser-extension').default.filter(({ id }) =>
-    //   [
-    //     '@jupyterlab/filebrowser-extension:factory'
-    //   ].includes(id)
-    // ),
-    // require('@jupyterlab/mainmenu-extension'),
     require('@jupyterlab/mathjax2-extension'),
-    // require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
-    //   [
-    //     '@jupyterlab/notebook-extension:factory',
-    //     '@jupyterlab/notebook-extension:tracker',
-    //     '@jupyterlab/notebook-extension:widget-factory'
-    //   ].includes(id)
-    // ),
     require('@jupyterlab/markdownviewer-extension'),
     require('@jupyterlab/rendermime-extension'),
-    // require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
-    // require('@jupyterlab/theme-dark-extension'),
-    // require('@jupyterlab/translation-extension'),
     // Voila plugins
     plugins.default.filter(({ id }) =>
       [
@@ -210,8 +149,6 @@ export async function main() {
     ),
     widgetManager,
   ];
-
-  console.log('voila plugins', plugins);
 
   // The motivation here is to only load a specific set of plugins dependending on
   // the current page
@@ -364,9 +301,6 @@ export async function main() {
     }
   });
 
-  console.log('plugins: ', litePluginsToRegister);
-  console.log('mods: ', mods);
-
   // create the in-browser JupyterLite Server
   const jupyterLiteServer = new JupyterLiteServer({});
   jupyterLiteServer.registerPluginModules(litePluginsToRegister);
@@ -405,8 +339,6 @@ export async function main() {
     document.body.appendChild(errordiv);
     return;
   }
-
-  console.log('notebook', notebook);
 
   const sessionManager = serviceManager.sessions;
   await sessionManager.ready;
