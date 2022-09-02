@@ -48,8 +48,8 @@ You can build your own JupyterLite website in a couple of minutes, with custom
 extensions and packages.
 
 See the
-[documentation](https://jupyterlite.readthedocs.io/en/latest/quickstart/deploy.html)
-for more details.
+[documentation](https://jupyterlite.readthedocs.io/en/latest/quickstart/deploy.html) for
+more details.
 
 ### Browser-based Interactive Computing
 
