@@ -18,9 +18,11 @@ tasks:
       export MAMBA_ROOT_PREFIX=/workspace/.micromamba
       export MAMBA_EXE=/workspace/bin/micromamba
       $(/workspace/bin/micromamba shell hook --shell=bash)
+      export JUPYTER_PREFER_ENV_PATH=1
       micromamba activate
       EOT
       source /workspace/bin/activate-env.sh
+      micromamba config append channels conda-forge
       micromamba install -n base -y -f .binder/environment.yml
       doit build
     command: |
@@ -37,6 +39,11 @@ tasks:
       gp sync-await setup
       source /workspace/bin/activate-env.sh
       doit watch:docs
+  - name: auto-activate
+    command: |
+      gp sync-await setup
+      echo "source /workspace/bin/activate-env.sh" >> ~/.bashrc
+      source /workspace/bin/activate-env.sh
 ports:
   - port: 5000
   - port: 8000
