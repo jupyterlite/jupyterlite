@@ -50,7 +50,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         argv: [],
         resources: {
           'logo-32x32': 'TODO',
-          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png'),
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.svg'),
         },
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
