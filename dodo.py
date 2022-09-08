@@ -912,6 +912,7 @@ class C:
         "pathspec",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
+    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets<8"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -1325,7 +1326,7 @@ class U:
     def deps_to_wheels(all_deps):
         from yaml import safe_load
 
-        required_deps = ["ipykernel", "notebook"]
+        required_deps = [*C.REQUIRED_WHEEL_DEPS]
         ignored_deps = [
             p
             for p in json.loads(B.PYODIDE_REPODATA.read_text(**C.ENC))[
