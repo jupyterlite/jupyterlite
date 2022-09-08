@@ -916,7 +916,7 @@ class C:
         "pathspec",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
-    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets<8"]
+    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))

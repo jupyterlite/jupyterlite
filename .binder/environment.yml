@@ -12,6 +12,7 @@ dependencies:
   - pyflakes
   - twine
   # demo stuff
+  - ipywidgets >=8,<9
   - jupyter-server-proxy
   - jupyterlab >=3.4.6,<4
   - retrolab >=0.3.21,<0.4
@@ -22,7 +23,7 @@ dependencies:
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
   - jupyterlab_miami_nights
-  - jupyterlab_widgets >=1,<2
+  - jupyterlab_widgets >=3.0.0,<4.0.0
   - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
@@ -37,7 +38,6 @@ dependencies:
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
   - ipycanvas
-  - ipycytoscape
   - ipyleaflet
   - ipympl
   - ipyvue
