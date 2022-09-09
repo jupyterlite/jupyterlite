@@ -915,8 +915,18 @@ class C:
         # broken?
         "pathspec",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
-    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets<8"]
+    IGNORED_WHEELS = [
+        # we provide shims
+        "ipykernel",
+        "pyolite",
+        # conda package has bad pin(#312)
+        "ipycytoscape",
+    ]
+    REQUIRED_WHEEL_DEPS = [
+        # we want all the dependencies, but not necessarily the packages
+        "ipykernel",
+        "notebook",
+    ]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
