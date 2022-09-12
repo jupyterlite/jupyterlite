@@ -22,6 +22,7 @@ dependencies:
   # the chunk below populates `../examples/jupyter_lite_config.json`,
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
+  - ipycytoscape
   - jupyterlab_miami_nights
   - jupyterlab_widgets >=3.0.0,<4.0.0
   - jupyterlab-drawio
