@@ -919,8 +919,6 @@ class C:
         # we provide shims
         "ipykernel",
         "pyolite",
-        # conda package has bad pin(#312)
-        "ipycytoscape",
     ]
     REQUIRED_WHEEL_DEPS = [
         # we want all the dependencies, but not necessarily the packages
