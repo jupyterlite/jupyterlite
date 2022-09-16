@@ -494,14 +494,28 @@ const workspacesRoutesPlugin: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IWorkspaces],
   activate(app: JupyterLiteServer, workspaces: IWorkspaces) {
-    app.router.get('/api/workspaces/?', async (req: Router.IRequest) => {
+    app.router.get('/api/workspaces/?$', async (req: Router.IRequest) => {
       const res = await workspaces.getAll();
+      console.warn('getAll', res);
       return new Response(JSON.stringify(res));
     });
-    app.router.get('/api/workspaces/(.+)', async (req: Router.IRequest, id: string) => {
-      const res = await workspaces.getWorkspace(id);
-      return new Response(JSON.stringify(res));
-    });
+    app.router.get(
+      '/api/workspaces/(.+)',
+      async (req: Router.IRequest, workspaceId: string) => {
+        const res = await workspaces.getWorkspace(workspaceId);
+        console.warn('get', res, workspaceId);
+        return new Response(JSON.stringify(res));
+      }
+    );
+    app.router.put(
+      '/api/workspaces/(.+)',
+      async (req: Router.IRequest, workspaceId: string) => {
+        const body = req.body as any;
+        const res = await workspaces.setWorkspace(workspaceId, body);
+        console.warn('put', res, workspaceId);
+        return new Response(null, { status: 204 });
+      }
+    );
   },
 };
 

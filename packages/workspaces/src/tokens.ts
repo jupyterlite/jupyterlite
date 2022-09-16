@@ -1,4 +1,5 @@
-// packages/services/src/workspace/index.ts
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 import { Token } from '@lumino/coreutils';
 import { Workspace } from '@jupyterlab/services/lib/workspace';
@@ -11,7 +12,7 @@ export const IWorkspaces = new Token<IWorkspaces>(
 );
 
 /**
- * The interface for the Licenses service.
+ * The interface for the Workspaces service.
  */
 
 export interface IWorkspaces {
@@ -29,7 +30,7 @@ export interface IWorkspaces {
 }
 
 /**
- * A named bundle of workspaces
+ * A named bundle of Workspaces
  */
 export namespace IWorkspaces {
   export interface IWorkspacesBundle {

@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import { Workspace } from '@jupyterlab/services/lib/workspace';
 
 import { IWorkspaces } from './tokens';
@@ -104,7 +107,22 @@ export class Workspaces implements IWorkspaces {
     workspaceId: string,
     workspace: Workspace.IWorkspace
   ): Promise<Workspace.IWorkspace> {
-    await (await this.storage).setItem<Workspace.IWorkspace>(workspaceId, workspace);
+    const { data, metadata } = workspace;
+    const now = new Date().toISOString();
+    const dateTimes = {
+      created: now,
+      last_udpated: now,
+    };
+    await (
+      await this.storage
+    ).setItem<Workspace.IWorkspace>(workspaceId, {
+      data,
+      metadata: {
+        // TODO: get these added to the upstream metadata
+        ...(dateTimes as any),
+        ...metadata,
+      },
+    });
     return this.getWorkspace(workspaceId);
   }
 
@@ -123,7 +141,9 @@ export class Workspaces implements IWorkspaces {
   private _ready: PromiseDelegate<void>;
 }
 
+/** A namespace for Workspaces types */
 export namespace Workspaces {
+  /** Initialization options for Workspaces */
   export interface IOptions {
     localforage: typeof localforage;
     storageName?: string | null;
