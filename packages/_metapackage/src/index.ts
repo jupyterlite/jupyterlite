@@ -17,3 +17,4 @@ import '@jupyterlite/session';
 import '@jupyterlite/settings';
 import '@jupyterlite/types';
 import '@jupyterlite/ui-components';
+import '@jupyterlite/workspaces';

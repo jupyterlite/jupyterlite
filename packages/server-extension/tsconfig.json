@@ -23,6 +23,9 @@
     },
     {
       "path": "../translation"
+    },
+    {
+      "path": "../workspaces"
     }
   ]
 }

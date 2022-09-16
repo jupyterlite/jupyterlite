@@ -32,6 +32,8 @@ import { ISettings, Settings } from '@jupyterlite/settings';
 
 import { ITranslation, Translation } from '@jupyterlite/translation';
 
+import { IWorkspaces, Workspaces } from '@jupyterlite/workspaces';
+
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
 
 import localforage from 'localforage';
@@ -467,6 +469,43 @@ const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 /**
+ * The licenses service plugin
+ */
+const workspacesPlugin: JupyterLiteServerPlugin<IWorkspaces> = {
+  id: '@jupyterlite/server-extension:workspaces',
+  autoStart: true,
+  provides: IWorkspaces,
+  requires: [ILocalForage],
+  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+    const { localforage } = forage;
+    const workspaces = new Workspaces({ localforage });
+
+    app.started.then(() => workspaces.initialize().catch(console.warn));
+
+    return workspaces;
+  },
+};
+
+/**
+ * A plugin providing the routes for the licenses service.
+ */
+const workspacesRoutesPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:workspaces-routes',
+  autoStart: true,
+  requires: [IWorkspaces],
+  activate(app: JupyterLiteServer, workspaces: IWorkspaces) {
+    app.router.get('/api/workspaces/?', async (req: Router.IRequest) => {
+      const res = await workspaces.getAll();
+      return new Response(JSON.stringify(res));
+    });
+    app.router.get('/api/workspaces/(.+)', async (req: Router.IRequest, id: string) => {
+      const res = await workspaces.getWorkspace(id);
+      return new Response(JSON.stringify(res));
+    });
+  },
+};
+
+/**
  * A plugin providing the routes for the nbconvert service.
  * TODO: provide the service in a separate plugin?
  */
@@ -633,10 +672,10 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   contentsPlugin,
   contentsRoutesPlugin,
   emscriptenFileSystemPlugin,
-  kernelsPlugin,
-  kernelsRoutesPlugin,
   kernelSpecPlugin,
   kernelSpecRoutesPlugin,
+  kernelsPlugin,
+  kernelsRoutesPlugin,
   licensesPlugin,
   licensesRoutesPlugin,
   localforageMemoryPlugin,
@@ -649,6 +688,8 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   settingsRoutesPlugin,
   translationPlugin,
   translationRoutesPlugin,
+  workspacesPlugin,
+  workspacesRoutesPlugin,
 ];
 
 export default plugins;

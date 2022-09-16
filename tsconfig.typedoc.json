@@ -68,6 +68,9 @@
     },
     {
       "path": "./packages/ui-components"
+    },
+    {
+      "path": "./packages/workspaces"
     }
   ]
 }

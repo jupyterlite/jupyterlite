@@ -15,7 +15,7 @@ export const THIRD_PARTY_LICENSES = 'third-party-licenses.json';
 export const ILicenses = new Token<ILicenses>('@jupyterlite/licenses:ILicenses');
 
 /**
- * The interface for the Settings service.
+ * The interface for the Licenses service.
  */
 export interface ILicenses {
   /**

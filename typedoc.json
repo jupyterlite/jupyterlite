@@ -21,7 +21,8 @@
     "packages/settings/src/index.ts",
     "packages/translation/src/index.ts",
     "packages/types/src/index.ts",
-    "packages/ui-components/src/index.ts"
+    "packages/ui-components/src/index.ts",
+    "packages/workspaces/src/index.ts"
   ],
   "githubPages": false,
   "logLevel": "Verbose",

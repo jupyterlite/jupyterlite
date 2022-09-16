@@ -24,6 +24,7 @@
     { "path": "../settings" },
     { "path": "../translation" },
     { "path": "../types" },
-    { "path": "../ui-components" }
+    { "path": "../ui-components" },
+    { "path": "../workspaces" }
   ]
 }
