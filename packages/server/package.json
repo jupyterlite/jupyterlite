@@ -2,33 +2,27 @@
   "name": "@jupyterlite/server",
   "version": "0.1.0-beta.12",
   "description": "JupyterLite - Server",
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
-  "bugs": {
-    "url": "https://github.com/jupyterlite/jupyterlite/issues"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
-  "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors",
-  "sideEffects": [
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "main": "lib/index.js",
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js",
+    "lib/*.js.map",
     "style/*.css",
     "style/index.js"
   ],
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "style": "style/index.css",
   "directories": {
     "lib": "lib/"
   },
-  "files": [
-    "lib/*.d.ts",
-    "lib/*.js.map",
-    "lib/*.js",
-    "style/*.css",
-    "style/index.js"
-  ],
   "scripts": {
     "build": "tsc -b",
     "build:test": "echo TODO",
@@ -41,6 +35,11 @@
     "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "watch": "tsc -b --watch"
   },
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@jupyterlab/coreutils": "~5.4.6",
     "@jupyterlab/nbformat": "~3.4.6",
@@ -70,5 +69,6 @@
   "publishConfig": {
     "access": "public"
   },
+  "style": "style/index.css",
   "styleModule": "style/index.js"
 }

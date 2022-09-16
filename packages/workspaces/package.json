@@ -2,26 +2,25 @@
   "name": "@jupyterlite/workspaces",
   "version": "0.1.0-beta.12",
   "description": "JupyterLite - Workspaces",
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
-  "bugs": {
-    "url": "https://github.com/jupyterlite/jupyterlite/issues"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
-  "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js",
+    "lib/*.js.map"
+  ],
   "directories": {
     "lib": "lib/"
   },
-  "files": [
-    "lib/*.d.ts",
-    "lib/*.js.map",
-    "lib/*.js"
-  ],
   "scripts": {
     "build": "tsc -b",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
@@ -29,6 +28,7 @@
     "prepublishOnly": "npm run build",
     "watch": "tsc -b --watch"
   },
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@jupyterlab/coreutils": "~5.4.6"
   },

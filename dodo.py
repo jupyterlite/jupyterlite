@@ -158,8 +158,26 @@ def task_lint():
         ],
     )
 
+    pkg_json_tasks = []
+
+    if not C.CI:
+        for pkg_json in [*P.PACKAGE_JSONS, P.ROOT_PACKAGE_JSON]:
+            name = f"prettier:package:{pkg_json.parent.name}"
+            pkg_json_tasks += [f"lint:{name}"]
+            yield dict(
+                name=name,
+                file_dep=[pkg_json],
+                actions=[
+                    (U.normalize_json, [pkg_json]),
+                    U.do(
+                        "yarn", "--silent", "prettier-package-json", "--write", pkg_json
+                    ),
+                ],
+            )
+
     yield U.ok(
         B.OK_PRETTIER,
+        task_dep=pkg_json_tasks,
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
@@ -841,10 +859,29 @@ def task_test():
 def task_repo():
     pkg_jsons = [P.ROOT / "app" / app / "package.json" for app in D.APPS]
     yield dict(
-        name="integrity",
+        name="app:resolutions",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
+        actions=[U.update_app_resolutions, U.do(*C.PRETTIER, *pkg_jsons)],
         file_dep=[B.YARN_INTEGRITY, *pkg_jsons],
+    )
+
+    yield dict(
+        name="metapackage:package.json",
+        doc="ensure metapackage metadata is up-to-date",
+        actions=[U.update_metapackage_json],
+        file_dep=[p for p in P.PACKAGE_JSONS if p != P.META_PACKAGE_JSON],
+        targets=[P.META_PACKAGE_JSON],
+    )
+
+    yield dict(
+        name="metapackage:tsconfig.json",
+        doc="ensure metapackage tsconfig is up-to-date",
+        actions=[
+            U.update_metapackage_tsconfig,
+            [*C.PRETTIER, P.META_PACKAGE_TSCONFIG],
+        ],
+        file_dep=[p for p in P.TSCONFIGS if p != P.META_PACKAGE_TSCONFIG],
+        targets=[P.META_PACKAGE_TSCONFIG],
     )
 
 
@@ -949,6 +986,9 @@ class P:
     ROOT = DODO.parent
     PACKAGES = ROOT / "packages"
     PACKAGE_JSONS = sorted(PACKAGES.glob("*/package.json"))
+    TSCONFIGS = sorted(PACKAGES.glob("*/tsconfig.json"))
+    META_PACKAGE_JSON = PACKAGES / "_metapackage/package.json"
+    META_PACKAGE_TSCONFIG = PACKAGES / "_metapackage/tsconfig.json"
     UI_COMPONENTS = PACKAGES / "ui-components"
     UI_COMPONENTS_ICONS = UI_COMPONENTS / "style" / "icons"
     ROOT_PACKAGE_JSON = ROOT / "package.json"
@@ -1097,6 +1137,7 @@ class L:
         P.PACKAGES.rglob("*/src/**/*.ts"),
     )
     ALL_JSON = _clean_paths(
+        P.TSCONFIGS,
         P.PACKAGE_JSONS,
         P.APP_JSONS,
         P.APP_EXTRA_JSON,
@@ -1685,7 +1726,7 @@ class U:
             shutil.copy2(whl_path, wheel_dir / whl_path.name)
 
     @staticmethod
-    def integrity():
+    def update_app_resolutions():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
             app = json.loads(app_json.read_text(**C.ENC))
@@ -1711,6 +1752,61 @@ class U:
 
         for app in D.APPS:
             _ensure_resolutions(app)
+
+    @staticmethod
+    def update_metapackage_json():
+        meta_pkg_data = json.loads(P.META_PACKAGE_JSON.read_text(**C.ENC))
+        changed = []
+        for pkg_json in P.PACKAGE_JSONS:
+            if pkg_json == P.META_PACKAGE_JSON:
+                continue
+            pkg_data = D.PACKAGE_JSONS[pkg_json.parent.name]
+            pkg_name = pkg_data["name"]
+            if pkg_name not in meta_pkg_data["dependencies"]:
+                path = pkg_json.parent.name
+                meta_pkg_data["dependencies"][pkg_name] = f"file:../{path}"
+                changed += [pkg_name]
+
+        if not changed:
+            return
+
+        if C.CI:
+            print(P.META_PACKAGE_JSON, "is missing", changed)
+            return False
+
+        P.META_PACKAGE_JSON.write_text(
+            json.dumps(meta_pkg_data, indent=2) + "\n", **C.ENC
+        )
+
+    @staticmethod
+    def update_metapackage_tsconfig():
+        raw = P.META_PACKAGE_TSCONFIG.read_text(**C.ENC)
+        meta_tsconfig = json.loads(raw)
+        refs = meta_tsconfig["references"]
+        changed = []
+        for tsconfig in P.TSCONFIGS:
+            if tsconfig == P.META_PACKAGE_TSCONFIG:
+                continue
+            rel = f"../{tsconfig.parent.name}"
+            if any(ref["path"] == rel for ref in refs):
+                continue
+            changed += [rel]
+            meta_tsconfig["references"] += [{"path": rel}]
+
+        if not changed:
+            return
+
+        if C.CI:
+            print(P.META_PACKAGE_TSCONFIG, "is missing", changed)
+            return False
+
+        meta_tsconfig["references"] = sorted(
+            meta_tsconfig["references"], key=lambda x: x["path"]
+        )
+
+        P.META_PACKAGE_TSCONFIG.write_text(
+            json.dumps(meta_tsconfig, indent=2) + "\n", **C.ENC
+        )
 
     @staticmethod
     def fetch_pyodide_repodata():
@@ -1754,6 +1850,17 @@ class U:
                 f"?name=pypi/[name].[ext]&context=.{bang}';"
             ]
         B.PYOLITE_WHEEL_TS.write_text("\n".join(sorted(lines) + [""]))
+
+    @staticmethod
+    def normalize_json(path):
+        if not path.exists:
+            print(path, "does not exist to be normalized", flush=True)
+            return False
+        old = path.read_text(**C.ENC)
+        data = json.loads(old)
+        new = json.dumps(data)
+        if new.strip() != old.strip():
+            path.write_text(new, **C.ENC)
 
 
 # environment overloads

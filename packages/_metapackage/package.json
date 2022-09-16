@@ -1,24 +1,24 @@
 {
-  "name": "@jupyterlite/metapackage",
   "private": true,
+  "name": "@jupyterlite/metapackage",
   "version": "0.1.0-beta.12",
   "description": "JupyterLite - Metapackage",
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributor",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
-  "bugs": {
-    "url": "https://github.com/jupyterlite/jupyterlite/issues"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite.git"
   },
-  "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributor",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "watch": "tsc -b -w --preserveWatchOutput"
   },
+  "types": "lib/index.d.ts",
   "dependencies": {
     "@jupyterlite/application": "file:../application",
     "@jupyterlite/application-extension": "file:../application-extension",
@@ -33,11 +33,14 @@
     "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
     "@jupyterlite/repl-extension": "file:../repl-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
-    "@jupyterlite/server": "file:../server-extension",
+    "@jupyterlite/server": "file:../server",
+    "@jupyterlite/server-extension": "file:../server-extension",
     "@jupyterlite/session": "file:../session",
     "@jupyterlite/settings": "file:../settings",
     "@jupyterlite/translation": "file:../translation",
-    "@jupyterlite/ui-components": "file:../ui-components"
+    "@jupyterlite/types": "file:../types",
+    "@jupyterlite/ui-components": "file:../ui-components",
+    "@jupyterlite/workspaces": "file:../workspaces"
   },
   "devDependencies": {
     "typescript": "~4.5.2"

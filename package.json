@@ -1,23 +1,16 @@
 {
+  "private": true,
   "name": "@jupyterlite/root",
   "version": "0.1.0b12",
-  "private": true,
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
-  "bugs": {
-    "url": "https://github.com/jupyterlite/jupyterlite/issues"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyterlite/jupyterlite"
   },
-  "license": "BSD-3-Clause",
-  "author": "JupyterLite Contributors",
-  "workspaces": {
-    "packages": [
-      "app",
-      "app/*",
-      "packages/*"
-    ]
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
   },
   "scripts": {
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
@@ -35,21 +28,23 @@
     "install": "lerna bootstrap",
     "lint": "yarn prettier:fix && yarn eslint:fix",
     "lint:check": "yarn prettier:check && yarn eslint:check",
-    "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
-    "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "publish": "yarn clean && yarn build && lerna publish",
     "serve": "node scripts/serve.js",
     "serve:py": "cd app && python -m http.server -b 127.0.0.1 8000",
     "test": "lerna run test",
+    "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
+    "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
     "watch": "run-p watch:lib watch:app",
     "watch:app": "lerna exec --stream --stream --parallel --scope @jupyterlite/app yarn watch",
     "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage yarn watch"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "workspaces": {
+    "packages": [
+      "app",
+      "app/*",
+      "packages/*"
+    ]
   },
   "resolutions": {
     "json-schema": "^0.4.0",
@@ -74,6 +69,7 @@
     "lint-staged": "^10.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "~2.5.1",
+    "prettier-package-json": "^2.6.4",
     "rimraf": "^3.0.2",
     "shell-quote": "^1.7.2",
     "svgo": "^2.3.0",
@@ -81,5 +77,10 @@
     "typedoc-plugin-markdown": "~3.11.13",
     "typescript": "~4.5.2",
     "yarn-deduplicate": "^3.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
