@@ -161,6 +161,7 @@ DEFAULT_FILE_TYPES = dict(
         ipynb=[[".ipynb"], ["application/x-ipynb+json"]],
         jsmap=[[".map"], ["application/json"]],
         json=[[".json"], ["application/json"]],
+        jupyterlab_workspace=[[".jupyterlab-workspace"], ["application/json"]],
     ),
     base64=dict(
         gzip=[[".tgz", ".gz", ".gzip"], ["application/gzip"]],
