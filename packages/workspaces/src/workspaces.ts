@@ -1,5 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
+import { Debouncer } from '@lumino/polling';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
@@ -12,6 +13,7 @@ export class Workspaces implements IWorkspaces {
   constructor(options: Workspaces.IOptions) {
     this._forager = this.createDefaultStorage(options);
     this._ready = new PromiseDelegate();
+    this._serverDebouncer = new Debouncer(() => this._getAllServer(), 10000);
   }
 
   /**
@@ -75,13 +77,20 @@ export class Workspaces implements IWorkspaces {
     return bundle;
   }
 
-  async getAllServer(): Promise<IWorkspaces.IWorkspacesBundle> {
+  private async _getAllServer(): Promise<IWorkspaces.IWorkspacesBundle> {
+    console.groupCollapsed('Maybe fetching workspaces from server...');
     try {
       return await (await fetch(URLExt.join(this.workspacesApiUrl, 'all.json'))).json();
     } catch {
       console.info('No workspaces found on web server: no need to worry!');
       return {};
+    } finally {
+      console.groupEnd();
     }
+  }
+
+  async getAllServer() {
+    return await this._serverDebouncer.invoke();
   }
 
   /** Get a workspace by id */
@@ -131,6 +140,7 @@ export class Workspaces implements IWorkspaces {
 
   private _forager: IForager;
   private _ready: PromiseDelegate<void>;
+  private _serverDebouncer: Debouncer<IWorkspaces.IWorkspacesBundle>;
 }
 
 /** A namespace for Workspaces types */

@@ -78,7 +78,7 @@ DEFAULT_OUTPUT_DIR = "_output"
 ALL_JSON = "all.json"
 
 #: the workspace file extension
-WORKSPACE_EXT = ".jupyterlab-workspace"
+WORKSPACE_FILE = ".jupyterlab-workspace"
 
 ### Environment Variables
 

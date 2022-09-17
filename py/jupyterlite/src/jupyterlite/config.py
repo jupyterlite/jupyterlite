@@ -137,7 +137,7 @@ class LiteBuildConfig(LoggingConfigurable):
         help="extra JupyterLab-compatible file types for the server and browser"
     ).tag(config=True)
 
-    workspaces: _Tuple[_Text] = TypedTuple(
+    workspaces: _Tuple[Path] = TypedTuple(
         CPath(), help=("Specific .jupyterlab-workspaces to include")
     ).tag(config=True)
 
@@ -201,6 +201,7 @@ class LiteBuildConfig(LoggingConfigurable):
             "/overrides\.json",
             "/untitled\..*",
             "/Untitled\..*",
+            "/workspaces/",
             "/venvs/",
             "\.*doit\.db$",
             "\.pyc$",

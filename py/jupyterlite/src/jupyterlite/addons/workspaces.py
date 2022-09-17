@@ -10,7 +10,7 @@ from ..constants import (
     API_WORKSPACES,
     JSON_FMT,
     UTF8,
-    WORKSPACE_EXT,
+    WORKSPACE_FILE,
     WORKSPACES,
 )
 from .base import BaseAddon
@@ -94,9 +94,14 @@ class WorkspacesAddon(BaseAddon):
     @property
     def workspaces(self):
         """Get all well-known and configured workspaces"""
-        return sorted(
-            [*self.workspaces_dir.glob(f"*.{WORKSPACE_EXT}"), *self.manager.workspaces]
-        )
+        pattern = f"*{WORKSPACE_FILE}"
+        workspaces = [*self.workspaces_dir.glob(pattern)]
+
+        for workspace_path in self.manager.workspaces:
+            if workspace_path.is_dir():
+                workspaces += [*workspace_path.glob(pattern)]
+
+        return sorted(workspaces)
 
     @property
     def output_workspaces_json(self):
