@@ -29,24 +29,18 @@ class WorkspacesAddon(BaseAddon):
 
     def post_build(self, manager):
         """Update /api/workspaces/all.json"""
-        if not self.workspaces:
-            return
-
         yield dict(
             name="workspaces",
             file_dep=[*self.workspaces],
-            targets=[
+            targets=[self.output_workspaces_json],
+            actions=[
                 (doit.tools.create_folder, [self.output_workspaces_json.parent]),
-                self.output_workspaces_json,
+                self.update_workspaces_all_json,
             ],
-            actions=[self.update_workspaces_all_json],
         )
 
     def check(self, manager):
         """verify /api/workspaces/all.json"""
-        if not self.workspaces:
-            return
-
         yield dict(
             name="workspaces",
             doc="validate the workspaces in api/workspaces/all.json",
@@ -57,9 +51,10 @@ class WorkspacesAddon(BaseAddon):
     def update_workspaces_all_json(self):
         """Update /api/workspaces/"""
         workspaces = {}
+
         for workspace_path in self.workspaces:
             workspace = json.loads(workspace_path.read_text(**UTF8))
-            stem = workspace.stem
+            stem = workspace_path.stem
             workspace_id = workspace.get("metadata", {}).get("id", stem)
             workspaces[workspace_id] = workspace
 
@@ -100,6 +95,8 @@ class WorkspacesAddon(BaseAddon):
         for workspace_path in self.manager.workspaces:
             if workspace_path.is_dir():
                 workspaces += [*workspace_path.glob(pattern)]
+            else:
+                workspaces += [workspace_path]
 
         return sorted(workspaces)
 
