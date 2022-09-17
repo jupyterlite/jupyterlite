@@ -65,7 +65,7 @@ class WorkspacesAddon(BaseAddon):
 
     def validate_workspaces_json(self):
         """Ensure /api/workspaces/all.json is well-formatted"""
-        workspaces = self.output_workspaces_json.read_text(**UTF8)
+        workspaces = json.loads(self.output_workspaces_json.read_text(**UTF8))
 
         errors = defaultdict(list)
 
