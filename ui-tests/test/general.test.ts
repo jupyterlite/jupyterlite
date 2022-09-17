@@ -28,7 +28,7 @@ test.describe('General Tests', () => {
     await page.theme.setDarkTheme();
 
     // ensure the theme is persisted after a page reload
-    await page.reload();
+    await page.goto('lab/index.html?reset');
     await page.sidebar.close('left');
 
     const imageName = 'dark-theme.png';

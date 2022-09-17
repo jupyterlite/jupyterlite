@@ -62,7 +62,8 @@ test.describe('Contents Tests', () => {
 
     expect((await page.notebook.getCellTextOutput(2))[0]).toBe('4');
 
-    await page.reload();
+    await page.goto('lab/index.html?reset');
+
     expect(
       await page.filebrowser.isFileListedInBrowser(path.basename(name))
     ).toBeTruthy();
