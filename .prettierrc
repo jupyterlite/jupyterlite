@@ -1,5 +1,13 @@
 {
   "singleQuote": true,
   "printWidth": 88,
-  "proseWrap": "always"
+  "proseWrap": "always",
+  "overrides": [
+    {
+      "files": "*.jupyterlab-workspace",
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
 }

@@ -1008,6 +1008,7 @@ class P:
         for p in EXAMPLES.rglob("*")
         if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
     ]
+    EXAMPLE_WORKSPACES = [*EXAMPLES.glob("workspaces/*.jupyterlab-workspace")]
     PYODIDE_ARCHIVE_CACHE = EXAMPLES / ".cache/pyodide" / C.PYODIDE_ARCHIVE
 
     # set later
@@ -1148,6 +1149,7 @@ class L:
         P.APP_JSONS,
         P.APP_EXTRA_JSON,
         P.ROOT_PACKAGE_JSON,
+        P.EXAMPLE_WORKSPACES,
         P.ROOT.glob("*.json"),
     )
     ALL_JS = _clean_paths(
