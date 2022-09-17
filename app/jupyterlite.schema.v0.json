@@ -86,7 +86,7 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
-        "fullWorkspacesApiUrl": {
+        "workspacesApiUrl": {
           "description": "path to workspaces",
           "default": "./api/workspaces",
           "$ref": "#/definitions/non-trailing-slash-uri"
