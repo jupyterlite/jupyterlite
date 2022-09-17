@@ -71,10 +71,10 @@ class WorkspacesAddon(BaseAddon):
 
         for workspace_id, workspace in workspaces.items():
             if not "data" in workspace:
-                errors[workspace_id] += "missing `data`"
+                errors[workspace_id] += ["missing `data`"]
 
             if not "metadata" in workspace:
-                errors[workspace_id] += "missing `metadata`"
+                errors[workspace_id] += ["missing `metadata`"]
 
         if errors:
             print("Errors found in", self.output_workspaces_json)
