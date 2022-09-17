@@ -3,3 +3,4 @@
 
 export * from './tokens';
 export * from './memory';
+export * from './forager';

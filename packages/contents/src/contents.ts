@@ -6,17 +6,12 @@ import { INotebookContent } from '@jupyterlab/nbformat';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import type localforage from 'localforage';
-
 import { IContents, MIME, FILE } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
 
-export type IModel = ServerContents.IModel;
+import { IForager, Forager } from '@jupyterlite/localforage';
 
-/**
- * The name of the local storage.
- */
-const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
+export type IModel = ServerContents.IModel;
 
 /**
  * The number of checkpoints to save.
@@ -31,9 +26,9 @@ export class Contents implements IContents {
    * Construct a new localForage-powered contents provider
    */
   constructor(options: Contents.IOptions) {
-    this._localforage = options.localforage;
-    this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
-    this._storageDrivers = options.storageDrivers || null;
+    this._storage = this.createDefaultStorage(options);
+    this._counters = this.createDefaultCounters(options);
+    this._checkpoints = this.createDefaultCheckpoints(options);
     this._ready = new PromiseDelegate();
   }
 
@@ -41,17 +36,12 @@ export class Contents implements IContents {
    * Finish any initialization after server has started and all extensions are applied.
    */
   async initialize() {
-    await this.initStorage();
+    await Promise.all([
+      this._storage.initialize(),
+      this._checkpoints.initialize(),
+      this._counters.initialize(),
+    ]);
     this._ready.resolve(void 0);
-  }
-
-  /**
-   * Initialize all storage instances
-   */
-  protected async initStorage(): Promise<void> {
-    this._storage = this.createDefaultStorage();
-    this._counters = this.createDefaultCounters();
-    this._checkpoints = this.createDefaultCheckpoints();
   }
 
   /**
@@ -65,66 +55,62 @@ export class Contents implements IContents {
    * A lazy reference to the underlying storage.
    */
   protected get storage(): Promise<LocalForage> {
-    return this.ready.then(() => this._storage as LocalForage);
+    return this.ready.then(() => this._storage.storage);
   }
 
   /**
    * A lazy reference to the underlying counters.
    */
   protected get counters(): Promise<LocalForage> {
-    return this.ready.then(() => this._counters as LocalForage);
+    return this.ready.then(() => this._counters.storage);
   }
 
   /**
    * A lazy reference to the underlying checkpoints.
    */
   protected get checkpoints(): Promise<LocalForage> {
-    return this.ready.then(() => this._checkpoints as LocalForage);
-  }
-
-  /**
-   * Get default options for localForage instances
-   */
-  protected get defaultStorageOptions(): LocalForageOptions {
-    const driver =
-      this._storageDrivers && this._storageDrivers.length ? this._storageDrivers : null;
-    return {
-      version: 1,
-      name: this._storageName,
-      ...(driver ? { driver } : {}),
-    };
+    return this.ready.then(() => this._checkpoints.storage);
   }
 
   /**
    * Initialize the default storage for contents.
    */
-  protected createDefaultStorage(): LocalForage {
-    return this._localforage.createInstance({
+  protected createDefaultStorage(options: IForager.IOptions): IForager {
+    const { localforage, storageName, storageDrivers } = options;
+    return new Forager({
+      localforage,
+      storageDrivers,
+      storageName,
       description: 'Offline Storage for Notebooks and Files',
       storeName: 'files',
-      ...this.defaultStorageOptions,
     });
   }
 
   /**
    * Initialize the default storage for counting file suffixes.
    */
-  protected createDefaultCounters(): LocalForage {
-    return this._localforage.createInstance({
+  protected createDefaultCounters(options: IForager.IOptions): IForager {
+    const { localforage, storageName, storageDrivers } = options;
+    return new Forager({
+      localforage,
+      storageDrivers,
+      storageName,
       description: 'Store the current file suffix counters',
       storeName: 'counters',
-      ...this.defaultStorageOptions,
     });
   }
 
   /**
    * Create the default checkpoint storage.
    */
-  protected createDefaultCheckpoints(): LocalForage {
-    return this._localforage.createInstance({
+  protected createDefaultCheckpoints(options: IForager.IOptions): IForager {
+    const { localforage, storageName, storageDrivers } = options;
+    return new Forager({
+      localforage,
+      storageDrivers,
+      storageName,
       description: 'Offline Storage for Checkpoints',
       storeName: 'checkpoints',
-      ...this.defaultStorageOptions,
     });
   }
 
@@ -739,27 +725,17 @@ export class Contents implements IContents {
   }
 
   private _serverContents = new Map<string, Map<string, IModel>>();
-  private _storageName: string = DEFAULT_STORAGE_NAME;
-  private _storageDrivers: string[] | null = null;
   private _ready: PromiseDelegate<void>;
-  private _storage: LocalForage | undefined;
-  private _counters: LocalForage | undefined;
-  private _checkpoints: LocalForage | undefined;
-  private _localforage: typeof localforage;
+  private _counters: IForager;
+  private _checkpoints: IForager;
+  private _storage: IForager;
 }
 
 /**
  * A namespace for contents information.
  */
 export namespace Contents {
-  export interface IOptions {
-    /**
-     * The name of the storage instance on e.g. IndexedDB, localStorage
-     */
-    storageName?: string | null;
-    storageDrivers?: string[] | null;
-    localforage: typeof localforage;
-  }
+  export interface IOptions extends IForager.IOptions {}
 }
 
 /**

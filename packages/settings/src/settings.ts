@@ -2,28 +2,33 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import * as json5 from 'json5';
 
-import type localforage from 'localforage';
-
 import { IFederatedExtension } from '@jupyterlite/types';
 
 import { IPlugin, ISettings } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
-
-/**
- * The name of the local storage.
- */
-const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
+import { IForager, Forager } from '@jupyterlite/localforage';
 
 /**
  * A class to handle requests to /api/settings
  */
 export class Settings implements ISettings {
   constructor(options: Settings.IOptions) {
-    this._localforage = options.localforage;
-    this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
-    this._storageDrivers = options.storageDrivers || null;
-
+    this._forager = this.createDefaultStorage(options);
     this._ready = new PromiseDelegate();
+  }
+
+  /**
+   * Initialize the default storage for settings.
+   */
+  protected createDefaultStorage(options: IForager.IOptions): IForager {
+    const { localforage, storageName, storageDrivers } = options;
+    return new Forager({
+      localforage,
+      storageDrivers,
+      storageName,
+      description: 'Offline Storage for Settings',
+      storeName: 'settings',
+    });
   }
 
   /**
@@ -37,45 +42,16 @@ export class Settings implements ISettings {
    * A lazy reference to initialized storage
    */
   protected get storage(): Promise<LocalForage> {
-    return this.ready.then(() => this._storage as LocalForage);
+    return this.ready.then(() => this._forager.storage);
   }
 
   /**
    * Finish any initialization after server has started and all extensions are applied.
    */
   async initialize() {
-    await this.initStorage();
+    await this._forager.initialize();
+    await this._forager.ready;
     this._ready.resolve(void 0);
-  }
-
-  /**
-   * Prepare the storage
-   */
-  protected async initStorage() {
-    this._storage = this.defaultSettingsStorage();
-  }
-
-  /**
-   * Get default options for localForage instances
-   */
-  protected get defaultStorageOptions(): LocalForageOptions {
-    const driver = this._storageDrivers?.length ? this._storageDrivers : null;
-    return {
-      version: 1,
-      name: this._storageName,
-      ...(driver ? { driver } : {}),
-    };
-  }
-
-  /**
-   * Create a settings store.
-   */
-  protected defaultSettingsStorage(): LocalForage {
-    return this._localforage.createInstance({
-      description: 'Offline Storage for Settings',
-      storeName: 'settings',
-      ...this.defaultStorageOptions,
-    });
   }
 
   /**
@@ -166,11 +142,9 @@ export class Settings implements ISettings {
     });
   }
 
-  private _storageName: string = DEFAULT_STORAGE_NAME;
-  private _storageDrivers: string[] | null = null;
-  private _storage: LocalForage | undefined;
-  private _localforage: typeof localforage;
   private _ready: PromiseDelegate<void>;
+
+  private _forager: IForager;
 }
 
 /**
@@ -180,11 +154,7 @@ export namespace Settings {
   /**
    * Initialization options for settings.
    */
-  export interface IOptions {
-    localforage: typeof localforage;
-    storageName?: string | null;
-    storageDrivers?: string[] | null;
-  }
+  export interface IOptions extends IForager.IOptions {}
 }
 
 /**

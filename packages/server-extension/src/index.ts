@@ -478,7 +478,12 @@ const workspacesPlugin: JupyterLiteServerPlugin<IWorkspaces> = {
   requires: [ILocalForage],
   activate: (app: JupyterLiteServer, forage: ILocalForage) => {
     const { localforage } = forage;
-    const workspaces = new Workspaces({ localforage });
+    const storageName = PageConfig.getOption('workspacesStorageName');
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('workspacesStorageDrivers') || 'null'
+    );
+
+    const workspaces = new Workspaces({ localforage, storageDrivers, storageName });
 
     app.started.then(() => workspaces.initialize().catch(console.warn));
 

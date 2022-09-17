@@ -30,7 +30,8 @@
   },
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@jupyterlab/coreutils": "~5.4.6"
+    "@jupyterlab/coreutils": "~5.4.6",
+    "@jupyterlite/localforage": "^0.1.0-beta.12"
   },
   "devDependencies": {
     "@jupyterlite/types": "^0.1.0-beta.12",

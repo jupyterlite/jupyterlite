@@ -130,6 +130,15 @@
           "type": "string",
           "default": "JupyterLite Storage"
         },
+        "workspacesStorageDrivers": {
+          "description": "names of the localforage driver for workspaces, or `null` for the best available",
+          "$ref": "#/definitions/localforage-driver-set"
+        },
+        "workspacesStorageName": {
+          "description": "name used to store Jupyter workspaces in the browser",
+          "type": "string",
+          "default": "JupyterLite Storage"
+        },
         "settingsStorageDrivers": {
           "description": "names of the localforage driver for settings, or `null` for the best available",
           "$ref": "#/definitions/localforage-driver-set"
