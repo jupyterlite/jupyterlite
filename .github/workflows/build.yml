@@ -79,7 +79,7 @@ jobs:
       - name: Test (js)
         run: doit -n4 test:js
       - name: Lint
-        run: doit lint
+        run: doit repo lint
       - name: Docs (typedoc)
         run: doit -n4 docs:typedoc:mystify
       - name: Upload (typedoc)

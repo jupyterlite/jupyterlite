@@ -1,3 +1,4 @@
+import difflib
 import json
 import os
 import platform
@@ -166,7 +167,7 @@ def task_lint():
             pkg_json_tasks += [f"lint:{name}"]
             yield dict(
                 name=name,
-                file_dep=[pkg_json],
+                file_dep=[B.YARN_INTEGRITY, pkg_json],
                 actions=[
                     (U.normalize_json, [pkg_json]),
                     U.do(
@@ -869,8 +870,10 @@ def task_repo():
         name="metapackage:package.json",
         doc="ensure metapackage metadata is up-to-date",
         actions=[U.update_metapackage_json],
-        file_dep=[p for p in P.PACKAGE_JSONS if p != P.META_PACKAGE_JSON],
-        targets=[P.META_PACKAGE_JSON],
+        file_dep=[
+            B.YARN_INTEGRITY,
+            *[p for p in P.PACKAGE_JSONS if p != P.META_PACKAGE_JSON],
+        ],
     )
 
     yield dict(
@@ -880,8 +883,10 @@ def task_repo():
             U.update_metapackage_tsconfig,
             [*C.PRETTIER, P.META_PACKAGE_TSCONFIG],
         ],
-        file_dep=[p for p in P.TSCONFIGS if p != P.META_PACKAGE_TSCONFIG],
-        targets=[P.META_PACKAGE_TSCONFIG],
+        file_dep=[
+            B.YARN_INTEGRITY,
+            *[p for p in P.TSCONFIGS if p != P.META_PACKAGE_TSCONFIG],
+        ],
     )
 
 
@@ -1729,7 +1734,8 @@ class U:
     def update_app_resolutions():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
-            app = json.loads(app_json.read_text(**C.ENC))
+            raw = app_json.read_text(**C.ENC)
+            app = json.loads(raw)
             app["resolutions"] = {}
             dependencies = list(app["dependencies"].keys())
             singletonPackages = list(app["jupyterlab"]["singletonPackages"])
@@ -1747,11 +1753,33 @@ class U:
                 for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
             }
 
-            # Write the package.json back to disk.
-            app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
+            new_raw = json.dumps(app, indent=2)
 
+            if raw.strip() == new_raw.strip():
+                return True
+
+            print(
+                "\n".join(
+                    difflib.context_diff(
+                        raw.splitlines(), new_raw.splitlines(), "old", "new"
+                    )
+                )
+            )
+
+            if C.CI:
+                return False
+
+            print("... updating", app_json)
+            app_json.write_text(new_raw + "\n", **C.ENC)
+            return True
+
+        not_ok = []
         for app in D.APPS:
-            _ensure_resolutions(app)
+            if _ensure_resolutions(app):
+                print(app, "resolutions are up-to-date")
+            else:
+                not_ok += [app]
+        return len(not_ok) == 0
 
     @staticmethod
     def update_metapackage_json():
