@@ -896,6 +896,7 @@ class C:
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
     CI = bool(json.loads(os.environ.get("CI", "0")))
+    CHECKING_RELEASE = bool(json.loads(os.environ.get("CHECKING_RELEASE", "0")))
     BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     PY_IMPL = platform.python_implementation()
     WIN = platform.system() == "Windows"
@@ -1766,7 +1767,7 @@ class U:
                 )
             )
 
-            if C.CI:
+            if C.CI and not C.CHECKING_RELEASE:
                 return False
 
             print("... updating", app_json)
