@@ -1,13 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Workspace } from '@jupyterlab/services/lib/workspace';
-
-import { IWorkspaces } from './tokens';
-
-import { IForager, Forager } from '@jupyterlite/localforage';
-
 import { PromiseDelegate } from '@lumino/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { Workspace } from '@jupyterlab/services/lib/workspace';
+import { IForager, Forager } from '@jupyterlite/localforage';
+import { IWorkspaces } from './tokens';
 
 /** A service for storing and retrieving Workspaces in localforage or the server */
 export class Workspaces implements IWorkspaces {
@@ -53,11 +51,19 @@ export class Workspaces implements IWorkspaces {
     this._ready.resolve(void 0);
   }
 
+  /** Get the workspaces API URL from the page config.  */
+  get workspacesApiUrl(): string {
+    return (
+      PageConfig.getOption('workspacesApiUrl') ||
+      URLExt.join(PageConfig.getBaseUrl(), 'api/workspaces')
+    );
+  }
+
   /** Get all the workspaces */
   async getAll(): Promise<IWorkspaces.IWorkspacesBundle> {
     const storage = await this.storage;
     const keys = await storage.keys();
-    const bundle: IWorkspaces.IWorkspacesBundle = {};
+    const bundle: IWorkspaces.IWorkspacesBundle = await this.getAllServer();
     await Promise.all(
       keys.map(async (workspaceId) => {
         const workspace = await storage.getItem<Workspace.IWorkspace>(workspaceId);
@@ -69,15 +75,28 @@ export class Workspaces implements IWorkspaces {
     return bundle;
   }
 
+  async getAllServer(): Promise<IWorkspaces.IWorkspacesBundle> {
+    try {
+      return await (await fetch(URLExt.join(this.workspacesApiUrl, 'all.json'))).json();
+    } catch {
+      console.info('No workspaces found on web server: no need to worry!');
+      return {};
+    }
+  }
+
   /** Get a workspace by id */
   async getWorkspace(workspaceId: string): Promise<Workspace.IWorkspace> {
-    const workspace = await (
+    let workspace = await (
       await this.storage
     ).getItem<Workspace.IWorkspace>(workspaceId);
-    if (workspace) {
-      return workspace;
+
+    workspace = (await this.getAllServer())[workspaceId];
+
+    if (!workspace) {
+      throw new Error(`${workspaceId} not found`);
     }
-    throw new Error(`${workspaceId} not found`);
+
+    return workspace;
   }
 
   /** Update a workspace by id */

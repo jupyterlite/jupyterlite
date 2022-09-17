@@ -86,6 +86,11 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "fullWorkspacesApiUrl": {
+          "description": "path to workspaces",
+          "default": "./api/workspaces",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
         "fullMathjaxUrl": {
           "type": "string",
           "description": "path to MathJax2 assets",
@@ -212,6 +217,11 @@
           "description": "Whether to enable collaborative editing over WebRTC. Should be paired with the ``?room=<room name>`` URL parameter",
           "type": "boolean",
           "default": false
+        },
+        "workspace": {
+          "description": "The name",
+          "type": "string",
+          "default": "default"
         }
       }
     },
