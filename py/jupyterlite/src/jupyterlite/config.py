@@ -137,6 +137,10 @@ class LiteBuildConfig(LoggingConfigurable):
         help="extra JupyterLab-compatible file types for the server and browser"
     ).tag(config=True)
 
+    workspaces: _Tuple[_Text] = TypedTuple(
+        CPath(), help=("Specific .jupyterlab-workspaces to include")
+    ).tag(config=True)
+
     @default("apps")
     def _default_apps(self):
         return []

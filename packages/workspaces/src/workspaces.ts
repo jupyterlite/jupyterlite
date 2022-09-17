@@ -86,19 +86,17 @@ export class Workspaces implements IWorkspaces {
     workspace: Workspace.IWorkspace
   ): Promise<Workspace.IWorkspace> {
     const { data, metadata } = workspace;
-    const now = new Date().toISOString();
-    const dateTimes = {
-      created: now,
-      last_udpated: now,
-    };
+    // normalize to what jupyterlab_server emits
+    const now = new Date().toISOString().replace('Z', '+00:00');
     await (
       await this.storage
     ).setItem<Workspace.IWorkspace>(workspaceId, {
       data,
       metadata: {
-        // TODO: get these added to the upstream metadata
-        ...(dateTimes as any),
+        ...{ created: now },
         ...metadata,
+        ...{ last_updated: now },
+        id: workspaceId,
       },
     });
     return this.getWorkspace(workspaceId);

@@ -104,6 +104,7 @@ serve = "jupyterlite.addons.serve:ServeAddon"
 settings = "jupyterlite.addons.settings:SettingsAddon"
 static = "jupyterlite.addons.static:StaticAddon"
 translation = "jupyterlite.addons.translation:TranslationAddon"
+workspaces = "jupyterlite.addons.workspaces:WorkspacesAddon"
 
 [tool.flit.sdist]
 include = [

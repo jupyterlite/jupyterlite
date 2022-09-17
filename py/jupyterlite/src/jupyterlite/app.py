@@ -75,6 +75,8 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             # pyolite things likely to move away
             "piplite-wheels": "LiteBuildConfig.piplite_urls",
             "pyodide": "LiteBuildConfig.pyodide_url",
+            # workspaces
+            "workspaces": "LiteBuildConfig.workspaces",
         },
     )
 
@@ -133,6 +135,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["piplite_urls"] = self.piplite_urls
         if self.pyodide_url is not None:
             kwargs["pyodide_url"] = self.pyodide_url
+        if self.workspaces is not None:
+            kwargs["workspaces"] = [Path(p) for p in self.workspaces]
 
         return LiteManager(**kwargs)
 
