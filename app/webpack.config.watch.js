@@ -6,6 +6,9 @@ module.exports = [
     ...base[0],
     bail: false,
     watch: true,
+    watchOptions: {
+      ignored: /node_modules/,
+    },
     plugins: [
       ...base[0].plugins,
       new ExtraWatchWebpackPlugin({
