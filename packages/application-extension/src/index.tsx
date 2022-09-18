@@ -8,7 +8,14 @@ import {
   ILabShell,
 } from '@jupyterlab/application';
 
-import { Clipboard, ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
+import {
+  Clipboard,
+  ICommandPalette,
+  Dialog,
+  showDialog,
+  IWindowResolver,
+  WindowResolver,
+} from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
@@ -41,6 +48,7 @@ import { Widget } from '@lumino/widgets';
 import { getParam } from 'lib0/environment';
 
 import React from 'react';
+import { Token } from '@lumino/coreutils';
 
 /**
  * The default notebook factory.
@@ -524,28 +532,88 @@ const router: JupyterFrontEndPlugin<IRouter> = {
   },
 };
 
-/** A custom plugin for workspace files and commands
+/**An interface for the workspace router */
+export interface IWorkspaceRouter {
+  // nothign to see here yet
+}
+
+/**A token to advertise the workspace router is installed */
+export const IWorkspaceRouter = new Token<IWorkspaceRouter>(
+  '@jupyterlite/application-extension:IWorkspaceRouter'
+);
+
+/**
+ * The default window name resolver provider.
  *
- * The upstream @jupyterlab/apputils-extension:workspaces does not export a token,
- * so we defer everything until the app has started.
+ * This adds a dependency on `IWorkspaceRouter`
  */
-const workspaces: JupyterFrontEndPlugin<void> = {
+const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
+  id: '@jupyterlite/application-extension:resolver',
+  autoStart: true,
+  provides: IWindowResolver,
+  requires: [JupyterFrontEnd.IPaths, IRouter, IWorkspaceRouter],
+  activate: async (
+    app: JupyterFrontEnd,
+    paths: JupyterFrontEnd.IPaths,
+    router: IRouter,
+    workspaceRouter: IWorkspaceRouter
+  ) => {
+    const { hash, search } = router.current;
+    const query = URLExt.queryStringToObject(search || '');
+    const solver = new WindowResolver();
+    const workspace = PageConfig.getOption('workspace');
+    const treePath = PageConfig.getOption('treePath');
+    const mode = PageConfig.getOption('mode') === 'multiple-document' ? 'lab' : 'doc';
+    // This is used as a key in local storage to refer to workspaces, either the name
+    // of the workspace or the string PageConfig.defaultWorkspace. Both lab and doc modes share the same workspace.
+    const candidate = workspace ? workspace : PageConfig.defaultWorkspace;
+    const rest = treePath ? URLExt.join('tree', treePath) : '';
+    try {
+      await solver.resolve(candidate);
+      return solver;
+    } catch (error) {
+      // Window resolution has failed so the URL must change. Return a promise
+      // that never resolves to prevent the application from loading plugins
+      // that rely on `IWindowResolver`.
+      return new Promise<IWindowResolver>(() => {
+        const { base } = paths.urls;
+        const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const random = pool[Math.floor(Math.random() * pool.length)];
+        let path = URLExt.join(base, mode, 'workspaces', `auto-${random}`);
+        path = rest ? URLExt.join(path, URLExt.encodeParts(rest)) : path;
+
+        // Reset the workspace on load.
+        query['reset'] = '';
+
+        const url = path + URLExt.objectToQueryString(query) + (hash || '');
+        router.navigate(url, { hard: true });
+      });
+    }
+  },
+};
+
+/** A custom plugin for workspace files and commands
+ */
+const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
   id: '@jupyterlite/application-extension:workspaces',
   requires: [ITranslator, ILiteRouter],
   optional: [ICommandPalette],
   autoStart: true,
+  provides: IWorkspaceRouter,
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     liteRouter: ILiteRouter,
     palette?: ICommandPalette
-  ): void => {
+  ): IWorkspaceRouter => {
     const { started, docRegistry } = app;
     const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Workspaces');
     const appUrl = PageConfig.getOption('appUrl');
+    const baseUrl = PageConfig.getBaseUrl();
     if (appUrl) {
       const workspaceUrl = URLExt.join(appUrl, 'workspaces') + '/';
+      const autoUrl = URLExt.join(baseUrl, 'doc/workspaces/auto-');
       liteRouter.addTransformer({
         id: workspaces.id,
         transform: ({ options, url }) => {
@@ -554,10 +622,18 @@ const workspaces: JupyterFrontEndPlugin<void> = {
             url.pathname = appUrl;
             url.searchParams.set('workspace', workspace);
           }
+          if (options.hard && url.pathname.startsWith(autoUrl)) {
+            url.pathname = appUrl;
+          }
           return { url, options };
         },
       });
     }
+
+    /**
+     * The upstream @jupyterlab/apputils-extension:workspaces does not export a token,
+     * so we defer everything until the app has started.
+     */
     started.then(() => {
       const fileType = docRegistry.getFileType('jupyterlab-workspace');
       // load the upstream
@@ -568,6 +644,8 @@ const workspaces: JupyterFrontEndPlugin<void> = {
         }
       }
     });
+
+    return {};
   },
 };
 
@@ -582,6 +660,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   router,
   shareFile,
   workspaces,
+  resolver,
 ];
 
 export default plugins;

@@ -29,6 +29,7 @@ export namespace IRouteTransformer {
 
 export class LiteRouter extends Router implements ILiteRouter {
   navigate(path: string, options: IRouter.INavOptions = {}): void {
+    debugger;
     const { origin } = window.location;
     let transformedOptions = { url: new URL(path, origin), options };
     for (const transformer of this._transformers.values()) {
