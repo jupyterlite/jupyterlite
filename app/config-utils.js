@@ -104,7 +104,7 @@ async function jupyterConfigData() {
 
   const url = new URL(window.location.href);
 
-  const workspace = url.searchParams.get('workspace');
+  const workspace = url.searchParams.get('workspace') || url.searchParams.get('clone');
 
   if (workspace) {
     finalConfig.workspace = workspace;

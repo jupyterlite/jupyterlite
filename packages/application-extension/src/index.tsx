@@ -558,36 +558,36 @@ const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
     router: IRouter,
     workspaceRouter: IWorkspaceRouter
   ) => {
-    const { hash, search } = router.current;
-    const query = URLExt.queryStringToObject(search || '');
+    // const { hash, search } = router.current;
+    // const query = URLExt.queryStringToObject(search || '');
+    const url = new URL(window.location.href);
     const solver = new WindowResolver();
-    const workspace = PageConfig.getOption('workspace');
-    const treePath = PageConfig.getOption('treePath');
-    const mode = PageConfig.getOption('mode') === 'multiple-document' ? 'lab' : 'doc';
+    const workspace =
+      url.searchParams.get('workspace') ||
+      url.searchParams.get('clone') ||
+      PageConfig.getOption('workspace') ||
+      'default';
+    // const treePath = PageConfig.getOption('treePath');
+    // const mode = PageConfig.getOption('mode') === 'multiple-document' ? 'lab' : 'doc';
     // This is used as a key in local storage to refer to workspaces, either the name
     // of the workspace or the string PageConfig.defaultWorkspace. Both lab and doc modes share the same workspace.
     const candidate = workspace ? workspace : PageConfig.defaultWorkspace;
-    const rest = treePath ? URLExt.join('tree', treePath) : '';
+    // const rest = treePath ? URLExt.join('tree', treePath) : '';
     try {
       await solver.resolve(candidate);
       return solver;
     } catch (error) {
-      // Window resolution has failed so the URL must change. Return a promise
-      // that never resolves to prevent the application from loading plugins
-      // that rely on `IWindowResolver`.
-      return new Promise<IWindowResolver>(() => {
-        const { base } = paths.urls;
-        const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        const random = pool[Math.floor(Math.random() * pool.length)];
-        let path = URLExt.join(base, mode, 'workspaces', `auto-${random}`);
-        path = rest ? URLExt.join(path, URLExt.encodeParts(rest)) : path;
-
-        // Reset the workspace on load.
-        query['reset'] = '';
-
-        const url = path + URLExt.objectToQueryString(query) + (hash || '');
-        router.navigate(url, { hard: true });
-      });
+      const { workspaces } = app.serviceManager;
+      const oldWorkspace = await workspaces.fetch(workspace);
+      const newWorkspaceId = `${workspace.split('-')[0]}-${+new Date()}`;
+      await workspaces.save(newWorkspaceId, oldWorkspace);
+      const appUrl = PageConfig.getOption('appUrl');
+      url.pathname = appUrl;
+      url.searchParams.set('clone', newWorkspaceId);
+      url.searchParams.delete('workspace');
+      const newUrl = URLExt.join(appUrl, url.toString().split(appUrl)[1]);
+      router.navigate(newUrl);
+      return solver;
     }
   },
 };
@@ -610,7 +610,7 @@ const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
     const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Workspaces');
     const appUrl = PageConfig.getOption('appUrl');
-    const baseUrl = PageConfig.getBaseUrl();
+    const baseUrl = PageConfig.getOption('baseUrl');
     if (appUrl) {
       const workspaceUrl = URLExt.join(appUrl, 'workspaces') + '/';
       const autoUrl = URLExt.join(baseUrl, 'doc/workspaces/auto-');
@@ -624,6 +624,7 @@ const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
           }
           if (options.hard && url.pathname.startsWith(autoUrl)) {
             url.pathname = appUrl;
+            url.searchParams.delete('reset');
           }
           return { url, options };
         },
