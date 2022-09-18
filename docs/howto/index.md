@@ -23,6 +23,7 @@ configure/translation
 configure/rtc
 configure/latex
 configure/workspaces
+configure/urls
 ```
 
 ## Contents

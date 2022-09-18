@@ -77,6 +77,13 @@ const UNPREFIXED_PATHS = ['licensesUrl', 'themesUrl'];
 /* a DOM parser for reading html files */
 const parser = new DOMParser();
 
+/* URL GET parameters to copy to jupyter-config-data */
+const URL_PARAMS = {
+  workspace: 'workspace',
+  clone: 'workspace',
+  mode: 'mode',
+};
+
 /**
  * Merge `jupyter-config-data` on the current page with:
  * - the contents of `.jupyter-lite#/jupyter-config-data`
@@ -102,13 +109,8 @@ async function jupyterConfigData() {
 
   let finalConfig = configs.reduce(mergeOneConfig);
 
-  const url = new URL(window.location.href);
-
-  const workspace = url.searchParams.get('workspace') || url.searchParams.get('clone');
-
-  if (workspace) {
-    finalConfig.workspace = workspace;
-  }
+  // grab URL params
+  finalConfig = hoistUrlParams(finalConfig);
 
   // apply any final patches
   finalConfig = dedupFederatedExtensions(finalConfig);
@@ -155,6 +157,22 @@ function dedupFederatedExtensions(config) {
   }
   let allExtensions = [...Object.values(named)];
   allExtensions.sort((a, b) => a.name.localeCompare(b.name));
+  return config;
+}
+
+/**
+ * Copy known URL params to the PageConfig
+ */
+function hoistUrlParams(config) {
+  const { searchParams } = new URL(window.location.href);
+
+  for (const [param, key] of Object.entries(URL_PARAMS)) {
+    const value = searchParams.get(param);
+    if (value != null) {
+      config[key] = value;
+    }
+  }
+
   return config;
 }
 

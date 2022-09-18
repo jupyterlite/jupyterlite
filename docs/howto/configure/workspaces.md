@@ -63,7 +63,11 @@ If not otherwise configured, the `default` workspace will be used: the default c
 overridden by setting `jupyter-lite.json#jupyter-config-data/workspace` to the id of the
 Workspace, and making that workspace available during `jupyter lite build`.
 
-## Workspace URLs
+## Workspace URL Parameters
+
+```{hint}
+Learn more about [URL parameters](../configure/urls.md).
+```
 
 ### Opening a Workspace File from Contents
 
