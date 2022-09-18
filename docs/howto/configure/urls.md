@@ -5,7 +5,7 @@ parameters, given of the form `?<param1>=<value1>&<param2>=<value2>`. Different
 applications may have interpret features.
 
 ```{hint}
-Check out the [Quick Start Guide](../quickstart/deploy.md) to learn how to deploy your own JupyterLite website
+Check out the [Quick Start Guide](../../quickstart/deploy.md) to learn how to deploy your own JupyterLite website
 and have full control on the environment and extensions installed.
 
 The snippets below use the public facing [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
