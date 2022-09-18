@@ -90,7 +90,9 @@ export class Workspaces implements IWorkspaces {
       await this.storage
     ).getItem<Workspace.IWorkspace>(workspaceId);
 
-    workspace = (await this.getAllServer())[workspaceId];
+    if (!workspace) {
+      workspace = (await this.getAllServer())[workspaceId];
+    }
 
     if (!workspace) {
       throw new Error(`${workspaceId} not found`);

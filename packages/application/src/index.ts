@@ -3,3 +3,4 @@
 
 export * from './singleWidgetApp';
 export * from './singleWidgetShell';
+export * from './router';

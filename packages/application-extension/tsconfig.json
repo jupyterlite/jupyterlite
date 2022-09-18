@@ -8,6 +8,7 @@
   "references": [
     {
       "path": "../ui-components"
-    }
+    },
+    { "path": "../application" }
   ]
 }

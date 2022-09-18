@@ -102,6 +102,14 @@ async function jupyterConfigData() {
 
   let finalConfig = configs.reduce(mergeOneConfig);
 
+  const url = new URL(window.location.href);
+
+  const workspace = url.searchParams.get('workspace');
+
+  if (workspace) {
+    finalConfig.workspace = workspace;
+  }
+
   // apply any final patches
   finalConfig = dedupFederatedExtensions(finalConfig);
 
