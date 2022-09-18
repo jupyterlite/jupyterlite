@@ -39,14 +39,6 @@ export class LiteRouter extends Router implements ILiteRouter {
       }
     }
     const newPath = transformedOptions.url.toString().replace(origin, '');
-    console.warn(
-      'LiteRouter.navigate',
-      path,
-      options,
-      'to',
-      newPath,
-      transformedOptions.options
-    );
     super.navigate(newPath, transformedOptions.options);
   }
 

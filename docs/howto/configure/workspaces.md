@@ -24,12 +24,38 @@ needed.
 [workspaces-file-format]:
   https://jupyterlab.readthedocs.io/en/stable/user/urls.html#workspace-file-format
 
+### Getting Workspace Files from JupyterLite
+
+- Open a JupyterLite application
+- Open various main area activities and sidebars
+- Use the JupyterLab Command _Save Current Workspace_
+  - Optionally use _Save Current Workspace As..._ to provide a filename
+- See the `.jupyterlab-workspace` file
+
+At this point, the workspace is ready to be used either by double-clicking in the UI or
+downloading and using as part of a future `jupyter lab build`.
+
+### Adding a Workspace to a built JupyterLite site
+
+- Copy the file to `<lite_dir>/workspaces/<workspace-id>.jupyterlab-workspace`
+- Run `jupyter lab build`
+
+Now, when the application is opened, the workspace will be available to use in URLs.
+
+If not otherwise configured, the `default` workspace will be used: the default can be
+overridden by setting `jupyter-lite.json#jupyter-config-data/workspace` to the id of the
+Workspace, and making that workspace available during `jupyter lite build`.
+
 ## Workspace URLs
 
-### Opening a workspace File
+### Opening a Workspace File from Contents
 
-By treating workspace files in [contents](../content/files.md), the `?path` URL
-parameter can be used to link directly to a workspace.
+By including workspace files as [contents](../content/files.md), the
+`?path=<workspace-id>.jupyterlab-workspace` URL parameter can be used to link directly
+to a workspace.
+
+This is useful for debugging a customized workspace file, but will cause an extra page
+reload.
 
 ### Opening a custom Workspace
 
