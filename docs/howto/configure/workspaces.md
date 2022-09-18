@@ -37,8 +37,25 @@ downloading and using as part of a future `jupyter lab build`.
 
 ### Adding a Workspace to a built JupyterLite site
 
-- Copy the file to `<lite_dir>/workspaces/<workspace-id>.jupyterlab-workspace`
-- Run `jupyter lab build`
+- Either
+  - Use the well-known location
+    - Copy the file to `<lite_dir>/workspaces/<workspace-id>.jupyterlab-workspace`
+    - Run `jupyter lab build`
+  - Provide via configuration in `jupyter_lite_build.json`
+    ```json
+    {
+      "LiteBuildConfig": {
+        "workspaces": ["./path-to/<workspace-id>.jupyterlab-workspace"]
+      }
+    }
+    ```
+  - Provide via CLI
+    - Run `jupyter lab build --workspaces ./path-to/<workspace-id>.jupyterlab-workspace`
+
+```{note}
+If a folder is given to `--workspaces`, `LiteBuildConfig`, any number of `.jupterlab-workspace`
+files in that folder will be discovered.
+```
 
 Now, when the application is opened, the workspace will be available to use in URLs.
 
@@ -54,17 +71,20 @@ By including workspace files as [contents](../content/files.md), the
 `?path=<workspace-id>.jupyterlab-workspace` URL parameter can be used to link directly
 to a workspace.
 
+```{note}
 This is useful for debugging a customized workspace file, but will cause an extra page
 reload.
+```
 
 ### Opening a custom Workspace
 
-Adding `?workspace=<workspace-id>` to an existing workspace will use that one for that
-browser session.
+Adding `?workspace=<workspace-id>` to an existing workspace will use that one for the
+current browser session.
 
 ### Resetting the Workspace
 
-Adding a `?reset` to a JupyterLite URL will reset the workspace.
+Adding a `?reset` to a JupyterLite URL will reset any user customizations to the
+workspace.
 
 ## Limitations of JupyterLite Workspaces
 
@@ -74,7 +94,7 @@ the page reloads, as these rely on stable kernel ids on the server.
 
 ## Disabling Workspaces
 
-Workspaces can be disabled with in
+Workspaces can be disabled by adding `@jupyterlab/apputils-extension:workspaces` to
 `jupyter-lite.json#jupyter-config-data/disabledExtensions`.
 
 ```json
