@@ -294,12 +294,16 @@ def task_build():
     js_wheels = []
 
     for py_pkg, version in P.PYOLITE_PACKAGES.items():
-        name = py_pkg.name
+        if re.match("^\d", py_pkg.name):
+            name = py_pkg.parent.name
+        else:
+            name = py_pkg.name
+
         wheel = py_pkg / f"dist/{name}-{version}-{C.NOARCH_WHL}"
         js_wheels += [wheel]
         yield dict(
-            name=f"js:py:{name}",
-            doc=f"build the {name} python package for the browser with flit",
+            name=f"js:py:{name}:{version}",
+            doc=f"build the {name} {version}python package for the browser with flit",
             file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
             actions=[(U.build_one_flit, [py_pkg])],
             # TODO: get version
@@ -912,7 +916,7 @@ class C:
         "pathspec",
     ]
     IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
-    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets<8"]
+    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
@@ -1064,9 +1068,9 @@ class D:
 
 
 P.PYOLITE_PACKAGES = {
-    P.PACKAGES / pkg / pyp: pyp_version
-    for pkg, pkg_data in D.PACKAGE_JSONS.items()
-    for pyp, pyp_version in pkg_data.get("pyolite", {}).get("packages", {}).items()
+    P.PACKAGES / js_pkg / pyp_path: pyp_version
+    for js_pkg, pkg_data in D.PACKAGE_JSONS.items()
+    for pyp_path, pyp_version in pkg_data.get("pyolite", {}).get("packages", {}).items()
 }
 
 
@@ -1727,14 +1731,25 @@ class U:
             "?name=pypi/[name].[ext]"
             "&context=.!../pypi/all.json';",
         ]
+
+        vars_made = {}
         for wheel in B.PYOLITE_WHEELS.glob(f"*{C.NOARCH_WHL}"):
             # this might be brittle
             name = wheel.name.split("-")[0]
             if name == "piplite":
                 lines += [f"export const PIPLITE_WHEEL = '{wheel.name}';"]
             bang = f"!../pypi/{wheel.name}"
+            base_var_name = f"{name}WheelUrl"
+
+            if base_var_name not in vars_made:
+                var_suffix = ""
+                vars_made[base_var_name] = 0
+            else:
+                vars_made[base_var_name] += 1
+                var_suffix = vars_made[base_var_name]
+
             lines += [
-                f"export * as {name}WheelUrl from '!!file-loader"
+                f"export * as {base_var_name}{var_suffix} from '!!file-loader"
                 ""
                 f"?name=pypi/[name].[ext]&context=.{bang}';"
             ]
