@@ -202,6 +202,11 @@ export class PyoliteRemoteKernel {
       await piplite.install(['ipython'], keep_going=True);
       import pyolite
     `);
+    for (const packageName of options.pipliteRequiredPackages) {
+      await this._pyodide.runPythonAsync(`
+         await piplite.install(['${packageName}'], keep_going=True);
+      `);
+    }
     // cd to the kernel location
     if (options.mountDrive && this._localPath) {
       await this._pyodide.runPythonAsync(`

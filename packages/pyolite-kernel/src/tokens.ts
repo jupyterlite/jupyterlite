@@ -58,6 +58,11 @@ export namespace IPyoliteWorkerKernel {
     disablePyPIFallback: boolean;
 
     /**
+     * The names of additional packages to be installed when initializing the kernel.
+     */
+    pipliteRequiredPackages: string[];
+
+    /**
      * The current working directory in which to start the kernel.
      */
     location: string;

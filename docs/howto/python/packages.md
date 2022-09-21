@@ -23,10 +23,29 @@ See also how to [ship additional wheels](./wheels.md) at build time.
 
 [micropip]: https://pyodide.org/en/latest/usage/loading-packages.html?#micropip
 
-## Bundling additional packages by default
+## Installing additional packages by default
 
-At the moment the most reasonable way to make additional packages available by default
-when starting the Python kernel is to add new packages to the Pyodide distribution.
+If you want additionall packages be installed by default, you can set it up in
+[Runtime Configuratio](../../reference/config.md) using the `pipliteRequiredPackages`
+property:
+
+```json
+"jupyter-config-data": {
+  "litePluginSettings": {
+    "@jupyterlite/pyolite-kernel-extension:kernel": {
+      "pipliteRequiredPackages": ["openpyxl"]
+    }
+  }
+}
+```
+
+If you configure additionall packages be installed by default, consider to also
+[ship appropriate pyolite wheels at build time](wheel.md).
+
+### Add additional packages to the Pyodide distribution
+
+The other way to make additional packages available by default when starting the Python
+kernel is to add new packages to the Pyodide distribution.
 
 The process is detailed in the [Pyodide documentation][pyodide-packages].
 

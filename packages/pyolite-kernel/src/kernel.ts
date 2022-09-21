@@ -52,7 +52,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   protected initRemoteOptions(
     options: PyoliteKernel.IOptions
   ): IPyoliteWorkerKernel.IOptions {
-    const { pyodideUrl } = options;
+    const { pyodideUrl, pipliteRequiredPackages } = options;
 
     const indexUrl = pyodideUrl.slice(0, pyodideUrl.lastIndexOf('/') + 1);
 
@@ -73,6 +73,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       pipliteWheelUrl,
       pipliteUrls,
       disablePyPIFallback,
+      pipliteRequiredPackages,
       location: this.location,
       mountDrive: options.mountDrive,
     };
@@ -316,6 +317,11 @@ export namespace PyoliteKernel {
      * Do not try pypi.org if `piplite.install` fails against local URLs
      */
     disablePyPIFallback: boolean;
+
+    /**
+     * The names of additional packages to be installed when initializing the kernel.
+     */
+    pipliteRequiredPackages: string[];
 
     /**
      * Whether or not to mount the Emscripten drive

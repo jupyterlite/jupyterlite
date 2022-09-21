@@ -41,6 +41,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const rawPipUrls = config.pipliteUrls || [];
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     const disablePyPIFallback = !!config.disablePyPIFallback;
+    const pipliteRequiredPackages = config.pipliteRequiredPackages || [];
 
     kernelspecs.register({
       spec: {
@@ -61,6 +62,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
           pyodideUrl,
           pipliteUrls,
           disablePyPIFallback,
+          pipliteRequiredPackages,
           mountDrive: serviceWorkerRegistrationWrapper.enabled,
         });
       },
