@@ -40,7 +40,7 @@ property:
 ```
 
 If you configure additionall packages be installed by default, consider to also
-[ship appropriate pyolite wheels at build time](wheel.md).
+[ship appropriate pyolite wheels at build time](./wheels.md).
 
 ### Add additional packages to the Pyodide distribution
 
