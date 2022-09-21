@@ -25,9 +25,9 @@ See also how to [ship additional wheels](./wheels.md) at build time.
 
 ## Installing additional packages by default
 
-If you want additionall packages be installed by default, you can set it up in
-[Runtime Configuratio](../../reference/config.md) using the `pipliteRequiredPackages`
-property:
+If you want additionall packages be pre-installed, you can use the
+`pipliteRequiredPackages` property of the
+[runtime ronfiguration](../../reference/config.md) like in the exampe:
 
 ```json
 "jupyter-config-data": {
@@ -39,7 +39,7 @@ property:
 }
 ```
 
-If you configure additionall packages be installed by default, consider to also
+When you configure pre-installed packages, consider to also
 [ship appropriate pyolite wheels at build time](./wheels.md).
 
 ### Add additional packages to the Pyodide distribution
