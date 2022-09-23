@@ -197,7 +197,7 @@ export class PyoliteRemoteKernel {
   protected async initKernel(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     // from this point forward, only use piplite
     await this._pyodide.runPythonAsync(`
-      await piplite.install(['matplotlib', 'ipykernel'], keep_going=True);
+      await piplite.install(['ipykernel'], keep_going=True);
       await piplite.install(['pyolite'], keep_going=True);
       await piplite.install(['ipython'], keep_going=True);
       import pyolite
