@@ -2,6 +2,37 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b13
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.0-beta.12...08fdbd2a34c7ca6c6be80426a8ff203e79aff949))
+
+### Bugs fixed
+
+- Properly download binary content [#775](https://github.com/jupyterlite/jupyterlite/pull/775) ([@vasiljevic](https://github.com/vasiljevic))
+
+### Maintenance and upkeep improvements
+
+- chore: update to Pyodide 0.21.3 [#810](https://github.com/jupyterlite/jupyterlite/pull/810) ([@henryiii](https://github.com/henryiii))
+- Update to JupyterLab 3.4.7 [#809](https://github.com/jupyterlite/jupyterlite/pull/809) ([@bollwyvl](https://github.com/bollwyvl))
+- Update to JupyterLab 3.4.6 [#791](https://github.com/jupyterlite/jupyterlite/pull/791) ([@bollwyvl](https://github.com/bollwyvl))
+- Improve the Gitpod setup [#786](https://github.com/jupyterlite/jupyterlite/pull/786) ([@jtpio](https://github.com/jtpio))
+- update to pyodide 0.21.2 [#782](https://github.com/jupyterlite/jupyterlite/pull/782) ([@bollwyvl](https://github.com/bollwyvl))
+- feat: bump to pyodide 0.21.1 [#780](https://github.com/jupyterlite/jupyterlite/pull/780) ([@agoose77](https://github.com/agoose77))
+
+### Documentation improvements
+
+- Update demos to ipywidgets 8, use widgetsnbextension shim [#793](https://github.com/jupyterlite/jupyterlite/pull/793) ([@bollwyvl](https://github.com/bollwyvl))
+- Point to deploy doc in README.md [#787](https://github.com/jupyterlite/jupyterlite/pull/787) ([@lesteve](https://github.com/lesteve))
+- Document browser console error when no contents is provided [#771](https://github.com/jupyterlite/jupyterlite/pull/771) ([@philipp-strack](https://github.com/philipp-strack))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-08-17&to=2022-09-23&type=c))
+
+[@agoose77](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagoose77+updated%3A2022-08-17..2022-09-23&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-08-17..2022-09-23&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-08-17..2022-09-23&type=Issues) | [@henryiii](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ahenryiii+updated%3A2022-08-17..2022-09-23&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-08-17..2022-09-23&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2022-08-17..2022-09-23&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-08-17..2022-09-23&type=Issues) | [@philipp-strack](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aphilipp-strack+updated%3A2022-08-17..2022-09-23&type=Issues) | [@vasiljevic](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Avasiljevic+updated%3A2022-08-17..2022-09-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b12
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b11...f3f5de025b764c51d37ef79da9e9e3cf7bad13cc))
@@ -44,8 +75,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-07-08&to=2022-08-17&type=c))
 
 [@agoose77](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagoose77+updated%3A2022-07-08..2022-08-17&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-07-08..2022-08-17&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-07-08..2022-08-17&type=Issues) | [@Enforcer007](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEnforcer007+updated%3A2022-07-08..2022-08-17&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-07-08..2022-08-17&type=Issues) | [@hbcarlos](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ahbcarlos+updated%3A2022-07-08..2022-08-17&type=Issues) | [@jasongrout](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajasongrout+updated%3A2022-07-08..2022-08-17&type=Issues) | [@joemarshall](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajoemarshall+updated%3A2022-07-08..2022-08-17&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-07-08..2022-08-17&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-07-08..2022-08-17&type=Issues) | [@rickwierenga](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Arickwierenga+updated%3A2022-07-08..2022-08-17&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b11
 
