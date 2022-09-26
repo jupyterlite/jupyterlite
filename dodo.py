@@ -1860,7 +1860,7 @@ class U:
         ]
 
         vars_made = {}
-        for wheel in B.PYOLITE_WHEELS.glob(f"*{C.NOARCH_WHL}"):
+        for wheel in sorted(B.PYOLITE_WHEELS.glob(f"*{C.NOARCH_WHL}")):
             # this might be brittle
             name = wheel.name.split("-")[0]
             if name == "piplite":
