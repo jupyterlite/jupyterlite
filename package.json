@@ -1,9 +1,9 @@
 {
   "private": true,
   "name": "@jupyterlite/root",
+  "version": "0.1.0b13",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
-  "version": "0.1.0b13",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "repository": {
     "type": "git",
