@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@jupyterlite/metapackage",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "JupyterLite - Metapackage",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributor",

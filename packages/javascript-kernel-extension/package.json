@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/javascript-kernel-extension",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "JupyterLite - JavaScript Kernel Extension",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -37,9 +37,9 @@
   "types": "lib/index.d.ts",
   "dependencies": {
     "@jupyterlab/coreutils": "~5.4.6",
-    "@jupyterlite/javascript-kernel": "^0.1.0-beta.12",
-    "@jupyterlite/kernel": "^0.1.0-beta.12",
-    "@jupyterlite/server": "^0.1.0-beta.12"
+    "@jupyterlite/javascript-kernel": "^0.1.0-beta.13",
+    "@jupyterlite/kernel": "^0.1.0-beta.13",
+    "@jupyterlite/server": "^0.1.0-beta.13"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

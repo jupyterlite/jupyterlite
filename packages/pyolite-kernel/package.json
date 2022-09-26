@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/pyolite-kernel",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "JupyterLite - Pyolite Kernel",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -47,14 +47,14 @@
   ],
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@jupyterlite/contents": "^0.1.0-beta.12",
-    "@jupyterlite/kernel": "^0.1.0-beta.12",
+    "@jupyterlite/contents": "^0.1.0-beta.13",
+    "@jupyterlite/kernel": "^0.1.0-beta.13",
     "comlink": "^4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.4.6",
+    "@jupyterlab/testutils": "~3.4.7",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
@@ -66,8 +66,8 @@
   },
   "pyolite": {
     "packages": {
-      "py/pyolite": "0.1.0b12",
-      "py/piplite": "0.1.0b12",
+      "py/pyolite": "0.1.0b13",
+      "py/piplite": "0.1.0b13",
       "py/ipykernel": "6.9.2",
       "py/widgetsnbextension3/widgetsnbextension": "3.6.0",
       "py/widgetsnbextension4/widgetsnbextension": "4.0.2"

@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/application",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "JupyterLite - Application",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -36,10 +36,10 @@
   ],
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@jupyterlab/application": "~3.4.6",
+    "@jupyterlab/application": "~3.4.7",
     "@jupyterlab/coreutils": "~5.4.6",
-    "@jupyterlab/docregistry": "~3.4.6",
-    "@jupyterlab/rendermime-interfaces": "~3.4.6",
+    "@jupyterlab/docregistry": "~3.4.7",
+    "@jupyterlab/rendermime-interfaces": "~3.4.7",
     "@lumino/coreutils": "^1.12.0",
     "@lumino/signaling": "^1.10.1",
     "@lumino/widgets": "^1.33.0"
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.4.6",
+    "@jupyterlab/testutils": "~3.4.7",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",

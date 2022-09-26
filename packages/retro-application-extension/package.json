@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/retro-application-extension",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "JupyterLite - Retro Application Extension",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
@@ -36,12 +36,12 @@
   ],
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@jupyterlab/application": "~3.4.6",
-    "@jupyterlab/console": "~3.4.6",
+    "@jupyterlab/application": "~3.4.7",
+    "@jupyterlab/console": "~3.4.7",
     "@jupyterlab/coreutils": "~5.4.6",
-    "@jupyterlab/docmanager": "~3.4.6",
+    "@jupyterlab/docmanager": "~3.4.7",
     "@jupyterlab/services": "~6.4.6",
-    "@jupyterlite/ui-components": "^0.1.0-beta.12",
+    "@jupyterlite/ui-components": "^0.1.0-beta.13",
     "@retrolab/application": "^0.3.21"
   },
   "devDependencies": {

@@ -1,9 +1,9 @@
 {
   "private": true,
   "name": "@jupyterlite/root",
-  "version": "0.1.0b12",
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
+  "version": "0.1.0b13",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~3.4.6",
+    "@jupyterlab/buildutils": "~3.4.7",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^8.9.0",
