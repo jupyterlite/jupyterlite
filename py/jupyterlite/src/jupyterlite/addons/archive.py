@@ -25,7 +25,7 @@ class ArchiveAddon(BaseAddon):
 
     def status(self, manager):
         tarball = manager.output_archive
-        yield dict(
+        yield self.task(
             name="archive",
             actions=[(self.log_archive, [tarball])],
         )
@@ -40,7 +40,7 @@ class ArchiveAddon(BaseAddon):
             p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]
         ]
 
-        yield dict(
+        yield self.task(
             name=f"archive:{tarball.name}",
             doc="generate a new app archive",
             file_dep=file_dep,

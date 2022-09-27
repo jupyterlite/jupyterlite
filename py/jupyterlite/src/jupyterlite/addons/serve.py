@@ -29,7 +29,7 @@ class ServeAddon(BaseAddon):
             return False
 
     def status(self, manager):
-        yield dict(name="contents", actions=[self._print_status])
+        yield self.task(name="contents", actions=[self._print_status])
 
     def _print_status(self):
         print(
@@ -55,7 +55,7 @@ class ServeAddon(BaseAddon):
             name = "stdlib"
             actions = [doit.tools.PythonInteractiveAction(self._serve_stdlib)]
 
-        yield dict(
+        yield self.task(
             name=name,
             doc=f"run server at {self.url} for {manager.output_dir}",
             uptodate=[lambda: False],
