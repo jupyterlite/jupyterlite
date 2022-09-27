@@ -23,8 +23,8 @@ pages:
     - main # the branch you want to publish
 ```
 
-```{hint}
-See the [gitlab pages template] for a more involved example.
-```
+````{hint}
+""When you're looking for a JupyterLite GitLab template, there is a [minimal example](https://gitlab.gwdg.de/crc1456/livedocs/jupyterlite-minimal-example) and a [more involved example](https://gitlab.com/benabel/jupyterlite-template).""```
 
 [gitlab pages template]: https://gitlab.com/benabel/jupyterlite-template
+````
