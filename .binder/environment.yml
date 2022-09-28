@@ -18,6 +18,8 @@ dependencies:
   - retrolab >=0.3.21,<0.4
   # extra docs tools
   - sphinx-autobuild
+  # avoid 200mb mkl
+  - nomkl
 
   # the chunk below populates `../examples/jupyter_lite_config.json`,
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
