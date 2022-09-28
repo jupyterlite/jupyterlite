@@ -76,7 +76,7 @@ class PipliteAddon(BaseAddon):
         for wheel in wheels:
             whl_meta = self.wheel_cache / f"{wheel.name}.meta.json"
             whl_metas += [whl_meta]
-            yield dict(
+            yield self.task(
                 name=f"meta:{whl_meta.name}",
                 doc=f"ensure {wheel} metadata",
                 file_dep=[wheel],
@@ -90,7 +90,7 @@ class PipliteAddon(BaseAddon):
         if whl_metas:
             whl_index = self.manager.output_dir / PYPI_WHEELS / ALL_JSON
 
-            yield dict(
+            yield self.task(
                 name="patch",
                 doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
                 file_dep=[*whl_metas, jupyterlite_json],
@@ -127,7 +127,7 @@ class PipliteAddon(BaseAddon):
             if not path.exists():
                 continue
 
-            yield dict(
+            yield self.task(
                 name=f"validate:{wheel_index_url}",
                 doc=f"validate {wheel_index_url} with the piplite API schema",
                 file_dep=[path],
@@ -150,7 +150,7 @@ class PipliteAddon(BaseAddon):
             dest = self.wheel_cache / name
             local_path = dest
             if not dest.exists():
-                yield dict(
+                yield self.task(
                     name=f"fetch:{name}",
                     doc=f"fetch the wheel {name}",
                     actions=[(self.fetch_one, [path_or_url, dest])],
@@ -177,7 +177,7 @@ class PipliteAddon(BaseAddon):
         dest = self.output_wheels / wheel.name
         if dest == wheel:  # pragma: no cover
             return
-        yield dict(
+        yield self.task(
             name=f"copy:whl:{wheel.name}",
             file_dep=[wheel],
             targets=[dest],

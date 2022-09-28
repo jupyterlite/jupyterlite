@@ -29,7 +29,7 @@ class ReportAddon(BaseAddon):
 
         all_output_files = self.all_output_files
 
-        yield dict(
+        yield self.task(
             name=SHA256SUMS,
             doc="hash all of the files",
             actions=[
