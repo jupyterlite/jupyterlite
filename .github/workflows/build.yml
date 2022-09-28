@@ -147,7 +147,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Install (py)
         run: |
-          ${{ matrix.python-command }} -m pip install entrypoints doit jupyter_core
+          ${{ matrix.python-command }} -m pip install importlib_metadata doit jupyter_core
           ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite
           ${{ matrix.python-command }} -m pip check
       - name: Prepare smoke test folder
@@ -204,7 +204,7 @@ jobs:
           path: ./docs/reference/api/ts
       - uses: actions/setup-python@v2
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Install node
         uses: actions/setup-node@v2
         with:

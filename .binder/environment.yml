@@ -50,9 +50,9 @@ dependencies:
   ### DOCS ENV ###
   # runtimes
   - nodejs >=14,<15
-  - python >=3.9,<3.10
+  - python >=3.10,<3.11
   # build
-  - doit >=0.33,<0.34
+  - doit-with-toml >=0.36,<1
   - flit >=3.7.1,<4
   - jupyter-server-mathjax >=0.2.3
   - jsonschema >=3

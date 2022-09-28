@@ -1,11 +1,17 @@
 """Manager for JupyterLite
 """
-
+import sys
 from logging import getLogger
 
 import doit
-import entrypoints
 from traitlets import Bool, Dict, Unicode, default
+
+# See compatibility note on `group` keyword in
+# https://docs.python.org/3/library/importlib.metadata.html#entry-points
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 from .config import LiteBuildConfig
 from .constants import ADDON_ENTRYPOINT, HOOK_PARENTS, HOOKS, PHASES
@@ -61,7 +67,8 @@ class LiteManager(LiteBuildConfig):
         if populated, ``disable_addons`` will be consulted
         """
         addons = {}
-        for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
+        for addon in entry_points(group=ADDON_ENTRYPOINT):
+            name = addon.name
             if name in self.disable_addons:
                 self.log.info(f"""[lite] [addon] [{name}] skipped by config""")
                 continue
