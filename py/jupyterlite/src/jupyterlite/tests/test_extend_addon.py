@@ -1,4 +1,5 @@
 import json
+import sys
 from unittest import mock
 
 import pytest
@@ -6,6 +7,8 @@ from traitlets import Int
 
 from jupyterlite.addons.base import BaseAddon
 from jupyterlite.app import LiteStatusApp
+
+LT_310 = sys.version_info < 3.10
 
 
 def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
@@ -50,10 +53,18 @@ def a_mock_addon():
             yield dict(name="hello:world", actions=[lambda: print("hello world")])
 
     class MockEntryPoint:
+        name = "mock"
+
         def load(self):
             return MockAddon
 
-    group = {"mock": MockEntryPoint()}
+    group = [MockEntryPoint()]
 
-    with mock.patch("entrypoints.get_group_named", return_value=group):
+    entry_points = (
+        "importlib_metadata.entry_points"
+        if LT_310
+        else "importlib.metadata.enytry_points"
+    )
+
+    with mock.patch(entry_points, return_value=group):
         yield
