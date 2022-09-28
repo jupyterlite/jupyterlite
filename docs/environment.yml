@@ -24,9 +24,10 @@ dependencies:
   # cli
   - wheel
   # docs
+  - docutils >=0.18
   - myst-nb
   - pydata-sphinx-theme
-  - sphinx
+  - sphinx >=5.1
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe
