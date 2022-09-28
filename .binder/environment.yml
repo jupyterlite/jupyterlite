@@ -54,7 +54,7 @@ dependencies:
   - nodejs >=16,<17
   - python >=3.10,<3.11
   # build
-  - doit >=0.35,<1
+  - doit >=0.34,<1
   - flit >=3.7.1,<4
   - jupyter-server-mathjax >=0.2.3
   - jsonschema >=3

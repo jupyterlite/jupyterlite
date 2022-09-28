@@ -147,7 +147,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Install (py)
         run: |
-          ${{ matrix.python-command }} -m pip install importlib_metadata 'doit >=0.35,<1' jupyter_core
+          ${{ matrix.python-command }} -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core
           ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite
           ${{ matrix.python-command }} -m pip check
       - name: Prepare smoke test folder
