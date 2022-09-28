@@ -27,7 +27,7 @@ dependencies:
   - docutils >=0.18
   - myst-nb
   - pydata-sphinx-theme
-  - sphinx >=5.1
+  - sphinx >=5.1,<6
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe
