@@ -20,9 +20,9 @@ git clone https://github.com/jupyterlite/jupyterlite
 You'll need:
 
 - `git`
-- `nodejs >=16`
+- `nodejs >=16,<17`
 - `yarn <2`
-- `python >=3.10`
+- `python >=3.10,<3.11`
 
 Various package managers on different operating systems provide these.
 
@@ -33,8 +33,14 @@ Various package managers on different operating systems provide these.
 > mamba env update --file .binder/environment.yml
 > mamba activate jupyterlite-dev
 > ```
+>
+> To get full archive reproducibility test output, only available on Linux, also run:
+>
+> ```bash
+> mamba install -c conda-forge diffoscope
+> ```
 
-For speed, in GitHub Actions, `python` and `nodejs` are installed directly. Provided you
+For speed in GitHub Actions, `python` and `nodejs` are installed directly. Provided you
 already have these, to install the full development stack:
 
 ```bash
