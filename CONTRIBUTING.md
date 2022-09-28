@@ -20,9 +20,9 @@ git clone https://github.com/jupyterlite/jupyterlite
 You'll need:
 
 - `git`
-- `nodejs >=12`
+- `nodejs >=16`
 - `yarn <2`
-- `python >=3.8`
+- `python >=3.10`
 
 Various package managers on different operating systems provide these.
 
