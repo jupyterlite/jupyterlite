@@ -48,7 +48,7 @@ class PyodideAddon(BaseAddon):
 
     def status(self, manager):
         """report on the status of pyodide"""
-        yield dict(
+        yield self.task(
             name="pyodide",
             actions=[
                 lambda: print(
@@ -91,7 +91,7 @@ class PyodideAddon(BaseAddon):
             if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
         ]
 
-        yield dict(
+        yield self.task(
             name="copy:pyodide",
             file_dep=file_dep,
             targets=[
@@ -109,7 +109,7 @@ class PyodideAddon(BaseAddon):
 
         output_js = self.output_pyodide / PYODIDE_JS
 
-        yield dict(
+        yield self.task(
             name=f"patch:{JUPYTERLITE_JSON}",
             doc=f"ensure {JUPYTERLITE_JSON} includes any piplite wheels",
             file_dep=[output_js],
@@ -125,7 +125,7 @@ class PyodideAddon(BaseAddon):
         """ensure the pyodide configuration is sound"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
 
-        yield dict(
+        yield self.task(
             name="config",
             file_dep=[jupyterlite_json],
             actions=[(self.check_config_paths, [jupyterlite_json])],
@@ -172,7 +172,7 @@ class PyodideAddon(BaseAddon):
             dest = self.pyodide_cache / name
             local_path = dest
             if not dest.exists():
-                yield dict(
+                yield self.task(
                     name=f"fetch:{name}",
                     doc=f"fetch the pyodide distribution {name}",
                     actions=[(self.fetch_one, [path_or_url, dest])],
@@ -186,7 +186,7 @@ class PyodideAddon(BaseAddon):
 
         if local_path.is_dir():
             all_paths = sorted([p for p in local_path.rglob("*") if not p.is_dir()])
-            yield dict(
+            yield self.task(
                 name=f"copy:pyodide:{local_path.name}",
                 file_dep=[*all_paths],
                 targets=[dest / p.relative_to(local_path) for p in all_paths],
@@ -212,7 +212,7 @@ class PyodideAddon(BaseAddon):
                     zf.extractall(td)
                 self.copy_one(Path(td), dest)
 
-        task = dict(
+        yield self.task(
             name="extract:pyodide",
             file_dep=[local_path],
             uptodate=[
@@ -227,5 +227,3 @@ class PyodideAddon(BaseAddon):
             ],
             actions=[_extract],
         )
-
-        yield task

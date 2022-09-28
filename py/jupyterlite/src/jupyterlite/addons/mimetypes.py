@@ -20,7 +20,7 @@ class MimetypesAddon(BaseAddon):
 
     def status(self, manager):
         """Yield status about file types."""
-        yield dict(
+        yield self.task(
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(f"""    filetypes:         {len(self.file_types)} """),
@@ -39,7 +39,7 @@ class MimetypesAddon(BaseAddon):
         """Yield ``doit`` tasks to update with file type config."""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
 
-        yield dict(
+        yield self.task(
             name="patch",
             uptodate=[
                 doit.tools.config_changed(

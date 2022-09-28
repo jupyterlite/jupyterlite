@@ -28,7 +28,7 @@ class StaticAddon(BaseAddon):
     __all__ = ["pre_init", "init", "post_init", "pre_status"]
 
     def pre_status(self, manager):
-        yield dict(
+        yield self.task(
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: print(
@@ -57,7 +57,7 @@ class StaticAddon(BaseAddon):
         """
         output_dir = manager.output_dir
 
-        yield dict(
+        yield self.task(
             name="output_dir",
             doc="clean out the lite directory",
             file_dep=[self.app_archive],
@@ -78,7 +78,7 @@ class StaticAddon(BaseAddon):
 
     def init(self, manager):
         """unpack and copy the tarball files into the output_dir"""
-        yield dict(
+        yield self.task(
             name="unpack",
             doc=f"unpack a 'gold master' JupyterLite from {self.app_archive.name}",
             actions=[(self._unpack_stdlib, [])],
@@ -109,7 +109,7 @@ class StaticAddon(BaseAddon):
             app_prune_task_dep = [
                 f"{self.manager.task_prefix}post_init:static:{shared_prune_name}"
             ]
-            yield dict(
+            yield self.task(
                 name=shared_prune_name,
                 actions=[
                     (self.prune_unused_shared_packages, [all_apps, apps_to_remove])
@@ -119,7 +119,7 @@ class StaticAddon(BaseAddon):
         for to_remove in apps_to_remove:
             app = output_dir / to_remove
             app_build = output_dir / "build" / to_remove
-            yield dict(
+            yield self.task(
                 task_dep=app_prune_task_dep,
                 name=f"prune:{app}",
                 actions=[(self.delete_one, [app, app_build])],

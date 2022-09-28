@@ -8,8 +8,8 @@ authors = [
     {name = "JupyterLite Contributors"},
 ]
 dependencies = [
-    "doit",
-    "entrypoints",
+    "doit >=0.34,<1",
+    "importlib_metadata >=3.6; python_version<\"3.10\"",
     "jupyter_core >=4.7",
 ]
 keywords = [

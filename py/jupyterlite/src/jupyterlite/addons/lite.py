@@ -16,7 +16,7 @@ class LiteAddon(BaseAddon):
     __all__ = ["build", "check", "status"]
 
     def status(self, manager):
-        yield dict(
+        yield self.task(
             name=JUPYTERLITE_JSON,
             actions=[
                 lambda: self.log.debug(
@@ -36,7 +36,7 @@ class LiteAddon(BaseAddon):
         for jupyterlite_file in self.lite_files:
             rel = jupyterlite_file.relative_to(lite_dir)
             dest = output_dir / rel
-            yield dict(
+            yield self.task(
                 name=f"patch:{rel}",
                 file_dep=[jupyterlite_file],
                 actions=[
@@ -65,7 +65,7 @@ class LiteAddon(BaseAddon):
                 if lite_file.name == JUPYTERLITE_JSON
                 else ["metadata", JUPYTERLITE_METADATA]
             )
-            yield dict(
+            yield self.task(
                 name=f"validate:{stem}",
                 file_dep=[schema, lite_file],
                 actions=[
