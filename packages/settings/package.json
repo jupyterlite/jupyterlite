@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "~5.4.6",
-    "@jupyterlab/settingregistry": "~3.4.7",
+    "@jupyterlab/settingregistry": "~3.4.8",
     "@jupyterlite/localforage": "^0.1.0-beta.13",
     "@lumino/coreutils": "^1.12.0",
     "json5": "^2.2.0",
@@ -52,7 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~3.4.7",
+    "@jupyterlab/testutils": "~3.4.8",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
