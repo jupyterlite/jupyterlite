@@ -1667,10 +1667,10 @@
     "@lumino/signaling" "^1.10.0"
     "@lumino/widgets" "^1.33.0"
 
-"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.3":
-  version "5.5.1"
-  resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-5.5.1.tgz#b8256928f06aa8d84a12009c01370e26f8651148"
-  integrity sha512-KnM22CGucdvH8ZjW4EECfTaK0C7pm+M1SiGMKiB7DJTfRObrhxOYByURS4KEZmBD8zZKoQQ6mFpn+Lnx7zZgjw==
+"@jupyterlab/coreutils@^5.4.0", "@jupyterlab/coreutils@^5.4.8":
+  version "5.5.0"
+  resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-5.5.0.tgz#0cbceb74e75a96cc69c8dd14b61f37d8ea940d75"
+  integrity sha512-mVBuVDUA87hvtS5DfbjfLIE1EFdhAGEU8f19G33QfhD/w2vYDi7vE4ro4arNT47r17MzXW4XfaE4LwatR6uvPw==
   dependencies:
     "@lumino/coreutils" "^1.11.0"
     "@lumino/disposable" "^1.10.0"
@@ -2799,7 +2799,7 @@
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
   version "0.1.0-beta.17"
   dependencies:
-    "@jupyterlab/coreutils" "^5.4.3"
+    "@jupyterlab/coreutils" "^5.4.8"
     "@jupyterlite/kernel" "^0.1.0-beta.17"
     comlink "^4.3.1"
 

@@ -42,7 +42,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^5.4.3",
+    "@jupyterlab/coreutils": "^5.4.8",
     "@jupyterlite/kernel": "^0.1.0-beta.17",
     "comlink": "^4.3.1"
   },
