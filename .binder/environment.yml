@@ -6,9 +6,10 @@ channels:
 
 dependencies:
   # build stuff
-  - black
+  - black-jupyter
   - depfinder
   - isort
+  - nbstripout
   - pyflakes
   - twine
   # demo stuff

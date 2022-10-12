@@ -14,6 +14,7 @@ from IPython.core.inputtransformer2 import (
     make_tokens_by_line,
 )
 
+
 class LiteTransformerManager(TransformerManager):
     def __init__(self):
         super().__init__()

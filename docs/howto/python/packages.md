@@ -9,7 +9,7 @@ New packages can be downloaded and installed at runtime. For example to install
 `snowballstemmer`.
 
 ```py
-%pip install snowballstemmer
+%pip install -q snowballstemmer
 ```
 
 which translates to:

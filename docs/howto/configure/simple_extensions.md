@@ -104,7 +104,7 @@ The end users of your JupyterLite instance will **still need to install** the
 dependencies at runtime in their notebooks with the IPython-compatible `%pip` magic:
 
 ```py
-%pip install ipywidgets bqplot plotly
+%pip install -q ipywidgets bqplot plotly
 ```
 
 which translates to:
@@ -135,7 +135,7 @@ The user-facing code in the notebook will then also have to use the same version
 stay compatible:
 
 ```py
-%pip install "ipywidgets==7.7.0" "bqplot==0.12.30" "plotly==5.8.0"
+%pip install -q "ipywidgets==7.7.0" "bqplot==0.12.30" "plotly==5.8.0"
 ```
 
 which translates to:

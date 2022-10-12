@@ -36,9 +36,6 @@ def _get_parser():
     )
     install.add_argument(
         "--requirements",
-        "-r",
-        "--constraints",
-        "-c",
         nargs="*",
         help="paths to requirements files",
     )
@@ -55,6 +52,7 @@ def _get_parser():
     install.add_argument(
         "--verbose", action="store_true", help="whether to print more output"
     )
+    install.add_argument("--quiet", help="only show the minimum output")
     return parser
 
 

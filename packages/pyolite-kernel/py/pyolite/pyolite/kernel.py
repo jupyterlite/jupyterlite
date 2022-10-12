@@ -17,7 +17,9 @@ class Pyolite(LoggingConfigurable):
     interpreter: "Interpreter" = Instance("pyolite.interpreter.Interpreter")
     comm_manager: CommManager = Instance(CommManager)
     parent_header: typing.Any = Instance(Any, allow_none=True)
-    pre_transform_manager: LiteTransformerManager = Instance(LiteTransformerManager, ())
+    lite_transform_manager: LiteTransformerManager = Instance(
+        LiteTransformerManager, ()
+    )
 
     @default("comm_manager")
     def _default_comm_manager(self):
@@ -83,7 +85,7 @@ class Pyolite(LoggingConfigurable):
 
     async def run(self, code):
         self.interpreter._last_traceback = None
-        code = await self.pre_transform_manager.transform_cell(code)
+        code = await self.lite_transform_manager.transform_cell(code)
         exec_code = self.interpreter.transform_cell(code)
 
         results = {}
