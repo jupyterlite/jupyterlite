@@ -26,8 +26,8 @@ assets, make sure to install `jupyterlite` with `pip install jupyterlite[mathjax
 
 ## Configure the piplite wheels
 
-By default calling `piplite.install()` downloads and installs packages from the public
-[PyPI].
+By default calling `%pip install` or `piplite.install()` downloads and installs packages
+from the public [PyPI].
 
 Instead you can configure a list of packages that will be downloaded at _build_ time so
 they can be hosted alongside your JupyterLite website.

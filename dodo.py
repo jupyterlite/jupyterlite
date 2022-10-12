@@ -221,6 +221,16 @@ def task_lint():
             actions=[(U.validate, validate_args)],
         )
 
+    for ipynb in D.ALL_IPYNB:
+        yield dict(
+            name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
+            file_dep=[ipynb],
+            actions=[
+                [*C.NBCONVERT, "--to=notebook", "--inplace", "--output", ipynb, ipynb],
+                [*C.NBTRUST, ipynb],
+            ],
+        )
+
 
 def task_build():
     """build code and intermediate packages"""
@@ -940,6 +950,9 @@ class C:
         "node_modules",
     ]
 
+    NBCONVERT = ["jupyter", "nbconvert"]
+    NBTRUST = ["jupyter", "trust"]
+
     # coverage varies based on excursions
     COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
 
@@ -1064,6 +1077,11 @@ class D:
             *P.APP.glob(f"*/*/{fname}"),
         ]
         if p.exists()
+    ]
+
+    ALL_IPYNB = [
+        *P.DOCS_IPYNB,
+        *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")],
     ]
 
 

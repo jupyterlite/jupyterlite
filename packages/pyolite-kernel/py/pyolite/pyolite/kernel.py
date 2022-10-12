@@ -1,14 +1,27 @@
 # This is our ipykernel mock
+import typing
+
 from ipykernel import CommManager
 from IPython.utils.tokenutil import line_at_cursor, token_at_cursor
 from pyodide_js import loadPackagesFromImports as _load_packages_from_imports
+from traitlets import Any, Instance, default
+from traitlets.config import LoggingConfigurable
+
+if typing.TYPE_CHECKING:
+    from .interpreter import Interpreter
+
+from .litetransform import LiteTransformerManager
 
 
-class Pyolite:
-    def __init__(self, interpreter):
-        self.interpreter = interpreter
-        self.comm_manager = CommManager(kernel=self)
-        self._parent_header = None
+class Pyolite(LoggingConfigurable):
+    interpreter: "Interpreter" = Instance("pyolite.interpreter.Interpreter")
+    comm_manager: CommManager = Instance(CommManager)
+    parent_header: typing.Any = Instance(Any, allow_none=True)
+    pre_transform_manager: LiteTransformerManager = Instance(LiteTransformerManager, ())
+
+    @default("comm_manager")
+    def _default_comm_manager(self):
+        return CommManager(kernel=self)
 
     def get_parent(self):
         # TODO mimic ipykernel's get_parent signature
@@ -70,6 +83,7 @@ class Pyolite:
 
     async def run(self, code):
         self.interpreter._last_traceback = None
+        code = await self.pre_transform_manager.transform_cell(code)
         exec_code = self.interpreter.transform_cell(code)
 
         results = {}
