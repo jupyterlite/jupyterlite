@@ -14,79 +14,120 @@ As of the upstream:
         pre: bool = False,                          # --pre
     ) -> None:
 ```
+
+As this is _not_ really a CLI, it doesn't bother with accurate return codes, and should
+failures should not block execution.
 """
 import re
+import sys
+import typing
 from argparse import ArgumentParser
 from pathlib import Path
-from warnings import warn
-
-import piplite
 
 REQ_FILE_PREFIX = r"^(-r|--requirements)\s*=?\s*(.*)\s*"
 
+__all__ = ["get_transformed_code"]
 
-def _get_parser():
-    parser = ArgumentParser("piplite", exit_on_error=False)
-    parser.add_argument("--version", action="version", version=piplite.__version__)
-    actions = parser.add_subparsers(title="actions")
 
-    install = actions.add_parser("install")
-    install.add_argument(
-        "packages", nargs="*", help="package names (or wheel URLs) to install"
+def warn(msg):
+    print(msg, file=sys.stderr, flush=True)
+
+
+def _get_parser() -> ArgumentParser:
+    """Build a pip-like CLI parser."""
+    parser = ArgumentParser(
+        "piplite",
+        exit_on_error=False,
+        allow_abbrev=False,
+        description="a pip-like wrapper for `piplite` and `micropip`",
     )
-    install.add_argument(
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="count",
+        help="whether to print more output",
+    )
+    parser.add_argument(
+        "--quiet", "-q", action="store_true", help="only show the minimum output"
+    )
+
+    parser.add_argument(
+        "action", help="action to perform", default="help", choices=["help", "install"]
+    )
+
+    parser.add_argument(
         "--requirements",
         "-r",
         nargs="*",
         help="paths to requirements files",
     )
-    install.add_argument(
+    parser.add_argument(
         "--no-deps",
         action="store_true",
         help="whether dependencies should be installed",
     )
-    install.add_argument(
+    parser.add_argument(
         "--pre",
         action="store_true",
         help="whether pre-release packages should be considered",
     )
-    install.add_argument(
-        "--verbose", action="store_true", help="whether to print more output"
+    parser.add_argument(
+        "packages",
+        nargs="*",
+        type=str,
+        default=[],
+        help="package names (or wheel URLs) to install",
     )
-    install.add_argument(
-        "--quiet", "-q", action="store_true", help="only show the minimum output"
-    )
+
     return parser
 
 
-async def main(argv: list[str]):
-    """Emulate the CLI behavior of `pip`"""
-    install_kwargs = await get_install_kwargs(argv)
-    return await piplite.install(**install_kwargs)
+async def get_transformed_code(argv: list[str]) -> typing.Optional[str]:
+    """Return a string of code for use in in-kernel execution."""
+    action, kwargs = await get_action_kwargs(argv)
+
+    if action == "help":
+        pass
+    if action == "install":
+        if kwargs["requirements"]:
+            return f"""await __import__("piplite").install(**{kwargs})\n"""
+        else:
+            warn("piplite needs at least one package to install")
 
 
-async def get_install_kwargs(argv: list[str]):
-    """Get the arguments to `piplite.install` from CLI-like tokens."""
+async def get_action_kwargs(argv: list[str]) -> tuple[typing.Optional[str], dict]:
+    """Get the arguments to `piplite` subcommands from CLI-like tokens."""
 
-    args = _get_parser().parse_args(argv)
+    parser = _get_parser()
 
-    install_kwargs = {}
+    try:
+        args = parser.parse_intermixed_args(argv)
+    except (Exception, SystemExit):
+        return None, {}
 
-    requirements = args.packages
+    kwargs = {}
 
-    if args.pre:
-        install_kwargs["pre"] = True
+    action = args.action
 
-    if args.no_deps:
-        install_kwargs["deps"] = False
+    if action == "install":
 
-    if args.verbose:
-        install_kwargs["keep_going"] = True
+        kwargs["requirements"] = args.packages
 
-    for req_file in args.requirements or []:
-        requirements += await _packages_from_requirements_file(Path(req_file))
+        if args.pre:
+            kwargs["pre"] = True
 
-    return {"requirements": requirements, **install_kwargs}
+        if args.no_deps:
+            kwargs["deps"] = False
+
+        if args.verbose:
+            kwargs["keep_going"] = True
+
+        for req_file in args.requirements or []:
+            kwargs["requirements"] += await _packages_from_requirements_file(
+                Path(req_file)
+            )
+
+    return action, kwargs
 
 
 async def _packages_from_requirements_file(req_path: Path) -> list[str]:

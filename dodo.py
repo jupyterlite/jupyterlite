@@ -52,7 +52,7 @@ def task_env():
         )
 
         for nb in P.ALL_EXAMPLES:
-            if not nb.name.endswith(".ipynb"):
+            if not nb.name.endswith(".ipynb") or nb in B.SKIP_DEPFINDER:
                 continue
             nb_deps = B.EXAMPLE_DEPS / f"{nb.name}.yml"
             yield dict(
@@ -1183,6 +1183,8 @@ class B:
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
+    # does crazy imports
+    SKIP_DEPFINDER = [P.EXAMPLES / "python-packages.ipynb"]
 
     PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
     RAW_WHEELS = BUILD / "wheels"

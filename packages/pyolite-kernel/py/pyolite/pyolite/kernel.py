@@ -85,6 +85,7 @@ class Pyolite(LoggingConfigurable):
 
     async def run(self, code):
         self.interpreter._last_traceback = None
+        # apply pyodide-specific changes that need to occur before interpreting
         code = await self.lite_transform_manager.transform_cell(code)
         exec_code = self.interpreter.transform_cell(code)
 
