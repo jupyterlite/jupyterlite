@@ -221,6 +221,10 @@ def task_lint():
             actions=[(U.validate, validate_args)],
         )
 
+    if not C.LINT_NOTEBOOKS:
+        # TODO: to be applied on another PR
+        return
+
     for ipynb in D.ALL_IPYNB:
         yield dict(
             name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
@@ -872,11 +876,12 @@ class C:
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
-    CI = bool(json.loads(os.environ.get("CI", "0")))
-    BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     PY_IMPL = platform.python_implementation()
     WIN = platform.system() == "Windows"
     PYPY = "pypy" in PY_IMPL.lower()
+    # env vars
+    CI = bool(json.loads(os.environ.get("CI", "0")))
+    BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
@@ -889,6 +894,8 @@ class C:
         )
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
+    LINT_NOTEBOOKS = json.loads(os.environ.get("LINT_NOTEBOOKS", "0"))
+
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
