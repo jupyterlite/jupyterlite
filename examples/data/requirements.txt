@@ -1,0 +1,3 @@
+# a requirements file that works with `%pip install`
+-r more-requirements.txt
+traitlets >=5
