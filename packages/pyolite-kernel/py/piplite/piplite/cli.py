@@ -53,7 +53,9 @@ def _get_parser():
     install.add_argument(
         "--verbose", action="store_true", help="whether to print more output"
     )
-    install.add_argument("--quiet", "-q", help="only show the minimum output")
+    install.add_argument(
+        "--quiet", "-q", action="store_true", help="only show the minimum output"
+    )
     return parser
 
 
