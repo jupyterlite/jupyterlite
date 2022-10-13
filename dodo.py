@@ -226,17 +226,17 @@ def task_lint():
             name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
             file_dep=[ipynb, B.YARN_INTEGRITY, P.PRETTIER_RC],
             actions=[
-                ["nbstripout", ipynb],
+                U.do("nbstripout", ipynb),
                 (U.notebook_lint, [ipynb]),
-                [
-                    which("jupyter-nbconvert"),
+                U.do(
+                    "jupyter-nbconvert",
                     "--log-level=WARN",
                     "--to=notebook",
                     "--inplace",
                     "--output",
                     ipynb,
                     ipynb,
-                ],
+                ),
             ],
         )
 
