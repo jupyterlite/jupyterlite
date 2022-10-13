@@ -965,6 +965,13 @@ class C:
 
     # coverage varies based on excursions
     COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
+    SKIP_LINT = [
+        "/docs/_build/",
+        "/.ipynb_checkpoints/",
+        "/jupyter_execute/",
+        "/_static/",
+    ]
+    NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
 
 
 class P:
@@ -1045,7 +1052,10 @@ class P:
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
-    DOCS_IPYNB = sorted(DOCS.rglob("*.ipynb"))
+    DOCS_IPYNB = filter(
+        lambda p: not re.match("|".join(C.SKIP_LINT), str(p.as_posix())),
+        DOCS.rglob("*.ipynb"),
+    )
 
     # pyolite
     PYOLITE_TS = PACKAGES / "pyolite-kernel"
@@ -1092,14 +1102,10 @@ class D:
         if p.exists()
     ]
 
-    ALL_IPYNB = [
-        p
-        for p in [
-            *P.DOCS_IPYNB,
-            *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")],
-        ]
-        if "ipynb_checkpoints" not in str(p)
-    ]
+    ALL_IPYNB = filter(
+        C.NOT_SKIP_LINT,
+        [*P.DOCS_IPYNB, *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")]],
+    )
 
 
 P.PYOLITE_PACKAGES = {
@@ -1228,10 +1234,7 @@ class BB:
             / (src.name.rsplit(".", 1)[0] + ".html")
         )
         for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
-        if P.DOCS in src.parents
-        and "_static" not in str(src)
-        and "ipynb_checkpoints" not in str(src)
-        and "jupyter_execute" not in str(src)
+        if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
 
 
