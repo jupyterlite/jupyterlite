@@ -221,10 +221,6 @@ def task_lint():
             actions=[(U.validate, validate_args)],
         )
 
-    if not C.LINT_NOTEBOOKS:
-        # TODO: to be applied on another PR
-        return
-
     for ipynb in D.ALL_IPYNB:
         yield dict(
             name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
@@ -894,7 +890,6 @@ class C:
         )
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
-    LINT_NOTEBOOKS = json.loads(os.environ.get("LINT_NOTEBOOKS", "0"))
 
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
