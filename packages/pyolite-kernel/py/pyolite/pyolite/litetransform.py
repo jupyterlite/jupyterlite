@@ -75,16 +75,21 @@ class LiteTransformerManager(TransformerManager):
 
 
 async def pip_magic(lines: list[str]) -> list[str]:
-    """Replace ``%pip`` with ``await piplite`` actions."""
+    """Replace ``%pip`` with ``piplite`` actions."""
     new_lines = []
+
     for line in lines:
-        pip_match = re.match(r"^\s*%pip\s+(install.*)$", line)
+        pip_match = re.match(r"^(\s*)%pip\b(.*)$", line)
         if not pip_match:
             new_lines.append(line)
             continue
-        from piplite.cli import get_install_kwargs
+        import piplite.cli
 
-        piplite_args = await get_install_kwargs(shlex.split(pip_match[1]))
-        new_lines.append(f"""await __import__("piplite").install(**{piplite_args})""")
+        transformed_code = await piplite.cli.get_transformed_code(
+            shlex.split(pip_match[2])
+        )
+
+        if transformed_code:
+            new_lines.append(f"{pip_match[1]}{transformed_code}")
 
     return new_lines
