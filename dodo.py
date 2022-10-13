@@ -229,7 +229,7 @@ def task_lint():
                 ["nbstripout", ipynb],
                 (U.notebook_lint, [ipynb]),
                 [
-                    *C.NBCONVERT,
+                    which("jupyter-nbconvert"),
                     "--log-level=WARN",
                     "--to=notebook",
                     "--inplace",
@@ -953,14 +953,11 @@ class C:
     )
     SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["yarn", "prettier", "--write"]
-    QUIET_PRETTIER = ["yarn", "--silent", "prettier"]
     PRETTIER_IGNORE = [
         "_pypi.ts",
         ".ipynb_checkpoints",
         "node_modules",
     ]
-
-    NBCONVERT = ["jupyter-nbconvert"]
     MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
@@ -1786,7 +1783,7 @@ class U:
             print(f"... blackening {ipynb.stem}")
             black_args = []
             black_args += ["--check"] if C.CI else ["--quiet"]
-            if subprocess.call(["black", *black_args, ipynb]) != 0:
+            if subprocess.call([which("black"), *black_args, ipynb]) != 0:
                 return False
 
     def pretty_markdown_cells(ipynb, nb_json):
@@ -1805,11 +1802,11 @@ class U:
                 files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
                 files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
 
-            args = ["--config", P.PRETTIER_RC]
+            args = [which("yarn"), "--silent", "prettier", "--config", P.PRETTIER_RC]
 
             args += ["--check"] if C.CI else ["--write", "--list-different"]
 
-            subprocess.call([*C.QUIET_PRETTIER, *args, tdp])
+            subprocess.call([*args, tdp])
 
             for i, cell in enumerate(cells):
                 cells[i]["source"] = (
