@@ -149,8 +149,12 @@ async def _packages_from_requirements_file(req_path: Path) -> list[str]:
 async def _packages_from_requirements_line(
     req_path: Path, line_no: int, line: str
 ) -> list[str]:
-    """Extract (potentially nested) package requirements from line of a requirements file."""
+    """Extract (potentially nested) package requirements from line of a requirements file.
+
+    `micropip` has a sufficient pep508 implementation to handle most cases
+    """
     req = line.strip().split("#")[0].strip()
+    # is it another requirement file?
     req_file_match = re.match(REQ_FILE_PREFIX, req)
     if req_file_match:
         if req_file_match[2].startswith("/"):
