@@ -40,7 +40,8 @@ If you want additionall packages be pre-installed, you can use the
 ```
 
 The default value for `pipliteRequiredPackages` is `["matplotlib"]`. When you set
-`pipliteRequiredPackages` take to include `matplotlib` package if you need it.
+`pipliteRequiredPackages` you should take care to include `matplotlib` package if you
+need it.
 
 When you configure pre-installed packages, consider to also
 [ship appropriate pyolite wheels at build time](./wheels.md).
