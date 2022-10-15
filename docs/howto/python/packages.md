@@ -39,14 +39,11 @@ If you want additionall packages be pre-installed, you can use the
 "jupyter-config-data": {
   "litePluginSettings": {
     "@jupyterlite/pyolite-kernel-extension:kernel": {
-      "pipliteRequiredPackages": ["matplotlib", "openpyxl"]
+      "pipliteRequiredPackages": ["openpyxl"]
     }
   }
 }
 ```
-
-The default value for `pipliteRequiredPackages` is `["matplotlib"]`. When you set
-`pipliteRequiredPackages` take to include `matplotlib` package if you need it.
 
 When you configure pre-installed packages, consider to also
 [ship appropriate pyolite wheels at build time](./wheels.md).

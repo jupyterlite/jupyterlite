@@ -41,8 +41,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const rawPipUrls = config.pipliteUrls || [];
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
     const disablePyPIFallback = !!config.disablePyPIFallback;
-    const defaultPackages = ['matplotlib'];
-    const pipliteRequiredPackages = config.pipliteRequiredPackages || defaultPackages;
+    const pipliteRequiredPackages = config.pipliteRequiredPackages || [];
 
     kernelspecs.register({
       spec: {
