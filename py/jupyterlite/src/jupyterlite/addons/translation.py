@@ -15,7 +15,7 @@ class TranslationAddon(BaseAddon):
 
     def status(self, manager):
         """yield some status information about the state of the translation"""
-        yield dict(
+        yield self.task(
             name="translation",
             actions=[
                 lambda: self.log.debug(
@@ -35,7 +35,7 @@ class TranslationAddon(BaseAddon):
         targets = [api_path]
         targets += [self.get_language_pack_file(locale) for locale in packs.keys()]
 
-        yield dict(
+        yield self.task(
             name="copy",
             doc="create the translation data",
             uptodate=[doit.tools.config_changed(dict(metadata=metadata, packs=packs))],
@@ -51,7 +51,7 @@ class TranslationAddon(BaseAddon):
         """Check the translation data is valid"""
         for all_json in self.api_dir.rglob(ALL_JSON):
             stem = all_json.relative_to(self.api_dir)
-            yield dict(
+            yield self.task(
                 name=f"validate:translation:{stem}",
                 doc=f"Validate {stem} with the JupyterLab Translation API",
                 file_dep=[all_json],

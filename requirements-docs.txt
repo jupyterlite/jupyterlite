@@ -3,10 +3,11 @@
 -r requirements-test.txt
 
 # build
+docutils >=0.18
 jupyter-server-mathjax
 myst-nb
 pydata-sphinx-theme
-sphinx
+sphinx >=5.1,<6
 sphinx-autodoc-typehints
 sphinx-jsonschema
 sphinxext-rediraffe

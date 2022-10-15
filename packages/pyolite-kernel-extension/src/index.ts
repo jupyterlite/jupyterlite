@@ -14,7 +14,7 @@ import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 /**
  * The default CDN fallback for Pyodide
  */
-const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js';
+const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js';
 
 /**
  * The id for the extension, and key in the litePlugins.
@@ -52,7 +52,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
         argv: [],
         resources: {
           'logo-32x32': 'TODO',
-          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.png'),
+          'logo-64x64': URLExt.join(baseUrl, '/kernelspecs/python.svg'),
         },
       },
       create: async (options: IKernel.IOptions): Promise<IKernel> => {

@@ -1,11 +1,17 @@
 """Manager for JupyterLite
 """
-
+import sys
 from logging import getLogger
 
 import doit
-import entrypoints
 from traitlets import Bool, Dict, Unicode, default
+
+# See compatibility note on `group` keyword in
+# https://docs.python.org/3/library/importlib.metadata.html#entry-points
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 from .config import LiteBuildConfig
 from .constants import ADDON_ENTRYPOINT, HOOK_PARENTS, HOOKS, PHASES
@@ -61,7 +67,7 @@ class LiteManager(LiteBuildConfig):
         if populated, ``disable_addons`` will be consulted
         """
         addons = {}
-        for name, addon in entrypoints.get_group_named(ADDON_ENTRYPOINT).items():
+        for name, addon in self._addon_entry_points().items():
             if name in self.disable_addons:
                 self.log.info(f"""[lite] [addon] [{name}] skipped by config""")
                 continue
@@ -78,6 +84,17 @@ class LiteManager(LiteBuildConfig):
             except Exception as err:
                 self.log.warning(f"[lite] [addon] [{name}] FAIL", exc_info=err)
         return addons
+
+    def _addon_entry_points(self):
+        """Return modern entrypoints as a dict with sorted keys"""
+        all_entry_points = {}
+        for entry_point in entry_points(group=ADDON_ENTRYPOINT):
+            name = entry_point.name
+            if name in all_entry_points:
+                self.log.warning(f"[lite] [addon] [{name}] already registered.")
+                continue
+            all_entry_points[name] = entry_point
+        return dict(sorted(all_entry_points.items()))
 
     @default("_doit_config")
     def _default_doit_config(self):

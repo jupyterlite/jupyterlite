@@ -2,7 +2,9 @@
 # see .binder/ and docs/ for full development/docs environments
 -r requirements-build.txt
 
-black
+black[jupyter]
 isort
 jsonschema >=3
+nbconvert
+nbstripout
 pyflakes

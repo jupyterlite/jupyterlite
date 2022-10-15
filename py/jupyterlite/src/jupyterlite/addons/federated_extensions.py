@@ -87,7 +87,7 @@ class FederatedExtensionAddon(BaseAddon):
         ]
         targets = [dest / p.relative_to(pkg_path) for p in file_dep]
 
-        yield dict(
+        yield self.task(
             name=f"copy:ext:{stem}",
             file_dep=file_dep,
             targets=targets,
@@ -102,7 +102,7 @@ class FederatedExtensionAddon(BaseAddon):
             dest = self.ext_cache / name
             if init:
                 if not dest.exists():
-                    yield dict(
+                    yield self.task(
                         name=f"fetch:{name}",
                         actions=[(self.fetch_one, [path_or_url, dest])],
                         targets=[dest],
@@ -188,7 +188,7 @@ class FederatedExtensionAddon(BaseAddon):
                     zf.extractall(td, members)
                 self.copy_one(Path(td) / pkg_root_with_slash, dest)
 
-        yield dict(
+        yield self.task(
             name=f"extract:wheel:{stem}",
             file_dep=[wheel],
             targets=targets,
@@ -248,7 +248,7 @@ class FederatedExtensionAddon(BaseAddon):
                     zf.extractall(td, _filter_members(zf.getmembers()))
                 self.copy_one(Path(td) / pkg_root_with_slash, dest)
 
-        yield dict(
+        yield self.task(
             name=f"extract:conda:{stem}",
             file_dep=[conda_pkg],
             targets=targets,
@@ -268,7 +268,7 @@ class FederatedExtensionAddon(BaseAddon):
         lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
         lab_extensions = self.env_extensions(lab_extensions_root)
 
-        yield dict(
+        yield self.task(
             name="patch",
             doc=f"ensure {JUPYTERLITE_JSON} includes the federated_extensions",
             file_dep=[*lab_extensions, jupyterlite_json],
@@ -294,7 +294,7 @@ class FederatedExtensionAddon(BaseAddon):
             )
             dest = app_themes / stem
             targets = [dest / p.relative_to(theme_dir) for p in file_dep]
-            yield dict(
+            yield self.task(
                 name=f"copy:theme:{stem}",
                 doc=f"copy theme asset for {pkg}",
                 file_dep=file_dep,

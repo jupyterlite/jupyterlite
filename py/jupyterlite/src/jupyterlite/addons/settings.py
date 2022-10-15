@@ -29,7 +29,7 @@ class SettingsAddon(BaseAddon):
                 continue
             apps.append(overrides_json)
 
-        yield dict(
+        yield self.task(
             name="overrides",
             actions=[lambda: print(f"""    {OVERRIDES_JSON}: {len(apps)}""")],
         )
@@ -42,7 +42,7 @@ class SettingsAddon(BaseAddon):
             if not overrides_json.exists():
                 continue
             dest = app_output_dir / overrides_json.name
-            yield dict(
+            yield self.task(
                 name=f"""copy:{app or "root"}/""",
                 file_dep=[overrides_json],
                 targets=[dest],
@@ -58,7 +58,7 @@ class SettingsAddon(BaseAddon):
             if not overrides_json.exists():
                 continue
 
-            yield dict(
+            yield self.task(
                 name=f"patch:overrides:{app}",
                 file_dep=[overrides_json, jupyterlite_json],
                 actions=[
@@ -98,7 +98,7 @@ class SettingsAddon(BaseAddon):
 
             validator = self.get_validator(schema)
 
-            yield dict(
+            yield self.task(
                 name=f"overrides:{plugin_id}",
                 file_dep=[lite_file, schema],
                 actions=[(self.validate_one_json_file, [validator, None, defaults])],

@@ -9,6 +9,12 @@ New packages can be downloaded and installed at runtime. For example to install
 `snowballstemmer`.
 
 ```py
+%pip install -q snowballstemmer
+```
+
+which translates to:
+
+```py
 import piplite
 await piplite.install("snowballstemmer")
 ```

@@ -6,23 +6,28 @@ channels:
 
 dependencies:
   # build stuff
-  - black
+  - black-jupyter
   - depfinder
   - isort
+  - nbstripout
   - pyflakes
   - twine
   # demo stuff
+  - ipywidgets >=8,<9
   - jupyter-server-proxy
-  - jupyterlab >=3.4.5,<4
+  - jupyterlab >=3.4.8,<4
   - retrolab >=0.3.21,<0.4
   # extra docs tools
   - sphinx-autobuild
+  # avoid 200mb mkl
+  - nomkl
 
   # the chunk below populates `../examples/jupyter_lite_config.json`,
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
+  - ipycytoscape
   - jupyterlab_miami_nights
-  - jupyterlab_widgets >=1,<2
+  - jupyterlab_widgets >=3.0.0,<4.0.0
   - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
@@ -37,7 +42,6 @@ dependencies:
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
   - ipycanvas
-  - ipycytoscape
   - ipyleaflet
   - ipympl
   - ipyvue
@@ -48,10 +52,10 @@ dependencies:
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
-  - nodejs >=14,<15
-  - python >=3.9,<3.10
+  - nodejs >=16,<17
+  - python >=3.10,<3.11
   # build
-  - doit >=0.33,<0.34
+  - doit >=0.34,<1
   - flit >=3.7.1,<4
   - jupyter-server-mathjax >=0.2.3
   - jsonschema >=3
@@ -63,9 +67,10 @@ dependencies:
   # cli
   - wheel
   # docs
+  - docutils >=0.18
   - myst-nb
   - pydata-sphinx-theme
-  - sphinx
+  - sphinx >=5.1,<6
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxext-rediraffe

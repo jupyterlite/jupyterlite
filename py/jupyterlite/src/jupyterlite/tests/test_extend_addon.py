@@ -1,4 +1,5 @@
 import json
+import sys
 from unittest import mock
 
 import pytest
@@ -6,6 +7,9 @@ from traitlets import Int
 
 from jupyterlite.addons.base import BaseAddon
 from jupyterlite.app import LiteStatusApp
+from jupyterlite.manager import LiteManager
+
+PY_LT_310 = sys.version_info < (3, 10)
 
 
 def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
@@ -13,6 +17,7 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
     app.initialize()
     manager = app.lite_manager
 
+    assert len(manager._addons) == 1
     addon = manager._addons["mock"]
     assert addon.parent == manager, "not the parent"
 
@@ -28,7 +33,7 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
 
 
 @pytest.fixture
-def a_configured_mock_addon(a_mock_addon, an_empty_lite_dir, monkeypatch):
+def a_configured_mock_addon(only_a_mock_addon, an_empty_lite_dir, monkeypatch):
     config = {
         "LiteBuildConfig": {"ignore_sys_prefix": ["federated_extensions"]},
         "MockAddon": {"some_feature": 42},
@@ -40,7 +45,7 @@ def a_configured_mock_addon(a_mock_addon, an_empty_lite_dir, monkeypatch):
 
 
 @pytest.fixture
-def a_mock_addon():
+def only_a_mock_addon():
     class MockAddon(BaseAddon):
         __all__ = ["status"]
 
@@ -50,10 +55,12 @@ def a_mock_addon():
             yield dict(name="hello:world", actions=[lambda: print("hello world")])
 
     class MockEntryPoint:
+        name = "mock"
+
         def load(self):
             return MockAddon
 
     group = {"mock": MockEntryPoint()}
 
-    with mock.patch("entrypoints.get_group_named", return_value=group):
+    with mock.patch.object(LiteManager, "_addon_entry_points", return_value=group):
         yield

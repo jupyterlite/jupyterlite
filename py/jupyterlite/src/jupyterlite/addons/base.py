@@ -44,6 +44,15 @@ class BaseAddon(LoggingConfigurable):
     def log(self):
         return self.manager.log
 
+    def task(self, **task):
+        """Ensure a ``doit`` task is well-formed.
+
+        - Task names may not include the ``=`` character
+          - arbitrarily replace with ``--``
+        """
+        task["name"] = task["name"].replace("=", "--")
+        return task
+
     def copy_one(self, src, dest):
         """copy one Path (a file or folder)"""
         if self.manager.no_sourcemaps and self.is_ignored_sourcemap(src.name):

@@ -128,8 +128,8 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         # some caching doesn't seep to work reliably
         assert duration_1 > duration_2
 
-    # force, detect a root file
-    readme = an_empty_lite_dir / "README.md"
+    # force, detect a root file with ``=`` in the name
+    readme = an_empty_lite_dir / "== README ==.md"
     readme.write_text("# hello world", encoding="utf-8")
 
     # ... and a nested folder
@@ -167,7 +167,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         out = an_empty_lite_dir / "_output"
 
         # did the files make it...
-        expected_readme = out / "files/README.md"
+        expected_readme = out / "files/== README ==.md"
         assert expected_readme.exists()
         assert "world" in expected_readme.read_text(encoding="utf-8")
         expected_details = out / "files/details/README.md"

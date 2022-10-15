@@ -20,9 +20,9 @@ git clone https://github.com/jupyterlite/jupyterlite
 You'll need:
 
 - `git`
-- `nodejs >=12`
+- `nodejs >=16,<17`
 - `yarn <2`
-- `python >=3.8`
+- `python >=3.10,<3.11`
 
 Various package managers on different operating systems provide these.
 
@@ -33,8 +33,14 @@ Various package managers on different operating systems provide these.
 > mamba env update --file .binder/environment.yml
 > mamba activate jupyterlite-dev
 > ```
+>
+> To get full archive reproducibility test output, only available on Linux, also run:
+>
+> ```bash
+> mamba install -c conda-forge diffoscope
+> ```
 
-For speed, in GitHub Actions, `python` and `nodejs` are installed directly. Provided you
+For speed in GitHub Actions, `python` and `nodejs` are installed directly. Provided you
 already have these, to install the full development stack:
 
 ```bash
@@ -81,22 +87,12 @@ doit run lint build docs:app:build
 For reference the default `doit` tasks are defined in the `DOIT_CONFIG` variable in the [dodo.py][dodo] file.
 ```
 
-#### `doit auto`
-
-On Linux and MacOS, `doit auto` (which can also accept task names) will watch all files
-and perform any dependent tasks, then reload the tasks, useful for rapidly seeing
-changes.
-
-> By default, `auto` will invoke `doit lint` which may change source files. This can be
-> confusing to IDEs (or the `watch:docs` and `watch:js` tasks) that might be performing
-> their own watching, or run up against file system limits.
-
 #### `doit serve`
 
 A number of development servers can be started for interactive local development and
 documentation authoring.
 
-Offering different assets and tools, and obey different environment variables:
+These offer different assets and tools, and obey different environment variables:
 
 - `5000`: core assets from `./app`:
   - `doit serve:core:js`
