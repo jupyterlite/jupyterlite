@@ -1,0 +1,2 @@
+# another requirements file, which gets included by requirements.txt
+ipython

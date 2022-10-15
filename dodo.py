@@ -52,7 +52,7 @@ def task_env():
         )
 
         for nb in P.ALL_EXAMPLES:
-            if not nb.name.endswith(".ipynb"):
+            if not nb.name.endswith(".ipynb") or nb in B.SKIP_DEPFINDER:
                 continue
             nb_deps = B.EXAMPLE_DEPS / f"{nb.name}.yml"
             yield dict(
@@ -219,6 +219,29 @@ def task_lint():
             name=f"schema:validate:{config.relative_to(P.ROOT)}",
             file_dep=[P.APP_SCHEMA, config],
             actions=[(U.validate, validate_args)],
+        )
+
+    if not C.LINT_NOTEBOOKS:
+        # TODO: to be applied on another PR
+        return
+
+    for ipynb in D.ALL_IPYNB:
+        yield dict(
+            name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
+            file_dep=[ipynb, B.YARN_INTEGRITY, P.PRETTIER_RC],
+            actions=[
+                U.do("nbstripout", ipynb),
+                (U.notebook_lint, [ipynb]),
+                U.do(
+                    "jupyter-nbconvert",
+                    "--log-level=WARN",
+                    "--to=notebook",
+                    "--inplace",
+                    "--output",
+                    ipynb,
+                    ipynb,
+                ),
+            ],
         )
 
 
@@ -853,11 +876,12 @@ class C:
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
-    CI = bool(json.loads(os.environ.get("CI", "0")))
-    BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     PY_IMPL = platform.python_implementation()
     WIN = platform.system() == "Windows"
     PYPY = "pypy" in PY_IMPL.lower()
+    # env vars
+    CI = bool(json.loads(os.environ.get("CI", "0")))
+    BINDER = bool(json.loads(os.environ.get("BINDER", "0")))
     RTD = bool(json.loads(os.environ.get("READTHEDOCS", "False").lower()))
     IN_CONDA = bool(os.environ.get("CONDA_PREFIX"))
     IN_SPHINX = json.loads(os.environ.get("IN_SPHINX", "0"))
@@ -870,6 +894,8 @@ class C:
         )
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
+    LINT_NOTEBOOKS = json.loads(os.environ.get("LINT_NOTEBOOKS", "0"))
+
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
@@ -939,9 +965,17 @@ class C:
         ".ipynb_checkpoints",
         "node_modules",
     ]
+    MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
     COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
+    SKIP_LINT = [
+        "/docs/_build/",
+        "/.ipynb_checkpoints/",
+        "/jupyter_execute/",
+        "/_static/",
+    ]
+    NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
 
 
 class P:
@@ -1022,7 +1056,10 @@ class P:
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
     DOCS_MD = sorted([*DOCS_SRC_MD, README, CONTRIBUTING, CHANGELOG])
-    DOCS_IPYNB = sorted(DOCS.glob("*.ipynb"))
+    DOCS_IPYNB = filter(
+        lambda p: not re.match("|".join(C.SKIP_LINT), str(p.as_posix())),
+        DOCS.rglob("*.ipynb"),
+    )
 
     # pyolite
     PYOLITE_TS = PACKAGES / "pyolite-kernel"
@@ -1035,6 +1072,9 @@ class P:
 
     # CI
     CI = ROOT / ".github"
+
+    # lint
+    PRETTIER_RC = ROOT / ".prettierrc"
 
 
 class D:
@@ -1065,6 +1105,11 @@ class D:
         ]
         if p.exists()
     ]
+
+    ALL_IPYNB = filter(
+        C.NOT_SKIP_LINT,
+        [*P.DOCS_IPYNB, *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")]],
+    )
 
 
 P.PYOLITE_PACKAGES = {
@@ -1138,6 +1183,8 @@ class B:
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
+    # does crazy imports
+    SKIP_DEPFINDER = [P.EXAMPLES / "python-packages.ipynb"]
 
     PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
     RAW_WHEELS = BUILD / "wheels"
@@ -1193,16 +1240,13 @@ class BB:
             / (src.name.rsplit(".", 1)[0] + ".html")
         )
         for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
-        if P.DOCS in src.parents
-        and "_static" not in str(src)
-        and "ipynb_checkpoints" not in str(src)
+        if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
 
 
 class U:
     _SESSION = None
 
-    @staticmethod
     def session():
         try:
             import requests_cache
@@ -1230,7 +1274,6 @@ class U:
 
         return U._SESSION
 
-    @staticmethod
     def do(*args, cwd=P.ROOT, **kwargs):
         """wrap a CmdAction for consistency (e.g. on windows)"""
         try:
@@ -1242,7 +1285,6 @@ class U:
             [cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs
         )
 
-    @staticmethod
     def ok(ok, **task):
         task.setdefault("targets", []).append(ok)
         task["actions"] = [
@@ -1253,7 +1295,6 @@ class U:
         ]
         return task
 
-    @staticmethod
     def sync_env(from_env, to_env, marker):
         """update an environment from another environment, based on marker pairs"""
         from_chunks = from_env.read_text(**C.ENC).split(marker)
@@ -1263,7 +1304,6 @@ class U:
             **C.ENC,
         )
 
-    @staticmethod
     def get_deps(has_deps, dep_file):
         """look for deps with depfinder"""
         args = [
@@ -1283,7 +1323,6 @@ class U:
 
         dep_file.write_text(out, **C.ENC)
 
-    @staticmethod
     def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
         """use conda list to derive tarball names for federated_extensions"""
         try:
@@ -1326,7 +1365,6 @@ class U:
 
         to_json.write_text(json.dumps(config, **C.JSON))
 
-    @staticmethod
     def deps_to_wheels(all_deps):
         from yaml import safe_load
 
@@ -1372,7 +1410,6 @@ class U:
             meta = pkginfo.get_metadata(str(wheel))
             yield U.pip_url(meta.name, meta.version, wheel.name)
 
-    @staticmethod
     def pip_url(name, version, wheel_name):
         """calculate and verify a "predictable" wheel name, or calculate it the hard way"""
         python_tag = "py3" if "py2." not in wheel_name else "py2.py3"
@@ -1402,7 +1439,6 @@ class U:
             " deleting `build/requests-cache.sqlite` and running again"
         )
 
-    @staticmethod
     def typedoc_conf():
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
         original_entry_points = sorted(typedoc["entryPoints"])
@@ -1430,7 +1466,6 @@ class U:
             tsconfig["references"] = new_references
             P.TSCONFIG_TYPEDOC.write_text(json.dumps(tsconfig, **C.JSON), **C.ENC)
 
-    @staticmethod
     def mystify():
         """unwrap monorepo docs into per-module docs"""
         mods = defaultdict(lambda: defaultdict(list))
@@ -1513,7 +1548,6 @@ class U:
             **C.ENC,
         )
 
-    @staticmethod
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
         import jsonschema
 
@@ -1540,7 +1574,6 @@ class U:
             print("\ton:", str(error.instance)[:64])
         return not errors
 
-    @staticmethod
     def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
 
@@ -1576,7 +1609,6 @@ class U:
 
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
-    @staticmethod
     def hashfile(path):
         shasums = path / "SHA256SUMS"
         lines = []
@@ -1591,7 +1623,6 @@ class U:
         print(output)
         shasums.write_text(output)
 
-    @staticmethod
     def copy_one(src, dest):
         if not src.exists():
             return False
@@ -1607,7 +1638,6 @@ class U:
         else:
             shutil.copy2(src, dest)
 
-    @staticmethod
     def build_one_flit(py_pkg):
         """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
 
@@ -1636,7 +1666,6 @@ class U:
                 subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
-    @staticmethod
     def check_one_ipynb(path):
         """ensure any pinned imports are present in the env and wheel cache"""
         built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
@@ -1678,13 +1707,11 @@ class U:
             file_dep=[path, built, P.BINDER_ENV, B.DOCS_APP_WHEEL_INDEX],
         )
 
-    @staticmethod
     def copy_wheels(wheel_dir, wheels):
         """create a warehouse-like index for the wheels"""
         for whl_path in wheels:
             shutil.copy2(whl_path, wheel_dir / whl_path.name)
 
-    @staticmethod
     def integrity():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
@@ -1712,7 +1739,6 @@ class U:
         for app in D.APPS:
             _ensure_resolutions(app)
 
-    @staticmethod
     def fetch_pyodide_repodata():
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
@@ -1722,7 +1748,6 @@ class U:
         B.PYODIDE_REPODATA.parent.mkdir(exist_ok=True, parents=True)
         B.PYODIDE_REPODATA.write_text(json.dumps(packages, **C.JSON))
 
-    @staticmethod
     def make_pyolite_wheel_js():
         lines = [
             "// this file is autogenerated from the wheels described in ../package.json",
@@ -1754,6 +1779,48 @@ class U:
                 f"?name=pypi/[name].[ext]&context=.{bang}';"
             ]
         B.PYOLITE_WHEEL_TS.write_text("\n".join(sorted(lines) + [""]))
+
+    def notebook_lint(ipynb: Path):
+        nb_text = ipynb.read_text(**C.ENC)
+        nb_json = json.loads(nb_text)
+
+        U.pretty_markdown_cells(ipynb, nb_json)
+
+        ipynb.write_text(json.dumps(nb_json), **C.ENC)
+
+        if C.MIME_IPYTHON in nb_text:
+            print(f"... blackening {ipynb.stem}")
+            black_args = []
+            black_args += ["--check"] if C.CI else ["--quiet"]
+            if subprocess.call([which("black"), *black_args, ipynb]) != 0:
+                return False
+
+    def pretty_markdown_cells(ipynb, nb_json):
+        cells = [c for c in nb_json["cells"] if c["cell_type"] == "markdown"]
+
+        if not cells:
+            return
+
+        print(f"... prettying {len(cells)} markdown cells of {ipynb.stem}")
+        with tempfile.TemporaryDirectory() as td:
+            tdp = Path(td)
+
+            files = {}
+
+            for i, cell in enumerate(cells):
+                files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
+                files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
+
+            args = [which("yarn"), "--silent", "prettier", "--config", P.PRETTIER_RC]
+
+            args += ["--check"] if C.CI else ["--write", "--list-different"]
+
+            subprocess.call([*args, tdp])
+
+            for i, cell in enumerate(cells):
+                cells[i]["source"] = (
+                    files[i].read_text(**C.ENC).rstrip().splitlines(True)
+                )
 
 
 # environment overloads

@@ -101,7 +101,13 @@ plotly
 ```
 
 The end users of your JupyterLite instance will **still need to install** the
-dependencies at runtime in their notebooks:
+dependencies at runtime in their notebooks with the IPython-compatible `%pip` magic:
+
+```py
+%pip install -q ipywidgets bqplot plotly
+```
+
+which translates to:
 
 ```py
 import piplite
@@ -111,11 +117,11 @@ await piplite.install(["ipywidgets", "bqplot", "plotly"])
 ### Avoid the drift of versions between the frontend extension and the Python package
 
 In some situations, the versions of the packages installed at runtime with
-`piplite.install` might not be compatible with the deployed frontend extension anymore.
-This can for example happen when a JupyterLite website was built and deployed a couple
-of weeks ago, and new versions of the Python packages were released since. In that case
-the frontend extension have not been updated since they are still available as static
-files as part of the deployment.
+`%pip install` or `piplite.install` might not be compatible with the deployed frontend
+extension anymore. This can for example happen when a JupyterLite website was built and
+deployed a couple of weeks ago, and new versions of the Python packages were released
+since. In that case the frontend extension have not been updated since they are still
+available as static files as part of the deployment.
 
 One way to avoid this mismatch is to pin the dependencies more explicitly. For example:
 
@@ -125,8 +131,14 @@ bqplot==0.12.30
 plotly==5.8.0
 ```
 
-The user facing code in the notebook will then also have to use the same versions to
+The user-facing code in the notebook will then also have to use the same versions to
 stay compatible:
+
+```py
+%pip install -q "ipywidgets==7.7.0" "bqplot==0.12.30" "plotly==5.8.0"
+```
+
+which translates to:
 
 ```py
 import piplite
