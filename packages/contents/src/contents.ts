@@ -300,9 +300,9 @@ export class Contents implements IContents {
 
     if (!options?.content) {
       return {
+        size: 0,
         ...model,
         content: null,
-        size: 0,
       };
     }
 
@@ -419,25 +419,39 @@ export class Contents implements IContents {
 
     if (options.content && options.format === 'base64') {
       if (ext === '.ipynb') {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(this.unescapeContent(options.content)),
+          content: JSON.parse(contentUnescaped),
           format: 'json',
           type: 'notebook',
+          size: size,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(this.unescapeContent(options.content)),
+          content: JSON.parse(contentUnescaped),
           format: 'json',
           type: 'file',
+          size: size,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: this.unescapeContent(options.content),
+          content: contentUnescaped,
           format: 'text',
           type: 'file',
+          size: size,
+        };
+      } else {
+        item = {
+          ...item,
+          size: atob(options.content).length,
         };
       }
     }
