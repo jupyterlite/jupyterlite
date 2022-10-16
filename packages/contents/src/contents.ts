@@ -640,7 +640,8 @@ export class Contents implements IContents {
       mimetype: MIME.PLAIN_TEXT,
       type: 'file',
       writable: true,
-      content: null,
+      size: 0,
+      content: '',
     };
 
     if (options?.content) {
@@ -662,30 +663,32 @@ export class Contents implements IContents {
           mimetype?.indexOf('json') !== -1 ||
           path.match(/\.(ipynb|[^/]*json[^/]*)$/)
         ) {
+          const contentText = await response.text();
           model = {
             ...model,
-            content: await response.json(),
+            content: JSON.parse(contentText),
             format: 'json',
             mimetype: model.mimetype || MIME.JSON,
+            size: contentText.length,
           };
         } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
+          const contentText = await response.text();
           model = {
             ...model,
-            content: await response.text(),
+            content: contentText,
             format: 'text',
             mimetype: mimetype || MIME.PLAIN_TEXT,
+            size: contentText.length,
           };
         } else {
+          const contentBytes = await response.arrayBuffer();
+          const contentBuffer = new Uint8Array(contentBytes);
           model = {
             ...model,
-            content: btoa(
-              new Uint8Array(await response.arrayBuffer()).reduce(
-                this.reduceBytesToString,
-                ''
-              )
-            ),
+            content: btoa(contentBuffer.reduce(this.reduceBytesToString, '')),
             format: 'base64',
             mimetype: mimetype || MIME.OCTET_STREAM,
+            size: contentBuffer.length,
           };
         }
       }
