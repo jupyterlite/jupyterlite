@@ -36,6 +36,7 @@
     "lint": "yarn prettier:fix && yarn eslint:fix",
     "lint:check": "yarn prettier:check && yarn eslint:check",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
+    "prettier:check-src": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml}\"",
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "publish": "yarn clean && yarn build && lerna publish",
     "serve": "node scripts/serve.js",
