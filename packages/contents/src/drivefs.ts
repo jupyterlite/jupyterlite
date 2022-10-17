@@ -78,6 +78,7 @@ export interface IStats {
 }
 
 export interface IEmscriptenFSNode {
+  id: number;
   name: string;
   mode: number;
   parent: IEmscriptenFSNode;
@@ -247,7 +248,11 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   getattr(node: IEmscriptenFSNode): IStats {
-    return this.fs.API.getattr(this.fs.realPath(node));
+    return {
+      ...this.fs.API.getattr(this.fs.realPath(node)),
+      mode: node.mode,
+      ino: node.id,
+    };
   }
 
   setattr(node: IEmscriptenFSNode, attr: IStats): void {
@@ -443,11 +448,15 @@ export class ContentsAPI {
   }
 
   getattr(path: string): IStats {
-    const stats = this.request({ method: 'getattr', path: this.normalizePath(path) });
+    const stats: IStats = this.request({
+      method: 'getattr',
+      path: this.normalizePath(path),
+    });
     // Turn datetimes into proper objects
     stats.atime = new Date(stats.atime);
     stats.mtime = new Date(stats.mtime);
     stats.ctime = new Date(stats.ctime);
+    // ensure a non-undefined size (0 isn't great, though)
     stats.size = stats.size || 0;
     return stats;
   }

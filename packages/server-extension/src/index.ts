@@ -36,6 +36,8 @@ import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
 
 import localforage from 'localforage';
 
+const BLOCK_SIZE = 4096;
+
 /**
  * The localforage plugin
  */
@@ -292,20 +294,19 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
         case 'getattr': {
           model = await contentManager.get(path);
 
+          const size = model.size || 0;
           broadcast.postMessage({
-            dev: 0,
-            ino: 0,
-            mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
-            nlink: 0,
+            dev: 1,
+            nlink: 1,
             uid: 0,
             gid: 0,
             rdev: 0,
-            size: model.size || 0,
-            blksize: 0,
-            blocks: 0,
+            size,
+            blksize: BLOCK_SIZE,
+            blocks: Math.ceil(size / BLOCK_SIZE),
             atime: model.last_modified, // TODO Get the proper atime?
             mtime: model.last_modified,
-            ctime: model.last_modified, // TODO Get the proper ctime?
+            ctime: model.created,
             timestamp: 0,
           });
           break;
