@@ -300,9 +300,9 @@ export class Contents implements IContents {
 
     if (!options?.content) {
       return {
+        size: 0,
         ...model,
         content: null,
-        size: 0,
       };
     }
 
@@ -419,25 +419,39 @@ export class Contents implements IContents {
 
     if (options.content && options.format === 'base64') {
       if (ext === '.ipynb') {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(this.unescapeContent(options.content)),
+          content: JSON.parse(contentUnescaped),
           format: 'json',
           type: 'notebook',
+          size: size,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(this.unescapeContent(options.content)),
+          content: JSON.parse(contentUnescaped),
           format: 'json',
           type: 'file',
+          size: size,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
+        const contentUnescaped = this.unescapeContent(options.content);
+        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: this.unescapeContent(options.content),
+          content: contentUnescaped,
           format: 'text',
           type: 'file',
+          size: size,
+        };
+      } else {
+        item = {
+          ...item,
+          size: atob(options.content).length,
         };
       }
     }
@@ -626,7 +640,8 @@ export class Contents implements IContents {
       mimetype: MIME.PLAIN_TEXT,
       type: 'file',
       writable: true,
-      content: null,
+      size: 0,
+      content: '',
     };
 
     if (options?.content) {
@@ -648,30 +663,32 @@ export class Contents implements IContents {
           mimetype?.indexOf('json') !== -1 ||
           path.match(/\.(ipynb|[^/]*json[^/]*)$/)
         ) {
+          const contentText = await response.text();
           model = {
             ...model,
-            content: await response.json(),
+            content: JSON.parse(contentText),
             format: 'json',
             mimetype: model.mimetype || MIME.JSON,
+            size: contentText.length,
           };
         } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
+          const contentText = await response.text();
           model = {
             ...model,
-            content: await response.text(),
+            content: contentText,
             format: 'text',
             mimetype: mimetype || MIME.PLAIN_TEXT,
+            size: contentText.length,
           };
         } else {
+          const contentBytes = await response.arrayBuffer();
+          const contentBuffer = new Uint8Array(contentBytes);
           model = {
             ...model,
-            content: btoa(
-              new Uint8Array(await response.arrayBuffer()).reduce(
-                this.reduceBytesToString,
-                ''
-              )
-            ),
+            content: btoa(contentBuffer.reduce(this.reduceBytesToString, '')),
             format: 'base64',
             mimetype: mimetype || MIME.OCTET_STREAM,
+            size: contentBuffer.length,
           };
         }
       }
