@@ -3,7 +3,7 @@ description: 'Build JupyterLite from source'
 runs:
   using: 'composite'
   steps:
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -12,7 +12,7 @@ runs:
       run: python3 -m pip install --user -U pip setuptools wheel
 
     - name: Cache (pip)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: |
@@ -25,12 +25,12 @@ runs:
       run: python3 -m pip install -r requirements-build.txt
 
     - name: Install node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 16.x
 
     - name: Cache (node_modules)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: cache-node-modules
       with:
         path: node_modules/
@@ -38,7 +38,7 @@ runs:
           ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
 
     - name: Cache (.yarn-packages)
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       id: cache-yarn-packages
       if: steps.cache-node-modules.outputs.cache-hit != 'true'
       with:
@@ -50,7 +50,7 @@ runs:
 
     # TODO: investigate fails observed in https://github.com/jupyterlite/jupyterlite/pull/746
     # - name: Cache (wepback)
-    #   uses: actions/cache@v2
+    #   uses: actions/cache@v3
     #   with:
     #     path: build/webpack
     #     key: |

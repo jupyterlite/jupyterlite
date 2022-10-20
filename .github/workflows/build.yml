@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/build-dist
 
       - name: Upload (dist)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -36,13 +36,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       - name: Setup pip (base)
         run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: |
@@ -53,18 +53,18 @@ jobs:
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
       - name: Install node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Cache (node_modules)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules/
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
       - name: Cache (.yarn-packages)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-yarn-packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         with:
@@ -83,7 +83,7 @@ jobs:
       - name: Docs (typedoc)
         run: doit -n4 docs:typedoc:mystify
       - name: Upload (typedoc)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
@@ -125,18 +125,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Setup pip (base)
         run: ${{ matrix.python-command }} -m pip install --user -U pip setuptools wheel
       - name: Download (dist)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Cache (pip)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ matrix.pip-cache }}
           key: |
@@ -175,7 +175,7 @@ jobs:
         run: doit test:py:*
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -193,31 +193,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Download (dist)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Download (typedoc)
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
       - name: Install node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - name: Cache (node_modules)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-node-modules
         with:
           path: node_modules/
           key: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
       - name: Cache (.yarn-packages)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-yarn-packages
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         with:
@@ -232,7 +232,7 @@ jobs:
       - name: Setup pip (base)
         run: python3 -m pip install --user -U pip setuptools wheel
       - name: Cache (pip)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
           key: |
@@ -241,7 +241,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Cache (docs extensions)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./examples/.cache
           key: |
@@ -257,7 +257,7 @@ jobs:
       - name: Docs (app archive)
         run: doit docs:app:pack
       - name: Upload (docs app archive)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite docs archive ${{ github.run_number }}
           path: |
@@ -270,7 +270,7 @@ jobs:
         run: doit test:py:jupyterlite
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -279,7 +279,7 @@ jobs:
             build/pytest
       - name: Upload (sphinx logs)
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
