@@ -163,7 +163,7 @@ def task_lint():
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
         file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier:check" if C.CI else "prettier:fix")],
+        actions=[U.do("yarn", "prettier:check-src" if C.CI else "prettier:fix")],
     )
 
     yield U.ok(
@@ -221,28 +221,25 @@ def task_lint():
             actions=[(U.validate, validate_args)],
         )
 
-    if not C.LINT_NOTEBOOKS:
-        # TODO: to be applied on another PR
-        return
-
-    for ipynb in D.ALL_IPYNB:
-        yield dict(
-            name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
-            file_dep=[ipynb, B.YARN_INTEGRITY, P.PRETTIER_RC],
-            actions=[
-                U.do("nbstripout", ipynb),
-                (U.notebook_lint, [ipynb]),
-                U.do(
-                    "jupyter-nbconvert",
-                    "--log-level=WARN",
-                    "--to=notebook",
-                    "--inplace",
-                    "--output",
-                    ipynb,
-                    ipynb,
-                ),
-            ],
-        )
+    if not C.CI:
+        for ipynb in D.ALL_IPYNB:
+            yield dict(
+                name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
+                file_dep=[ipynb, B.YARN_INTEGRITY, P.PRETTIER_RC],
+                actions=[
+                    U.do("nbstripout", ipynb),
+                    (U.notebook_lint, [ipynb]),
+                    U.do(
+                        "jupyter-nbconvert",
+                        "--log-level=WARN",
+                        "--to=notebook",
+                        "--inplace",
+                        "--output",
+                        ipynb,
+                        ipynb,
+                    ),
+                ],
+            )
 
 
 def task_build():
@@ -894,7 +891,6 @@ class C:
         )
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
-    LINT_NOTEBOOKS = json.loads(os.environ.get("LINT_NOTEBOOKS", "0"))
 
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
