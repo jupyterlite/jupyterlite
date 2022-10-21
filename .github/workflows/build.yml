@@ -18,7 +18,7 @@ jobs:
       BUILDING_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build dist
         uses: ./.github/actions/build-dist
@@ -35,7 +35,7 @@ jobs:
       LINTING_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
@@ -124,7 +124,7 @@ jobs:
             python-version: pypy-3.7
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -191,7 +191,7 @@ jobs:
       FORCE_PYODIDE: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Download (dist)
         uses: actions/download-artifact@v3
         with:
