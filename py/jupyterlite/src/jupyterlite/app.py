@@ -1,7 +1,7 @@
 """the JupyterLite CLI App(s)"""
 from pathlib import Path
 
-from jupyter_core import jupyter_config_path
+from jupyter_core.paths import jupyter_config_path
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
 from traitlets import Bool, Instance, Unicode, default
 
