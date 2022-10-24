@@ -155,13 +155,8 @@ jobs:
         run: mkdir -p build/smoke-test
       - name: Get SOURCE_DATE_EPOCH
         id: source-date
-        if: ${{ matrix.os=='windows' }}
         run: |
           echo "epoch=$(git log -1 --format=%ct)" >> %GITHUB_OUTPUT%
-      - name: Get SOURCE_DATE_EPOCH
-        id: source-date
-        if: ${{ matrix.os!='windows' }}
-        run: |
           echo "epoch=$(git log -1 --format=%ct)" >> $GITHUB_OUTPUT
       - name: Test (CLI)
         run: |
