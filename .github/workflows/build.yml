@@ -11,10 +11,6 @@ on:
 env:
   CACHE_EPOCH: 3
 
-defaults:
-  run:
-    shell: bash -eux {0}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -159,8 +155,9 @@ jobs:
         run: mkdir -p build/smoke-test
       - name: Get SOURCE_DATE_EPOCH
         id: source-date
+        shell: bash -eux {0}
         run: |
-          echo "epoch=$(git log -1 --format=%ct)" >> ${GITHUB_OUTPUT}
+          echo "epoch=$(git log -1 --format=%ct)" >> $GITHUB_OUTPUT
       - name: Test (CLI)
         run: |
           cd build/smoke-test
