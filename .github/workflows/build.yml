@@ -156,7 +156,7 @@ jobs:
       - name: Get SOURCE_DATE_EPOCH
         id: source-date
         run: |
-          echo "::set-output name=epoch::$(git log -1 --format=%ct)"
+          echo "epoch=$(git log -1 --format=%ct)" >> $GITHUB_OUTPUT
       - name: Test (CLI)
         run: |
           cd build/smoke-test
