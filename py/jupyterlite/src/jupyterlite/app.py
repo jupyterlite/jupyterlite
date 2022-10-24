@@ -87,7 +87,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
     @default("config_file_paths")
     def _config_file_paths_default(self):
-        return [os.getcwd()] + jupyter_config_path()
+        return [str(Path.cwd())] + jupyter_config_path()
 
 
 class ManagedApp(BaseLiteApp):
