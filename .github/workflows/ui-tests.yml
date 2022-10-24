@@ -16,7 +16,7 @@ jobs:
 
       - name: Install JupyterLite
         run: |
-          python3 -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core jupyterlab~=3.2
+          python3 -m pip install importlib_metadata 'doit >=0.34,<1' "jupyter_core<4.11.2" jupyterlab~=3.2
           python3 -m pip install --find-links dist --no-index jupyterlite
 
       - name: Build JupyterLite
