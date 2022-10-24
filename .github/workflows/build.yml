@@ -157,7 +157,7 @@ jobs:
         id: source-date
         run: |
           echo "epoch=$(git log -1 --format=%ct)" >> %GITHUB_OUTPUT%
-          echo "epoch=$(git log -1 --format=%ct)" >> $GITHUB_OUTPUT
+          echo "epoch=$(git log -1 --format=%ct)" >> ${GITHUB_OUTPUT}
       - name: Test (CLI)
         run: |
           cd build/smoke-test
