@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build dist
         uses: ./.github/actions/build-dist
@@ -26,7 +26,7 @@ jobs:
           yarn build
 
       - name: Upload the JupyterLite website
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
@@ -41,15 +41,15 @@ jobs:
         browser: [firefox, chromium]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
 
       - name: Cache (ui-tests/node_modules)
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cache-ui-tests-node-modules
         with:
           path: ui-tests/node_modules/
@@ -81,7 +81,7 @@ jobs:
 
       - name: Upload Playwright Test assets
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite-${{ matrix.browser }}-test-assets
           path: |
@@ -89,7 +89,7 @@ jobs:
 
       - name: Upload Playwright Test report
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite-${{ matrix.browser }}-test-report
           path: |
@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload updated snapshots
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jupyterlite-${{ matrix.browser }}-updated-snapshots
           path: ui-tests/test
