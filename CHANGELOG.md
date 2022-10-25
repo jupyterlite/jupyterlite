@@ -10,7 +10,7 @@
 
 - Include some more accurate file stats from ServiceWorker [#839](https://github.com/jupyterlite/jupyterlite/pull/839) ([@bollwyvl](https://github.com/bollwyvl))
 - Add pyolite pre-transformer, %pip [#832](https://github.com/jupyterlite/jupyterlite/pull/832) ([@bollwyvl](https://github.com/bollwyvl))
-- Condition all addon tasks for well-formedness  [#821](https://github.com/jupyterlite/jupyterlite/pull/821) ([@bollwyvl](https://github.com/bollwyvl))
+- Condition all addon tasks for well-formedness [#821](https://github.com/jupyterlite/jupyterlite/pull/821) ([@bollwyvl](https://github.com/bollwyvl))
 
 ### Maintenance and upkeep improvements
 
