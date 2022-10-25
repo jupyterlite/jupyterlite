@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/contents",
-  "version": "0.1.0-beta.13",
+  "version": "0.1.0-beta.14",
   "description": "JupyterLite - Contents",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -44,7 +44,7 @@
   "dependencies": {
     "@jupyterlab/nbformat": "~3.4.8",
     "@jupyterlab/services": "~6.4.6",
-    "@jupyterlite/localforage": "^0.1.0-beta.13",
+    "@jupyterlite/localforage": "^0.1.0-beta.14",
     "@lumino/coreutils": "^1.12.0",
     "localforage": "^1.9.0",
     "mime": "^3.0.0"

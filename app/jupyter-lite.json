@@ -2,7 +2,7 @@
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
     "appName": "JupyterLite",
-    "appVersion": "0.1.0-beta.13",
+    "appVersion": "0.1.0-beta.14",
     "baseUrl": "./",
     "appUrl": "./lab",
     "defaultKernelName": "python",

@@ -1,5 +1,5 @@
 [project]
-version = "0.1.0b13"
+version = "0.1.0b14"
 
 [tool.isort]
 profile = "black"
@@ -20,7 +20,7 @@ before-draft-release = [ "rm dist/jupyterlite-app-*.tgz",]
 version-cmd = "python scripts/bump-version.py --force"
 
 [tool.tbump.version]
-current = "0.1.0b13"
+current = "0.1.0b14"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
