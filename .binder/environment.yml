@@ -15,7 +15,7 @@ dependencies:
   # demo stuff
   - ipywidgets >=8,<9
   - jupyter-server-proxy
-  - jupyterlab >=3.4.8,<4
+  - jupyterlab >=3.5.0,<4
   - retrolab >=0.3.21,<0.4
   # extra docs tools
   - sphinx-autobuild
