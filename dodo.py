@@ -1711,7 +1711,8 @@ class U:
     def integrity():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
-            app = json.loads(app_json.read_text(**C.ENC))
+            old_text = app_json.read_text(**C.ENC)
+            app = json.loads(old_text)
             app["resolutions"] = {}
             dependencies = list(app["dependencies"].keys())
             singletonPackages = list(app["jupyterlab"]["singletonPackages"])
@@ -1729,11 +1730,34 @@ class U:
                 for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
             }
 
-            # Write the package.json back to disk.
-            app_json.write_text(json.dumps(app, indent=2) + "\n", **C.ENC)
+            new_text = json.dumps(app, indent=2) + "\n"
 
+            if new_text.strip() == old_text.strip():
+                print(
+                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!"
+                )
+                return True
+            elif C.LINTING_IN_CI:
+                print(
+                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!"
+                )
+                return False
+
+            # Write the package.json back to disk.
+            app_json.write_text(new_text, **C.ENC)
+            print(f"... {app_json.relative_to(P.ROOT)} was updated!")
+            return True
+
+        all_up_to_date = True
+
+        print("Checking app `resolutions`...")
         for app in D.APPS:
-            _ensure_resolutions(app)
+            all_up_to_date = _ensure_resolutions(app) and all_up_to_date
+
+        if not all_up_to_date:
+            print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
+
+        return all_up_to_date
 
     def fetch_pyodide_repodata():
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
