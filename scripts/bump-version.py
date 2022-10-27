@@ -19,11 +19,6 @@ ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
-PYOLITE_PACKAGE = ROOT / "packages" / "pyolite-kernel"
-PYOLITE_PACKAGE_JSON = PYOLITE_PACKAGE / "package.json"
-PYOLITE_PY_PACKAGE = PYOLITE_PACKAGE / "py" / "pyolite"
-PIPLITE_PY_PACKAGE = PYOLITE_PACKAGE / "py" / "piplite"
-
 
 @click.command()
 @click.option("--force", default=False, is_flag=True)
@@ -42,13 +37,6 @@ def bump(force, spec):
     js_version = (
         py_version.replace("a", "-alpha.").replace("b", "-beta.").replace("rc", "-rc.")
     )
-
-    # bump pyolite js version
-    pyolite_json = json.loads(PYOLITE_PACKAGE_JSON.read_text(**ENC))
-    pyolite_json["pyolite"]["packages"]["py/pyolite"] = py_version
-    pyolite_json["pyolite"]["packages"]["py/piplite"] = py_version
-    PYOLITE_PACKAGE_JSON.write_text(json.dumps(pyolite_json), **ENC)
-    run(f"yarn prettier --write {PYOLITE_PACKAGE_JSON}")
 
     # save the new version to the app jupyter-lite.json
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))

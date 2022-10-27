@@ -64,9 +64,6 @@ SETTINGS_FILE_TYPES = "fileTypes"
 #: the top-level key for lite plugin settings
 LITE_PLUGIN_SETTINGS = "litePluginSettings"
 
-#: the plugin id for the pyolite kernel
-PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
-
 ### jupyterlite "well-known" paths
 
 #: our schema

@@ -39,12 +39,6 @@ src = "pyproject.toml"
 [[tool.tbump.file]]
 src = "py/jupyterlite/src/jupyterlite/__init__.py"
 
-[[tool.tbump.file]]
-src = "packages/pyolite-kernel/py/piplite/piplite/__init__.py"
-
-[[tool.tbump.file]]
-src = "packages/pyolite-kernel/py/pyolite/pyolite/__init__.py"
-
 [[tool.tbump.field]]
 name = "channel"
 default = ""

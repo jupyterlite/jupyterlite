@@ -37,12 +37,6 @@
       "path": "./packages/localforage"
     },
     {
-      "path": "./packages/pyolite-kernel"
-    },
-    {
-      "path": "./packages/pyolite-kernel-extension"
-    },
-    {
       "path": "./packages/repl-extension"
     },
     {
