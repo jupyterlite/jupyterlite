@@ -9,7 +9,6 @@ from traitlets.utils.text import indent
 
 from . import __version__
 from .addons import get_addon_implementations, merge_addon_aliases, merge_addon_flags
-from .addons.piplite import list_wheels
 from .config import LiteBuildConfig
 from .constants import PHASES
 from .manager import LiteManager
@@ -311,56 +310,6 @@ class LiteArchiveApp(LiteTaskApp):
     _doit_task = "archive"
 
 
-class PipliteIndex(DescribedMixin, JupyterApp):
-    """index a directory of wheels for piplite into an all.json
-
-    this file is suitable for including in a pre-built lab extension and will be
-    found by adding to the extension's ``package.json``:
-
-    .. code-block: json
-
-        {
-            "name": "my-extension",
-            "jupyterlab": {
-                "extension": true
-            },
-            "piplite": {
-                "wheelDir": "./pypi"
-            }
-        }
-    """
-
-    version = __version__
-
-    wheel_dir = CPath(Path.cwd(), help="a path of wheels")
-
-    def parse_command_line(self, argv=None):
-        super(PipliteIndex, self).parse_command_line(argv)
-
-        if self.extra_args:
-            self.wheel_dir = Path(self.extra_args[0])
-
-    def start(self):
-        if not self.wheel_dir.exists():
-            raise ValueError(f"{self.wheel_dir} does not exist")
-        if not list_wheels(self.wheel_dir):
-            raise ValueError(f"no supported wheels found in {self.wheel_dir}")
-        from .addons.piplite import write_wheel_index
-
-        write_wheel_index(self.wheel_dir)
-
-
-class PipliteApp(DescribedMixin, JupyterApp):
-    """tools for working with piplite"""
-
-    subcommands = {
-        k: (v, v.__doc__.splitlines()[0].strip())
-        for k, v in dict(
-            index=PipliteIndex,
-        ).items()
-    }
-
-
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
 
@@ -378,7 +327,6 @@ class LiteApp(BaseLiteApp):
             archive=LiteArchiveApp,
             # more special apps
             doit=LiteRawDoitApp,
-            pip=PipliteApp,
         ).items()
     }
 

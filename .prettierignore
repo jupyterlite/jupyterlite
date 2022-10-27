@@ -17,8 +17,6 @@ bootstrap.js
 index.template.js
 
 # generated
-_pypi.ts
-**/pypi/all.json
 app/**/*.html
 app/service-worker-*.js
 
