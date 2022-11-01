@@ -177,7 +177,9 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         # ...and get indexed
         missed = 0
         for path in ["", "details"]:
-            contents = (out / f"api/contents/{path}/all.json").read_text()
+            contents = (out / f"api/contents/{path}/all.json").read_text(
+                encoding="utf-8"
+            )
             print("contents of", path, contents)
             if "README" not in contents:  # pragma: no cover
                 missed += 1
@@ -186,7 +188,7 @@ def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite
         # default translation files should also be created
         all_packs_file = out / "api/translations/all.json"
         assert all_packs_file.exists()
-        all_packs = all_packs_file.read_text()
+        all_packs = all_packs_file.read_text(encoding="utf-8")
         assert "English" in all_packs
 
         en_pack_file = out / "api/translations/en.json"

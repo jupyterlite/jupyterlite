@@ -67,6 +67,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             # contents
             "contents": "LiteBuildConfig.contents",
             "ignore-contents": "LiteBuildConfig.ignore_contents",
+            "extra-ignore-contents": "LiteBuildConfig.extra_ignore_contents",
             # settings
             "settings-overrides": "LiteBuildConfig.settings_overrides",
             "mathjax-dir": "LiteBuildConfig.mathjax_dir",
@@ -116,6 +117,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["contents"] = [Path(p) for p in self.contents]
         if self.ignore_contents:
             kwargs["ignore_contents"] = self.ignore_contents
+        if self.extra_ignore_contents:
+            kwargs["extra_ignore_contents"] = self.extra_ignore_contents
         if self.settings_overrides:
             kwargs["settings_overrides"] = [Path(p) for p in self.settings_overrides]
         if self.apps:
