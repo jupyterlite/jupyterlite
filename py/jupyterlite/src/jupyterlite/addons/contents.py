@@ -163,12 +163,9 @@ class ContentsAddon(BaseAddon):
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
-        listing_path = str(
-            output_file_dir.relative_to(self.output_files_dir).as_posix()
+        listing_path = str(output_file_dir.as_posix()).replace(
+            str(self.output_files_dir), "/"
         )
-
-        if listing_path.startswith("./"):
-            listing_path = listing_path[2:]
 
         try:
             listing = fm.get(listing_path)
@@ -186,7 +183,7 @@ class ContentsAddon(BaseAddon):
 
                     "LiteBuildConfig": {{
                         "extra_ignore_contents": [
-                            "\\.<the offendings path name>"
+                            "/\\.<the offendings path name>"
                         ]
                     }}
                 """
