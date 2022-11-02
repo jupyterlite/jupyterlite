@@ -163,8 +163,8 @@ class ContentsAddon(BaseAddon):
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
-        listing_path = str(output_file_dir.as_posix()).replace(
-            str(self.output_files_dir), "/"
+        listing_path = output_file_dir.as_uri().replace(
+            self.output_files_dir.as_uri(), "/"
         )
 
         try:
