@@ -14,7 +14,7 @@ PYODIDE_URL = "pyodideUrl"
 
 #: where we put pyodide, for now
 PYODIDE = "pyodide"
-PYODIDE_JS = "pyodide.mjs"
+PYODIDE_JS = "pyodide.js"
 PYODIDE_REPODATA = "repodata.json"
 
 from ..constants import (

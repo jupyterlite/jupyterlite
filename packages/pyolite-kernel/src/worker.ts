@@ -39,10 +39,18 @@ export class PyoliteRemoteKernel {
 
   protected async initRuntime(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     const { pyodideUrl, indexUrl } = options;
-    const pyodideModule: typeof Pyodide = await import(
-      /* webpackIgnore: true */ pyodideUrl
-    );
-    this._pyodide = await pyodideModule.loadPyodide({ indexURL: indexUrl });
+    let loadPyodide: typeof Pyodide.loadPyodide;
+    if (pyodideUrl.endsWith('.mjs')) {
+      // note: this does not work at all in firefox
+      const pyodideModule: typeof Pyodide = await import(
+        /* webpackIgnore: true */ pyodideUrl
+      );
+      loadPyodide = pyodideModule.loadPyodide;
+    } else {
+      importScripts(pyodideUrl);
+      loadPyodide = (self as any).loadPyodide;
+    }
+    this._pyodide = await loadPyodide({ indexURL: indexUrl });
   }
 
   protected async initPackageManager(

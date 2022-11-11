@@ -103,7 +103,7 @@ def task_setup():
     ]
     file_dep = [
         *P.APP_JSONS,
-        *P.PACKAGE_JSONS,
+        *P.PACKAGE_JSONS.values(),
         P.APP_PACKAGE_JSON,
         P.ROOT_PACKAGE_JSON,
     ]
@@ -147,14 +147,15 @@ def task_lint():
     yield U.ok(
         B.OK_PYODIDE_VERSION,
         name="version:js:pyodide",
-        doc="check pyodide version vs schema, ts, etc",
+        doc="check pyodide version from devDependencies vs schema, ts, etc",
         file_dep=[
             P.APP_SCHEMA,
             P.PYOLITE_EXT_TS,
+            P.PACKAGE_JSONS["pyolite-kernel"],
         ],
         actions=[
-            lambda: C.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
-            lambda: C.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
+            lambda: D.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
+            lambda: D.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
         ],
     )
 
@@ -301,7 +302,7 @@ def task_build():
         doc="build .ts files into .js files",
         file_dep=[
             *L.ALL_ESLINT,
-            *P.PACKAGE_JSONS,
+            *P.PACKAGE_JSONS.values(),
             B.PYOLITE_WHEEL_TS,
             B.YARN_INTEGRITY,
             P.ROOT_PACKAGE_JSON,
@@ -536,7 +537,7 @@ def task_docs():
     if not C.DOCS_IN_CI:
         yield dict(
             name="typedoc:ensure",
-            file_dep=[*P.PACKAGE_JSONS, B.YARN_INTEGRITY],
+            file_dep=[*P.PACKAGE_JSONS.values(), B.YARN_INTEGRITY],
             actions=[
                 U.typedoc_conf,
                 U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
@@ -579,7 +580,7 @@ def task_docs():
 
     if C.FORCE_PYODIDE:
         docs_app_targets += [B.DOCS_APP_PYODIDE_JS]
-        uptodate = [doit.tools.config_changed(dict(pyodide_url=C.PYODIDE_URL))]
+        uptodate = [doit.tools.config_changed(dict(pyodide_url=D.PYODIDE_URL))]
 
     yield U.ok(
         B.OK_DOCS_APP,
@@ -800,9 +801,9 @@ def task_test():
 
     env = dict(os.environ)
 
-    if P.PYODIDE_ARCHIVE_CACHE.exists():
+    if D.PYODIDE_ARCHIVE_CACHE.exists():
         # this makes some tests e.g. archive _very_ slow
-        env["TEST_JUPYTERLITE_PYODIDE_URL"] = str(P.PYODIDE_ARCHIVE_CACHE)
+        env["TEST_JUPYTERLITE_PYODIDE_URL"] = str(D.PYODIDE_ARCHIVE_CACHE)
 
     pytest_args = [
         *C.PYM,
@@ -911,16 +912,6 @@ class C:
     PYPI_SRC = f"{PYPI}/packages/source"
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-    PYODIDE_VERSION = "0.22.0a3"
-    PYODIDE_JS = "pyodide.mjs"
-    PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
-    PYODIDE_URL = os.environ.get(
-        "JUPYTERLITE_PYODIDE_URL",
-        f"{PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
-    )
-    PYODIDE_CDN_URL = (
-        f"https://cdn.jsdelivr.net/pyodide/v{PYODIDE_VERSION}/full/{PYODIDE_JS}"
-    )
 
     JUPYTERLITE_JSON = "jupyter-lite.json"
     JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
@@ -980,7 +971,7 @@ class P:
     DODO = Path(__file__)
     ROOT = DODO.parent
     PACKAGES = ROOT / "packages"
-    PACKAGE_JSONS = sorted(PACKAGES.glob("*/package.json"))
+    PACKAGE_JSONS = {p.parent.name: p for p in PACKAGES.glob("*/package.json")}
     UI_COMPONENTS = PACKAGES / "ui-components"
     UI_COMPONENTS_ICONS = UI_COMPONENTS / "style" / "icons"
     ROOT_PACKAGE_JSON = ROOT / "package.json"
@@ -994,7 +985,6 @@ class P:
         for p in EXAMPLES.rglob("*")
         if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
     ]
-    PYODIDE_ARCHIVE_CACHE = EXAMPLES / ".cache/pyodide" / C.PYODIDE_ARCHIVE
 
     # set later
     PYOLITE_PACKAGES = {}
@@ -1075,23 +1065,38 @@ class P:
     PRETTIER_RC = ROOT / ".prettierrc"
 
 
+def _js_version_to_py_version(js_version):
+    return (
+        js_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
+    )
+
+
 class D:
     # data
     APP = json.loads(P.APP_PACKAGE_JSON.read_text(**C.ENC))
     APP_VERSION = APP["version"]
     APPS = APP["jupyterlite"]["apps"]
+    APP_SCHEMA = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
+    APP_SCHEMA_DEFS = APP_SCHEMA["definitions"]
+    APP_SCHEMA_PYOLITE = APP_SCHEMA_DEFS["pyolite-settings"]
 
     # derive the PEP-compatible version
-    PY_VERSION = (
-        APP["version"]
-        .replace("-alpha.", "a")
-        .replace("-beta.", "b")
-        .replace("-rc.", "rc")
-    )
+    PY_VERSION = _js_version_to_py_version(APP["version"])
 
     PACKAGE_JSONS = {
-        p.parent.name: json.loads(p.read_text(**C.ENC)) for p in P.PACKAGE_JSONS
+        parent: json.loads(p.read_text(**C.ENC))
+        for parent, p in P.PACKAGE_JSONS.items()
     }
+    PYODIDE_JS_VERSION = PACKAGE_JSONS["pyolite-kernel"]["devDependencies"]["pyodide"]
+    PYODIDE_CDN_URL = APP_SCHEMA_PYOLITE["properties"]["pyodideUrl"]["default"]
+    PYODIDE_VERSION = _js_version_to_py_version(PYODIDE_JS_VERSION)
+    PYODIDE_JS = PYODIDE_CDN_URL.split("/")[-1]
+    PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_URL = os.environ.get(
+        "JUPYTERLITE_PYODIDE_URL",
+        f"{C.PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
+    )
+    PYODIDE_ARCHIVE_CACHE = P.EXAMPLES / ".cache/pyodide" / PYODIDE_ARCHIVE
 
     APP_CONFIGS = [
         p
@@ -1140,7 +1145,7 @@ class L:
         P.PACKAGES.rglob("*/src/**/*.ts"),
     )
     ALL_JSON = _clean_paths(
-        P.PACKAGE_JSONS,
+        P.PACKAGE_JSONS.values(),
         P.APP_JSONS,
         P.APP_EXTRA_JSON,
         P.ROOT_PACKAGE_JSON,
@@ -1192,7 +1197,7 @@ class B:
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
     DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
-    DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{C.PYODIDE_JS}"
+    DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{D.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
@@ -1205,9 +1210,9 @@ class B:
     DOCS_TS = P.DOCS / "reference/api/ts"
     DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
     DOCS_TS_MODULES = [
-        P.ROOT / "docs/reference/api/ts" / f"{p.parent.name}.md"
-        for p in P.PACKAGE_JSONS
-        if p.parent.name not in C.NO_TYPEDOC
+        P.ROOT / f"docs/reference/api/ts/{parent}.md"
+        for parent in P.PACKAGE_JSONS
+        if parent not in C.NO_TYPEDOC
     ]
 
     OK = BUILD / "ok"
@@ -1443,8 +1448,8 @@ class U:
         new_entry_points = sorted(
             [
                 str(next(p.parent.glob("src/index.ts*")).relative_to(P.ROOT).as_posix())
-                for p in P.PACKAGE_JSONS
-                if p.parent.name not in C.NO_TYPEDOC
+                for parent, p in P.PACKAGE_JSONS.items()
+                if parent not in C.NO_TYPEDOC
             ]
         )
 
@@ -1455,9 +1460,9 @@ class U:
         tsconfig = json.loads(P.TSCONFIG_TYPEDOC.read_text(**C.ENC))
         original_references = tsconfig["references"]
         new_references = [
-            {"path": f"./packages/{p.parent.name}"}
-            for p in P.PACKAGE_JSONS
-            if p.parent.name not in C.NO_TYPEDOC
+            {"path": f"./packages/{parent}"}
+            for parent in P.PACKAGE_JSONS
+            if parent not in C.NO_TYPEDOC
         ]
 
         if json.dumps(original_references) != json.dumps(new_references):
@@ -1597,7 +1602,7 @@ class U:
                 args += ["--app-archive", B.APP_PACK]
 
             if C.FORCE_PYODIDE:
-                args += ["--pyodide", C.PYODIDE_URL]
+                args += ["--pyodide", D.PYODIDE_URL]
 
             # ignoring sys-prefix for fine-grained extensions, add mathjax dir
             if MATHJAX_DIR:
@@ -1764,7 +1769,7 @@ class U:
     def fetch_pyodide_repodata():
         schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
         props = schema["definitions"]["pyolite-settings"]["properties"]
-        url = props["pyodideUrl"]["default"].replace(C.PYODIDE_JS, "repodata.json")
+        url = props["pyodideUrl"]["default"].replace(D.PYODIDE_JS, "repodata.json")
         print(f"fetching pyodide packages from {url}")
         packages = U.session().get(url).json()
         B.PYODIDE_REPODATA.parent.mkdir(exist_ok=True, parents=True)
