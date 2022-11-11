@@ -76,8 +76,8 @@ def test_pyodide(
     build = script_runner.run("jupyter", "lite", "build", *pargs, **kwargs)
     assert build.success, "the build did NOT succeed"
 
-    pyodide_path = an_empty_lite_dir / "_output/static/pyodide/pyodide.js"
-    assert pyodide_path.exists(), "pyodide.js does not exist"
+    pyodide_path = an_empty_lite_dir / "_output/static/pyodide/pyodide.mjs"
+    assert pyodide_path.exists(), "pyodide.mjs does not exist"
 
     check = script_runner.run("jupyter", "lite", "check", *pargs, **kwargs)
     assert check.success, "the check did NOT succeed"

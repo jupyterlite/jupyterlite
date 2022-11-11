@@ -1,135 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import type Pyodide from 'pyodide';
+
 import { DriveFS } from '@jupyterlite/contents';
 
 import { IPyoliteWorkerKernel } from './tokens';
-
-// TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
-// Remove this shameless copy
-const ERRNO_CODES = {
-  E2BIG: 1,
-  EACCES: 2,
-  EADDRINUSE: 3,
-  EADDRNOTAVAIL: 4,
-  EADV: 122,
-  EAFNOSUPPORT: 5,
-  EAGAIN: 6,
-  EALREADY: 7,
-  EBADE: 113,
-  EBADF: 8,
-  EBADFD: 127,
-  EBADMSG: 9,
-  EBADR: 114,
-  EBADRQC: 103,
-  EBADSLT: 102,
-  EBFONT: 101,
-  EBUSY: 10,
-  ECANCELED: 11,
-  ECHILD: 12,
-  ECHRNG: 106,
-  ECOMM: 124,
-  ECONNABORTED: 13,
-  ECONNREFUSED: 14,
-  ECONNRESET: 15,
-  EDEADLK: 16,
-  EDEADLOCK: 16,
-  EDESTADDRREQ: 17,
-  EDOM: 18,
-  EDOTDOT: 125,
-  EDQUOT: 19,
-  EEXIST: 20,
-  EFAULT: 21,
-  EFBIG: 22,
-  EHOSTDOWN: 142,
-  EHOSTUNREACH: 23,
-  EIDRM: 24,
-  EILSEQ: 25,
-  EINPROGRESS: 26,
-  EINTR: 27,
-  EINVAL: 28,
-  EIO: 29,
-  EISCONN: 30,
-  EISDIR: 31,
-  EL2HLT: 112,
-  EL2NSYNC: 156,
-  EL3HLT: 107,
-  EL3RST: 108,
-  ELIBACC: 129,
-  ELIBBAD: 130,
-  ELIBEXEC: 133,
-  ELIBMAX: 132,
-  ELIBSCN: 131,
-  ELNRNG: 109,
-  ELOOP: 32,
-  EMFILE: 33,
-  EMLINK: 34,
-  EMSGSIZE: 35,
-  EMULTIHOP: 36,
-  ENAMETOOLONG: 37,
-  ENETDOWN: 38,
-  ENETRESET: 39,
-  ENETUNREACH: 40,
-  ENFILE: 41,
-  ENOANO: 104,
-  ENOBUFS: 42,
-  ENOCSI: 111,
-  ENODATA: 116,
-  ENODEV: 43,
-  ENOENT: 44,
-  ENOEXEC: 45,
-  ENOLCK: 46,
-  ENOLINK: 47,
-  ENOMEDIUM: 148,
-  ENOMEM: 48,
-  ENOMSG: 49,
-  ENONET: 119,
-  ENOPKG: 120,
-  ENOPROTOOPT: 50,
-  ENOSPC: 51,
-  ENOSR: 118,
-  ENOSTR: 100,
-  ENOSYS: 52,
-  ENOTBLK: 105,
-  ENOTCONN: 53,
-  ENOTDIR: 54,
-  ENOTEMPTY: 55,
-  ENOTRECOVERABLE: 56,
-  ENOTSOCK: 57,
-  ENOTSUP: 138,
-  ENOTTY: 59,
-  ENOTUNIQ: 126,
-  ENXIO: 60,
-  EOPNOTSUPP: 138,
-  EOVERFLOW: 61,
-  EOWNERDEAD: 62,
-  EPERM: 63,
-  EPFNOSUPPORT: 139,
-  EPIPE: 64,
-  EPROTO: 65,
-  EPROTONOSUPPORT: 66,
-  EPROTOTYPE: 67,
-  ERANGE: 68,
-  EREMCHG: 128,
-  EREMOTE: 121,
-  EROFS: 69,
-  ESHUTDOWN: 140,
-  ESOCKTNOSUPPORT: 137,
-  ESPIPE: 70,
-  ESRCH: 71,
-  ESRMNT: 123,
-  ESTALE: 72,
-  ESTRPIPE: 135,
-  ETIME: 117,
-  ETIMEDOUT: 73,
-  ETOOMANYREFS: 141,
-  ETXTBSY: 74,
-  EUNATCH: 110,
-  EUSERS: 136,
-  EWOULDBLOCK: 6,
-  EXDEV: 75,
-  EXFULL: 115,
-};
 
 export class PyoliteRemoteKernel {
   constructor() {
@@ -163,13 +39,10 @@ export class PyoliteRemoteKernel {
 
   protected async initRuntime(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     const { pyodideUrl, indexUrl } = options;
-    if (pyodideUrl.endsWith('.mjs')) {
-      const pyodideModule: any = await import(/* webpackIgnore: true */ pyodideUrl);
-      this._pyodide = await (pyodideModule as any).loadPyodide({ indexURL: indexUrl });
-    } else {
-      importScripts(pyodideUrl);
-      this._pyodide = await (self as any).loadPyodide({ indexURL: indexUrl });
-    }
+    const pyodideModule: typeof Pyodide = await import(
+      /* webpackIgnore: true */ pyodideUrl
+    );
+    this._pyodide = await pyodideModule.loadPyodide({ indexURL: indexUrl });
   }
 
   protected async initPackageManager(
@@ -228,14 +101,12 @@ export class PyoliteRemoteKernel {
   ): Promise<void> {
     if (options.mountDrive) {
       const mountpoint = '/drive';
-      const { FS } = this._pyodide;
+      const { FS, PATH, ERRNO_CODES } = this._pyodide;
       const { baseUrl } = options;
-      // TODO Once this https://github.com/pyodide/pyodide/pull/2582/files is released
-      // We'll be able to acces PATH and ERRNO_CODES from this._pyodide directly (not through _module)
       const driveFS = new DriveFS({
         FS,
-        PATH: this._pyodide._module.PATH,
-        ERRNO_CODES: ERRNO_CODES,
+        PATH,
+        ERRNO_CODES,
         baseUrl,
         driveName: this._driveName,
         mountpoint,
@@ -582,10 +453,10 @@ export class PyoliteRemoteKernel {
     reject: () => void;
     resolve: () => void;
   } | null = null;
+  protected _pyodide: Pyodide.PyodideInterface = null as any;
   /** TODO: real typing */
   protected _localPath = '';
   protected _driveName = '';
-  protected _pyodide: any;
   protected _kernel: any;
   protected _interpreter: any;
   protected _stdout_stream: any;

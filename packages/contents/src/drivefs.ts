@@ -3,6 +3,8 @@
 // And from https://github.com/gzuidhof/starboard-notebook
 
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
+import type Pyodide from 'pyodide';
+
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
@@ -321,8 +323,8 @@ export class ContentsAPI {
     baseUrl: string,
     driveName: string,
     mountpoint: string,
-    FS: any,
-    ERRNO_CODES: any
+    FS: Pyodide.PyodideInterface['FS'],
+    ERRNO_CODES: Pyodide.PyodideInterface['ERRNO_CODES']
   ) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;

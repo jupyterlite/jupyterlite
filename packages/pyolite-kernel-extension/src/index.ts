@@ -14,7 +14,7 @@ import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 /**
  * The default CDN fallback for Pyodide
  */
-const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.22.0a3/full/pyodide.js';
+const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.22.0a3/full/pyodide.mjs';
 
 /**
  * The id for the extension, and key in the litePlugins.

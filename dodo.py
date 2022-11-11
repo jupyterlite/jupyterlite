@@ -911,7 +911,7 @@ class C:
     PYODIDE_GH = f"{GH}/pyodide/pyodide"
     PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
     PYODIDE_VERSION = "0.22.0a3"
-    PYODIDE_JS = "pyodide.js"
+    PYODIDE_JS = "pyodide.mjs"
     PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
         "JUPYTERLITE_PYODIDE_URL",

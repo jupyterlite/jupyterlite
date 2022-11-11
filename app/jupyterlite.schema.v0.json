@@ -211,9 +211,9 @@
       "type": "object",
       "properties": {
         "pyodideUrl": {
-          "description": "The path to the main pyodide.js entry point",
+          "description": "The path to the main pyodide.mjs entry point",
           "type": "string",
-          "default": "https://cdn.jsdelivr.net/pyodide/v0.22.0a3/full/pyodide.js",
+          "default": "https://cdn.jsdelivr.net/pyodide/v0.22.0a3/full/pyodide.mjs",
           "format": "uri"
         },
         "disablePyPIFallback": {
