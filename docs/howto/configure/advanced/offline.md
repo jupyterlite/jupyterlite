@@ -14,7 +14,13 @@ Use the `--pyodide` flag to specify the Pyodide distribution you would like to u
 example:
 
 ```bash
-jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.20.0/pyodide-build-0.20.0.tar.bz2
+jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.22.0a3/pyodide-build-0.22.0a3.tar.bz2
+```
+
+```{warning}
+Generally, a version of `pyolite` is likely only compatible with variants of the
+_same_ `x.y.z` version against which the release was tested, as both python
+and JS APIs are still changing frequently on both sides of the dependency.
 ```
 
 ## Configure Mathjax
