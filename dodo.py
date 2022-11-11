@@ -166,13 +166,14 @@ def task_lint():
         actions=[U.do("yarn", "prettier:check-src" if C.CI else "prettier:fix")],
     )
 
-    yield U.ok(
-        B.OK_ESLINT,
-        name="eslint",
-        doc="format and verify .ts, .js files with eslint",
-        file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-        actions=[U.do("yarn", "eslint:check" if C.CI else "eslint:fix")],
-    )
+    if not C.SKIP_ESLINT:
+        yield U.ok(
+            B.OK_ESLINT,
+            name="eslint",
+            doc="format and verify .ts, .js files with eslint",
+            file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
+            actions=[U.do("yarn", "eslint:check" if C.CI else "eslint:fix")],
+        )
 
     yield U.ok(
         B.OK_BLACK,
@@ -972,6 +973,7 @@ class C:
         "/_static/",
     ]
     NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
+    SKIP_ESLINT = json.loads(os.environ.get("SKIP_ESLINT", "0"))
 
 
 class P:
