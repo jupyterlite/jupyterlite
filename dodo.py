@@ -144,18 +144,16 @@ def task_lint():
         actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
     )
 
+    has_pyodide_js = [P.APP_SCHEMA, P.PYOLITE_EXT_TS]
+    has_pyodide_bz2 = [P.DOCS_OFFLINE_MD]
     yield U.ok(
         B.OK_PYODIDE_VERSION,
         name="version:js:pyodide",
         doc="check pyodide version from devDependencies vs schema, ts, etc",
-        file_dep=[
-            P.APP_SCHEMA,
-            P.PYOLITE_EXT_TS,
-            P.PACKAGE_JSONS["pyolite-kernel"],
-        ],
+        file_dep=[P.PACKAGE_JSONS["pyolite-kernel"], *has_pyodide_js, *has_pyodide_bz2],
         actions=[
-            lambda: D.PYODIDE_CDN_URL in P.APP_SCHEMA.read_text(**C.ENC),
-            lambda: D.PYODIDE_CDN_URL in P.PYOLITE_EXT_TS.read_text(**C.ENC),
+            *[(U.check_contains, [p, D.PYODIDE_CDN_URL]) for p in has_pyodide_js],
+            *[(U.check_contains, [p, D.PYODIDE_URL]) for p in has_pyodide_bz2],
         ],
     )
 
@@ -1026,6 +1024,7 @@ class P:
     CONTRIBUTING = ROOT / "CONTRIBUTING.md"
     CHANGELOG = ROOT / "CHANGELOG.md"
     DOCS = ROOT / "docs"
+    DOCS_OFFLINE_MD = DOCS / "howto/configure/advanced/offline.md"
     DOCS_ICON = DOCS / "_static/icon.svg"
     DOCS_WORDMARK = DOCS / "_static/wordmark.svg"
     EXAMPLE_OVERRIDES = EXAMPLES / "overrides.json"
@@ -1848,6 +1847,12 @@ class U:
                 cells[i]["source"] = (
                     files[i].read_text(**C.ENC).rstrip().splitlines(True)
                 )
+
+    def check_contains(path: Path, pattern: str):
+        if pattern not in path.read_text(**C.ENC):
+            print(f"!!! {pattern} not found in:")
+            print("", path)
+            return False
 
 
 # environment overloads
