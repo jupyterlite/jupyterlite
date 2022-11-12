@@ -2,6 +2,8 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
+import SW_URL from '!!file-loader?name=[name]-[contenthash:7].[ext]&context=.!./sw';
+
 /**
  * The token for the ServiceWorker.
  */
@@ -32,3 +34,5 @@ export interface IServiceWorkerRegistrationWrapper {
    */
   ready: Promise<void>;
 }
+
+export const WORKER_NAME = `${SW_URL}`.split('/').slice(-1)[0];

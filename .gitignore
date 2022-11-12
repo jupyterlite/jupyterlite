@@ -125,6 +125,7 @@ app/test/data
 # do not include kernels such as Pyodide
 app/kernels
 app/extensions
+app/sw-*.js
 
 # generated html
 app/lab/index.html

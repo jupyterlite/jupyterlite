@@ -3,7 +3,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { IServiceWorkerRegistrationWrapper } from './tokens';
+import { IServiceWorkerRegistrationWrapper, WORKER_NAME } from './tokens';
 
 export class ServiceWorkerRegistrationWrapper
   implements IServiceWorkerRegistrationWrapper
@@ -35,7 +35,7 @@ export class ServiceWorkerRegistrationWrapper
 
   private async initialize(): Promise<void> {
     const { serviceWorker } = navigator;
-    const workerUrl = URLExt.join(PageConfig.getBaseUrl(), 'services.js');
+    const workerUrl = URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     let registration: ServiceWorkerRegistration | null = null;
 
     if (!serviceWorker) {
@@ -49,7 +49,7 @@ export class ServiceWorkerRegistrationWrapper
 
     if (!registration && serviceWorker) {
       try {
-        console.info('Registering new JupyterLite ServiceWorker');
+        console.info('Registering new JupyterLite ServiceWorker', workerUrl);
         registration = await serviceWorker.register(workerUrl);
         console.info('JupyterLite ServiceWorker was sucessfully registered');
       } catch (err: any) {

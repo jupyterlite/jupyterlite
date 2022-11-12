@@ -62,6 +62,7 @@
     "@babel/preset-env": "^7.12.1",
     "@jupyterlab/testutils": "~3.5.0",
     "@types/jest": "^26.0.10",
+    "@types/serviceworker": "^0.0.56",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
     "ts-jest": "^26.3.0",
