@@ -115,16 +115,15 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
       case 'getattr':
         model = await _contents.get(path);
 
-        const size = model.size || 0;
         response = {
           dev: 1,
           nlink: 1,
           uid: 0,
           gid: 0,
           rdev: 0,
-          size,
+          size: model.size || 0,
           blksize: BLOCK_SIZE,
-          blocks: Math.ceil(size / BLOCK_SIZE),
+          blocks: Math.ceil(model.size || 0 / BLOCK_SIZE),
           atime: model.last_modified, // TODO Get the proper atime?
           mtime: model.last_modified,
           ctime: model.created,

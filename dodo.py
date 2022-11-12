@@ -1461,7 +1461,7 @@ class U:
         original_references = tsconfig["references"]
         new_references = [
             {"path": f"./packages/{parent}"}
-            for parent in P.PACKAGE_JSONS
+            for parent in sorted(P.PACKAGE_JSONS.keys())
             if parent not in C.NO_TYPEDOC
         ]
 
