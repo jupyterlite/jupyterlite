@@ -27,11 +27,12 @@ const PLUGIN_ID = '@jupyterlite/pyolite-kernel-extension:kernel';
 const kernel: JupyterLiteServerPlugin<void> = {
   id: PLUGIN_ID,
   autoStart: true,
-  requires: [IKernelSpecs, IServiceWorkerRegistrationWrapper],
+  requires: [IKernelSpecs],
+  optional: [IServiceWorkerRegistrationWrapper],
   activate: (
     app: JupyterLiteServer,
     kernelspecs: IKernelSpecs,
-    serviceWorkerRegistrationWrapper: IServiceWorkerRegistrationWrapper
+    serviceWorkerRegistrationWrapper?: IServiceWorkerRegistrationWrapper
   ) => {
     const baseUrl = PageConfig.getBaseUrl();
     const config =
@@ -61,7 +62,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
           pyodideUrl,
           pipliteUrls,
           disablePyPIFallback,
-          mountDrive: serviceWorkerRegistrationWrapper.enabled,
+          mountDrive: !!serviceWorkerRegistrationWrapper?.enabled,
         });
       },
     });

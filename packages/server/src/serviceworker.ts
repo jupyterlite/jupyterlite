@@ -8,7 +8,7 @@ export class ServiceWorkerRegistrationWrapper
   implements IServiceWorkerRegistrationWrapper
 {
   constructor() {
-    this.initialize();
+    void this.initialize().catch(console.warn);
   }
 
   /**
@@ -28,35 +28,34 @@ export class ServiceWorkerRegistrationWrapper
     return this._registration !== null;
   }
 
-  private async initialize() {
-    if (!('serviceWorker' in navigator)) {
-      console.error(
-        'ServiceWorker registration failed: Service Workers not supported in this browser'
-      );
-      this.setRegistration(null);
+  private async initialize(): Promise<void> {
+    const { serviceWorker } = navigator;
+    const workerUrl = URLExt.join(PageConfig.getBaseUrl(), 'services.js');
+    let registration: ServiceWorkerRegistration | null = null;
+
+    if (!serviceWorker) {
+      console.warn('ServiceWorkers not supported in this browser');
+    } else if (serviceWorker.controller) {
+      registration =
+        (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
+        null;
+      console.info('JupyterLite ServiceWorker was already registered');
     }
 
-    if (navigator.serviceWorker.controller) {
-      const registration = await navigator.serviceWorker.getRegistration(
-        navigator.serviceWorker.controller.scriptURL
-      );
-
-      if (registration) {
-        this.setRegistration(registration);
+    if (!registration && serviceWorker) {
+      try {
+        console.info('Registering new JupyterLite ServiceWorker');
+        registration = await serviceWorker.register(workerUrl);
+        console.info('JupyterLite ServiceWorker was sucessfully registered');
+      } catch (err: any) {
+        console.warn(err);
+        console.warn(
+          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`
+        );
       }
     }
 
-    return await navigator.serviceWorker
-      .register(URLExt.join(PageConfig.getBaseUrl(), 'services.js'))
-      .then(
-        (registration) => {
-          this.setRegistration(registration);
-        },
-        (err) => {
-          console.error(`ServiceWorker registration failed: ${err}`);
-          this.setRegistration(null);
-        }
-      );
+    return this.setRegistration(registration);
   }
 
   private setRegistration(registration: ServiceWorkerRegistration | null) {

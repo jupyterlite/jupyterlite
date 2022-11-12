@@ -217,7 +217,17 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWra
 const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:emscripten-filesystem',
   autoStart: true,
-  activate: (app: JupyterLiteServer) => {
+  optional: [IServiceWorkerRegistrationWrapper],
+  activate: (
+    app: JupyterLiteServer,
+    serviceWorkerRegistrationWrapper?: IServiceWorkerRegistrationWrapper
+  ) => {
+    if (!serviceWorkerRegistrationWrapper?.enabled) {
+      console.warn(
+        'ServiceWorker not available, emscripten files and contents will not sync'
+      );
+      return;
+    }
     // Setup communication with service worker for the virtual fs
     const broadcast = new BroadcastChannel('/api/drive.v1');
     let subitems: [];
