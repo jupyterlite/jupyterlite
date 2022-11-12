@@ -64,9 +64,9 @@ export class ServiceWorkerRegistrationWrapper
 
     if (!registration) {
       this._ready.reject(void 0);
+    } else {
+      this._ready.resolve(void 0);
     }
-
-    this._ready.resolve(void 0);
   }
 
   private setRegistration(registration: ServiceWorkerRegistration | null) {
