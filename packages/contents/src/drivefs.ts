@@ -5,14 +5,27 @@
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
 import type Pyodide from 'pyodide';
 
+export const BLOCK_SIZE = 4096;
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
 export const SEEK_END = 2;
 export const DRIVE_SEPARATOR = ':';
+export const DRIVE_API_PATH = '/api/drive.v1';
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
+
+export type TDriveMethod =
+  | 'readdir'
+  | 'rmdir'
+  | 'rename'
+  | 'getmode'
+  | 'lookup'
+  | 'mknod'
+  | 'getattr'
+  | 'get'
+  | 'put';
 
 /**
  * Interface of a request on the /api/drive endpoint
@@ -21,7 +34,7 @@ export interface IDriveRequest {
   /**
    * The method of the request (rmdir, readdir etc)
    */
-  method: string;
+  method: TDriveMethod;
 
   /**
    * The path to the file/directory for which the request was sent
