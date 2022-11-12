@@ -26,4 +26,9 @@ export interface IServiceWorkerRegistrationWrapper {
    * Whether the ServiceWorker is enabled or not.
    */
   readonly enabled: boolean;
+
+  /**
+   * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
+   */
+  ready: Promise<void>;
 }

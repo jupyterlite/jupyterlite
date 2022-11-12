@@ -1,3 +1,4 @@
+import { PromiseDelegate } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
@@ -28,6 +29,10 @@ export class ServiceWorkerRegistrationWrapper
     return this._registration !== null;
   }
 
+  get ready(): Promise<void> {
+    return this._ready.promise;
+  }
+
   private async initialize(): Promise<void> {
     const { serviceWorker } = navigator;
     const workerUrl = URLExt.join(PageConfig.getBaseUrl(), 'services.js');
@@ -55,7 +60,13 @@ export class ServiceWorkerRegistrationWrapper
       }
     }
 
-    return this.setRegistration(registration);
+    this.setRegistration(registration);
+
+    if (!registration) {
+      this._ready.reject(void 0);
+    }
+
+    this._ready.resolve(void 0);
   }
 
   private setRegistration(registration: ServiceWorkerRegistration | null) {
@@ -67,4 +78,5 @@ export class ServiceWorkerRegistrationWrapper
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
     this
   );
+  private _ready = new PromiseDelegate<void>();
 }
