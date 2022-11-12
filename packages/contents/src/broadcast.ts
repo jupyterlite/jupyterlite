@@ -65,10 +65,11 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     const request = event.data;
     const { path } = request;
 
-    let model: ServerContents.IModel;
-
     // many successful responses default to null
     let response: any = null;
+
+    // most requests will use a model
+    let model: ServerContents.IModel;
 
     switch (request.method) {
       case 'readdir':
@@ -104,10 +105,9 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         }
         break;
       case 'mknod':
-        const mode = Number.parseInt(request.data.mode);
         model = await _contents.newUntitled({
           path: PathExt.dirname(path),
-          type: mode === DIR_MODE ? 'directory' : 'file',
+          type: Number.parseInt(request.data.mode) === DIR_MODE ? 'directory' : 'file',
           ext: PathExt.extname(path),
         });
         await _contents.rename(model.path, path);
@@ -137,11 +137,11 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         if (model.type === 'directory') {
           break;
         }
-        let { content, format } = model;
 
         response = {
-          content: format === 'json' ? JSON.stringify(content) : content,
-          format,
+          content:
+            model.format === 'json' ? JSON.stringify(model.content) : model.content,
+          format: model.format,
         };
         break;
       case 'put':
@@ -164,7 +164,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   protected _channel: BroadcastChannel | null = null;
   protected _contents: ContentsManager;
-  protected _enabled: boolean = false;
+  protected _enabled = false;
 }
 
 /** A namespace for  */
