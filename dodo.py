@@ -1445,11 +1445,7 @@ class U:
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
-            [
-                str(next(p.parent.glob("src/index.ts*")).relative_to(P.ROOT).as_posix())
-                for parent, p in P.PACKAGE_JSONS.items()
-                if parent not in C.NO_TYPEDOC
-            ]
+            [parent for parent in P.PACKAGE_JSONS if parent not in C.NO_TYPEDOC]
         )
 
         if json.dumps(original_entry_points) != json.dumps(new_entry_points):
