@@ -6,7 +6,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from collections import defaultdict
 from hashlib import sha256
 from pathlib import Path
 
@@ -557,7 +556,7 @@ def task_docs():
             targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
             actions=[
                 U.mystify,
-                U.do(*C.PRETTIER, B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES),
+                U.do(*C.PRETTIER, B.DOCS_TS),
             ],
         )
 
@@ -1208,8 +1207,12 @@ class B:
     DOCS_RAW_TYPEDOC_README = DOCS_RAW_TYPEDOC / "README.md"
     DOCS_TS = P.DOCS / "reference/api/ts"
     DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
+    DOCS_TS_MYST_MODULES = DOCS_TS / "modules.md"
+    DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
+    DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
     DOCS_TS_MODULES = [
-        P.ROOT / f"docs/reference/api/ts/{parent}.md"
+        P.ROOT
+        / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
@@ -1445,7 +1448,11 @@ class U:
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
-            [parent for parent in P.PACKAGE_JSONS if parent not in C.NO_TYPEDOC]
+            [
+                f"packages/{parent}"
+                for parent in P.PACKAGE_JSONS
+                if parent not in C.NO_TYPEDOC
+            ]
         )
 
         if json.dumps(original_entry_points) != json.dumps(new_entry_points):
@@ -1466,12 +1473,18 @@ class U:
 
     def mystify():
         """unwrap monorepo docs into per-module docs"""
-        mods = defaultdict(lambda: defaultdict(list))
         if B.DOCS_TS.exists():
             shutil.rmtree(B.DOCS_TS)
 
-        def mod_md_name(mod):
-            return mod.replace("@jupyterlite/", "") + ".md"
+        def unescape_name_header(matchobj):
+            unescaped = matchobj.group(1).replace("\\_", "_")
+            if unescaped not in ["Interfaces"]:
+                unescaped = f"`{unescaped}`"
+            return f"""### {unescaped}"""
+
+        def unescape_bold(matchobj):
+            unescaped = matchobj.group(1).replace("\\_", "_")
+            return f"""**`{unescaped}`**"""
 
         for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
             if doc.parent == B.DOCS_RAW_TYPEDOC:
@@ -1480,16 +1493,6 @@ class U:
                 continue
             doc_text = doc.read_text(**C.ENC)
             doc_lines = doc_text.splitlines()
-            mod_chunks = doc_lines[0].split(" / ")
-            src = mod_chunks[1]
-            if src.startswith("["):
-                src = re.findall(r"\[(.*)/src\]", src)[0]
-            else:
-                src = src.replace("/src", "")
-            pkg = f"""@jupyterlite/{src.replace("/src", "")}"""
-            mods[pkg][doc.parent.name] += [
-                str(doc.relative_to(B.DOCS_RAW_TYPEDOC).as_posix())[:-3]
-            ]
 
             # rewrite doc and write back out
             out_doc = B.DOCS_TS / doc.relative_to(B.DOCS_RAW_TYPEDOC)
@@ -1503,35 +1506,49 @@ class U:
                 out_text,
                 flags=re.M | re.S,
             )
+            out_text = re.sub("^# Module: (.*)$", r"# `\1`", out_text, flags=re.M)
+            out_text = re.sub("^# (.*): (.*)$", r"# \1: `\2`", out_text, flags=re.M)
+            out_text = re.sub("^### (.*)$", unescape_name_header, out_text, flags=re.M)
+            out_text = re.sub(r"^[\-_]{3}$", "", out_text, flags=re.M)
+            # what even is this
+            out_text = re.sub("^[•▸] ", ">\n> ", out_text, flags=re.M)
+            out_text = re.sub("\*\*([^\*]+)\*\*", unescape_bold, out_text, flags=re.M)
             out_text = out_text.replace("/src]", "]")
             out_text = re.sub("/src$", "", out_text, flags=re.M)
-            out_text = re.sub(
-                r"^Defined in: ([^\n]+)$",
-                "_Defined in:_ `\\1`",
-                out_text,
-                flags=re.M | re.S,
-            )
             out_text = re.sub(
                 r"^((Implementation of|Overrides|Inherited from):)",
                 "_\\1_",
                 out_text,
                 flags=re.M | re.S,
             )
+            out_text = re.sub(
+                r"^Defined in: ([^\n]+)$",
+                "_Defined in:_ `\\1`",
+                out_text,
+                flags=re.M | re.S,
+            )
 
             out_doc.write_text(out_text, **C.ENC)
 
-        for mod, sections in mods.items():
-            out_doc = B.DOCS_TS / mod_md_name(mod)
-            mod_lines = [f"""# `{mod.replace("@jupyterlite/", "")}`\n"""]
-            for label, contents in sections.items():
-                mod_lines += [
-                    f"## {label.title()}\n",
-                    "```{toctree}",
-                    ":maxdepth: 1",
-                    *contents,
-                    "```\n",
-                ]
-            out_doc.write_text("\n".join(mod_lines))
+        for index in [
+            B.DOCS_TS_MYST_INTERFACES,
+            B.DOCS_TS_MYST_MODULES,
+            B.DOCS_TS_MYST_CLASSES,
+        ]:
+            name = index.name[:-3]
+            index.write_text(
+                "\n".join(
+                    [
+                        f"# {name.title()}",
+                        "\n",
+                        "```{toctree}",
+                        ":maxdepth: 1",
+                        ":glob:",
+                        f"{name}/*",
+                        "```",
+                    ]
+                )
+            )
 
         B.DOCS_TS_MYST_INDEX.write_text(
             "\n".join(
@@ -1539,7 +1556,9 @@ class U:
                     "# `@jupyterlite`\n",
                     "```{toctree}",
                     ":maxdepth: 1",
-                    *[mod_md_name(mod) for mod in sorted(mods)],
+                    "modules",
+                    "interfaces",
+                    "classes",
                     "```",
                 ]
             ),

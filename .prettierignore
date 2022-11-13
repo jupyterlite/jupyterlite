@@ -7,7 +7,6 @@
 build
 docs/_build
 node_modules
-docs/reference/api/ts
 .pytest_cache
 app/extensions/
 .cache/

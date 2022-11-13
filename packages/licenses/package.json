@@ -35,7 +35,7 @@
   "devDependencies": {
     "@jupyterlite/types": "^0.1.0-beta.14",
     "rimraf": "~3.0.0",
-    "typescript": "~4.5.2"
+    "typescript": "~4.8.4"
   },
   "publishConfig": {
     "access": "public"
