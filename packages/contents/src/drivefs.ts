@@ -119,7 +119,7 @@ export interface IEmscriptenNodeOps {
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
-    dev: any
+    dev: number
   ): IEmscriptenFSNode;
   rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
   unlink(parent: IEmscriptenFSNode, name: string): void;
@@ -181,8 +181,9 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     if (needsWrite) {
       this.fs.API.put(path, stream.file);
-      stream.file = undefined;
     }
+
+    stream.file = undefined;
   }
 
   read(
@@ -192,16 +193,16 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     length: number,
     position: number
   ): number {
-    if (length <= 0 || stream.file === undefined) {
+    if (
+      length <= 0 ||
+      stream.file === undefined ||
+      position >= (stream.file.data.length || 0)
+    ) {
       return 0;
     }
 
-    const size = Math.min((stream.file.data.length ?? 0) - position, length);
-    try {
-      buffer.set(stream.file.data.subarray(position, position + size), offset);
-    } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
-    }
+    const size = Math.min(stream.file.data.length - position, length);
+    buffer.set(stream.file.data.subarray(position, position + size), offset);
     return size;
   }
 
@@ -218,19 +219,15 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     stream.node.timestamp = Date.now();
 
-    try {
-      if (position + length > (stream.file?.data.length ?? 0)) {
-        const oldData = stream.file.data ? stream.file.data : new Uint8Array();
-        stream.file.data = new Uint8Array(position + length);
-        stream.file.data.set(oldData);
-      }
-
-      stream.file.data.set(buffer.subarray(offset, offset + length), position);
-
-      return length;
-    } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
+    if (position + length > (stream.file?.data.length || 0)) {
+      const oldData = stream.file.data ? stream.file.data : new Uint8Array();
+      stream.file.data = new Uint8Array(position + length);
+      stream.file.data.set(oldData);
     }
+
+    stream.file.data.set(buffer.subarray(offset, offset + length), position);
+
+    return length;
   }
 
   llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
@@ -242,13 +239,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
         if (stream.file !== undefined) {
           position += stream.file.data.length;
         } else {
-          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
+          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES.EPERM);
         }
       }
     }
 
     if (position < 0) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EINVAL']);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES.EINVAL);
     }
 
     return position;
@@ -292,14 +289,14 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     if (!result.ok) {
       throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
     }
-    return this.fs.createNode(parent, name, result.mode);
+    return this.fs.createNode(parent, name, result.mode, 0);
   }
 
   mknod(
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
-    dev: any
+    dev: number
   ): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
@@ -556,7 +553,7 @@ export class DriveFS {
     parent: IEmscriptenFSNode | null,
     name: string,
     mode: number,
-    dev?: any
+    dev: number
   ): IEmscriptenFSNode {
     const FS = this.FS;
     if (!FS.isDir(mode) && !FS.isFile(mode)) {
