@@ -125,7 +125,10 @@ class ContentsAddon(BaseAddon):
         if root is not None:
             rel_posix_path = f"/{path.relative_to(root).as_posix()}"
 
-            for ignore in self.manager.ignore_contents:
+            for ignore in [
+                *self.manager.ignore_contents,
+                *self.manager.extra_ignore_contents,
+            ]:
                 if re.findall(ignore, rel_posix_path):
                     return
 
@@ -160,14 +163,32 @@ class ContentsAddon(BaseAddon):
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
-        listing_path = str(
-            output_file_dir.relative_to(self.output_files_dir).as_posix()
+        listing_path = output_file_dir.as_uri().replace(
+            self.output_files_dir.as_uri(), "/"
         )
 
-        if listing_path.startswith("."):
-            listing_path = listing_path[1:]
+        try:
+            listing = fm.get(listing_path)
+        except Exception as error:
+            print(
+                f"""Couldn't fetch {listing_path} as Jupyter contents.  {error}
+                If this folder, or one of its parents, starts with a `.`, you can
+                enable indexing hidden files with a `jupyter_lite_config.json` such as:
 
-        listing = fm.get(listing_path)
+                    "ContentsManager": {{
+                        "allow_hidden": true
+                    }}
+
+                Alternately, to skip it:
+
+                    "LiteBuildConfig": {{
+                        "extra_ignore_contents": [
+                            "/\\.<the offendings path name>"
+                        ]
+                    }}
+                """
+            )
+            return False
 
         if self.manager.source_date_epoch is not None:
             listing = self.patch_listing_timestamps(listing)

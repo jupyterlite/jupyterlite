@@ -21,14 +21,13 @@ Will be:
   - may have timestamps changed if `--source-date-epoch` is provided.
 - indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
 
-````{note}
+```{note}
 If no contents are provided when building the JupyterLite website,
 the following error message might be logged in the browser console and can be safely ignored:
 
+    Failed to load resource: the server responded with a status of 404 (File not found) :8000/api/contents/all.json:1
+
 ```
-Failed to load resource: the server responded with a status of 404 (File not found) :8000/api/contents/all.json:1
-```
-````
 
 ## Server Contents and Local Contents
 
@@ -86,6 +85,59 @@ For example, to ensure the `.fasta` file format is served correctly as `text/pla
         "fileFormat": "text"
       }
     }
+  }
+}
+```
+
+## Hidden Files
+
+Files and directories that start with `.` are considered
+[hidden](https://jupyterlab.readthedocs.io/en/stable/user/files.html#displaying-hidden-files),
+and by default will not be
+
+- indexed by the `jupyter_server.ContentsManager` which handles building Jupyter
+  Contents API responses
+- displayed in the _File Browser_
+
+To **ignore** these files entirely from being copied or indexed, provide the following
+for e.g. files in the `.binder`.
+
+```json
+{
+  "LiteBuildConfig": {
+    "extra_ignore_contents": ["/\\.binder/"]
+  }
+}
+```
+
+To **include** these files in the output, add the following to
+`jupyter_lite_config.json`:
+
+```json
+{
+  "ContentsManager": {
+    "allow_hidden": true
+  }
+}
+```
+
+```{note}
+If _included_, users will be able to open these files directly:
+- clicking links to the file in files that are not hidden
+- via the _Open from Path..._ JupyterLab command
+- from within kernels that support unified contents like the default [python kernel](./python.md)
+- from within [collaborative editing](../configure/rtc.md) sessions
+```
+
+### Showing Hidden Files
+
+To make hidden files visible by default in the file browser, add the following to
+`overrides.json`:
+
+```json
+{
+  "@jupyterlab/filebrowser-extension:browser": {
+    "showHiddenFiles": true
   }
 }
 ```
