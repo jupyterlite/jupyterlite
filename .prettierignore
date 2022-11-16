@@ -3,6 +3,7 @@
 **/node_modules
 **/static
 
+.ipynb_checkpoints/
 .yarn-packages
 build
 docs/_build
