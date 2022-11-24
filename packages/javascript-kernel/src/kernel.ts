@@ -23,7 +23,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     super(options);
     this._worker = this.initWorker();
     this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
-    this._remoteKernel = this.initRemote(options);
+    this.remoteKernel = this.initRemote(options);
     this._ready.resolve();
   }
 
@@ -85,7 +85,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
-    const result = await this._remoteKernel.execute(content, this.parent);
+    const result = await this.remoteKernel.execute(content, this.parent);
     result.execution_count = this.executionCount;
     return result;
   }
@@ -98,7 +98,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   async completeRequest(
     content: KernelMessage.ICompleteRequestMsg['content']
   ): Promise<KernelMessage.ICompleteReplyMsg['content']> {
-    return await this._remoteKernel.complete(content, this.parent);
+    return await this.remoteKernel.complete(content, this.parent);
   }
 
   /**
@@ -267,8 +267,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     }
   }
 
+  protected remoteKernel: IRemoteJavaScriptWorkerKernel;
+
   private _worker: Worker;
-  private _remoteKernel: IRemoteJavaScriptWorkerKernel;
   private _ready = new PromiseDelegate<void>();
 }
 
