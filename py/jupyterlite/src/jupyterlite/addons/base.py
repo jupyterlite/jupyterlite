@@ -1,17 +1,23 @@
 import email.utils
+import importlib.util
 import json
 import os
 import shutil
+import tarfile
 import tempfile
 import time
 import warnings
+import zipfile
 from pathlib import Path
+from typing import List
 
 from traitlets import Bool, Instance
 from traitlets.config import LoggingConfigurable
 
 from ..constants import (
     DISABLED_EXTENSIONS,
+    EXTENSION_TAR,
+    EXTENSION_ZIP,
     FEDERATED_EXTENSIONS,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
@@ -282,3 +288,52 @@ class BaseAddon(LoggingConfigurable):
 
     def is_sys_prefix_ignored(self):
         return self.ignore_sys_prefix
+
+    @property
+    def should_use_libarchive_c(self):
+        """should libarchive-c be used (if available)?"""
+        use_libarchive_c = not self.manager.no_libarchive_c
+
+        if use_libarchive_c:
+            use_libarchive_c = importlib.util.find_spec("importlib") is not None
+
+        return use_libarchive_c
+
+    def extract_one(self, archive: Path, dest: Path):
+        """extract the contents of an archive to a path."""
+        if dest.exists():
+            shutil.rmtree(dest)
+
+        dest.mkdir(parents=True)
+
+        if self.should_use_libarchive_c:
+            import libarchive
+
+            old_cwd = os.getcwd()
+            os.chdir(str(dest))
+            try:
+                libarchive.extract_file(str(archive))
+            finally:
+                os.chdir(old_cwd)
+            return
+
+        if archive.name.endswith(EXTENSION_ZIP):
+            with zipfile.ZipFile(archive) as zf:
+                zf.extractall(dest)
+        elif archive.name.endswith(EXTENSION_TAR):
+            mode = "r:bz2" if archive.name.endswith(".bz2") else "r:gz"
+            with tarfile.open(archive, mode) as tf:
+                tf.extractall(dest)
+        else:
+            raise ValueError(f"Unrecognized archive format {archive.name}")
+
+    def hash_all(self, hashfile: Path, root: Path, paths: List[Path]):
+        from hashlib import sha256
+
+        lines = [
+            "  ".join(
+                [sha256(p.read_bytes()).hexdigest(), p.relative_to(root).as_posix()]
+            )
+            for p in sorted(paths)
+        ]
+        hashfile.write_text("\n".join(lines))

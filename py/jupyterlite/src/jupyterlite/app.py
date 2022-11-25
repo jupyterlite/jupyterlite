@@ -26,6 +26,10 @@ lite_flags = {
         {"LiteBuildConfig": {"no_unused_shared_packages": True}},
         "Remove shared packages not used by --apps",
     ),
+    "no-libarchive-c": (
+        {"LiteBuildConfig": {"no_libarchive_c": True}},
+        "Do not try to use libarchive-c for archive operations",
+    ),
     **{
         flag: value
         for flag, value in base_flags.items()
@@ -105,6 +109,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["lite_dir"] = self.lite_dir
         if self.app_archive:
             kwargs["app_archive"] = self.app_archive
+        if self.no_libarchive_c:
+            kwargs["no_libarchive_c"] = self.no_libarchive_c
         if self.output_dir:
             kwargs["output_dir"] = self.output_dir
         if self.mathjax_dir:

@@ -2,7 +2,6 @@
 import json
 import re
 import sys
-import tempfile
 import urllib.parse
 from pathlib import Path
 
@@ -13,6 +12,7 @@ from ..constants import (
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
     PACKAGE_JSON,
+    SHA256SUMS,
     SHARE_LABEXTENSIONS,
     UTF8,
 )
@@ -44,6 +44,11 @@ class FederatedExtensionAddon(BaseAddon):
         return self.manager.cache_dir / "federated_extensions"
 
     @property
+    def archive_cache(self):
+        """where archives will go in the cache"""
+        return self.manager.cache_dir / "archives"
+
+    @property
     def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
@@ -72,11 +77,11 @@ class FederatedExtensionAddon(BaseAddon):
             yield self.copy_one_extension(pkg_json)
 
     def copy_one_env_extension(self, pkg_json):
-        """copy one unpacked on-disk extension from sys.prefix into the output dir"""
+        """yield tasks to copy one unpacked on-disk extension from sys.prefix into the output dir"""
         yield from self.copy_one_extension(pkg_json)
 
     def copy_one_extension(self, pkg_json):
-        """copy one unpacked on-disk extension from anywhere into the output dir"""
+        """yield a task to copy one unpacked on-disk extension from anywhere into the output dir"""
         pkg_path = pkg_json.parent
         stem = json.loads(pkg_json.read_text(**UTF8))["name"]
         dest = self.output_extensions / stem
@@ -95,7 +100,7 @@ class FederatedExtensionAddon(BaseAddon):
         )
 
     def resolve_one_extension(self, path_or_url, init):
-        """try to resolve one URL or local folder/archive as a (set of) federated_extension(s)"""
+        """yield tasks try to resolve one URL or local folder/archive as a (set of) federated_extension(s)"""
         if re.findall(r"^https?://", path_or_url):
             url = urllib.parse.urlparse(path_or_url)
             name = url.path.split("/")[-1]
@@ -122,11 +127,9 @@ class FederatedExtensionAddon(BaseAddon):
         elif local_path.exists():
             suffix = local_path.suffix
 
-            if suffix == ".whl":
-                yield from self.copy_wheel_extensions(local_path)
-            elif suffix == ".bz2":
-                yield from self.copy_conda_extensions(local_path)
-            elif suffix == ".conda":
+            if local_path.name.endswith((".whl", ".tar.bz2")):
+                yield from self.copy_simple_archive_extensions(local_path)
+            elif local_path.name.endswith(".conda"):
                 yield from self.copy_conda2_extensions(local_path)
             else:  # pragma: no cover
                 raise NotImplementedError(f"unknown archive {suffix}")
@@ -134,7 +137,7 @@ class FederatedExtensionAddon(BaseAddon):
             raise FileNotFoundError(path_or_url)
 
     def copy_one_folder_extension(self, path):
-        """copy one extension from the given path"""
+        """yield a task to copy one extension from the given path"""
         pkg_json = path / PACKAGE_JSON
 
         if not pkg_json.exists():
@@ -142,128 +145,95 @@ class FederatedExtensionAddon(BaseAddon):
 
         yield from self.copy_one_extension(pkg_json)
 
-    def copy_wheel_extensions(self, wheel):
-        """copy the labextensions from a local wheel"""
-        import zipfile
+    def copy_simple_archive_extensions(self, archive: Path):
+        """yield tasks to extract and copy the labextensions from a local simple archive"""
+        unarchived = self.archive_cache / archive.name
+        hashfile = self.archive_cache / f"{archive.name}.{SHA256SUMS}"
 
-        with zipfile.ZipFile(wheel) as zf:
-            infos = [*zf.infolist()]
-
-            for info in infos:
-                filename = info.filename
-                if (
-                    filename.split("/")[0].endswith(".data")
-                    and SHARE_LABEXTENSIONS in filename
-                    and filename.endswith(PACKAGE_JSON)
-                ):
-                    is_prebuilt = False
-
-                    try:
-                        is_prebuilt = self.is_prebuilt(
-                            json.loads(zf.read(info).decode("utf-8"))
-                        )
-                    except Exception as err:
-                        print(f"... skipping {info}: {err}")
-
-                    if is_prebuilt:
-                        yield from self.extract_one_wheel_extension(wheel, info, infos)
-
-    def extract_one_wheel_extension(self, wheel, pkg_json_info, all_infos):
-        """extract one labextension from a wheel"""
-        import zipfile
-
-        pkg_root_with_slash = pkg_json_info.filename.split(PACKAGE_JSON)[0]
-        prefix = len(pkg_root_with_slash)
-        stem = pkg_root_with_slash.split(SHARE_LABEXTENSIONS)[1][1:-1]
-        dest = self.output_extensions / stem
-        members = [
-            p.filename
-            for p in all_infos
-            if not (p.is_dir() or self.is_ignored_sourcemap(p.filename))
-            and p.filename.startswith(pkg_root_with_slash)
-        ]
-        targets = [dest / m[prefix:] for m in members]
-
-        def _extract():
-            with tempfile.TemporaryDirectory() as td:
-                with zipfile.ZipFile(wheel) as zf:
-                    zf.extractall(td, members)
-                self.copy_one(Path(td) / pkg_root_with_slash, dest)
-
-        yield self.task(
-            name=f"extract:wheel:{stem}",
-            file_dep=[wheel],
-            targets=targets,
-            actions=[_extract],
+        yield dict(
+            name=f"extract:{archive.name}",
+            actions=[
+                (self.delete_one, [hashfile]),
+                (self.extract_one, [archive, unarchived]),
+                lambda: self.hash_all(
+                    hashfile,
+                    unarchived,
+                    [p for p in unarchived.rglob("*") if not p.is_dir()],
+                ),
+            ],
+            file_dep=[archive],
         )
+
+        yield dict(
+            name=f"copy:{archive.name}",
+            file_dep=[hashfile],
+            actions=[(self.copy_all_federated_extensions, [unarchived])],
+        )
+
+    def copy_all_federated_extensions(self, unarchived):
+        """actually copy all federated extensions found in a folder."""
+        for simple_pkg_json in unarchived.rglob(
+            f"{SHARE_LABEXTENSIONS}/*/package.json"
+        ):
+            self.copy_one_federated_extension(simple_pkg_json)
+        for org_pkg_json in unarchived.rglob(
+            f"{SHARE_LABEXTENSIONS}/@*/*/package.json"
+        ):
+            self.copy_one_federated_extension(org_pkg_json)
+
+    def copy_one_federated_extension(self, pkg_json):
+        """actually copy one labextension from an extracted archive"""
+        pkg_data = json.loads(pkg_json.read_text(**UTF8))
+
+        if self.is_prebuilt(pkg_data):
+            pkg_name = pkg_data["name"]
+            self.copy_one(pkg_json.parent, self.output_extensions / f"{pkg_name}")
 
     def is_prebuilt(self, pkg_json):
         """verify this is an actual pre-built extension, containing load information"""
         return pkg_json.get("jupyterlab", {}).get("_build", {}).get("load") is not None
 
-    def copy_conda_extensions(self, conda_pkg):
-        """copy the labextensions from a local conda ``.tar.bz2`` package"""
-        import tarfile
-
-        with tarfile.open(conda_pkg, "r:bz2") as zf:
-            infos = [*zf.getmembers()]
-
-            for info in infos:
-                filename = info.name
-                if filename.startswith(SHARE_LABEXTENSIONS) and filename.endswith(
-                    PACKAGE_JSON
-                ):
-                    is_prebuilt = False
-                    try:
-                        is_prebuilt = self.is_prebuilt(
-                            json.loads(zf.extractfile(info).read().decode("utf-8"))
-                        )
-                    except Exception as err:
-                        print(f"... skipping {info}: {err}")
-
-                    if is_prebuilt:
-                        yield from self.extract_one_conda_extension(
-                            conda_pkg, info, infos
-                        )
-
     def copy_conda2_extensions(self, conda_pkg):
-        """copy the labextensions from a local conda ``.conda`` package"""
-        raise NotImplementedError()
+        """copy the labextensions from a local, nested ``.conda`` package"""
+        if self.manager.no_libarchive_c:
+            raise RuntimeError(
+                "`.conda` packages are not supported by python's stdlib. Please:\n\n"
+                "\tconda install python-libarchive-c\n\nor:\n\n"
+                "\tpip install libarchive-c"
+            )
+        unarchived = self.archive_cache / conda_pkg.name
+        inner_archive = unarchived / f"pkg-{conda_pkg.stem}.tar.zst"
+        inner_unarchived = self.archive_cache / inner_archive.name
+        hashfile = self.archive_cache / f"{inner_archive.name}.{SHA256SUMS}"
 
-    def extract_one_conda_extension(self, conda_pkg, pkg_json_info, all_infos):
-        """extract one labextension from a conda ``.tar.bz2`` package"""
-        import tarfile
-
-        pkg_root_with_slash = pkg_json_info.name.split(PACKAGE_JSON)[0]
-        prefix = len(pkg_root_with_slash)
-        stem = pkg_root_with_slash.split(SHARE_LABEXTENSIONS)[1][1:-1]
-        dest = self.output_extensions / stem
-
-        def _filter_members(infos):
-            return [
-                p
-                for p in infos
-                if not p.isdir() and p.name.startswith(pkg_root_with_slash)
-            ]
-
-        targets = [dest / m.name[prefix:] for m in _filter_members(all_infos)]
-
-        def _extract():
-            with tempfile.TemporaryDirectory() as td:
-                with tarfile.open(conda_pkg, "r:bz2") as zf:
-                    zf.extractall(td, _filter_members(zf.getmembers()))
-                self.copy_one(Path(td) / pkg_root_with_slash, dest)
-
-        yield self.task(
-            name=f"extract:conda:{stem}",
+        yield dict(
+            name=f"extract:{conda_pkg.name}",
+            actions=[
+                (self.extract_one, [conda_pkg, unarchived]),
+            ],
             file_dep=[conda_pkg],
-            targets=targets,
-            actions=[_extract],
+            targets=[inner_archive],
         )
 
-    def extract_one_conda2_extension(self, conda_pkg, pkg_json_info, all_infos):
-        """extract one labextension from a conda ``.conda`` package"""
-        raise NotImplementedError()
+        yield dict(
+            name=f"extract:{inner_archive.name}",
+            actions=[
+                (self.delete_one, [hashfile]),
+                (self.extract_one, [inner_archive, inner_unarchived]),
+                lambda: self.hash_all(
+                    hashfile,
+                    inner_unarchived,
+                    [p for p in inner_unarchived.rglob("*") if not p.is_dir()],
+                ),
+            ],
+            file_dep=[inner_archive],
+        )
+
+        yield dict(
+            name=f"copy:{inner_archive.name}",
+            file_dep=[hashfile],
+            actions=[(self.copy_all_federated_extensions, [inner_unarchived])],
+        )
 
     def post_build(self, manager):
         """update the root jupyter-lite.json, and copy each output theme to each app

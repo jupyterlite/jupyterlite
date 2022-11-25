@@ -91,6 +91,12 @@ NOARCH_WHL = "py3-none-any.whl"
 #: the only kind of binary wheel piplite understands
 WASM_WHL = "emscripten_*_wasm32.whl"
 
+#: known zip extensions
+EXTENSION_ZIP = (".whl", ".zip", ".conda")
+
+#: known compressed tar extensions
+EXTENSION_TAR = (".tgz", ".tar.bz2", ".tar.gz")
+
 #: the only kinds of wheels piplite understands
 ALL_WHL = [NOARCH_WHL, WASM_WHL]
 
