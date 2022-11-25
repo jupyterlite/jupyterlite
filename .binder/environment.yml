@@ -3,6 +3,7 @@ name: jupyterlite-dev
 
 channels:
   - conda-forge
+  - conda-forge/label/jupyterlab_alpha
 
 dependencies:
   # build stuff
