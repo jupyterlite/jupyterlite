@@ -15,7 +15,7 @@ from jupyterlite.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
 WHEELS = [*FIXTURES.glob("*.whl")]
-CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2")]
+CONDA_PKGS = [*FIXTURES.glob("*.tar.bz2"), *FIXTURES.glob("*.conda")]
 
 
 CI = os.environ.get("CI", None)

@@ -126,6 +126,8 @@ class FederatedExtensionAddon(BaseAddon):
                 yield from self.copy_wheel_extensions(local_path)
             elif suffix == ".bz2":
                 yield from self.copy_conda_extensions(local_path)
+            elif suffix == ".conda":
+                yield from self.copy_conda2_extensions(local_path)
             else:  # pragma: no cover
                 raise NotImplementedError(f"unknown archive {suffix}")
         else:  # pragma: no cover
@@ -200,7 +202,7 @@ class FederatedExtensionAddon(BaseAddon):
         return pkg_json.get("jupyterlab", {}).get("_build", {}).get("load") is not None
 
     def copy_conda_extensions(self, conda_pkg):
-        """copy the labextensions from a local conda package"""
+        """copy the labextensions from a local conda ``.tar.bz2`` package"""
         import tarfile
 
         with tarfile.open(conda_pkg, "r:bz2") as zf:
@@ -224,8 +226,12 @@ class FederatedExtensionAddon(BaseAddon):
                             conda_pkg, info, infos
                         )
 
+    def copy_conda2_extensions(self, conda_pkg):
+        """copy the labextensions from a local conda ``.conda`` package"""
+        raise NotImplementedError()
+
     def extract_one_conda_extension(self, conda_pkg, pkg_json_info, all_infos):
-        """extract one labextension from a conda package"""
+        """extract one labextension from a conda ``.tar.bz2`` package"""
         import tarfile
 
         pkg_root_with_slash = pkg_json_info.name.split(PACKAGE_JSON)[0]
@@ -254,6 +260,10 @@ class FederatedExtensionAddon(BaseAddon):
             targets=targets,
             actions=[_extract],
         )
+
+    def extract_one_conda2_extension(self, conda_pkg, pkg_json_info, all_infos):
+        """extract one labextension from a conda ``.conda`` package"""
+        raise NotImplementedError()
 
     def post_build(self, manager):
         """update the root jupyter-lite.json, and copy each output theme to each app

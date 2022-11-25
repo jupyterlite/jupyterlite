@@ -47,4 +47,5 @@ extension.
 
 Finally, the `--federated-extensions` CLI flag and the
 `LiteBuildConfig/federated_extensions` config entry allow for adding additional
-federated extensions, as packaged in Python `.whl` or conda `.tar.bz2` packages.
+federated extensions, as packaged in Python `.whl` or conda `.tar.bz2`/`.conda`
+packages.
