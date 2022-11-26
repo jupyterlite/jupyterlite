@@ -8,7 +8,7 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-from ..constants import C_LOCALE, NPM_SOURCE_DATE_EPOCH
+from ..constants import C_LOCALE, MOD_FILE, NPM_SOURCE_DATE_EPOCH
 from .base import BaseAddon
 
 
@@ -96,7 +96,7 @@ class ArchiveAddon(BaseAddon):
         with tempfile.TemporaryDirectory() as td:
             temp_ball = Path(td) / tarball.name
             with os.fdopen(
-                os.open(temp_ball, os.O_WRONLY | os.O_CREAT, 0o644), "wb"
+                os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb"
             ) as tar_gz:
                 with gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:

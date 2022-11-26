@@ -21,6 +21,8 @@ from ..constants import (
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_METADATA,
+    MOD_DIRECTORY,
+    MOD_FILE,
     SETTINGS_OVERRIDES,
     SOURCEMAP_IGNORE_PATTERNS,
     SOURCEMAPS,
@@ -327,7 +329,7 @@ class BaseAddon(LoggingConfigurable):
             raise ValueError(f"Unrecognized archive format {archive.name}")
 
         for path in [dest, *dest.rglob("*")]:
-            path.chmod(0o755 if path.is_dir() else 0o644)
+            path.chmod(MOD_DIRECTORY if path.is_dir() else MOD_FILE)
 
     def is_within_directory(self, directory, target):
         abs_directory = os.path.abspath(directory)

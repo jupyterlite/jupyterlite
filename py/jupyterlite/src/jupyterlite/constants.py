@@ -2,12 +2,22 @@
 import shutil
 from pathlib import Path
 
+#: a default permission for directories
+MOD_DIRECTORY = 0o755
+
+#: a default permission for files
+MOD_FILE = 0o644
+
 #: a locale for reproducible file sorting
 C_LOCALE = "C"
 
 #: the encoding for pretty much every file written and read by jupyterlite
 UTF8 = dict(encoding="utf-8")
+
+#: default arguments for normalized JSON
 JSON_FMT = dict(sort_keys=True, indent=2)
+
+# the root of this project
 ROOT = Path(__file__).parent
 
 #: all of the archives
