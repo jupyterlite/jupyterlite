@@ -195,7 +195,7 @@ class FederatedExtensionAddon(BaseAddon):
 
     def copy_conda2_extensions(self, conda_pkg):
         """copy the labextensions from a local, nested ``.conda`` package"""
-        if self.manager.no_libarchive_c:
+        if self.manager.no_libarchive:
             raise RuntimeError(
                 "`.conda` packages are not supported by python's stdlib. Please:\n\n"
                 "\tconda install python-libarchive-c\n\nor:\n\n"

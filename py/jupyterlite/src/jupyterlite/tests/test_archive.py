@@ -44,7 +44,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
     # build once for initial tarball
     before = an_empty_lite_dir / "v1.tgz"
     initial = script_runner.run(
-        *archive_args, "--output-archive", str(before), "--no-libarchive-c", **cwd
+        *archive_args, "--output-archive", str(before), "--no-libarchive", **cwd
     )
     assert initial.success, "failed to build the first tarball"
 

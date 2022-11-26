@@ -6,10 +6,23 @@ from pytest import mark
 
 from .conftest import CONDA_PKGS, FIXTURES, WHEELS
 
+try:
+    __import__("libarchive")
+    HAS_LIBARCHIVE = True
+except (AttributeError, ImportError):
+    HAS_LIBARCHIVE = False
+
 
 @mark.parametrize("remote", [True, False])
-@mark.parametrize("ext_name", [p.name for p in [*WHEELS, *CONDA_PKGS]])
-@mark.parametrize("use_libarchive", [True, False])
+@mark.parametrize(
+    "ext_name",
+    [
+        p.name
+        for p in [*WHEELS, *CONDA_PKGS]
+        if HAS_LIBARCHIVE or not p.name.endswith(".conda")
+    ],
+)
+@mark.parametrize("use_libarchive", [True, False] if HAS_LIBARCHIVE else [False])
 def test_federated_extensions(
     an_empty_lite_dir, script_runner, remote, ext_name, use_libarchive, a_fixture_server
 ):
@@ -33,7 +46,7 @@ def test_federated_extensions(
     (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
     (an_empty_lite_dir / "overrides.json").write_text(json.dumps(overrides))
 
-    extra_args = [] if use_libarchive else ["--no-libarchive-c"]
+    extra_args = [] if use_libarchive else ["--no-libarchive"]
 
     build = script_runner.run(
         "jupyter", "lite", "build", *extra_args, cwd=str(an_empty_lite_dir)

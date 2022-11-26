@@ -47,7 +47,7 @@ class LiteBuildConfig(LoggingConfigurable):
         help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE"
     ).tag(config=True)
 
-    no_libarchive_c: bool = Bool(
+    no_libarchive: bool = Bool(
         help="Don't detect and use libarchive-c for higher performance and more archives",
         default_value=False,
     ).tag(config=True)

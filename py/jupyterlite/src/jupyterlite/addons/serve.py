@@ -20,9 +20,6 @@ class ServeAddon(BaseAddon):
 
     @default("has_tornado")
     def _default_has_tornado(self):
-        if json.loads(os.environ.get("JUPYTERLITE_NO_TORNADO", "0")):
-            return False
-
         return has_optional_dependency("tornado")
 
     def status(self, manager):
@@ -62,7 +59,6 @@ class ServeAddon(BaseAddon):
     def _patch_mime(self):
         """install extra mime types if configured"""
         import mimetypes
-        import os
 
         jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
         config = json.loads(jupyterlite_json.read_text(**UTF8))

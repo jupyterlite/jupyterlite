@@ -150,7 +150,7 @@ class ContentsAddon(BaseAddon):
         """
         if not has_optional_dependency(
             "jupyter_server",
-            "[lite] [contents] install `jupyter_server` to index contents: {err}",
+            "[lite] [contents] install `jupyter_server` to index contents: {error}",
         ):
             return
 

@@ -292,7 +292,7 @@ class BaseAddon(LoggingConfigurable):
     @property
     def should_use_libarchive_c(self):
         """should libarchive-c be used (if available)?"""
-        if self.manager.no_libarchive_c:
+        if self.manager.no_libarchive:
             return False
 
         return has_optional_dependency(
