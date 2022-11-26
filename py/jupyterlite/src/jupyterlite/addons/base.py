@@ -307,15 +307,11 @@ class BaseAddon(LoggingConfigurable):
 
         if self.should_use_libarchive_c:
             import libarchive
-            from libarchive import extract
 
             old_cwd = os.getcwd()
             os.chdir(str(dest))
-            flags = (
-                extract.PREVENT_ESCAPE | extract.EXTRACT_ACL | extract.EXTRACT_FFLAGS
-            )
             try:
-                libarchive.extract_file(str(archive), flags)
+                libarchive.extract_file(str(archive))
             finally:
                 os.chdir(old_cwd)
             return
@@ -326,9 +322,25 @@ class BaseAddon(LoggingConfigurable):
         elif archive.name.endswith(EXTENSION_TAR):
             mode = "r:bz2" if archive.name.endswith(".bz2") else "r:gz"
             with tarfile.open(archive, mode) as tf:
-                tf.extractall(dest)
+                self.safe_extract_all(tf, dest)
         else:
             raise ValueError(f"Unrecognized archive format {archive.name}")
+
+        for path in [dest, *dest.rglob("*")]:
+            path.chmod(0o755 if path.is_dir() else 0o644)
+
+    def is_within_directory(self, directory, target):
+        abs_directory = os.path.abspath(directory)
+        abs_target = os.path.abspath(target)
+        prefix = os.path.commonprefix([abs_directory, abs_target])
+        return prefix == abs_directory
+
+    def safe_extract_all(self, tar, path=".", members=None, *, numeric_owner=False):
+        for member in tar.getmembers():
+            member_path = os.path.join(path, member.name)
+            if not self.is_within_directory(path, member_path):
+                raise Exception("Attempted Path Traversal in Tar File")
+        tar.extractall(path, members, numeric_owner=numeric_owner)
 
     def hash_all(self, hashfile: Path, root: Path, paths: List[Path]):
         from hashlib import sha256
