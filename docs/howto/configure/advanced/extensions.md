@@ -59,7 +59,7 @@ federated extensions, as packaged on:
 
 If detected, [`libarchive-c`](https://pypi.org/project/libarchive-c) will be used for
 better performance, especially when working with archives with many/large assets,
-espcially [pyodide](../python/pyodide.md).
+espcially [pyodide](../../python/pyodide.md).
 
 If not `libarchive-c` is not detected, python's built-in `zipfile` and `tarfile` modules
 will be used.
