@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from ..constants import ALL_JSON, API_CONTENTS, JSON_FMT, UTF8
+from ..optional import has_optional_dependency
 from .base import BaseAddon
 
 
@@ -147,19 +148,18 @@ class ContentsAddon(BaseAddon):
             Ideally we'd have a fallback, schema-verified generator, which we could
             later port to e.g. JS
         """
-        try:
-            from jupyter_server.services.contents.filemanager import FileContentsManager
-        except ImportError as err:  # pragma: no cover
-            self.log.warning(
-                f"[lite] [contents] `jupyter_server` was not importable, "
-                f"cannot index contents {err}"
-            )
+        if not has_optional_dependency(
+            "jupyter_server",
+            "[lite] [contents] install `jupyter_server` to index contents",
+        ):
             return
 
         if not self.output_files_dir.exists():
             return
 
         self.maybe_timestamp(self.output_files_dir)
+
+        from jupyter_server.services.contents.filemanager import FileContentsManager
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 

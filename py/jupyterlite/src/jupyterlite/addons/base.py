@@ -1,12 +1,10 @@
 import email.utils
-import importlib.util
 import json
 import os
 import shutil
 import tarfile
 import tempfile
 import time
-import warnings
 import zipfile
 from pathlib import Path
 from typing import List
@@ -29,6 +27,7 @@ from ..constants import (
     UTF8,
 )
 from ..manager import LiteManager
+from ..optional import has_optional_dependency
 
 
 class BaseAddon(LoggingConfigurable):
@@ -172,13 +171,12 @@ class BaseAddon(LoggingConfigurable):
 
     def get_validator(self, schema_path, klass=None):
         if klass is None:
-            try:
-                from jsonschema import Draft7Validator
-            except ImportError:  # pragma: no cover
-                warnings.warn(
-                    "jsonschema >=3 not installed: only checking JSON well-formedness"
-                )
+            if not has_optional_dependency(
+                "jsonschema", "only checking JSON well-formedness"
+            ):
                 return None
+            from jsonschema import Draft7Validator
+
             klass = Draft7Validator
 
         schema = json.loads(schema_path.read_text(**UTF8))
@@ -292,12 +290,13 @@ class BaseAddon(LoggingConfigurable):
     @property
     def should_use_libarchive_c(self):
         """should libarchive-c be used (if available)?"""
-        use_libarchive_c = not self.manager.no_libarchive_c
+        if self.manager.no_libarchive_c:
+            return False
 
-        if use_libarchive_c:
-            use_libarchive_c = importlib.util.find_spec("importlib") is not None
-
-        return use_libarchive_c
+        return has_optional_dependency(
+            "libarchive",
+            "install libarchive-c for better perfomance when working with archives",
+        )
 
     def extract_one(self, archive: Path, dest: Path):
         """extract the contents of an archive to a path."""
