@@ -9,7 +9,7 @@ from .conftest import CONDA_PKGS, FIXTURES, WHEELS
 try:
     __import__("libarchive")
     HAS_LIBARCHIVE = True
-except (AttributeError, ImportError):
+except Exception:
     HAS_LIBARCHIVE = False
 
 
