@@ -51,12 +51,15 @@ class ArchiveAddon(BaseAddon):
             targets=[tarball],
         )
 
-    def filter_tarinfo(self, tarinfo):
+    def filter_tarinfo(self, tarinfo: tarfile.TarInfo):
         """apply best-effort entropy fixes to give more reproducible archives"""
         tarinfo.uid = tarinfo.gid = 0
         tarinfo.uname = tarinfo.gname = "root"
+        tarinfo.mode = MOD_FILE
 
-        if "package/files/" not in str(Path(tarinfo.name).as_posix()):
+        norm_path = str(Path(tarinfo.name).as_posix())
+
+        if norm_path.startswith("package/files") or norm_path == "package/files":
             tarinfo.mtime = NPM_SOURCE_DATE_EPOCH
         elif self.manager.source_date_epoch is not None:
             tarinfo.mtime = self.manager.source_date_epoch
