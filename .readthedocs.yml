@@ -5,6 +5,7 @@ build:
     python: mambaforge-4.10
   jobs:
     pre_build:
+      - doit -n4 setup
       - doit -n4 build
       - doit -n4 docs:typedoc:mystify
       - doit -n4 docs:app:pack
