@@ -307,11 +307,15 @@ class BaseAddon(LoggingConfigurable):
 
         if self.should_use_libarchive_c:
             import libarchive
+            from libarchive import extract
 
             old_cwd = os.getcwd()
             os.chdir(str(dest))
+            flags = (
+                extract.PREVENT_ESCAPE | extract.EXTRACT_ACL | extract.EXTRACT_FFLAGS
+            )
             try:
-                libarchive.extract_file(str(archive))
+                libarchive.extract_file(str(archive), flags)
             finally:
                 os.chdir(old_cwd)
             return
