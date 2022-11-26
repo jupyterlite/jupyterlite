@@ -174,7 +174,7 @@ class BaseAddon(LoggingConfigurable):
     def get_validator(self, schema_path, klass=None):
         if klass is None:
             if not has_optional_dependency(
-                "jsonschema", "only checking JSON well-formedness"
+                "jsonschema", "only checking JSON well-formedness: {error}"
             ):
                 return None
             from jsonschema import Draft7Validator
@@ -297,7 +297,7 @@ class BaseAddon(LoggingConfigurable):
 
         return has_optional_dependency(
             "libarchive",
-            "install libarchive-c for better perfomance when working with archives",
+            "install libarchive-c for better perfomance when working with archives: {error}",
         )
 
     def extract_one(self, archive: Path, dest: Path):

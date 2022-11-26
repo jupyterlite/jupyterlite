@@ -36,8 +36,10 @@ def an_empty_lite_dir(tmp_path):
         if lite_dir.exists():
             try:
                 shutil.rmtree(lite_dir)
-            except Exception as err:
-                warnings.warn(f"Attempt {retry}: failed to clean up {lite_dir}: {err}")
+            except Exception as error:
+                warnings.warn(
+                    f"Attempt {retry}: failed to clean up {lite_dir}: {error}"
+                )
                 time.sleep(5)
 
 

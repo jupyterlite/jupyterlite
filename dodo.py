@@ -1248,8 +1248,8 @@ class U:
             import requests_cache
 
             HAS_REQUESTS_CACHE = True
-        except Exception as err:
-            print(f"requests_cache not available: {err}")
+        except Exception as error:
+            print(f"requests_cache not available: {error}")
             HAS_REQUESTS_CACHE = False
 
         if U._SESSION is None:

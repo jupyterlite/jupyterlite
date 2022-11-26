@@ -88,7 +88,7 @@ class TranslationAddon(BaseAddon):
         if not self.is_sys_prefix_ignored():
             if has_optional_dependency(
                 "jupyterlab_server",
-                "[lite] [translation] install `jupyterlab_server` to load translations",
+                "[lite] [translation] install `jupyterlab_server` to load translations: {error}",
             ):
                 from jupyterlab_server.translation_utils import (
                     get_language_pack,

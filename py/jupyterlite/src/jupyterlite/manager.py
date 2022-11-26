@@ -138,10 +138,10 @@ class LiteManager(LiteBuildConfig):
                             ] = f"""{self.task_prefix}{name}:{task["name"]}"""
                             print(patched_task["name"])
                             yield patched_task
-                    except Exception as err:
-                        self.log.error(f"[lite] [{attr}] [{name}] [ERR] {err}")
+                    except Exception as error:
+                        self.log.error(f"[lite] [{attr}] [{name}] [ERR] {error}")
                         if self.strict:
-                            raise err
+                            raise error
 
         if not prev_attr:
             return _gather
