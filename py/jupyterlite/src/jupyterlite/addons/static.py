@@ -130,17 +130,13 @@ class StaticAddon(BaseAddon):
         return self.manager.app_archive
 
     def _unpack_stdlib(self):
-        """use bog-standard python tarfiles.
-
-        TODO: a libarchive-based backend, which is already ported to WASM
-        """
+        """extract the original static assets into the output dir"""
         output_dir = self.manager.output_dir
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with tarfile.open(str(self.app_archive), "r:gz") as tar:
-                tar.extractall(td)
-                self.copy_one(tdp / "package", output_dir)
+            self.extract_one(self.app_archive, tdp)
+            self.copy_one(tdp / "package", output_dir)
 
         self.maybe_timestamp(output_dir)
 

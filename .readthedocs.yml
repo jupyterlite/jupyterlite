@@ -3,6 +3,12 @@ build:
   os: ubuntu-20.04
   tools:
     python: mambaforge-4.10
+  jobs:
+    pre_build:
+      - doit -n4 setup
+      - doit -n4 build
+      - doit -n4 docs:typedoc:mystify
+      - doit -n4 docs:app:pack
 sphinx:
   builder: html
   configuration: docs/conf.py

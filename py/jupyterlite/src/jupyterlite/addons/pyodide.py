@@ -2,8 +2,6 @@
 
 import json
 import re
-import tarfile
-import tempfile
 import urllib.parse
 from pathlib import Path
 
@@ -206,12 +204,6 @@ class PyodideAddon(BaseAddon):
     def extract_pyodide(self, local_path, dest):
         """extract a local pyodide tarball to the cache"""
 
-        def _extract():
-            with tempfile.TemporaryDirectory() as td:
-                with tarfile.open(local_path, "r:bz2") as zf:
-                    zf.extractall(td)
-                self.copy_one(Path(td), dest)
-
         yield self.task(
             name="extract:pyodide",
             file_dep=[local_path],
@@ -225,5 +217,5 @@ class PyodideAddon(BaseAddon):
                 dest / PYODIDE / PYODIDE_JS,
                 dest / PYODIDE / PYODIDE_REPODATA,
             ],
-            actions=[_extract],
+            actions=[(self.extract_one, [local_path, dest])],
         )

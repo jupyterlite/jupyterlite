@@ -8,7 +8,7 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-from ..constants import C_LOCALE, NPM_SOURCE_DATE_EPOCH
+from ..constants import C_LOCALE, MOD_FILE, NPM_SOURCE_DATE_EPOCH
 from .base import BaseAddon
 
 
@@ -51,12 +51,15 @@ class ArchiveAddon(BaseAddon):
             targets=[tarball],
         )
 
-    def filter_tarinfo(self, tarinfo):
+    def filter_tarinfo(self, tarinfo: tarfile.TarInfo):
         """apply best-effort entropy fixes to give more reproducible archives"""
         tarinfo.uid = tarinfo.gid = 0
         tarinfo.uname = tarinfo.gname = "root"
+        tarinfo.mode = MOD_FILE
 
-        if "package/files/" not in str(Path(tarinfo.name).as_posix()):
+        norm_path = str(Path(tarinfo.name).as_posix())
+
+        if norm_path.startswith("package/files") or norm_path == "package/files":
             tarinfo.mtime = NPM_SOURCE_DATE_EPOCH
         elif self.manager.source_date_epoch is not None:
             tarinfo.mtime = self.manager.source_date_epoch
@@ -96,7 +99,7 @@ class ArchiveAddon(BaseAddon):
         with tempfile.TemporaryDirectory() as td:
             temp_ball = Path(td) / tarball.name
             with os.fdopen(
-                os.open(temp_ball, os.O_WRONLY | os.O_CREAT, 0o644), "wb"
+                os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb"
             ) as tar_gz:
                 with gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:

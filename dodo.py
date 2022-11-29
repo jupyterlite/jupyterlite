@@ -111,7 +111,7 @@ def task_setup():
     if P.YARN_LOCK.exists():
         file_dep += [P.YARN_LOCK]
 
-    if C.CI:
+    if C.CI or C.WIN_DEV_IN_CI:
         # .yarn-integrity will only exist on a full cache hit vs yarn.lock, saves 1min+
         if B.YARN_INTEGRITY.exists():
             return
@@ -944,6 +944,7 @@ class C:
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
+    WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
     FORCE_PYODIDE = "JUPYTERLITE_PYODIDE_URL" in os.environ or bool(
         json.loads(os.environ.get("FORCE_PYODIDE", "0"))
     )
@@ -1248,8 +1249,8 @@ class U:
             import requests_cache
 
             HAS_REQUESTS_CACHE = True
-        except Exception as err:
-            print(f"requests_cache not available: {err}")
+        except Exception as error:
+            print(f"requests_cache not available: {error}")
             HAS_REQUESTS_CACHE = False
 
         if U._SESSION is None:

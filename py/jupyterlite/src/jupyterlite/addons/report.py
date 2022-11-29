@@ -1,8 +1,11 @@
 """a JupyterLite addon for generating hashes"""
-from hashlib import sha256
+from typing import TYPE_CHECKING
 
 from ..constants import SHA256SUMS
 from .base import BaseAddon
+
+if TYPE_CHECKING:
+    from ..manager import LiteManager
 
 
 class ReportAddon(BaseAddon):
@@ -14,7 +17,7 @@ class ReportAddon(BaseAddon):
 
     __all__ = ["pre_archive"]
 
-    def pre_archive(self, manager):
+    def pre_archive(self, manager: "LiteManager"):
         """generate a hash file of all files in the distribution.
 
         As this is relatively expensive for hundreds of files, this is performed
@@ -38,17 +41,6 @@ class ReportAddon(BaseAddon):
             file_dep=all_output_files,
             targets=[sha256sums],
         )
-
-    def hash_all(self, hashfile, root, paths):
-        lines = [
-            "  ".join(
-                [sha256(p.read_bytes()).hexdigest(), p.relative_to(root).as_posix()]
-            )
-            for p in sorted(paths)
-        ]
-        hashfile.write_text("\n".join(lines))
-
-        self.maybe_timestamp(hashfile.parent)
 
     @property
     def sha256sums(self):
