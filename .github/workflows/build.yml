@@ -29,14 +29,6 @@ jobs:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
 
-  link_check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v3
-      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - uses: jupyterlab/maintainer-tools/.github/actions/check-links@v1
-
   lint-js-test:
     runs-on: ubuntu-latest
     env:
