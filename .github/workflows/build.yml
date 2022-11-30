@@ -191,7 +191,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
-      FORCE_PYODIDE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
