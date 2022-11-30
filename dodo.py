@@ -658,10 +658,6 @@ def task_check():
         ],
     )
 
-    for example in P.ALL_EXAMPLES:
-        if example.name.endswith(".ipynb"):
-            yield from U.check_one_ipynb(example)
-
 
 def task_watch():
     """watch sources and rebuild on change"""
