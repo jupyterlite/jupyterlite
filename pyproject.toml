@@ -12,7 +12,7 @@ skip = [ "build-python", "check-links", "check-manifest",]
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "yarn", "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt",]
 after-bump-version = [ "doit repo:integrity", "doit lint", "yarn",]
-before-build-npm = [ "doit build",]
+before-build-npm = [ "doit build", "rm app/jupyterlite-app-*.tgz",]
 after-check-npm = [ "doit dist",]
 
 [tool.jupyter-releaser.options]
