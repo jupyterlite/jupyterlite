@@ -14,7 +14,7 @@ before-bump-version = [ "yarn", "python -m pip install jupyter-releaser -r requi
 after-bump-version = [ "doit repo:integrity", "doit lint", "yarn",]
 before-build-npm = [ "doit build",]
 after-check-npm = [ "doit dist",]
-before-draft-release = [ "rm dist/jupyterlite-app-*.tgz",]
+before-prep-release = [ "rm dist/jupyterlite-app-*.tgz",]
 
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
