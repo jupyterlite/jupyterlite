@@ -43,35 +43,10 @@ def task_env():
         all_deps = []
 
         yield dict(
-            name="pyodide:repodata",
-            doc="fetch the pyodide repodata.json",
-            file_dep=[P.APP_SCHEMA],
-            targets=[B.PYODIDE_REPODATA],
-            actions=[U.fetch_pyodide_repodata],
-        )
-
-        for nb in P.ALL_EXAMPLES:
-            if not nb.name.endswith(".ipynb") or nb in B.SKIP_DEPFINDER:
-                continue
-            nb_deps = B.EXAMPLE_DEPS / f"{nb.name}.yml"
-            yield dict(
-                name=f"lite:deps:{nb.name}",
-                doc="find dependencies for pyolite notebooks",
-                file_dep=[nb],
-                targets=[nb_deps],
-                actions=[
-                    (doit.tools.create_folder, [B.EXAMPLE_DEPS]),
-                    (U.get_deps, [nb, nb_deps]),
-                ],
-            )
-
-            all_deps += [nb_deps]
-
-        yield dict(
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
-            file_dep=[P.BINDER_ENV, B.PYODIDE_REPODATA, *all_deps],
-            targets=[B.RAW_WHEELS_REQS],
+            file_dep=[P.BINDER_ENV, *all_deps],
+            targets=[],
             actions=[
                 (
                     U.sync_lite_config,
@@ -145,17 +120,6 @@ def task_lint():
 
     has_pyodide_js = [P.APP_SCHEMA, P.PYOLITE_EXT_TS]
     has_pyodide_bz2 = [P.DOCS_OFFLINE_MD]
-    yield U.ok(
-        B.OK_PYODIDE_VERSION,
-        name="version:js:pyodide",
-        doc="check pyodide version from devDependencies vs schema, ts, etc",
-        file_dep=[P.PACKAGE_JSONS["pyolite-kernel"], *has_pyodide_js, *has_pyodide_bz2],
-        actions=[
-            *[(U.check_contains, [p, D.PYODIDE_CDN_URL]) for p in has_pyodide_js],
-            *[(U.check_contains, [p, D.PYODIDE_URL]) for p in has_pyodide_bz2],
-        ],
-    )
-
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
@@ -300,7 +264,6 @@ def task_build():
         file_dep=[
             *L.ALL_ESLINT,
             *P.PACKAGE_JSONS.values(),
-            B.PYOLITE_WHEEL_TS,
             B.YARN_INTEGRITY,
             P.ROOT_PACKAGE_JSON,
         ],
@@ -312,40 +275,9 @@ def task_build():
 
     js_wheels = []
 
-    for py_pkg, version in P.PYOLITE_PACKAGES.items():
-        if re.match("^\d", py_pkg.name):
-            name = py_pkg.parent.name
-        else:
-            name = py_pkg.name
-
-        wheel = py_pkg / f"dist/{name}-{version}-{C.NOARCH_WHL}"
-        js_wheels += [wheel]
-        yield dict(
-            name=f"js:py:{name}:{version}",
-            doc=f"build the {name} {version}python package for the browser with flit",
-            file_dep=[*py_pkg.rglob("*.py"), py_pkg / "pyproject.toml"],
-            actions=[(U.build_one_flit, [py_pkg])],
-            # TODO: get version
-            targets=[wheel],
-        )
-
     # a temporary environment to reuse build logic for app, for now
     bs_env = dict(os.environ)
     bs_env["PYTHONPATH"] = str(P.MAIN_SRC)
-
-    yield dict(
-        name="js:piplite:wheels",
-        file_dep=js_wheels,
-        actions=[
-            (doit.tools.create_folder, [B.PYOLITE_WHEELS]),
-            (U.copy_wheels, [B.PYOLITE_WHEELS, js_wheels]),
-            U.do(
-                *C.PYM, "jupyterlite.app", "pip", "index", B.PYOLITE_WHEELS, env=bs_env
-            ),
-            (U.make_pyolite_wheel_js),
-        ],
-        targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
-    )
 
     app_deps = [
         B.META_BUILDINFO,
@@ -379,8 +311,6 @@ def task_build():
         file_dep=[
             *app_deps,
             *extra_app_deps,
-            B.PYOLITE_WHEEL_INDEX,
-            B.PYOLITE_WHEEL_TS,
         ],
         actions=[
             U.do("yarn", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
@@ -398,7 +328,6 @@ def task_build():
             *P.APP.rglob("*.ipynb"),
             *P.APP.glob("*/*/index.html"),
             *P.APP.glob("*/build/schemas/**/.json"),
-            B.PYOLITE_WHEEL_INDEX,
             B.META_BUILDINFO,
             P.APP / "index.html",
             P.APP_NPM_IGNORE,
@@ -567,24 +496,14 @@ def task_docs():
         *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
     ]
 
-    # in CI, assume the config, wheels, etc. all agree
-    if not (C.DOCS_IN_CI or C.RTD):
-        app_build_deps += [B.RAW_WHEELS_REQS]
-
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
-
-    uptodate = []
-
-    if C.FORCE_PYODIDE:
-        docs_app_targets += [B.DOCS_APP_PYODIDE_JS]
-        uptodate = [doit.tools.config_changed(dict(pyodide_url=D.PYODIDE_URL))]
 
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
         task_dep=[f"dev:py:{C.NAME}"],
-        uptodate=uptodate,
+        uptodate=[lambda: False],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
         targets=docs_app_targets,
@@ -593,7 +512,7 @@ def task_docs():
     yield dict(
         name="app:pack",
         doc="build the as-deployed app archive",
-        uptodate=uptodate,
+        uptodate=[lambda: False],
         file_dep=[B.OK_DOCS_APP],
         actions=[(U.docs_app, ["archive"])],
         targets=[B.DOCS_APP_ARCHIVE, B.DOCS_APP_SHA256SUMS],
@@ -730,13 +649,6 @@ def task_check():
         ],
     )
 
-    if not C.DOCS_IN_CI:
-        yield dict(
-            name=f"schema:validate:{B.PYOLITE_WHEEL_INDEX.relative_to(P.ROOT)}",
-            file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
-            actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
-        )
-
     yield dict(
         name="app",
         doc="use the jupyterlite CLI to check the docs app",
@@ -797,10 +709,6 @@ def task_test():
         return
 
     env = dict(os.environ)
-
-    if D.PYODIDE_ARCHIVE_CACHE.exists():
-        # this makes some tests e.g. archive _very_ slow
-        env["TEST_JUPYTERLITE_PYODIDE_URL"] = str(D.PYODIDE_ARCHIVE_CACHE)
 
     pytest_args = [
         *C.PYM,
@@ -903,40 +811,17 @@ class C:
     P5_VERSION = "0.1.0"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
-    PYTHON_HOSTED = "https://files.pythonhosted.org/packages"
-    PYPI = "https://pypi.org"
-    PYPI_API = f"{PYPI}/pypi"
-    PYPI_SRC = f"{PYPI}/packages/source"
-    PYODIDE_GH = f"{GH}/pyodide/pyodide"
-    PYODIDE_DOWNLOAD = f"{PYODIDE_GH}/releases/download"
-
     JUPYTERLITE_JSON = "jupyter-lite.json"
     JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
     IPYNB_METADATA = "jupyter-lite"
     LITE_CONFIG_FILES = [JUPYTERLITE_JSON, JUPYTERLITE_IPYNB]
     NO_TYPEDOC = ["_metapackage"]
-    IGNORED_WHEEL_DEPS = [
-        # our stuff
-        "pyolite",
-        "piplite",
-        # magic JS interop layer
-        "js",
-        "pyodide_js",
-        "pyodide",
-        # broken?
-        "pathspec",
-    ]
-    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
-    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
     LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
     WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
-    FORCE_PYODIDE = "JUPYTERLITE_PYODIDE_URL" in os.environ or bool(
-        json.loads(os.environ.get("FORCE_PYODIDE", "0"))
-    )
     PYM = [sys.executable, "-m"]
     FLIT = [*PYM, "flit"]
     SOURCE_DATE_EPOCH = (
@@ -953,7 +838,7 @@ class C:
     MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
+    COV_THRESHOLD = 86
     SKIP_LINT = [
         "/docs/_build/",
         "/.ipynb_checkpoints/",
@@ -982,9 +867,6 @@ class P:
         for p in EXAMPLES.rglob("*")
         if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
     ]
-
-    # set later
-    PYOLITE_PACKAGES = {}
 
     APP = ROOT / "app"
     APP_JUPYTERLITE_JSON = APP / C.JUPYTERLITE_JSON
@@ -1047,11 +929,6 @@ class P:
         DOCS.rglob("*.ipynb"),
     )
 
-    # pyolite
-    PYOLITE_TS = PACKAGES / "pyolite-kernel"
-    PYOLITE_EXT = PACKAGES / "pyolite-kernel-extension"
-    PYOLITE_EXT_TS = PYOLITE_EXT / "src/index.ts"
-
     # demo
     BINDER = ROOT / ".binder"
     BINDER_ENV = BINDER / "environment.yml"
@@ -1113,13 +990,6 @@ class D:
     )
 
 
-P.PYOLITE_PACKAGES = {
-    P.PACKAGES / js_pkg / pyp_path: pyp_version
-    for js_pkg, pkg_data in D.PACKAGE_JSONS.items()
-    for pyp_path, pyp_version in pkg_data.get("pyolite", {}).get("packages", {}).items()
-}
-
-
 def _clean_paths(*paths_or_globs):
     final_paths = []
     for pg in paths_or_globs:
@@ -1163,7 +1033,6 @@ class L:
         P.DODO,
         *(P.ROOT / "scripts").glob("*.py"),
         *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
-        *sum([[*p.rglob("*.py")] for p in P.PYOLITE_PACKAGES.keys()], []),
     )
 
 
@@ -1184,8 +1053,6 @@ class B:
     # does crazy imports
     SKIP_DEPFINDER = [P.EXAMPLES / "python-packages.ipynb"]
 
-    RAW_WHEELS = BUILD / "wheels"
-    RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
@@ -1221,7 +1088,6 @@ class B:
     OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
-    OK_PYODIDE_VERSION = OK / "pyodide.version"
     PY_DISTRIBUTIONS = [
         *P.ROOT.glob("py/*/dist/*.whl"),
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
@@ -1356,86 +1222,8 @@ class U:
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
-        config["PipliteAddon"]["piplite_urls"] = sorted(set(U.deps_to_wheels(all_deps)))
-
-        # fetch piplite wheels
-        U.deps_to_wheels(all_deps)
 
         to_json.write_text(json.dumps(config, **C.JSON))
-
-    def deps_to_wheels(all_deps):
-        from yaml import safe_load
-
-        required_deps = [*C.REQUIRED_WHEEL_DEPS]
-        ignored_deps = [
-            p
-            for p in json.loads(B.PYODIDE_REPODATA.read_text(**C.ENC))[
-                "packages"
-            ].keys()
-        ]
-        ignored_deps += C.IGNORED_WHEEL_DEPS
-
-        for dep in all_deps:
-            required_deps += safe_load(dep.read_text(**C.ENC)).get("required", [])
-
-        from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
-        # replace unversioned dependencies with versioned ones, if needed
-        for pkg, version in re.findall("-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]):
-            if pkg in required_deps:
-                required_deps.remove(pkg)
-            required_deps += [f"{pkg}=={version}"]
-
-        B.RAW_WHEELS.mkdir(exist_ok=True, parents=True)
-        B.RAW_WHEELS_REQS.write_text(
-            "\n".join(
-                [
-                    req
-                    for req in sorted(set(required_deps))
-                    if req.split("==")[0] not in ignored_deps
-                ]
-            )
-        )
-        subprocess.check_call(
-            [*C.PYM, "pip", "download", "-r", B.RAW_WHEELS_REQS, "--prefer-binary"],
-            cwd=str(B.RAW_WHEELS),
-        )
-
-        ignored_wheels = [*C.IGNORED_WHEELS, *ignored_deps]
-
-        for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
-            if any(re.findall(f"{p}-\d", wheel.name) for p in ignored_wheels):
-                continue
-            meta = pkginfo.get_metadata(str(wheel))
-            yield U.pip_url(meta.name, meta.version, wheel.name)
-
-    def pip_url(name, version, wheel_name):
-        """calculate and verify a "predictable" wheel name, or calculate it the hard way"""
-        python_tag = "py3" if "py2." not in wheel_name else "py2.py3"
-
-        if name == "testpath":
-            python_tag = "py2.py3"
-
-        url = "/".join([C.PYTHON_HOSTED, python_tag, name[0], name, wheel_name])
-
-        print(".", end="", flush=True)
-        r = U.session().head(url)
-
-        if r.status_code < 400:
-            print(".", end="", flush=True)
-            return url
-
-        dists = U.session().get(f"{C.PYPI_API}/{name}/json").json()["releases"][version]
-        print("!", end="", flush=True)
-        for dist in dists:
-            if dist.get("yanked"):
-                continue
-            if dist["filename"] == wheel_name:
-                return dist["url"]
-
-        raise ValueError(
-            f"Couldn't figure out simple or canonical URL for {wheel_name}: try"
-            " deleting `build/requests-cache.sqlite` and running again"
-        )
 
     def typedoc_conf():
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
@@ -1608,9 +1396,6 @@ class U:
             if not C.CI:
                 args += ["--app-archive", B.APP_PACK]
 
-            if C.FORCE_PYODIDE:
-                args += ["--pyodide", D.PYODIDE_URL]
-
             # ignoring sys-prefix for fine-grained extensions, add mathjax dir
             if MATHJAX_DIR:
                 args += ["--mathjax-dir", MATHJAX_DIR]
@@ -1676,52 +1461,6 @@ class U:
                 subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
-    def check_one_ipynb(path):
-        """ensure any pinned imports are present in the env and wheel cache"""
-        built = B.DOCS / "_static/files" / path.relative_to(P.EXAMPLES)
-
-        if not built.exists():
-            return
-
-        raw = built.read_text(**C.ENC)
-
-        if "piplite" not in raw:
-            return
-
-        def _check():
-            from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
-            wheels = json.loads(B.DOCS_APP_WHEEL_INDEX.read_text(**C.ENC))
-            unpinned = []
-            uncached = []
-            for pkg, version in re.findall(
-                "-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]
-            ):
-                spec = f"{pkg}=={version}"
-                if pkg in raw:
-                    if spec not in raw:
-                        unpinned += [spec]
-                    if not wheels.get(pkg, {}).get("releases", {}).get(version):
-                        uncached += [spec]
-
-            if unpinned:
-                print(P.BINDER_ENV, path.name, *unpinned)
-
-            if uncached:
-                print(B.DOCS_APP_WHEEL_INDEX, path.name, *uncached)
-
-            return not (unpinned + uncached)
-
-        yield dict(
-            name=f"ipynb:{path.name}",
-            actions=[_check],
-            file_dep=[path, built, P.BINDER_ENV, B.DOCS_APP_WHEEL_INDEX],
-        )
-
-    def copy_wheels(wheel_dir, wheels):
-        """create a warehouse-like index for the wheels"""
-        for whl_path in wheels:
-            shutil.copy2(whl_path, wheel_dir / whl_path.name)
-
     def integrity():
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
@@ -1772,47 +1511,6 @@ class U:
             print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
 
         return all_up_to_date
-
-    def fetch_pyodide_repodata():
-        schema = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
-        props = schema["definitions"]["pyolite-settings"]["properties"]
-        url = props["pyodideUrl"]["default"].replace(D.PYODIDE_JS, "repodata.json")
-        print(f"fetching pyodide packages from {url}")
-        packages = U.session().get(url).json()
-        B.PYODIDE_REPODATA.parent.mkdir(exist_ok=True, parents=True)
-        B.PYODIDE_REPODATA.write_text(json.dumps(packages, **C.JSON))
-
-    def make_pyolite_wheel_js():
-        lines = [
-            "// this file is autogenerated from the wheels described in ../package.json",
-            "export * as allJSONUrl from '!!file-loader"
-            ""
-            "?name=pypi/[name].[ext]"
-            "&context=.!../pypi/all.json';",
-        ]
-
-        vars_made = {}
-        for wheel in sorted(B.PYOLITE_WHEELS.glob(f"*{C.NOARCH_WHL}")):
-            # this might be brittle
-            name = wheel.name.split("-")[0]
-            if name == "piplite":
-                lines += [f"export const PIPLITE_WHEEL = '{wheel.name}';"]
-            bang = f"!../pypi/{wheel.name}"
-            base_var_name = f"{name}WheelUrl"
-
-            if base_var_name not in vars_made:
-                var_suffix = ""
-                vars_made[base_var_name] = 0
-            else:
-                vars_made[base_var_name] += 1
-                var_suffix = vars_made[base_var_name]
-
-            lines += [
-                f"export * as {base_var_name}{var_suffix} from '!!file-loader"
-                ""
-                f"?name=pypi/[name].[ext]&context=.{bang}';"
-            ]
-        B.PYOLITE_WHEEL_TS.write_text("\n".join(sorted(lines) + [""]))
 
     def notebook_lint(ipynb: Path):
         nb_text = ipynb.read_text(**C.ENC)
