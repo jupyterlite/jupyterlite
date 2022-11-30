@@ -947,7 +947,6 @@ class C:
     SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["yarn", "prettier", "--write"]
     PRETTIER_IGNORE = [
-        "_pypi.ts",
         ".ipynb_checkpoints",
         "node_modules",
     ]
@@ -1178,9 +1177,6 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PYOLITE_WHEELS = P.PYOLITE_TS / "pypi"
-    PYOLITE_WHEEL_INDEX = PYOLITE_WHEELS / "all.json"
-    PYOLITE_WHEEL_TS = P.PYOLITE_TS / "src/_pypi.ts"
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
@@ -1188,7 +1184,6 @@ class B:
     # does crazy imports
     SKIP_DEPFINDER = [P.EXAMPLES / "python-packages.ipynb"]
 
-    PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
     RAW_WHEELS = BUILD / "wheels"
     RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
     DOCS_APP = BUILD / "docs-app"
@@ -1196,7 +1191,6 @@ class B:
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
     DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
     DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
-    DOCS_APP_PYODIDE_JS = DOCS_APP / f"static/pyodide/{D.PYODIDE_JS}"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
     DOCS_BUILDINFO = DOCS / ".buildinfo"
