@@ -10,7 +10,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-import pkginfo
 
 
 def which(cmd):
@@ -272,8 +271,6 @@ def task_build():
         ],
         targets=[B.META_BUILDINFO],
     )
-
-    js_wheels = []
 
     # a temporary environment to reuse build logic for app, for now
     bs_env = dict(os.environ)

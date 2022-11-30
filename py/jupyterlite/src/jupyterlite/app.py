@@ -12,7 +12,6 @@ from .addons import get_addon_implementations, merge_addon_aliases, merge_addon_
 from .config import LiteBuildConfig
 from .constants import PHASES
 from .manager import LiteManager
-from .trait_types import CPath
 
 #: the total set of flags from discovered addons
 lite_flags = {
