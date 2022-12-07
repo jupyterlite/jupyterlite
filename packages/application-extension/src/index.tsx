@@ -181,10 +181,7 @@ const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
     translator: ITranslator
   ): IDocumentProviderFactory => {
     const collaborative = PageConfig.getOption('collaborative') === 'true';
-    // TODO: fix typing for `IDocumentProviderFactory.IOptions` below.
-    const factory = (
-      options: IDocumentProviderFactory.IOptions<any>
-    ): IDocumentProvider => {
+    const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
       if (collaborative) {
         const trans = translator.load(I18N_BUNDLE);
         console.warn(
