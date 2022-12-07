@@ -4,35 +4,40 @@ import shutil
 
 from pytest import mark
 
-from .conftest import CONDA_PKGS, WHEELS
+from .conftest import CONDA_PKGS, FIXTURES, WHEELS
+
+try:
+    __import__("libarchive")
+    HAS_LIBARCHIVE = True
+except Exception:
+    HAS_LIBARCHIVE = False
 
 
+@mark.parametrize("remote", [True, False])
 @mark.parametrize(
-    "remote,kind",
+    "ext_name",
     [
-        [True, "wheel"],
-        [True, "conda"],
-        [False, "wheel"],
-        [False, "conda"],
+        p.name
+        for p in [*WHEELS, *CONDA_PKGS]
+        if HAS_LIBARCHIVE or not p.name.endswith(".conda")
     ],
 )
+@mark.parametrize("use_libarchive", [True, False] if HAS_LIBARCHIVE else [False])
 def test_federated_extensions(
-    an_empty_lite_dir, script_runner, remote, kind, a_fixture_server
+    an_empty_lite_dir, script_runner, remote, ext_name, use_libarchive, a_fixture_server
 ):
     """can we include a single extension from an archive"""
-    ext = CONDA_PKGS[0] if kind == "conda" else WHEELS[0]
-
     if remote:
-        federated_extensions = [f"{a_fixture_server}/{ext.name}"]
+        federated_extensions = [f"{a_fixture_server}/{ext_name}"]
     else:
-        shutil.copy2(ext, an_empty_lite_dir / ext.name)
-        federated_extensions = [ext.name]
+        shutil.copy2(FIXTURES / ext_name, an_empty_lite_dir / ext_name)
+        federated_extensions = [ext_name]
 
     config = {
         "LiteBuildConfig": {
             "federated_extensions": federated_extensions,
             "ignore_sys_prefix": ["federated_extensions"],
-            "overrides": ["overrides.json"],
+            "settings_overrides": ["overrides.json"],
             "apps": ["lab"],
         },
     }
@@ -41,10 +46,21 @@ def test_federated_extensions(
     (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
     (an_empty_lite_dir / "overrides.json").write_text(json.dumps(overrides))
 
-    build = script_runner.run("jupyter", "lite", "build", cwd=str(an_empty_lite_dir))
+    extra_args = [] if use_libarchive else ["--no-libarchive"]
+
+    build = script_runner.run(
+        "jupyter", "lite", "build", *extra_args, cwd=str(an_empty_lite_dir)
+    )
+
+    if ext_name.endswith(".conda") and not use_libarchive:
+        assert not build.success
+        return
+
     assert build.success
 
-    check = script_runner.run("jupyter", "lite", "check", cwd=str(an_empty_lite_dir))
+    check = script_runner.run(
+        "jupyter", "lite", "check", *extra_args, cwd=str(an_empty_lite_dir)
+    )
     assert check.success
 
     output = an_empty_lite_dir / "_output"

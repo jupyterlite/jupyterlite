@@ -6,6 +6,7 @@ import doit
 from traitlets import Bool, default
 
 from ..constants import JUPYTER_CONFIG_DATA, JUPYTERLITE_JSON, SETTINGS_FILE_TYPES, UTF8
+from ..optional import has_optional_dependency
 from .base import BaseAddon
 
 # we _really_ don't want to be in the server-running business, so hardcode, now...
@@ -19,14 +20,7 @@ class ServeAddon(BaseAddon):
 
     @default("has_tornado")
     def _default_has_tornado(self):
-        if json.loads(os.environ.get("JUPYTERLITE_NO_TORNADO", "0")):
-            return False
-        try:
-            __import__("tornado")
-
-            return True
-        except (ImportError, AttributeError):
-            return False
+        return has_optional_dependency("tornado")
 
     def status(self, manager):
         yield self.task(name="contents", actions=[self._print_status])
@@ -65,7 +59,6 @@ class ServeAddon(BaseAddon):
     def _patch_mime(self):
         """install extra mime types if configured"""
         import mimetypes
-        import os
 
         jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
         config = json.loads(jupyterlite_json.read_text(**UTF8))

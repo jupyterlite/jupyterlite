@@ -61,6 +61,7 @@ dependencies:
   - jsonschema >=3
   - pip
   - pkginfo
+  - python-libarchive-c
   - requests_cache
   - wheel
   - yarn <2
@@ -83,7 +84,7 @@ dependencies:
   - pytest-html
   - pytest-xdist
   # language packs and contents
-  - jupyter_server >=1.11,<2
+  - jupyter_server >=1.11,<3
   - jupyterlab-language-pack-fr-FR
   - jupyterlab-language-pack-zh-CN
   - jupyterlab_server >=2.8.1,<3

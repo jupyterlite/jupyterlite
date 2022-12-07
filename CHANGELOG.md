@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b15
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b14...41b80272e4d1991b3776eebd103e2e3aab4375d1))
+
+### Enhancements made
+
+- Support `.conda` packages with `libarchive-c`, prefer if available for all unarchiving [#878](https://github.com/jupyterlite/jupyterlite/pull/878) ([@bollwyvl](https://github.com/bollwyvl))
+- Loosen `.` file detection, add `--extra-ignore-contents` [#860](https://github.com/jupyterlite/jupyterlite/pull/860) ([@bollwyvl](https://github.com/bollwyvl))
+- Update to JupyterLab 3.5 [#848](https://github.com/jupyterlite/jupyterlite/pull/848) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to the Jupyter Releaser v2 [#879](https://github.com/jupyterlite/jupyterlite/pull/879) ([@jtpio](https://github.com/jtpio))
+- Bump loader-utils from 1.4.1 to 1.4.2 [#873](https://github.com/jupyterlite/jupyterlite/pull/873) ([@dependabot](https://github.com/dependabot))
+- Bump loader-utils from 1.4.0 to 1.4.1 [#869](https://github.com/jupyterlite/jupyterlite/pull/869) ([@dependabot](https://github.com/dependabot))
+- Update app resolutions for JupyterLab 3.5.0 [#852](https://github.com/jupyterlite/jupyterlite/pull/852) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-10-25&to=2022-11-30&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-10-25..2022-11-30&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-10-25..2022-11-30&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-10-25..2022-11-30&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-10-25..2022-11-30&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b14
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b13...1707520c2b19d36aa6e2a182f1a95f7834937e9e))
@@ -32,8 +57,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-09-23&to=2022-10-25&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-09-23..2022-10-25&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-09-23..2022-10-25&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-09-23..2022-10-25&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-09-23..2022-10-25&type=Issues) | [@kolibril13](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akolibril13+updated%3A2022-09-23..2022-10-25&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b13
 

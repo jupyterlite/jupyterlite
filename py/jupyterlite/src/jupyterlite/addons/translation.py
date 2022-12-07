@@ -1,11 +1,16 @@
 """a JupyterLite addon to expose translation data"""
 import json
 import pprint
+from typing import TYPE_CHECKING
 
 import doit.tools
 
 from ..constants import ALL_JSON, API_TRANSLATIONS, JSON_FMT, UTF8
+from ..optional import has_optional_dependency
 from .base import BaseAddon
+
+if TYPE_CHECKING:
+    from ..manager import LiteManager
 
 
 class TranslationAddon(BaseAddon):
@@ -13,7 +18,7 @@ class TranslationAddon(BaseAddon):
 
     __all__ = ["build", "status", "check"]
 
-    def status(self, manager):
+    def status(self, manager: "LiteManager"):
         """yield some status information about the state of the translation"""
         yield self.task(
             name="translation",
@@ -28,7 +33,7 @@ class TranslationAddon(BaseAddon):
             ],
         )
 
-    def build(self, manager):
+    def build(self, manager: "LiteManager"):
         api_path = self.api_dir / ALL_JSON
         metadata, packs = self.translation_data
 
@@ -47,8 +52,8 @@ class TranslationAddon(BaseAddon):
             ],
         )
 
-    def check(self, manager):
-        """Check the translation data is valid"""
+    def check(self, manager: "LiteManager"):
+        """Check if the translation data is valid"""
         for all_json in self.api_dir.rglob(ALL_JSON):
             stem = all_json.relative_to(self.api_dir)
             yield self.task(
@@ -81,7 +86,10 @@ class TranslationAddon(BaseAddon):
         packs = {"en": {"data": {}, "message": "Language pack 'en' not installed!"}}
 
         if not self.is_sys_prefix_ignored():
-            try:
+            if has_optional_dependency(
+                "jupyterlab_server",
+                "[lite] [translation] install `jupyterlab_server` to load translations: {error}",
+            ):
                 from jupyterlab_server.translation_utils import (
                     get_language_pack,
                     get_language_packs,
@@ -93,11 +101,6 @@ class TranslationAddon(BaseAddon):
                     for locale in sorted(all_packs.keys())
                 }
                 metadata = {"data": all_packs, "message": ""}
-            except ImportError as err:  # pragma: no cover
-                self.log.warning(
-                    f"[lite] [translation] `jupyterlab_server` was not importable, "
-                    f"cannot create translation data {err}"
-                )
 
         return metadata, packs
 

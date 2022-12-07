@@ -47,4 +47,23 @@ extension.
 
 Finally, the `--federated-extensions` CLI flag and the
 `LiteBuildConfig/federated_extensions` config entry allow for adding additional
-federated extensions, as packaged in Python `.whl` or conda `.tar.bz2` packages.
+federated extensions, as packaged on:
+
+- PyPI:
+  - `.whl`
+- conda-forge:
+  - `.tar.bz2`
+  - `.conda` (_see warning below_)
+
+### Using libarchive
+
+If detected, [`libarchive-c`](https://pypi.org/project/libarchive-c) will be used for
+better performance, especially when working with archives with many/large assets,
+espcially [pyodide](../../python/pyodide.md).
+
+If not `libarchive-c` is not detected, python's built-in `zipfile` and `tarfile` modules
+will be used.
+
+```{warning}
+Extracting federated extensions from `.conda` packages **requires** `libarchive-c`.
+```

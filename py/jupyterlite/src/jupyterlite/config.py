@@ -47,6 +47,11 @@ class LiteBuildConfig(LoggingConfigurable):
         help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE"
     ).tag(config=True)
 
+    no_libarchive: bool = Bool(
+        help="Don't detect and use libarchive-c for higher performance and more archives",
+        default_value=False,
+    ).tag(config=True)
+
     lite_dir: Path = CPath(
         help="The root folder of a JupyterLite project. env: JUPYTERLITE_DIR"
     ).tag(config=True)

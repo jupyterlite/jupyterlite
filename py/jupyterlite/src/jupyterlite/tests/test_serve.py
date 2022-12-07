@@ -84,10 +84,10 @@ def _fetch_without_errors(url, retries=10, expect_headers=None):  # pragma: no c
             # it worked, eventually: clear errors
             errors = []
             break
-        except Exception as err:  # pragma: no cover
-            print(f"{err}: {retries} retries left...")
+        except Exception as error:  # pragma: no cover
+            print(f"{error}: {retries} retries left...")
             time.sleep(0.5)
-            errors = [err]
+            errors = [error]
 
     if response and expect_headers:
         errors = []

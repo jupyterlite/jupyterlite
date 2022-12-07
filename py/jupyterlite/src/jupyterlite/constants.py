@@ -2,12 +2,22 @@
 import shutil
 from pathlib import Path
 
+#: a default permission for directories
+MOD_DIRECTORY = 0o755
+
+#: a default permission for files
+MOD_FILE = 0o644
+
 #: a locale for reproducible file sorting
 C_LOCALE = "C"
 
 #: the encoding for pretty much every file written and read by jupyterlite
 UTF8 = dict(encoding="utf-8")
+
+#: default arguments for normalized JSON
 JSON_FMT = dict(sort_keys=True, indent=2)
+
+# the root of this project
 ROOT = Path(__file__).parent
 
 #: all of the archives
@@ -90,6 +100,12 @@ NOARCH_WHL = "py3-none-any.whl"
 
 #: the only kind of binary wheel piplite understands
 WASM_WHL = "emscripten_*_wasm32.whl"
+
+#: known zip extensions
+EXTENSION_ZIP = (".whl", ".zip", ".conda")
+
+#: known compressed tar extensions
+EXTENSION_TAR = (".tgz", ".tar.bz2", ".tar.gz")
 
 #: the only kinds of wheels piplite understands
 ALL_WHL = [NOARCH_WHL, WASM_WHL]

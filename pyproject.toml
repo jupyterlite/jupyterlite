@@ -1,5 +1,5 @@
 [project]
-version = "0.1.0b14"
+version = "0.1.0b15"
 
 [tool.isort]
 profile = "black"
@@ -13,14 +13,13 @@ skip = [ "build-python", "check-links", "check-manifest",]
 before-bump-version = [ "yarn", "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt",]
 after-bump-version = [ "doit repo:integrity", "doit lint", "yarn",]
 before-build-npm = [ "doit build",]
-after-check-npm = [ "doit dist",]
-before-draft-release = [ "rm dist/jupyterlite-app-*.tgz",]
+after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
 
 [tool.tbump.version]
-current = "0.1.0b14"
+current = "0.1.0b15"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
