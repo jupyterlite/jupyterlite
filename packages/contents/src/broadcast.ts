@@ -5,13 +5,9 @@ import { PathExt } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, ContentsManager } from '@jupyterlab/services';
 
-import {
-  DIR_MODE,
-  FILE_MODE,
-  BLOCK_SIZE,
-  IDriveRequest,
-  DRIVE_API_PATH,
-} from './drivefs';
+import { DIR_MODE, FILE_MODE } from './emscripten';
+
+import { BLOCK_SIZE, IDriveRequest, DRIVE_API_PATH } from './drivefs';
 
 import { IModel } from './contents';
 

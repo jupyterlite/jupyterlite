@@ -42,6 +42,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@types/emscripten": "^1.39.6",
     "@jupyterlab/nbformat": "~3.5.0",
     "@jupyterlab/services": "~6.5.0",
     "@jupyterlite/localforage": "^0.1.0-beta.15",

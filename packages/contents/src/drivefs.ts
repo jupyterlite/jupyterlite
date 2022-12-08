@@ -1,17 +1,29 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 // Types and implementation inspired from https://github.com/jvilk/BrowserFS
 // LICENSE: https://github.com/jvilk/BrowserFS/blob/8977a704ea469d05daf857e4818bef1f4f498326/LICENSE
 // And from https://github.com/gzuidhof/starboard-notebook
 
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
-import type Pyodide from 'pyodide';
+import {
+  FS,
+  ERRNO_CODES,
+  PATH,
+  DIR_MODE,
+  SEEK_CUR,
+  SEEK_END,
+  IEmscriptenStream,
+  IEmscriptenStreamOps,
+  IEmscriptenNodeOps,
+  IEmscriptenFSNode,
+  IStats,
+} from './emscripten';
 
-export const BLOCK_SIZE = 4096;
-export const DIR_MODE = 16895; // 040777
-export const FILE_MODE = 33206; // 100666
-export const SEEK_CUR = 1;
-export const SEEK_END = 2;
 export const DRIVE_SEPARATOR = ':';
 export const DRIVE_API_PATH = '/api/drive.v1';
+
+export const BLOCK_SIZE = 4096;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
@@ -75,78 +87,9 @@ const flagNeedsWrite: { [flag: number]: boolean } = {
   4098 /*O_RDWR|O_DSYNC*/: true,
 };
 
-export interface IStats {
-  dev: number;
-  ino: number;
-  mode: number;
-  nlink: number;
-  uid: number;
-  gid: number;
-  rdev: number;
-  size: number;
-  blksize: number;
-  blocks: number;
-  atime: Date;
-  mtime: Date;
-  ctime: Date;
-  timestamp?: number;
-}
-
-export interface IEmscriptenFSNode {
-  id: number;
-  name: string;
-  mode: number;
-  parent: IEmscriptenFSNode;
-  mount: { opts: { root: string } };
-  stream_ops: IEmscriptenStreamOps;
-  node_ops: IEmscriptenNodeOps;
-  timestamp: number;
-}
-
-export interface IEmscriptenStream {
-  node: IEmscriptenFSNode;
-  nfd: any;
-  flags: string;
-  position: number;
+/** Implementation-specifc extension of an open stream, adding the file. */
+export interface IDriveStream extends IEmscriptenStream {
   file?: DriveFS.IFile;
-}
-
-export interface IEmscriptenNodeOps {
-  getattr(node: IEmscriptenFSNode): IStats;
-  setattr(node: IEmscriptenFSNode, attr: IStats): void;
-  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode;
-  mknod(
-    parent: IEmscriptenFSNode,
-    name: string,
-    mode: number,
-    dev: number
-  ): IEmscriptenFSNode;
-  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
-  unlink(parent: IEmscriptenFSNode, name: string): void;
-  rmdir(parent: IEmscriptenFSNode, name: string): void;
-  readdir(node: IEmscriptenFSNode): string[];
-  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void;
-  readlink(node: IEmscriptenFSNode): string;
-}
-
-export interface IEmscriptenStreamOps {
-  open(stream: IEmscriptenStream): void;
-  close(stream: IEmscriptenStream): void;
-  read(
-    stream: IEmscriptenStream,
-    buffer: Uint8Array,
-    offset: number,
-    length: number,
-    position: number
-  ): number;
-  write(
-    stream: IEmscriptenStream,
-    buffer: Uint8Array,
-    offset: number,
-    length: number,
-    position: number
-  ): number;
-  llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
 
 export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
@@ -156,14 +99,14 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     this.fs = fs;
   }
 
-  open(stream: IEmscriptenStream): void {
+  open(stream: IDriveStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
       stream.file = this.fs.API.get(path);
     }
   }
 
-  close(stream: IEmscriptenStream): void {
+  close(stream: IDriveStream): void {
     if (!this.fs.FS.isFile(stream.node.mode) || !stream.file) {
       return;
     }
@@ -187,7 +130,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   }
 
   read(
-    stream: IEmscriptenStream,
+    stream: IDriveStream,
     buffer: Uint8Array,
     offset: number,
     length: number,
@@ -207,7 +150,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   }
 
   write(
-    stream: IEmscriptenStream,
+    stream: IDriveStream,
     buffer: Uint8Array,
     offset: number,
     length: number,
@@ -230,7 +173,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     return length;
   }
 
-  llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
+  llseek(stream: IDriveStream, offset: number, whence: number): number {
     let position = offset;
     if (whence === SEEK_CUR) {
       position += stream.position;
@@ -345,8 +288,8 @@ export class ContentsAPI {
     baseUrl: string,
     driveName: string,
     mountpoint: string,
-    FS: Pyodide.PyodideInterface['FS'],
-    ERRNO_CODES: Pyodide.PyodideInterface['ERRNO_CODES']
+    FS: FS,
+    ERRNO_CODES: ERRNO_CODES
   ) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;
@@ -514,15 +457,15 @@ export class ContentsAPI {
   private _baseUrl: string;
   private _driveName: string;
   private _mountpoint: string;
-  private FS: any;
-  private ERRNO_CODES: any;
+  private FS: FS;
+  private ERRNO_CODES: ERRNO_CODES;
 }
 
 export class DriveFS {
-  FS: any;
+  FS: FS;
   API: ContentsAPI;
-  PATH: DriveFS.IPath;
-  ERRNO_CODES: any;
+  PATH: PATH;
+  ERRNO_CODES: ERRNO_CODES;
   driveName: string;
 
   constructor(options: DriveFS.IOptions) {
@@ -605,24 +548,12 @@ export namespace DriveFS {
   }
 
   /**
-   * The emscripten FS Path API;
-   */
-  export interface IPath {
-    basename: (path: string) => string;
-    dirname: (path: string) => string;
-    join: (...parts: string[]) => string;
-    join2: (l: string, r: string) => string;
-    normalize: (path: string) => string;
-    splitPath: (filename: string) => string;
-  }
-
-  /**
    * Initialization options for a drive;
    */
   export interface IOptions {
-    FS: any;
-    PATH: IPath;
-    ERRNO_CODES: any;
+    FS: FS;
+    PATH: PATH;
+    ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
     driveName: string;
     mountpoint: string;

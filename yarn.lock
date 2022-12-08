@@ -2764,6 +2764,7 @@
     "@jupyterlab/services" "~6.5.0"
     "@jupyterlite/localforage" "^0.1.0-beta.15"
     "@lumino/coreutils" "^1.12.0"
+    "@types/emscripten" "^1.39.6"
     localforage "^1.9.0"
     mime "^3.0.0"
 
@@ -4245,6 +4246,11 @@
   version "2.0.2"
   resolved "https://registry.npmjs.org/@types/dom4/-/dom4-2.0.2.tgz#6495303f049689ce936ed328a3e5ede9c51408ee"
   integrity sha512-Rt4IC1T7xkCWa0OG1oSsPa0iqnxlDeQqKXZAHrQGLb7wFGncWm85MaxKUjAGejOrUynOgWlFi4c6S6IyJwoK4g==
+
+"@types/emscripten@^1.39.6":
+  version "1.39.6"
+  resolved "https://registry.npmjs.org/@types/emscripten/-/emscripten-1.39.6.tgz#698b90fe60d44acf93c31064218fbea93fbfd85a"
+  integrity sha512-H90aoynNhhkQP6DRweEjJp5vfUVdIj7tdPLsu7pq89vODD/lcugKfZOsfgwpvM6XUewEp2N5dCg1Uf3Qe55Dcg==
 
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
