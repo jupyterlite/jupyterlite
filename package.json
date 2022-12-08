@@ -60,7 +60,7 @@
     "got": ">=11.8.5"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~3.5.0",
+    "@jupyterlab/buildutils": "~3.5.1",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^8.27.0",
