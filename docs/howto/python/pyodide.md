@@ -11,10 +11,13 @@ as might be downloaded via the
 This can be either relative to the `lite_dir`, or as a full URL.
 
 ```json
-"jupyter-config-data": {
-  "litePluginSettings": {
-    "@jupyterlite/pyolite-kernel-extension:kernel": {
-      "pyodideUrl": "./path/to/custom/pyodide/pyodide.js"
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "litePluginSettings": {
+      "@jupyterlite/pyolite-kernel-extension:kernel": {
+        "pyodideUrl": "./path/to/custom/pyodide/pyodide.js"
+      }
     }
   }
 }

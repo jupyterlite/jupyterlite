@@ -2,7 +2,7 @@
 
 ```{warning}
 This is a more advanced section on extension configuration.
-We recommend following the [](../simple_extensions.md) guide first.
+We recommend following the [simple extensions](../simple_extensions.md) guide first.
 ```
 
 ## Ignore extensions from the environment
@@ -27,6 +27,27 @@ a per-addon basis, for example:
 
 This is for example useful if you don't want "side-effects" in case you are building a
 site from an environment with already installed extensions.
+
+## Disabling Extensions at Runtime
+
+All third-party extensions, and some provided by JupyterLite and JupyterLab, can be
+disabled for one or all apps deployed in a site with the `disabledExtensions` option.
+
+For example, a site that doesn't use the Pyodide-based kernel can disable the
+[`ServiceWorker`](./service-worker.md) and [Pyolite](../../python/pyodide.md) kernel
+with the following `jupyter-lite.json`:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "disabledExtensions": [
+      "@jupyterlite/pyolite-kernel-extension:kernel",
+      "@jupyterlite/server-extension:service-worker"
+    ]
+  }
+}
+```
 
 ## Extensions for a Specific App
 
@@ -55,7 +76,7 @@ federated extensions, as packaged on:
   - `.tar.bz2`
   - `.conda` (_see warning below_)
 
-### Using libarchive
+### Using `libarchive`
 
 If detected, [`libarchive-c`](https://pypi.org/project/libarchive-c) will be used for
 better performance, especially when working with archives with many/large assets,
