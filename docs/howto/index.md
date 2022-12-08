@@ -79,5 +79,6 @@ extensions/cli-addons
 configure/advanced/optimizations
 configure/advanced/offline
 configure/advanced/extensions
+configure/advanced/service-worker
 configure/advanced/hard
 ```
