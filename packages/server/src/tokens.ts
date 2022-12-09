@@ -7,19 +7,19 @@ import SW_URL from '!!file-loader?name=[name]-[contenthash:7].[ext]&context=.!./
 /**
  * The token for the ServiceWorker.
  */
-export const IServiceManager = new Token<IServiceManager>(
-  '@jupyterlite/server-extension:IServiceManager'
+export const IServiceWorkerManager = new Token<IServiceWorkerManager>(
+  '@jupyterlite/server-extension:IServiceWorkerManager'
 );
 
 /**
  * The interface for the ServiceWorkerRegistration.
  */
-export interface IServiceManager {
+export interface IServiceWorkerManager {
   /**
    * Signal fired when the registration changed.
    */
   readonly registrationChanged: ISignal<
-    IServiceManager,
+    IServiceWorkerManager,
     ServiceWorkerRegistration | null
   >;
 

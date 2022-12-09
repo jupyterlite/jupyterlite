@@ -20,8 +20,8 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
-  IServiceManager,
-  ServiceManager,
+  IServiceWorkerManager,
+  ServiceWorkerManager,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -197,12 +197,12 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceManager> = {
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerManager> = {
   id: '@jupyterlite/server-extension:service-worker',
   autoStart: true,
-  provides: IServiceManager,
+  provides: IServiceWorkerManager,
   activate: (app: JupyterLiteServer) => {
-    return new ServiceManager();
+    return new ServiceWorkerManager();
   },
 };
 
@@ -212,11 +212,11 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceManager> = {
 const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapper> = {
   id: '@jupyterlite/server-extension:emscripten-filesystem',
   autoStart: true,
-  optional: [IServiceManager],
+  optional: [IServiceWorkerManager],
   provides: IBroadcastChannelWrapper,
   activate: (
     app: JupyterLiteServer,
-    serviceWorkerRegistrationWrapper?: IServiceManager
+    serviceWorkerRegistrationWrapper?: IServiceWorkerManager
   ): IBroadcastChannelWrapper => {
     const { contents } = app.serviceManager;
     const broadcaster = new BroadcastChannelWrapper({ contents });
