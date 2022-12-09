@@ -9,7 +9,7 @@ on:
       - '*'
 
 env:
-  CACHE_EPOCH: 3
+  CACHE_EPOCH: 4
   CI: 0
   WIN_DEV_IN_CI: 1
 
