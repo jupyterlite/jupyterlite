@@ -5,7 +5,10 @@ By default, JupyterLite tries to launch a [ServiceWorker][sw].
 If available, this enables a number of useful features:
 
 - [synced content](../../content/python.md) between browser storage and kernels
-- a robust, offline-capable cache, such as for [packages](../../python/wheels.md)
+- a robust, offline-capable caching proxy for all fetched content, including:
+  - the JupyterLite application itself
+  - content [files](../../content/files.md) from the server
+  - any requests made by kernel, such as installed [packages](../../python/wheels.md)
 
 ## Limitations
 

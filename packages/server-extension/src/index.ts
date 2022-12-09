@@ -20,8 +20,8 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
-  IServiceWorkerRegistrationWrapper,
-  ServiceWorkerRegistrationWrapper,
+  IServiceManager,
+  ServiceManager,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -197,15 +197,14 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> =
-  {
-    id: '@jupyterlite/server-extension:service-worker',
-    autoStart: true,
-    provides: IServiceWorkerRegistrationWrapper,
-    activate: (app: JupyterLiteServer) => {
-      return new ServiceWorkerRegistrationWrapper();
-    },
-  };
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceManager> = {
+  id: '@jupyterlite/server-extension:service-worker',
+  autoStart: true,
+  provides: IServiceManager,
+  activate: (app: JupyterLiteServer) => {
+    return new ServiceManager();
+  },
+};
 
 /**
  * A plugin for handling communication with the Emscpriten file system.
@@ -213,11 +212,11 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWra
 const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapper> = {
   id: '@jupyterlite/server-extension:emscripten-filesystem',
   autoStart: true,
-  optional: [IServiceWorkerRegistrationWrapper],
+  optional: [IServiceManager],
   provides: IBroadcastChannelWrapper,
   activate: (
     app: JupyterLiteServer,
-    serviceWorkerRegistrationWrapper?: IServiceWorkerRegistrationWrapper
+    serviceWorkerRegistrationWrapper?: IServiceManager
   ): IBroadcastChannelWrapper => {
     const { contents } = app.serviceManager;
     const broadcaster = new BroadcastChannelWrapper({ contents });

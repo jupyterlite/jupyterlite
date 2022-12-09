@@ -4,7 +4,7 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
-  IServiceWorkerRegistrationWrapper,
+  IServiceManager,
   JupyterLiteServer,
   JupyterLiteServerPlugin,
 } from '@jupyterlite/server';
@@ -29,11 +29,11 @@ const kernel: JupyterLiteServerPlugin<void> = {
   id: PLUGIN_ID,
   autoStart: true,
   requires: [IKernelSpecs],
-  optional: [IServiceWorkerRegistrationWrapper, IBroadcastChannelWrapper],
+  optional: [IServiceManager, IBroadcastChannelWrapper],
   activate: (
     app: JupyterLiteServer,
     kernelspecs: IKernelSpecs,
-    serviceWorker?: IServiceWorkerRegistrationWrapper,
+    serviceWorker?: IServiceManager,
     broadcastChannel?: IBroadcastChannelWrapper
   ) => {
     const baseUrl = PageConfig.getBaseUrl();

@@ -2,25 +2,24 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
-import SW_URL from '!!file-loader?name=[name]-[contenthash:7].[ext]&context=.!./sw';
+import SW_URL from '!!file-loader?name=[name]-[contenthash:7].[ext]&context=.!./service-worker';
 
 /**
  * The token for the ServiceWorker.
  */
-export const IServiceWorkerRegistrationWrapper =
-  new Token<IServiceWorkerRegistrationWrapper>(
-    '@jupyterlite/server-extension:IServiceWorkerRegistrationWrapper'
-  );
+export const IServiceManager = new Token<IServiceManager>(
+  '@jupyterlite/server-extension:IServiceManager'
+);
 
 /**
  * The interface for the ServiceWorkerRegistration.
  */
-export interface IServiceWorkerRegistrationWrapper {
+export interface IServiceManager {
   /**
    * Signal fired when the registration changed.
    */
   readonly registrationChanged: ISignal<
-    IServiceWorkerRegistrationWrapper,
+    IServiceManager,
     ServiceWorkerRegistration | null
   >;
 
