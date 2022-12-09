@@ -244,7 +244,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapp
           broadcaster.enable();
           logStatus();
         })
-        .catch((err) => {
+        .catch((err: any) => {
           logStatus('JupyterLite ServiceWorker failed to become available', err);
         });
     }
