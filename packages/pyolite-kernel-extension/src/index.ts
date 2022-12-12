@@ -4,12 +4,13 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
-  IServiceWorkerRegistrationWrapper,
+  IServiceWorkerManager,
   JupyterLiteServer,
   JupyterLiteServerPlugin,
 } from '@jupyterlite/server';
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
+import { IBroadcastChannelWrapper } from '@jupyterlite/contents';
 
 /**
  * The default CDN fallback for Pyodide
@@ -27,11 +28,13 @@ const PLUGIN_ID = '@jupyterlite/pyolite-kernel-extension:kernel';
 const kernel: JupyterLiteServerPlugin<void> = {
   id: PLUGIN_ID,
   autoStart: true,
-  requires: [IKernelSpecs, IServiceWorkerRegistrationWrapper],
+  requires: [IKernelSpecs],
+  optional: [IServiceWorkerManager, IBroadcastChannelWrapper],
   activate: (
     app: JupyterLiteServer,
     kernelspecs: IKernelSpecs,
-    serviceWorkerRegistrationWrapper: IServiceWorkerRegistrationWrapper
+    serviceWorker?: IServiceWorkerManager,
+    broadcastChannel?: IBroadcastChannelWrapper
   ) => {
     const baseUrl = PageConfig.getBaseUrl();
     const config =
@@ -56,12 +59,20 @@ const kernel: JupyterLiteServerPlugin<void> = {
       create: async (options: IKernel.IOptions): Promise<IKernel> => {
         const { PyoliteKernel } = await import('@jupyterlite/pyolite-kernel');
 
+        const mountDrive = !!(serviceWorker?.enabled && broadcastChannel?.enabled);
+
+        if (mountDrive) {
+          console.info('Pyolite contents will be synced with Jupyter Contents');
+        } else {
+          console.warn('Pyolite contents will NOT be synced with Jupyter Contents');
+        }
+
         return new PyoliteKernel({
           ...options,
           pyodideUrl,
           pipliteUrls,
           disablePyPIFallback,
-          mountDrive: serviceWorkerRegistrationWrapper.enabled,
+          mountDrive,
         });
       },
     });

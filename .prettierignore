@@ -8,7 +8,6 @@
 build
 docs/_build
 node_modules
-docs/reference/api/ts
 .pytest_cache
 app/extensions/
 .cache/
@@ -21,6 +20,7 @@ index.template.js
 _pypi.ts
 **/pypi/all.json
 app/**/*.html
+app/service-worker-*.js
 
 # The changelog is updated by the releaser
 CHANGELOG.md

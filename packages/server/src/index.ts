@@ -4,4 +4,4 @@
 export * from './app';
 export * from './router';
 export * from './tokens';
-export * from './serviceworker';
+export * from './service-manager';

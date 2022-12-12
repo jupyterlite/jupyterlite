@@ -227,6 +227,19 @@ class CompileSchemasPlugin {
 }
 
 /**
+ * Define a custom plugin to ensure serviceworker is deployed
+ */
+class ServiceWorkerPlugin {
+  apply(compiler) {
+    compiler.hooks.done.tapAsync('ServiceWorkerPlugin', (compilation, callback) => {
+      const worker = glob.sync(`${topLevelBuild}/service-worker-*.js`)[0];
+      fs.copyFileSync(worker, path.resolve(path.basename(worker)));
+      callback();
+    });
+  }
+}
+
+/**
  * A helper for filtering deprecated webpack loaders, to be replaced with assets
  */
 function filterDeprecatedRule(rule) {
@@ -319,6 +332,7 @@ module.exports = [
       }),
       new CompileSchemasPlugin(),
       ...allHtmlPlugins,
+      new ServiceWorkerPlugin(),
     ],
   }),
 ].concat(...allAssetConfig);

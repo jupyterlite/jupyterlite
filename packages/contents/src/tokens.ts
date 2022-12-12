@@ -1,3 +1,4 @@
+import { IDisposable } from '@lumino/disposable';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { PageConfig } from '@jupyterlab/coreutils';
 import mime from 'mime';
@@ -185,4 +186,17 @@ export namespace FILE {
     }
     return false;
   }
+}
+
+/**
+ * The token for the BroadcastChannel broadcaster.
+ */
+export const IBroadcastChannelWrapper = new Token<IBroadcastChannelWrapper>(
+  '@jupyterlite/contents:IBroadcastChannelWrapper'
+);
+
+export interface IBroadcastChannelWrapper extends IDisposable {
+  enable(): void;
+  disable(): void;
+  enabled: boolean;
 }

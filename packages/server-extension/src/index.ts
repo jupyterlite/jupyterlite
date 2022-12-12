@@ -1,17 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PageConfig, PathExt } from '@jupyterlab/coreutils';
+import { PageConfig } from '@jupyterlab/coreutils';
 
 import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
 
 import {
+  BroadcastChannelWrapper,
   Contents,
-  DIR_MODE,
-  FILE_MODE,
   IContents,
-  IDriveRequest,
-  IModel,
+  IBroadcastChannelWrapper,
 } from '@jupyterlite/contents';
 
 import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
@@ -22,8 +20,8 @@ import {
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
-  IServiceWorkerRegistrationWrapper,
-  ServiceWorkerRegistrationWrapper,
+  IServiceWorkerManager,
+  ServiceWorkerManager,
 } from '@jupyterlite/server';
 
 import { ISessions, Sessions } from '@jupyterlite/session';
@@ -35,8 +33,6 @@ import { ITranslation, Translation } from '@jupyterlite/translation';
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
 
 import localforage from 'localforage';
-
-const BLOCK_SIZE = 4096;
 
 /**
  * The localforage plugin
@@ -201,149 +197,59 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerRegistrationWrapper> =
-  {
-    id: '@jupyterlite/server-extension:service-worker',
-    autoStart: true,
-    provides: IServiceWorkerRegistrationWrapper,
-    activate: (app: JupyterLiteServer) => {
-      return new ServiceWorkerRegistrationWrapper();
-    },
-  };
+const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerManager> = {
+  id: '@jupyterlite/server-extension:service-worker',
+  autoStart: true,
+  provides: IServiceWorkerManager,
+  activate: (app: JupyterLiteServer) => {
+    return new ServiceWorkerManager();
+  },
+};
 
 /**
- * A plugin handling communication with the Emscpriten file system.
+ * A plugin for handling communication with the Emscpriten file system.
  */
-const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<void> = {
+const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapper> = {
   id: '@jupyterlite/server-extension:emscripten-filesystem',
   autoStart: true,
-  activate: (app: JupyterLiteServer) => {
-    // Setup communication with service worker for the virtual fs
-    const broadcast = new BroadcastChannel('/api/drive.v1');
-    let subitems: [];
+  optional: [IServiceWorkerManager],
+  provides: IBroadcastChannelWrapper,
+  activate: (
+    app: JupyterLiteServer,
+    serviceWorkerRegistrationWrapper?: IServiceWorkerManager
+  ): IBroadcastChannelWrapper => {
+    const { contents } = app.serviceManager;
+    const broadcaster = new BroadcastChannelWrapper({ contents });
+    const what = 'Kernel filesystem and JupyterLite contents';
 
-    broadcast.onmessage = async (event) => {
-      const request = event.data as IDriveRequest;
-      const contentManager = app.serviceManager.contents;
-
-      const path = request.path;
-
-      let model: ServerContents.IModel;
-
-      switch (request.method) {
-        case 'readdir': {
-          model = await contentManager.get(path, { content: true });
-
-          if (model.type === 'directory' && model.content) {
-            subitems = model.content.map((subcontent: IModel) => subcontent.name);
-            broadcast.postMessage(subitems);
-          } else {
-            broadcast.postMessage([]);
-          }
-          break;
-        }
-        case 'rmdir': {
-          await contentManager.delete(path);
-          broadcast.postMessage(null);
-          break;
-        }
-        case 'rename': {
-          await contentManager.rename(path, request.data.newPath);
-          broadcast.postMessage(null);
-          break;
-        }
-        case 'getmode': {
-          model = await contentManager.get(path);
-
-          if (model.type === 'directory') {
-            broadcast.postMessage(DIR_MODE);
-          } else {
-            broadcast.postMessage(FILE_MODE);
-          }
-          break;
-        }
-        case 'lookup': {
-          try {
-            model = await contentManager.get(path);
-
-            broadcast.postMessage({
-              ok: true,
-              mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
-            });
-          } catch (e) {
-            broadcast.postMessage({
-              ok: false,
-            });
-          }
-
-          break;
-        }
-        case 'mknod': {
-          const mode = Number.parseInt(request.data.mode);
-
-          model = await contentManager.newUntitled({
-            path: PathExt.dirname(path),
-            type: mode === DIR_MODE ? 'directory' : 'file',
-            ext: PathExt.extname(path),
-          });
-          await contentManager.rename(model.path, path);
-
-          broadcast.postMessage(null);
-          break;
-        }
-        case 'getattr': {
-          model = await contentManager.get(path);
-
-          const size = model.size || 0;
-          broadcast.postMessage({
-            dev: 1,
-            nlink: 1,
-            uid: 0,
-            gid: 0,
-            rdev: 0,
-            size,
-            blksize: BLOCK_SIZE,
-            blocks: Math.ceil(size / BLOCK_SIZE),
-            atime: model.last_modified, // TODO Get the proper atime?
-            mtime: model.last_modified,
-            ctime: model.created,
-            timestamp: 0,
-          });
-          break;
-        }
-        case 'get': {
-          model = await contentManager.get(path, { content: true });
-
-          if (model.type === 'directory') {
-            broadcast.postMessage(null);
-            return;
-          }
-          let content = model.content;
-          if (model.format === 'json') {
-            content = JSON.stringify(model.content);
-          }
-
-          broadcast.postMessage({
-            content,
-            format: model.format,
-          });
-          break;
-        }
-        case 'put': {
-          await contentManager.save(path, {
-            content:
-              request.data.format === 'json'
-                ? JSON.parse(request.data.data)
-                : request.data.data,
-            type: 'file',
-            format: request.data.format as ServerContents.FileFormat,
-          });
-
-          broadcast.postMessage(null);
-          break;
-        }
+    function logStatus(msg?: string, err?: any) {
+      if (err) {
+        console.warn(err);
       }
-    };
+      if (msg) {
+        console.warn(msg);
+      }
+      if (err || msg) {
+        console.warn(`${what} will NOT be synced`);
+      } else {
+        console.info(`${what} will be synced`);
+      }
+    }
+
+    if (!serviceWorkerRegistrationWrapper) {
+      logStatus('JupyterLite ServiceWorker not available');
+    } else {
+      serviceWorkerRegistrationWrapper.ready
+        .then(() => {
+          broadcaster.enable();
+          logStatus();
+        })
+        .catch((err: any) => {
+          logStatus('JupyterLite ServiceWorker failed to become available', err);
+        });
+    }
+
+    return broadcaster;
   },
 };
 

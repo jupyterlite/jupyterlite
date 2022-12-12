@@ -1,8 +1,9 @@
-# Accessing files and notebooks from the kernel
+# Accessing files and notebooks from a kernel
 
-You can now access content from the Pyolite kernel.
+Starting with JupyterLite `0.1.0b9`, the contents of the user's _File Browser_ and some
+kernels, including Pyolite, are automatically synchronized.
 
-You can for example drag and drop a file `file.csv` into the JupyterLite UI, then load
+You can, for example, drag and drop a file `file.csv` into the JupyterLite UI, then load
 it in Python:
 
 ```py
@@ -13,23 +14,28 @@ data = pd.read_csv('file.csv')
 data
 ```
 
-The Pyolite kernel makes content available by mounting a custom Emscripten File-System
-which communicates with the JupyterLite content manager through a service worker.
+Synchronized content works by mounting a custom [Emscripten Filesystem][fs] (FS) which
+communicates with the JupyterLite content manager through the JupyterLite
+[`ServiceWorker`](../configure/advanced/service-worker.md)-enabled.
 
 ```{note}
-This only works if your browser supports service workers, see https://caniuse.com/serviceworkers
-
-There is a known issue that prevents service workers to work in Firefox private mode: https://bugzilla.mozilla.org/show_bug.cgi?id=1320796
+The `ServiceWorker` will not always be enabled, based on
+[limitations](../configure/advanced/service-worker.md#limitations) of both the
+user's browser and the HTTP server.
 ```
 
-An easy way to check if the Emscripten File-System mounting was a success, is to check
-that the `cwd` starts with `"drive"`:
+## Verifying the Filesystem
+
+To check if the filesystem syncing is enabled, see whether `cwd` starts with `/drive/`:
 
 ```py
 import os
 
-os.getcwd()  # Should return "/drive/path/to/notebook"
+os.getcwd()  # If successful:  "/drive/path/to/notebook"
+             # ... otherwise:  "/home/pyodide"
 ```
 
 [emscripten-notebook]:
   https://github.com/jupyterlite/jupyterlite/blob/main/examples/pyolite/emscripten-filesystem.ipynb
+[fs]: https://emscripten.org/docs/api_reference/Filesystem-API.html
+[caniuse-sw]: https://caniuse.com/serviceworkers

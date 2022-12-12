@@ -1,16 +1,43 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 // Types and implementation inspired from https://github.com/jvilk/BrowserFS
 // LICENSE: https://github.com/jvilk/BrowserFS/blob/8977a704ea469d05daf857e4818bef1f4f498326/LICENSE
 // And from https://github.com/gzuidhof/starboard-notebook
 
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
-export const DIR_MODE = 16895; // 040777
-export const FILE_MODE = 33206; // 100666
-export const SEEK_CUR = 1;
-export const SEEK_END = 2;
+import {
+  FS,
+  ERRNO_CODES,
+  PATH,
+  DIR_MODE,
+  SEEK_CUR,
+  SEEK_END,
+  IEmscriptenStream,
+  IEmscriptenStreamOps,
+  IEmscriptenNodeOps,
+  IEmscriptenFSNode,
+  IStats,
+} from './emscripten';
+
 export const DRIVE_SEPARATOR = ':';
+export const DRIVE_API_PATH = '/api/drive.v1';
+
+export const BLOCK_SIZE = 4096;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
+
+export type TDriveMethod =
+  | 'readdir'
+  | 'rmdir'
+  | 'rename'
+  | 'getmode'
+  | 'lookup'
+  | 'mknod'
+  | 'getattr'
+  | 'get'
+  | 'put';
 
 /**
  * Interface of a request on the /api/drive endpoint
@@ -19,7 +46,7 @@ export interface IDriveRequest {
   /**
    * The method of the request (rmdir, readdir etc)
    */
-  method: string;
+  method: TDriveMethod;
 
   /**
    * The path to the file/directory for which the request was sent
@@ -60,78 +87,9 @@ const flagNeedsWrite: { [flag: number]: boolean } = {
   4098 /*O_RDWR|O_DSYNC*/: true,
 };
 
-export interface IStats {
-  dev: number;
-  ino: number;
-  mode: number;
-  nlink: number;
-  uid: number;
-  gid: number;
-  rdev: number;
-  size: number;
-  blksize: number;
-  blocks: number;
-  atime: Date;
-  mtime: Date;
-  ctime: Date;
-  timestamp?: number;
-}
-
-export interface IEmscriptenFSNode {
-  id: number;
-  name: string;
-  mode: number;
-  parent: IEmscriptenFSNode;
-  mount: { opts: { root: string } };
-  stream_ops: IEmscriptenStreamOps;
-  node_ops: IEmscriptenNodeOps;
-  timestamp: number;
-}
-
-export interface IEmscriptenStream {
-  node: IEmscriptenFSNode;
-  nfd: any;
-  flags: string;
-  position: number;
+/** Implementation-specifc extension of an open stream, adding the file. */
+export interface IDriveStream extends IEmscriptenStream {
   file?: DriveFS.IFile;
-}
-
-export interface IEmscriptenNodeOps {
-  getattr(node: IEmscriptenFSNode): IStats;
-  setattr(node: IEmscriptenFSNode, attr: IStats): void;
-  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode;
-  mknod(
-    parent: IEmscriptenFSNode,
-    name: string,
-    mode: number,
-    dev: any
-  ): IEmscriptenFSNode;
-  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
-  unlink(parent: IEmscriptenFSNode, name: string): void;
-  rmdir(parent: IEmscriptenFSNode, name: string): void;
-  readdir(node: IEmscriptenFSNode): string[];
-  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void;
-  readlink(node: IEmscriptenFSNode): string;
-}
-
-export interface IEmscriptenStreamOps {
-  open(stream: IEmscriptenStream): void;
-  close(stream: IEmscriptenStream): void;
-  read(
-    stream: IEmscriptenStream,
-    buffer: Uint8Array,
-    offset: number,
-    length: number,
-    position: number
-  ): number;
-  write(
-    stream: IEmscriptenStream,
-    buffer: Uint8Array,
-    offset: number,
-    length: number,
-    position: number
-  ): number;
-  llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
 
 export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
@@ -141,14 +99,14 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     this.fs = fs;
   }
 
-  open(stream: IEmscriptenStream): void {
+  open(stream: IDriveStream): void {
     const path = this.fs.realPath(stream.node);
     if (this.fs.FS.isFile(stream.node.mode)) {
       stream.file = this.fs.API.get(path);
     }
   }
 
-  close(stream: IEmscriptenStream): void {
+  close(stream: IDriveStream): void {
     if (!this.fs.FS.isFile(stream.node.mode) || !stream.file) {
       return;
     }
@@ -166,32 +124,33 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     if (needsWrite) {
       this.fs.API.put(path, stream.file);
-      stream.file = undefined;
     }
+
+    stream.file = undefined;
   }
 
   read(
-    stream: IEmscriptenStream,
+    stream: IDriveStream,
     buffer: Uint8Array,
     offset: number,
     length: number,
     position: number
   ): number {
-    if (length <= 0 || stream.file === undefined) {
+    if (
+      length <= 0 ||
+      stream.file === undefined ||
+      position >= (stream.file.data.length || 0)
+    ) {
       return 0;
     }
 
-    const size = Math.min((stream.file.data.length ?? 0) - position, length);
-    try {
-      buffer.set(stream.file.data.subarray(position, position + size), offset);
-    } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
-    }
+    const size = Math.min(stream.file.data.length - position, length);
+    buffer.set(stream.file.data.subarray(position, position + size), offset);
     return size;
   }
 
   write(
-    stream: IEmscriptenStream,
+    stream: IDriveStream,
     buffer: Uint8Array,
     offset: number,
     length: number,
@@ -203,22 +162,18 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     stream.node.timestamp = Date.now();
 
-    try {
-      if (position + length > (stream.file?.data.length ?? 0)) {
-        const oldData = stream.file.data ? stream.file.data : new Uint8Array();
-        stream.file.data = new Uint8Array(position + length);
-        stream.file.data.set(oldData);
-      }
-
-      stream.file.data.set(buffer.subarray(offset, offset + length), position);
-
-      return length;
-    } catch (e) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
+    if (position + length > (stream.file?.data.length || 0)) {
+      const oldData = stream.file.data ? stream.file.data : new Uint8Array();
+      stream.file.data = new Uint8Array(position + length);
+      stream.file.data.set(oldData);
     }
+
+    stream.file.data.set(buffer.subarray(offset, offset + length), position);
+
+    return length;
   }
 
-  llseek(stream: IEmscriptenStream, offset: number, whence: number): number {
+  llseek(stream: IDriveStream, offset: number, whence: number): number {
     let position = offset;
     if (whence === SEEK_CUR) {
       position += stream.position;
@@ -227,13 +182,13 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
         if (stream.file !== undefined) {
           position += stream.file.data.length;
         } else {
-          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
+          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES.EPERM);
         }
       }
     }
 
     if (position < 0) {
-      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EINVAL']);
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES.EINVAL);
     }
 
     return position;
@@ -256,7 +211,19 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   }
 
   setattr(node: IEmscriptenFSNode, attr: IStats): void {
-    // TODO
+    for (const [key, value] of Object.entries(attr)) {
+      switch (key) {
+        case 'mode':
+          node.mode = value;
+          break;
+        case 'timestamp':
+          node.timestamp = value;
+          break;
+        default:
+          console.warn('setattr', key, 'of', value, 'on', node, 'not yet implemented');
+          break;
+      }
+    }
   }
 
   lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
@@ -265,14 +232,14 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     if (!result.ok) {
       throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
     }
-    return this.fs.createNode(parent, name, result.mode);
+    return this.fs.createNode(parent, name, result.mode, 0);
   }
 
   mknod(
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
-    dev: any
+    dev: number
   ): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
@@ -321,8 +288,8 @@ export class ContentsAPI {
     baseUrl: string,
     driveName: string,
     mountpoint: string,
-    FS: any,
-    ERRNO_CODES: any
+    FS: FS,
+    ERRNO_CODES: ERRNO_CODES
   ) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;
@@ -490,15 +457,15 @@ export class ContentsAPI {
   private _baseUrl: string;
   private _driveName: string;
   private _mountpoint: string;
-  private FS: any;
-  private ERRNO_CODES: any;
+  private FS: FS;
+  private ERRNO_CODES: ERRNO_CODES;
 }
 
 export class DriveFS {
-  FS: any;
+  FS: FS;
   API: ContentsAPI;
-  PATH: DriveFS.IPath;
-  ERRNO_CODES: any;
+  PATH: PATH;
+  ERRNO_CODES: ERRNO_CODES;
   driveName: string;
 
   constructor(options: DriveFS.IOptions) {
@@ -529,7 +496,7 @@ export class DriveFS {
     parent: IEmscriptenFSNode | null,
     name: string,
     mode: number,
-    dev?: any
+    dev: number
   ): IEmscriptenFSNode {
     const FS = this.FS;
     if (!FS.isDir(mode) && !FS.isFile(mode)) {
@@ -581,24 +548,12 @@ export namespace DriveFS {
   }
 
   /**
-   * The emscripten FS Path API;
-   */
-  export interface IPath {
-    basename: (path: string) => string;
-    dirname: (path: string) => string;
-    join: (...parts: string[]) => string;
-    join2: (l: string, r: string) => string;
-    normalize: (path: string) => string;
-    splitPath: (filename: string) => string;
-  }
-
-  /**
    * Initialization options for a drive;
    */
   export interface IOptions {
-    FS: any;
-    PATH: IPath;
-    ERRNO_CODES: any;
+    FS: FS;
+    PATH: PATH;
+    ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
     driveName: string;
     mountpoint: string;
