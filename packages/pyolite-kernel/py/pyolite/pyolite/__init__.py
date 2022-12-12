@@ -3,6 +3,7 @@
 __version__ = "0.1.0b15"
 
 import sys
+import os
 
 # 0. do early mocks that change `sys.modules`
 from . import mocks
@@ -19,6 +20,9 @@ del patches
 # 2. set up the rest of the IPython-like environment
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
+
+if not os.environ.get("MPLBACKEND"):
+    os.environ["MPLBACKEND"] = "module://matplotlib_inline.backend_inline"
 
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
