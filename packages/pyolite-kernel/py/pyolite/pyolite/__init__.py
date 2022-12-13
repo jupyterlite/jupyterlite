@@ -21,9 +21,6 @@ del patches
 from .display import LiteStream
 from .interpreter import LitePythonShellApp
 
-if not os.environ.get("MPLBACKEND"):
-    os.environ["MPLBACKEND"] = "module://matplotlib_inline.backend_inline"
-
 stdout_stream = LiteStream("stdout")
 stderr_stream = LiteStream("stderr")
 

@@ -1,27 +1,8 @@
 def patch_matplotlib():
     import os
-    from io import BytesIO
 
-    # before importing matplotlib
-    # to avoid the wasm backend (which needs `js.document`, not available in worker)
-    os.environ["MPLBACKEND"] = "AGG"
-
-    import matplotlib.pyplot
-    from IPython.display import display
-
-    from .display import Image
-
-    _old_show = matplotlib.pyplot.show
-    assert _old_show, "matplotlib.pyplot.show"
-
-    def show(*, block=None):
-        buf = BytesIO()
-        matplotlib.pyplot.savefig(buf, format="png")
-        buf.seek(0)
-        display(Image(buf.read()))
-        matplotlib.pyplot.clf()
-
-    matplotlib.pyplot.show = show
+    if not os.environ.get("MPLBACKEND"):
+        os.environ["MPLBACKEND"] = "module://matplotlib_inline.backend_inline"
 
 
 def patch_pillow():
