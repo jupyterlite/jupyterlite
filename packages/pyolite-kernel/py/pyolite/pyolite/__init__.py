@@ -3,7 +3,6 @@
 __version__ = "0.1.0b15"
 
 import sys
-import os
 
 # 0. do early mocks that change `sys.modules`
 from . import mocks
