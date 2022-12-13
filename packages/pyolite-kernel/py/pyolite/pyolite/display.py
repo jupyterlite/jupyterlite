@@ -1,16 +1,11 @@
-import base64
 import sys
 
+from ipykernel.jsonutil import encode_images, json_clean
 from IPython.core.displayhook import DisplayHook
 from IPython.core.displaypub import DisplayPublisher
+from IPython.display import Image  # to replace previous base64-encoding shim
 
-
-class Image:
-    def __init__(self, data):
-        self.data = base64.b64encode(data).decode()
-
-    def _repr_png_(self):
-        return self.data
+__all__ = ["LiteStream", "Image", "LiteDisplayHook", "LiteDisplayPublisher"]
 
 
 class LiteStream:
@@ -71,7 +66,7 @@ class LiteDisplayHook(DisplayHook):
         pass
 
     def write_format_data(self, format_dict, md_dict=None):
-        self.data = format_dict
+        self.data = json_clean(encode_images(format_dict))
         self.metadata = md_dict
 
     def finish_displayhook(self):
