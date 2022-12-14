@@ -3,9 +3,9 @@
 
 import type Pyodide from 'pyodide';
 
-import { DriveFS } from '@jupyterlite/contents';
+import type { DriveFS } from '@jupyterlite/contents';
 
-import { IPyoliteWorkerKernel } from './tokens';
+import type { IPyoliteWorkerKernel } from './tokens';
 
 export class PyoliteRemoteKernel {
   constructor() {
@@ -111,6 +111,8 @@ export class PyoliteRemoteKernel {
       const mountpoint = '/drive';
       const { FS, PATH, ERRNO_CODES } = this._pyodide;
       const { baseUrl } = options;
+      const { DriveFS } = await import('@jupyterlite/contents');
+
       const driveFS = new DriveFS({
         FS,
         PATH,
