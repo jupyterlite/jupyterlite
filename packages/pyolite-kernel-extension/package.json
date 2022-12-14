@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "~5.5.1",
+    "@jupyterlite/contents": "^0.1.0-beta.15",
     "@jupyterlite/kernel": "^0.1.0-beta.15",
     "@jupyterlite/pyolite-kernel": "^0.1.0-beta.15",
     "@jupyterlite/server": "^0.1.0-beta.15"
