@@ -24,7 +24,8 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     super(options);
     this._worker = this.initWorker(options);
     this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
-    this._remoteKernel = this.initRemote(options);
+    this._remoteKernel = wrap(this._worker);
+    this.initRemote(options);
   }
 
   /**
@@ -41,13 +42,10 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
     });
   }
 
-  protected initRemote(options: PyoliteKernel.IOptions): IRemotePyoliteWorkerKernel {
-    const remote: IRemotePyoliteWorkerKernel = wrap(this._worker);
+  protected async initRemote(options: PyoliteKernel.IOptions): Promise<void> {
     const remoteOptions = this.initRemoteOptions(options);
-    remote.initialize(remoteOptions).then(() => {
-      this._ready.resolve();
-    });
-    return remote;
+    await this._remoteKernel.initialize(remoteOptions);
+    this._ready.resolve();
   }
 
   protected initRemoteOptions(
@@ -199,6 +197,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
+    await this.ready;
     const result = await this._remoteKernel.execute(content, this.parent);
     result.execution_count = this.executionCount;
     return result;
