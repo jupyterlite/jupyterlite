@@ -20,6 +20,6 @@
     "yarn-deduplicate": "^3.1.0"
   },
   "resolutions": {
-    "@playwright/test": "~1.26.0"
+    "@playwright/test": "~1.29.0"
   }
 }
