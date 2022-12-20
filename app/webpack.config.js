@@ -306,6 +306,10 @@ module.exports = [
           test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
           type: 'asset/resource',
         },
+        {
+          test: /\.js$/,
+          use: ['source-map-loader'],
+        },
       ],
     },
     optimization: {

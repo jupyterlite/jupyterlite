@@ -31,6 +31,7 @@
     "mini-css-extract-plugin": "^2.5.3",
     "raw-loader": "^4.0.2",
     "rimraf": "^3.0.2",
+    "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.1",
     "svg-url-loader": "^7.1.1",
     "url-loader": "^4.1.1",
