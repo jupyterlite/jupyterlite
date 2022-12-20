@@ -1,17 +1,18 @@
-import { IJupyterLabPageFixture, test as base } from '@jupyterlab/galata';
+import { IJupyterLabPageFixture } from '@jupyterlab/galata';
+
+import { PlaywrightTestOptions } from '@playwright/test';
 
 // TODO: move back to playwright.config.ts after updating to JupyterLab 4 packages
 // See https://github.com/jupyterlab/jupyterlab/pull/13140 for more information
-base.use({
+
+export const config = {
   appPath: '',
   baseURL: 'http://localhost:8000',
   autoGoto: false,
   video: 'retain-on-failure',
   acceptDownloads: true,
   viewport: { width: 1280, height: 720 },
-});
-
-export const test = base;
+} as Partial<PlaywrightTestOptions>;
 
 // TODO: upstream in Galata?
 

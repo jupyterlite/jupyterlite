@@ -1,9 +1,13 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
+import { test } from '@jupyterlab/galata';
+
 import { expect } from '@playwright/test';
 
-import { test } from './utils';
+import { config } from './utils';
+
+test.use(config);
 
 test.describe('Kernels', () => {
   test('Default kernel name', async ({ page }) => {
