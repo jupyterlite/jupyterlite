@@ -1,9 +1,9 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { test as base } from '@jupyterlab/galata';
-
 import { expect } from '@playwright/test';
+
+import { test as base } from './utils';
 
 // TODO: fix upstream condition so it's not specific to JupyterLab?
 const test = base.extend({

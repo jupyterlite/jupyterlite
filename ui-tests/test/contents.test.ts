@@ -5,11 +5,9 @@ import * as path from 'path';
 
 import * as fs from 'fs/promises';
 
-import { test } from '@jupyterlab/galata';
-
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, deleteItem, download } from './utils';
+import { createNewDirectory, deleteItem, download, test } from './utils';
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
