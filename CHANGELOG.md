@@ -2,6 +2,42 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b16
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b15...161cfaadaa2ccdf6e928d080b2cf9c5255baa987))
+
+### Enhancements made
+
+- add @jupyterlite/contents to list of singleton packages [#917](https://github.com/jupyterlite/jupyterlite/pull/917) ([@sglyon](https://github.com/sglyon))
+- Remove `Image` hacks, vendor and use upstream `ipykernel.jsonutil` [#913](https://github.com/jupyterlite/jupyterlite/pull/913) ([@bollwyvl](https://github.com/bollwyvl))
+- Pyolite - Matplotlib: Setup inline backend by default [#911](https://github.com/jupyterlite/jupyterlite/pull/911) ([@martinRenou](https://github.com/martinRenou))
+- Service worker fixes,  JupyterLab 3.5.1  [#899](https://github.com/jupyterlite/jupyterlite/pull/899) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Update to Playwright 1.29 [#923](https://github.com/jupyterlite/jupyterlite/pull/923) ([@jtpio](https://github.com/jtpio))
+- Resolve example package lists, update matplotlib example [#916](https://github.com/jupyterlite/jupyterlite/pull/916) ([@bollwyvl](https://github.com/bollwyvl))
+- Service worker fixes,  JupyterLab 3.5.1  [#899](https://github.com/jupyterlite/jupyterlite/pull/899) ([@bollwyvl](https://github.com/bollwyvl))
+- Bump decode-uri-component from 0.2.0 to 0.2.2 [#894](https://github.com/jupyterlite/jupyterlite/pull/894) ([@dependabot](https://github.com/dependabot))
+- Fix handling of `@jupyterlite/app` by the releaser [#885](https://github.com/jupyterlite/jupyterlite/pull/885) ([@jtpio](https://github.com/jtpio))
+- \[wip\] Update to pyodide 0.22.0, use pyodide and serviceworker types [#871](https://github.com/jupyterlite/jupyterlite/pull/871) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Resolve example package lists, update matplotlib example [#916](https://github.com/jupyterlite/jupyterlite/pull/916) ([@bollwyvl](https://github.com/bollwyvl))
+
+### API and Breaking Changes
+
+- add @jupyterlite/contents to list of singleton packages [#917](https://github.com/jupyterlite/jupyterlite/pull/917) ([@sglyon](https://github.com/sglyon))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-11-30&to=2022-12-20&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-11-30..2022-12-20&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-11-30..2022-12-20&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-11-30..2022-12-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-11-30..2022-12-20&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-11-30..2022-12-20&type=Issues) | [@sglyon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Asglyon+updated%3A2022-11-30..2022-12-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b15
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b14...41b80272e4d1991b3776eebd103e2e3aab4375d1))
@@ -24,8 +60,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-10-25&to=2022-11-30&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-10-25..2022-11-30&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-10-25..2022-11-30&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-10-25..2022-11-30&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-10-25..2022-11-30&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b14
 
