@@ -5,6 +5,8 @@ import { test as base } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import { config } from './utils';
+
 // TODO: fix upstream condition so it's not specific to JupyterLab?
 const test = base.extend({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
@@ -14,6 +16,8 @@ const test = base.extend({
     await use(waitIsReady);
   },
 });
+
+test.use(config);
 
 test.describe('REPL Tests', () => {
   test.beforeEach(async ({ page }) => {
