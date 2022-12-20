@@ -8,6 +8,7 @@ base.use({
   autoGoto: false,
   video: 'retain-on-failure',
   acceptDownloads: true,
+  viewport: { width: 1280, height: 720 },
 });
 
 export const test = base;
