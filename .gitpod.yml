@@ -21,6 +21,7 @@ tasks:
       export JUPYTER_PREFER_ENV_PATH=1
       micromamba activate
       EOT
+      source /workspace/bin/activate-env.sh
       micromamba config append channels conda-forge
       micromamba install -n base -y -f .binder/environment.yml
       source /workspace/bin/activate-env.sh
