@@ -19,9 +19,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    *
    * @param options The instantiation options for a new JavaScriptKernel
    */
-  constructor(options: IKernel.IOptions) {
+  constructor(options: JavaScriptKernel.IOptions) {
     super(options);
-    this._worker = this.initWorker();
+    this._worker = this.initWorker(options);
     this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
     this.remoteKernel = this.initRemote(options);
     this._ready.resolve();
@@ -184,7 +184,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    * Subclasses must implement this typographically almost _exactly_ for
    * webpack to find it.
    */
-  protected initWorker(): Worker {
+  protected initWorker(options: JavaScriptKernel.IOptions): Worker {
     return new Worker(new URL('./comlink.worker.js', import.meta.url), {
       type: 'module',
     });
