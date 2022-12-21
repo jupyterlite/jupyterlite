@@ -63,6 +63,7 @@ export class Kernels implements IKernels {
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
         await mutex.runExclusive(async () => {
+          await kernel.ready;
           await kernel.handleMessage(msg);
         });
       };
@@ -143,8 +144,6 @@ export class Kernels implements IKernels {
       name,
       location,
     });
-
-    await kernel.ready;
 
     this._kernels.set(kernelId, kernel);
     this._kernelClients.set(kernelId, new Set<string>());
