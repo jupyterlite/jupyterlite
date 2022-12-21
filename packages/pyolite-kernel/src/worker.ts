@@ -329,7 +329,7 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
    *
    * @param content The incoming message with the comm target name.
    */
-  async commInfo(content: { target_name: string }, parent: any) {
+  async commInfo(content: any, parent: any) {
     await this.setup(parent);
 
     const res = this._kernel.comm_info(content.target_name);
