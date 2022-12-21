@@ -22,7 +22,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    */
   constructor(options: PyoliteKernel.IOptions) {
     super(options);
-    this._worker = this.initWorker();
+    this._worker = this.initWorker(options);
     this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
     this._remoteKernel = wrap(this._worker);
     this.initRemote(options);
@@ -36,7 +36,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
    * Subclasses must implement this typographically almost _exactly_ for
    * webpack to find it.
    */
-  protected initWorker(): Worker {
+  protected initWorker(options: PyoliteKernel.IOptions): Worker {
     return new Worker(new URL('./comlink.worker.js', import.meta.url), {
       type: 'module',
     });
