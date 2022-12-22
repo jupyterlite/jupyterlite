@@ -13,7 +13,7 @@ test.describe('Embed the REPL app', () => {
     await page.goto('embed/index.html');
     await page
       .frameLocator('#repl')
-      .locator('.jp-InputArea')
+      .getByText('A JavaScript kernel running in the browser')
       .first()
       .waitFor({ state: 'visible' });
   });
