@@ -39,3 +39,41 @@ os.getcwd()  # If successful:  "/drive/path/to/notebook"
   https://github.com/jupyterlite/jupyterlite/blob/main/examples/pyolite/emscripten-filesystem.ipynb
 [fs]: https://emscripten.org/docs/api_reference/Filesystem-API.html
 [caniuse-sw]: https://caniuse.com/serviceworkers
+
+## Fetching remote content
+
+It is also possible to fetch content from remote URL. For example if you are using the
+Pyodide kernel, you can use the `fetch` function to do so:
+
+```py
+import pandas as pd
+from js import fetch
+
+URL = "https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/data/iris.csv"
+
+res = await fetch(URL)
+text = await res.text()
+
+filename = 'data.csv'
+
+with open(filename, 'w') as f:
+    f.write(text)
+
+data = pd.read_csv(filename, sep=',')
+data
+```
+
+As an alternative, you can also use the `pyodide-http` package to use familiar methods
+more seamlessly:
+
+```py
+%pip install pyodide-http
+
+import pyodide_http
+import pandas as pd
+
+pyodide_http.patch_all()
+
+data = pd.read_csv("https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/data/iris.csv")
+data
+```
