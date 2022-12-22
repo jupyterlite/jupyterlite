@@ -10,13 +10,13 @@ module.exports = {
       command: 'yarn run start',
       port: 8000,
       timeout: 120 * 1000,
-      reuseExistingServer: true
+      reuseExistingServer: true,
     },
     {
       command: 'yarn run start:embed',
       port: 8001,
       timeout: 120 * 1000,
-      reuseExistingServer: true
+      reuseExistingServer: true,
     },
   ],
 };
