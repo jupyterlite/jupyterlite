@@ -220,9 +220,6 @@ The UI tests use a custom JupyterLite website:
 
 # build
 yarn build
-
-# start the HTTP server to server the JupyterLite website
-yarn start
 ```
 
 Then run the `test` script:

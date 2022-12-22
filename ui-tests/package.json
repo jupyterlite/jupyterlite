@@ -8,7 +8,8 @@
   "scripts": {
     "build": "jupyter lite build",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
-    "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1",
+    "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1 8000",
+    "start:embed": "python -m http.server -b 127.0.0.1 8001",
     "start:detached": "yarn run start&",
     "test": "playwright test",
     "test:debug": "PWDEBUG=1 playwright test",
