@@ -117,8 +117,6 @@ def task_lint():
         actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
     )
 
-    has_pyodide_js = [P.APP_SCHEMA, P.PYOLITE_EXT_TS]
-    has_pyodide_bz2 = [P.DOCS_OFFLINE_MD]
     yield U.ok(
         B.OK_PRETTIER,
         name="prettier",
@@ -955,16 +953,6 @@ class D:
         parent: json.loads(p.read_text(**C.ENC))
         for parent, p in P.PACKAGE_JSONS.items()
     }
-    PYODIDE_JS_VERSION = PACKAGE_JSONS["pyolite-kernel"]["devDependencies"]["pyodide"]
-    PYODIDE_CDN_URL = APP_SCHEMA_PYOLITE["properties"]["pyodideUrl"]["default"]
-    PYODIDE_VERSION = _js_version_to_py_version(PYODIDE_JS_VERSION)
-    PYODIDE_JS = PYODIDE_CDN_URL.split("/")[-1]
-    PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
-    PYODIDE_URL = os.environ.get(
-        "JUPYTERLITE_PYODIDE_URL",
-        f"{C.PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
-    )
-    PYODIDE_ARCHIVE_CACHE = P.EXAMPLES / ".cache/pyodide" / PYODIDE_ARCHIVE
 
     APP_CONFIGS = [
         p
