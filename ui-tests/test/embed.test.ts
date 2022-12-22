@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 test.use({ baseURL: 'http://localhost:8001' });
 
 /**
- * This test uses the raw Playwright since the host page is not a JupyterLab instance.
+ * This test uses the raw Playwright since the host page does not expose window.jupyterapp
  */
 test.describe('Embed the REPL app', () => {
   test.beforeEach(async ({ page }) => {
