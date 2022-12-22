@@ -62,18 +62,6 @@ jobs:
           yarn --frozen-lockfile
           yarn playwright install
 
-      - name: Start JupyterLite
-        run: |
-          cd ui-tests
-          # Serve the website
-          yarn start:detached
-
-      - name: Wait for JupyterLite
-        uses: ifaxity/wait-on-action@v1
-        with:
-          resource: http-get://127.0.0.1:8000/
-          timeout: 360000
-
       - name: Test
         run: |
           cd ui-tests

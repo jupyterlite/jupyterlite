@@ -1,28 +1,25 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { test as base } from '@jupyterlab/galata';
+import { expect, test } from '@playwright/test';
 
-import { expect } from '@playwright/test';
+test.use({ baseURL: 'http://localhost:8001' });
 
-// TODO: fix upstream condition so it's not specific to JupyterLab?
-const test = base.extend({
-  waitForApplication: async ({ baseURL }, use, testInfo) => {
-    const waitIsReady = async (page): Promise<void> => {
-      const iframe = await page.frameLocator('iframe');
-      await iframe.waitForSelector('.jp-InputArea');
-    };
-    await use(waitIsReady);
-  },
-});
-
+/**
+ * This test uses the raw Playwright since the host page is not a JupyterLab instance.
+ */
 test.describe('Embed the REPL app', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('embed/index.html');
+    await page
+      .frameLocator('#repl')
+      .locator('.jp-InputArea')
+      .first()
+      .waitFor({ state: 'visible' });
   });
 
   test('Page', async ({ page }) => {
-    const imageName = 'page.png';
+    const imageName = 'embed-repl.png';
     expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
 });
