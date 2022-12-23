@@ -954,7 +954,7 @@ class C:
     MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 92 if FORCE_PYODIDE else 86
+    COV_THRESHOLD = 92 if FORCE_PYODIDE else 85
     SKIP_LINT = [
         "/docs/_build/",
         "/.ipynb_checkpoints/",
