@@ -5,8 +5,8 @@ modified by [extensions][frontend], this may not be enough for all needs. It is 
 possible to extend the underlying `jupyter lite` [CLI](../../reference/cli.ipynb) by
 means of _Addons_.
 
-A custom Addon can do anything to the _output folder_ of a built lite application, as
-well as modify the behavior of other addons, including the ones that comprise the core
+A custom _Addon_ can do anything to the _output folder_ of a built lite application, as
+well as modify the behavior of other _Addons_, including the ones that comprise the core
 API.
 
 Some use cases:
@@ -18,7 +18,7 @@ Some use cases:
 ```{note}
 _Addon_ was chosen to distinguish these pieces from browser-based _Plugins_ and
 _Extensions_ for the [frontend], and all `jupyter lite` core
-behavior is implemented as Addons.
+behavior is implemented as _Addons_.
 ```
 
 [frontend]: ../../howto/configure/simple_extensions.md
@@ -28,8 +28,8 @@ behavior is implemented as Addons.
 Before digging into building an Addon, it's worth understanding where in the overall
 structure of the CLI they fit.
 
-In order to download, unpacking, and update static files and configurations from a
-number of sources, the CLI uses a number of layers.
+In order to download, unpack, and update static files and configurations from a number
+of sources, the CLI uses a number of layers.
 
 | Component | Example              | Role                                           |
 | --------- | -------------------- | ---------------------------------------------- |
@@ -54,7 +54,7 @@ At its very simplest, an Addon is initialized with a signature like:
 
 ```python
 class MyAddon:
-    __all__ = ["status']
+    __all__ = ["status"]
 
     def status(self, maanger):
         yield dict(name="hello", actions=[lambda: print("world")])
@@ -98,11 +98,11 @@ built application is always in a consistent state, _without_ substantial rework.
 
 [hook-parent]: jupyterlite.constants.HOOK_PARENTS
 
-### BaseAddon
+### `BaseAddon`
 
 A convenience class, [`jupyterlite.addons.base.BaseAddon`][baseaddon] may be extended to
 provide a number of useful features. It extends `traitlets.LoggingConfigurable`, and
-makes the `manager` the `parent` of the addon, allowing it to be [configured by
+makes the `LiteManager` the `parent` of the _Addon_, allowing it to be [configured by
 name][config] via `jupyter_lite_config.json`:
 
 [baseaddon]: jupyterlite.addons.base.BaseAddon
@@ -125,9 +125,65 @@ name][config] via `jupyter_lite_config.json`:
 jupyter lite build --MyAddon.enable_some_feature=True
 ```
 
+### Short CLI
+
+An _Addon_ which inherits from `BaseAddon` (or `traitlets.Configurable` some other way)
+can tell the parent application that it exposes additional CLI [_aliases_ and
+_flags_][traitlets-cli], both for execution, and when queried with `--help`.
+
+```{hint}
+_Addons_ authors are encouraged to group their aliases and flags by using a common prefix.
+```
+
+[traitlets-cli]: https://traitlets.readthedocs.io/en/stable/config.html#common-arguments
+
+#### Aliases
+
+An _alias_ maps a CLI argument to a single trait.
+
+```py
+from traitlets import Int
+
+class MyFooAddon(BaseAddon):
+    __all__ = ["status"]
+    aliases = {"how-many-foos": "MyFooAddon.foo"}
+    foo = Int(0, help="The number of foos").tag(config=True)
+    # ...
+```
+
+```{warning}
+_Addons_ may **not** overload core aliases, or the aliases of previously-loaded
+addons.
+```
+
+#### Flags
+
+A _flag_ maps a CLI argument to any number of traits, with useful help:
+
+```py
+from traitlets import Int, Bool
+
+class MyFooBarAddon(BaseAddon):
+    __all__ = ["status"]
+    flags = {
+      "foo-bar": (
+        {"MyFooBarAddon": {"foo": 1, "bar": True}},
+        "Foo once, and bar"
+      )
+    }
+    foo = Int(0, help="The number of foos").tag(config=True)
+    bar = Bar(False, help="Whether to bar").tag(config=True)
+    # ...
+```
+
+```{note}
+_Addons_ may augment the behavior of existing flags, but **not** override
+previously-registered configuration values. Help text will be appended with a newline.
+```
+
 ## Packaging
 
-Addons are advertised via `entry_points` e.g. in `pyproject.toml`:
+_Addons_ are advertised via `entry_points` e.g. in `pyproject.toml`:
 
 ```toml
 [project.entry-points."jupyterlite.addon.v0"]

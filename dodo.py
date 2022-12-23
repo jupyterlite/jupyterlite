@@ -1362,9 +1362,7 @@ class U:
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
-        config["LiteBuildConfig"]["piplite_urls"] = sorted(
-            set(U.deps_to_wheels(all_deps))
-        )
+        config["PipliteAddon"]["piplite_urls"] = sorted(set(U.deps_to_wheels(all_deps)))
 
         # fetch piplite wheels
         U.deps_to_wheels(all_deps)

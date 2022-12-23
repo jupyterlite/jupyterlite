@@ -24,7 +24,9 @@
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a12/jupyterlite_p5_kernel-0.1.0a12-py3-none-any.whl"
     ],
     "ignore_sys_prefix": ["federated_extensions", "mathjax"],
-    "output_dir": "../build/docs-app",
+    "output_dir": "../build/docs-app"
+  },
+  "PipliteAddon": {
     "piplite_urls": [
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.2.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
@@ -68,8 +70,8 @@
       "https://files.pythonhosted.org/packages/py3/i/isoduration/isoduration-20.11.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyter-events/jupyter_events-0.5.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyter_client/jupyter_client-7.4.8-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/j/jupyter_core/jupyter_core-5.1.0-py3-none-any.whl",
-      "https://files.pythonhosted.org/packages/py3/j/jupyter_server/jupyter_server-2.0.4-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py3/j/jupyter_core/jupyter_core-5.1.1-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py3/j/jupyter_server/jupyter_server-2.0.5-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyter_server_terminals/jupyter_server_terminals-0.4.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/j/jupyterlab-widgets/jupyterlab_widgets-3.0.5-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/m/matplotlib-inline/matplotlib_inline-0.1.6-py3-none-any.whl",

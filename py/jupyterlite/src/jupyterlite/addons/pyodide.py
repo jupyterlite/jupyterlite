@@ -1,11 +1,13 @@
 """a JupyterLite addon for supporting the pyodide distribution"""
 
 import json
+import os
 import re
 import urllib.parse
 from pathlib import Path
 
 import doit.tools
+from traitlets import Unicode, default
 
 #: where we put wheels, for now
 PYODIDE_URL = "pyodideUrl"
@@ -29,6 +31,20 @@ from .base import BaseAddon
 class PyodideAddon(BaseAddon):
     __all__ = ["status", "post_init", "build", "post_build", "check"]
 
+    # traits
+    pyodide_url: str = Unicode(
+        allow_none=True, help="Local path or URL of a pyodide distribution tarball"
+    ).tag(config=True)
+
+    # CLI
+    aliases = {
+        "pyodide": "PyodideAddon.pyodide_url",
+    }
+
+    @default("pyodide_url")
+    def _default_pyodide_url(self):
+        return os.environ.get("JUPYTERLITE_PYODIDE_URL")
+
     @property
     def pyodide_cache(self):
         """where pyodide stuff will go in the cache folder"""
@@ -50,7 +66,7 @@ class PyodideAddon(BaseAddon):
             name="pyodide",
             actions=[
                 lambda: print(
-                    f"     URL: {manager.pyodide_url}",
+                    f"     URL: {self.pyodide_url}",
                 ),
                 lambda: print(f" archive: {[*self.pyodide_cache.glob('*.bz2')]}"),
                 lambda: print(
@@ -64,10 +80,10 @@ class PyodideAddon(BaseAddon):
 
     def post_init(self, manager):
         """handle downloading of pyodide"""
-        if manager.pyodide_url is None:
+        if self.pyodide_url is None:
             return
 
-        yield from self.cache_pyodide(manager.pyodide_url)
+        yield from self.cache_pyodide(self.pyodide_url)
 
     def build(self, manager):
         """copy a local (cached or well-known) pyodide into the output_dir"""
@@ -77,7 +93,7 @@ class PyodideAddon(BaseAddon):
 
         if self.well_known_pyodide.exists():
             the_pyodide = self.well_known_pyodide
-        elif manager.pyodide_url is not None:
+        elif self.pyodide_url is not None:
             the_pyodide = cached_pyodide
 
         if not the_pyodide:
@@ -100,7 +116,7 @@ class PyodideAddon(BaseAddon):
 
     def post_build(self, manager):
         """configure jupyter-lite.json for pyodide"""
-        if not self.well_known_pyodide.exists() and manager.pyodide_url is None:
+        if not self.well_known_pyodide.exists() and self.pyodide_url is None:
             return
 
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON

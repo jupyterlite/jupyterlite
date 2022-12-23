@@ -44,10 +44,13 @@ Concretely that means populating a list of URLs for downloading wheels. A good e
 for this is the configuration used for the JupyterLite demo website:
 [jupyter_lite_config.json][lite-demo-config]
 
-The relevant part is the `piplite_urls` list which looks like the following:
+The relevant part of `jupyter_lite_config.json` is the `piplite_urls` list which looks
+like the following:
 
 ```json
-"piplite_urls": [
+{
+  "PipliteAddon": {
+    "piplite_urls": [
       "https://files.pythonhosted.org/packages/e6/0b/24795939622d60f4b453aa7040f23c6a6f8b44c7c026c3b42d9842e6cc31/fastjsonschema-2.15.3-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.0.5-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",
@@ -56,7 +59,9 @@ The relevant part is the `piplite_urls` list which looks like the following:
       "https://files.pythonhosted.org/packages/py2.py3/d/defusedxml/defusedxml-0.7.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/e/executing/executing-0.8.3-py2.py3-none-any.whl",
       "..."
-]
+    ]
+  }
+}
 ```
 
 Tweak this list based on the packages you would like to serve statically.
