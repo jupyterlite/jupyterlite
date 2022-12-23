@@ -46,6 +46,10 @@ refresh on your Github Pages site in your web browser to see the new version of 
 website.
 ```
 
+```{note}
+Alternatively, you can use the [JupyterLite demo using xeus-python](https://github.com/jupyterlite/xeus-python-demo) to publish a deployment on Github pages that uses xeus-python by default and allows to pre-install packages using ``emscripten-forge`` and ``conda-forge``.
+```
+
 ## Accessing the JupyterLite website
 
 After the build has completed, the site will be available on GitHub Pages. Go to
@@ -75,6 +79,12 @@ branch.
 The `requirements.txt` file can be used to add extra prebuilt (also called _federated_)
 JupyterLab extensions to the deployed JupyterLite website. Follow the
 [extension guide](../howto/configure/simple_extensions.md) to learn more.
+
+### Using the xeus-python kernel and emscripten-forge
+
+Using [a JupyterLite deployment with xeus-python](https://github.com/jupyterlite/xeus-python-demo), you can pre-install packages available both on ``conda-forge`` and ``emscripten-forge`` by specifying them to the ``environment.yml`` file.
+
+By pre-installing packages, they are readily usable in the kernel and can be imported without the need for ``piplite``.
 
 ### Contents
 
