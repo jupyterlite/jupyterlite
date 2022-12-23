@@ -41,6 +41,7 @@ content/share
 :maxdepth: 1
 
 python/packages
+python/preinstalled_packages
 python/wheels
 python/pyodide
 ```
