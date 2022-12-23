@@ -63,8 +63,8 @@ data = pd.read_csv(filename, sep=',')
 data
 ```
 
-As an alternative, you can also use the `pyodide-http` package to use familiar methods
-more seamlessly:
+As an alternative, you can also install the `pyodide-http` package to use familiar
+methods more seamlessly:
 
 ```py
 %pip install pyodide-http
