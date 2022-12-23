@@ -1,4 +1,5 @@
 [project]
+name = "jupyterlite-root"
 version = "0.1.0b16"
 
 [tool.isort]
