@@ -78,7 +78,7 @@ class LiteManager(LiteBuildConfig):
                 addons[name] = addon_inst
                 for one in sorted(addon_inst.__all__):
                     self.log.debug(f"""[lite] [addon] [{name}] ... will {one}""")
-            except Exception as err:
+            except Exception as err:  # pragma: no cover
                 self.log.warning(f"[lite] [addon] [{name}] FAIL", exc_info=err)
         return addons
 

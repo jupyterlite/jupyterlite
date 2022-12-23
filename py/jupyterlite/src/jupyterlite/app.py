@@ -75,7 +75,7 @@ class DescribedMixin:
     """a self-describing mixin"""
 
     @property
-    def description(self):
+    def description(self):  # pragma: no cover
         return self.__doc__.splitlines()[0].strip()
 
 
@@ -98,7 +98,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
     def _config_file_paths_default(self):
         return [str(Path.cwd())] + jupyter_config_path()
 
-    def emit_alias_help(self):
+    def emit_alias_help(self):  # pragma: no cover
         """Yield the lines for alias part of the help.
 
         copied from:

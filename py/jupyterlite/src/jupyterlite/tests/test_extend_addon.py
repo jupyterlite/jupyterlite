@@ -18,6 +18,7 @@ MOCK_FLAGS = {
     "all-the-features": (
         {
             "MockAddon": {"some_feature": 42, "some_other_feature": 1},
+            "LiteBuildConfig": {"log_level": "DEBUG"},
         },
         "enable all the features",
     ),
@@ -30,9 +31,7 @@ MOCK_ARGV_CONFIG = [
 ]
 
 
-def test_extend_addon_config(
-    an_empty_lite_dir, a_configured_mock_addon, capsys, recwarn
-):
+def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
     argv, config = a_configured_mock_addon
     app = LiteStatusApp(log_level="DEBUG")
     app.aliases.update(MOCK_ALIASES)

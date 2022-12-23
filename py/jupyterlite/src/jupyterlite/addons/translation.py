@@ -9,7 +9,7 @@ from ..constants import ALL_JSON, API_TRANSLATIONS, JSON_FMT, UTF8
 from ..optional import has_optional_dependency
 from .base import BaseAddon
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..manager import LiteManager
 
 

@@ -7,15 +7,15 @@ from ..constants import ADDON_ENTRYPOINT
 
 # See compatibility note on `group` keyword in
 # https://docs.python.org/3/library/importlib.metadata.html#entry-points
-if sys.version_info < (3, 10):
+if sys.version_info < (3, 10):  # pragma: no cover
     from importlib_metadata import entry_points
-else:
+else:  # pragma: no cover
     from importlib.metadata import entry_points
 
 
-def add_addon_aliases_and_flags(aliases, flags):
+def add_addon_aliases_and_flags(aliases, flags, force=None):
     """Update CLI aliases and flags from addons."""
-    for name, impl in get_addon_implementations().items():
+    for name, impl in get_addon_implementations(force).items():
         addon_aliases = getattr(impl, "aliases", {})
         addon_flags = getattr(impl, "flags", {})
 
@@ -29,15 +29,16 @@ def add_addon_aliases_and_flags(aliases, flags):
             if flag not in flags:
                 flags[flag] = config_help
             else:
+                flag_config, flag_help = flags[flag]
                 config, help = config_help
                 for cls_name, traits in config.items():
-                    if cls_name in flags[flag][0]:
+                    if cls_name in flag_config:
                         warnings.warn(
                             f"[lite] [{name}] --{flag} cannot redefine {cls_name}"
                         )
                         continue
-                    flags[flag][0][cls_name] = traits
-                flags[flag][1] = "\n".join([flags[flag][1], help])
+                    flag_config[cls_name] = traits
+                flags[flag] = (flag_config, "\n".join([flag_help, help]))
 
 
 @lru_cache(1)
@@ -47,10 +48,10 @@ def get_addon_implementations(force=None):
     Pass some noise (like `date.date`) to the ``force`` argument to reload.
     """
     addon_implementations = {}
-    for name, entry_point in get_addon_entry_points().items():
+    for name, entry_point in get_addon_entry_points(force).items():
         try:
             addon_implementations[name] = entry_point.load()
-        except Exception as err:
+        except Exception as err:  # pragma: no cover
             warnings.warn(f"[lite] [{name}] failed to load: {err}")
     return addon_implementations
 
@@ -64,7 +65,7 @@ def get_addon_entry_points(force=None):
     all_entry_points = {}
     for entry_point in entry_points(group=ADDON_ENTRYPOINT):
         name = entry_point.name
-        if name in all_entry_points:
+        if name in all_entry_points:  # pragma: no cover
             warnings.warn(f"[lite] [{name}] addon already registered.")
             continue
         all_entry_points[name] = entry_point

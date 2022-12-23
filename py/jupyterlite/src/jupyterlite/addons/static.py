@@ -149,7 +149,7 @@ class StaticAddon(BaseAddon):
 
         for app in all_apps:
             bundle = build_dir / app / "bundle.js"
-            if not bundle.exists():
+            if not bundle.exists():  # pragma: no cover
                 continue
             bundle_txt = bundle.read_text(**UTF8)
             chunks = dict(re.findall(chunk_pattern, bundle_txt, re.VERBOSE))
