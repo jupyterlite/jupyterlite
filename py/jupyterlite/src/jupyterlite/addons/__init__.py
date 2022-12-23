@@ -40,9 +40,12 @@ def add_addon_aliases_and_flags(aliases, flags):
                 flags[flag][1] = "\n".join([flags[flag][1], help])
 
 
-@lru_cache
-def get_addon_implementations():
-    """Load (and cache) addon implementations."""
+@lru_cache(1)
+def get_addon_implementations(force=None):
+    """Load (and cache) addon implementations.
+
+    Pass some noise (like `date.date`) to the ``force`` argument to reload.
+    """
     addon_implementations = {}
     for name, entry_point in get_addon_entry_points().items():
         try:
@@ -52,9 +55,12 @@ def get_addon_implementations():
     return addon_implementations
 
 
-@lru_cache
-def get_addon_entry_points():
-    """Discover (and cache) modern entrypoints as a ``dict`` with sorted keys."""
+@lru_cache(1)
+def get_addon_entry_points(force=None):
+    """Discover (and cache) modern entrypoints as a ``dict`` with sorted keys.
+
+    Pass some noise (like `date.date`) to the ``force`` argument to reload.
+    """
     all_entry_points = {}
     for entry_point in entry_points(group=ADDON_ENTRYPOINT):
         name = entry_point.name

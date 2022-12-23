@@ -11,42 +11,63 @@ from jupyterlite.manager import LiteManager
 
 PY_LT_310 = sys.version_info < (3, 10)
 
-MOCK_ALIASES = {"some-other-feature": "MockAddon.some_other_feature"}
+MOCK_ALIASES = {
+    "some-other-feature": "MockAddon.some_other_feature",
+}
+MOCK_FLAGS = {
+    "all-the-features": (
+        {
+            "MockAddon": {"some_feature": 42, "some_other_feature": 1},
+        },
+        "enable all the features",
+    ),
+}
+
+MOCK_ARGV_CONFIG = [
+    [["--some-other-feature=1"], {"some_feature": 42}],
+    [[], {"some_other_feature": 1, "some_feature": 42}],
+    [["--all-the-features"], {}],
+]
 
 
-def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
+def test_extend_addon_config(
+    an_empty_lite_dir, a_configured_mock_addon, capsys, recwarn
+):
+    argv, config = a_configured_mock_addon
     app = LiteStatusApp(log_level="DEBUG")
-    # it might be nice to make this a function
     app.aliases.update(MOCK_ALIASES)
-    app.initialize(argv=["--some-other-feature=1"])
+    app.flags.update(MOCK_FLAGS)
+    app.initialize(argv=argv)
     manager = app.lite_manager
 
-    assert len(manager._addons) == 1
-    addon = manager._addons["mock"]
-    assert addon.parent == manager, "not the parent"
+    assert len(manager._addons) == 1, "loaded too many addons"
 
-    assert addon.some_feature == 42, "didn't configure"
-    assert addon.some_other_feature == 1, "didn't configure"
+    addon = manager._addons["mock"]
+    assert addon.parent == manager, "parent should have been the manager"
+
+    assert addon.some_feature == 42, "some feature should have been 42"
+    assert addon.some_other_feature == 1, "some other feature should have been 1"
 
     with pytest.raises(SystemExit) as exit:
         app.start()
 
-    assert exit.type == SystemExit
-    assert exit.value.code == 0
+    assert exit.type == SystemExit, "should have raised a SystemExit"
+    assert exit.value.code == 0, "should have passed with rc 0"
     cap = capsys.readouterr()
-    assert "hello world" in cap.out
+    assert "hello world" in cap.out, "should have printed hello world"
 
 
-@pytest.fixture
-def a_configured_mock_addon(only_a_mock_addon, an_empty_lite_dir, monkeypatch):
+@pytest.fixture(params=MOCK_ARGV_CONFIG)
+def a_configured_mock_addon(request, only_a_mock_addon, an_empty_lite_dir, monkeypatch):
+    argv, config = request.param
     config = {
         "LiteBuildConfig": {"ignore_sys_prefix": ["federated_extensions"]},
-        "MockAddon": {"some_feature": 42},
+        "MockAddon": config,
     }
     conf = an_empty_lite_dir / "jupyter_lite_config.json"
     conf.write_text(json.dumps(config), encoding="utf-8")
     monkeypatch.chdir(an_empty_lite_dir)
-    yield config
+    yield argv, config
 
 
 @pytest.fixture
@@ -55,9 +76,10 @@ def only_a_mock_addon():
         __all__ = ["status"]
 
         aliases = MOCK_ALIASES
+        flags = MOCK_FLAGS
 
-        some_feature = Int(0).tag(config=True, help="some feature!")
-        some_other_feature = Int(0).tag(config=True, help="some other feature!")
+        some_feature = Int(0, help="some feature!").tag(config=True)
+        some_other_feature = Int(0, help="some other feature!").tag(config=True)
 
         def status(self, manager):
             yield dict(name="hello:world", actions=[lambda: print("hello world")])
