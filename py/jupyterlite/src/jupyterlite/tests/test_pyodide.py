@@ -15,7 +15,7 @@ if TEST_PYODIDE_URL is None:  # pragma: no cover
 
 
 @pytest.fixture
-def a_pyodide_server(an_unused_port):
+def a_pyodide_server(an_unused_port):  # pragma: no cover
     """serve up the pyodide archive"""
     root = Path(TEST_PYODIDE_URL).parent
     assert root.exists()
@@ -43,7 +43,7 @@ def a_pyodide_server(an_unused_port):
 )
 def test_pyodide(
     an_empty_lite_dir, script_runner, a_pyodide_server, approach, path, kind
-):
+):  # pragma: no cover
     """can we fetch a pyodide archive, or use a local copy?"""
     env = dict(os.environ)
     pargs = []

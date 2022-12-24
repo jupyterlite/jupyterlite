@@ -26,7 +26,8 @@ from jupyterlite.addons.base import BaseAddon
 def test_cli_no_redefine_warnings(aliases, flags, expect_warn, some_entry_point_addons):
     assert len(addons.get_addon_entry_points(1)) == 1
     with pytest.warns() as warned:
-        addons.add_addon_aliases_and_flags(aliases, flags, force=True)
+        aliases = addons.merge_addon_aliases(aliases, force=True)
+        flags = addons.merge_addon_flags(flags, force=True)
     print("aliases", aliases)
     print("flags", flags)
     assert len(warned) == 1
@@ -44,9 +45,7 @@ def some_entry_point_addons():
         aliases = {"foo": "BadAddon.foo"}
         flags = {"bar": ({"BadAddon": {"foo": True}}, "foo")}
 
-    mock_eps = [
-        Bunch(name="foo", load=lambda: BadAddon),
-    ]
-
-    with mock.patch.multiple(addons, entry_points=lambda group: mock_eps):
+    with mock.patch.multiple(
+        addons, entry_points=lambda group: [Bunch(name="foo", load=lambda: BadAddon)]
+    ):
         yield

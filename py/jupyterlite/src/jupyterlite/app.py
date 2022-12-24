@@ -8,7 +8,7 @@ from traitlets import Bool, Instance, List, Unicode, default
 from traitlets.utils.text import indent
 
 from . import __version__
-from .addons import add_addon_aliases_and_flags, get_addon_implementations
+from .addons import get_addon_implementations, merge_addon_aliases, merge_addon_flags
 from .addons.piplite import list_wheels
 from .config import LiteBuildConfig
 from .constants import PHASES
@@ -67,9 +67,6 @@ lite_aliases = dict(
     },
 )
 
-# ideally, this would happen inside the constructor, but it seems to be too late
-add_addon_aliases_and_flags(lite_aliases, lite_flags)
-
 
 class DescribedMixin:
     """a self-describing mixin"""
@@ -90,9 +87,15 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
         Unicode(help="Paths to search for jupyter_lite.(py|json)")
     ).tag(config=True)
 
-    # CLI
-    aliases = {**lite_aliases}
-    flags = {**lite_flags}
+    @property
+    def aliases(self):
+        """Get CLI aliases, including ones provided by addons."""
+        return merge_addon_aliases(lite_aliases)
+
+    @property
+    def flags(self):
+        """Get CLI flags, including ones provided by addons."""
+        return merge_addon_flags(lite_flags)
 
     @default("config_file_paths")
     def _config_file_paths_default(self):
@@ -248,15 +251,15 @@ class LiteTaskApp(LiteDoitApp):
         False, help="forget previous runs of task and re-run from the beginning"
     ).tag(config=True)
 
-    flags = dict(
-        **lite_flags,
-        **{
-            "force": (
-                {"LiteTaskApp": {"force": True}},
-                force.help,
-            ),
-        },
-    )
+    @property
+    def flags(self):
+        """CLI flags, including some custom ones."""
+        return merge_addon_flags(
+            {
+                **lite_flags,
+                "force": ({"LiteTaskApp": {"force": True}}, LiteTaskApp.force.help),
+            }
+        )
 
     _doit_task = None
 

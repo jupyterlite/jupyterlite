@@ -6,10 +6,10 @@ from pytest import mark
 
 from .conftest import CONDA_PKGS, FIXTURES, WHEELS
 
-try:
+try:  # pragma: no cover
     __import__("libarchive")
     HAS_LIBARCHIVE = True
-except Exception:
+except Exception:  # pragma: no cover
     HAS_LIBARCHIVE = False
 
 

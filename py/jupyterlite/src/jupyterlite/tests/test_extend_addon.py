@@ -3,11 +3,11 @@ import sys
 from unittest import mock
 
 import pytest
-from traitlets import Int
+from traitlets import Bunch, Int
 
+from jupyterlite import addons
 from jupyterlite.addons.base import BaseAddon
 from jupyterlite.app import LiteStatusApp
-from jupyterlite.manager import LiteManager
 
 PY_LT_310 = sys.version_info < (3, 10)
 
@@ -34,8 +34,6 @@ MOCK_ARGV_CONFIG = [
 def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
     argv, config = a_configured_mock_addon
     app = LiteStatusApp(log_level="DEBUG")
-    app.aliases.update(MOCK_ALIASES)
-    app.flags.update(MOCK_FLAGS)
     app.initialize(argv=argv)
     manager = app.lite_manager
 
@@ -83,7 +81,8 @@ def only_a_mock_addon():
         def status(self, manager):
             yield dict(name="hello:world", actions=[lambda: print("hello world")])
 
-    group = {"mock": MockAddon}
-
-    with mock.patch.object(LiteManager, "_addon_implementations", return_value=group):
+    with mock.patch.multiple(
+        addons,
+        entry_points=lambda group: [Bunch(name="mock", load=lambda: MockAddon)],
+    ):
         yield

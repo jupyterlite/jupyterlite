@@ -1,6 +1,7 @@
 """Handle efficient discovery of """
 import sys
 import warnings
+from copy import deepcopy
 from functools import lru_cache
 
 from ..constants import ADDON_ENTRYPOINT
@@ -13,23 +14,34 @@ else:  # pragma: no cover
     from importlib.metadata import entry_points
 
 
-def add_addon_aliases_and_flags(aliases, flags, force=None):
-    """Update CLI aliases and flags from addons."""
+def merge_addon_aliases(base_aliases, force=None):
+    """Update CLI aliases from addons."""
+    new_aliases = deepcopy(base_aliases)
+
     for name, impl in get_addon_implementations(force).items():
         addon_aliases = getattr(impl, "aliases", {})
-        addon_flags = getattr(impl, "flags", {})
 
         for alias, trait_name in addon_aliases.items():
-            if alias in aliases:
+            if alias in new_aliases:
                 warnings.warn(f"[lite] [{name}] alias --{alias} cannot be redefined")
                 continue
-            aliases[alias] = trait_name
+            new_aliases[alias] = trait_name
+
+    return new_aliases
+
+
+def merge_addon_flags(base_flags, force=None):
+    """Update CLI flags from addons."""
+    new_flags = deepcopy(base_flags)
+
+    for name, impl in get_addon_implementations(force).items():
+        addon_flags = getattr(impl, "flags", {})
 
         for flag, config_help in addon_flags.items():
-            if flag not in flags:
-                flags[flag] = config_help
+            if flag not in new_flags:
+                new_flags[flag] = config_help
             else:
-                flag_config, flag_help = flags[flag]
+                flag_config, flag_help = new_flags[flag]
                 config, help = config_help
                 for cls_name, traits in config.items():
                     if cls_name in flag_config:
@@ -38,7 +50,9 @@ def add_addon_aliases_and_flags(aliases, flags, force=None):
                         )
                         continue
                     flag_config[cls_name] = traits
-                flags[flag] = (flag_config, "\n".join([flag_help, help]))
+                new_flags[flag] = (flag_config, "\n".join([flag_help, help]))
+
+    return new_flags
 
 
 @lru_cache(1)

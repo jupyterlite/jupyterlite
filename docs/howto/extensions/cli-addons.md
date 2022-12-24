@@ -146,7 +146,9 @@ from traitlets import Int
 
 class MyFooAddon(BaseAddon):
     __all__ = ["status"]
-    aliases = {"how-many-foos": "MyFooAddon.foo"}
+    aliases = {
+      "how-many-foos": "MyFooAddon.foo",
+    }
     foo = Int(0, help="The number of foos").tag(config=True)
     # ...
 ```
@@ -158,7 +160,8 @@ addons.
 
 #### Flags
 
-A _flag_ maps a CLI argument to any number of traits, with useful help:
+A _flag_ maps a CLI argument to any number of traits on any number of
+`traitlets.Configurable` classes:
 
 ```py
 from traitlets import Int, Bool
@@ -168,7 +171,7 @@ class MyFooBarAddon(BaseAddon):
     flags = {
       "foo-bar": (
         {"MyFooBarAddon": {"foo": 1, "bar": True}},
-        "Foo once, and bar"
+        "Foo once, and bar",
       )
     }
     foo = Int(0, help="The number of foos").tag(config=True)
