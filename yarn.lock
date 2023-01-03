@@ -11862,10 +11862,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pyodide@0.21.3:
-  version "0.21.3"
-  resolved "https://registry.npmjs.org/pyodide/-/pyodide-0.21.3.tgz#0be64868231fa59a5372a1191d157a9e8d83e9d7"
-  integrity sha512-5fu5P8ys8V8tKTsK9lag0HattbZQuFRdnNzv1LLOLCieM9A96OPs2cF29lPpcD9N+8GuUtfrGCWEMKiupTHUlA==
+pyodide@0.22.0:
+  version "0.22.0"
+  resolved "https://registry.npmjs.org/pyodide/-/pyodide-0.22.0.tgz#44c264e26d5c054e676b051cc5a15a1d14e259c6"
+  integrity sha512-H5BV2m3dDXisZSxKZpPXDudsoAcRRo7Zq9ca4nlj5WjzSC2SY0+Q3fiZDMosgiz7W1BQz5FJUv3EDTmmscJRvA==
   dependencies:
     base-64 "^1.0.0"
     node-fetch "^2.6.1"

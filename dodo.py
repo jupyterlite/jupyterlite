@@ -1090,7 +1090,7 @@ class D:
     PYODIDE_CDN_URL = APP_SCHEMA_PYOLITE["properties"]["pyodideUrl"]["default"]
     PYODIDE_VERSION = _js_version_to_py_version(PYODIDE_JS_VERSION)
     PYODIDE_JS = PYODIDE_CDN_URL.split("/")[-1]
-    PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
         "JUPYTERLITE_PYODIDE_URL",
         f"{C.PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",
