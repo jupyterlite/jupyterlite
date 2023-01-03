@@ -15,7 +15,7 @@ import { IBroadcastChannelWrapper } from '@jupyterlite/contents';
 /**
  * The default CDN fallback for Pyodide
  */
-const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js';
+const PYODIDE_CDN_URL = 'https://cdn.jsdelivr.net/pyodide/v0.22.0a3/full/pyodide.js';
 
 /**
  * The id for the extension, and key in the litePlugins.
