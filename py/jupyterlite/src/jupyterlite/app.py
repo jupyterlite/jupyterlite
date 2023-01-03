@@ -1,19 +1,27 @@
 """the JupyterLite CLI App(s)"""
+import typing
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
 from jupyter_core.paths import jupyter_config_path
 from traitlets import Bool, Instance, List, Unicode, default
+from traitlets.utils.text import indent
 
 from . import __version__
+from .addons import get_addon_implementations, merge_addon_aliases, merge_addon_flags
 from .addons.piplite import list_wheels
 from .config import LiteBuildConfig
 from .constants import PHASES
 from .manager import LiteManager
 from .trait_types import CPath
 
-#: some flags we use
+#: the total set of flags from discovered addons
 lite_flags = {
+    **{
+        flag: value
+        for flag, value in base_flags.items()
+        if flag not in ["show-config", "show-config-json", "generate-config"]
+    },
     "ignore-sys-prefix": (
         {"LiteBuildConfig": {"ignore_sys_prefix": True}},
         "Do not copy anything from sys.prefix",
@@ -30,19 +38,41 @@ lite_flags = {
         {"LiteBuildConfig": {"no_libarchive": True}},
         "Do not try to use libarchive-c for archive operations",
     ),
-    **{
-        flag: value
-        for flag, value in base_flags.items()
-        if flag not in ["show-config", "show-config-json", "generate-config"]
-    },
 }
+
+lite_aliases = dict(
+    **base_aliases,
+    **{
+        # meta options
+        "disable-addons": "LiteBuildConfig.disable_addons",
+        # input options
+        "app-archive": "LiteBuildConfig.app_archive",
+        "apps": "LiteBuildConfig.apps",
+        # top-level
+        "lite-dir": "LiteBuildConfig.lite_dir",
+        # contents
+        "contents": "LiteBuildConfig.contents",
+        "ignore-contents": "LiteBuildConfig.ignore_contents",
+        "extra-ignore-contents": "LiteBuildConfig.extra_ignore_contents",
+        # settings
+        "settings-overrides": "LiteBuildConfig.settings_overrides",
+        "mathjax-dir": "LiteBuildConfig.mathjax_dir",
+        # output options
+        "output-dir": "LiteBuildConfig.output_dir",
+        "output-archive": "LiteBuildConfig.output_archive",
+        "source-date-epoch": "LiteBuildConfig.source_date_epoch",
+        # server-specific things
+        "port": "LiteBuildConfig.port",
+        "base-url": "LiteBuildConfig.base_url",
+    },
+)
 
 
 class DescribedMixin:
     """a self-describing mixin"""
 
     @property
-    def description(self):
+    def description(self):  # pragma: no cover
         return self.__doc__.splitlines()[0].strip()
 
 
@@ -57,42 +87,70 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
         Unicode(help="Paths to search for jupyter_lite.(py|json)")
     ).tag(config=True)
 
-    # traitlets app stuff
-    aliases = dict(
-        **base_aliases,
-        **{
-            # meta options
-            "disable-addons": "LiteBuildConfig.disable_addons",
-            # input options
-            "app-archive": "LiteBuildConfig.app_archive",
-            "apps": "LiteBuildConfig.apps",
-            # top-level
-            "lite-dir": "LiteBuildConfig.lite_dir",
-            # contents
-            "contents": "LiteBuildConfig.contents",
-            "ignore-contents": "LiteBuildConfig.ignore_contents",
-            "extra-ignore-contents": "LiteBuildConfig.extra_ignore_contents",
-            # settings
-            "settings-overrides": "LiteBuildConfig.settings_overrides",
-            "mathjax-dir": "LiteBuildConfig.mathjax_dir",
-            # output options
-            "output-dir": "LiteBuildConfig.output_dir",
-            "output-archive": "LiteBuildConfig.output_archive",
-            "source-date-epoch": "LiteBuildConfig.source_date_epoch",
-            # server-specific things
-            "port": "LiteBuildConfig.port",
-            "base-url": "LiteBuildConfig.base_url",
-            # pyolite things likely to move away
-            "piplite-wheels": "LiteBuildConfig.piplite_urls",
-            "pyodide": "LiteBuildConfig.pyodide_url",
-        },
-    )
+    @property
+    def aliases(self):
+        """Get CLI aliases, including ones provided by addons."""
+        return merge_addon_aliases(lite_aliases)
 
-    flags = lite_flags
+    @property
+    def flags(self):
+        """Get CLI flags, including ones provided by addons."""
+        return merge_addon_flags(lite_flags)
 
     @default("config_file_paths")
     def _config_file_paths_default(self):
         return [str(Path.cwd())] + jupyter_config_path()
+
+    def emit_alias_help(self):  # pragma: no cover
+        """Yield the lines for alias part of the help.
+
+        copied from:
+
+        https://github.com/ipython/traitlets/blob/v5.8.0/traitlets/config/application.py#L517
+
+        Unlike the upstream, this also takes Addon classes (and their parents)
+        into consideration.
+        """
+        if not self.aliases:
+            return
+
+        classdict = {}
+        # discover more classes
+        for cls in [*self.classes, *get_addon_implementations().values()]:
+            # include all parents (up to, but excluding Configurable) in available names
+            for c in cls.mro()[:-3]:
+                classdict[c.__name__] = c
+
+        fhelp: typing.Optional[str]
+        for alias, longname in self.aliases.items():
+            try:
+                if isinstance(longname, tuple):
+                    longname, fhelp = longname
+                else:
+                    fhelp = None
+                classname, traitname = longname.split(".")[-2:]
+                longname = classname + "." + traitname
+
+                cls = classdict[classname]
+
+                trait = cls.class_traits(config=True)[traitname]
+                fhelp = cls.class_get_trait_help(trait, helptext=fhelp).splitlines()
+
+                if not isinstance(alias, tuple):
+                    alias = (alias,)
+                alias = sorted(alias, key=len)  # type:ignore[assignment]
+                alias = ", ".join(("--%s" if len(m) > 1 else "-%s") % m for m in alias)
+
+                # reformat first line
+                assert fhelp is not None
+                fhelp[0] = fhelp[0].replace("--" + longname, alias)  # type:ignore
+                yield from fhelp
+                yield indent("Equivalent to: [--%s]" % longname)
+            except Exception as ex:
+                self.log.error(
+                    "Failed collecting help-message for alias %r, due to: %s", alias, ex
+                )
+                raise
 
 
 class ManagedApp(BaseLiteApp):
@@ -147,10 +205,6 @@ class ManagedApp(BaseLiteApp):
             kwargs["federated_extensions"] = self.federated_extensions
         if self.ignore_sys_prefix is not None:
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
-        if self.piplite_urls is not None:
-            kwargs["piplite_urls"] = self.piplite_urls
-        if self.pyodide_url is not None:
-            kwargs["pyodide_url"] = self.pyodide_url
 
         return LiteManager(**kwargs)
 
@@ -197,15 +251,15 @@ class LiteTaskApp(LiteDoitApp):
         False, help="forget previous runs of task and re-run from the beginning"
     ).tag(config=True)
 
-    flags = dict(
-        **lite_flags,
-        **{
-            "force": (
-                {"LiteTaskApp": {"force": True}},
-                force.help,
-            ),
-        },
-    )
+    @property
+    def flags(self):
+        """CLI flags, including some custom ones."""
+        return merge_addon_flags(
+            {
+                **lite_flags,
+                "force": ({"LiteTaskApp": {"force": True}}, LiteTaskApp.force.help),
+            }
+        )
 
     _doit_task = None
 

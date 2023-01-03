@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from ..constants import SHA256SUMS
 from .base import BaseAddon
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from ..manager import LiteManager
 
 

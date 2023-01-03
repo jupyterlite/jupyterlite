@@ -114,7 +114,7 @@ class ContentsAddon(BaseAddon):
                 stem = from_path.relative_to(path) if path.is_dir() else path.name
                 to_path = self.output_files_dir / stem
                 resolved = str(to_path.resolve())
-                if resolved in yielded_dests:
+                if resolved in yielded_dests:  # pragma: no cover
                     self.log.debug("Already populated", resolved)
                     continue
                 yielded_dests += [resolved]

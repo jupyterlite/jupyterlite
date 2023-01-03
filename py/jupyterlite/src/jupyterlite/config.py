@@ -82,15 +82,6 @@ class LiteBuildConfig(LoggingConfigurable):
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
-    piplite_urls: _Tuple[str] = TypedTuple(
-        Unicode(),
-        help="Local paths or URLs of piplite-compatible wheels to copy and index",
-    ).tag(config=True)
-
-    pyodide_url: str = Unicode(
-        allow_none=True, help="Local path or URL of a pyodide distribution tarball"
-    ).tag(config=True)
-
     settings_overrides: _Tuple[_Text] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
@@ -244,10 +235,6 @@ class LiteBuildConfig(LoggingConfigurable):
     @default("base_url")
     def _default_base_url(self):
         return os.environ.get("JUPYTERLITE_BASE_URL", "/")
-
-    @default("pyodide_url")
-    def _default_pyodide_url(self):
-        return os.environ.get("JUPYTERLITE_PYODIDE_URL")
 
     @default("http_headers")
     def _default_http_headers(self):

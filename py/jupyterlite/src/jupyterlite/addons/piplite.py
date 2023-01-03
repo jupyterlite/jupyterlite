@@ -6,8 +6,12 @@ import re
 import urllib.parse
 from hashlib import md5, sha256
 from pathlib import Path
+from typing import Tuple as _Tuple
 
 import doit.tools
+from traitlets import Unicode
+
+from ..trait_types import TypedTuple
 
 ### pyolite-specific values, will move to separate repo
 #: the key for PyPI-compatible API responses pointing to wheels
@@ -35,6 +39,17 @@ from .base import BaseAddon
 class PipliteAddon(BaseAddon):
     __all__ = ["post_init", "build", "post_build", "check"]
 
+    # traits
+    piplite_urls: _Tuple[str] = TypedTuple(
+        Unicode(),
+        help="Local paths or URLs of piplite-compatible wheels to copy and index",
+    ).tag(config=True)
+
+    # CLI
+    aliases = {
+        "piplite-wheels": "PipliteAddon.piplite_urls",
+    }
+
     @property
     def output_wheels(self):
         """where wheels will go in the output folder"""
@@ -52,7 +67,7 @@ class PipliteAddon(BaseAddon):
 
     def post_init(self, manager):
         """handle downloading of wheels"""
-        for path_or_url in manager.piplite_urls:
+        for path_or_url in self.piplite_urls:
             yield from self.resolve_one_wheel(path_or_url)
 
     def build(self, manager):
