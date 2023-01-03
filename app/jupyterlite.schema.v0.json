@@ -213,7 +213,7 @@
         "pyodideUrl": {
           "description": "The path to the main pyodide.js entry point",
           "type": "string",
-          "default": "https://cdn.jsdelivr.net/pyodide/v0.21.3/full/pyodide.js",
+          "default": "https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js",
           "format": "uri"
         },
         "disablePyPIFallback": {
