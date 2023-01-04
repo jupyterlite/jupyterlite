@@ -328,9 +328,11 @@ def get_wheel_index(wheels, metadata=None):
 
     for whl_path in sorted(wheels):
         name, version, release = metadata.get(whl_path, get_wheel_fileinfo(whl_path))
-        if name not in all_json:
-            all_json[name] = {"releases": {}}
-        all_json[name]["releases"][version] = [release]
+        # https://peps.python.org/pep-0503/#normalized-names
+        normalized_name = re.sub(r"[-_.]+", "-", name).lower()
+        if normalized_name not in all_json:
+            all_json[normalized_name] = {"releases": {}}
+        all_json[normalized_name]["releases"][version] = [release]
 
     return all_json
 
