@@ -3885,13 +3885,6 @@
     read-package-json-fast "^2.0.3"
     which "^2.0.2"
 
-"@nrwl/cli@15.3.0":
-  version "15.3.0"
-  resolved "https://registry.npmjs.org/@nrwl/cli/-/cli-15.3.0.tgz#61b145d2ba613f9df4dbb9188e631ca50a4e42cb"
-  integrity sha512-WAki2+puBp6qel/VAxdQmr/L/sLyw8K6bynYNmMl4eIlR5hjefrUChPzUiJDAS9/CUYQNOyva2VV5wofzdv95w==
-  dependencies:
-    nx "15.3.0"
-
 "@nrwl/cli@15.4.5":
   version "15.4.5"
   resolved "https://registry.npmjs.org/@nrwl/cli/-/cli-15.4.5.tgz#2a8f663e5265379812ba83c0577abdc94dcdba8f"
@@ -3909,13 +3902,6 @@
     ignore "^5.0.4"
     semver "7.3.4"
     tslib "^2.3.0"
-
-"@nrwl/tao@15.3.0":
-  version "15.3.0"
-  resolved "https://registry.npmjs.org/@nrwl/tao/-/tao-15.3.0.tgz#20266f1269815cb28e21677b0aa7f913a7e31b17"
-  integrity sha512-alyzKKSgfgPwQ/FUozvk43VGOZHyNMiSM6Udl49ZaQwT77GXRFkrOu21odW6dciWPd3iUOUjfJISNqrEJmxvpw==
-  dependencies:
-    nx "15.3.0"
 
 "@nrwl/tao@15.4.5":
   version "15.4.5"
@@ -4345,11 +4331,6 @@
   version "7.0.11"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
-
-"@types/json5@^0.0.29":
-  version "0.0.29"
-  resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
-  integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
 "@types/lodash@^4.14.178":
   version "4.14.191"
@@ -11025,47 +11006,6 @@ nwsapi@^2.2.0:
   resolved "https://registry.npmjs.org/nwsapi/-/nwsapi-2.2.2.tgz#e5418863e7905df67d51ec95938d67bf801f0bb0"
   integrity sha512-90yv+6538zuvUMnN+zCr8LuV6bPFdq50304114vJYJ8RDyK8D5O9Phpbd6SZWgI7PwzmmfN1upeOJlvybDSgCw==
 
-nx@15.3.0:
-  version "15.3.0"
-  resolved "https://registry.npmjs.org/nx/-/nx-15.3.0.tgz#50916064145cf33ba68fb8bd03ff8ffc2b9ebc7b"
-  integrity sha512-5tBrEF2zDkGBDfe8wThazJqBDhsVkRrxc6OttzfBmkXP4VPp8w5MMtUEOry181AXKfjDGkw//UnCSkUNynTDlw==
-  dependencies:
-    "@nrwl/cli" "15.3.0"
-    "@nrwl/tao" "15.3.0"
-    "@parcel/watcher" "2.0.4"
-    "@yarnpkg/lockfile" "^1.1.0"
-    "@yarnpkg/parsers" "^3.0.0-rc.18"
-    "@zkochan/js-yaml" "0.0.6"
-    axios "^1.0.0"
-    chalk "4.1.0"
-    chokidar "^3.5.1"
-    cli-cursor "3.1.0"
-    cli-spinners "2.6.1"
-    cliui "^7.0.2"
-    dotenv "~10.0.0"
-    enquirer "~2.3.6"
-    fast-glob "3.2.7"
-    figures "3.2.0"
-    flat "^5.0.2"
-    fs-extra "^10.1.0"
-    glob "7.1.4"
-    ignore "^5.0.4"
-    js-yaml "4.1.0"
-    jsonc-parser "3.2.0"
-    minimatch "3.0.5"
-    npm-run-path "^4.0.1"
-    open "^8.4.0"
-    semver "7.3.4"
-    string-width "^4.2.3"
-    strong-log-transformer "^2.1.0"
-    tar-stream "~2.2.0"
-    tmp "~0.2.1"
-    tsconfig-paths "^3.9.0"
-    tslib "^2.3.0"
-    v8-compile-cache "2.3.0"
-    yargs "^17.6.2"
-    yargs-parser "21.1.1"
-
 nx@15.4.5, "nx@>=14.8.6 < 16", "nx@>=15.4.2 < 16":
   version "15.4.5"
   resolved "https://registry.npmjs.org/nx/-/nx-15.4.5.tgz#12daa740256fa29ba634fbc4f3f87b6d078c2990"
@@ -13601,16 +13541,6 @@ ts-jest@^26.3.0:
     mkdirp "1.x"
     semver "7.x"
     yargs-parser "20.x"
-
-tsconfig-paths@^3.9.0:
-  version "3.14.1"
-  resolved "https://registry.npmjs.org/tsconfig-paths/-/tsconfig-paths-3.14.1.tgz#ba0734599e8ea36c862798e920bcf163277b137a"
-  integrity sha512-fxDhWnFSLt3VuTwtvJt5fpwxBHg5AdKWMsgcPOOIilyjymcYVZoCQF8fvFRezCNfblEXmi+PcM1eYHeOAgXCOQ==
-  dependencies:
-    "@types/json5" "^0.0.29"
-    json5 "^1.0.1"
-    minimist "^1.2.6"
-    strip-bom "^3.0.0"
 
 tsconfig-paths@^4.1.2:
   version "4.1.2"
