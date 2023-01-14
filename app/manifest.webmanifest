@@ -15,7 +15,7 @@
   ],
   "start_url": "./",
   "background_color": "#fff",
-  "display": "minimal-ui",
+  "display": "standalone",
   "scope": "./",
   "shortcuts" : [
     {
