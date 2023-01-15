@@ -46,7 +46,7 @@ dependencies:
   - ipympl
   - ipyvue
   - ipyvuetify
-  - plotly
+  - plotly >=5.12.0
   ### FEDERATED EXTENSIONS ###
 
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
