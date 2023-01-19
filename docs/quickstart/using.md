@@ -84,4 +84,4 @@ Pyolite is built on top of [pyodide], and includes `piplite`, a wrapper around
 ### JavaScript
 
 By default JupyterLite also ships with a simple JavaScript kernel that runs in an
-`IFrame`.
+`Web Worker`.

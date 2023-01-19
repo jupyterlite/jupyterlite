@@ -58,7 +58,7 @@ JupyterLite is all about accessible browser-based interactive computing:
 - Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
   - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
     `ipywidgets`, `matplotlib`, and `plotly`
-- JavaScript and [P5.js] kernels running in an `IFrame`
+- JavaScript kernel running in a Web Worker
 - View hosted example Notebooks and other files, then edit, save, and download from the
   browser's `IndexDB` (or `localStorage`)
 - Support for saving settings for JupyterLab/Lite core and federated extensions
