@@ -2786,7 +2786,9 @@
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
   version "0.1.0-beta.17"
   dependencies:
+    "@jupyterlab/coreutils" "^5.5.2"
     "@jupyterlite/kernel" "^0.1.0-beta.17"
+    comlink "^4.3.1"
 
 "@jupyterlite/kernel@file:packages/kernel":
   version "0.1.0-beta.17"
