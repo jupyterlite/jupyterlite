@@ -79,9 +79,7 @@ def task_env():
                         P.BINDER_ENV,
                         P.EXAMPLE_LITE_BUILD_CONFIG,
                         C.FED_EXT_MARKER,
-                        # TODO: re-add the p5 kernel
-                        # [C.P5_WHL_URL],
-                        [],
+                        [C.P5_WHL_URL],
                         all_deps,
                     ],
                 ),
