@@ -30,7 +30,7 @@ Various package managers on different operating systems provide these.
 > Binder environment description checked into the repo.
 >
 > ```bash
-> mamba env update --file .binder/environment.yml
+> mamba env create --file .binder/environment.yml
 > mamba activate jupyterlite-dev
 > ```
 >
