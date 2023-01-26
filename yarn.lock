@@ -2729,7 +2729,7 @@
     vega-lite "^5.1.0"
 
 "@jupyterlite/application-extension@file:packages/application-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/application" "~3.5.2"
     "@jupyterlab/apputils" "~3.5.2"
@@ -2741,13 +2741,13 @@
     "@jupyterlab/services" "~6.5.2"
     "@jupyterlab/translation" "~3.5.2"
     "@jupyterlab/ui-components" "~3.5.2"
-    "@jupyterlite/ui-components" "^0.1.0-beta.17"
+    "@jupyterlite/ui-components" "^0.1.0-beta.18"
     "@lumino/algorithm" "^1.9.1"
     "@lumino/coreutils" "^1.12.0"
     "@lumino/widgets" "^1.33.0"
 
 "@jupyterlite/application@file:packages/application":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/application" "~3.5.2"
     "@jupyterlab/coreutils" "~5.5.2"
@@ -2758,40 +2758,40 @@
     "@lumino/widgets" "^1.33.0"
 
 "@jupyterlite/contents@file:packages/contents":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/nbformat" "~3.5.2"
     "@jupyterlab/services" "~6.5.2"
-    "@jupyterlite/localforage" "^0.1.0-beta.17"
+    "@jupyterlite/localforage" "^0.1.0-beta.18"
     "@lumino/coreutils" "^1.12.0"
     "@types/emscripten" "^1.39.6"
     localforage "^1.9.0"
     mime "^3.0.0"
 
 "@jupyterlite/iframe-extension@file:packages/iframe-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/rendermime-interfaces" "~3.5.2"
     "@lumino/coreutils" "^1.12.0"
     "@lumino/widgets" "^1.33.0"
 
 "@jupyterlite/javascript-kernel-extension@file:packages/javascript-kernel-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
-    "@jupyterlite/javascript-kernel" "^0.1.0-beta.17"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
-    "@jupyterlite/server" "^0.1.0-beta.17"
+    "@jupyterlite/javascript-kernel" "^0.1.0-beta.18"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
+    "@jupyterlite/server" "^0.1.0-beta.18"
 
 "@jupyterlite/javascript-kernel@file:packages/javascript-kernel":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "^5.5.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
     comlink "^4.3.1"
 
 "@jupyterlite/kernel@file:packages/kernel":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
     "@jupyterlab/observables" "~4.5.2"
@@ -2804,12 +2804,12 @@
     mock-socket "^9.1.0"
 
 "@jupyterlite/licenses@file:packages/licenses":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
 
 "@jupyterlite/localforage@file:packages/localforage":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
     "@lumino/coreutils" "^1.5.3"
@@ -2817,83 +2817,83 @@
     localforage-memoryStorageDriver "^0.9.2"
 
 "@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
-    "@jupyterlite/contents" "^0.1.0-beta.17"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
-    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.17"
-    "@jupyterlite/server" "^0.1.0-beta.17"
+    "@jupyterlite/contents" "^0.1.0-beta.18"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
+    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.18"
+    "@jupyterlite/server" "^0.1.0-beta.18"
 
 "@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
-    "@jupyterlite/contents" "^0.1.0-beta.17"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
+    "@jupyterlite/contents" "^0.1.0-beta.18"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
     comlink "^4.3.1"
 
 "@jupyterlite/repl-extension@file:packages/repl-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/application" "~3.5.2"
     "@jupyterlab/apputils" "~3.5.2"
     "@jupyterlab/console" "~3.5.2"
     "@jupyterlab/translation" "~3.5.2"
     "@jupyterlab/ui-components" "~3.5.2"
-    "@jupyterlite/application" "^0.1.0-beta.17"
-    "@jupyterlite/ui-components" "^0.1.0-beta.17"
+    "@jupyterlite/application" "^0.1.0-beta.18"
+    "@jupyterlite/ui-components" "^0.1.0-beta.18"
     "@lumino/widgets" "^1.33.0"
 
 "@jupyterlite/retro-application-extension@file:packages/retro-application-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/application" "~3.5.2"
     "@jupyterlab/console" "~3.5.2"
     "@jupyterlab/coreutils" "~5.5.2"
     "@jupyterlab/docmanager" "~3.5.2"
     "@jupyterlab/services" "~6.5.2"
-    "@jupyterlite/ui-components" "^0.1.0-beta.17"
+    "@jupyterlite/ui-components" "^0.1.0-beta.18"
     "@retrolab/application" "^0.3.21"
 
 "@jupyterlite/server@file:packages/server-extension":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
-    "@jupyterlite/licenses" "^0.1.0-beta.17"
-    "@jupyterlite/localforage" "^0.1.0-beta.17"
-    "@jupyterlite/server" "^0.1.0-beta.17"
-    "@jupyterlite/session" "^0.1.0-beta.17"
-    "@jupyterlite/settings" "^0.1.0-beta.17"
-    "@jupyterlite/translation" "^0.1.0-beta.17"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
+    "@jupyterlite/licenses" "^0.1.0-beta.18"
+    "@jupyterlite/localforage" "^0.1.0-beta.18"
+    "@jupyterlite/server" "^0.1.0-beta.18"
+    "@jupyterlite/session" "^0.1.0-beta.18"
+    "@jupyterlite/settings" "^0.1.0-beta.18"
+    "@jupyterlite/translation" "^0.1.0-beta.18"
 
 "@jupyterlite/session@file:packages/session":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
     "@jupyterlab/services" "~6.5.2"
-    "@jupyterlite/kernel" "^0.1.0-beta.17"
+    "@jupyterlite/kernel" "^0.1.0-beta.18"
     "@lumino/algorithm" "^1.9.1"
     "@lumino/coreutils" "^1.12.0"
 
 "@jupyterlite/settings@file:packages/settings":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
     "@jupyterlab/settingregistry" "~3.5.2"
-    "@jupyterlite/localforage" "^0.1.0-beta.17"
+    "@jupyterlite/localforage" "^0.1.0-beta.18"
     "@lumino/coreutils" "^1.12.0"
     json5 "^2.2.0"
     localforage "^1.9.0"
 
 "@jupyterlite/translation@file:packages/translation":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/coreutils" "~5.5.2"
     "@lumino/coreutils" "^1.12.0"
 
 "@jupyterlite/ui-components@file:packages/ui-components":
-  version "0.1.0-beta.17"
+  version "0.1.0-beta.18"
   dependencies:
     "@jupyterlab/ui-components" "~3.5.2"
 
@@ -11862,10 +11862,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pyodide@0.22.0:
-  version "0.22.0"
-  resolved "https://registry.npmjs.org/pyodide/-/pyodide-0.22.0.tgz#44c264e26d5c054e676b051cc5a15a1d14e259c6"
-  integrity sha512-H5BV2m3dDXisZSxKZpPXDudsoAcRRo7Zq9ca4nlj5WjzSC2SY0+Q3fiZDMosgiz7W1BQz5FJUv3EDTmmscJRvA==
+pyodide@0.23.0-alpha.1:
+  version "0.23.0-alpha.1"
+  resolved "https://registry.npmjs.org/pyodide/-/pyodide-0.23.0-alpha.1.tgz#780ea6fed217266c0297856aaa0cd8d76175259f"
+  integrity sha512-vtL5D/5p93ueYcBoaHzwdbuOLO9c+YZA29S2VBFaW2t6iwBalULLfua0iYa0MG4M5Tse5mVHGCBw3wNhTu3CHg==
   dependencies:
     base-64 "^1.0.0"
     node-fetch "^2.6.1"
