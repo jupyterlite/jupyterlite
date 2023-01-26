@@ -145,6 +145,9 @@ def before_rtd_build(app: Sphinx, error):
 
 def after_build(app: Sphinx, error):
     """sphinx-jsonschema makes duplicate ids. clean them"""
+    os.environ.update(
+        JLITE_DOCS_OUT=app.builder.outdir
+    )  # <--- dodo.py already looking for this
     do_tasks("post", RTD_POST_TASKS)
 
 
