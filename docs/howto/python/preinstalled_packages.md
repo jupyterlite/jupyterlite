@@ -6,4 +6,4 @@ By pre-installing packages, they are readily usable in the kernel and can be imp
 
 When pre-installing packages that provides JupyterLab extensions (*e.g.* ipywidgets or ipyleaflet), those JupyterLab extensions are automatically included in the JupyterLite build output without the need for extra configuration.
 
-As an example, a deployment can easily be made using the [JupyterLite deployment demo with xeus-python](https://github.com/jupyterlite/xeus-python-demo)].
+As an example, a deployment can easily be made using the [JupyterLite deployment demo with xeus-python](https://github.com/jupyterlite/xeus-python-demo).
