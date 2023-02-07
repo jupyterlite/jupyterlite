@@ -103,7 +103,6 @@ class ArchiveAddon(BaseAddon):
             ) as tar_gz:
                 with gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz:
                     with tarfile.open(fileobj=gz, mode="w:") as tar:
-
                         for i, path in enumerate(members):
                             if path.is_dir():
                                 continue
