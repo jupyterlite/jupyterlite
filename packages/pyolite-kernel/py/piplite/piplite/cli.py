@@ -110,7 +110,6 @@ async def get_action_kwargs(argv: list[str]) -> tuple[typing.Optional[str], dict
     action = args.action
 
     if action == "install":
-
         kwargs["requirements"] = args.packages
 
         if args.pre:
