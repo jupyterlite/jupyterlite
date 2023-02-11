@@ -21,7 +21,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
     kernelspecs.register({
       spec: {
         name: 'javascript',
-        display_name: 'JavaScript',
+        display_name: 'JavaScript (Web Worker)',
         language: 'javascript',
         argv: [],
         resources: {

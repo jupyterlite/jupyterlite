@@ -7,7 +7,7 @@ import type { DriveFS } from '@jupyterlite/contents';
 
 import type { IPyoliteWorkerKernel } from './tokens';
 
-export class PyoliteRemoteKernel {
+export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
   constructor() {
     this._initialized = new Promise((resolve, reject) => {
       this._initializer = { resolve, reject };
@@ -78,6 +78,7 @@ export class PyoliteRemoteKernel {
   protected async initKernel(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     // from this point forward, only use piplite (but not %pip)
     await this._pyodide.runPythonAsync(`
+      await piplite.install(['sqlite3'], keep_going=True);
       await piplite.install(['ipykernel'], keep_going=True);
       await piplite.install(['pyolite'], keep_going=True);
       await piplite.install(['ipython'], keep_going=True);
@@ -334,10 +335,7 @@ export class PyoliteRemoteKernel {
     const res = this._kernel.comm_info(content.target_name);
     const results = this.formatResult(res);
 
-    return {
-      comms: results,
-      status: 'ok',
-    };
+    return results;
   }
 
   /**

@@ -900,7 +900,7 @@ class C:
     LITE_GH_ORG = f"{GH}/{NAME}"
     P5_GH_REPO = f"{LITE_GH_ORG}/p5-kernel"
     P5_MOD = "jupyterlite_p5_kernel"
-    P5_VERSION = "0.1.0a12"
+    P5_VERSION = "0.1.0"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
     PYTHON_HOSTED = "https://files.pythonhosted.org/packages"
@@ -1090,7 +1090,7 @@ class D:
     PYODIDE_CDN_URL = APP_SCHEMA_PYOLITE["properties"]["pyodideUrl"]["default"]
     PYODIDE_VERSION = _js_version_to_py_version(PYODIDE_JS_VERSION)
     PYODIDE_JS = PYODIDE_CDN_URL.split("/")[-1]
-    PYODIDE_ARCHIVE = f"pyodide-build-{PYODIDE_VERSION}.tar.bz2"
+    PYODIDE_ARCHIVE = f"pyodide-{PYODIDE_VERSION}.tar.bz2"
     PYODIDE_URL = os.environ.get(
         "JUPYTERLITE_PYODIDE_URL",
         f"{C.PYODIDE_DOWNLOAD}/{PYODIDE_VERSION}/{PYODIDE_ARCHIVE}",

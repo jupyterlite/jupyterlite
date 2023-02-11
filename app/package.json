@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/app",
-  "version": "0.1.0-beta.16",
+  "version": "0.1.0-beta.18",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -19,7 +19,7 @@
     "watch": "webpack --config webpack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "~3.5.2",
+    "@jupyterlab/builder": "~3.5.3",
     "css-loader": "^6.6.0",
     "file-loader": "^6.2.0",
     "fs-extra": "^9.0.1",

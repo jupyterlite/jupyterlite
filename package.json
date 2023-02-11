@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.1.0b16",
+  "version": "0.1.0b18",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -59,7 +59,7 @@
     "validator": "^13.7.0"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~3.5.2",
+    "@jupyterlab/buildutils": "~3.5.3",
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "eslint": "^8.27.0",
@@ -73,7 +73,7 @@
     "jest-junit": "^11.1.0",
     "jest-raw-loader": "^1.0.1",
     "jest-summary-reporter": "^0.0.2",
-    "lerna": "^6.1.0",
+    "lerna": "^6.4.0",
     "lint-staged": "^10.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.1",

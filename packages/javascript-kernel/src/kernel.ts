@@ -1,8 +1,14 @@
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import { KernelMessage } from '@jupyterlab/services';
 
 import { BaseKernel, IKernel } from '@jupyterlite/kernel';
 
 import { PromiseDelegate } from '@lumino/coreutils';
+
+import { wrap } from 'comlink';
+
+import { IRemoteJavaScriptWorkerKernel } from './tokens';
 
 /**
  * A kernel that executes code in an IFrame.
@@ -13,27 +19,12 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
    *
    * @param options The instantiation options for a new JavaScriptKernel
    */
-  constructor(options: IKernel.IOptions) {
+  constructor(options: JavaScriptKernel.IOptions) {
     super(options);
-
-    // create the main IFrame
-    this._iframe = document.createElement('iframe');
-    this._iframe.style.visibility = 'hidden';
-    this._iframe.style.position = 'absolute';
-    // position outside of the page
-    this._iframe.style.top = '-100000px';
-    this._iframe.onload = async () => {
-      await this._initIFrame();
-      this._ready.resolve();
-      window.addEventListener('message', (e: MessageEvent) => {
-        const msg = e.data;
-        if (msg.event === 'stream') {
-          const content = msg as KernelMessage.IStreamMsg['content'];
-          this.stream(content);
-        }
-      });
-    };
-    document.body.appendChild(this._iframe);
+    this._worker = this.initWorker(options);
+    this._worker.onmessage = (e) => this._processWorkerMessage(e.data);
+    this.remoteKernel = this.initRemote(options);
+    this._ready.resolve();
   }
 
   /**
@@ -43,7 +34,8 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
     if (this.isDisposed) {
       return;
     }
-    this._iframe.remove();
+    this._worker.terminate();
+    (this._worker as any) = null;
     super.dispose();
   }
 
@@ -93,40 +85,9 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   async executeRequest(
     content: KernelMessage.IExecuteRequestMsg['content']
   ): Promise<KernelMessage.IExecuteReplyMsg['content']> {
-    const { code } = content;
-    try {
-      const result = this._eval(code);
-
-      this.publishExecuteResult({
-        execution_count: this.executionCount,
-        data: {
-          'text/plain': result,
-        },
-        metadata: {},
-      });
-
-      return {
-        status: 'ok',
-        execution_count: this.executionCount,
-        user_expressions: {},
-      };
-    } catch (e) {
-      const { name, stack, message } = e as any as Error;
-
-      this.publishExecuteError({
-        ename: name,
-        evalue: message,
-        traceback: [`${stack}`],
-      });
-
-      return {
-        status: 'error',
-        execution_count: this.executionCount,
-        ename: name,
-        evalue: message,
-        traceback: [`${stack}`],
-      };
-    }
+    const result = await this.remoteKernel.execute(content, this.parent);
+    result.execution_count = this.executionCount;
+    return result;
   }
 
   /**
@@ -137,24 +98,7 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   async completeRequest(
     content: KernelMessage.ICompleteRequestMsg['content']
   ): Promise<KernelMessage.ICompleteReplyMsg['content']> {
-    // naive completion on window names only
-    // TODO: improve and move logic to the iframe
-    const vars = this._evalFunc(
-      this._iframe.contentWindow,
-      'Object.keys(window)'
-    ) as string[];
-    const { code, cursor_pos } = content;
-    const words = code.slice(0, cursor_pos).match(/(\w+)$/) ?? [];
-    const word = words[0] ?? '';
-    const matches = vars.filter((v) => v.startsWith(word));
-
-    return {
-      matches,
-      cursor_start: cursor_pos - word.length,
-      cursor_end: cursor_pos,
-      metadata: {},
-      status: 'ok',
-    };
+    return await this.remoteKernel.complete(content, this.parent);
   }
 
   /**
@@ -233,61 +177,108 @@ export class JavaScriptKernel extends BaseKernel implements IKernel {
   }
 
   /**
-   * Execute code in the kernel IFrame.
+   * Load the worker.
    *
-   * @param code The code to execute.
+   * ### Note
+   *
+   * Subclasses must implement this typographically almost _exactly_ for
+   * webpack to find it.
    */
-  protected _eval(code: string): string {
-    return this._evalFunc(this._iframe.contentWindow, code);
+  protected initWorker(options: JavaScriptKernel.IOptions): Worker {
+    return new Worker(new URL('./comlink.worker.js', import.meta.url), {
+      type: 'module',
+    });
   }
 
   /**
-   * Create a new IFrame
+   * Initialize the remote kernel.
    *
-   * @param iframe The IFrame to initialize.
+   * @param options The options for the remote kernel.
+   * @returns The initialized remote kernel.
    */
-  protected async _initIFrame(): Promise<void> {
-    if (!this._iframe.contentWindow) {
-      return;
-    }
-    this._evalFunc(
-      this._iframe.contentWindow,
-      `
-        console._log = console.log;
-        console._error = console.error;
-
-        window._bubbleUp = function(msg) {
-          window.parent.postMessage(msg);
-        }
-
-        console.log = function() {
-          const args = Array.prototype.slice.call(arguments);
-          window._bubbleUp({
-            "event": "stream",
-            "name": "stdout",
-            "text": args.join(' ') + '\\n'
-          });
-        };
-        console.info = console.log;
-
-        console.error = function() {
-          const args = Array.prototype.slice.call(arguments);
-          window._bubbleUp({
-            "event": "stream",
-            "name": "stderr",
-            "text": args.join(' ') + '\\n'
-          });
-        };
-        console.warn = console.error;
-
-        window.onerror = function(message, source, lineno, colno, error) {
-          console.error(message);
-        }
-      `
-    );
+  protected initRemote(
+    options: JavaScriptKernel.IOptions
+  ): IRemoteJavaScriptWorkerKernel {
+    const remote: IRemoteJavaScriptWorkerKernel = wrap(this._worker);
+    remote.initialize({ baseUrl: PageConfig.getBaseUrl() });
+    return remote;
   }
 
-  private _iframe: HTMLIFrameElement;
-  private _evalFunc = new Function('window', 'code', 'return window.eval(code);');
+  /**
+   * Process a message coming from the JavaScript web worker.
+   *
+   * @param msg The worker message to process.
+   */
+  private _processWorkerMessage(msg: any): void {
+    if (!msg.type) {
+      return;
+    }
+
+    const parentHeader = msg.parentHeader || this.parentHeader;
+
+    switch (msg.type) {
+      case 'stream': {
+        const bundle = msg.bundle ?? { name: 'stdout', text: '' };
+        this.stream(bundle, parentHeader);
+        break;
+      }
+      case 'input_request': {
+        const bundle = msg.content ?? { prompt: '', password: false };
+        this.inputRequest(bundle, parentHeader);
+        break;
+      }
+      case 'display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.displayData(bundle, parentHeader);
+        break;
+      }
+      case 'update_display_data': {
+        const bundle = msg.bundle ?? { data: {}, metadata: {}, transient: {} };
+        this.updateDisplayData(bundle, parentHeader);
+        break;
+      }
+      case 'clear_output': {
+        const bundle = msg.bundle ?? { wait: false };
+        this.clearOutput(bundle, parentHeader);
+        break;
+      }
+      case 'execute_result': {
+        const bundle = msg.bundle ?? { execution_count: 0, data: {}, metadata: {} };
+        this.publishExecuteResult(bundle, parentHeader);
+        break;
+      }
+      case 'execute_error': {
+        const bundle = msg.bundle ?? { ename: '', evalue: '', traceback: [] };
+        this.publishExecuteError(bundle, parentHeader);
+        break;
+      }
+      case 'comm_msg':
+      case 'comm_open':
+      case 'comm_close': {
+        this.handleComm(
+          msg.type,
+          msg.content,
+          msg.metadata,
+          msg.buffers,
+          msg.parentHeader
+        );
+        break;
+      }
+    }
+  }
+
+  protected remoteKernel: IRemoteJavaScriptWorkerKernel;
+
+  private _worker: Worker;
   private _ready = new PromiseDelegate<void>();
+}
+
+/**
+ * A namespace for JavaScriptKernel statics
+ */
+namespace JavaScriptKernel {
+  /**
+   * The instantiation options for a JavaScript kernel.
+   */
+  export interface IOptions extends IKernel.IOptions {}
 }

@@ -2,7 +2,7 @@
 
 As of the upstream:
 
-    https://github.com/pyodide/pyodide/blob/0.21.3/packages/micropip/src/micropip/_micropip.py#L440
+    https://github.com/pyodide/micropip/blob/v0.2.0/micropip/_micropip.py#L468
 
 .. code:
 
@@ -110,7 +110,6 @@ async def get_action_kwargs(argv: list[str]) -> tuple[typing.Optional[str], dict
     action = args.action
 
     if action == "install":
-
         kwargs["requirements"] = args.packages
 
         if args.pre:

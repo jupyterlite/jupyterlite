@@ -2,6 +2,70 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b18
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b17...2bab033a13e46dc29a8fa51a3bca033d377cedeb))
+
+### Enhancements made
+
+- Display field in webmanifest changed to standalone to support iPadOS [#951](https://github.com/jupyterlite/jupyterlite/pull/951) ([@dhombios](https://github.com/dhombios))
+- Run the JavaScript kernel in a Web Worker [#711](https://github.com/jupyterlite/jupyterlite/pull/711) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to lerna 6.4 [#943](https://github.com/jupyterlite/jupyterlite/pull/943) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Run the JavaScript kernel in a Web Worker [#711](https://github.com/jupyterlite/jupyterlite/pull/711) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-01-04&to=2023-01-19&type=c))
+
+[@dhombios](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adhombios+updated%3A2023-01-04..2023-01-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-01-04..2023-01-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-01-04..2023-01-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 0.1.0b17
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b16...864bc67f434706297b3c958555abbdb532841941))
+
+### ⚠️ API and Breaking Changes ⚠️
+
+#### Use `PipliteAddon.piplite_urls` instead of `LiteBuildConfig.piplite_urls`
+
+If you were configuring the `piplite_urls` option (described in https://jupyterlite.readthedocs.io/en/latest/howto/python/wheels.html) to ship additional wheels at build time, this configuration option has now been moved from `LiteBuildConfig.piplite_urls` to `PipliteAddon.piplite_urls`.
+
+This was changed in the following PR:
+
+- Allow Addons to provide CLI aliases and flags [#934](https://github.com/jupyterlite/jupyterlite/pull/934) ([@bollwyvl](https://github.com/bollwyvl))
+
+#### CLI flags
+
+The CLI flags have *not* changed.
+
+### Enhancements made
+
+- normalize all indexed piplite wheel names [#939](https://github.com/jupyterlite/jupyterlite/pull/939) ([@bollwyvl](https://github.com/bollwyvl))
+- Update to Pyodide 0.22 [#937](https://github.com/jupyterlite/jupyterlite/pull/937) ([@jtpio](https://github.com/jtpio))
+- Allow Addons to provide CLI aliases and flags [#934](https://github.com/jupyterlite/jupyterlite/pull/934) ([@bollwyvl](https://github.com/bollwyvl))
+- do not signal `ready` until initialize completes [#900](https://github.com/jupyterlite/jupyterlite/pull/900) ([@stevejpurves](https://github.com/stevejpurves))
+
+### Maintenance and upkeep improvements
+
+- Bump json5 from 2.2.1 to 2.2.2 [#936](https://github.com/jupyterlite/jupyterlite/pull/936) ([@dependabot](https://github.com/dependabot))
+- Add name to the top-level `pyproject.toml` [#931](https://github.com/jupyterlite/jupyterlite/pull/931) ([@jtpio](https://github.com/jtpio))
+- Fix Gitpod setup task [#928](https://github.com/jupyterlite/jupyterlite/pull/928) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 3.5.2 [#924](https://github.com/jupyterlite/jupyterlite/pull/924) ([@jtpio](https://github.com/jtpio))
+- Add UI test for embedding the REPL [#699](https://github.com/jupyterlite/jupyterlite/pull/699) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-12-20&to=2023-01-04&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-12-20..2023-01-04&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-12-20..2023-01-04&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-12-20..2023-01-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-12-20..2023-01-04&type=Issues) | [@stevejpurves](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Astevejpurves+updated%3A2022-12-20..2023-01-04&type=Issues)
+
 ## 0.1.0b16
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b15...161cfaadaa2ccdf6e928d080b2cf9c5255baa987))
@@ -35,8 +99,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2022-11-30&to=2022-12-20&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2022-11-30..2022-12-20&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2022-11-30..2022-12-20&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2022-11-30..2022-12-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2022-11-30..2022-12-20&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2022-11-30..2022-12-20&type=Issues) | [@sglyon](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Asglyon+updated%3A2022-11-30..2022-12-20&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b15
 
