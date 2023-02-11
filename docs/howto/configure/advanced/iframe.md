@@ -1,11 +1,3 @@
-
-
-
-bridge -> communication
-
-
-
-
 # Communication between a host page and a JupyterLite instance running in an IFrame
 
 When a JupyterLite instance is embedded in a website via an IFrame, it may be relevant to establish a communication channel between the host page and the instance.
