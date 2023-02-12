@@ -344,7 +344,7 @@ def task_build():
             ),
             (U.make_pyolite_wheel_js),
         ],
-        targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_WHEEL_TS],
+        targets=[B.PYOLITE_WHEEL_INDEX, B.PYOLITE_REPODATA_INDEX, B.PYOLITE_WHEEL_TS],
     )
 
     app_deps = [
@@ -1180,6 +1180,7 @@ class B:
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
     PYOLITE_WHEELS = P.PYOLITE_TS / "pypi"
     PYOLITE_WHEEL_INDEX = PYOLITE_WHEELS / "all.json"
+    PYOLITE_REPODATA_INDEX = PYOLITE_WHEELS / "repodata.json"
     PYOLITE_WHEEL_TS = P.PYOLITE_TS / "src/_pypi.ts"
     PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
     REQ_CACHE = BUILD / "requests-cache.sqlite"
