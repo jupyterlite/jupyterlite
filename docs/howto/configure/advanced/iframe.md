@@ -93,11 +93,11 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     /* Outgoing messages management */
     const notifyThemeChanged = (): void => {
-      console.log('Message sent to host: ' + themeManager.theme);
       window.parent.postMessage(
         {type: 'from-iframe-to-host', theme: themeManager.theme}, 
         '*'
       );
+      console.log('Message sent to host: ' + themeManager.theme);
     };
     themeManager.themeChanged.connect(notifyThemeChanged);
   }
