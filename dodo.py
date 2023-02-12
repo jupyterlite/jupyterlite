@@ -952,7 +952,13 @@ class C:
         "websocket-client",
         "widgetsnbextension",
     ]
-    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
+    REQUIRED_WHEEL_DEPS = [
+        "ipykernel",
+        "notebook",
+        "ipywidgets>=8",
+        # some requests thing
+        f"{PYTHON_HOSTED}/py3/c/charset-normalizer/charset_normalizer-3.0.1-py3-none-any.whl",
+    ]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
