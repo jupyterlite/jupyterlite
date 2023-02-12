@@ -17,7 +17,7 @@ conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-prior
 conda activate jupyterlab-iframe-ext
 ```
 
-Create a folder in your workspace, then generate an extension template using [cookiecutter](https://github.com/cookiecutter/cookiecutter).
+Create a directory in your workspace, move to this directory, then generate an extension template using [cookiecutter](https://github.com/cookiecutter/cookiecutter):
 
 ```bash 
 cookiecutter https://github.com/jupyterlab/extension-cookiecutter-ts
@@ -141,7 +141,7 @@ Now, create the JupyterLite extension. Install jupyterlite:
 pip install jupyterlite
 ```
 
-Go to a folder where the extension should be tested and run the build of this extension for JupyterLite:
+Move to a directory where the extension should be tested and run the build of this extension for JupyterLite:
 
 ```bash
 mkdir examples
@@ -158,7 +158,7 @@ federated_extensions:copy:ext:jupyterlab-iframe-bridge-example
 ...
 ```
 
-A `jupyterlab-iframe-bridge-example/examples/lite/` folder containing everything needed for JupyterLite to work is created (notice the presence of our extension in the `extensions` subdirectory).
+A `jupyterlab-iframe-bridge-example/examples/lite/` directory containing everything needed for JupyterLite to work is created (notice the presence of our extension in the `extensions` subdirectory).
 
 ## Test the extension
 
@@ -196,7 +196,7 @@ To test the communication between a host page and an IFrame containing JupyterLi
 
 When the user clicks on the button, the `toggle` function sends a message to the IFrame via the `postMessage` method. This message is intercepted by our extension which changes the theme. Moreover, when the host page receives a message from the IFrame notifying of an effective theme change, it displays it to the user.
 
-In order to visualize this process, launch a minimalist server from the `examples` folder:
+In order to visualize this process, launch a minimalist server from the `examples` directory:
 
 ```bash
 cd examples
