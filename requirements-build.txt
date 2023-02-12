@@ -6,5 +6,6 @@ twine
 requests_cache
 # bootstrap packages
 pkginfo
+packaging
 jupyter_core >=4.7
 importlib_metadata
