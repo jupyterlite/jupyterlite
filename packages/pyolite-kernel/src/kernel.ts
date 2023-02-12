@@ -61,6 +61,11 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const pipliteUrls = [...(options.pipliteUrls || []), URLExt.join(pypi, 'all.json')];
 
+    const repodataUrls = [
+      ...(options.repodataUrls || []),
+      URLExt.join(pypi, 'all.json'),
+    ];
+
     const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
 
     const disablePyPIFallback = !!options.disablePyPIFallback;
@@ -311,6 +316,11 @@ export namespace PyoliteKernel {
      * The URLs from which to attempt PyPI API requests
      */
     pipliteUrls: string[];
+
+    /**
+     * The URLs with which to patch repodata.json
+     */
+    repodataUrls: string[];
 
     /**
      * Do not try pypi.org if `piplite.install` fails against local URLs

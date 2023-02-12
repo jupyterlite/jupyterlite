@@ -61,7 +61,7 @@ REPODATA_INFO = {
     "arch": "wasm32",
     "platform": "emscripten_3_1_27",
     "python": "3.10.2",
-    "version": "0.22.0",
+    "version": "0.22.1",
 }
 
 #: the observed default environment of pyodide
