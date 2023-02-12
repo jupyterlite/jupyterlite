@@ -495,7 +495,7 @@ def get_wheel_repodata(
     return normalized_name, version, pkg_entry
 
 
-@functools.lru_cache
+@functools.lru_cache(1000)
 def get_wheel_pkginfo(whl_path: Path):
     """Return the as-parsed distribution information from pkginfo."""
     import pkginfo
