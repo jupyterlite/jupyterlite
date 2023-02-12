@@ -17,7 +17,7 @@ conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-prior
 conda activate jupyterlab-iframe-ext
 ```
 
-Define a working folder and then create the basic extension files using [cookiecutter](https://github.com/cookiecutter/cookiecutter).
+Create a folder in your workspace, then generate an extension template using [cookiecutter](https://github.com/cookiecutter/cookiecutter).
 
 ```bash 
 cookiecutter https://github.com/jupyterlab/extension-cookiecutter-ts
