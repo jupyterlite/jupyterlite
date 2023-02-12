@@ -10,7 +10,7 @@ This extension is first built for JupyterLab and then for JupyterLite.
 
 It's a good practice to create a specific environment for the development of the extension. Several methods are possible. Here we use [conda](https://conda.io/projects/conda/en/latest/index.html), a package and environment manager. The installation procedure for conda is [here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
-Follow the [JupyterLab tutorial](https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html#install-nodejs-jupyterlab-etc-in-a-conda-environment): 
+Follow the [JupyterLab tutorial](https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html#install-nodejs-jupyterlab-etc-in-a-conda-environment) to create an environment: 
 
 ```bash 
 conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs
