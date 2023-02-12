@@ -75,7 +75,8 @@ serve = [
     "tornado >=6.1",
 ]
 piplite = [
-    "pkginfo"
+    "pkginfo",
+    "packaging",
 ]
 mathjax = [
     "jupyter-server-mathjax >=0.2.3",
