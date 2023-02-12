@@ -206,6 +206,6 @@ In a browser, at the address `http://127.0.0.1:8000`, you should be able to noti
 
 https://user-images.githubusercontent.com/44410933/218273379-07d129e3-27c1-4c30-a89b-6d1a7bb61b26.mp4
 
-Furthermore, the browser console should display the following messages:
+In addition, the browser console should display messages similar to the following:
 
-![image](https://user-images.githubusercontent.com/44410933/218318643-48ddecd3-200e-4fcc-a43c-2c55e821f18c.png)
+![image](https://user-images.githubusercontent.com/44410933/218319071-0095cbe5-ca53-45e5-9bae-a9beeb6197e2.png)
