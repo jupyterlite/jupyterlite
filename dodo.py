@@ -71,6 +71,14 @@ def task_env():
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
             file_dep=[P.BINDER_ENV, B.PYODIDE_REPODATA, *all_deps],
+            uptodate=[
+                doit.tools.config_changed(
+                    dict(
+                        IGNORED_WHEELS=C.IGNORED_WHEELS,
+                        REQUIRED_WHEEL_DEPS=C.REQUIRED_WHEEL_DEPS,
+                    )
+                )
+            ],
             targets=[B.RAW_WHEELS_REQS],
             actions=[
                 (
@@ -923,13 +931,27 @@ class C:
         "js",
         "pyodide_js",
         "pyodide",
-        # used in piplite examples
-        "jupyter_server",
-        "nbconvert",
         # broken?
         "pathspec",
     ]
-    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyolite"]
+    #: never any reason to ship these to the browser
+    IGNORED_WHEELS = [
+        "ipykernel",
+        "jupyter_client",
+        "jupyter_server_terminals",
+        "jupyter_server",
+        "jupyter_events",
+        "nbclassic",
+        "nbclient",
+        "nbconvert",
+        "notebook_shim",
+        "notebook",
+        "pyolite",
+        "Send2Trash",
+        "terminado",
+        "websocket-client",
+        "widgetsnbextension",
+    ]
     REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
@@ -984,7 +1006,10 @@ class P:
     ALL_EXAMPLES = [
         p
         for p in EXAMPLES.rglob("*")
-        if not p.is_dir() and ".cache" not in str(p) and ".doit" not in str(p)
+        if not p.is_dir()
+        and ".cache" not in str(p)
+        and ".doit" not in str(p)
+        and "-checkpoint.ipynb" not in str(p)
     ]
 
     # set later
@@ -1198,7 +1223,7 @@ class B:
 
     EXAMPLE_DEPS = BUILD / "depfinder"
     # does crazy imports
-    SKIP_DEPFINDER = [P.EXAMPLES / "python-packages.ipynb"]
+    SKIP_DEPFINDER = [P.EXAMPLES / "pyolite/python-packages.ipynb"]
 
     PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
     RAW_WHEELS = BUILD / "wheels"
