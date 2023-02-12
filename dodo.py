@@ -1110,7 +1110,15 @@ class D:
 
     ALL_IPYNB = filter(
         C.NOT_SKIP_LINT,
-        [*P.DOCS_IPYNB, *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")]],
+        [
+            *P.DOCS_IPYNB,
+            *[
+                p
+                for p in P.ALL_EXAMPLES
+                if p.name.endswith(".ipynb")
+                and not p.name.endswith("-checkpoint.ipynb")
+            ],
+        ],
     )
 
 
