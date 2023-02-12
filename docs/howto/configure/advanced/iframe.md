@@ -93,11 +93,9 @@ const plugin: JupyterFrontEndPlugin<void> = {
 
     /* Outgoing messages management */
     const notifyThemeChanged = (): void => {
-      window.parent.postMessage(
-        {type: 'from-iframe-to-host', theme: themeManager.theme}, 
-        '*'
-      );
-      console.log('Message sent to host: ' + themeManager.theme);
+      const message = {type: 'from-iframe-to-host', theme: themeManager.theme};
+      window.parent.postMessage(message, '*');
+      console.log('Message sent to host:', message);
     };
     themeManager.themeChanged.connect(notifyThemeChanged);
   }
@@ -208,3 +206,6 @@ In a browser, at the address `http://127.0.0.1:8000`, you should be able to noti
 
 https://user-images.githubusercontent.com/44410933/218273379-07d129e3-27c1-4c30-a89b-6d1a7bb61b26.mp4
 
+Furthermore, the browser console should display the following messages:
+
+![image](https://user-images.githubusercontent.com/44410933/218318643-48ddecd3-200e-4fcc-a43c-2c55e821f18c.png)
