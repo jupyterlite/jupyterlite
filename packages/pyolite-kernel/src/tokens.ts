@@ -53,6 +53,11 @@ export namespace IPyoliteWorkerKernel {
     pipliteUrls: string[];
 
     /**
+     * The URLs of additional pyodide repodata.json files
+     */
+    repodataUrls: string[];
+
+    /**
      * Whether `piplite` should fall back to the hard-coded `pypi.org` for resolving packages.
      */
     disablePyPIFallback: boolean;

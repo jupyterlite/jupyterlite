@@ -1796,6 +1796,10 @@ class U:
             ""
             "?name=pypi/[name].[ext]"
             "&context=.!../pypi/all.json';",
+            "export * as repodataJSONUrl from '!!file-loader"
+            ""
+            "?name=pypi/[name].[ext]"
+            "&context=.!../pypi/repodata.json';",
         ]
 
         vars_made = {}

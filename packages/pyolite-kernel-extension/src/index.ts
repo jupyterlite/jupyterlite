@@ -42,7 +42,11 @@ const kernel: JupyterLiteServerPlugin<void> = {
     const url = config.pyodideUrl || PYODIDE_CDN_URL;
     const pyodideUrl = URLExt.parse(url).href;
     const rawPipUrls = config.pipliteUrls || [];
+    const rawRepoUrls = config.repodataUrls || [];
     const pipliteUrls = rawPipUrls.map((pipUrl: string) => URLExt.parse(pipUrl).href);
+    const repodataUrls = rawRepoUrls.map(
+      (repoUrl: string) => URLExt.parse(repoUrl).href
+    );
     const disablePyPIFallback = !!config.disablePyPIFallback;
 
     kernelspecs.register({
@@ -73,6 +77,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
           pipliteUrls,
           disablePyPIFallback,
           mountDrive,
+          repodataUrls,
         });
       },
     });

@@ -63,7 +63,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
 
     const repodataUrls = [
       ...(options.repodataUrls || []),
-      URLExt.join(pypi, 'all.json'),
+      URLExt.join(pypi, 'repodata.json'),
     ];
 
     const pipliteWheelUrl = URLExt.join(pypi, PIPLITE_WHEEL);
@@ -75,6 +75,7 @@ export class PyoliteKernel extends BaseKernel implements IKernel {
       pyodideUrl,
       indexUrl,
       pipliteWheelUrl,
+      repodataUrls,
       pipliteUrls,
       disablePyPIFallback,
       location: this.location,

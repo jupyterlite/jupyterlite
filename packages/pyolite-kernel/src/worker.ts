@@ -7,6 +7,38 @@ import type { DriveFS } from '@jupyterlite/contents';
 
 import type { IPyoliteWorkerKernel } from './tokens';
 
+async function fetchRepodata(url: string): Promise<IRepoData> {
+  const response = await fetch(url);
+  const repodata: IRepoData = await response.json();
+  for (const [pkgName, pkg] of Object.entries(repodata.packages)) {
+    const file_name = new URL(pkg.file_name, url).toString();
+    repodata.packages[pkgName] = { ...pkg, file_name };
+  }
+  return repodata;
+}
+
+export interface IRepoDataPackage {
+  depends: string[];
+  file_name: string;
+  imports: string[];
+  install_dir: 'site';
+  name: string;
+  sha256: string;
+  version: string;
+}
+
+export interface IRepoData {
+  info: {
+    arch: string;
+    platform: string;
+    python: string;
+    version: string;
+  };
+  packages: {
+    [key: string]: IRepoDataPackage;
+  };
+}
+
 export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
   constructor() {
     this._initialized = new Promise((resolve, reject) => {
@@ -60,7 +92,8 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
       throw new Error('Uninitialized');
     }
 
-    const { pipliteWheelUrl, disablePyPIFallback, pipliteUrls } = this._options;
+    const { pipliteWheelUrl, disablePyPIFallback, pipliteUrls, repodataUrls } =
+      this._options;
 
     // this is the only use of `loadPackage`, allow `piplite` to handle the rest
     await this._pyodide.loadPackage(['micropip']);
@@ -73,6 +106,28 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
       piplite.piplite._PIPLITE_DISABLE_PYPI = ${disablePyPIFallback ? 'True' : 'False'}
       piplite.piplite._PIPLITE_URLS = ${JSON.stringify(pipliteUrls)}
     `);
+
+    if (repodataUrls.length) {
+      const API = (this._pyodide as any)._api;
+      const repodataPromises: Promise<IRepoData>[] = [];
+      for (const url of repodataUrls) {
+        repodataPromises.push(fetchRepodata(url));
+      }
+      const repodataResults = await Promise.all(repodataPromises);
+      for (const repo of repodataResults) {
+        API.repodata_packages = {
+          ...API.repodata_packages,
+          ...repo.packages,
+        };
+      }
+
+      for (const name of Object.keys(API.repodata_packages)) {
+        const pkg = API.repodata_packages[name];
+        for (const import_name of pkg.imports) {
+          API._import_name_to_package_name.set(import_name, name);
+        }
+      }
+    }
   }
 
   protected async initKernel(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
