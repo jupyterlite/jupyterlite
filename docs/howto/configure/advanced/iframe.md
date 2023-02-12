@@ -203,7 +203,7 @@ cd examples
 python -m http.server -b 127.0.0.1
 ```
 
-In a browser, at the address `http://127.0.0.1:8000`, you should be able to notice the the communication between the host page and the IFrame:
+In a browser, at the address `http://127.0.0.1:8000`, you should be able to notice the communication between the host page and the IFrame:
 
 
 https://user-images.githubusercontent.com/44410933/218273379-07d129e3-27c1-4c30-a89b-6d1a7bb61b26.mp4
