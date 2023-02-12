@@ -40,7 +40,7 @@ test [y]: n
 repository [https://github.com/github_username/jupyterlab-iframe-bridge-example]:
 ```
 
-Finally, copy the extension (empty for now) into JupyterLab and create a symbolic link from JupyterLab to the source code:
+Finally, install the dependencies and the extension (empty for now) into the environment, then create a symbolic link from JupyterLab to the source code in order to avoid running `pip install` every time a modification is made:
 
 ```bash 
 cd jupyterlab-iframe-bridge-example
