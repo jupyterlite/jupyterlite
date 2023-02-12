@@ -95,7 +95,7 @@ const plugin: JupyterFrontEndPlugin<void> = {
     const notifyThemeChanged = (): void => {
       const message = {type: 'from-iframe-to-host', theme: themeManager.theme};
       window.parent.postMessage(message, '*');
-      console.log('Message sent to host:', message);
+      console.log('Message sent to the host:', message);
     };
     themeManager.themeChanged.connect(notifyThemeChanged);
   }
