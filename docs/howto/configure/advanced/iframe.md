@@ -112,7 +112,7 @@ Two situations are to be distinguished: the reception of a message sent from the
 
 For the first situation, we use the `themeManager.theme` property to identify the current theme and the `themeManager.setTheme` method to change it. The theme change is triggered when the IFrame receives a message whose type is `from-host-to-iframe`.
 
-For the second situation, the `themeManager.themeChanged` property is used. This signal is fired when the theme has actually changed. It is used here to notify the host page. This notification is made possible by the `postMessage` ([documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)) method.
+For the second situation, the `themeManager.themeChanged` property is used. This signal is fired when the theme has actually changed. It is used to notify the host page through the `postMessage` method ([documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)).
 
 ## From JupyterLab extension to JupyterLite extension
 
