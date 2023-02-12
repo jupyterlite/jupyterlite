@@ -923,6 +923,9 @@ class C:
         "js",
         "pyodide_js",
         "pyodide",
+        # used in piplite examples
+        "jupyter_server",
+        "nbconvert",
         # broken?
         "pathspec",
     ]
