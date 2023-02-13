@@ -15,7 +15,7 @@ dependencies:
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - jupyterlab >=3.5.3,<4
+  - jupyterlab >=3.5.3,<3.6
   - retrolab >=0.3.21,<0.4
   # extra docs tools
   - sphinx-autobuild
@@ -51,7 +51,7 @@ dependencies:
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
-  - nodejs >=16,<17
+  - nodejs >=18,<19
   - python >=3.10,<3.11
   # build
   - doit >=0.34,<1
