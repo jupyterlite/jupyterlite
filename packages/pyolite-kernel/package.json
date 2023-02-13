@@ -73,7 +73,9 @@
       "py/piplite": "0.1.0b18",
       "py/pyolite": "0.1.0b18",
       "py/widgetsnbextension3/widgetsnbextension": "3.6.0",
-      "py/widgetsnbextension4/widgetsnbextension": "4.0.2"
+      "py/widgetsnbextension4/widgetsnbextension": "4.0.2",
+      "py/jupyterlab_widgets1/jupyterlab_widgets": "1.1.2",
+      "py/jupyterlab_widgets3/jupyterlab_widgets": "3.0.5"
     }
   },
   "styleModule": "style/index.js"

@@ -2,6 +2,8 @@
 export * as allJSONUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/all.json';
 export * as ipykernelWheelUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/ipykernel-6.9.2-py3-none-any.whl';
 export * as jediWheelUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/jedi-0.18.2-py3-none-any.whl';
+export * as jupyterlab_widgetsWheelUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/jupyterlab_widgets-1.1.2-py3-none-any.whl';
+export * as jupyterlab_widgetsWheelUrl1 from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/jupyterlab_widgets-3.0.5-py3-none-any.whl';
 export * as pipliteWheelUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/piplite-0.1.0b18-py3-none-any.whl';
 export * as pyoliteWheelUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/pyolite-0.1.0b18-py3-none-any.whl';
 export * as repodataJSONUrl from '!!file-loader?name=pypi/[name].[ext]&context=.!../pypi/repodata.json';
