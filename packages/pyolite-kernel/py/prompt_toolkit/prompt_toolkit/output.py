@@ -1,0 +1,2 @@
+class ColorDepth:
+    pass

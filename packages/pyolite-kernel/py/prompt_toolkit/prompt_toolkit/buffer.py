@@ -1,0 +1,2 @@
+class Buffer:
+    pass

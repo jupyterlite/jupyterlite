@@ -938,18 +938,20 @@ class C:
     IGNORED_WHEELS = [
         "ipykernel",
         "jupyter_client",
+        "jupyter_events",
         "jupyter_server_terminals",
         "jupyter_server",
-        "jupyter_events",
         "nbclassic",
         "nbclient",
         "nbconvert",
         "notebook_shim",
         "notebook",
+        "prometheus_client",
+        "prompt_toolkit",
         "pyolite",
         "Send2Trash",
         "terminado",
-        "websocket-client",
+        "websocket_client",
         "widgetsnbextension",
     ]
     REQUIRED_WHEEL_DEPS = [

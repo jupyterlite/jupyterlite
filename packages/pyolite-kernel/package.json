@@ -70,12 +70,13 @@
     "packages": {
       "py/ipykernel": "6.9.2",
       "py/jedi": "0.18.2",
+      "py/jupyterlab_widgets1/jupyterlab_widgets": "1.1.2",
+      "py/jupyterlab_widgets3/jupyterlab_widgets": "3.0.5",
       "py/piplite": "0.1.0b18",
+      "py/prompt_toolkit": "3.0.36",
       "py/pyolite": "0.1.0b18",
       "py/widgetsnbextension3/widgetsnbextension": "3.6.0",
-      "py/widgetsnbextension4/widgetsnbextension": "4.0.2",
-      "py/jupyterlab_widgets1/jupyterlab_widgets": "1.1.2",
-      "py/jupyterlab_widgets3/jupyterlab_widgets": "3.0.5"
+      "py/widgetsnbextension4/widgetsnbextension": "4.0.2"
     }
   },
   "styleModule": "style/index.js"
