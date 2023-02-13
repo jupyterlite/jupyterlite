@@ -212,6 +212,12 @@ def task_lint():
         actions=[(U.validate, [P.PIPLITE_SCHEMA])],
     )
 
+    yield dict(
+        name="schema:repodata",
+        file_dep=[P.REPODATA_SCHEMA],
+        actions=[(U.validate, [P.REPODATA_SCHEMA])],
+    )
+
     for config in D.APP_CONFIGS:
         if config.name.endswith(".ipynb"):
             validate_args = [
@@ -744,6 +750,11 @@ def task_check():
             file_dep=[P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX],
             actions=[(U.validate, (P.PIPLITE_SCHEMA, B.PYOLITE_WHEEL_INDEX))],
         )
+        yield dict(
+            name=f"schema:validate:{B.PYOLITE_REPODATA_INDEX.relative_to(P.ROOT)}",
+            file_dep=[P.REPODATA_SCHEMA, B.PYOLITE_REPODATA_INDEX],
+            actions=[(U.validate, (P.REPODATA_SCHEMA, B.PYOLITE_REPODATA_INDEX))],
+        )
 
     yield dict(
         name="app",
@@ -1029,6 +1040,7 @@ class P:
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
     PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
+    REPODATA_SCHEMA = APP / "repodata.schema.v0.json"
     APP_HTMLS = [
         APP / "index.html",
         *APP.rglob("*/index.template.html"),
@@ -1193,6 +1205,8 @@ class L:
         P.APP_EXTRA_JSON,
         P.ROOT_PACKAGE_JSON,
         P.ROOT.glob("*.json"),
+        P.REPODATA_SCHEMA,
+        P.PIPLITE_SCHEMA,
     )
     ALL_JS = _clean_paths(
         (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")

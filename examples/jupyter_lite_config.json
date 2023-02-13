@@ -27,6 +27,7 @@
     "output_dir": "../build/docs-app"
   },
   "PipliteAddon": {
+    "install_on_import": true,
     "piplite_urls": [
       "https://files.pythonhosted.org/packages/py2.py3/a/asttokens/asttokens-2.2.1-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/b/backcall/backcall-0.2.0-py2.py3-none-any.whl",

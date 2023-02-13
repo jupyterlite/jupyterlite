@@ -70,6 +70,33 @@ Tweak this list based on the packages you would like to serve statically.
 [lite-demo-config]:
   https://github.com/jupyterlite/jupyterlite/blob/main/examples/jupyter_lite_config.json
 
+### Install on import
+
+```{warning}
+This feature has not been exhaustively tested with the hundreds of thousands
+of wheels, build systems, and other factors involved in arbitrary python packages.
+```
+
+Once wheels are known to `jupyter lite build`, they can be made to appear as if they are
+part of the pyodide distribution, or even overloading one or more packages provided by
+pyodide.
+
+With the experimental CLI flag `--piplite-install-on-import` (or the configuration value
+`PipliteAddon.install_on_import`), a pyodide `repodata.json` will be generated along
+with the PyPI Warehouse-compatible `all.json`. While very similar, this file includes
+the critical mapping from `import`able python module name to the distribution which
+provides it.
+
+This allows for treating known packages as "already installed," though of course they
+must _still_ be downloaded, cached, and parsed.
+
+#### Limitations
+
+This feature has a number of _known_ limitations:
+
+- it only permits a _single_ version of a named package
+- exotic installation tricks might not work properly
+
 ## Reference
 
 Check out the [CLI Reference](../../../reference/cli.ipynb) for more details.

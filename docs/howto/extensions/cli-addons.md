@@ -169,10 +169,10 @@ from traitlets import Int, Bool
 class MyFooBarAddon(BaseAddon):
     __all__ = ["status"]
     flags = {
-      "foo-bar": (
-        {"MyFooBarAddon": {"foo": 1, "bar": True}},
-        "Foo once, and bar",
-      )
+        "foo-bar": (
+            {"MyFooBarAddon": {"foo": 1, "bar": True}},
+            "Foo once, and bar",
+        )
     }
     foo = Int(0, help="The number of foos").tag(config=True)
     bar = Bar(False, help="Whether to bar").tag(config=True)

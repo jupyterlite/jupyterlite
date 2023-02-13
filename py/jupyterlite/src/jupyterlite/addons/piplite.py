@@ -15,7 +15,7 @@ from typing import Optional as _Optional
 from typing import Tuple as _Tuple
 
 import doit.tools
-from traitlets import Dict, Unicode, default
+from traitlets import Bool, Dict, Unicode, default
 
 from ..constants import (
     ALL_JSON,
@@ -32,6 +32,7 @@ from ..trait_types import TypedTuple
 from .base import BaseAddon
 
 ### pyolite-specific values, will move to separate repo
+
 #: the key for PyPI-compatible API responses pointing to wheels
 PIPLITE_URLS = "pipliteUrls"
 
@@ -56,13 +57,6 @@ WHL_RECORD = "RECORD"
 #: the pyodide index of wheels
 REPODATA_JSON = "repodata.json"
 
-#: the pyodide repodata info
-REPODATA_INFO = {
-    "arch": "wasm32",
-    "platform": "emscripten_3_1_27",
-    "python": "3.10.2",
-    "version": "0.22.1",
-}
 
 #: the observed default environment of pyodide
 PYODIDE_MARKER_ENV = {
@@ -85,29 +79,35 @@ TDistPackages = _Dict[str, _List[str]]
 class PipliteAddon(BaseAddon):
     __all__ = ["post_init", "build", "post_build", "check"]
 
+    # CLI
+    aliases = {
+        "piplite-wheels": "PipliteAddon.piplite_urls",
+    }
+
+    flags = {
+        "piplite-install-on-import": (
+            {"PipliteAddon": {"install_on_import": True}},
+            "Index wheels by import names to install when imported",
+        )
+    }
+
     # traits
     piplite_urls: _Tuple[str] = TypedTuple(
         Unicode(),
         help="Local paths or URLs of piplite-compatible wheels to copy and index",
     ).tag(config=True)
 
+    install_on_import: bool = Bool(
+        False, help="Index wheels by import names to install when imported"
+    ).tag(config=True)
+
     distributions_packages: TDistPackages = Dict(
         key_trait=Unicode(),
         value_trait=TypedTuple(Unicode()),
-        help="Core known top-level packages exported by a normalized dist name",
+        help="Importable package names exported by a normalized dist name",
     ).tag(config=True)
 
-    extra_distributions_packages: TDistPackages = Dict(
-        key_trait=Unicode(),
-        value_trait=TypedTuple(Unicode()),
-        help="Additional known top-level packages exported by a normalized dist name",
-        kw={},
-    ).tag(config=True)
-
-    # CLI
-    aliases = {
-        "piplite-wheels": "PipliteAddon.piplite_urls",
-    }
+    # properties
 
     @property
     def output_wheels(self):
@@ -123,12 +123,6 @@ class PipliteAddon(BaseAddon):
     def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
-
-    @property
-    def all_distributions_packages(self):
-        dist_pkgs = dict(self.distributions_packages)
-        dist_pkgs.update(self.extra_distributions_packages)
-        return dist_pkgs
 
     # traitlets defaults
     @default("distributions_packages")
@@ -163,9 +157,7 @@ class PipliteAddon(BaseAddon):
 
         for wheel in wheels:
             whl_meta = self.wheel_cache / f"{wheel.name}.meta.json"
-            whl_repo = self.wheel_cache / f"{wheel.name}.repodata.json"
             whl_metas += [whl_meta]
-            whl_repos += [whl_repo]
             yield self.task(
                 name=f"meta:{whl_meta.name}",
                 doc=f"ensure {wheel} metadata",
@@ -176,16 +168,20 @@ class PipliteAddon(BaseAddon):
                 ],
                 targets=[whl_meta],
             )
-            yield self.task(
-                name=f"meta:{whl_repo.name}",
-                doc=f"ensure {wheel} repodata",
-                file_dep=[wheel],
-                actions=[
-                    (doit.tools.create_folder, [whl_repo.parent]),
-                    (self.repodata_wheel, [wheel, whl_repo]),
-                ],
-                targets=[whl_repo],
-            )
+            if self.install_on_import:
+                whl_repo = self.wheel_cache / f"{wheel.name}.repodata.json"
+                whl_repos += [whl_repo]
+
+                yield self.task(
+                    name=f"meta:{whl_repo.name}",
+                    doc=f"ensure {wheel} repodata",
+                    file_dep=[wheel],
+                    actions=[
+                        (doit.tools.create_folder, [whl_repo.parent]),
+                        (self.repodata_wheel, [wheel, whl_repo]),
+                    ],
+                    targets=[whl_repo],
+                )
 
         if whl_metas:
             whl_index = self.manager.output_dir / PYPI_WHEELS / ALL_JSON
@@ -212,37 +208,46 @@ class PipliteAddon(BaseAddon):
             )
 
     def check(self, manager):
-        """verify that all Wheel API are valid (sorta)"""
+        """Verify that all Wheel API are valid (sorta)"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
         if not jupyterlite_json.exists():
             return
-        config = json.loads(jupyterlite_json.read_text(**UTF8))
-        urls = (
-            config.get(JUPYTER_CONFIG_DATA, {})
+        plugin_config = (
+            json.loads(jupyterlite_json.read_text(**UTF8))
+            .get(JUPYTER_CONFIG_DATA, {})
             .get(LITE_PLUGIN_SETTINGS, {})
             .get(PYOLITE_PLUGIN_ID, {})
-            .get(PIPLITE_URLS, [])
         )
 
-        for wheel_index_url in urls:
-            if not wheel_index_url.startswith("./"):
+        yield from self.check_index_urls(
+            plugin_config.get(PIPLITE_URLS, []), PIPLITE_INDEX_SCHEMA
+        )
+
+        yield from self.check_index_urls(
+            plugin_config.get(REPODATA_URLS, []), REPODATA_SCHEMA
+        )
+
+    def check_index_urls(self, raw_urls, schema):
+        """Validate one URL against a schema."""
+        for raw_url in raw_urls:
+            if not raw_url.startswith("./"):
                 continue
 
-            wheel_index_url = wheel_index_url.split("?")[0].split("#")[0]
+            url = raw_url.split("?")[0].split("#")[0]
 
-            path = manager.output_dir / wheel_index_url
+            path = self.manager.output_dir / url
 
             if not path.exists():
                 continue
 
             yield self.task(
-                name=f"validate:{wheel_index_url}",
-                doc=f"validate {wheel_index_url} with the piplite API schema",
+                name=f"validate:{url}",
+                doc=f"validate {url} against {schema}",
                 file_dep=[path],
                 actions=[
                     (
                         self.validate_one_json_file,
-                        [manager.output_dir / PIPLITE_INDEX_SCHEMA, path],
+                        [self.manager.output_dir / schema, path],
                     )
                 ],
             )
@@ -308,8 +313,9 @@ class PipliteAddon(BaseAddon):
             plugin_config, whl_index, whl_metas
         )
 
-        # ...then add repodata
-        repodata_urls = self.update_repo_index(plugin_config, repo_index, whl_repos)
+        # ...then maybe add repodata
+        if self.install_on_import:
+            repodata_urls = self.update_repo_index(plugin_config, repo_index, whl_repos)
 
         # ...then add wheels from federated extensions...
         if pkg_jsons:
@@ -323,7 +329,7 @@ class PipliteAddon(BaseAddon):
                         warehouse_urls += [pkg_whl_index_url_with_sha]
                     pkg_repo_index = pkg_json.parent / wheel_dir / REPODATA_JSON
 
-                    if pkg_repo_index.exists():
+                    if self.install_on_import and pkg_repo_index.exists():
                         pkg_repo_index_url_with_sha = self.get(pkg_repo_index)[1]
                         repodata_urls += [pkg_repo_index_url_with_sha]
 
@@ -336,7 +342,7 @@ class PipliteAddon(BaseAddon):
             ] = warehouse_urls
             needs_save = True
 
-        if repodata_urls:
+        if self.install_on_import and repodata_urls:
             config[JUPYTER_CONFIG_DATA][LITE_PLUGIN_SETTINGS][PYOLITE_PLUGIN_ID][
                 REPODATA_URLS
             ] = repodata_urls
@@ -421,8 +427,9 @@ class PipliteAddon(BaseAddon):
         self.maybe_timestamp(whl_meta)
 
     def repodata_wheel(self, whl_path, whl_repo):
+        """Write out the repodata for a wheel."""
         name, version, pkg_entry = get_wheel_repodata(
-            whl_path, self.all_distributions_packages
+            whl_path, self.distributions_packages
         )
         whl_repo.write_text(
             json.dumps(pkg_entry, **JSON_FMT),
@@ -432,7 +439,7 @@ class PipliteAddon(BaseAddon):
 
 
 def list_wheels(wheel_dir):
-    """get all wheels we know how to handle in a directory"""
+    """Get all wheels we know how to handle in a directory"""
     return sorted(sum([[*wheel_dir.glob(f"*{whl}")] for whl in ALL_WHL], []))
 
 
@@ -497,7 +504,7 @@ def get_wheel_repodata(
 
 @functools.lru_cache(1000)
 def get_wheel_pkginfo(whl_path: Path):
-    """Return the as-parsed distribution information from pkginfo."""
+    """Return the as-parsed distribution information from ``pkginfo``."""
     import pkginfo
 
     return pkginfo.get_metadata(str(whl_path))
@@ -562,7 +569,7 @@ def get_wheel_modules(
 
 
 def get_wheel_depends(whl_path: Path):
-    """Get the runtime dependencies from a wheel."""
+    """Get the normalize runtime distribution dependencies from a wheel."""
     from packaging.requirements import Requirement
 
     metadata = get_wheel_pkginfo(str(whl_path))
@@ -608,9 +615,9 @@ def get_wheel_index(wheels, metadata=None):
 
 
 def get_repo_index(wheels, metadata=None):
+    """Get the data for a ``repodata.json``."""
     metadata = metadata or {}
-    # TODO: fix this
-    repodata_json = {"info": REPODATA_INFO, "packages": {}}
+    repodata_json = {"packages": {}}
 
     for whl_path in sorted(wheels):
         name, version, pkg_entry = metadata.get(whl_path) or get_wheel_repodata(
@@ -628,7 +635,7 @@ def get_repo_index(wheels, metadata=None):
 
 
 def write_wheel_index(whl_dir, metadata=None):
-    """Write out an all.json for a directory of wheels"""
+    """Write out an ``all.json`` for a directory of wheels."""
     wheel_index = Path(whl_dir) / ALL_JSON
     index_data = get_wheel_index(list_wheels(whl_dir), metadata)
     wheel_index.write_text(json.dumps(index_data, **JSON_FMT), **UTF8)
@@ -636,7 +643,7 @@ def write_wheel_index(whl_dir, metadata=None):
 
 
 def write_repo_index(whl_dir, metadata=None):
-    """Write out an repodata.json for a directory of wheels"""
+    """Write out a ``repodata.json`` for a directory of wheels."""
     repo_index = Path(whl_dir) / REPODATA_JSON
     index_data = get_repo_index(list_wheels(whl_dir), metadata)
     repo_index.write_text(json.dumps(index_data, **JSON_FMT), **UTF8)

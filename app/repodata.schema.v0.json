@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://jupyterlite.readthedocs.org/en/latest/repodata-schema-v0.html#",
+  "title": "Pyodide Repodata Schema v0",
+  "description": "a schema for a partial pyodide repodata index",
+  "$ref": "#/definitions/top",
+  "definitions": {
+    "top": {
+      "type": "object",
+      "required": ["packages"],
+      "properties": {
+        "info": {
+          "description": "Pyodide version for which this repodata is valid. Presently not generated, and discarded at runtime.",
+          "$ref": "#/definitions/repodata-info"
+        },
+        "packages": {
+          "type": "object",
+          "patternProperties": {
+            "[a-z][a-z\\-\\.]+": {
+              "$ref": "#/definitions/a-project-repodata"
+            }
+          }
+        }
+      }
+    },
+    "repodata-info": {
+      "description": "The pyodide version runtime for which this repodata will work",
+      "properties": {
+        "arch": {
+          "type": "string",
+          "description": "The name of the architecture, e.g. ``wasm32``"
+        },
+        "platform": {
+          "type": "string",
+          "description": "The name of the platform, e.g. ``emscripten_3_1_27``"
+        },
+        "python": {
+          "type": "string",
+          "description": "The version of python, e.g. ``3.10.2``"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of pyodide, e.g. ``0.22.1``"
+        }
+      }
+    },
+    "a-project-repodata": {
+      "type": "object",
+      "required": [
+        "depends",
+        "file_name",
+        "imports",
+        "install_dir",
+        "name",
+        "sha256",
+        "version"
+      ],
+      "properties": {
+        "depends": {
+          "type": "array",
+          "description": "A list of PEP 503 normalized package names which this package depends on",
+          "items": {
+            "$ref": "#/definitions/a-pep-503-name"
+          }
+        },
+        "file_name": {
+          "type": "string",
+          "format": "uri",
+          "description": "A relative path or URL that resolves to a ``.whl`` file"
+        },
+        "install_dir": {
+          "type": "string",
+          "description": "The destination for the package: currently only generates ``site``",
+          "enum": ["site", "dynlib"]
+        },
+        "name": {
+          "description": "The PEP 503 name of the package.",
+          "$ref": "#/definitions/a-pep-503-name"
+        },
+        "sha256": {
+          "description": "The observed sha256 hash digest of the package, which might be validated",
+          "$ref": "#/definitions/a-sha256-digest"
+        },
+        "version": {
+          "description": "The version of the package",
+          "type": "string"
+        },
+        "imports": {
+          "description": "The top-level names which can be imported when this package is installed (or will trigger installation)",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "a-pep-503-name": {
+      "description": "A python distribution name that conforms to PEP 503",
+      "type": "string",
+      "pattern": "[a-z][a-z0-9\\-\\.]+"
+    },
+    "a-sha256-digest": {
+      "type": "string",
+      "pattern": "[a-f0-9]{64}"
+    }
+  }
+}
