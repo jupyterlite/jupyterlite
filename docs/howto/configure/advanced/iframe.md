@@ -237,7 +237,6 @@ communication between the host page and the IFrame (refresh the browser if neces
 
 ![jupyterlite-bridge-iframe](https://user-images.githubusercontent.com/44410933/218969739-2f78788d-00a3-4715-b20e-59c48bb2f2bd.gif)
 
-
 In addition, the browser console should display messages similar to the following:
 
 ![image](https://user-images.githubusercontent.com/44410933/218319071-0095cbe5-ca53-45e5-9bae-a9beeb6197e2.png)
