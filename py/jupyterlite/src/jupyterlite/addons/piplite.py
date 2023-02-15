@@ -11,11 +11,10 @@ from hashlib import md5, sha256
 from pathlib import Path
 from typing import Dict as _Dict
 from typing import List as _List
-from typing import Optional as _Optional
 from typing import Tuple as _Tuple
 
 import doit.tools
-from traitlets import Bool, Dict, Unicode, default
+from traitlets import Bool, Unicode
 
 from ..constants import (
     ALL_JSON,
@@ -25,6 +24,7 @@ from ..constants import (
     JUPYTERLITE_JSON,
     LAB_EXTENSIONS,
     LITE_PLUGIN_SETTINGS,
+    NOARCH_WHL,
     PYOLITE_PLUGIN_ID,
     UTF8,
 )
@@ -101,12 +101,6 @@ class PipliteAddon(BaseAddon):
         False, help="Index wheels by import names to install when imported"
     ).tag(config=True)
 
-    distributions_packages: TDistPackages = Dict(
-        key_trait=Unicode(),
-        value_trait=TypedTuple(Unicode()),
-        help="Importable package names exported by a normalized dist name",
-    ).tag(config=True)
-
     # properties
 
     @property
@@ -123,11 +117,6 @@ class PipliteAddon(BaseAddon):
     def output_extensions(self):
         """where labextensions will go in the output folder"""
         return self.manager.output_dir / LAB_EXTENSIONS
-
-    # traitlets defaults
-    @default("distributions_packages")
-    def _default_distributions_packages(self):
-        return {}
 
     # API
 
@@ -223,9 +212,10 @@ class PipliteAddon(BaseAddon):
             plugin_config.get(PIPLITE_URLS, []), PIPLITE_INDEX_SCHEMA
         )
 
-        yield from self.check_index_urls(
-            plugin_config.get(REPODATA_URLS, []), REPODATA_SCHEMA
-        )
+        if self.install_on_import:
+            yield from self.check_index_urls(
+                plugin_config.get(REPODATA_URLS, []), REPODATA_SCHEMA
+            )
 
     def check_index_urls(self, raw_urls, schema):
         """Validate one URL against a schema."""
@@ -428,9 +418,7 @@ class PipliteAddon(BaseAddon):
 
     def repodata_wheel(self, whl_path, whl_repo):
         """Write out the repodata for a wheel."""
-        name, version, pkg_entry = get_wheel_repodata(
-            whl_path, self.distributions_packages
-        )
+        name, version, pkg_entry = get_wheel_repodata(whl_path)
         whl_repo.write_text(
             json.dumps(pkg_entry, **JSON_FMT),
             **UTF8,
@@ -478,9 +466,7 @@ def get_wheel_fileinfo(whl_path: Path):
     return metadata.name, metadata.version, release
 
 
-def get_wheel_repodata(
-    whl_path: Path, distributions_packages: _Optional[TDistPackages] = None
-):
+def get_wheel_repodata(whl_path: Path):
     """Get pyodide-compatible `repodata.json` fragment for a wheel.
 
     This only knows how to handle "simple" noarch wheels, without extra binary
@@ -488,13 +474,13 @@ def get_wheel_repodata(
     """
     name, version, release = get_wheel_fileinfo(whl_path)
     depends = get_wheel_depends(whl_path)
-    modules = get_wheel_modules(name, whl_path, distributions_packages)
+    modules = get_wheel_modules(whl_path)
     normalized_name = get_normalized_name(name)
     pkg_entry = {
         "name": normalized_name,
         "version": version,
         "file_name": whl_path.name,
-        "install_dir": "site",
+        "install_dir": "site" if whl_path.name.endswith(NOARCH_WHL) else "dynlib",
         "sha256": release["digests"]["sha256"],
         "imports": modules,
         "depends": depends,
@@ -510,13 +496,8 @@ def get_wheel_pkginfo(whl_path: Path):
     return pkginfo.get_metadata(str(whl_path))
 
 
-def get_wheel_modules(
-    name: str, whl_path: Path, distributions_packages: _Optional[TDistPackages] = None
-) -> _List[str]:
+def get_wheel_modules(whl_path: Path) -> _List[str]:
     """Get the exported top-level modules from a wheel."""
-    if distributions_packages and name in distributions_packages:
-        return distributions_packages[name]
-
     top_levels = {}
     records = {}
     with zipfile.ZipFile(whl_path) as zf:

@@ -1,12 +1,4 @@
-# Ship additional pyolite wheels at build time
-
-User-installable wheels can be included at extension build time. Wheel indices can be
-generated with the `jupyter lite pip index`
-[CLI](../../reference/cli.ipynb#pyolite-wheels) and then included in
-`package.json#/piplite`: make sure to include the index and `.whl` files in
-`package.json#/files` as well.
-
-## Adding pyolite wheels
+# Adding `pyolite` wheels
 
 The [pyolite kernel](../../quickstart/using.md#kernels) itself consists of a bit of
 JavaScript and customized python wheels, which in turn require other wheels and
@@ -37,3 +29,11 @@ Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
   }
 }
 ```
+
+## For Extension Authors
+
+User-installable wheels can be included at extension build time. Wheel indices can be
+generated with the `jupyter lite pip index`
+[CLI](../../reference/cli.ipynb#pyolite-wheels) and then included in
+`package.json#/piplite`: make sure to include the index and `.whl` files in
+`package.json#/files` as well.

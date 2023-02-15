@@ -33,15 +33,30 @@ source bin/activate
 Or with `conda` / `mamba`:
 
 ```bash
-mamba create -n my-jupyterlite-deployment -c conda-forge python -y
+mamba create -n my-jupyterlite-deployment -c conda-forge python=3.10 -y
 mamba activate my-jupyterlite-deployment
 ```
 
+### Install `jupyterlite`
+
+JupyterLite is distributed on PyPI, but is currently a _prerelease_. Install it with:
+
+```bash
+pip install --pre jupyterlite[lab]
+```
+
+While it is _possible_ to install `jupyterlite` without `jupyterlab`, it can be useful
+to force installation to help the `pip` solver pull compatible packages.
+
 ### Installing the extensions in the environment
 
-As an example let's use the following `requirements.txt`:
+As an example let's use the following `requirements.txt`, starting with `jupyterlite`
+itself and some JupyterLab extensions:
 
 ```
+# requirements.txt
+jupyterlite[lab] ==<the version you installed>
+# some frontend-only labextensions
 jupyterlab-tour
 jupyterlab-night
 ```
@@ -64,14 +79,14 @@ Which should return something similar to the following:
 ```text
 JupyterLab v3.*.*
 PREFIX/share/jupyter/labextensions
-        jupyterlab-tour  v3.1.4 enabled OK
-        jupyterlab-night v0.4.0 enabled OK
+        jupyterlab-tour  v*.*.* enabled OK
+        jupyterlab-night v*.*.* enabled OK
 ```
 
 ### Build the JupyterLite website
 
-Now we need to produce the JupyterLite archive that will include these extensions. This
-can be done with the following command:
+Now we need to produce the JupyterLite `output_dir` that will include these extensions.
+This can be done with the following command:
 
 ```bash
 jupyter lite build
@@ -86,70 +101,109 @@ environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 ## The case of Jupyter Widgets and custom renderers
 
 Some extensions like Jupyter Widgets and custom renderers also need a Python package to
-be installed at runtime when working with a notebook. This is for example the case with
-`ipyleaflet`, `bqplot` or `plotly`.
+be installed at runtime when working with a notebook. This is, for example, the case
+with `bqplot`.
 
-To install the frontend extensions, simply add it to the list of requirements. For
-example continuing from the `requirements.txt` file defined above:
+To install the frontend extensions, a recommended approach is to ensure these packages
+are available in the environment where `jupyterlite` is installed before running
+`jupyter lite build`.
+
+For example, continuing from the `requirements.txt` file defined above, create a new
+file, `requirements-run.txt`:
 
 ```text
+# requirements-run.txt
+bqplot
+```
+
+... and reference it from `requirements.txt`
+
+```text
+# requirements.txt
+jupyterlite[lab] ==<the version you installed>
+# some frontend-only labextensions
 jupyterlab-tour
 jupyterlab-night
-ipywidgets
-bqplot
-plotly
+# add runtime dependencies
+-r ./requirements-run.txt
 ```
 
 The end users of your JupyterLite instance will **still need to install** the
 dependencies at runtime in their notebooks with the IPython-compatible `%pip` magic:
 
 ```py
-%pip install -q ipywidgets bqplot plotly
+%pip install -q bqplot
 ```
 
-which translates to:
+... which translates to:
 
 ```py
 import piplite
-await piplite.install(["ipywidgets", "bqplot", "plotly"])
+await piplite.install(["bqplot"])
+```
+
+Alternately, if the `requirements-run.txt` is included as _contents_ in the build:
+
+```pip
+%pip install -r requirements-run.txt
 ```
 
 ### Avoid the drift of versions between the frontend extension and the Python package
 
-In some situations, the versions of the packages installed at runtime with
-`%pip install` or `piplite.install` might not be compatible with the deployed frontend
-extension anymore. This can for example happen when a JupyterLite website was built and
-deployed a couple of weeks ago, and new versions of the Python packages were released
-since. In that case the frontend extension have not been updated since they are still
-available as static files as part of the deployment.
+At some point, the versions of the packages installed at runtime with `%pip install` or
+`await piplite.install` might not be compatible with the deployed frontend extension
+anymore.
+
+This can, for example, happen when a JupyterLite website was built and deployed a couple
+of weeks ago, and new versions of the Python packages were released since. In that case
+the frontend extension have not been updated since they are still available as static
+files as part of the deployment.
 
 One way to avoid this mismatch is to pin the dependencies more explicitly. For example:
 
 ```text
-ipywidgets==7.7.0
-bqplot==0.12.30
-plotly==5.8.0
+# requirements-run.txt
+ipywidgets ==8.0.4
+bqplot ==0.12.36
 ```
 
 The user-facing code in the notebook will then also have to use the same versions to
-stay compatible:
+stay compatible. This is where the `requirements-run.txt` file really shines, as
 
 ```py
-%pip install -q "ipywidgets==7.7.0" "bqplot==0.12.30" "plotly==5.8.0"
+%pip install -q -r requirements-run.txt
 ```
 
-which translates to:
+... is much easier to keep accurate than:
+
+```py
+%pip install -q "ipywidgets==8.0.4" "bqplot==0.12.36"
+```
+
+... which translates to:
 
 ```py
 import piplite
-await piplite.install(["ipywidgets==7.7.0", "bqplot==0.12.30", "plotly==5.8.0"])
+await piplite.install(["ipywidgets==8.0.4", "bqplot==0.12.36"])
 ```
 
-This is unfortunately a little bit brittle but does the job for now. There is chance
-this will be improved in future versions of JupyterLite.
+### More about reproducible sitess
 
-Check out the [guide on configuring the piplite URLs](../python/wheels.md) if you want
-to have more control on your dependencies.
+The above techniques are, unfortunately, somewhat brittle.
+
+There on-going work to improve the situation in future versions of JupyterLite, such as
+providing more information about the frontend packages to kernel.
+
+In the meantime, the [guide on configuring the piplite URLs](../python/wheels.md)
+describes more ways to control the site's dependencies, a substantial part of building
+[reproducible sites](./advanced/offline.md) which will continue working for years.
+
+These techniques have trade-offs, but generally improve the maintainability of the site,
+and improve the overall experience for users.
+
+For example, the experimental `--piplite-install-on-import` flag, when combined with
+`--piplite-wheels`, removes the need for the explicit `%pip install` step, but requires
+more planning and work up-front.
 
 ## How to know if an extension is compatible with JupyterLite?
 

@@ -7,38 +7,6 @@ import type { DriveFS } from '@jupyterlite/contents';
 
 import type { IPyoliteWorkerKernel } from './tokens';
 
-async function fetchRepodata(url: string): Promise<IRepoData> {
-  const response = await fetch(url);
-  const repodata: IRepoData = await response.json();
-  for (const [pkgName, pkg] of Object.entries(repodata.packages)) {
-    const file_name = new URL(pkg.file_name, url).toString();
-    repodata.packages[pkgName] = { ...pkg, file_name };
-  }
-  return repodata;
-}
-
-export interface IRepoDataPackage {
-  depends: string[];
-  file_name: string;
-  imports: string[];
-  install_dir: 'site';
-  name: string;
-  sha256: string;
-  version: string;
-}
-
-export interface IRepoData {
-  info: {
-    arch: string;
-    platform: string;
-    python: string;
-    version: string;
-  };
-  packages: {
-    [key: string]: IRepoDataPackage;
-  };
-}
-
 export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
   constructor() {
     this._initialized = new Promise((resolve, reject) => {
@@ -85,6 +53,21 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
     this._pyodide = await loadPyodide({ indexURL: indexUrl });
   }
 
+  /**
+   * Fetch the repodata URL, and resolve all filename URLs
+   */
+  async fetchRepodata(url: string): Promise<IPyoliteWorkerKernel.IRepoData> {
+    const response = await fetch(url);
+    const repodata: IPyoliteWorkerKernel.IRepoData = await response.json();
+    for (const [packageName, packageData] of Object.entries(repodata.packages)) {
+      if (packageData) {
+        const file_name = new URL(packageData.file_name, url).toString();
+        repodata.packages[packageName] = { ...packageData, file_name };
+      }
+    }
+    return repodata;
+  }
+
   protected async initPackageManager(
     options: IPyoliteWorkerKernel.IOptions
   ): Promise<void> {
@@ -95,25 +78,15 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
     const { pipliteWheelUrl, disablePyPIFallback, pipliteUrls, repodataUrls } =
       this._options;
 
-    // this is the only use of `loadPackage`, allow `piplite` to handle the rest
-    await this._pyodide.loadPackage(['micropip']);
-
-    // get piplite early enough to impact pyolite dependencies
-    await this._pyodide.runPythonAsync(`
-      import micropip
-      await micropip.install('${pipliteWheelUrl}', keep_going=True)
-      import piplite.piplite
-      piplite.piplite._PIPLITE_DISABLE_PYPI = ${disablePyPIFallback ? 'True' : 'False'}
-      piplite.piplite._PIPLITE_URLS = ${JSON.stringify(pipliteUrls)}
-    `);
-
     if (repodataUrls.length) {
       const API = (this._pyodide as any)._api;
-      const repodataPromises: Promise<IRepoData>[] = [];
+      const repodataPromises: Promise<IPyoliteWorkerKernel.IRepoData>[] = [];
       for (const url of repodataUrls) {
-        repodataPromises.push(fetchRepodata(url));
+        repodataPromises.push(this.fetchRepodata(url));
       }
+
       const repodataResults = await Promise.all(repodataPromises);
+
       for (const repo of repodataResults) {
         API.repodata_packages = {
           ...API.repodata_packages,
@@ -121,24 +94,47 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
         };
       }
 
-      for (const name of Object.keys(API.repodata_packages)) {
-        const pkg = API.repodata_packages[name];
-        for (const import_name of pkg.imports) {
-          API._import_name_to_package_name.set(import_name, name);
+      const repodataPackages = Object.keys(API.repodata_packages);
+
+      for (const packageName of repodataPackages) {
+        const packageData: IPyoliteWorkerKernel.IRepoDataPackage =
+          API.repodata_packages[packageName];
+
+        for (const importName of packageData.imports) {
+          API._import_name_to_package_name.set(importName, packageName);
         }
       }
     }
+
+    // this is the only use of `loadPackage`, allow `piplite` to handle the rest
+    await this._pyodide.loadPackage(['micropip']);
+
+    // get piplite early enough to impact pyolite dependencies
+    await this._pyodide.runPythonAsync(`
+      import micropip, pyodide_js
+      micropip._micropip.REPODATA_PACKAGES.update(
+        pyodide_js._api.repodata_packages.to_py()
+      )
+      await micropip.install('${pipliteWheelUrl}', keep_going=True)
+    `);
+
+    // actually import and initialize piplite
+    await this._pyodide.runPythonAsync(`
+      import piplite.piplite
+      piplite.piplite._PIPLITE_DISABLE_PYPI = ${disablePyPIFallback ? 'True' : 'False'}
+      piplite.piplite._PIPLITE_URLS = ${JSON.stringify(pipliteUrls)}
+    `);
   }
 
   protected async initKernel(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
     // from this point forward, only use piplite (but not %pip)
     await this._pyodide.runPythonAsync(`
-      await piplite.install(['sqlite3'], keep_going=True);
-      await piplite.install(['ipykernel'], keep_going=True);
+      await piplite.install(['sqlite3', 'jedi', 'decorator', 'pygments', 'six', 'ipykernel'], keep_going=True);
       await piplite.install(['pyolite'], keep_going=True);
       await piplite.install(['ipython'], keep_going=True);
       import pyolite
     `);
+
     // cd to the kernel location
     if (options.mountDrive && this._localPath) {
       await this._pyodide.runPythonAsync(`

@@ -86,7 +86,7 @@
           "type": "string"
         },
         "imports": {
-          "description": "The top-level names which can be imported when this package is installed (or will trigger installation)",
+          "description": "The top-level import names which will trigger installation of this package",
           "type": "array",
           "items": {
             "type": "string"

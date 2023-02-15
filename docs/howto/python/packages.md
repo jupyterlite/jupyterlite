@@ -3,7 +3,7 @@
 ## Installing packages at runtime
 
 JupyterLite provides an additional `piplite` layer on top of [micropip] to install
-packages from Python notebooks.
+packages in the pyolite kernel.
 
 New packages can be downloaded and installed at runtime. For example to install
 `snowballstemmer`:
@@ -39,18 +39,20 @@ at kernel startup time about how to load packages when they are `import`ed.
 
 Simple python [wheels](../configure/advanced/offline.md) can be shipped along with your
 JupyterLite site. With the _experimental_ `--piplite-install-on-import` flag, these will
-be treated as if they were part of the Pyodide distribution.
+be treated as if they were part of the Pyodide distribution, only requiring that the
+importable names discovered in the wheel be `import`ed, without requiring `%pip` or
+`await piplite.install`.
 
 There are number of known edge cases which haven't been fully explored with this
-approach, and is highly dependent on some of the underlying (and private) pyodide
+approach. Results are highly dependent on some of the underlying (and private) pyodide
 behavior, but is demonstrated on the JupyterLite documentation website for a relatively
 large selection of packages.
 
 ### Binary packages
 
-At the moment the most reasonable way to make additional packages with binary extensions
-available by default when starting the Python kernel is to add new packages to the
-Pyodide distribution.
+At the moment the most productive way to make additional packages with binary extensions
+available by default when starting the Python kernel is to add new packages to a Pyodide
+distribution.
 
 The process is detailed in the [Pyodide documentation][pyodide-packages].
 

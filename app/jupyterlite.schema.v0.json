@@ -225,10 +225,18 @@
           "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, assumed to be an aggregate, keyed by package name, with relative paths",
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           },
+          "default": []
+        },
+        "repodataUrls": {
+          "description": "Paths to pyodide-compatible ``repodata.json`` files: ``packages[<package name>]`` may be set to ``null`` to force deletion.",
           "default": [],
-          "format": "uri"
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
         }
       }
     },
