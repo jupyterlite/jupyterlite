@@ -235,7 +235,8 @@ python -m http.server -b 127.0.0.1
 In a browser, at the address `http://127.0.0.1:8000`, you should be able to notice the
 communication between the host page and the IFrame (refresh the browser if necessary):
 
-https://user-images.githubusercontent.com/44410933/218273379-07d129e3-27c1-4c30-a89b-6d1a7bb61b26.mp4
+![jupyterlite-bridge-iframe](https://user-images.githubusercontent.com/44410933/218969739-2f78788d-00a3-4715-b20e-59c48bb2f2bd.gif)
+
 
 In addition, the browser console should display messages similar to the following:
 
