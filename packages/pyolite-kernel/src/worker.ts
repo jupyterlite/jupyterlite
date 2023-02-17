@@ -78,6 +78,18 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
     const { pipliteWheelUrl, disablePyPIFallback, pipliteUrls, repodataUrls } =
       this._options;
 
+    // this is the only use of `loadPackage`, allow `piplite` to handle the rest
+    await this._pyodide.loadPackage(['micropip']);
+
+    // get piplite early enough to impact pyolite dependencies
+    await this._pyodide.runPythonAsync(`
+      import micropip
+      await micropip.install('${pipliteWheelUrl}', keep_going=True)
+      import piplite.piplite
+      piplite.piplite._PIPLITE_DISABLE_PYPI = ${disablePyPIFallback ? 'True' : 'False'}
+      piplite.piplite._PIPLITE_URLS = ${JSON.stringify(pipliteUrls)}
+    `);
+
     if (repodataUrls.length) {
       const API = (this._pyodide as any)._api;
       const repodataPromises: Promise<IPyoliteWorkerKernel.IRepoData>[] = [];
@@ -94,9 +106,7 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
         };
       }
 
-      const repodataPackages = Object.keys(API.repodata_packages);
-
-      for (const packageName of repodataPackages) {
+      for (const packageName of Object.keys(API.repodata_packages)) {
         const packageData: IPyoliteWorkerKernel.IRepoDataPackage =
           API.repodata_packages[packageName];
 
@@ -105,25 +115,6 @@ export class PyoliteRemoteKernel implements IPyoliteWorkerKernel {
         }
       }
     }
-
-    // this is the only use of `loadPackage`, allow `piplite` to handle the rest
-    await this._pyodide.loadPackage(['micropip']);
-
-    // get piplite early enough to impact pyolite dependencies
-    await this._pyodide.runPythonAsync(`
-      import micropip, pyodide_js
-      micropip._micropip.REPODATA_PACKAGES.update(
-        pyodide_js._api.repodata_packages.to_py()
-      )
-      await micropip.install('${pipliteWheelUrl}', keep_going=True)
-    `);
-
-    // actually import and initialize piplite
-    await this._pyodide.runPythonAsync(`
-      import piplite.piplite
-      piplite.piplite._PIPLITE_DISABLE_PYPI = ${disablePyPIFallback ? 'True' : 'False'}
-      piplite.piplite._PIPLITE_URLS = ${JSON.stringify(pipliteUrls)}
-    `);
   }
 
   protected async initKernel(options: IPyoliteWorkerKernel.IOptions): Promise<void> {
