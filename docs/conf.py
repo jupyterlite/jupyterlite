@@ -51,6 +51,8 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
+    # ipython syntax highlighting
+    "IPython.sphinxext.ipython_console_highlighting",
 ]
 
 autosectionlabel_prefix_document = True

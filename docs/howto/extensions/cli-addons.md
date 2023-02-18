@@ -141,7 +141,7 @@ _Addons_ authors are encouraged to group their aliases and flags by using a comm
 
 An _alias_ maps a CLI argument to a single trait.
 
-```py
+```python
 from traitlets import Int
 
 class MyFooAddon(BaseAddon):
@@ -163,7 +163,7 @@ addons.
 A _flag_ maps a CLI argument to any number of traits on any number of
 `traitlets.Configurable` classes:
 
-```py
+```python
 from traitlets import Int, Bool
 
 class MyFooBarAddon(BaseAddon):

@@ -6,7 +6,7 @@ kernels, including Pyolite, are automatically synchronized.
 You can, for example, drag and drop a file `file.csv` into the JupyterLite UI, then load
 it in Python:
 
-```py
+```ipython
 import pandas as pd
 
 data = pd.read_csv('file.csv')
@@ -28,7 +28,7 @@ user's browser and the HTTP server.
 
 To check if the filesystem syncing is enabled, see whether `cwd` starts with `/drive/`:
 
-```py
+```ipython
 import os
 
 os.getcwd()  # If successful:  "/drive/path/to/notebook"
@@ -45,7 +45,7 @@ os.getcwd()  # If successful:  "/drive/path/to/notebook"
 It is also possible to fetch content from remote URL. For example if you are using the
 Pyodide kernel, you can use the `fetch` function to do so:
 
-```py
+```ipython
 import pandas as pd
 from js import fetch
 
@@ -66,7 +66,7 @@ data
 As an alternative, you can import the `pyodide-http` package (distributed with Pyodide
 by default) to use familiar methods more seamlessly:
 
-```py
+```ipython
 import pyodide_http
 import pandas as pd
 

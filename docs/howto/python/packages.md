@@ -8,13 +8,13 @@ packages in the pyolite kernel.
 New packages can be downloaded and installed at runtime. For example to install
 `snowballstemmer`:
 
-```py
+```ipython
 %pip install -q snowballstemmer
 ```
 
 which translates to:
 
-```py
+```ipython
 import piplite
 await piplite.install("snowballstemmer")
 ```

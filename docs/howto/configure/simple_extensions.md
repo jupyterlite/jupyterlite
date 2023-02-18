@@ -131,20 +131,20 @@ jupyterlab-night
 The end users of your JupyterLite instance will **still need to install** the
 dependencies at runtime in their notebooks with the IPython-compatible `%pip` magic:
 
-```py
+```ipython
 %pip install -q bqplot
 ```
 
 ... which translates to:
 
-```py
+```ipython
 import piplite
 await piplite.install(["bqplot"])
 ```
 
 Alternately, if the `requirements-run.txt` is included as _contents_ in the build:
 
-```pip
+```ipython
 %pip install -r requirements-run.txt
 ```
 
@@ -170,19 +170,19 @@ bqplot ==0.12.36
 The user-facing code in the notebook will then also have to use the same versions to
 stay compatible. This is where the `requirements-run.txt` file really shines, as
 
-```py
+```ipython
 %pip install -q -r requirements-run.txt
 ```
 
 ... is much easier to keep accurate than:
 
-```py
+```ipython
 %pip install -q "ipywidgets==8.0.4" "bqplot==0.12.36"
 ```
 
 ... which translates to:
 
-```py
+```ipython
 import piplite
 await piplite.install(["ipywidgets==8.0.4", "bqplot==0.12.36"])
 ```
