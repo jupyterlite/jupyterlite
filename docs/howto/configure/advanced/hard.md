@@ -15,7 +15,7 @@ Open a browser:
 
 - view the
   [Contents API](https://jupyter-server.readthedocs.io/en/latest/developers/rest-api.html#get--api-contents-path),
-  e.g. `http://localhost:8888/api/contents`, which should look like the following:
+  e.g. `http://127.0.0.1:8888/api/contents`, which should look like the following:
 
 ```json
 {

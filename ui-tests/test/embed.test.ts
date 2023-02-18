@@ -3,7 +3,7 @@
 
 import { expect, test } from '@playwright/test';
 
-test.use({ baseURL: 'http://localhost:8001' });
+test.use({ baseURL: 'http://127.0.0.1:8001' });
 
 /**
  * This test uses the raw Playwright since the host page does not expose window.jupyterapp

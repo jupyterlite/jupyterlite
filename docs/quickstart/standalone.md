@@ -56,7 +56,7 @@ serving `application/wasm` files with the correct headers
 ```
 
 ```{hint}
-An HTTPS-capable server is recommended for all but the simplest `localhost` cases.
+An HTTPS-capable server is recommended for all but the simplest `127.0.0.1` (a.k.a. `localhost`) cases.
 ```
 
 ### `jupyter lite serve`
@@ -79,7 +79,7 @@ Check out the help with `jupyter lite serve --help` to learn more.
 #### Jupyter
 
 If you're already running a [Jupyter Server]-powered app, such as JupyterLab, your files
-will be served correctly on e.g. `http://localhost:8888/files`.
+will be served correctly on e.g. `http://127.0.0.1:8888/files`.
 
 #### Python
 

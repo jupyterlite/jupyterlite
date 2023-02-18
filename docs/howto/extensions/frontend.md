@@ -66,7 +66,7 @@ federated_extensions:copy:ext:jupyterlab_apod
 
 3. Serve the website: `jupyter lite serve`
 
-Then open your browser at `http://localhost:8000` and you should be able to see the
+Then open your browser at `http://127.0.0.1:8000` and you should be able to see the
 Astronomy Picture of the Day (APOD) extension loaded:
 
 ![apod-tutorial]

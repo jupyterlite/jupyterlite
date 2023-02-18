@@ -107,6 +107,6 @@ def a_fixture_server(an_unused_port):
         ["python", "-m", "http.server", "-b", "127.0.0.1", f"{an_unused_port}"],
         cwd=str(FIXTURES),
     )
-    url = f"http://localhost:{an_unused_port}"
+    url = f"http://127.0.0.1:{an_unused_port}"
     yield url
     p.terminate()

@@ -90,7 +90,7 @@ jupyter lite build --force
 jupyter lite serve
 ```
 
-Then open `http://localhost:8000` in a web browser. You should be able to see the
+Then open `http://127.0.0.1:8000` in a web browser. You should be able to see the
 following message printed to the developer tools console:
 
 ![jupyterlite-server-extension](https://user-images.githubusercontent.com/591645/136397303-deb1187f-8ab0-4b8c-aa61-f4f8eab76258.png)

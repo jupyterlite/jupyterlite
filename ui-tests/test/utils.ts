@@ -7,7 +7,7 @@ import { PlaywrightTestOptions } from '@playwright/test';
 
 export const config = {
   appPath: '',
-  baseURL: 'http://localhost:8000',
+  baseURL: 'http://127.0.0.1:8000',
   autoGoto: false,
   video: 'retain-on-failure',
   acceptDownloads: true,

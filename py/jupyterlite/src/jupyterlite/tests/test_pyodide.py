@@ -24,7 +24,7 @@ def a_pyodide_server(an_unused_port):  # pragma: no cover
         ["python", "-m", "http.server", "-b", "127.0.0.1", f"{an_unused_port}"],
         cwd=str(root),
     )
-    url = f"http://localhost:{an_unused_port}"
+    url = f"http://127.0.0.1:{an_unused_port}"
     yield url
     p.terminate()
 
