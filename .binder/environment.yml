@@ -11,7 +11,6 @@ dependencies:
   - isort
   - nbstripout
   - pyflakes
-  - twine
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
@@ -56,12 +55,13 @@ dependencies:
   # build
   - doit >=0.34,<1
   - flit >=3.7.1,<4
-  - jupyter-server-mathjax >=0.2.3
   - jsonschema >=3
+  - jupyter-server-mathjax >=0.2.3
   - pip
   - pkginfo
   - python-libarchive-c
   - requests_cache
+  - twine
   - wheel
   - yarn <2
   # cli
