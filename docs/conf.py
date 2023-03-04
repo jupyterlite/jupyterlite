@@ -71,6 +71,8 @@ html_favicon = "../app/lab/favicon.ico"
 html_static_path = [
     # docs stuff
     "_static",
+    # as-built assets for testing "hot" downstreams against a PR without rebuilding
+    "../dist",
     # as-built application, extensions, contents, and patched jupyter-lite.json
     "../build/docs-app",
 ]
