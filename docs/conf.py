@@ -108,6 +108,13 @@ html_theme_options = {
     "use_edit_page_button": True,
     "navbar_start": ["launch.html"],
     "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": APP_PKG["repository"]["url"],
+            "icon": "fa-solid fa-github-square",
+        }
+    ],
 }
 
 html_context = {
