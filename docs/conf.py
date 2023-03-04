@@ -111,7 +111,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": APP_PKG["repository"]["url"],
+            "url": APP_DATA["repository"]["url"],
             "icon": "fa-solid fa-github-square",
         }
     ],
