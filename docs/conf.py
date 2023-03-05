@@ -110,11 +110,18 @@ html_theme_options = {
     "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
     "icon_links": [
         {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/jupyterlite",
+            "icon": "fa-solid fa-box",
+        },
+        {
             "name": "GitHub",
             "url": APP_DATA["repository"]["url"],
             "icon": "fa-solid fa-github-square",
-        }
+        },
     ],
+    "pygment_light_style": "github-light",
+    "pygment_dark_style": "github-dark",
 }
 
 html_context = {
