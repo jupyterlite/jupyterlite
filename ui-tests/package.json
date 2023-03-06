@@ -25,6 +25,6 @@
     "rimraf": "^3"
   },
   "resolutions": {
-    "@playwright/test": "~1.29.0"
+    "@playwright/test": "~1.31.0"
   }
 }
