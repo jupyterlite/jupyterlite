@@ -944,7 +944,6 @@ class D:
     APPS = APP["jupyterlite"]["apps"]
     APP_SCHEMA = json.loads(P.APP_SCHEMA.read_text(**C.ENC))
     APP_SCHEMA_DEFS = APP_SCHEMA["definitions"]
-    APP_SCHEMA_PYOLITE = APP_SCHEMA_DEFS["pyolite-settings"]
 
     # derive the PEP-compatible version
     PY_VERSION = _js_version_to_py_version(APP["version"])
