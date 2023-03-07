@@ -267,17 +267,6 @@ The generated snapshots can be found on the Summary page of the CI check:
 
 ![reference-snapshots](https://user-images.githubusercontent.com/591645/141300086-d13c3221-a66d-45f5-b0ac-6f4795b16349.png)
 
-### Lab Extension development
-
-> _TBD: describe how the `@jupyterlite/labextension` works with e.g. **real**
-> serverextensions_
-
-### (Browser) Python Development
-
-> _TBD: describe successor to `pyolite`, patches, etc. See [#151]._
-
-[#151]: https://github.com/jupyterlite/jupyterlite/issues/151
-
 ### (Server) Python Development
 
 After all the `yarn`-related work has finished, the terminal-compatible python uses the
