@@ -2815,22 +2815,6 @@
     localforage "^1.9.0"
     localforage-memoryStorageDriver "^0.9.2"
 
-"@jupyterlite/pyolite-kernel-extension@file:packages/pyolite-kernel-extension":
-  version "0.1.0-beta.18"
-  dependencies:
-    "@jupyterlab/coreutils" "~5.5.3"
-    "@jupyterlite/contents" "^0.1.0-beta.18"
-    "@jupyterlite/kernel" "^0.1.0-beta.18"
-    "@jupyterlite/pyolite-kernel" "^0.1.0-beta.18"
-    "@jupyterlite/server" "^0.1.0-beta.18"
-
-"@jupyterlite/pyolite-kernel@file:packages/pyolite-kernel":
-  version "0.1.0-beta.18"
-  dependencies:
-    "@jupyterlite/contents" "^0.1.0-beta.18"
-    "@jupyterlite/kernel" "^0.1.0-beta.18"
-    comlink "^4.3.1"
-
 "@jupyterlite/repl-extension@file:packages/repl-extension":
   version "0.1.0-beta.18"
   dependencies:
@@ -5217,11 +5201,6 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
-
-base-64@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
-  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
 
 base16@^1.0.0:
   version "1.0.0"
@@ -11861,15 +11840,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pyodide@0.22.1:
-  version "0.22.1"
-  resolved "https://registry.npmjs.org/pyodide/-/pyodide-0.22.1.tgz#45bfab36ef332ec7fed6fb9736ab13ebd54f05d1"
-  integrity sha512-6+PkFLTC+kcBKtFQxYBxR44J5IBxLm8UGkobLgZv1SxzV9qOU2rb0YYf0qDtlnfDiN/IQd2uckf+D8Zwe88Mqg==
-  dependencies:
-    base-64 "^1.0.0"
-    node-fetch "^2.6.1"
-    ws "^8.5.0"
-
 q@^1.5.1:
   version "1.5.1"
   resolved "https://registry.npmjs.org/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
@@ -14773,11 +14743,6 @@ ws@^7.3.1, ws@^7.4.6:
   version "7.5.9"
   resolved "https://registry.npmjs.org/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
   integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
-
-ws@^8.5.0:
-  version "8.11.0"
-  resolved "https://registry.npmjs.org/ws/-/ws-8.11.0.tgz#6a0d36b8edfd9f96d8b25683db2f8d7de6e8e143"
-  integrity sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==
 
 xml-name-validator@^3.0.0:
   version "3.0.0"

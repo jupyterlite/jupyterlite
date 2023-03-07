@@ -74,9 +74,6 @@ translation = [
 serve = [
     "tornado >=6.1",
 ]
-piplite = [
-    "pkginfo"
-]
 mathjax = [
     "jupyter-server-mathjax >=0.2.3",
 ]
@@ -101,8 +98,6 @@ federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensi
 lite = "jupyterlite.addons.lite:LiteAddon"
 mimetypes = "jupyterlite.addons.mimetypes:MimetypesAddon"
 mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
-piplite = "jupyterlite.addons.piplite:PipliteAddon"
-pyodide = "jupyterlite.addons.pyodide:PyodideAddon"
 report = "jupyterlite.addons.report:ReportAddon"
 serve = "jupyterlite.addons.serve:ServeAddon"
 settings = "jupyterlite.addons.settings:SettingsAddon"

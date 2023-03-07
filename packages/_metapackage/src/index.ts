@@ -8,8 +8,6 @@ import '@jupyterlite/javascript-kernel';
 import '@jupyterlite/kernel';
 import '@jupyterlite/licenses';
 import '@jupyterlite/localforage';
-import '@jupyterlite/pyolite-kernel-extension';
-import '@jupyterlite/pyolite-kernel';
 import '@jupyterlite/retro-application-extension';
 import '@jupyterlite/server';
 import '@jupyterlite/server-extension';

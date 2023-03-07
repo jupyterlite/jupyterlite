@@ -71,6 +71,8 @@ html_favicon = "../app/lab/favicon.ico"
 html_static_path = [
     # docs stuff
     "_static",
+    # as-built assets for testing "hot" downstreams against a PR without rebuilding
+    "../dist",
     # as-built application, extensions, contents, and patched jupyter-lite.json
     "../build/docs-app",
 ]
@@ -106,6 +108,20 @@ html_theme_options = {
     "use_edit_page_button": True,
     "navbar_start": ["launch.html"],
     "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
+    "icon_links": [
+        {
+            "name": "PyPI",
+            "url": "https://pypi.org/project/jupyterlite",
+            "icon": "fa-solid fa-box",
+        },
+        {
+            "name": "GitHub",
+            "url": APP_DATA["repository"]["url"],
+            "icon": "fa-solid fa-github-square",
+        },
+    ],
+    "pygment_light_style": "github-light",
+    "pygment_dark_style": "github-dark",
 }
 
 html_context = {

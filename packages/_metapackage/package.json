@@ -29,8 +29,6 @@
     "@jupyterlite/kernel": "file:../kernel",
     "@jupyterlite/licenses": "file:../licenses",
     "@jupyterlite/localforage": "file:../localforage",
-    "@jupyterlite/pyolite-kernel": "file:../pyolite-kernel",
-    "@jupyterlite/pyolite-kernel-extension": "file:../pyolite-kernel-extension",
     "@jupyterlite/repl-extension": "file:../repl-extension",
     "@jupyterlite/retro-application-extension": "file:../retro-application-extension",
     "@jupyterlite/server": "file:../server-extension",

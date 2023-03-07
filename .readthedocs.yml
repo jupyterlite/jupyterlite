@@ -9,6 +9,7 @@ build:
       - doit -n4 build
       - doit -n4 docs:typedoc:mystify
       - doit -n4 docs:app:pack
+      - doit -n4 dist
 sphinx:
   builder: html
   configuration: docs/conf.py

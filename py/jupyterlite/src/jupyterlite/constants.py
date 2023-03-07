@@ -64,9 +64,6 @@ SETTINGS_FILE_TYPES = "fileTypes"
 #: the top-level key for lite plugin settings
 LITE_PLUGIN_SETTINGS = "litePluginSettings"
 
-#: the plugin id for the pyolite kernel
-PYOLITE_PLUGIN_ID = "@jupyterlite/pyolite-kernel-extension:kernel"
-
 ### jupyterlite "well-known" paths
 
 #: our schema
@@ -83,7 +80,6 @@ JUPYTER_LITE_CONFIG = "jupyter_lite_config.json"
 #: Needs a better canonical location
 DEFAULT_OUTPUT_DIR = "_output"
 
-
 #: commonly-used filename for response fixtures, e.g. settings
 ALL_JSON = "all.json"
 
@@ -95,20 +91,11 @@ SOURCE_DATE_EPOCH = "SOURCE_DATE_EPOCH"
 #: this is arrived at by inspection
 NPM_SOURCE_DATE_EPOCH = 499162500
 
-#: the only kind of noarch wheel piplite understands
-NOARCH_WHL = "py3-none-any.whl"
-
-#: the only kind of binary wheel piplite understands
-WASM_WHL = "emscripten_*_wasm32.whl"
-
 #: known zip extensions
 EXTENSION_ZIP = (".whl", ".zip", ".conda")
 
 #: known compressed tar extensions
 EXTENSION_TAR = (".tgz", ".tar.bz2", ".tar.gz")
-
-#: the only kinds of wheels piplite understands
-ALL_WHL = [NOARCH_WHL, WASM_WHL]
 
 ### URLs
 

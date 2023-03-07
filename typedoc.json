@@ -11,8 +11,6 @@
     "packages/kernel",
     "packages/licenses",
     "packages/localforage",
-    "packages/pyolite-kernel-extension",
-    "packages/pyolite-kernel",
     "packages/repl-extension",
     "packages/retro-application-extension",
     "packages/server-extension",
