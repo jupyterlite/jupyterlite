@@ -34,7 +34,7 @@ All third-party extensions, and some provided by JupyterLite and JupyterLab, can
 disabled for one or all apps deployed in a site with the `disabledExtensions` option.
 
 For example, a site that doesn't use the Pyodide-based kernel can disable the
-[`ServiceWorker`](./service-worker.md) and [Pyolite](../../python/pyodide.md) kernel
+[`ServiceWorker`](./service-worker.md) and the [Pyodide](../../python/pyodide.md) kernel
 with the following `jupyter-lite.json`:
 
 ```json
@@ -42,7 +42,7 @@ with the following `jupyter-lite.json`:
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
     "disabledExtensions": [
-      "@jupyterlite/pyolite-kernel-extension:kernel",
+      "@jupyterlite/pyodide-kernel-extension:kernel",
       "@jupyterlite/server-extension:service-worker"
     ]
   }

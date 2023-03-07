@@ -73,9 +73,9 @@ help of [`mock-socket`][mock-socket].
 
 ### A Python kernel powered by Pyodide
 
-By default JupyterLite ships with a Python kernel called Pyolite.
+By default JupyterLite ships with a Python kernel.
 
-Pyolite is built on top of [pyodide], and includes `piplite`, a wrapper around
+The Python kernel is built on top of [pyodide], and includes `piplite`, a wrapper around
 [micropip] which supports [customized wheels sources](../howto/python/wheels.md).
 
 [pyodide]: https://github.com/pyodide/pyodide

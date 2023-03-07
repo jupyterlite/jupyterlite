@@ -3,7 +3,7 @@
 It is possible to create a fully self-contained JupyterLite archive with no request to
 external services.
 
-## Configure Pyolite
+## Configure the Pyodide kernel
 
 By default the Pyodide files are fetched from a CDN.
 
@@ -18,7 +18,7 @@ jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/downloa
 ```
 
 ```{warning}
-Generally, a version of `pyolite` is likely only compatible with variants of the
+Generally, a version of `pyodide_kernel` is likely only compatible with variants of the
 _same_ `x.y.z` version against which the release was tested, as both python
 and JS APIs are still changing frequently on both sides of the dependency.
 ```

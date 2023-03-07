@@ -1,14 +1,14 @@
-# Ship additional pyolite wheels at build time
+# Ship additional Pyodide wheels at build time
 
 User-installable wheels can be included at extension build time. Wheel indices can be
 generated with the `jupyter lite pip index`
-[CLI](../../reference/cli.ipynb#pyolite-wheels) and then included in
+[CLI](../../reference/cli.ipynb#pyodide-wheels) and then included in
 `package.json#/piplite`: make sure to include the index and `.whl` files in
 `package.json#/files` as well.
 
-## Adding pyolite wheels
+## Adding wheels to the Pyodide kernel
 
-The [pyolite kernel](../../quickstart/using.md#kernels) itself consists of a bit of
+The [Pyodide kernel](../../quickstart/using.md#kernels) itself consists of a bit of
 JavaScript and customized python wheels, which in turn require other wheels and
 pre-built WASM modules and other JavaScript.
 
@@ -31,7 +31,7 @@ Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
 ```json
 "jupyter-config-data": {
   "litePluginSettings": {
-    "@jupyterlite/pyolite-kernel-extension:kernel": {
+    "@jupyterlite/pyodide-kernel-extension:kernel": {
       "disablePyPIFallback": true
     }
   }

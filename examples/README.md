@@ -8,4 +8,4 @@ For examples of using JupyterLite with more kernels, see the other notebooks in 
 folder.
 
 For examples of using JupyterLite for scientific computing, see
-[the `pyolite` examples folder](pyolite).
+[the `pyodide` examples folder](pyodide).
