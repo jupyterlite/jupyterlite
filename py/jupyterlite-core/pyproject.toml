@@ -3,7 +3,7 @@ build-backend = "flit_core.buildapi"
 requires = ["flit_core >=3.7.1,<4"]
 
 [project]
-name = "jupyterlite"
+name = "jupyterlite-core"
 authors = [
     {name = "JupyterLite Contributors"},
 ]
@@ -48,7 +48,7 @@ classifiers = [
 Source = "https://github.com/jupyterlite/jupyterlite"
 
 [project.scripts]
-jupyter-lite = "jupyterlite.app:main"
+jupyter-lite = "jupyterlite_core.app:main"
 
 [project.optional-dependencies]
 test = [
@@ -91,22 +91,22 @@ all = [
     "tornado >=6.1",
 ]
 
-[project.entry-points."jupyterlite.addon.v0"]
-archive = "jupyterlite.addons.archive:ArchiveAddon"
-contents = "jupyterlite.addons.contents:ContentsAddon"
-federated_extensions = "jupyterlite.addons.federated_extensions:FederatedExtensionAddon"
-lite = "jupyterlite.addons.lite:LiteAddon"
-mimetypes = "jupyterlite.addons.mimetypes:MimetypesAddon"
-mathjax = "jupyterlite.addons.mathjax:MathjaxAddon"
-report = "jupyterlite.addons.report:ReportAddon"
-serve = "jupyterlite.addons.serve:ServeAddon"
-settings = "jupyterlite.addons.settings:SettingsAddon"
-static = "jupyterlite.addons.static:StaticAddon"
-translation = "jupyterlite.addons.translation:TranslationAddon"
+[project.entry-points."jupyterlite_core.addon.v0"]
+archive = "jupyterlite_core.addons.archive:ArchiveAddon"
+contents = "jupyterlite_core.addons.contents:ContentsAddon"
+federated_extensions = "jupyterlite_core.addons.federated_extensions:FederatedExtensionAddon"
+lite = "jupyterlite_core.addons.lite:LiteAddon"
+mimetypes = "jupyterlite_core.addons.mimetypes:MimetypesAddon"
+mathjax = "jupyterlite_core.addons.mathjax:MathjaxAddon"
+report = "jupyterlite_core.addons.report:ReportAddon"
+serve = "jupyterlite_core.addons.serve:ServeAddon"
+settings = "jupyterlite_core.addons.settings:SettingsAddon"
+static = "jupyterlite_core.addons.static:StaticAddon"
+translation = "jupyterlite_core.addons.translation:TranslationAddon"
 
 [tool.flit.sdist]
 include = [
-    "src/jupyterlite/jupyterlite-*.tgz",
+    "src/jupyterlite_core/jupyterlite-*.tgz",
 ]
 
 [tool.pytest.ini_options]
