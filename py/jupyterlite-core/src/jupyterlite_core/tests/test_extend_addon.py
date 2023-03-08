@@ -5,7 +5,7 @@ from unittest import mock
 import pytest
 from traitlets import Bunch, Int
 
-from jupyterlite import addons
+from jupyterlite_core import addons
 from jupyterlite_core.addons.base import BaseAddon
 from jupyterlite_core.app import LiteStatusApp
 
