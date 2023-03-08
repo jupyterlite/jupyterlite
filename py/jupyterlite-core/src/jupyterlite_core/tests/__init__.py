@@ -1,1 +1,1 @@
-"""tests of jupyterlite"""
+"""tests of jupyterlite-core"""

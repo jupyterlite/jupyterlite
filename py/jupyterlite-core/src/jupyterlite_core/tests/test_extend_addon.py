@@ -6,8 +6,8 @@ import pytest
 from traitlets import Bunch, Int
 
 from jupyterlite import addons
-from jupyterlite.addons.base import BaseAddon
-from jupyterlite.app import LiteStatusApp
+from jupyterlite_core.addons.base import BaseAddon
+from jupyterlite_core.app import LiteStatusApp
 
 PY_LT_310 = sys.version_info < (3, 10)
 

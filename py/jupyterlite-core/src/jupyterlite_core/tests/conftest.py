@@ -1,4 +1,4 @@
-"""pytest configuration for jupyterlite"""
+"""pytest configuration for jupyterlite-core"""
 
 import os
 import shutil
@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from jupyterlite.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
+from jupyterlite_core.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"
