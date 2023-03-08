@@ -422,12 +422,10 @@ def task_dist():
 def task_dev():
     """setup up local packages for interactive development"""
     for py_name in [C.NAME, C.CORE_NAME]:
+        py_name_pkg = py_name.replace("-", "_")
         if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
             cwd = P.ROOT
-            file_dep = [
-                B.DIST
-                / f"""{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-            ]
+            file_dep = [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
             args = [
                 *C.PYM,
                 "pip",
@@ -440,7 +438,7 @@ def task_dev():
             ]
         else:
             cwd = P.PY_SETUP_PY[py_name].parent
-            file_dep = [cwd / "src" / py_name / B.APP_PACK.name]
+            file_dep = [cwd / "src" / py_name_pkg / B.APP_PACK.name]
             args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
 
         yield dict(
