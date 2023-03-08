@@ -339,7 +339,7 @@ def task_build():
     )
 
     yield dict(
-        name=f"py:{C.NAME}:pre:app",
+        name=f"py:{C.CORE_NAME}:pre:app",
         file_dep=[B.APP_PACK],
         targets=[B.PY_APP_PACK],
         actions=[
@@ -488,7 +488,7 @@ def task_docs():
         *([] if C.CI else [B.PY_APP_PACK]),
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
-        *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
     ]
 
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
@@ -497,7 +497,7 @@ def task_docs():
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
-        task_dep=[f"dev:py:{C.NAME}"],
+        task_dep=[f"dev:py:{C.CORE_NAME}"],
         uptodate=[lambda: False],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
@@ -647,12 +647,12 @@ def task_check():
     yield dict(
         name="app",
         doc="use the jupyterlite CLI to check the docs app",
-        task_dep=[f"dev:py:{C.NAME}"],
+        task_dep=[f"dev:py:{C.CORE_NAME}"],
         actions=[(U.docs_app, ["check"])],
         file_dep=[
             B.DOCS_APP_SHA256SUMS,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
-            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+            *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
         ],
     )
 
@@ -713,7 +713,7 @@ def task_test():
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
-        if py_name != C.NAME:
+        if py_name != C.CORE_NAME:
             # TODO: we'll get there
             continue
 
@@ -1022,8 +1022,8 @@ class B:
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
-    APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
+    APP_PACK = DIST / f"""{C.CORE_NAME}-app-{D.APP_VERSION}.tgz"""
+    PY_APP_PACK = P.ROOT / "py" / C.CORE_NAME / "src" / C.CORE_NAME.replace('-', '_') / APP_PACK.name
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
