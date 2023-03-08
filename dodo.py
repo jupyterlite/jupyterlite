@@ -421,31 +421,32 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
-        cwd = P.ROOT
-        file_dep = [
-            B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-        ]
-        args = [
-            *C.PYM,
-            "pip",
-            "install",
-            "-vv",
-            "--no-index",
-            "--find-links",
-            B.DIST,
-            C.NAME,
-        ]
-    else:
-        cwd = P.PY_SETUP_PY[C.NAME].parent
-        file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
-        args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
+    for py_name in [C.NAME, C.CORE_NAME]:
+        if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+            cwd = P.ROOT
+            file_dep = [
+                B.DIST / f"""{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+            ]
+            args = [
+                *C.PYM,
+                "pip",
+                "install",
+                "-vv",
+                "--no-index",
+                "--find-links",
+                B.DIST,
+                py_name,
+            ]
+        else:
+            cwd = P.PY_SETUP_PY[py_name].parent
+            file_dep = [cwd / "src" / py_name / B.APP_PACK.name]
+            args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
 
-    yield dict(
-        name=f"py:{C.NAME}",
-        actions=[U.do(*args, cwd=cwd)],
-        file_dep=file_dep,
-    )
+        yield dict(
+            name=f"py:{py_name}",
+            actions=[U.do(*args, cwd=cwd)],
+            file_dep=file_dep,
+        )
 
 
 def task_docs():
