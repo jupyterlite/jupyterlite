@@ -1023,7 +1023,14 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.CORE_NAME}-app-{D.APP_VERSION}.tgz"""
-    PY_APP_PACK = P.ROOT / "py" / C.CORE_NAME / "src" / C.CORE_NAME.replace('-', '_') / APP_PACK.name
+    PY_APP_PACK = (
+        P.ROOT
+        / "py"
+        / C.CORE_NAME
+        / "src"
+        / C.CORE_NAME.replace("-", "_")
+        / APP_PACK.name
+    )
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
