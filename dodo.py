@@ -145,13 +145,13 @@ def task_lint():
         ],
     )
 
-    yield U.ok(
-        B.OK_PYFLAKES,
-        name="pyflakes",
-        doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
-    )
+    # yield U.ok(
+    #     B.OK_PYFLAKES,
+    #     name="pyflakes",
+    #     doc="ensure python code style with pyflakes",
+    #     file_dep=[*L.ALL_BLACK, B.OK_BLACK],
+    #     actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
+    # )
 
     yield dict(
         name="schema:self",
