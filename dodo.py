@@ -1022,7 +1022,7 @@ class B:
     # built things
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
-    APP_PACK = DIST / f"""{C.CORE_NAME}-app-{D.APP_VERSION}.tgz"""
+    APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
     PY_APP_PACK = (
         P.ROOT
         / "py"
