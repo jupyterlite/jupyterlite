@@ -439,7 +439,7 @@ def task_dev():
             args += [py_name]
 
         yield dict(
-            name=f"py:{py_name}",
+            name=f"py:jupyterlite",
             actions=[U.do(*args, cwd=P.ROOT)],
             file_dep=file_dep,
         )
