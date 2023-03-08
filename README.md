@@ -8,8 +8,8 @@
 [ci]: https://github.com/jupyterlite/jupyterlite/actions?query=branch%3Amain
 [binder-badge]: https://mybinder.org/badge_logo.svg
 [binder]: https://mybinder.org/v2/gh/jupyterlite/jupyterlite/main?urlpath=lab
-[docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=latest
-[docs]: https://jupyterlite.readthedocs.io/en/latest/?badge=latest
+[docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=0.1.0-beta
+[docs]: https://jupyterlite.readthedocs.io/en/0.1.0-beta/?badge=0.1.0-beta
 
 JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built
 from the ground-up using JupyterLab components and extensions.
@@ -23,7 +23,7 @@ Not all the usual features available in JupyterLab and the Classic Notebook will
 with JupyterLite, but many already do!
 
 Don't hesitate to check out the
-[documentation](https://jupyterlite.readthedocs.io/en/latest/howto/index.html) for more
+[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/howto/index.html) for more
 information and project updates.
 
 ## ✨ Try it in your browser ✨
@@ -48,7 +48,7 @@ You can build your own JupyterLite website in a couple of minutes, with custom
 extensions and packages.
 
 See the
-[documentation](https://jupyterlite.readthedocs.io/en/latest/quickstart/deploy.html) for
+[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/quickstart/deploy.html) for
 more details.
 
 ### Browser-based Interactive Computing
