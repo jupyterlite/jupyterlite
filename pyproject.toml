@@ -39,6 +39,9 @@ src = "pyproject.toml"
 [[tool.tbump.file]]
 src = "py/jupyterlite/src/jupyterlite/__init__.py"
 
+[[tool.tbump.file]]
+src = "py/jupyterlite-core/src/jupyterlite_core/__init__.py"
+
 [[tool.tbump.field]]
 name = "channel"
 default = ""
