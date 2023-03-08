@@ -5,7 +5,7 @@ version = "0.1.0b18"
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-known_first_party = [ "jupyterlite",]
+known_first_party = [ "jupyterlite_core", "jupyterlite",]
 
 [tool.jupyter-releaser]
 skip = [ "build-python", "check-links", "check-manifest",]
