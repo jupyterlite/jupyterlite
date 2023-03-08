@@ -270,10 +270,6 @@ def task_build():
         targets=[B.META_BUILDINFO],
     )
 
-    # a temporary environment to reuse build logic for app, for now
-    bs_env = dict(os.environ)
-    bs_env["PYTHONPATH"] = str(P.MAIN_SRC)
-
     app_deps = [
         B.META_BUILDINFO,
         P.WEBPACK_CONFIG,
@@ -768,6 +764,7 @@ def task_repo():
 
 class C:
     NAME = "jupyterlite"
+    CORE_NAME = "jupyterlite-core"
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -888,7 +885,6 @@ class P:
     PY_SETUP_DEPS = {
         C.NAME: lambda: [B.PY_APP_PACK],
     }
-    MAIN_SRC = ROOT / "py" / C.NAME / "src"
 
     # docs
     README = ROOT / "README.md"
