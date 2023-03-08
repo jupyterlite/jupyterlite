@@ -41,11 +41,11 @@ of sources, the CLI uses a number of layers.
 | [Task]    | `init:static:unpack` | set of actions with Task and file dependencies |
 | Action    | `_unpack_stdlib`     | actually move and update files                 |
 
-[hook]: jupyterlite.constants.HOOKS
-[litebuildapp]: jupyterlite.app.LiteBuildApp
-[litemanager]: jupyterlite.manager.LiteManager
-[staticaddon]: jupyterlite.addons.static.StaticAddon
-[phase]: jupyterlite.constants.PHASES
+[hook]: jupyterlite_core.constants.HOOKS
+[litebuildapp]: jupyterlite_core.app.LiteBuildApp
+[litemanager]: jupyterlite_core.manager.LiteManager
+[staticaddon]: jupyterlite_core.addons.static.StaticAddon
+[phase]: jupyterlite_core.constants.PHASES
 [task]: https://pydoit.org/tasks.html
 
 ## Structure of an Addon
@@ -96,16 +96,16 @@ parents (by any other addons) already existing.
 While not _required_, having accurate `file_dep` and `targets` help ensure that the
 built application is always in a consistent state, _without_ substantial rework.
 
-[hook-parent]: jupyterlite.constants.HOOK_PARENTS
+[hook-parent]: jupyterlite_core.constants.HOOK_PARENTS
 
 ### `BaseAddon`
 
-A convenience class, [`jupyterlite.addons.base.BaseAddon`][baseaddon] may be extended to
-provide a number of useful features. It extends `traitlets.LoggingConfigurable`, and
-makes the `LiteManager` the `parent` of the _Addon_, allowing it to be [configured by
-name][config] via `jupyter_lite_config.json`:
+A convenience class, [`jupyterlite_core.addons.base.BaseAddon`][baseaddon] may be
+extended to provide a number of useful features. It extends
+`traitlets.LoggingConfigurable`, and makes the `LiteManager` the `parent` of the
+_Addon_, allowing it to be [configured by name][config] via `jupyter_lite_config.json`:
 
-[baseaddon]: jupyterlite.addons.base.BaseAddon
+[baseaddon]: jupyterlite_core.addons.base.BaseAddon
 [config]: https://traitlets.readthedocs.io/en/stable/config.html#module-traitlets.config
 
 ```json
