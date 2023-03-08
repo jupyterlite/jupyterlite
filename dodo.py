@@ -431,16 +431,16 @@ def task_dev():
             "--no-index",
             "--find-links",
             B.DIST,
-            py_name,
         ]
+        file_dep = []
         for py_name in [C.NAME, C.CORE_NAME]:
             py_name_pkg = py_name.replace("-", "_")
-            cwd = P.ROOT
-            file_dep = [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
+            file_dep += [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
+            args += [py_name]
 
         yield dict(
             name=f"py:{py_name}",
-            actions=[U.do(*args, cwd=cwd)],
+            actions=[U.do(*args, cwd=P.ROOT)],
             file_dep=file_dep,
         )
     else:
