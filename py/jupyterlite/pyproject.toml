@@ -9,7 +9,6 @@ authors = [
 ]
 dependencies = [
     "jupyterlite_core[lab]",
-    "jupyterlite-pyodide-kernel",
 ]
 keywords = [
     "browser",
