@@ -425,7 +425,8 @@ def task_dev():
         if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
             cwd = P.ROOT
             file_dep = [
-                B.DIST / f"""{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+                B.DIST
+                / f"""{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
             ]
             args = [
                 *C.PYM,

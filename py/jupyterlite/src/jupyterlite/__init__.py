@@ -3,5 +3,5 @@
 
 __version__ = "0.1.0b18"
 
-from jupyterlite_core.constants import *
 from jupyterlite_core.addons.base import *
+from jupyterlite_core.constants import *
