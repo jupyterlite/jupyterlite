@@ -6,7 +6,7 @@ runs:
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
+
     - name: Base Setup
       uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
@@ -17,7 +17,7 @@ runs:
     - name: Setup pip (build)
       shell: bash
       run: python3 -m pip install -r requirements-build.txt
- 
+
     - name: Install
       shell: bash
       if: steps.cache-node-modules.outputs.cache-hit != 'true'
