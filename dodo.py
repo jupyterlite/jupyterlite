@@ -358,11 +358,13 @@ def task_build():
         actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
 
         file_dep = [
-            *P.PY_SETUP_DEPS[py_name](),
             *py_pkg.rglob("src/*.py"),
             *py_pkg.glob("*.md"),
             setup_py,
         ]
+
+        if py_name == "jupyterlite-core":
+            file_dep += [B.PY_APP_PACK]
 
         pyproj_toml = py_pkg / "pyproject.toml"
 
@@ -882,9 +884,6 @@ class P:
 
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
-    PY_SETUP_DEPS = {
-        C.NAME: lambda: [B.PY_APP_PACK],
-    }
 
     # docs
     README = ROOT / "README.md"
