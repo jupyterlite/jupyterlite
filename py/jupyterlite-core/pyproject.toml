@@ -91,7 +91,7 @@ all = [
     "tornado >=6.1",
 ]
 
-[project.entry-points."jupyterlite_core.addon.v0"]
+[project.entry-points."jupyterlite.addon.v0"]
 archive = "jupyterlite_core.addons.archive:ArchiveAddon"
 contents = "jupyterlite_core.addons.contents:ContentsAddon"
 federated_extensions = "jupyterlite_core.addons.federated_extensions:FederatedExtensionAddon"
