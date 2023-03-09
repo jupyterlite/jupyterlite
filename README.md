@@ -23,8 +23,8 @@ Not all the usual features available in JupyterLab and the Classic Notebook will
 with JupyterLite, but many already do!
 
 Don't hesitate to check out the
-[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/howto/index.html) for more
-information and project updates.
+[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/howto/index.html) for
+more information and project updates.
 
 ## ✨ Try it in your browser ✨
 
@@ -48,8 +48,8 @@ You can build your own JupyterLite website in a couple of minutes, with custom
 extensions and packages.
 
 See the
-[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/quickstart/deploy.html) for
-more details.
+[documentation](https://jupyterlite.readthedocs.io/en/0.1.0-beta/quickstart/deploy.html)
+for more details.
 
 ### Browser-based Interactive Computing
 
