@@ -1020,7 +1020,7 @@ class L:
     )
     # ignore files in the jupyterlite metapackage
     ALL_PYFLAKES = [
-        f for f in ALL_BLACK if not str(P.PY_SETUP_PY[C.NAME].parent) in str(f)
+        f for f in ALL_BLACK if str(P.PY_SETUP_PY[C.NAME].parent) not in str(f)
     ]
 
 
