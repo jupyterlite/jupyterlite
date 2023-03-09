@@ -145,13 +145,13 @@ def task_lint():
         ],
     )
 
-    # yield U.ok(
-    #     B.OK_PYFLAKES,
-    #     name="pyflakes",
-    #     doc="ensure python code style with pyflakes",
-    #     file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-    #     actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
-    # )
+    yield U.ok(
+        B.OK_PYFLAKES,
+        name="pyflakes",
+        doc="ensure python code style with pyflakes",
+        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
+        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_PYFLAKES)],
+    )
 
     yield dict(
         name="schema:self",
@@ -439,7 +439,7 @@ def task_dev():
             args += [py_name]
 
         yield dict(
-            name=f"py:jupyterlite-core",
+            name="py:jupyterlite-core",
             actions=[U.do(*args, cwd=P.ROOT)],
             file_dep=file_dep,
         )
@@ -1018,6 +1018,10 @@ class L:
         *(P.ROOT / "scripts").glob("*.py"),
         *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
     )
+    # ignore files in the jupyterlite metapackage
+    ALL_PYFLAKES = [
+        f for f in ALL_BLACK if not f.is_relative_to(P.PY_SETUP_PY[C.NAME].parent)
+    ]
 
 
 class B:
