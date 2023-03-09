@@ -149,7 +149,7 @@ def task_lint():
         B.OK_PYFLAKES,
         name="pyflakes",
         doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
+        file_dep=[*L.ALL_PYFLAKES, B.OK_BLACK],
         actions=[U.do(*C.PYM, "pyflakes", *L.ALL_PYFLAKES)],
     )
 
