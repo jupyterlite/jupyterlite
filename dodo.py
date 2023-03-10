@@ -422,7 +422,7 @@ def task_dev():
             "pip",
             "install",
             "-vv",
-            # "--no-index",
+            "--no-index",
             "--find-links",
             B.DIST,
         ]
