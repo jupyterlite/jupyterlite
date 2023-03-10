@@ -430,7 +430,10 @@ def task_dev():
         yield dict(
             name="py:jupyterlite-core",
             actions=[U.do(*core_args, cwd=P.ROOT)],
-            file_dep=[B.DIST / f"""{C.CORE_NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
+            file_dep=[
+                B.DIST
+                / f"""{C.CORE_NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+            ],
         )
 
         meta_args = args + [C.NAME, "--no-deps"]
@@ -438,7 +441,9 @@ def task_dev():
             task_dep=["dev:py:jupyterlite-core"],
             name="py:jupyterlite",
             actions=[U.do(*meta_args, cwd=P.ROOT)],
-            file_dep=[B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
+            file_dep=[
+                B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+            ],
         )
     else:
         for py_name in [C.NAME, C.CORE_NAME]:
