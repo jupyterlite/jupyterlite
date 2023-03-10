@@ -36,45 +36,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Setup pip (base)
-        run: python3 -m pip install --user -U pip setuptools wheel
-      - name: Cache (pip)
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Cache (node_modules)
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache (.yarn-packages)
-        uses: actions/cache@v3
-        id: cache-yarn-packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        with:
-          path: .yarn-packages
-          key: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
       - name: Test (js)
         run: doit -n4 test:js
