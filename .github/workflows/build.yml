@@ -170,8 +170,6 @@ jobs:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
-      - name: Install
-        run: doit setup:js
       - name: Cache (docs extensions)
         uses: actions/cache@v3
         with:
@@ -182,6 +180,8 @@ jobs:
             ${{ env.CACHE_EPOCH }}-docs-app-
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt -r requirements-build.txt
+      - name: Install
+        run: doit setup:js
       - name: Install (py)
         run: doit dev:py:jupyterlite-core
       - name: Docs (app)
