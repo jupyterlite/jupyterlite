@@ -1,12 +1,12 @@
-"""basic smoke tests of jupyterlite infrastructure"""
-import jupyterlite
+"""basic smoke tests of jupyterlite_core infrastructure"""
+import jupyterlite_core
 
 
 def test_is_documented():
     """TODO: improve the definition of documented"""
-    assert jupyterlite.__doc__
+    assert jupyterlite_core.__doc__
 
 
 def test_is_versioned():
     """TODO: test the version agrees with the version mangling from npm"""
-    assert jupyterlite.__version__
+    assert jupyterlite_core.__version__

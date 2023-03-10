@@ -149,8 +149,8 @@ def task_lint():
         B.OK_PYFLAKES,
         name="pyflakes",
         doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_BLACK, B.OK_BLACK],
-        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_BLACK)],
+        file_dep=[*L.ALL_PYFLAKES, B.OK_BLACK],
+        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_PYFLAKES)],
     )
 
     yield dict(
@@ -270,10 +270,6 @@ def task_build():
         targets=[B.META_BUILDINFO],
     )
 
-    # a temporary environment to reuse build logic for app, for now
-    bs_env = dict(os.environ)
-    bs_env["PYTHONPATH"] = str(P.MAIN_SRC)
-
     app_deps = [
         B.META_BUILDINFO,
         P.WEBPACK_CONFIG,
@@ -343,7 +339,7 @@ def task_build():
     )
 
     yield dict(
-        name=f"py:{C.NAME}:pre:app",
+        name=f"py:{C.CORE_NAME}:pre:app",
         file_dep=[B.APP_PACK],
         targets=[B.PY_APP_PACK],
         actions=[
@@ -362,11 +358,13 @@ def task_build():
         actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
 
         file_dep = [
-            *P.PY_SETUP_DEPS[py_name](),
             *py_pkg.rglob("src/*.py"),
             *py_pkg.glob("*.md"),
             setup_py,
         ]
+
+        if py_name == "jupyterlite-core":
+            file_dep += [B.PY_APP_PACK]
 
         pyproj_toml = py_pkg / "pyproject.toml"
 
@@ -423,11 +421,8 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
+    args = []
     if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
-        cwd = P.ROOT
-        file_dep = [
-            B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-        ]
         args = [
             *C.PYM,
             "pip",
@@ -436,18 +431,30 @@ def task_dev():
             "--no-index",
             "--find-links",
             B.DIST,
-            C.NAME,
         ]
-    else:
-        cwd = P.PY_SETUP_PY[C.NAME].parent
-        file_dep = [cwd / "src" / C.NAME / B.APP_PACK.name]
-        args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
+        file_dep = []
+        for py_name in [C.NAME, C.CORE_NAME]:
+            py_name_pkg = py_name.replace("-", "_")
+            file_dep += [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
+            args += [py_name]
 
-    yield dict(
-        name=f"py:{C.NAME}",
-        actions=[U.do(*args, cwd=cwd)],
-        file_dep=file_dep,
-    )
+        yield dict(
+            name="py:jupyterlite-core",
+            actions=[U.do(*args, cwd=P.ROOT)],
+            file_dep=file_dep,
+        )
+    else:
+        for py_name in [C.NAME, C.CORE_NAME]:
+            py_name_pkg = py_name.replace("-", "_")
+            cwd = P.PY_SETUP_PY[py_name].parent
+            file_dep = [cwd / "src" / py_name_pkg / B.APP_PACK.name]
+            args = [*C.FLIT, "install", "--pth-file", "--deps=none"]
+
+        yield dict(
+            name=f"py:{py_name}",
+            actions=[U.do(*args, cwd=cwd)],
+            file_dep=file_dep,
+        )
 
 
 def task_docs():
@@ -488,7 +495,7 @@ def task_docs():
         *([] if C.CI else [B.PY_APP_PACK]),
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
-        *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+        *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
     ]
 
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
@@ -497,7 +504,7 @@ def task_docs():
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
-        task_dep=[f"dev:py:{C.NAME}"],
+        task_dep=[f"dev:py:{C.CORE_NAME}"],
         uptodate=[lambda: False],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
@@ -647,12 +654,12 @@ def task_check():
     yield dict(
         name="app",
         doc="use the jupyterlite CLI to check the docs app",
-        task_dep=[f"dev:py:{C.NAME}"],
+        task_dep=[f"dev:py:{C.CORE_NAME}"],
         actions=[(U.docs_app, ["check"])],
         file_dep=[
             B.DOCS_APP_SHA256SUMS,
             # NOTE: these won't always trigger a rebuild because of the inner dodo
-            *P.PY_SETUP_PY[C.NAME].rglob("*.py"),
+            *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
         ],
     )
 
@@ -713,7 +720,7 @@ def task_test():
     ]
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
-        if py_name != C.NAME:
+        if py_name != C.CORE_NAME:
             # TODO: we'll get there
             continue
 
@@ -768,6 +775,7 @@ def task_repo():
 
 class C:
     NAME = "jupyterlite"
+    CORE_NAME = "jupyterlite-core"
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -885,10 +893,6 @@ class P:
 
     # "real" py packages have a `setup.py`, even if handled by `.toml` or `.cfg`
     PY_SETUP_PY = {p.parent.name: p for p in (ROOT / "py").glob("*/setup.py")}
-    PY_SETUP_DEPS = {
-        C.NAME: lambda: [B.PY_APP_PACK],
-    }
-    MAIN_SRC = ROOT / "py" / C.NAME / "src"
 
     # docs
     README = ROOT / "README.md"
@@ -1014,6 +1018,10 @@ class L:
         *(P.ROOT / "scripts").glob("*.py"),
         *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
     )
+    # ignore files in the jupyterlite metapackage
+    ALL_PYFLAKES = [
+        f for f in ALL_BLACK if str(P.PY_SETUP_PY[C.NAME].parent) not in str(f)
+    ]
 
 
 class B:
@@ -1026,7 +1034,14 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PY_APP_PACK = P.ROOT / "py" / C.NAME / "src" / C.NAME / APP_PACK.name
+    PY_APP_PACK = (
+        P.ROOT
+        / "py"
+        / C.CORE_NAME
+        / "src"
+        / C.CORE_NAME.replace("-", "_")
+        / APP_PACK.name
+    )
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
