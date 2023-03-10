@@ -427,7 +427,7 @@ def task_dev():
             B.DIST,
         ]
         file_dep = []
-        for py_name in [C.CORE_NAME, C.NAME]:
+        for py_name in [C.NAME, C.CORE_NAME]:
             py_name_pkg = py_name.replace("-", "_")
             file_dep += [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
             args += [py_name]
@@ -1390,7 +1390,6 @@ class U:
 
             args += C.LITE_ARGS
 
-            print(args)
             subprocess.check_call(list(map(str, args)), cwd=str(P.EXAMPLES))
 
     def hashfile(path):
