@@ -416,7 +416,7 @@ def task_dist():
 def task_dev():
     """setup up local packages for interactive development"""
     args = []
-    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+    if True or C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         args = [
             *C.PYM,
             "pip",
@@ -426,16 +426,19 @@ def task_dev():
             "--find-links",
             B.DIST,
         ]
-        file_dep = []
-        for py_name in [C.NAME, C.CORE_NAME]:
-            py_name_pkg = py_name.replace("-", "_")
-            file_dep += [B.DIST / f"""{py_name_pkg}-{D.PY_VERSION}-{C.NOARCH_WHL}"""]
-            args += [py_name]
-
+        core_args = args + [C.CORE_NAME]
         yield dict(
             name="py:jupyterlite-core",
-            actions=[U.do(*args, cwd=P.ROOT)],
-            file_dep=file_dep,
+            actions=[U.do(*core_args, cwd=P.ROOT)],
+            file_dep=[B.DIST / f"""{C.CORE_NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
+        )
+
+        meta_args = args + [C.NAME, "--no-deps"]
+        yield dict(
+            task_dep=["dev:py:jupyterlite-core"],
+            name="py:jupyterlite",
+            actions=[U.do(*meta_args, cwd=P.ROOT)],
+            file_dep=[B.DIST / f"""{C.NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
         )
     else:
         for py_name in [C.NAME, C.CORE_NAME]:
