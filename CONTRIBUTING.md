@@ -278,7 +278,7 @@ content**.
 Extra `PYTEST_ARGS` can be passed as a (gross) JSON string:
 
 ```bash
-PYTEST_ARGS='["-s", "-x", "--ff"]' doit test:py:jupyterlite
+PYTEST_ARGS='["-s", "-x", "--ff"]' doit test:py:jupyterlite-core
 ```
 
 Several tasks invoke the `jupyter lite` CLI, which is further described in the main docs

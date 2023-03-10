@@ -4,8 +4,8 @@ import time
 
 from pytest import mark
 
-from jupyterlite import __version__
-from jupyterlite.constants import HOOKS
+from jupyterlite_core import __version__
+from jupyterlite_core.constants import HOOKS
 
 PY_IMPL = platform.python_implementation()
 IS_PYPY = "pypy" in PY_IMPL.lower()

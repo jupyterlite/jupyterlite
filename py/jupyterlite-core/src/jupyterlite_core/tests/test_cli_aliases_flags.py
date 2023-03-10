@@ -3,8 +3,8 @@ from unittest import mock
 import pytest
 from traitlets import Bool, Bunch
 
-from jupyterlite import addons
-from jupyterlite.addons.base import BaseAddon
+from jupyterlite_core import addons
+from jupyterlite_core.addons.base import BaseAddon
 
 
 @pytest.mark.parametrize(
