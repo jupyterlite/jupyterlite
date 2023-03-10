@@ -8,10 +8,8 @@ authors = [
     {name = "JupyterLite Contributors"},
 ]
 dependencies = [
-    "jupyterlite-core",
-    # TODO
-    # "jupyterlite-core[lab]",
-    # "jupyterlite-pyodide-kernel",
+    "jupyterlite-core[lab]",
+    "jupyterlite-pyodide-kernel",
 ]
 keywords = [
     "browser",
