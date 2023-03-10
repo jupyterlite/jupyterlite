@@ -15,7 +15,7 @@ IS_PYPY = "pypy" in PY_IMPL.lower()
 LITE_INVOCATIONS = [
     ["jupyter-lite"],
     ["jupyter", "lite"],
-    # ["python", "-m", "jupyterlite"],
+    ["python", "-m", "jupyterlite_core"],
 ]
 
 # nothing we can do about this, at present
