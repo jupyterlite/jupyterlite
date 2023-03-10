@@ -7,7 +7,7 @@ import tempfile
 import time
 import zipfile
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, Generator, List
 
 from traitlets import Bool, Instance
 from traitlets.config import LoggingConfigurable
@@ -20,7 +20,9 @@ from ..constants import (
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_IPYNB,
+    JUPYTERLITE_JSON,
     JUPYTERLITE_METADATA,
+    LITE_PLUGIN_SETTINGS,
     MOD_DIRECTORY,
     MOD_FILE,
     SETTINGS_OVERRIDES,
@@ -354,3 +356,61 @@ class BaseAddon(LoggingConfigurable):
             for p in sorted(paths)
         ]
         hashfile.write_text("\n".join(lines))
+
+    def get_lite_config_paths(self) -> Generator[Path, None, None]:
+        """Yield all config paths that exist in the ``lite_dir``."""
+        for app in [None, *self.manager.apps]:
+            app_dir = self.manager.lite_dir / app if app else self.manager.output_dir
+            for path_name in [JUPYTERLITE_JSON, JUPYTERLITE_IPYNB]:
+                config_path = app_dir / path_name
+                if config_path.exists():
+                    yield config_path
+
+    def get_output_config_paths(self) -> Generator[Path, None, None]:
+        """Yield all config paths that _might_ exist in the ``output_dir``."""
+        for app in [None, *self.manager.apps]:
+            app_dir = self.manager.output_dir / app if app else self.manager.output_dir
+            for path_name in [JUPYTERLITE_JSON, JUPYTERLITE_IPYNB]:
+                config_path = app_dir / path_name
+                yield config_path
+
+    def get_lite_plugin_settings(
+        self, config_path: Path, plugin_id: str
+    ) -> Dict[str, Any]:
+        """Get the plugin settings from a config path.
+
+        The keys follow the JupyterLab settings naming convention, of module and
+        identifier e.g.
+
+            @jupyterlite/contents:plugin
+        """
+        if not config_path.exists():
+            return {}
+
+        config = json.loads(config_path.read_text(**UTF8))
+
+        # if a notebook, look in the top-level metadata (which must exist)
+        if config_path.name == JUPYTERLITE_IPYNB:
+            config = config["metadata"].get(JUPYTERLITE_METADATA, {})
+
+        return (
+            config.get(JUPYTER_CONFIG_DATA, {})
+            .get(LITE_PLUGIN_SETTINGS, {})
+            .get(plugin_id, {})
+        )
+
+    def set_lite_plugin_settings(
+        self, config_path: Path, plugin_id: str, settings: Dict[str, Any]
+    ) -> None:
+        """Overwrite the plugin settings for a single plugin in a config path."""
+        whole_file = config = json.loads(config_path.read_text(**UTF8))
+        if config_path.name == JUPYTERLITE_IPYNB:
+            config = whole_file["metadata"][JUPYTERLITE_METADATA]
+
+        config.setdefault(JUPYTER_CONFIG_DATA, {}).setdefault(
+            LITE_PLUGIN_SETTINGS, {}
+        ).update({plugin_id: settings})
+
+        config_path.write_text(json.dumps(whole_file, **JSON_FMT), **UTF8)
+        self.log.debug("%s wrote settings in %s: %s", plugin_id, config_path, settings)
+        self.maybe_timestamp(config_path)

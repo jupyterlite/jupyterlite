@@ -159,12 +159,6 @@ def task_lint():
         actions=[(U.validate, [P.APP_SCHEMA])],
     )
 
-    yield dict(
-        name="schema:piplite",
-        file_dep=[P.PIPLITE_SCHEMA],
-        actions=[(U.validate, [P.PIPLITE_SCHEMA])],
-    )
-
     for config in D.APP_CONFIGS:
         if config.name.endswith(".ipynb"):
             validate_args = [
@@ -872,7 +866,6 @@ class P:
     APP_JUPYTERLITE_IPYNB = APP / C.JUPYTERLITE_IPYNB
     APP_PACKAGE_JSON = APP / "package.json"
     APP_SCHEMA = APP / "jupyterlite.schema.v0.json"
-    PIPLITE_SCHEMA = APP / "piplite.schema.v0.json"
     APP_HTMLS = [
         APP / "index.html",
         *APP.rglob("*/index.template.html"),
