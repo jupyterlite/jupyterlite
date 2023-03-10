@@ -416,7 +416,7 @@ def task_dist():
 def task_dev():
     """setup up local packages for interactive development"""
     args = []
-    if True or C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
         args = [
             *C.PYM,
             "pip",
