@@ -169,44 +169,9 @@ jobs:
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Cache (node_modules)
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache (.yarn-packages)
-        uses: actions/cache@v3
-        id: cache-yarn-packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        with:
-          path: .yarn-packages
-          key: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
-      - name: Setup pip (base)
-        run: python3 -m pip install --user -U pip setuptools wheel
-      - name: Cache (pip)
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-${{ hashFiles('requirements*.txt') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Cache (docs extensions)
         uses: actions/cache@v3
         with:
