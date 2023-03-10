@@ -22,7 +22,7 @@
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_widgets-3.0.5-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0/jupyterlite_p5_kernel-0.1.0-py3-none-any.whl",
-      "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.3/jupyterlite_pyodide_kernel-0.0.3-py3-none-any.whl"
+      "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.4/jupyterlite_pyodide_kernel-0.0.4-py3-none-any.whl"
     ],
     "ignore_sys_prefix": ["federated_extensions", "mathjax"],
     "output_dir": "../build/docs-app"
