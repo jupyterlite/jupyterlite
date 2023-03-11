@@ -3,7 +3,7 @@
 Deploying a JupyterLite site requires:
 
 - a copy of the JupyterLite site assets
-  - often provided by the `pip`-installable python package `jupyterlite`
+  - often provided by the `pip`-installable python package `jupyterlite-core`
 - an option set of configurations for the site and different apps
   - different options offer trade-offs between reproducibility, build speed, deployment
     size, and end-user performance, privacy, and security
@@ -22,11 +22,11 @@ To get the [Python CLI](../reference/cli.ipynb) and [API](../reference/api/index
 from [PyPI]:
 
 ```bash
-python -m pip install --pre jupyterlite
+python -m pip install --pre jupyterlite-core
 ```
 
 ```{note}
-`jupyterlite` will soon be available on [conda forge]
+`jupyterlite-core` will soon be available on [conda forge]
 ```
 
 To build an empty site (just the JupyterLite static assets):
@@ -41,6 +41,16 @@ specific a different with `--output-dir` parameter. For instance:
 ```bash
 jupyter lite build --output-dir dist
 ```
+
+````{note}
+The `jupyterlite-core` package provides the **base** static assets and the CLI for building JupyterLite website.
+If you would like your deployment to also include a default Python kernel and other useful extensions by default, you
+can install the `jupyterlite` package:
+
+```bash
+python -m pip install --pre jupyterlite
+```
+````
 
 ## Standalone Servers
 

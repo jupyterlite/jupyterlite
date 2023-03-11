@@ -62,7 +62,7 @@ See this [blog post](https://github.blog/2009-12-29-bypassing-jekyll-on-github-p
 
 ## Deploy a new version of JupyterLite
 
-To change the version of the prebuilt JupyterLite assets, update the `jupyterlite`
+To change the version of the prebuilt JupyterLite assets, update the `jupyterlite-core`
 package version in the `requirements.txt` file.
 
 Commit and push the changes. The site will be deployed on the next push to the `main`

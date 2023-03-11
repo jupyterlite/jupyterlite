@@ -150,10 +150,10 @@ loaded in the environment:
 jupyter labextension list
 ```
 
-Now, create the JupyterLite extension. Install jupyterlite:
+Now, create the JupyterLite extension. Install the JupyterLite CLI:
 
 ```bash
-pip install jupyterlite
+pip install jupyterlite-core
 ```
 
 Move to a directory where the extension should be tested and run the build of this

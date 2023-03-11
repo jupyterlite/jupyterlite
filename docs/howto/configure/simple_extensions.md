@@ -13,7 +13,7 @@ also work with JupyterLite.
 
 ### Creating a new environment
 
-The easiest way to add new extensions is to use the `jupyterlite` CLI in a Python
+The easiest way to add new extensions is to use the `jupyterlite-core` CLI in a Python
 environment where extensions have already been installed.
 
 You can choose the tool of your choice to manage these dependencies, such as `pip`,

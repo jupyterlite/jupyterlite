@@ -33,18 +33,15 @@ site from an environment with already installed extensions.
 All third-party extensions, and some provided by JupyterLite and JupyterLab, can be
 disabled for one or all apps deployed in a site with the `disabledExtensions` option.
 
-For example, a site that doesn't use the Pyodide-based kernel can disable the
-[`ServiceWorker`](./service-worker.md) and the [Pyodide](../../python/pyodide.md) kernel
-with the following `jupyter-lite.json`:
+For example, a site that doesn't need the content to be available from the Python kernel
+can disable the [`ServiceWorker`](./service-worker.md) plugin with the following
+`jupyter-lite.json`:
 
 ```json
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": [
-      "@jupyterlite/pyodide-kernel-extension:kernel",
-      "@jupyterlite/server-extension:service-worker"
-    ]
+    "disabledExtensions": ["@jupyterlite/server-extension:service-worker"]
   }
 }
 ```
@@ -82,7 +79,7 @@ If detected, [`libarchive-c`](https://pypi.org/project/libarchive-c) will be use
 better performance, especially when working with archives with many/large assets,
 espcially [pyodide](../../python/pyodide.md).
 
-If not `libarchive-c` is not detected, python's built-in `zipfile` and `tarfile` modules
+If `libarchive-c` is not detected, Python's built-in `zipfile` and `tarfile` modules
 will be used.
 
 ```{warning}

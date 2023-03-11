@@ -49,7 +49,8 @@ dependencies if needed:
 
 ```text
 jupyterlab~=3.4
-jupyterlite
+jupyterlite-core
+jupyterlite-pyodide-kernel
 ```
 
 Then create a new `deploy.sh` file with the following content:

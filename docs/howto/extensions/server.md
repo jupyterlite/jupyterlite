@@ -27,13 +27,13 @@ First create a new development environment with:
 
 ```bash
 # create the environment
-mamba create -n myliteextension -c conda-forge python nodejs jupyterlab jupyter-packaging cookiecutter -y
+mamba create -n myliteextension -c conda-forge python nodejs jupyterlab cookiecutter -y
 
 # activate the environment
 conda activate myliteextension
 
-# install the jupyterlite CLI tool
-python -m pip install jupyterlite
+# install the jupyterlite-core CLI tool
+python -m pip install jupyterlite-core
 ```
 
 ```{note}
@@ -118,7 +118,7 @@ python -m pip install myliteextension
 In most cases, this would mean adding the extension to a `requirements.txt` file:
 
 ```
-jupyterlite
+jupyterlite-core
 myliteextension
 ```
 
