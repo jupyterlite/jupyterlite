@@ -37,6 +37,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Cache (pip)
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
       - name: Install
@@ -170,6 +179,15 @@ jobs:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Cache (pip)
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-${{ hashFiles('requirements*.txt') }}
+          restore-keys: |
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-
+            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Cache (docs extensions)
         uses: actions/cache@v3
         with:
