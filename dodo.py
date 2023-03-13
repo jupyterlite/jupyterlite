@@ -418,6 +418,7 @@ def task_dev():
     core_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite-core[test]"]
     yield dict(
         name="py:jupyterlite-core",
+        task_dep=[f"build:py:{C.CORE_NAME}:pre:app"],
         actions=[U.do(*core_args, cwd=P.ROOT)],
     )
 
