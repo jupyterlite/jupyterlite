@@ -1,2 +1,0 @@
--e ./py/jupyterlite-core[test]
--e ./py/jupyterlite
