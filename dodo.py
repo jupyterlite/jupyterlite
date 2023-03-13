@@ -416,6 +416,7 @@ def task_dist():
 def task_dev():
     """setup up local packages for interactive development"""
     if C.DOCS_IN_CI or C.TESTING_IN_CI:
+        py_name = C.CORE_NAME.replace("-", "_")
         args = [
             *C.PYM,
             "pip",
@@ -424,13 +425,13 @@ def task_dev():
             "--no-index",
             "--find-links",
             B.DIST,
-            C.CORE_NAME.replace("-", "_"),
+            py_name,
         ]
 
         yield dict(
             name="py:jupyterlite-core",
             actions=[U.do(*args, cwd=P.ROOT)],
-            file_dep=[B.DIST / f"""{C.CORE_NAME}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
+            file_dep=[B.DIST / f"""{py_name}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
         )
     else:
         core_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite-core[test]"]
