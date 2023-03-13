@@ -197,7 +197,7 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-docs-app-
       - name: Setup pip (docs)
-        run: python3 -m pip install -r requirements-docs.txt -r requirements-build.txt
+        run: python3 -m pip install -r requirements-docs.txt
       - name: Install
         run: doit setup:js
       - name: Install (py)
