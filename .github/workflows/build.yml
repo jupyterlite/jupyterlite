@@ -198,8 +198,6 @@ jobs:
             ${{ env.CACHE_EPOCH }}-docs-app-
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt
-      - name: Install
-        run: doit setup:js
       - name: Install (py)
         run: doit dev:py:jupyterlite-core
       - name: Docs (app)
