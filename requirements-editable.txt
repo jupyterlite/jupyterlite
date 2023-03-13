@@ -1,2 +1,2 @@
--e py/jupyterlite_core[test]
--e py/jupyterlite
+-e ./py/jupyterlite-core[test]
+-e ./py/jupyterlite

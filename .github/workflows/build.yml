@@ -201,7 +201,7 @@ jobs:
       - name: Install
         run: doit setup:js
       - name: Install (py)
-        run: doit dev:py:jupyterlite
+        run: doit dev:py:jupyterlite-core
       - name: Docs (app)
         run: doit docs:app:build
       - name: Docs (app archive)
