@@ -415,18 +415,42 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    core_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite-core[test]"]
-    yield dict(
-        name="py:jupyterlite-core",
-        task_dep=[f"build:py:{C.CORE_NAME}:pre:app"],
-        actions=[U.do(*core_args, cwd=P.ROOT)],
-    )
+    if C.DOCS_IN_CI:
+        args = [
+            *C.PYM,
+            "pip",
+            "install",
+            "-vv",
+            "--no-index",
+            "--find-links",
+            B.DIST,
+            C.CORE_NAME.replace("-", "_"),
+        ]
 
-    metapackage_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite", "--no-deps"]
-    yield dict(
-        name="py:jupyterlite",
-        actions=[U.do(*metapackage_args, cwd=P.ROOT)],
-    )
+        yield dict(
+            name="py:jupyterlite-core",
+            actions=[U.do(*args, cwd=P.ROOT)],
+            file_dep=[B.DIST / f"""{C.CORE_NAME}-{D.PY_VERSION}-{C.NOARCH_WHL}"""],
+        )
+    else:
+        core_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite-core[test]"]
+        yield dict(
+            name="py:jupyterlite-core",
+            actions=[U.do(*core_args, cwd=P.ROOT)],
+        )
+
+        metapackage_args = [
+            *C.PYM,
+            "pip",
+            "install",
+            "-e",
+            "./py/jupyterlite",
+            "--no-deps",
+        ]
+        yield dict(
+            name="py:jupyterlite",
+            actions=[U.do(*metapackage_args, cwd=P.ROOT)],
+        )
 
 
 def task_docs():
