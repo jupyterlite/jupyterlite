@@ -216,6 +216,8 @@ jobs:
         run: doit docs:sphinx
       - name: Check Built Artifacts
         run: doit check
+      - name: Test (py)
+        run: doit test:py:jupyterlite-core
       - name: Upload (reports)
         if: always()
         uses: actions/upload-artifact@v3
