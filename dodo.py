@@ -415,14 +415,21 @@ def task_dist():
 
 def task_dev():
     """setup up local packages for interactive development"""
-    args = [*C.PYM, "pip", "install", "-r", "requirements-editable.txt"]
+    file_dep = [
+        B.DIST / f"""{C.CORE_NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
+    ]
+    core_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite-core[test]"]
     yield dict(
         name="py:jupyterlite-core",
-        actions=[U.do(*args, cwd=P.ROOT)],
-        file_dep=[
-            B.DIST
-            / f"""{C.CORE_NAME.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-        ],
+        actions=[U.do(*core_args, cwd=P.ROOT)],
+        file_dep=file_dep,
+    )
+
+    metapackage_args = [*C.PYM, "pip", "install", "-e", "./py/jupyterlite", "--no-deps"]
+    yield dict(
+        name="py:jupyterlite",
+        actions=[U.do(*metapackage_args, cwd=P.ROOT)],
+        file_dep=file_dep,
     )
 
 
