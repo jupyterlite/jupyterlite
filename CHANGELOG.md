@@ -2,6 +2,78 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b19
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b18...8a3bce63ec8e5bd97d132d60012c8a0378d11698))
+
+### :warning:  API and Breaking Changes :warning:
+
+#### `jupyterlite-core`
+
+This release introduces a new `jupyterlite-core` package in addition to the existing `jupyterlite` package.
+
+The jupyterlite-core package provides the core functionality for building JupyterLite websites CLI [extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html). Currently it only includes a JavaScript kernel that runs in Web Worker. If you would like to include a Python kernel in your deployment you will have to add it to your dependencies, for example with:
+
+```
+python -m pip install jupyterlite-pyodide-kernel
+```
+
+Or to the [LiteBuildConfig/federated_extensions](https://jupyterlite.readthedocs.io/en/latest/howto/configure/advanced/extensions.html#adding-custom-extensions) config entry.
+
+The `jupyterlite` currently provides a couple of shims as well as the Pyodide kernel for better compatibility with existing deployments.
+
+We recommend you start using the `jupyterlite-core` package more for your deployments, and additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or `jupyterlite-xeus-python`.
+
+#### `jupyterlite-pyodide-kernel`
+
+The Pyodide kernel has been moved to its own repo: https://github.com/jupyterlite/pyodide-kernel
+
+Currently it is still installed by default with `jupyterlite` for convenience, but it is not part of `jupyterlite-core`.
+
+### Enhancements made
+
+- Remove code references to pyolite, add BaseAddon methods [#998](https://github.com/jupyterlite/jupyterlite/pull/998) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Bump webpack from 5.75.0 to 5.76.0 [#1005](https://github.com/jupyterlite/jupyterlite/pull/1005) ([@dependabot](https://github.com/dependabot))
+- Update `jupyterlite` dependencies and docs [#1001](https://github.com/jupyterlite/jupyterlite/pull/1001) ([@jtpio](https://github.com/jtpio))
+- Remove code references to pyolite, add BaseAddon methods [#998](https://github.com/jupyterlite/jupyterlite/pull/998) ([@bollwyvl](https://github.com/bollwyvl))
+- Add the `jupyterlite-core` Python package [#994](https://github.com/jupyterlite/jupyterlite/pull/994) ([@jtpio](https://github.com/jtpio))
+- Update to Playwright 1.31.2 [#992](https://github.com/jupyterlite/jupyterlite/pull/992) ([@jtpio](https://github.com/jtpio))
+- Bump vega from 5.22.1 to 5.23.0 [#990](https://github.com/jupyterlite/jupyterlite/pull/990) ([@dependabot](https://github.com/dependabot))
+- Bump vega from 5.22.1 to 5.23.0 in /ui-tests [#989](https://github.com/jupyterlite/jupyterlite/pull/989) ([@dependabot](https://github.com/dependabot))
+- Bump vega-functions from 5.13.0 to 5.13.1 [#988](https://github.com/jupyterlite/jupyterlite/pull/988) ([@dependabot](https://github.com/dependabot))
+- Bump vega-functions from 5.13.0 to 5.13.1 in /ui-tests [#987](https://github.com/jupyterlite/jupyterlite/pull/987) ([@dependabot](https://github.com/dependabot))
+- Update to pyodide 0.22.1, use NodeJS 18 LTS [#978](https://github.com/jupyterlite/jupyterlite/pull/978) ([@bollwyvl](https://github.com/bollwyvl))
+- Add releaser workflows [#976](https://github.com/jupyterlite/jupyterlite/pull/976) ([@jtpio](https://github.com/jtpio))
+- Fix lint issues on CI [#974](https://github.com/jupyterlite/jupyterlite/pull/974) ([@jtpio](https://github.com/jtpio))
+- Bump http-cache-semantics from 4.1.0 to 4.1.1 [#972](https://github.com/jupyterlite/jupyterlite/pull/972) ([@dependabot](https://github.com/dependabot))
+- Troubleshoot ReadTheDocs [#964](https://github.com/jupyterlite/jupyterlite/pull/964) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 3.5.3 [#960](https://github.com/jupyterlite/jupyterlite/pull/960) ([@jtpio](https://github.com/jtpio))
+- Fix UI tests snapshots cleaning on CI [#953](https://github.com/jupyterlite/jupyterlite/pull/953) ([@jtpio](https://github.com/jtpio))
+- Update the JavaScript kernel display name [#952](https://github.com/jupyterlite/jupyterlite/pull/952) ([@jtpio](https://github.com/jtpio))
+- Move the Pyodide kernel to a separate repo [#854](https://github.com/jupyterlite/jupyterlite/pull/854) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update the Pyodide kernel on the demo site [#1000](https://github.com/jupyterlite/jupyterlite/pull/1000) ([@jtpio](https://github.com/jtpio))
+- Point docs to `0.1.0-beta` in the README for now [#997](https://github.com/jupyterlite/jupyterlite/pull/997) ([@jtpio](https://github.com/jtpio))
+- Document sending message to jupyterlite iframe [#980](https://github.com/jupyterlite/jupyterlite/pull/980) ([@sebreb](https://github.com/sebreb))
+- Update the p5 kernel on the demo site [#955](https://github.com/jupyterlite/jupyterlite/pull/955) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Move the Pyodide kernel to a separate repo [#854](https://github.com/jupyterlite/jupyterlite/pull/854) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-01-19&to=2023-03-15&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-01-19..2023-03-15&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-01-19..2023-03-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-01-19..2023-03-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-01-19..2023-03-15&type=Issues) | [@sebreb](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Asebreb+updated%3A2023-01-19..2023-03-15&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b18
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b17...2bab033a13e46dc29a8fa51a3bca033d377cedeb))
@@ -24,8 +96,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-01-04&to=2023-01-19&type=c))
 
 [@dhombios](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adhombios+updated%3A2023-01-04..2023-01-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-01-04..2023-01-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-01-04..2023-01-19&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b17
 
