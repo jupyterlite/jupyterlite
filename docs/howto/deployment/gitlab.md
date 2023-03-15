@@ -13,7 +13,7 @@ image: python
 pages:
   stage: deploy
   before_script:
-    - python -m pip install jupyterlite
+    - python -m pip install jupyterlite-core jupyterlite-pyodide-kernel
   script:
     - jupyter lite build --contents content --output-dir public
   artifacts:

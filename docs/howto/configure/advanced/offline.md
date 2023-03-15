@@ -28,7 +28,8 @@ and JS APIs are still changing frequently on both sides of the dependency.
 By default Mathjax is fetched from a CDN.
 
 To retrieve the static asssets at built time and serve them alongside the main website
-assets, make sure to install `jupyterlite` with `pip install jupyterlite[mathjax]`.
+assets, make sure to install `jupyterlite-core` with
+`pip install jupyterlite-core[mathjax]`.
 
 ## Configure the piplite wheels
 

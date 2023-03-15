@@ -16,7 +16,7 @@ A `ServiceWorker` will only be created and used if all of the following are true
 
 - the extension has not been [disabled](extensions.md#disabling-extensions-at-runtime)
 - the user's current browser session supports the `ServiceWorker` API
-  - see [supported browsers][caniuse-sw]
+  - see [supported browsers][sw]
   - _Private Browsing_ in Firefox is [**known** to not work][ff-private-bug]
 - the HTTP server's URL starts with one of:
   - `https://`
