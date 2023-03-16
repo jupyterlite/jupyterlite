@@ -1,5 +1,2 @@
 def _jupyter_labextension_paths():
-    return [{
-        "src": "labextension",
-        "dest": "@jupyterlite/javascript-kernel-extension"
-    }]
+    return [{"src": "labextension", "dest": "@jupyterlite/javascript-kernel-extension"}]

@@ -16,6 +16,7 @@
     "style/*.css",
     "style/index.js"
   ],
+  "styleModule": "style/index.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "style": "style/index.css",
@@ -30,11 +31,26 @@
     "style/index.js"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "docs": "typedoc src",
-    "prepublishOnly": "npm run build",
-    "watch": "tsc -b --watch"
+    "build": "jlpm build:lib && jlpm build:labextension:dev",
+    "build:prod": "jlpm clean && jlpm build:lib && jlpm build:labextension",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:lib": "tsc",
+    "clean": "jlpm clean:lib",
+    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
+    "clean:labextension": "rimraf ../../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension",
+    "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
+    "eslint": "jlpm eslint:check --fix",
+    "eslint:check": "eslint . --cache --ext .ts,.tsx",
+    "install:extension": "jlpm build",
+    "lint": "jlpm prettier && jlpm eslint",
+    "lint:check": "jlpm prettier:check && jlpm eslint:check",
+    "prettier": "jlpm prettier:base --write --list-different",
+    "prettier:base": "prettier \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}\"",
+    "prettier:check": "jlpm prettier:base --check",
+    "watch": "run-p watch:src watch:labextension",
+    "watch:src": "tsc -w",
+    "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
     "@jupyterlab/coreutils": "~5.5.3",
@@ -45,6 +61,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
+    "@jupyterlab/builder": "^3.1.0",
     "@types/jest": "^26.0.10",
     "jest": "^26.4.2",
     "rimraf": "~3.0.0",
@@ -54,6 +71,11 @@
   "publishConfig": {
     "access": "public"
   },
-  "jupyterlab": {},
-  "styleModule": "style/index.js"
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "../../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension"
+  },
+  "jupyterlite": {
+    "liteExtension": true
+  }
 }
