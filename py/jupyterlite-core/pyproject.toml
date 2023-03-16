@@ -105,11 +105,16 @@ static = "jupyterlite_core.addons.static:StaticAddon"
 translation = "jupyterlite_core.addons.translation:TranslationAddon"
 
 [tool.hatch.version]
-path = "src/jupyterlite_core/__init__.py"
+path = "jupyterlite_core/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "src/jupyterlite_core/jupyterlite-*.tgz",
+    "jupyterlite_core/jupyterlite-*.tgz",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "/jupyterlite_core",
 ]
 
 [tool.pytest.ini_options]

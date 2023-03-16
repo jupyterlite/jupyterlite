@@ -37,10 +37,10 @@ src = "package.json"
 src = "pyproject.toml"
 
 [[tool.tbump.file]]
-src = "py/jupyterlite/src/jupyterlite/__init__.py"
+src = "py/jupyterlite/jupyterlite/__init__.py"
 
 [[tool.tbump.file]]
-src = "py/jupyterlite-core/src/jupyterlite_core/__init__.py"
+src = "py/jupyterlite-core/jupyterlite_core/__init__.py"
 
 [[tool.tbump.file]]
 src = "py/jupyterlite-javascript-kernel/pyproject.toml"
