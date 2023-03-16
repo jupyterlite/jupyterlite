@@ -109,7 +109,8 @@ path = "jupyterlite_core/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "jupyterlite_core/jupyterlite-*.tgz",
+    "/jupyterlite_core",
+    "/*.md",
 ]
 
 [tool.hatch.build.targets.wheel]

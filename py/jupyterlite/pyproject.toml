@@ -82,6 +82,12 @@ all = [
 [tool.hatch.version]
 path = "jupyterlite/__init__.py"
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "/jupyterlite",
+    "/*.md",
+]
+
 [tool.hatch.build.targets.wheel]
 include = [
     "/jupyterlite",
