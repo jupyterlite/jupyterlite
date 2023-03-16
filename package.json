@@ -31,6 +31,7 @@
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
+    "develop:js:kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "docs": "typedoc",
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
