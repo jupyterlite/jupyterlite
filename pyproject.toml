@@ -19,6 +19,9 @@ after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
 
+[tool.check-wheel-contents]
+ignore = ["W002"]
+
 [tool.tbump.version]
 current = "0.1.0b19"
 regex = '''
