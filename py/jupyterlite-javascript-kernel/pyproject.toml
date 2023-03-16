@@ -47,6 +47,7 @@ include = [
 [tool.hatch.build.targets.wheel]
 include = [
     "/jupyterlite_javascript_kernel",
+    "/*.toml",
 ]
 
 [tool.hatch.build.targets.wheel.shared-data]
