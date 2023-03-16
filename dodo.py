@@ -1027,7 +1027,6 @@ class B:
         P.ROOT
         / "py"
         / C.CORE_NAME
-        / "src"
         / C.CORE_NAME.replace("-", "_")
         / APP_PACK.name
     )
