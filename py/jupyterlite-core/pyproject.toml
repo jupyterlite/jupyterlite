@@ -108,12 +108,18 @@ translation = "jupyterlite_core.addons.translation:TranslationAddon"
 path = "jupyterlite_core/__init__.py"
 
 [tool.hatch.build.targets.sdist]
+artifacts = [
+    "jupyterlite_core/jupyterlite-*.tgz",
+]
 include = [
     "/jupyterlite_core",
     "/*.md",
 ]
 
 [tool.hatch.build.targets.wheel]
+artifacts = [
+    "jupyterlite_core/jupyterlite-*.tgz",
+]
 include = [
     "/jupyterlite_core",
 ]
