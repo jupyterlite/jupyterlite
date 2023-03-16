@@ -1,12 +1,32 @@
 # jupyterlite-core
 
-[![ci-badge]][ci] [![lite-badge]][lite] [![binder-badge]][binder] [![docs-badge]][docs]
+[![docs-badge]][docs]
 
-[ci-badge]: https://github.com/jupyterlite/jupyterlite/workflows/Build/badge.svg
-[lite-badge]: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
-[lite]: https://jupyterlite.rtfd.io/en/latest/try/lab
-[ci]: https://github.com/jupyterlite/jupyterlite/actions?query=branch%3Amain
-[binder-badge]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jupyterlite/jupyterlite/main?urlpath=lab
 [docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=latest
 [docs]: https://jupyterlite.readthedocs.io/en/latest/?badge=latest
+
+The `jupyterlite-core` package provides the core functionality for building JupyterLite
+websites CLI
+[extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html).
+
+## Getting Started
+
+To get started with JupyterLite, please refer to the
+[Getting Started Guide](https://jupyterlite.readthedocs.io/en/latest/quickstart/index.html).
+
+## Documentation
+
+For more information about how to use JupyterLite, we recommend reading the
+[official documentation](https://jupyterlite.readthedocs.io/).
+
+## Contributing
+
+If you're interested in contributing to JupyterLite, please refer to the
+[Contributing Guide](https://jupyterlite.readthedocs.io/en/latest/contributing.html).
+
+## License
+
+`jupyterlite-core` is licensed under the
+[BSD 3-Clause License](https://opensource.org/licenses/BSD-3-Clause). For more
+information, please see the
+[LICENSE](https://github.com/jupyterlite/jupyterlite/blob/main/LICENSE) file.
