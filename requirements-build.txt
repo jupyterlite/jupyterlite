@@ -1,5 +1,6 @@
 # minimum needed to build jupyterlite... in addition to nodejs and yarn
 # see .binder/ and docs/ for full development/docs environments
+build
 doit >=0.34,<1
 flit >=3.7.1,<4
 twine
