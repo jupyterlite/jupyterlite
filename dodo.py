@@ -354,7 +354,7 @@ def task_build():
         pyproj_toml = py_pkg / "pyproject.toml"
 
         file_dep = [
-            *py_pkg.rglob("src/*.py"),
+            *py_pkg.rglob("*.py"),
             *py_pkg.glob("*.md"),
             setup_py,
             pyproj_toml,
