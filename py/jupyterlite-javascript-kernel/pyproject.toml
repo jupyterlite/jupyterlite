@@ -52,3 +52,6 @@ include = [
 
 [tool.hatch.build.targets.wheel.shared-data]
 "jupyterlite_javascript_kernel/labextension" = "share/jupyter/labextensions/@jupyterlite/javascript-kernel-extension"
+
+[tool.check-wheel-contents]
+ignore = ["W002"]
