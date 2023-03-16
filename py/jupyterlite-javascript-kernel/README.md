@@ -27,5 +27,5 @@ jupyter lite build
 
 ## Documentation
 
-For more information about how to use JupyterLite and use additional kernels, we
+For more information about how to use JupyterLite and include additional kernels, we
 recommend reading the [documentation](https://jupyterlite.readthedocs.io/).

@@ -1384,48 +1384,7 @@
     "@lumino/disposable" "^1.10.0"
     "@lumino/signaling" "^1.10.0"
 
-"@jupyterlab/builder@^3.1.0":
-  version "3.6.1"
-  resolved "https://registry.npmjs.org/@jupyterlab/builder/-/builder-3.6.1.tgz#a04bf0312e8679d1f452c27fee2554ba4a6af3f5"
-  integrity sha512-LvHQe6InEXJisEcvAdvSFbEEl8OhTjxBSNz7MrjRB+Ur+Qs898dg8QhDH9Ad5mgK3uh4nEN1BDq9W7C/NomqoA==
-  dependencies:
-    "@lumino/algorithm" "^1.9.0"
-    "@lumino/application" "^1.31.3"
-    "@lumino/commands" "^1.19.0"
-    "@lumino/coreutils" "^1.11.0"
-    "@lumino/disposable" "^1.10.0"
-    "@lumino/domutils" "^1.8.0"
-    "@lumino/dragdrop" "^1.13.0"
-    "@lumino/messaging" "^1.10.0"
-    "@lumino/properties" "^1.8.0"
-    "@lumino/signaling" "^1.10.0"
-    "@lumino/virtualdom" "^1.14.0"
-    "@lumino/widgets" "^1.37.1"
-    ajv "^6.12.3"
-    commander "~6.0.0"
-    css-loader "^5.0.1"
-    duplicate-package-checker-webpack-plugin "^3.0.0"
-    file-loader "~6.0.0"
-    fs-extra "^9.0.1"
-    glob "~7.1.6"
-    license-webpack-plugin "^2.3.14"
-    mini-css-extract-plugin "~1.3.2"
-    path-browserify "^1.0.0"
-    process "^0.11.10"
-    raw-loader "~4.0.0"
-    source-map-loader "~1.0.2"
-    style-loader "~2.0.0"
-    supports-color "^7.2.0"
-    svg-url-loader "~6.0.0"
-    terser-webpack-plugin "^4.1.0"
-    to-string-loader "^1.1.6"
-    url-loader "~4.1.0"
-    webpack "^5.41.1"
-    webpack-cli "^4.1.0"
-    webpack-merge "^5.1.2"
-    worker-loader "^3.0.2"
-
-"@jupyterlab/builder@~3.5.3":
+"@jupyterlab/builder@^3.1.0", "@jupyterlab/builder@~3.5.3":
   version "3.5.3"
   resolved "https://registry.npmjs.org/@jupyterlab/builder/-/builder-3.5.3.tgz#5409f97f4d082bb0d8bb68db47a01e2cd7077189"
   integrity sha512-N8Qw0XU5UxEAltwa58DkppRlkUJX7Nu034QNczlXWjaW0IIqc8ElAGZ0LGMIDMNAUgajccK+4Bm7D+duN1evKQ==
@@ -3612,15 +3571,6 @@
   integrity sha512-Z06lp/yuhz8CtIir3PNTGnuk7909eXt4ukJsCzChsGuot2l5Fbs96RJ/FOHgwCedaX74CtxPjXHXoszFbUA+4A==
 
 "@lumino/application@^1.27.0":
-  version "1.31.0"
-  resolved "https://registry.npmjs.org/@lumino/application/-/application-1.31.0.tgz#106587d2d17a95479148d5d8760d9d09573678d8"
-  integrity sha512-sadWsSlu9MSXStXyKkLvinvFsv6FLHaAQrKCrlxgEc6hmk79KC4WRzMn8NHULAsJShtOL9SAMkE4IMvwbNOBhA==
-  dependencies:
-    "@lumino/commands" "^1.21.0"
-    "@lumino/coreutils" "^1.12.1"
-    "@lumino/widgets" "^1.36.0"
-
-"@lumino/application@^1.31.3":
   version "1.31.3"
   resolved "https://registry.npmjs.org/@lumino/application/-/application-1.31.3.tgz#c5a9bc84212a2505be8f5d43516e0603d9100965"
   integrity sha512-XnsXm5PD9QevJRl/pHJziYmhRKqJYjEOTL6Vh9dtKpPPML57uswOj59Pokxx/yCvym1xRF9iDVvujy3KallRwQ==
@@ -3636,20 +3586,7 @@
   dependencies:
     "@lumino/algorithm" "^1.9.2"
 
-"@lumino/commands@^1.19.0", "@lumino/commands@^1.20.0", "@lumino/commands@^1.21.0":
-  version "1.21.0"
-  resolved "https://registry.npmjs.org/@lumino/commands/-/commands-1.21.0.tgz#23cf0b5b1f9b00b0c2960d896726d89dd17bf6b4"
-  integrity sha512-N2LNL5fVNLdD48WEa7yyUtVRc2kIf4YpBojxygzZcMGVaoemLnCnUlw7espB5DTDl+WRO/pi5fkWTnoNvp+8Bg==
-  dependencies:
-    "@lumino/algorithm" "^1.9.2"
-    "@lumino/coreutils" "^1.12.1"
-    "@lumino/disposable" "^1.10.3"
-    "@lumino/domutils" "^1.8.2"
-    "@lumino/keyboard" "^1.8.2"
-    "@lumino/signaling" "^1.11.0"
-    "@lumino/virtualdom" "^1.14.3"
-
-"@lumino/commands@^1.21.1":
+"@lumino/commands@^1.19.0", "@lumino/commands@^1.20.0", "@lumino/commands@^1.21.1":
   version "1.21.1"
   resolved "https://registry.npmjs.org/@lumino/commands/-/commands-1.21.1.tgz#eda8b3cf5ef73b9c8ce93b3b5cf66bb053df2a76"
   integrity sha512-d1zJmwz5bHU0BM/Rl3tRdZ7/WgXnFB0bM7x7Bf0XDlmX++jnU9k0j3mh6/5JqCGLmIApKCRwVqSaV7jPmSJlcQ==
@@ -3682,15 +3619,7 @@
     "@lumino/signaling" "^1.11.0"
     "@lumino/widgets" "^1.36.0"
 
-"@lumino/disposable@^1.10.0", "@lumino/disposable@^1.10.1", "@lumino/disposable@^1.10.3":
-  version "1.10.3"
-  resolved "https://registry.npmjs.org/@lumino/disposable/-/disposable-1.10.3.tgz#c9778204f997605b00dab342029d488196d4baef"
-  integrity sha512-a+LplaVGuubmM0KcgAK5NCcJxo0vuw020p3r5AaM/uvAtvLHM+po0wqD0Lcz633ERunf+bDdQ+8BcOhrQLPofQ==
-  dependencies:
-    "@lumino/algorithm" "^1.9.2"
-    "@lumino/signaling" "^1.11.0"
-
-"@lumino/disposable@^1.10.4":
+"@lumino/disposable@^1.10.0", "@lumino/disposable@^1.10.1", "@lumino/disposable@^1.10.3", "@lumino/disposable@^1.10.4":
   version "1.10.4"
   resolved "https://registry.npmjs.org/@lumino/disposable/-/disposable-1.10.4.tgz#73b452044fecf988d7fa73fac9451b1a7f987323"
   integrity sha512-4ZxyYcyzUS+ZeB2KAH9oAH3w0DUUceiVr+FIZHZ2TAYGWZI/85WlqJtfm0xjwEpCwLLW1TDqJrISuZu3iMmVMA==
@@ -3703,15 +3632,7 @@
   resolved "https://registry.npmjs.org/@lumino/domutils/-/domutils-1.8.2.tgz#d15cdbae12bea52852bbc13c4629360f9f05b7f5"
   integrity sha512-QIpMfkPJrs4GrWBuJf2Sn1fpyVPmvqUUAeD8xAQo8+4V5JAT0vUDLxZ9HijefMgNCi3+Bs8Z3lQwRCrz+cFP1A==
 
-"@lumino/dragdrop@^1.13.0", "@lumino/dragdrop@^1.14.3":
-  version "1.14.3"
-  resolved "https://registry.npmjs.org/@lumino/dragdrop/-/dragdrop-1.14.3.tgz#5621d97bcb90ae18b053f56d9c448ccef272d575"
-  integrity sha512-e3/lnc7bSqtdbDyamx+yeLuAECY1XGcczh8Wu66p6nkkohiajLqeNXicvWQd5G+T2xGce6QFkUnqWUcO5KNHOw==
-  dependencies:
-    "@lumino/coreutils" "^1.12.1"
-    "@lumino/disposable" "^1.10.3"
-
-"@lumino/dragdrop@^1.14.4":
+"@lumino/dragdrop@^1.13.0", "@lumino/dragdrop@^1.14.3", "@lumino/dragdrop@^1.14.4":
   version "1.14.4"
   resolved "https://registry.npmjs.org/@lumino/dragdrop/-/dragdrop-1.14.4.tgz#b6ec4cf4f470c17a849e31f299d5a24acdc8c7d3"
   integrity sha512-IHX2M8Yqs2YsFHHXKSKiYLgv9DEuhyyKoDS85Chg34J9OaPC5ocT0AmNVnpeq9T4A50sg3vdL9mSRCZ0f302Gw==
@@ -3746,15 +3667,7 @@
   resolved "https://registry.npmjs.org/@lumino/properties/-/properties-1.8.2.tgz#91131f2ca91a902faa138771eb63341db78fc0fd"
   integrity sha512-EkjI9Cw8R0U+xC9HxdFSu7X1tz1H1vKu20cGvJ2gU+CXlMB1DvoYJCYxCThByHZ+kURTAap4SE5x8HvKwNPbig==
 
-"@lumino/signaling@^1.10.0", "@lumino/signaling@^1.10.1", "@lumino/signaling@^1.11.0":
-  version "1.11.0"
-  resolved "https://registry.npmjs.org/@lumino/signaling/-/signaling-1.11.0.tgz#b61071875a69a02e7b14b779657ebdb099aac676"
-  integrity sha512-c4mfkmwr9RDh/cUF7BFoPj8KdSsmJRfGLt0e2ez4sgnbSX2afeMNQBIi/gKsD4mMmhI5bXa17tVDYQn6ICBXAw==
-  dependencies:
-    "@lumino/algorithm" "^1.9.2"
-    "@lumino/properties" "^1.8.2"
-
-"@lumino/signaling@^1.11.1":
+"@lumino/signaling@^1.10.0", "@lumino/signaling@^1.10.1", "@lumino/signaling@^1.11.0", "@lumino/signaling@^1.11.1":
   version "1.11.1"
   resolved "https://registry.npmjs.org/@lumino/signaling/-/signaling-1.11.1.tgz#438f447a1b644fd286549804f9851b5aec9679a2"
   integrity sha512-YCUmgw08VoyMN5KxzqPO3KMx+cwdPv28tAN06C0K7Q/dQf+oufb1XocuhZb5selTrTmmuXeizaYxgLIQGdS1fA==
@@ -3769,24 +3682,7 @@
   dependencies:
     "@lumino/algorithm" "^1.9.2"
 
-"@lumino/widgets@^1.31.1", "@lumino/widgets@^1.33.0", "@lumino/widgets@^1.36.0":
-  version "1.36.0"
-  resolved "https://registry.npmjs.org/@lumino/widgets/-/widgets-1.36.0.tgz#8e9734db86d78fb3f8714d247b52194eec999526"
-  integrity sha512-6EEzhEcGxLlIo6eCRDFYDA3cviXRQ+V2eVaJCpwP8bVyAJxi0vESskkenVaB38K5uB2cobkxgYr2PlS6REviIw==
-  dependencies:
-    "@lumino/algorithm" "^1.9.2"
-    "@lumino/commands" "^1.21.0"
-    "@lumino/coreutils" "^1.12.1"
-    "@lumino/disposable" "^1.10.3"
-    "@lumino/domutils" "^1.8.2"
-    "@lumino/dragdrop" "^1.14.3"
-    "@lumino/keyboard" "^1.8.2"
-    "@lumino/messaging" "^1.10.3"
-    "@lumino/properties" "^1.8.2"
-    "@lumino/signaling" "^1.11.0"
-    "@lumino/virtualdom" "^1.14.3"
-
-"@lumino/widgets@^1.37.1":
+"@lumino/widgets@^1.31.1", "@lumino/widgets@^1.33.0", "@lumino/widgets@^1.36.0", "@lumino/widgets@^1.37.1":
   version "1.37.1"
   resolved "https://registry.npmjs.org/@lumino/widgets/-/widgets-1.37.1.tgz#d7a2398b276e15e60aff4fec58c035d46549a75b"
   integrity sha512-/whz5B/hL0fjv0bR8JYZ+Emx+CH7HBwXc4TqI9PrrHGm3g6+jRJAyIFGZcQubqkPxxHrRE/VxQgoDKGhINw/Gw==
@@ -12634,7 +12530,7 @@ schema-utils@^0.4.0:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
-schema-utils@^2.6.5, schema-utils@^2.7.0:
+schema-utils@^2.6.5:
   version "2.7.1"
   resolved "https://registry.npmjs.org/schema-utils/-/schema-utils-2.7.1.tgz#1ca4f32d1b24c590c203b8e7a50bf0ea4cd394d7"
   integrity sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg==
@@ -12985,17 +12881,6 @@ source-map-loader@^4.0.1:
     abab "^2.0.6"
     iconv-lite "^0.6.3"
     source-map-js "^1.0.2"
-
-source-map-loader@~1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/source-map-loader/-/source-map-loader-1.0.2.tgz#b0a6582b2eaa387ede1ecf8061ae0b93c23f9eb0"
-  integrity sha512-oX8d6ndRjN+tVyjj6PlXSyFPhDdVAPsZA30nD3/II8g4uOv8fCz0DMn5sy8KtVbDfKQxOpGwGJnK3xIW3tauDw==
-  dependencies:
-    data-urls "^2.0.0"
-    iconv-lite "^0.6.2"
-    loader-utils "^2.0.0"
-    schema-utils "^2.7.0"
-    source-map "^0.6.1"
 
 source-map-resolve@^0.5.0:
   version "0.5.3"
