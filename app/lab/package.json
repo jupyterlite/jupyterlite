@@ -75,8 +75,6 @@
     "@jupyterlite/application-extension": "~0.1.0-beta.19",
     "@jupyterlite/contents": "~0.1.0-beta.19",
     "@jupyterlite/iframe-extension": "~0.1.0-beta.19",
-    "@jupyterlite/javascript-kernel": "~0.1.0-beta.19",
-    "@jupyterlite/javascript-kernel-extension": "~0.1.0-beta.19",
     "@jupyterlite/kernel": "~0.1.0-beta.19",
     "@jupyterlite/licenses": "~0.1.0-beta.19",
     "@jupyterlite/localforage": "~0.1.0-beta.19",
@@ -142,7 +140,6 @@
     "@jupyterlab/vega5-extension": "~3.5.3",
     "@jupyterlite/application-extension": "^0.1.0-beta.19",
     "@jupyterlite/iframe-extension": "^0.1.0-beta.19",
-    "@jupyterlite/javascript-kernel-extension": "^0.1.0-beta.19",
     "@jupyterlite/licenses": "^0.1.0-beta.19",
     "@jupyterlite/localforage": "^0.1.0-beta.19",
     "@jupyterlite/server": "^0.1.0-beta.19",
@@ -195,7 +192,6 @@
       "@jupyterlab/vega5-extension",
       "@jupyterlite/application-extension",
       "@jupyterlite/iframe-extension",
-      "@jupyterlite/javascript-kernel-extension",
       "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
@@ -235,7 +231,6 @@
       "@jupyterlite/kernel",
       "@jupyterlite/licenses",
       "@jupyterlite/localforage",
-      "@jupyterlite/javascript-kernel",
       "@jupyterlite/types",
       "@lumino/algorithm",
       "@lumino/application",
