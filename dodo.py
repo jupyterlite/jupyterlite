@@ -349,25 +349,21 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        actions = [U.do("python", "-m", "build", cwd=py_pkg)]
+        actions = [(U.build_one_hatch, [py_pkg])]
+
+        pyproj_toml = py_pkg / "pyproject.toml"
 
         file_dep = [
             *py_pkg.rglob("src/*.py"),
             *py_pkg.glob("*.md"),
             setup_py,
+            pyproj_toml,
         ]
 
         if py_name == "jupyterlite-core":
             file_dep += [B.PY_APP_PACK]
 
-        pyproj_toml = py_pkg / "pyproject.toml"
-
         targets = [wheel, sdist]
-
-        # we might tweak the args
-        if pyproj_toml.exists() and "flit_core" in pyproj_toml.read_text(**C.ENC):
-            actions = [(U.build_one_flit, [py_pkg])]
-            file_dep += [pyproj_toml]
 
         yield dict(
             name=f"py:{py_name}",
@@ -819,7 +815,7 @@ class C:
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
     WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
     PYM = [sys.executable, "-m"]
-    FLIT = [*PYM, "flit"]
+    HATCH = [*PYM, "hatch"]
     SOURCE_DATE_EPOCH = (
         subprocess.check_output([which("git"), "log", "-1", "--format=%ct"])
         .decode("utf-8")
@@ -1424,11 +1420,11 @@ class U:
         else:
             shutil.copy2(src, dest)
 
-    def build_one_flit(py_pkg):
-        """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
+    def build_one_hatch(py_pkg):
+        """attempt to build one package with hatch: on RTD, allow doing a build in /tmp"""
 
         print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
-        args = [*C.FLIT, "--debug", "build", "--setup-py"]
+        args = [*C.HATCH, "build"]
         env = os.environ.update(SOURCE_DATE_EPOCH=C.SOURCE_DATE_EPOCH)
 
         try:
