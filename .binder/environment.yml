@@ -53,6 +53,7 @@ dependencies:
   - nodejs >=18,<19
   - python >=3.10,<3.11
   # build
+  - build
   - doit >=0.34,<1
   - flit >=3.7.1,<4
   - jsonschema >=3

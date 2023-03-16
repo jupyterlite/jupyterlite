@@ -349,7 +349,7 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
+        actions = [U.do("python", "-m", "build", cwd=py_pkg)]
 
         file_dep = [
             *py_pkg.rglob("src/*.py"),
