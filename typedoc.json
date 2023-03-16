@@ -2,8 +2,8 @@
   "$schema": "https://typedoc.org/schema.json",
   "entryPointStrategy": "packages",
   "entryPoints": [
-    "packages/application-extension",
     "packages/application",
+    "packages/application-extension",
     "packages/contents",
     "packages/iframe-extension",
     "packages/javascript-kernel",
@@ -12,14 +12,13 @@
     "packages/localforage",
     "packages/repl-extension",
     "packages/retro-application-extension",
-    "packages/server-extension",
     "packages/server",
+    "packages/server-extension",
     "packages/session",
     "packages/settings",
     "packages/translation",
     "packages/types",
-    "packages/ui-components",
-    "py/jupyterlite-javascript-kernel"
+    "packages/ui-components"
   ],
   "githubPages": false,
   "logLevel": "Verbose",

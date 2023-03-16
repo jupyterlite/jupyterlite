@@ -59,9 +59,6 @@
     },
     {
       "path": "./packages/ui-components"
-    },
-    {
-      "path": "./py/jupyterlite-javascript-kernel"
     }
   ]
 }
