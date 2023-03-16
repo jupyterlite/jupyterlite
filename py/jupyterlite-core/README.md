@@ -6,8 +6,9 @@
 [docs]: https://jupyterlite.readthedocs.io/en/latest/?badge=latest
 
 The `jupyterlite-core` package provides the core functionality for building JupyterLite
-websites CLI
-[extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html).
+websites, the `jupyter-lite` CLI, and
+[extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html)
+for authoring custom addons.
 
 ## Getting Started
 
