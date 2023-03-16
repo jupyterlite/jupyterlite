@@ -84,5 +84,5 @@ path = "jupyterlite/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 include = [
-    "/jupyterlite_core",
+    "/jupyterlite",
 ]
