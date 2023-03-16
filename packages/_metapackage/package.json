@@ -16,8 +16,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build:lib": "tsc -b",
-    "build": "yarn run build",
+    "build": "tsc -b",
     "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
