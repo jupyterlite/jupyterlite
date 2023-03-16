@@ -365,6 +365,11 @@ def task_build():
 
         targets = [wheel, sdist]
 
+        # make sure to build the lab extension before building the wheel
+        if py_name == C.JS_KERNEL_NAME:
+            actions.insert(0, U.do("yarn", "build:prod", cwd=py_pkg))
+            targets.append(B.JAVASCRIPT_LABEXTENSION_PACKAGE_JSON)
+
         yield dict(
             name=f"py:{py_name}",
             doc=f"build the {py_name} python package",
@@ -766,6 +771,7 @@ def task_repo():
 class C:
     NAME = "jupyterlite"
     CORE_NAME = "jupyterlite-core"
+    JS_KERNEL_NAME = "jupyterlite-javascript-kernel"
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -1072,6 +1078,13 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
+    JAVASCRIPT_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
+    JAVASCRIPT_LABEXTENSION_PACKAGE_JSON = (
+        JAVASCRIPT_PY_PACKAGE
+        / C.JS_KERNEL_NAME.replace("-", "_")
+        / "labextension"
+        / "package.json"
+    )
 
 
 class BB:
