@@ -27,7 +27,7 @@
     "build:prod": "yarn clean && yarn build:lib && yarn build:labextension",
     "build:labextension": "jupyter labextension build .",
     "build:labextension:dev": "jupyter labextension build --development True .",
-    "build:lib": "tsc",
+    "build:lib": "tsc -b",
     "clean": "yarn clean:lib",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
     "clean:labextension": "rimraf jupyterlite_javascript_kernel/labextension",
