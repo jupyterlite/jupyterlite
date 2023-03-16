@@ -11,7 +11,6 @@
     { "path": "../contents" },
     { "path": "../iframe-extension" },
     { "path": "../javascript-kernel" },
-    { "path": "../javascript-kernel-extension" },
     { "path": "../kernel" },
     { "path": "../licenses" },
     { "path": "../localforage" },

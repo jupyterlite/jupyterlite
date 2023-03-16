@@ -6,7 +6,6 @@
     "packages/application",
     "packages/contents",
     "packages/iframe-extension",
-    "packages/javascript-kernel-extension",
     "packages/javascript-kernel",
     "packages/kernel",
     "packages/licenses",
@@ -19,7 +18,8 @@
     "packages/settings",
     "packages/translation",
     "packages/types",
-    "packages/ui-components"
+    "packages/ui-components",
+    "py/jupyterlite-javascript-kernel"
   ],
   "githubPages": false,
   "logLevel": "Verbose",

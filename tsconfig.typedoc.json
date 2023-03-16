@@ -25,9 +25,6 @@
       "path": "./packages/javascript-kernel"
     },
     {
-      "path": "./packages/javascript-kernel-extension"
-    },
-    {
       "path": "./packages/kernel"
     },
     {
@@ -62,6 +59,9 @@
     },
     {
       "path": "./packages/ui-components"
+    },
+    {
+      "path": "./py/jupyterlite-javascript-kernel"
     }
   ]
 }

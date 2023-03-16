@@ -39,7 +39,9 @@ PyPI = "https://pypi.org/project/jupyterlite-javascript-kernel"
 artifacts = ["jupyterlite_javascript_kernel/labextension"]
 include = [
     "/jupyterlite_javascript_kernel",
-    "/*.md"
+    "/src",
+    "/*.md",
+    "/*.json",
 ]
 
 [tool.hatch.build.targets.wheel]

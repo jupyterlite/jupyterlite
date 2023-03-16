@@ -25,7 +25,6 @@
     "@jupyterlite/contents": "file:../contents",
     "@jupyterlite/iframe-extension": "file:../iframe-extension",
     "@jupyterlite/javascript-kernel": "file:../javascript-kernel",
-    "@jupyterlite/javascript-kernel-extension": "file:../javascript-kernel-extension",
     "@jupyterlite/kernel": "file:../kernel",
     "@jupyterlite/licenses": "file:../licenses",
     "@jupyterlite/localforage": "file:../localforage",

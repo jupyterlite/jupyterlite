@@ -12,23 +12,15 @@
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
-  "sideEffects": [
-    "style/*.css",
-    "style/index.js"
-  ],
-  "styleModule": "style/index.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "style": "style/index.css",
   "directories": {
     "lib": "lib/"
   },
   "files": [
     "lib/*.d.ts",
     "lib/*.js.map",
-    "lib/*.js",
-    "style/*.css",
-    "style/index.js"
+    "lib/*.js"
   ],
   "scripts": {
     "build": "jlpm build:lib && jlpm build:labextension:dev",
@@ -38,7 +30,7 @@
     "build:lib": "tsc",
     "clean": "jlpm clean:lib",
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
-    "clean:labextension": "rimraf ../../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension",
+    "clean:labextension": "rimraf jupyterlite_javascript_kernel/labextension",
     "clean:all": "jlpm clean:lib && jlpm clean:labextension && jlpm clean:lintcache",
     "eslint": "jlpm eslint:check --fix",
     "eslint:check": "eslint . --cache --ext .ts,.tsx",
@@ -73,7 +65,7 @@
   },
   "jupyterlab": {
     "extension": true,
-    "outputDir": "../../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension"
+    "outputDir": "jupyterlite_javascript_kernel/labextension"
   },
   "jupyterlite": {
     "liteExtension": true

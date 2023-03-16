@@ -16,7 +16,8 @@
     "packages": [
       "app",
       "app/*",
-      "packages/*"
+      "packages/*",
+      "py/jupyterlite-javascript-kernel"
     ]
   },
   "scripts": {
