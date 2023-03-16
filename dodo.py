@@ -1024,11 +1024,7 @@ class B:
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
     PY_APP_PACK = (
-        P.ROOT
-        / "py"
-        / C.CORE_NAME
-        / C.CORE_NAME.replace("-", "_")
-        / APP_PACK.name
+        P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
     )
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
