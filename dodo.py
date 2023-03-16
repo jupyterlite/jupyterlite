@@ -398,9 +398,6 @@ def task_dist():
     )
 
     for dist in B.PY_DISTRIBUTIONS:
-        if dist.name.endswith(".tar.gz"):
-            # apparently flit sdists are malformed according to `twine check`
-            continue
         yield dict(
             name=f"twine:{dist.name}",
             doc=f"use twine to validate {dist.name}",
