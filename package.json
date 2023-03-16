@@ -24,7 +24,7 @@
     "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
     "build": "yarn build:lib && yarn run build:js:kernel && yarn build:app",
     "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
-    "build:lib": "lerna run build --scope @jupyterlite/metapackage --scope @jupyterlite/javascript-kernel-extension",
+    "build:lib": "lerna run build:build --scope @jupyterlite/metapackage --scope @jupyterlite/javascript-kernel-extension",
     "build:js:kernel": "lerna run build --scope @jupyterlite/javascript-kernel-extension",
     "build:prod": "lerna run build:prod",
     "build:python": "lerna run build:python",
