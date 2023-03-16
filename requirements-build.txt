@@ -7,4 +7,5 @@ requests_cache
 # bootstrap packages
 pkginfo
 jupyter_core >=4.7
+jupyterlab >=3.5.3,<3.6
 importlib_metadata
