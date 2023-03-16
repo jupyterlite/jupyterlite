@@ -70,18 +70,3 @@ help of [`mock-socket`][mock-socket].
 
 [jkm]: https://jupyter-client.readthedocs.io/en/stable/messaging.html
 [mock-socket]: https://github.com/thoov/mock-socket
-
-### A Python kernel powered by Pyodide
-
-By default JupyterLite ships with a Python kernel.
-
-The Python kernel is built on top of [pyodide], and includes `piplite`, a wrapper around
-[micropip] which supports [customized wheels sources](../howto/python/wheels.md).
-
-[pyodide]: https://github.com/pyodide/pyodide
-[micropip]: https://pyodide.org/en/latest/usage/api/micropip-api.html
-
-### JavaScript
-
-By default JupyterLite also ships with a simple JavaScript kernel that runs in an
-`Web Worker`.
