@@ -375,11 +375,6 @@ page, including:
 
 [actions]: https://github.com/jupyterlite/jupyterlite/actions
 
-### Releasing
-
-> TBD: See [#121].
-
-[#121]: https://github.com/jupyterlite/jupyterlite/issues/121
 [issues]: https://github.com/jupyterlite/jupyterlite/issues
 [new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
 [pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
