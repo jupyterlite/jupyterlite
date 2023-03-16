@@ -487,7 +487,7 @@ def task_docs():
         )
 
     app_build_deps = [
-        *([] if C.CI else [B.PY_APP_PACK]),
+        *([] if C.CI else [B.PY_APP_PACK, B.JAVASCRIPT_LABEXTENSION_PACKAGE_JSON]),
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
         *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
