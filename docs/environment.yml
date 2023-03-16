@@ -16,6 +16,7 @@ dependencies:
   - hatch >=1.6.3,<2
   - jsonschema >=3
   - jupyter-server-mathjax >=0.2.3
+  - jupyterlab >=3.5.3,<3.6
   - pip
   - pkginfo
   - python-libarchive-c
