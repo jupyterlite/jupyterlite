@@ -5,7 +5,32 @@ follow to update JupyterLite from one version to another.
 
 ## `0.1.0b19` to `0.1.0b20`
 
-TODO
+### `jupyterlite-core`
+
+The static assets distributed via the `jupyterlite-core` package do not include the
+JavaScript kernel anymore.
+
+Instead the JavaScript kernel is now distributed via the separate
+`jupyterlite-javascript-kernel` package.
+
+If you would like to include the JavaScript kernel in your deployment you will have to
+first install it before building the JupyterLite site. For example with:
+
+```
+python -m pip install jupyterlite-javascript-kernel
+```
+
+Or add it to the
+[LiteBuildConfig/federated_extensions](https://jupyterlite.readthedocs.io/en/latest/howto/configure/advanced/extensions.html#adding-custom-extensions)
+config entry.
+
+Currently the `jupyterlite` package still includes the JavaScript kernel via a
+dependency on `jupyterlite-javascript-kernel`. But this might change in a future
+version.
+
+We recommend you start using the `jupyterlite-core` package directly for your
+deployments, and explicitly add more kernels such as `jupyterlite-pyodide-kernel` or
+`jupyterlite-javascript-kernel`.
 
 ## `0.1.0b18` to `0.1.0b19`
 
@@ -18,22 +43,22 @@ The `jupyterlite-core` package provides the core functionality for building Jupy
 websites CLI
 [extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html).
 Currently it only includes a JavaScript kernel that runs in Web Worker. If you would
-like to include a Python kernel in your deployment you will have to add it to your
-dependencies, for example with:
+like to include a Python kernel in your deployment yyou will have to first install it
+before building the JupyterLite site. For example with:
 
 ```
 python -m pip install jupyterlite-pyodide-kernel
 ```
 
-Or to the
+Or add it to the
 [LiteBuildConfig/federated_extensions](https://jupyterlite.readthedocs.io/en/latest/howto/configure/advanced/extensions.html#adding-custom-extensions)
 config entry.
 
-The `jupyterlite` currently provides a couple of shims as well as the Pyodide kernel for
-better compatibility with existing deployments.
+The `jupyterlite` package currently provides a couple of shims as well as the Pyodide
+kernel for better compatibility with existing deployments.
 
-We recommend you start using the `jupyterlite-core` package more for your deployments,
-and additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or
+We recommend you start using the `jupyterlite-core` package for your deployments, and
+additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or
 `jupyterlite-xeus-python`.
 
 ### `jupyterlite-pyodide-kernel`
