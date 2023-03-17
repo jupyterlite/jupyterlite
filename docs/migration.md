@@ -64,7 +64,7 @@ additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or
 ### `jupyterlite-pyodide-kernel`
 
 The Pyodide kernel has been moved to its own repo:
-https://github.com/jupyterlite/pyodide-kernel
+[https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
 
 Currently it is still installed by default with `jupyterlite` for convenience, but it is
 not part of `jupyterlite-core`.
