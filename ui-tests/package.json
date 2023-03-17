@@ -6,8 +6,8 @@
   "license": "BSD-3-Clause",
   "description": "JupyterLite UI Tests",
   "scripts": {
-    "build": "yarn run build:js:kernel && yarn run build:lite",
-    "build:js:kernel": "cd ../py/jupyterlite-javascript-kernel && yarn && yarn run build:prod",
+    "build": "yarn run build:js-kernel && yarn run build:lite",
+    "build:js-kernel": "cd ../ && yarn && yarn run build:js-kernel",
     "build:lite": "jupyter lite build",
     "clean:snapshots": "rimraf test/**/*-snapshots/*.png",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
