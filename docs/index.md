@@ -15,5 +15,6 @@ quickstart/index
 howto/index
 reference/index
 contributing
+migration
 changelog
 ```
