@@ -349,8 +349,6 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        actions = [(U.build_one_hatch, [py_pkg])]
-
         pyproj_toml = py_pkg / "pyproject.toml"
 
         file_dep = [
@@ -364,11 +362,14 @@ def task_build():
             file_dep += [B.PY_APP_PACK]
 
         targets = [wheel, sdist]
-
+        actions = []
         # make sure to build the lab extension before building the wheel
         if py_name == C.JS_KERNEL_NAME:
-            actions.insert(0, U.do("yarn", "build:prod", cwd=py_pkg))
+            actions += [U.do("yarn", cwd=py_pkg)]
+            actions += [U.do("yarn", "build:prod", cwd=py_pkg)]
             targets.append(B.JAVASCRIPT_LABEXTENSION_PACKAGE_JSON)
+
+        actions += [(U.build_one_hatch, [py_pkg])]
 
         yield dict(
             name=f"py:{py_name}",
