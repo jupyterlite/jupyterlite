@@ -6,7 +6,7 @@
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b18...8a3bce63ec8e5bd97d132d60012c8a0378d11698))
 
-### :warning:  API and Breaking Changes :warning:
+### ⚠️ API and Breaking Changes ⚠️
 
 #### `jupyterlite-core`
 
