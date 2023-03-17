@@ -367,7 +367,7 @@ def task_build():
         if py_name == C.JS_KERNEL_NAME:
             actions += [U.do("yarn", cwd=py_pkg)]
             actions += [U.do("yarn", "build:prod", cwd=py_pkg)]
-            targets.append(B.JAVASCRIPT_LABEXTENSION_PACKAGE_JSON)
+            targets.append(B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON)
 
         actions += [(U.build_one_hatch, [py_pkg])]
 
@@ -488,7 +488,8 @@ def task_docs():
         )
 
     app_build_deps = [
-        *([] if C.CI else [B.PY_APP_PACK, B.JAVASCRIPT_LABEXTENSION_PACKAGE_JSON]),
+        *([] if C.CI else [B.PY_APP_PACK]),
+        B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON,
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
         *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
@@ -1079,9 +1080,9 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
-    JAVASCRIPT_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
-    JAVASCRIPT_LABEXTENSION_PACKAGE_JSON = (
-        JAVASCRIPT_PY_PACKAGE
+    JS_KERNEL_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
+    JS_KERNEL_LABEXTENSION_PACKAGE_JSON = (
+        JS_KERNEL_PY_PACKAGE
         / C.JS_KERNEL_NAME.replace("-", "_")
         / "labextension"
         / "package.json"

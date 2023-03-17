@@ -374,7 +374,6 @@ page, including:
 > You must be logged in to GitHub to download these.
 
 [actions]: https://github.com/jupyterlite/jupyterlite/actions
-
 [issues]: https://github.com/jupyterlite/jupyterlite/issues
 [new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
 [pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
