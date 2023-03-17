@@ -1,7 +1,7 @@
 # Migration Guide
 
-This guide provides an overview of the changes and steps required to update JupyterLite
-from one version to another.
+This guide provides an overview of major (potentially breaking) changes and the steps to
+follow to update JupyterLite from one version to another.
 
 ## `0.1.0b19` to `0.1.0b20`
 
