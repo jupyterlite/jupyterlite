@@ -202,7 +202,7 @@ jobs:
         run: doit dev:py:jupyterlite-core
       - name: Build the JavaScript kernel
         run: |
-          yarn
+          yarn --frozen-lockfile
           yarn run build:js-kernel
       - name: Docs (app)
         run: doit docs:app:build
