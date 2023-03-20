@@ -74,7 +74,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: ['3.8', '3.10', 'pypy-3.8']
+        python-version: ['3.8', '3.11', 'pypy-3.8']
         include:
           # OS-specifics for running pip
           - os: ubuntu
@@ -89,7 +89,7 @@ jobs:
           # python-specifics for tests
           - python-version: '3.8'
             pytest-args: '[]'
-          - python-version: '3.10'
+          - python-version: '3.11'
             pytest-args: '[]'
           - python-version: 'pypy-3.8'
             # TODO: some instability with libarchive, might be better with pypy-3.8
