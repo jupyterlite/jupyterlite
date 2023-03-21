@@ -72,6 +72,12 @@ Check out the dedicated guides for configuring the Xeus Python kernel:
 ../xeus-python/preinstalled_packages
 ```
 
+```{note}
+These two Python kernels are very similar but yet still have some slight differences.
+There are plans to converge the two implementations in the future. Concretely, this could mean being able to reuse packages from `emscripten-forge` and `conda-forge` in the Pyodide kernel. Or make some of the Pyodide features more easily reusable so they can be leveraged in the Xeus Python kernel as well.
+There is ongoing work between the Pyodide and Emscripten Forge developers to make this happen.
+```
+
 ## Installing the kernel
 
 To include a kernel in a JupyterLite website, you need to install the corresponding
