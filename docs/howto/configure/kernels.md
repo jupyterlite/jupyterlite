@@ -32,9 +32,27 @@ In the case of Python there are currently two options:
 - `jupyterlite-xeus-python`: a Python kernel based on
   [xeus-python](https://jupyter-xeus/xeus-python).
 
-```{note}
-TODO: explain differences
-```
+#### `jupyterlite-pyodide-kernel`
+
+- Is based on [Pyodide](https://github.com/pyodide/pyodide)
+- Uses [IPython](https://github.com/ipython/ipython) for the code execution (access to
+  IPython magics, support for the inline Matplotlib backend, _etc_)
+- Provides a way to dynamically install packages with `piplite` (**e.g.**
+  `await piplite.install("ipywidgets")`)
+- **Does not support** sleeping with `from time import sleep`
+- **Does not support** pre-installing packages
+
+#### `jupyterlite-xeus-python`
+
+- Is based on [xeus-python](https://github.com/jupyter-xeus/xeus-python)
+- Uses [IPython](https://github.com/ipython/ipython) for the code execution (access to
+  IPython magics, support for the inline Matplotlib backend, _etc_)
+- **Does not provide** (yet) a way to dynamically install packages. There is ongoing
+  work for building a `mamba` package manager for WebAssembly that would allow for
+  installing packages on the fly.
+- **Supports** sleeping with `from time import sleep`
+- **Supports** pre-installing packages from `emscripten-forge` and `conda-forge`, by
+  providing an `environment.yml` file defining the runtime environment
 
 ## Installing the kernel
 

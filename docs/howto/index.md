@@ -36,7 +36,7 @@ content/filesystem-access
 content/share
 ```
 
-## Configuring the Python environment
+## Configuring the Pyodide kernel
 
 ```{toctree}
 :maxdepth: 1
