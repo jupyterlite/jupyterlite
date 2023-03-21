@@ -42,6 +42,16 @@ In the case of Python there are currently two options:
 - **Does not support** sleeping with `from time import sleep`
 - **Does not support** pre-installing packages
 
+Check out the dedicated guides for configuring the Pyodide kernel:
+
+```{toctree}
+:maxdepth: 1
+
+../pyodide/packages
+../pyodide/wheels
+../pyodide/pyodide
+```
+
 #### `jupyterlite-xeus-python`
 
 - Is based on [xeus-python](https://github.com/jupyter-xeus/xeus-python)
@@ -53,6 +63,14 @@ In the case of Python there are currently two options:
 - **Supports** sleeping with `from time import sleep`
 - **Supports** pre-installing packages from `emscripten-forge` and `conda-forge`, by
   providing an `environment.yml` file defining the runtime environment
+
+Check out the dedicated guides for configuring the Xeus Python kernel:
+
+```{toctree}
+:maxdepth: 1
+
+../xeus-python/preinstalled_packages
+```
 
 ## Installing the kernel
 
