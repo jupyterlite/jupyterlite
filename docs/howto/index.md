@@ -41,10 +41,10 @@ content/share
 ```{toctree}
 :maxdepth: 1
 
-python/packages
-python/preinstalled_packages
-python/wheels
-python/pyodide
+pyodide/packages
+pyodide/preinstalled_packages
+pyodide/wheels
+pyodide/pyodide
 ```
 
 ## Deploying
