@@ -148,7 +148,7 @@ await piplite.install(["ipywidgets==7.7.0", "bqplot==0.12.30", "plotly==5.8.0"])
 This is unfortunately a little bit brittle but does the job for now. There is chance
 this will be improved in future versions of JupyterLite.
 
-Check out the [guide on configuring the piplite URLs](../python/wheels.md) if you want
+Check out the [guide on configuring the piplite URLs](../pyodide/wheels.md) if you want
 to have more control on your dependencies.
 
 ## How to know if an extension is compatible with JupyterLite?
