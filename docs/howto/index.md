@@ -16,6 +16,7 @@ tools and extensions from the Jupyter ecosystem.
 ```{toctree}
 :maxdepth: 1
 
+configure/kernels
 configure/simple_extensions
 configure/storage
 configure/settings
