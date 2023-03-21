@@ -74,6 +74,19 @@ branch.
 
 ## Add additional requirements to the deployment
 
+````{note}
+The [jupyterlite/demo](https://github.com/jupyterlite/demo) repository uses a `requirements.txt` file to specify the dependencies. For demo purposes this file may contain extra kernels and extensions you might want to remove from your deployment. If that's the case you can stick to a more minimal `requirements.txt` file such as:
+
+```bash
+# core package for building the JupyterLite website
+jupyterlite-core==0.1.0b19
+# the Python kernel powered by Pyodide
+jupyterlite-pyodide-kernel==0.0.5
+# dependency for indexing the content
+jupyterlab~=3.5.3
+```
+````
+
 ### Extensions
 
 The `requirements.txt` file can be used to add extra prebuilt (also called _federated_)
@@ -82,9 +95,13 @@ JupyterLab extensions to the deployed JupyterLite website. Follow the
 
 ### Using the xeus-python kernel and emscripten-forge
 
-Using [a JupyterLite deployment with xeus-python](https://github.com/jupyterlite/xeus-python-demo), you can pre-install packages available both on ``conda-forge`` and ``emscripten-forge`` by specifying them to the ``environment.yml`` file.
+Using
+[a JupyterLite deployment with xeus-python](https://github.com/jupyterlite/xeus-python-demo),
+you can pre-install packages available both on `conda-forge` and `emscripten-forge` by
+specifying them to the `environment.yml` file.
 
-By pre-installing packages, they are readily usable in the kernel and can be imported without the need for ``piplite``.
+By pre-installing packages, they are readily usable in the kernel and can be imported
+without the need for `piplite`.
 
 ### Contents
 
