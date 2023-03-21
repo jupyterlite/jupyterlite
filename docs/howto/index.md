@@ -42,9 +42,16 @@ content/share
 :maxdepth: 1
 
 pyodide/packages
-pyodide/preinstalled_packages
 pyodide/wheels
 pyodide/pyodide
+```
+
+## Configuring the Xeus Python kernel
+
+```{toctree}
+:maxdepth: 1
+
+xeus-python/preinstalled_packages
 ```
 
 ## Deploying

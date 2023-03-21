@@ -13,3 +13,6 @@ build output without the need for extra configuration.
 
 As an example, a deployment can easily be made using the
 [JupyterLite deployment demo with xeus-python](https://github.com/jupyterlite/xeus-python-demo).
+
+This demo follows the same steps as the [quickstart](../../quickstart/deploy.md) guide
+but uses Xeus Python as the kernel.
