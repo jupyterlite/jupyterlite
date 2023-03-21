@@ -52,6 +52,7 @@ python/pyodide
 :maxdepth: 1
 
 ../quickstart/deploy
+deployment/github-pages
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
