@@ -18,9 +18,7 @@ means that many of the existing Jupyter kernels like `ipykernel` will not work o
 the box in JupyterLite.
 
 However a couple of JupyterLite kernels targeting different languages are already
-available. Some are listed in the
-[JupyterLite Kernels](../../quickstart/using.md#kernels) section of the documentation.
-There might be more third-party kernels compatible with JupyterLite.
+available.
 
 ### Adding a Python kernel
 
@@ -77,6 +75,15 @@ These two Python kernels are very similar but yet still have some slight differe
 There are plans to converge the two implementations in the future. Concretely, this could mean being able to reuse packages from `emscripten-forge` and `conda-forge` in the Pyodide kernel. Or make some of the Pyodide features more easily reusable so they can be leveraged in the Xeus Python kernel as well.
 There is ongoing work between the Pyodide and Emscripten Forge developers to make this happen.
 ```
+
+### Adding other kernels
+
+Other kernels are available for other languages. You can include more than one kernel in
+your JupyterLite website.
+
+Some are listed in the [JupyterLite Kernels](../../quickstart/using.md#kernels) section
+of the documentation. There might be more third-party kernels compatible with
+JupyterLite.
 
 ## Installing the kernel
 
