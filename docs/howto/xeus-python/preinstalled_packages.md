@@ -1,11 +1,12 @@
 # Pre-install additional packages with emscripten-forge
 
 Using [xeus-python](https://github.com/jupyterlite/xeus-python-kernel), you can
-pre-install packages available both on `conda-forge` and `emscripten-forge` by
-specifying them to the `environment.yml` file in the JupyterLite build directory.
+pre-install packages available both on `conda-forge` and
+[`emscripten-forge`](https://github.com/emscripten-forge/recipes) by specifying them to
+the `environment.yml` file in the JupyterLite build directory.
 
 By pre-installing packages, they are readily usable in the kernel and can be imported
-without the need for `piplite`.
+without the need of installing them in the notebook with `micropip` or `piplite`.
 
 When pre-installing packages that provides JupyterLab extensions (_e.g._ ipywidgets or
 ipyleaflet), those JupyterLab extensions are automatically included in the JupyterLite
