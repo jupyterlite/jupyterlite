@@ -9,7 +9,7 @@ If you're using a JupyterLite site, there isn't much to know. It works like a re
 server-backed JupyterLab site, except:
 
 - The list of kernels, usually visible from the _Launcher_ as different _Notebook_
-  flavors, will be different
+  flavors, will be different. See [the Kernels section below](#kernels).
 - Your data is written to in-browser storage
   - though you may be able to copy
 - None of your data leaves your browser unless...
@@ -66,22 +66,28 @@ execute code in the browser.
 ## Kernels
 
 JupyterLite Kernels implement [Jupyter Kernel Messaging][jkm] in the browser with the
-help of [`mock-socket`][mock-socket].
+help of [`mock-socket`][mock-socket] and [WebAssembly][webassembly], without relying on
+any external infrastructure.
+
+The JupyterLite contibutors develop and maintain the following kernels:
+
+- a Python kernel based on [Pyodide][pyodide]:
+  [https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
+- a JavaScript kernel running in a Web Worker, developed as part of the
+  `jupyterlite/jupyterlite` repository but distributed via the
+  `jupyterlite-javascript-kernel` package on PyPI
+- a Python kernel based on [Xeus Python][xeus-python]:
+  [https://github.com/jupyterlite/xeus-python-kernel](https://github.com/jupyterlite/xeus-python-kernel)
+
+There are a few more third-party in-browser kernels also compatible with JupyterLite.
+See this [GitHub discussion][github-discussion-kernels] for more information.
+
+Check out the [How-to Guides](../howto/index.md) of the documentation to learn how to
+use and configure kernels.
 
 [jkm]: https://jupyter-client.readthedocs.io/en/stable/messaging.html
 [mock-socket]: https://github.com/thoov/mock-socket
-
-### A Python kernel powered by Pyodide
-
-By default JupyterLite ships with a Python kernel.
-
-The Python kernel is built on top of [pyodide], and includes `piplite`, a wrapper around
-[micropip] which supports [customized wheels sources](../howto/python/wheels.md).
-
-[pyodide]: https://github.com/pyodide/pyodide
-[micropip]: https://pyodide.org/en/latest/usage/api/micropip-api.html
-
-### JavaScript
-
-By default JupyterLite also ships with a simple JavaScript kernel that runs in an
-`Web Worker`.
+[webassembly]: https://developer.mozilla.org/en-US/docs/WebAssembly
+[github-discussion-kernels]: https://github.com/jupyterlite/jupyterlite/discussions/968
+[pyodide]: https://pyodide.org
+[xeus-python]: https://github.com/jupyter-xeus/xeus-python

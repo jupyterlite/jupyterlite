@@ -19,6 +19,9 @@ after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
 
+[tool.check-wheel-contents]
+ignore = ["W002"]
+
 [tool.tbump.version]
 current = "0.1.0b19"
 regex = '''
@@ -37,10 +40,13 @@ src = "package.json"
 src = "pyproject.toml"
 
 [[tool.tbump.file]]
-src = "py/jupyterlite/src/jupyterlite/__init__.py"
+src = "py/jupyterlite/jupyterlite/__init__.py"
 
 [[tool.tbump.file]]
-src = "py/jupyterlite-core/src/jupyterlite_core/__init__.py"
+src = "py/jupyterlite-core/jupyterlite_core/__init__.py"
+
+[[tool.tbump.file]]
+src = "py/jupyterlite-javascript-kernel/pyproject.toml"
 
 [[tool.tbump.field]]
 name = "channel"

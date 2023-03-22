@@ -200,6 +200,10 @@ jobs:
         run: python3 -m pip install -r requirements-docs.txt
       - name: Install (py)
         run: doit dev:py:jupyterlite-core
+      - name: Build the JavaScript kernel
+        run: |
+          yarn --frozen-lockfile
+          yarn run build:js-kernel
       - name: Docs (app)
         run: doit docs:app:build
       - name: Docs (app archive)

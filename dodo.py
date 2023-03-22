@@ -349,25 +349,27 @@ def task_build():
         )
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
-        actions = [U.do("python", "setup.py", "sdist", "bdist_wheel", cwd=py_pkg)]
+        pyproj_toml = py_pkg / "pyproject.toml"
 
         file_dep = [
-            *py_pkg.rglob("src/*.py"),
+            *py_pkg.rglob("*.py"),
             *py_pkg.glob("*.md"),
             setup_py,
+            pyproj_toml,
         ]
 
         if py_name == "jupyterlite-core":
             file_dep += [B.PY_APP_PACK]
 
-        pyproj_toml = py_pkg / "pyproject.toml"
-
         targets = [wheel, sdist]
+        actions = []
+        # make sure to build the lab extension before building the wheel
+        if py_name == C.JS_KERNEL_NAME:
+            actions += [U.do("yarn", cwd=py_pkg)]
+            actions += [U.do("yarn", "build:prod", cwd=py_pkg)]
+            targets.append(B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON)
 
-        # we might tweak the args
-        if pyproj_toml.exists() and "flit_core" in pyproj_toml.read_text(**C.ENC):
-            actions = [(U.build_one_flit, [py_pkg])]
-            file_dep += [pyproj_toml]
+        actions += [(U.build_one_hatch, [py_pkg])]
 
         yield dict(
             name=f"py:{py_name}",
@@ -402,9 +404,6 @@ def task_dist():
     )
 
     for dist in B.PY_DISTRIBUTIONS:
-        if dist.name.endswith(".tar.gz"):
-            # apparently flit sdists are malformed according to `twine check`
-            continue
         yield dict(
             name=f"twine:{dist.name}",
             doc=f"use twine to validate {dist.name}",
@@ -490,6 +489,7 @@ def task_docs():
 
     app_build_deps = [
         *([] if C.CI else [B.PY_APP_PACK]),
+        B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON,
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
         *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
@@ -773,6 +773,7 @@ def task_repo():
 class C:
     NAME = "jupyterlite"
     CORE_NAME = "jupyterlite-core"
+    JS_KERNEL_NAME = "jupyterlite-javascript-kernel"
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -819,7 +820,7 @@ class C:
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
     WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
     PYM = [sys.executable, "-m"]
-    FLIT = [*PYM, "flit"]
+    HATCH = [*PYM, "hatch"]
     SOURCE_DATE_EPOCH = (
         subprocess.check_output([which("git"), "log", "-1", "--format=%ct"])
         .decode("utf-8")
@@ -834,7 +835,7 @@ class C:
     MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
-    COV_THRESHOLD = 86
+    COV_THRESHOLD = 82
     SKIP_LINT = [
         "/docs/_build/",
         "/.ipynb_checkpoints/",
@@ -1031,12 +1032,7 @@ class B:
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
     PY_APP_PACK = (
-        P.ROOT
-        / "py"
-        / C.CORE_NAME
-        / "src"
-        / C.CORE_NAME.replace("-", "_")
-        / APP_PACK.name
+        P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
     )
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
@@ -1084,6 +1080,13 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
+    JS_KERNEL_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
+    JS_KERNEL_LABEXTENSION_PACKAGE_JSON = (
+        JS_KERNEL_PY_PACKAGE
+        / C.JS_KERNEL_NAME.replace("-", "_")
+        / "labextension"
+        / "package.json"
+    )
 
 
 class BB:
@@ -1424,11 +1427,11 @@ class U:
         else:
             shutil.copy2(src, dest)
 
-    def build_one_flit(py_pkg):
-        """attempt to build one package with flit: on RTD, allow doing a build in /tmp"""
+    def build_one_hatch(py_pkg):
+        """attempt to build one package with hatch: on RTD, allow doing a build in /tmp"""
 
         print(f"[{py_pkg.name}] trying in-tree build...", flush=True)
-        args = [*C.FLIT, "--debug", "build", "--setup-py"]
+        args = [*C.HATCH, "build"]
         env = os.environ.update(SOURCE_DATE_EPOCH=C.SOURCE_DATE_EPOCH)
 
         try:

@@ -7,13 +7,13 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../kernel"
+      "path": "../../packages/kernel"
     },
     {
-      "path": "../javascript-kernel"
+      "path": "../../packages/javascript-kernel"
     },
     {
-      "path": "../server"
+      "path": "../../packages/server"
     }
   ]
 }

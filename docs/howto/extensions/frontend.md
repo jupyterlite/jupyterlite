@@ -82,8 +82,8 @@ If you iterate and make new changes to the extension:
   https://user-images.githubusercontent.com/591645/171583522-f5677259-b91a-4ab0-8812-9770807a088e.gif
 
 ```{note}
-By default the `jupyterlite-core` package only includes a JavaScript kernel running in a Web Worker.
-If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies.
+By default the `jupyterlite-core` package does not include any kernels.
+If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies. There is also a JavaScript kernel available via the `jupyterlite-javascript-kernel` package.
 ```
 
 ## Publishing the extension

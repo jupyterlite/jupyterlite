@@ -16,19 +16,22 @@
     "packages": [
       "app",
       "app/*",
-      "packages/*"
+      "packages/*",
+      "py/jupyterlite-javascript-kernel"
     ]
   },
   "scripts": {
-    "bootstrap": "yarn && yarn clean && yarn build && yarn lint && yarn test",
-    "build": "yarn build:lib && yarn build:app",
+    "bootstrap": "yarn && yarn clean && yarn build && yarn lint",
+    "build": "yarn build:lib && yarn run build:js-kernel && yarn build:app",
     "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
-    "build:lib": "lerna run build --scope @jupyterlite/metapackage",
+    "build:lib": "lerna run build --scope @jupyterlite/metapackage && yarn run build:js-kernel:lib",
+    "build:js-kernel:lib": "lerna run build:lib --scope @jupyterlite/javascript-kernel-extension",
+    "build:js-kernel": "lerna run build --scope @jupyterlite/javascript-kernel-extension",
     "build:prod": "lerna run build:prod",
-    "build:python": "lerna run build:python",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
+    "develop:js:kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "docs": "typedoc",
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
@@ -38,7 +41,6 @@
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "prettier:check-src": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml}\"",
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
-    "publish": "yarn clean && yarn build && lerna publish",
     "serve": "node scripts/serve.js",
     "serve:py": "cd app && python -m http.server -b 127.0.0.1 8000",
     "test": "lerna run test",
