@@ -43,13 +43,13 @@ jupyter lite build --output-dir dist
 ```
 
 ````{note}
-The `jupyterlite-core` package provides the **base** static assets and the CLI for building JupyterLite website.
-If you would like your deployment to also include a default Python kernel and other useful extensions by default, you
-can install the `jupyterlite` package:
+By default the `jupyterlite-core` package does not provide any kernels. If you would like to install one in your environment you would need to install it in your build environment. For example to install the Pyodide kernel for JupyterLite:
 
 ```bash
-python -m pip install --pre jupyterlite
+python -m pip install jupyterlite-pyodide-kernel
 ```
+
+Then make sure to rerun the `jupyter lite build` command.
 ````
 
 ## Standalone Servers

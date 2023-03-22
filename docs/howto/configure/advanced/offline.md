@@ -39,7 +39,7 @@ from the public [PyPI].
 Instead you can configure a list of packages that will be downloaded at _build_ time so
 they can be hosted alongside your JupyterLite website.
 
-See [](../../python/wheels.md) for more information.
+See [](../../pyodide/wheels.md) for more information.
 
 Concretely that means populating a list of URLs for downloading wheels. A good example
 for this is the configuration used for the JupyterLite demo website:

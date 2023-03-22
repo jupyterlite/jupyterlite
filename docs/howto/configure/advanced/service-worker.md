@@ -8,7 +8,7 @@ If available, this enables a number of useful features:
 - a robust, offline-capable caching proxy for all fetched content, including:
   - the JupyterLite application itself
   - content [files](../../content/files.md) from the server
-  - any requests made by kernel, such as installed [packages](../../python/wheels.md)
+  - any requests made by kernel, such as installed [packages](../../pyodide/wheels.md)
 
 ## Limitations
 

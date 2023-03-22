@@ -16,6 +16,7 @@ tools and extensions from the Jupyter ecosystem.
 ```{toctree}
 :maxdepth: 1
 
+configure/kernels
 configure/simple_extensions
 configure/storage
 configure/settings
@@ -35,14 +36,22 @@ content/filesystem-access
 content/share
 ```
 
-## Configuring the Python environment
+## Configuring the Pyodide kernel
 
 ```{toctree}
 :maxdepth: 1
 
-python/packages
-python/wheels
-python/pyodide
+pyodide/packages
+pyodide/wheels
+pyodide/pyodide
+```
+
+## Configuring the Xeus Python kernel
+
+```{toctree}
+:maxdepth: 1
+
+xeus-python/preinstalled_packages
 ```
 
 ## Deploying
@@ -51,6 +60,7 @@ python/pyodide
 :maxdepth: 1
 
 ../quickstart/deploy
+deployment/github-pages
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
