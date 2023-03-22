@@ -2,6 +2,51 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b20
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b19...2dab56bcb88042a5a87565cbcacd6adc86be934d))
+
+### :warning:  API and Breaking Changes :warning:
+
+#### `jupyterlite-javascript-kernel`
+
+The JavaScript kernel has been extracted from the main JupyterLite bundle. This means it is not available by default anymore when building a site with the `jupyterlite-core` package.
+
+Currently it is still installed by default with `jupyterlite` for convenience, but it is not part of `jupyterlite-core`.
+
+If you use `jupyterlite-core` to build your JupyterLite website, you can install the `jupyterlite-javascript-kernel` package to include the JavaScript kernel as part of the build.
+
+#### Python 3.8
+
+The `jupyterlite-core`, `jupyterlite` and `jupyterlite-javascript-kernel` packages now require Python 3.8.
+
+______________________________________________________________________
+
+### Maintenance and upkeep improvements
+
+- Require Python 3.8, test on Python 3.11 [#1016](https://github.com/jupyterlite/jupyterlite/pull/1016) ([@jtpio](https://github.com/jtpio))
+- Distribute `jupyterlite-javascript-kernel` as a federated kernel [#1013](https://github.com/jupyterlite/jupyterlite/pull/1013) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Improve documentation for installing different kernels [#1018](https://github.com/jupyterlite/jupyterlite/pull/1018) ([@jtpio](https://github.com/jtpio))
+- Bootstrap the migration guide [#1015](https://github.com/jupyterlite/jupyterlite/pull/1015) ([@jtpio](https://github.com/jtpio))
+- Remove "Releasing" section from the docs [#1014](https://github.com/jupyterlite/jupyterlite/pull/1014) ([@jtpio](https://github.com/jtpio))
+- Add a minimal README for `jupyterlite-core` [#1012](https://github.com/jupyterlite/jupyterlite/pull/1012) ([@jtpio](https://github.com/jtpio))
+- Default docs back to `latest` [#1009](https://github.com/jupyterlite/jupyterlite/pull/1009) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Distribute `jupyterlite-javascript-kernel` as a federated kernel [#1013](https://github.com/jupyterlite/jupyterlite/pull/1013) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-15&to=2023-03-22&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-03-15..2023-03-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-15..2023-03-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-15..2023-03-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b19
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b18...8a3bce63ec8e5bd97d132d60012c8a0378d11698))
@@ -71,8 +116,6 @@ Currently it is still installed by default with `jupyterlite` for convenience, b
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-01-19&to=2023-03-15&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-01-19..2023-03-15&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-01-19..2023-03-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-01-19..2023-03-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-01-19..2023-03-15&type=Issues) | [@sebreb](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Asebreb+updated%3A2023-01-19..2023-03-15&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b18
 
