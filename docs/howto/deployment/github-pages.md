@@ -11,7 +11,7 @@ If that's not the case, check out the [quickstart guide](../../quickstart/deploy
 If the dependencies are listed in a `requirements.txt` file, edit the file to make your
 changes.
 
-For example let's say you want to add the `jupyterlite-night` theme to your deployment.
+For example let's say you want to add the `jupyterlab-night` theme to your deployment.
 Open `requirements.txt` and add the following line:
 
 ```text
@@ -19,8 +19,8 @@ Open `requirements.txt` and add the following line:
 jupyterlite-core
 # ...
 
-# add the jupyterlite-night theme
-jupyterlite-night
+# add the jupyterlab-night theme
+jupyterlab-night
 ```
 
 ## Opening a pull request

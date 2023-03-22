@@ -90,14 +90,25 @@ JupyterLite.
 To include a kernel in a JupyterLite website, you need to install the corresponding
 Python package in the environment used to build the website.
 
-If you are using GitHub Pages to host your website, you can use the `requirements.txt`
-file to specify the kernel to install.
+If you are using GitHub Pages to host your website like in the
+[quickstart guide](../../quickstart/deploy.md), you can use the `requirements.txt` file
+to specify the kernel to install.
 
 For example, to install the `jupyterlite-pyodide-kernel` kernel, you can add the
 following line to the `requirements.txt` file:
 
 ```
+# existing dependencices
+# ...
+# add the Pyodide kernel
 jupyterlite-pyodide-kernel
+```
+
+As an alternative, you can also install the `jupyterlite-pyodide-kernel` in your build
+environment, for example with:
+
+```
+python -m pip install jupyterlite-pyodide-kernel
 ```
 
 Then rebuild the website with `jupyter lite build`.
