@@ -401,7 +401,7 @@ export class Contents implements IContents {
     const chunk = options.chunk;
 
     // retrieve the content if it is a later chunk or the last one
-    const chunked = chunk ? (chunk > 1 || chunk === -1) : false;
+    const chunked = chunk ? chunk > 1 || chunk === -1 : false;
     let item: IModel | null = await this.get(path, { content: chunked });
 
     if (!item) {
