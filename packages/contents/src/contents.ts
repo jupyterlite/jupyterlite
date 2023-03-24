@@ -463,6 +463,12 @@ export class Contents implements IContents {
           size: atob(content).length,
         };
       }
+    } else {
+      item = {
+        ...item,
+        ...options,
+        last_modified: modified,
+      };
     }
 
     await (await this.storage).setItem(path, item);
