@@ -401,6 +401,7 @@ export class Contents implements IContents {
     const chunk = options.chunk;
 
     // retrieve the content if it is a later chunk or the last one
+    // the new content will then be appended to the existing one
     const chunked = chunk ? chunk > 1 || chunk === -1 : false;
     let item: IModel | null = await this.get(path, { content: chunked });
 
@@ -412,63 +413,58 @@ export class Contents implements IContents {
       return null;
     }
 
-    // override with the new values
+    // keep a copy of the original content
+    const originalContent = item.content;
+
     const modified = new Date().toISOString();
+    // override with the new values
+    item = {
+      ...item,
+      ...options,
+      last_modified: modified,
+    };
 
     if (options.content && options.format === 'base64') {
-      let content = '';
-      if (chunked) {
-        content = item.content + this._unescapeContent(options.content);
-      } else {
-        content = this._unescapeContent(options.content);
-      }
-      const size = content.length;
-
-      item = {
-        ...item,
-        ...options,
-        content,
-        last_modified: modified,
-      };
-
       const lastChunk = chunk === -1;
 
       if (ext === '.ipynb') {
+        const escaped = this._unescapeContent(options.content);
+        const content = chunked ? originalContent + escaped : escaped;
         item = {
           ...item,
           content: lastChunk ? JSON.parse(content) : content,
           format: 'json',
           type: 'notebook',
-          size,
+          size: content.length,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
+        const escaped = this._unescapeContent(options.content);
+        const content = chunked ? originalContent + escaped : escaped;
         item = {
           ...item,
           content: lastChunk ? JSON.parse(content) : content,
           format: 'json',
           type: 'file',
-          size,
+          size: content.length,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
+        const escaped = this._unescapeContent(options.content);
+        const content = chunked ? originalContent + escaped : escaped;
         item = {
           ...item,
           content,
           format: 'text',
           type: 'file',
-          size,
+          size: content.length,
         };
       } else {
+        const content = options.content;
         item = {
           ...item,
+          content,
           size: atob(content).length,
         };
       }
-    } else {
-      item = {
-        ...item,
-        ...options,
-        last_modified: modified,
-      };
     }
 
     await (await this.storage).setItem(path, item);
@@ -584,6 +580,13 @@ export class Contents implements IContents {
     await (await this.checkpoints).setItem(path, copies);
   }
 
+  /**
+   * Decode and unescape a base64-encoded string.
+   * @param content the content to process
+   *
+   * @returns the decoded string
+   * /
+   */
   private _unescapeContent(content: string): string {
     return decodeURIComponent(escape(atob(content)));
   }
