@@ -400,14 +400,12 @@ export class Contents implements IContents {
     const ext = PathExt.extname(options.name ?? '');
     const chunk = options.chunk;
 
-    let item: IModel | null = await this.get(path);
+    // retrieve the content if it is a later chunk or the last one
+    const chunked = chunk ? (chunk > 1 || chunk === -1) : false;
+    let item: IModel | null = await this.get(path, { content: chunked });
 
     if (!item) {
       item = await this.newUntitled({ path, ext, type: 'file' });
-    }
-
-    if (chunk && chunk > 1) {
-      item = await (await this.storage).getItem(path);
     }
 
     if (!item) {
@@ -416,24 +414,29 @@ export class Contents implements IContents {
 
     // override with the new values
     const modified = new Date().toISOString();
-    item = {
-      ...item,
-      ...options,
-      last_modified: modified,
-    };
 
     if (options.content && options.format === 'base64') {
       let content = '';
-      if (chunk && (chunk > 1 || chunk === -1)) {
+      if (chunked) {
         content = item.content + this._unescapeContent(options.content);
       } else {
         content = this._unescapeContent(options.content);
       }
       const size = content.length;
+
+      item = {
+        ...item,
+        ...options,
+        content,
+        last_modified: modified,
+      };
+
+      const lastChunk = chunk === -1;
+
       if (ext === '.ipynb') {
         item = {
           ...item,
-          content: JSON.parse(content),
+          content: lastChunk ? JSON.parse(content) : content,
           format: 'json',
           type: 'notebook',
           size,
@@ -441,7 +444,7 @@ export class Contents implements IContents {
       } else if (FILE.hasFormat(ext, 'json')) {
         item = {
           ...item,
-          content: JSON.parse(content),
+          content: lastChunk ? JSON.parse(content) : content,
           format: 'json',
           type: 'file',
           size,
