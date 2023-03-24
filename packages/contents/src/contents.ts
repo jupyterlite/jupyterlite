@@ -398,11 +398,16 @@ export class Contents implements IContents {
 
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
+    const chunk = options.chunk;
 
     let item: IModel | null = await this.get(path);
 
     if (!item) {
       item = await this.newUntitled({ path, ext, type: 'file' });
+    }
+
+    if (chunk && chunk > 1) {
+      item = await (await this.storage).getItem(path);
     }
 
     if (!item) {
@@ -418,50 +423,47 @@ export class Contents implements IContents {
     };
 
     if (options.content && options.format === 'base64') {
+      let content = '';
+      if (chunk && (chunk > 1 || chunk === -1)) {
+        content = item.content + this._unescapeContent(options.content);
+      } else {
+        content = this._unescapeContent(options.content);
+      }
+      const size = content.length;
       if (ext === '.ipynb') {
-        const contentUnescaped = this.unescapeContent(options.content);
-        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(contentUnescaped),
+          content: JSON.parse(content),
           format: 'json',
           type: 'notebook',
-          size: size,
+          size,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
-        const contentUnescaped = this.unescapeContent(options.content);
-        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: JSON.parse(contentUnescaped),
+          content: JSON.parse(content),
           format: 'json',
           type: 'file',
-          size: size,
+          size,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
-        const contentUnescaped = this.unescapeContent(options.content);
-        const size = contentUnescaped.length;
         item = {
           ...item,
-          content: contentUnescaped,
+          content,
           format: 'text',
           type: 'file',
-          size: size,
+          size,
         };
       } else {
         item = {
           ...item,
-          size: atob(options.content).length,
+          size: atob(content).length,
         };
       }
     }
 
     await (await this.storage).setItem(path, item);
     return item;
-  }
-
-  unescapeContent(content: string): string {
-    return decodeURIComponent(escape(atob(content)));
   }
 
   /**
@@ -571,6 +573,10 @@ export class Contents implements IContents {
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
     await (await this.checkpoints).setItem(path, copies);
+  }
+
+  private _unescapeContent(content: string): string {
+    return decodeURIComponent(escape(atob(content)));
   }
 
   /**
