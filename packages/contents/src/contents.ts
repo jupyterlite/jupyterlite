@@ -413,7 +413,7 @@ export class Contents implements IContents {
       return null;
     }
 
-    // keep a copy of the original content
+    // keep a reference to the original content
     const originalContent = item.content;
 
     const modified = new Date().toISOString();
