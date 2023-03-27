@@ -60,8 +60,8 @@ own content and configuration.
 The documentation includes several how-to guides for customizing the site:
 
 - [Adding kernels](../howto/configure/kernels.md)
-- [Adding extensions](./howto/configure/simple_extension.md)
-- [Adding content](./howto/content/files.md)
+- [Adding extensions](../howto/configure/simple_extensions.md)
+- [Adding content](../howto/content/files.md)
 
 Check out the list of [how-to guides](../howto/index.md) for more information.
 
