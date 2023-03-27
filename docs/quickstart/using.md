@@ -131,5 +131,5 @@ This can be achieved by right-clicking on the file in the file browser and selec
 ```
 
 ```{note}
-If you are a site deployer, check out the [guide](../content/files.md) to learn how to make files available to users.
+If you are a site deployer, check out the [guide](../howto/content/files.md) to learn how to make files available to users.
 ```
