@@ -52,6 +52,19 @@ python -m pip install jupyterlite-pyodide-kernel
 Then make sure to rerun the `jupyter lite build` command.
 ````
 
+## Customizing the site
+
+By default the JupyterLite site will be empty, but you can customize it by adding your
+own content and configuration.
+
+The documentation includes several how-to guides for customizing the site:
+
+- [Adding kernels](../howto/configure/kernels.md)
+- [Adding extensions](./howto/configure/simple_extension.md)
+- [Adding content](./howto/content/files.md)
+
+Check out the list of [how-to guides](../howto/index.md) for more information.
+
 ## Standalone Servers
 
 Now that the static assets have been built, you can use a plain HTTP server to serve
