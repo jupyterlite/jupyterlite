@@ -428,8 +428,7 @@ export class Contents implements IContents {
       const lastChunk = chunk === -1;
 
       if (ext === '.ipynb') {
-        const escaped = this._unescapeContent(options.content);
-        const content = chunked ? originalContent + escaped : escaped;
+        const content = this._handleChunk(options.content, originalContent, chunked);
         item = {
           ...item,
           content: lastChunk ? JSON.parse(content) : content,
@@ -438,8 +437,7 @@ export class Contents implements IContents {
           size: content.length,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
-        const escaped = this._unescapeContent(options.content);
-        const content = chunked ? originalContent + escaped : escaped;
+        const content = this._handleChunk(options.content, originalContent, chunked);
         item = {
           ...item,
           content: lastChunk ? JSON.parse(content) : content,
@@ -448,8 +446,7 @@ export class Contents implements IContents {
           size: content.length,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
-        const escaped = this._unescapeContent(options.content);
-        const content = chunked ? originalContent + escaped : escaped;
+        const content = this._handleChunk(options.content, originalContent, chunked);
         item = {
           ...item,
           content,
@@ -581,14 +578,21 @@ export class Contents implements IContents {
   }
 
   /**
+   * Handle a chunk of a file.
    * Decode and unescape a base64-encoded string.
    * @param content the content to process
    *
-   * @returns the decoded string
+   * @returns the decoded string, appended to the original content if chunked
    * /
    */
-  private _unescapeContent(content: string): string {
-    return decodeURIComponent(escape(atob(content)));
+  private _handleChunk(
+    newContent: string,
+    originalContent: string,
+    chunked?: boolean
+  ): string {
+    const escaped = decodeURIComponent(escape(atob(newContent)));
+    const content = chunked ? originalContent + escaped : escaped;
+    return content;
   }
 
   /**
