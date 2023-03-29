@@ -91,3 +91,45 @@ use and configure kernels.
 [github-discussion-kernels]: https://github.com/jupyterlite/jupyterlite/discussions/968
 [pyodide]: https://pyodide.org
 [xeus-python]: https://github.com/jupyter-xeus/xeus-python
+
+## Working with files
+
+By default the files you create in JupyterLite are stored in the browser's local storage
+(IndexedDB). They are not shared between different JupyterLite website unless they are
+deployed on the same domain, and you use the same browser.
+
+### Uploading files
+
+JupyterLite supports uploading files from your local machine to the browser's local
+storage. This can be achieved by dragging and dropping files from your local machine to
+the file browser, or by using the `Upload` button in the file browser.
+
+This is useful for example when you want to upload a dataset to use in a notebook, like
+a CSV file.
+
+However please note that the browser's local storage has a limited capacity, and you
+might not be able to upload large files. But smaller files up to ~50MB should be fine.
+
+```{note}
+To learn more about the browser's storage limits, check out the [browser storage][browser-storage] reference page on MDN.
+```
+
+[browser-storage]:
+  https://developer.mozilla.org/en-US/docs/Web/API/Storage_API/Storage_quotas_and_eviction_criteria
+
+### Accessing existing files
+
+Some JupyterLite deployments might provide access to some files by default. These files
+are stored as static assets on the server, and are made available to the user via the
+JupyterLite file browser. They can be edited, but the changes are not saved back to the
+server. Instead a local copy is created in the browser's local storage just like when
+creating a new file.
+
+```{note}
+If you would like to revert to the original file, you can delete the local copy.
+This can be achieved by right-clicking on the file in the file browser and selecting `Delete`.
+```
+
+```{note}
+If you are a site deployer, check out the [guide](../howto/content/files.md) to learn how to make files available to users.
+```
