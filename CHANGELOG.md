@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0b22
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b21...dc852003a6923e636cb7f8aa4afd0d76ccb6b5cc))
+
+### Bugs fixed
+
+- Support chunked uploads [#1024](https://github.com/jupyterlite/jupyterlite/pull/1024) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Documentation: Minor improvements to the standalone guide [#1026](https://github.com/jupyterlite/jupyterlite/pull/1026) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-24&to=2023-03-29&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-24..2023-03-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-24..2023-03-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b21
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b20...87b3c08b455c265e4fafaf9c2ded7ca2e1f47566))
@@ -15,8 +35,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-22&to=2023-03-24&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-03-22..2023-03-24&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-22..2023-03-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-22..2023-03-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b20
 

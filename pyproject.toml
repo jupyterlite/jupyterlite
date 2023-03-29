@@ -1,6 +1,6 @@
 [project]
 name = "jupyterlite-root"
-version = "0.1.0b21"
+version = "0.1.0b22"
 
 [tool.isort]
 profile = "black"
@@ -23,7 +23,7 @@ version-cmd = "python scripts/bump-version.py --force"
 ignore = ["W002"]
 
 [tool.tbump.version]
-current = "0.1.0b21"
+current = "0.1.0b22"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
