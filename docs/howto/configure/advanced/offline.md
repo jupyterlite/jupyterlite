@@ -71,6 +71,17 @@ Tweak this list based on the packages you would like to serve statically.
 [lite-demo-config]:
   https://github.com/jupyterlite/jupyterlite/blob/main/examples/jupyter_lite_config.json
 
+## Offline Progressive Web App (PWA)
+
+JupyterLite can be used as a Progressive Web App (PWA) on mobile devices, but also on
+desktop.
+
+When JupyterLite is configured to work offline as detailed in this guide, it means that
+JupyterLite can be used as a PWA without any network connection.
+
+Check out the [Using](../../../quickstart/using.md) guide for more details on how to
+install JupyterLite as an application.
+
 ## Reference
 
 Check out the [CLI Reference](../../../reference/cli.ipynb) for more details.

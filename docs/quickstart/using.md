@@ -137,6 +137,8 @@ This can be achieved by right-clicking on the file in the file browser and selec
 If you are a site deployer, check out the [guide](../howto/content/files.md) to learn how to make files available to users.
 ```
 
+(install-application)=
+
 ## Installing the JupyterLite application
 
 JupyterLite can also be "installed" as an application if it is supported by the browser
