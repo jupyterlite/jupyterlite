@@ -76,8 +76,10 @@ Tweak this list based on the packages you would like to serve statically.
 JupyterLite can be used as a Progressive Web App (PWA) on mobile devices, but also on
 desktop.
 
-When JupyterLite is configured to work offline as detailed in this guide, it means that
-JupyterLite can be used as a PWA without any network connection.
+When JupyterLite is configured to work offline as detailed in this guide, it should be
+possible to use JupyterLite as a PWA without any network connection. There might still
+be a need for using the app while still connected to the Internet first, so the
+underlying Service Worker can cache the assets.
 
 Check out the [Using](../../../quickstart/using.md) guide for more details on how to
 install JupyterLite as an application.
