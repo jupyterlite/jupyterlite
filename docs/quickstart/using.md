@@ -136,3 +136,50 @@ This can be achieved by right-clicking on the file in the file browser and selec
 ```{note}
 If you are a site deployer, check out the [guide](../howto/content/files.md) to learn how to make files available to users.
 ```
+
+(install-application)=
+
+## Installing the JupyterLite application
+
+JupyterLite can also be installed as an application if it is supported by the browser
+and the operating system.
+
+When you visit a JupyterLite website, you can install it as an application by clicking
+on the `Install` button in search bar:
+
+![a screenshot showing how to install the JupyterLite app](https://user-images.githubusercontent.com/591645/228767533-1535da26-7dd3-4223-9b43-62c6e65c4171.png)
+
+```{note}
+If the `Install` button is not visible, make sure to check with another browser.
+```
+
+### Example on Linux with Gnome
+
+Once installed, the JupyterLite application can be launched via the overview on Gnome:
+
+![a screenshot showing how to launch the JupyterLite app](https://user-images.githubusercontent.com/591645/175347542-f9477e79-e029-4ae0-9299-238b74a63f26.png)
+
+The application will then be opened in a new window like a regular desktop application:
+
+![a screenshot showing the JupyterLite application on desktop](https://user-images.githubusercontent.com/591645/228768252-35ca71ba-a8ae-4261-a24b-94ab4d896279.png)
+
+### Example on Android
+
+It is also possible to install the JupyterLite application on mobile devices.
+
+On Android it will look like the following:
+
+```{image} https://user-images.githubusercontent.com/591645/228768748-c053d450-2b88-45c6-84cd-76d838228fbf.png
+:alt: a screenshot showing how to install the JupyterLite app on Android
+:height: 512px
+:align: center
+```
+
+After clicking on the `Install` button, the application will be available on the home
+screen:
+
+```{image} https://user-images.githubusercontent.com/591645/228768956-374ad79e-b5ee-45da-9077-bab4b6b7fce5.png
+:alt: a screenshot showing the JupyterLite application on the home screen
+:height: 512px
+:align: center
+```
