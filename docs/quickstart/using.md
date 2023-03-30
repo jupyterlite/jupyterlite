@@ -35,6 +35,9 @@ of extensions, packages and content:
   [quick-start guide](../quickstart/deploy.md) to learn how to deploy your own.
 - The [Try Jupyter](https://jupyter.org/try) deployment:
   [https://jupyter.org/try-jupyter/lab/](https://jupyter.org/try-jupyter/lab/)
+- The [p5 notebook](https://github.com/jtpio/p5-notebook) is a customized version of
+  JupyterLite focused on simplicity and the use of the [p5.js](https://p5js.org/)
+  library.
 
 A deployment can have one or more applications available.
 
