@@ -9,7 +9,7 @@ import tempfile
 from hashlib import sha256
 from pathlib import Path
 
-import doit
+import doit.tools
 
 
 def which(cmd):
@@ -42,9 +42,34 @@ def task_env():
         all_deps = []
 
         yield dict(
+            name="pyodide:repodata",
+            doc="fetch the pyodide repodata.json",
+            file_dep=[P.APP_SCHEMA],
+            targets=[B.PYODIDE_REPODATA],
+            actions=[U.fetch_pyodide_repodata],
+        )
+
+        for nb in P.ALL_EXAMPLES:
+            if not nb.name.endswith(".ipynb") or nb in B.SKIP_DEPFINDER:
+                continue
+            nb_deps = B.EXAMPLE_DEPS / f"{nb.name}.yml"
+            yield dict(
+                name=f"lite:deps:{nb.name}",
+                doc="find dependencies for pyolite notebooks",
+                file_dep=[nb],
+                targets=[nb_deps],
+                actions=[
+                    (doit.tools.create_folder, [B.EXAMPLE_DEPS]),
+                    (U.get_deps, [nb, nb_deps]),
+                ],
+            )
+
+            all_deps += [nb_deps]
+
+        yield dict(
             name="lite:extensions",
             doc="update jupyter-lite.json from the conda env",
-            file_dep=[P.BINDER_ENV, *all_deps],
+            file_dep=[P.BINDER_ENV, B.PYODIDE_REPODATA, *all_deps],
             targets=[],
             actions=[
                 (
@@ -812,10 +837,6 @@ class C:
     P5_VERSION = "0.1.0"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
-    PYODIDE_KERNEL_WHL_URL = (
-        "https://jupyterlite-pyodide-kernel--39.org.readthedocs.build/en/39/"
-        "jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
-    )
     JS_KERNEL_LABEXT_URL = (
         "../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension"
     )
@@ -856,6 +877,30 @@ class C:
     ]
     NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
     SKIP_ESLINT = json.loads(os.environ.get("SKIP_ESLINT", "0"))
+
+    # pyodide wheel stuff
+    PYODIDE_KERNEL_WHL_URL = (
+        "https://jupyterlite-pyodide-kernel--39.org.readthedocs.build/en/39/"
+        "jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
+    )
+    IGNORED_WHEEL_DEPS = [
+        # our stuff
+        "pyolite",
+        "piplite",
+        # magic JS interop layer
+        "js",
+        "pyodide_js",
+        "pyodide",
+        # broken?
+        "pathspec",
+        "pyodide_kernel",
+    ]
+    IGNORED_WHEELS = ["widgetsnbextension", "ipykernel", "pyodide_kernel"]
+    REQUIRED_WHEEL_DEPS = ["ipykernel", "notebook", "ipywidgets>=8"]
+    PYTHON_HOSTED = "https://files.pythonhosted.org/packages"
+    PYPI = "https://pypi.org"
+    PYPI_API = f"{PYPI}/pypi"
+    PYPI_SRC = f"{PYPI}/packages/source"
 
 
 class P:
@@ -1100,6 +1145,11 @@ class B:
         / "package.json"
     )
 
+    # example wheel sync
+    PYODIDE_REPODATA = BUILD / "pyodide-repodata.json"
+    RAW_WHEELS = BUILD / "wheels"
+    RAW_WHEELS_REQS = RAW_WHEELS / "requirements.txt"
+
 
 class BB:
     """Built from other built files"""
@@ -1195,6 +1245,52 @@ class U:
 
         dep_file.write_text(out, **C.ENC)
 
+    def deps_to_wheels(all_deps):
+        import pkginfo
+        from yaml import safe_load
+
+        required_deps = [*C.REQUIRED_WHEEL_DEPS]
+        ignored_deps = [
+            p
+            for p in json.loads(B.PYODIDE_REPODATA.read_text(**C.ENC))[
+                "packages"
+            ].keys()
+        ]
+        ignored_deps += C.IGNORED_WHEEL_DEPS
+
+        for dep in all_deps:
+            required_deps += safe_load(dep.read_text(**C.ENC)).get("required", [])
+
+        from_chunks = P.BINDER_ENV.read_text(**C.ENC).split(C.FED_EXT_MARKER)
+        # replace unversioned dependencies with versioned ones, if needed
+        for pkg, version in re.findall("-\s*([^\s]*)\s*==\s*([^\s]*)", from_chunks[1]):
+            if pkg in required_deps:
+                required_deps.remove(pkg)
+            required_deps += [f"{pkg}=={version}"]
+
+        B.RAW_WHEELS.mkdir(exist_ok=True, parents=True)
+        B.RAW_WHEELS_REQS.write_text(
+            "\n".join(
+                [
+                    req
+                    for req in sorted(set(required_deps))
+                    if req.split("==")[0] not in ignored_deps
+                ]
+            )
+        )
+        subprocess.check_call(
+            [*C.PYM, "pip", "download", "-r", B.RAW_WHEELS_REQS, "--prefer-binary"],
+            cwd=str(B.RAW_WHEELS),
+        )
+
+        ignored_wheels = [*C.IGNORED_WHEELS, *ignored_deps]
+
+        for wheel in sorted(B.RAW_WHEELS.glob(f"*{C.NOARCH_WHL}")):
+            if any(re.findall(f"{p}-\d", wheel.name) for p in ignored_wheels):
+                continue
+            meta = pkginfo.get_metadata(str(wheel))
+            yield U.pip_url(meta.name, meta.version, wheel.name)
+
     def sync_lite_config(from_env, to_json, marker, extra_urls, all_deps):
         """use conda list to derive tarball names for federated_extensions"""
         try:
@@ -1228,8 +1324,41 @@ class U:
 
         config = json.loads(to_json.read_text(**C.ENC))
         config["LiteBuildConfig"]["federated_extensions"] = sorted(set(tarball_urls))
+        config["PipliteAddon"]["piplite_urls"] = sorted(set(U.deps_to_wheels(all_deps)))
+
+        # fetch piplite wheels
+        U.deps_to_wheels(all_deps)
 
         to_json.write_text(json.dumps(config, **C.JSON))
+
+    def pip_url(name, version, wheel_name):
+        """calculate and verify a "predictable" wheel name, or calculate it the hard way"""
+        python_tag = "py3" if "py2." not in wheel_name else "py2.py3"
+
+        if name == "testpath":
+            python_tag = "py2.py3"
+
+        url = "/".join([C.PYTHON_HOSTED, python_tag, name[0], name, wheel_name])
+
+        print(".", end="", flush=True)
+        r = U.session().head(url)
+
+        if r.status_code < 400:
+            print(".", end="", flush=True)
+            return url
+
+        dists = U.session().get(f"{C.PYPI_API}/{name}/json").json()["releases"][version]
+        print("!", end="", flush=True)
+        for dist in dists:
+            if dist.get("yanked"):
+                continue
+            if dist["filename"] == wheel_name:
+                return dist["url"]
+
+        raise ValueError(
+            f"Couldn't figure out simple or canonical URL for {wheel_name}: try"
+            " deleting `build/requests-cache.sqlite` and running again"
+        )
 
     def typedoc_conf():
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
@@ -1517,6 +1646,13 @@ class U:
             print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
 
         return all_up_to_date
+
+    def fetch_pyodide_repodata():
+        url = "https://cdn.jsdelivr.net/pyodide/v0.23.0/full/repodata.json"
+        print(f"fetching pyodide packages from {url}")
+        packages = U.session().get(url).json()
+        B.PYODIDE_REPODATA.parent.mkdir(exist_ok=True, parents=True)
+        B.PYODIDE_REPODATA.write_text(json.dumps(packages, **C.JSON))
 
     def notebook_lint(ipynb: Path):
         nb_text = ipynb.read_text(**C.ENC)
