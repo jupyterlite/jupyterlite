@@ -881,7 +881,7 @@ class C:
     # pyodide wheel stuff
     PYODIDE_KERNEL_WHL_URL = (
         "https://jupyterlite-pyodide-kernel--39.org.readthedocs.build/en/39/"
-        "jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
+        "_static/jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
     )
     IGNORED_WHEEL_DEPS = [
         # our stuff
