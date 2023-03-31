@@ -80,7 +80,7 @@ def task_env():
                         C.FED_EXT_MARKER,
                         [
                             C.P5_WHL_URL,
-                            C.PYODIDE_KERNEL_WHL_URL,
+                            C.PYK_WHL_URL,
                             C.JS_KERNEL_LABEXT_URL,
                         ],
                         all_deps,
@@ -527,29 +527,12 @@ def task_docs():
     ]
 
     docs_app_targets = [B.DOCS_APP_JS_BUNDLE]
-    ext_cache = P.EXAMPLES / ".cache/federated_extensions"
-    pyodide_whl = ext_cache / C.PYODIDE_KERNEL_WHL_URL.split("/")[-1]
-    app_build_deps += [pyodide_whl]
-
-    def fetch_pyodide_kernel_TODO_REMOVE_ME():
-        subprocess.check_call(["curl", "-O", C.PYODIDE_KERNEL_WHL_URL], cwd=ext_cache)
-
-    yield dict(
-        name="app:build:TODOREMOVEME",
-        doc="shell out to cURL for new RTD 403 errors",
-        uptodate=[doit.tools.config_changed(C.PYODIDE_KERNEL_WHL_URL)],
-        actions=[
-            (doit.tools.create_folder, [ext_cache]),
-            fetch_pyodide_kernel_TODO_REMOVE_ME,
-        ],
-        targets=[pyodide_whl],
-    )
 
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
-        task_dep=[f"dev:py:{C.CORE_NAME}", "docs:app:build:TODOREMOVEME"],
+        task_dep=[f"dev:py:{C.CORE_NAME}"],
         uptodate=[lambda: False],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
@@ -802,6 +785,7 @@ def task_test():
             file_dep=[
                 *setup_py.parent.rglob("*.py"),
                 setup_py.parent / "pyproject.toml",
+                B.APP_PACK,
             ],
             targets=pkg_targets,
             actions=[U.do(*pytest_args, *pkg_args, env=env, cwd=cwd)],
@@ -898,10 +882,11 @@ class C:
     SKIP_ESLINT = json.loads(os.environ.get("SKIP_ESLINT", "0"))
 
     # pyodide wheel stuff
-    PYODIDE_KERNEL_WHL_URL = (
-        "https://jupyterlite-pyodide-kernel--39.org.readthedocs.build/en/39/"
-        "_static/jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
-    )
+    PYK_GH_REPO = f"{LITE_GH_ORG}/pyodide-kernel"
+    PYK_MOD = "jupyterlite_pyodide_kernel"
+    PYK_VERSION = "0.0.6"
+    PYK_RELEASE = f"{PYK_GH_REPO}/releases/download/v{PYK_VERSION}"
+    PYK_WHL_URL = f"{PYK_RELEASE}/{PYK_MOD}-{PYK_VERSION}-{NOARCH_WHL}"
     IGNORED_WHEEL_DEPS = [
         # our stuff
         "pyolite",
