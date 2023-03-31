@@ -66,6 +66,7 @@ dependencies:
   - yarn <2
   # cli
   - wheel
+  - curl
   # docs
   - docutils >=0.18
   - myst-nb

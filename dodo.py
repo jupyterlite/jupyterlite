@@ -376,7 +376,7 @@ def task_build():
             py_pkg
             / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         )
-        sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
+        sdist = py_pkg / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}.tar.gz"""
 
         pyproj_toml = py_pkg / "pyproject.toml"
 
@@ -466,6 +466,7 @@ def task_dev():
         yield dict(
             name="py:jupyterlite-core",
             actions=[U.do(*core_args, cwd=P.ROOT)],
+            file_dep=["./py/jupyterlite-core/pyproject.toml"],
         )
 
         metapackage_args = [
@@ -479,6 +480,7 @@ def task_dev():
         yield dict(
             name="py:jupyterlite",
             actions=[U.do(*metapackage_args, cwd=P.ROOT)],
+            file_dep=["./py/jupyterlite/pyproject.toml"],
         )
 
 
@@ -525,12 +527,29 @@ def task_docs():
     ]
 
     docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
+    ext_cache = P.EXAMPLES / ".cache/federated_extensions"
+    pyodide_whl = ext_cache / C.PYODIDE_KERNEL_WHL_URL.split("/")[-1]
+    app_build_deps += [pyodide_whl]
+
+    def fetch_pyodide_kernel_TODO_REMOVE_ME():
+        subprocess.check_call(["curl", "-O", C.PYODIDE_KERNEL_WHL_URL], cwd=ext_cache)
+
+    yield dict(
+        name="app:build:TODOREMOVEME",
+        doc="shell out to cURL for new RTD 403 errors",
+        uptodate=[doit.tools.config_changed(C.PYODIDE_KERNEL_WHL_URL)],
+        actions=[
+            (doit.tools.create_folder, [ext_cache]),
+            fetch_pyodide_kernel_TODO_REMOVE_ME,
+        ],
+        targets=[pyodide_whl],
+    )
 
     yield U.ok(
         B.OK_DOCS_APP,
         name="app:build",
         doc="use the jupyterlite CLI to (pre-)build the docs app",
-        task_dep=[f"dev:py:{C.CORE_NAME}"],
+        task_dep=[f"dev:py:{C.CORE_NAME}", "docs:app:build:TODOREMOVEME"],
         uptodate=[lambda: False],
         actions=[(U.docs_app, [])],
         file_dep=app_build_deps,
