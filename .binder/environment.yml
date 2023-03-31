@@ -40,8 +40,8 @@ dependencies:
   - ipycanvas
   - ipyleaflet
   - ipympl
-  - ipyvue
-  - ipyvuetify
+  - ipyvue ==1.8.0
+  - ipyvuetify ==1.8.4
   ### FEDERATED EXTENSIONS ###
 
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
