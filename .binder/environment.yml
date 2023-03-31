@@ -31,8 +31,6 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - jupyterlab-github
   - jupyterlab-kernelspy
-  - jupyterlab-markup
-  - jupyterlab-myst
   - jupyterlab-tour >=3.1.0
   - jupyterlab-webrtc-docprovider >=0.1.1
   - theme-darcula >=3,<4
