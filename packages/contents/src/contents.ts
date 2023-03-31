@@ -425,7 +425,7 @@ export class Contents implements IContents {
     };
 
     if (options.content && options.format === 'base64') {
-      const lastChunk = chunk === -1;
+      const lastChunk = chunk ? chunk === -1 : true;
 
       if (ext === '.ipynb') {
         const content = this._handleChunk(options.content, originalContent, chunked);
