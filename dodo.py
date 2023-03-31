@@ -526,7 +526,7 @@ def task_docs():
         *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
     ]
 
-    docs_app_targets = [B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE]
+    docs_app_targets = [B.DOCS_APP_JS_BUNDLE]
     ext_cache = P.EXAMPLES / ".cache/federated_extensions"
     pyodide_whl = ext_cache / C.PYODIDE_KERNEL_WHL_URL.split("/")[-1]
     app_build_deps += [pyodide_whl]
@@ -629,7 +629,7 @@ def task_serve():
         doc="serve the as-built example site with `jupyter lite serve`",
         uptodate=[lambda: False],
         actions=[(U.docs_app, ["serve"])],
-        file_dep=[B.DOCS_APP_WHEEL_INDEX, B.DOCS_APP_JS_BUNDLE],
+        file_dep=[B.DOCS_APP_JS_BUNDLE],
         task_dep=["dev"],
     )
 
@@ -1119,7 +1119,6 @@ class B:
     DOCS_APP = BUILD / "docs-app"
     DOCS_APP_SHA256SUMS = DOCS_APP / "SHA256SUMS"
     DOCS_APP_ARCHIVE = DOCS_APP / f"""jupyterlite-docs-{D.APP_VERSION}.tgz"""
-    DOCS_APP_WHEEL_INDEX = DOCS_APP / "pypi/all.json"
     DOCS_APP_JS_BUNDLE = DOCS_APP / "build/lab/bundle.js"
 
     DOCS = Path(os.environ.get("JLITE_DOCS_OUT", P.DOCS / "_build"))
