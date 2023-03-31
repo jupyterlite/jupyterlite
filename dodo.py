@@ -53,7 +53,11 @@ def task_env():
                         P.BINDER_ENV,
                         P.EXAMPLE_LITE_BUILD_CONFIG,
                         C.FED_EXT_MARKER,
-                        [C.P5_WHL_URL],
+                        [
+                            C.P5_WHL_URL,
+                            C.PYODIDE_KERNEL_WHL_URL,
+                            C.JS_KERNEL_LABEXT_URL,
+                        ],
                         all_deps,
                     ],
                 ),
@@ -808,6 +812,14 @@ class C:
     P5_VERSION = "0.1.0"
     P5_RELEASE = f"{P5_GH_REPO}/releases/download/v{P5_VERSION}"
     P5_WHL_URL = f"{P5_RELEASE}/{P5_MOD}-{P5_VERSION}-{NOARCH_WHL}"
+    PYODIDE_KERNEL_WHL_URL = (
+        "https://jupyterlite-pyodide-kernel--39.org.readthedocs.build/en/39/"
+        "jupyterlite_pyodide_kernel-0.0.5-py3-none-any.whl"
+    )
+    JS_KERNEL_LABEXT_URL = (
+        "../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension"
+    )
+
     JUPYTERLITE_JSON = "jupyter-lite.json"
     JUPYTERLITE_IPYNB = "jupyter-lite.ipynb"
     IPYNB_METADATA = "jupyter-lite"
