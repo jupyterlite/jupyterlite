@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b22...4a269caca2dcdb137a927981cc1c05cd1813c8d3))
+
+### Bugs fixed
+
+- Fix chunk handling when uploading notebooks [#1034](https://github.com/jupyterlite/jupyterlite/pull/1034) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.0.6` on RTD [#1035](https://github.com/jupyterlite/jupyterlite/pull/1035) ([@jtpio](https://github.com/jtpio))
+- Add docs about installing the JupyterLite application on desktop and mobile [#1030](https://github.com/jupyterlite/jupyterlite/pull/1030) ([@jtpio](https://github.com/jtpio))
+- Add a small mention of the p5 notebook in the documentation [#1029](https://github.com/jupyterlite/jupyterlite/pull/1029) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-29&to=2023-04-01&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-29..2023-04-01&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-29..2023-04-01&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0b22
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b21...dc852003a6923e636cb7f8aa4afd0d76ccb6b5cc))
@@ -19,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-24&to=2023-03-29&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-24..2023-03-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-24..2023-03-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b21
 
