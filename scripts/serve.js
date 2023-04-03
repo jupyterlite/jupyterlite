@@ -169,7 +169,7 @@ const MIME_TYPES = {
   '.ipynb': 'application/json',
   '.jupyterlab-workspace': 'application/json',
 
-  // pyolite
+  // Wasm kernels
   '.data': 'application/wasm',
 };
 

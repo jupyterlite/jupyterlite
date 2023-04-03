@@ -1,0 +1,74 @@
+{
+  "name": "@jupyterlite/javascript-kernel-extension",
+  "version": "0.1.0-rc.0",
+  "description": "JupyterLite - JavaScript Kernel Extension",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js"
+  ],
+  "scripts": {
+    "build": "yarn build:lib && yarn build:labextension:dev",
+    "build:prod": "yarn clean && yarn build:lib && yarn build:labextension",
+    "build:labextension": "jupyter labextension build .",
+    "build:labextension:dev": "jupyter labextension build --development True .",
+    "build:lib": "tsc -b",
+    "clean": "yarn clean:lib",
+    "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
+    "clean:labextension": "rimraf jupyterlite_javascript_kernel/labextension",
+    "clean:dist": "rimraf dist",
+    "clean:all": "yarn clean:lib && yarn run clean:dist && yarn clean:labextension",
+    "eslint": "yarn eslint:check --fix",
+    "eslint:check": "eslint . --cache --ext .ts,.tsx",
+    "install:extension": "yarn build",
+    "lint": "yarn prettier && yarn eslint",
+    "lint:check": "yarn prettier:check && yarn eslint:check",
+    "prettier": "yarn prettier:base --write --list-different",
+    "prettier:base": "prettier \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}\"",
+    "prettier:check": "yarn prettier:base --check",
+    "watch": "run-p watch:src watch:labextension",
+    "watch:src": "tsc -w",
+    "watch:labextension": "jupyter labextension watch ."
+  },
+  "dependencies": {
+    "@jupyterlab/coreutils": "~5.5.3",
+    "@jupyterlite/javascript-kernel": "^0.1.0-rc.0",
+    "@jupyterlite/kernel": "^0.1.0-rc.0",
+    "@jupyterlite/server": "^0.1.0-rc.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.12.1",
+    "@jupyterlab/builder": "^3.1.0",
+    "@types/jest": "^26.0.10",
+    "jest": "^26.4.2",
+    "rimraf": "~3.0.0",
+    "ts-jest": "^26.3.0",
+    "typescript": "~4.9.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "outputDir": "jupyterlite_javascript_kernel/labextension"
+  },
+  "jupyterlite": {
+    "liteExtension": true
+  }
+}

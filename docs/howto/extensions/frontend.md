@@ -51,9 +51,10 @@ JupyterLab.
 By default JupyterLite is able to find JupyterLab extensions installed in the same
 environment under `PREFIX/share/labextensions`.
 
-The `jupyterlite` CLI does this automatically by default. In your local environment:
+The `jupyterlite-core` CLI does this automatically by default. In your local
+environment:
 
-1. Install the `jupyterlite` CLI with: `pip install jupyterlite`
+1. Install the `jupyter lite` CLI with: `pip install jupyterlite-core`
 2. Build the website: `jupyter lite build`. In the build logs you should see something
    like the following that indicates the extension was correctly found and copied:
 
@@ -79,6 +80,11 @@ If you iterate and make new changes to the extension:
 
 [apod-tutorial]:
   https://user-images.githubusercontent.com/591645/171583522-f5677259-b91a-4ab0-8812-9770807a088e.gif
+
+```{note}
+By default the `jupyterlite-core` package does not include any kernels.
+If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies. There is also a JavaScript kernel available via the `jupyterlite-javascript-kernel` package.
+```
 
 ## Publishing the extension
 

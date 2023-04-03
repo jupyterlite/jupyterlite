@@ -3,7 +3,7 @@
 It is possible to create a fully self-contained JupyterLite archive with no request to
 external services.
 
-## Configure Pyolite
+## Configure the Pyodide kernel
 
 By default the Pyodide files are fetched from a CDN.
 
@@ -14,11 +14,11 @@ Use the `--pyodide` flag to specify the Pyodide distribution you would like to u
 example:
 
 ```bash
-jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.22.0/pyodide-0.22.0.tar.bz2
+jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.22.1/pyodide-0.22.1.tar.bz2
 ```
 
 ```{warning}
-Generally, a version of `pyolite` is likely only compatible with variants of the
+Generally, a version of `pyodide_kernel` is likely only compatible with variants of the
 _same_ `x.y.z` version against which the release was tested, as both python
 and JS APIs are still changing frequently on both sides of the dependency.
 ```
@@ -28,7 +28,8 @@ and JS APIs are still changing frequently on both sides of the dependency.
 By default Mathjax is fetched from a CDN.
 
 To retrieve the static asssets at built time and serve them alongside the main website
-assets, make sure to install `jupyterlite` with `pip install jupyterlite[mathjax]`.
+assets, make sure to install `jupyterlite-core` with
+`pip install jupyterlite-core[mathjax]`.
 
 ## Configure the piplite wheels
 
@@ -38,7 +39,7 @@ from the public [PyPI].
 Instead you can configure a list of packages that will be downloaded at _build_ time so
 they can be hosted alongside your JupyterLite website.
 
-See [](../../python/wheels.md) for more information.
+See [](../../pyodide/wheels.md) for more information.
 
 Concretely that means populating a list of URLs for downloading wheels. A good example
 for this is the configuration used for the JupyterLite demo website:
@@ -69,6 +70,19 @@ Tweak this list based on the packages you would like to serve statically.
 [pypi]: https://pypi.org
 [lite-demo-config]:
   https://github.com/jupyterlite/jupyterlite/blob/main/examples/jupyter_lite_config.json
+
+## Offline Progressive Web App (PWA)
+
+JupyterLite can be used as a Progressive Web App (PWA) on mobile devices, but also on
+desktop.
+
+When JupyterLite is configured to work offline as detailed in this guide, it should be
+possible to use JupyterLite as a PWA without any network connection. There might still
+be a need for using the app while still connected to the Internet first, so the
+underlying Service Worker can cache the assets.
+
+Check out the [Using](../../../quickstart/using.md) guide for more details on how to
+install JupyterLite as an application.
 
 ## Reference
 

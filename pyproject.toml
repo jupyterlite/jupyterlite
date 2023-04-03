@@ -1,11 +1,11 @@
 [project]
 name = "jupyterlite-root"
-version = "0.1.0b17"
+version = "0.1.0rc0"
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-known_first_party = [ "jupyterlite",]
+known_first_party = [ "jupyterlite_core", "jupyterlite",]
 
 [tool.jupyter-releaser]
 skip = [ "build-python", "check-links", "check-manifest",]
@@ -19,8 +19,11 @@ after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
 
+[tool.check-wheel-contents]
+ignore = ["W002"]
+
 [tool.tbump.version]
-current = "0.1.0b17"
+current = "0.1.0rc0"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
@@ -37,13 +40,13 @@ src = "package.json"
 src = "pyproject.toml"
 
 [[tool.tbump.file]]
-src = "py/jupyterlite/src/jupyterlite/__init__.py"
+src = "py/jupyterlite/jupyterlite/__init__.py"
 
 [[tool.tbump.file]]
-src = "packages/pyolite-kernel/py/piplite/piplite/__init__.py"
+src = "py/jupyterlite-core/jupyterlite_core/__init__.py"
 
 [[tool.tbump.file]]
-src = "packages/pyolite-kernel/py/pyolite/pyolite/__init__.py"
+src = "py/jupyterlite-javascript-kernel/pyproject.toml"
 
 [[tool.tbump.field]]
 name = "channel"

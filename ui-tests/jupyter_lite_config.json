@@ -2,13 +2,15 @@
   "LiteBuildConfig": {
     "contents": ["../examples"],
     "federated_extensions": [
+      "../py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension",
       "https://conda.anaconda.org/conda-forge/noarch/bqplot-0.12.30-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/ipycanvas-0.9.0-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab-geojson-3.1.2-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_widgets-1.0.2-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/plotly-5.1.0-pyhd8ed1ab_1.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
-      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0a12/jupyterlite_p5_kernel-0.1.0a12-py3-none-any.whl"
+      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0/jupyterlite_p5_kernel-0.1.0-py3-none-any.whl",
+      "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.4/jupyterlite_pyodide_kernel-0.0.4-py3-none-any.whl"
     ],
     "output_dir": "ui-tests-app",
     "ignore_sys_prefix": ["federated_extensions"]

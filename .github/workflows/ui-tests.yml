@@ -17,7 +17,7 @@ jobs:
       - name: Install JupyterLite
         run: |
           python3 -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core jupyterlab~=3.2
-          python3 -m pip install --find-links dist --no-index jupyterlite
+          python3 -m pip install --find-links dist --no-index jupyterlite_core
 
       - name: Build JupyterLite
         run: |
@@ -88,7 +88,7 @@ jobs:
         run: |
           cd ui-tests
           # remove previous snapshots from other browser
-          yarn rimraf "test/**/*-snapshots/*.png"
+          yarn run clean:snapshots
           # generate new snapshots
           yarn run test:update --browser ${{ matrix.browser }}
 

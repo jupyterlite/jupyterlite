@@ -46,6 +46,10 @@ refresh on your Github Pages site in your web browser to see the new version of 
 website.
 ```
 
+```{note}
+Alternatively, you can use the [JupyterLite demo using xeus-python](https://github.com/jupyterlite/xeus-python-demo) to publish a deployment on Github pages that uses xeus-python by default and allows to pre-install packages using ``emscripten-forge`` and ``conda-forge``.
+```
+
 ## Accessing the JupyterLite website
 
 After the build has completed, the site will be available on GitHub Pages. Go to
@@ -62,7 +66,7 @@ See this [blog post](https://github.blog/2009-12-29-bypassing-jekyll-on-github-p
 
 ## Deploy a new version of JupyterLite
 
-To change the version of the prebuilt JupyterLite assets, update the `jupyterlite`
+To change the version of the prebuilt JupyterLite assets, update the `jupyterlite-core`
 package version in the `requirements.txt` file.
 
 Commit and push the changes. The site will be deployed on the next push to the `main`
@@ -70,11 +74,34 @@ branch.
 
 ## Add additional requirements to the deployment
 
+````{note}
+The [jupyterlite/demo](https://github.com/jupyterlite/demo) repository uses a `requirements.txt` file to specify the dependencies. For demo purposes this file may contain extra kernels and extensions you might want to remove from your deployment. If that's the case you can stick to a more minimal `requirements.txt` file such as:
+
+```bash
+# core package for building the JupyterLite website
+jupyterlite-core==0.1.0b19
+# the Python kernel powered by Pyodide
+jupyterlite-pyodide-kernel==0.0.5
+# dependency for indexing the content
+jupyterlab~=3.5.3
+```
+````
+
 ### Extensions
 
 The `requirements.txt` file can be used to add extra prebuilt (also called _federated_)
 JupyterLab extensions to the deployed JupyterLite website. Follow the
 [extension guide](../howto/configure/simple_extensions.md) to learn more.
+
+### Using the xeus-python kernel and emscripten-forge
+
+Using
+[a JupyterLite deployment with xeus-python](https://github.com/jupyterlite/xeus-python-demo),
+you can pre-install packages available both on `conda-forge` and `emscripten-forge` by
+specifying them to the `environment.yml` file.
+
+By pre-installing packages, they are readily usable in the kernel and can be imported
+without the need for `piplite`.
 
 ### Contents
 

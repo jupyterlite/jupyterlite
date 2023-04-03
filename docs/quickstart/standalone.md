@@ -3,7 +3,7 @@
 Deploying a JupyterLite site requires:
 
 - a copy of the JupyterLite site assets
-  - often provided by the `pip`-installable python package `jupyterlite`
+  - often provided by the `pip`-installable python package `jupyterlite-core`
 - an option set of configurations for the site and different apps
   - different options offer trade-offs between reproducibility, build speed, deployment
     size, and end-user performance, privacy, and security
@@ -22,11 +22,11 @@ To get the [Python CLI](../reference/cli.ipynb) and [API](../reference/api/index
 from [PyPI]:
 
 ```bash
-python -m pip install --pre jupyterlite
+python -m pip install --pre jupyterlite-core
 ```
 
 ```{note}
-`jupyterlite` will soon be available on [conda forge]
+`jupyterlite-core` will soon be available on [conda forge]
 ```
 
 To build an empty site (just the JupyterLite static assets):
@@ -41,6 +41,29 @@ specific a different with `--output-dir` parameter. For instance:
 ```bash
 jupyter lite build --output-dir dist
 ```
+
+````{note}
+By default the `jupyterlite-core` package does not provide any kernels. If you would like to install one in your environment you would need to install it in your build environment. For example to install the Pyodide kernel for JupyterLite:
+
+```bash
+python -m pip install jupyterlite-pyodide-kernel
+```
+
+Then make sure to rerun the `jupyter lite build` command.
+````
+
+## Customizing the site
+
+By default the JupyterLite site will be empty, but you can customize it by adding your
+own content and configuration.
+
+The documentation includes several how-to guides for customizing the site:
+
+- [Adding kernels](../howto/configure/kernels.md)
+- [Adding extensions](../howto/configure/simple_extensions.md)
+- [Adding content](../howto/content/files.md)
+
+Check out the list of [how-to guides](../howto/index.md) for more information.
 
 ## Standalone Servers
 

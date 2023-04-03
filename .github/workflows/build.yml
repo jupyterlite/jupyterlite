@@ -36,11 +36,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Setup pip (base)
-        run: python3 -m pip install --user -U pip setuptools wheel
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
         uses: actions/cache@v3
         with:
@@ -52,29 +48,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Cache (node_modules)
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache (.yarn-packages)
-        uses: actions/cache@v3
-        id: cache-yarn-packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        with:
-          path: .yarn-packages
-          key: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-
       - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: doit setup:js
       - name: Test (js)
         run: doit -n4 test:js
@@ -100,7 +74,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: ['3.7', '3.10', 'pypy-3.7']
+        python-version: ['3.8', '3.11', 'pypy-3.8']
         include:
           # OS-specifics for running pip
           - os: ubuntu
@@ -113,17 +87,17 @@ jobs:
             pip-cache: ~\AppData\Local\pip\Cache
             python-command: python
           # python-specifics for tests
-          - python-version: '3.7'
+          - python-version: '3.8'
             pytest-args: '[]'
-          - python-version: '3.10'
+          - python-version: '3.11'
             pytest-args: '[]'
-          - python-version: 'pypy-3.7'
+          - python-version: 'pypy-3.8'
             # TODO: some instability with libarchive, might be better with pypy-3.8
             # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
         exclude:
           - os: windows
-            python-version: pypy-3.7
+            python-version: pypy-3.8
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -150,7 +124,7 @@ jobs:
       - name: Install (py)
         run: |
           ${{ matrix.python-command }} -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core
-          ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite
+          ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite_core
           ${{ matrix.python-command }} -m pip check
       - name: Prepare smoke test folder
         shell: bash
@@ -191,7 +165,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1
-      FORCE_PYODIDE: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -205,35 +178,7 @@ jobs:
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Install node
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16.x'
-      - name: Cache (node_modules)
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Cache (.yarn-packages)
-        uses: actions/cache@v3
-        id: cache-yarn-packages
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        with:
-          path: .yarn-packages
-          key: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ env.CACHE_EPOCH }}-yarn-packages-
-      - name: Install
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: doit setup:js
-      - name: Setup pip (base)
-        run: python3 -m pip install --user -U pip setuptools wheel
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
         uses: actions/cache@v3
         with:
@@ -254,7 +199,11 @@ jobs:
       - name: Setup pip (docs)
         run: python3 -m pip install -r requirements-docs.txt
       - name: Install (py)
-        run: doit dev:py:jupyterlite
+        run: doit dev:py:jupyterlite-core
+      - name: Build the JavaScript kernel
+        run: |
+          yarn --frozen-lockfile
+          yarn run build:js-kernel
       - name: Docs (app)
         run: doit docs:app:build
       - name: Docs (app archive)
@@ -270,7 +219,7 @@ jobs:
       - name: Check Built Artifacts
         run: doit check
       - name: Test (py)
-        run: doit test:py:jupyterlite
+        run: doit test:py:jupyterlite-core
       - name: Upload (reports)
         if: always()
         uses: actions/upload-artifact@v3

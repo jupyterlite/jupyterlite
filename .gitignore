@@ -143,12 +143,14 @@ app/retro/tree/index.html
 docs/.jupyter_cache
 docs/reference/api/ts
 docs/jupyter_execute
+py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension
 .vercel
 *.bz2
 *.isorted
 *.tar.gz
 *.tgz
 *.whl
+_output
 
 ui-tests/playwright-report
 ui-tests/test-results

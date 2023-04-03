@@ -6,7 +6,10 @@
   "license": "BSD-3-Clause",
   "description": "JupyterLite UI Tests",
   "scripts": {
-    "build": "jupyter lite build",
+    "build": "yarn run build:js-kernel && yarn run build:lite",
+    "build:js-kernel": "cd ../ && yarn && yarn run build:js-kernel",
+    "build:lite": "jupyter lite build",
+    "clean:snapshots": "rimraf test/**/*-snapshots/*.png",
     "deduplicate": "yarn-deduplicate -s fewer --fail",
     "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1 8000",
     "start:embed": "python -m http.server -b 127.0.0.1 8001",
@@ -17,10 +20,13 @@
     "test:update": "playwright test --update-snapshots"
   },
   "dependencies": {
-    "@jupyterlab/galata": "~4.4.2",
+    "@jupyterlab/galata": "~4.4.3",
     "yarn-deduplicate": "^3.1.0"
   },
+  "devDependencies": {
+    "rimraf": "^3"
+  },
   "resolutions": {
-    "@playwright/test": "~1.29.0"
+    "@playwright/test": "~1.31.0"
   }
 }

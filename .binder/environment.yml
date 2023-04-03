@@ -11,11 +11,9 @@ dependencies:
   - isort
   - nbstripout
   - pyflakes
-  - twine
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - jupyterlab >=3.5.2,<4
   - retrolab >=0.3.21,<0.4
   # extra docs tools
   - sphinx-autobuild
@@ -52,17 +50,19 @@ dependencies:
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
-  - nodejs >=16,<17
+  - nodejs >=18,<19
   - python >=3.10,<3.11
   # build
   - doit >=0.34,<1
-  - flit >=3.7.1,<4
-  - jupyter-server-mathjax >=0.2.3
+  - hatch >=1.6.3,<2
   - jsonschema >=3
+  - jupyter-server-mathjax >=0.2.3
+  - jupyterlab >=3.5.3,<3.6
   - pip
   - pkginfo
   - python-libarchive-c
   - requests_cache
+  - twine
   - wheel
   - yarn <2
   # cli

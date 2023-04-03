@@ -173,11 +173,6 @@
           "type": "object",
           "additionalProperties": {
             "type": "object"
-          },
-          "properties": {
-            "@jupyterlite/pyolite-kernel-extension:kernel": {
-              "$ref": "#/definitions/pyolite-settings"
-            }
           }
         },
         "retroPage": {
@@ -203,32 +198,6 @@
           "description": "Whether to enable collaborative editing over WebRTC. Should be paired with the ``?room=<room name>`` URL parameter",
           "type": "boolean",
           "default": false
-        }
-      }
-    },
-    "pyolite-settings": {
-      "description": "Pyodide-specific configuration values. Will be defined in another location in the future.",
-      "type": "object",
-      "properties": {
-        "pyodideUrl": {
-          "description": "The path to the main pyodide.js entry point",
-          "type": "string",
-          "default": "https://cdn.jsdelivr.net/pyodide/v0.22.0/full/pyodide.js",
-          "format": "uri"
-        },
-        "disablePyPIFallback": {
-          "description": "Disable the piplite behavior of falling back to https://pypi.org/pypi/",
-          "default": false,
-          "type": "boolean"
-        },
-        "pipliteUrls": {
-          "description": "Paths to PyPI-compatible API endpoints for wheels. If ending in ``all.json``, assumed to be an aggregate, keyed by package name, with relative paths",
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [],
-          "format": "uri"
         }
       }
     },

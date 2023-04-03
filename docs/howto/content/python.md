@@ -1,7 +1,7 @@
 # Accessing files and notebooks from a kernel
 
 Starting with JupyterLite `0.1.0b9`, the contents of the user's _File Browser_ and some
-kernels, including Pyolite, are automatically synchronized.
+kernels, including the Pyodide kernel, are automatically synchronized.
 
 You can, for example, drag and drop a file `file.csv` into the JupyterLite UI, then load
 it in Python:
@@ -35,8 +35,6 @@ os.getcwd()  # If successful:  "/drive/path/to/notebook"
              # ... otherwise:  "/home/pyodide"
 ```
 
-[emscripten-notebook]:
-  https://github.com/jupyterlite/jupyterlite/blob/main/examples/pyolite/emscripten-filesystem.ipynb
 [fs]: https://emscripten.org/docs/api_reference/Filesystem-API.html
 [caniuse-sw]: https://caniuse.com/serviceworkers
 

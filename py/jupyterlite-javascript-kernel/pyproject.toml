@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.6.3,<2", "jupyterlab>=3.5.3,<3.6.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "jupyterlite-javascript-kernel"
+readme = "README.md"
+version = "0.1.0rc0"
+description = "JavaScript kernel for JupyterLite running in a Web Worker"
+authors = [
+    { name = "JupyterLite Contributors" },
+]
+keywords = [
+    "jupyterlite",
+    "jupyter",
+    "jupyterlab",
+    "notebook",
+    "browser",
+    "javascript",
+]
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Framework :: Jupyter",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+Source = "https://github.com/jupyterlite/jupyterlite"
+PyPI = "https://pypi.org/project/jupyterlite-javascript-kernel"
+
+[tool.hatch.build.targets.sdist]
+artifacts = ["jupyterlite_javascript_kernel/labextension"]
+include = [
+    "/jupyterlite_javascript_kernel",
+    "/src",
+    "/*.md",
+    "/*.json",
+    "/*.toml",
+]
+
+[tool.hatch.build.targets.wheel]
+include = [
+    "/jupyterlite_javascript_kernel"
+]
+
+[tool.hatch.build.targets.wheel.shared-data]
+"jupyterlite_javascript_kernel/labextension" = "share/jupyter/labextensions/@jupyterlite/javascript-kernel-extension"
+
+[tool.check-wheel-contents]
+ignore = ["W002"]

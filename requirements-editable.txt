@@ -1,0 +1,3 @@
+-e ./py/jupyterlite-core[all,test]
+-e ./py/jupyterlite-javascript-kernel
+-e ./py/jupyterlite

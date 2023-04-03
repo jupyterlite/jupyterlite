@@ -25,9 +25,6 @@
       "path": "./packages/javascript-kernel"
     },
     {
-      "path": "./packages/javascript-kernel-extension"
-    },
-    {
       "path": "./packages/kernel"
     },
     {
@@ -35,12 +32,6 @@
     },
     {
       "path": "./packages/localforage"
-    },
-    {
-      "path": "./packages/pyolite-kernel"
-    },
-    {
-      "path": "./packages/pyolite-kernel-extension"
     },
     {
       "path": "./packages/repl-extension"

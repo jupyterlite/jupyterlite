@@ -29,6 +29,3 @@ app/extensions/
 bootstrap.js
 index.template.js
 config-utils.js
-
-# generated
-**/_pypi.ts
