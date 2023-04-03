@@ -21,6 +21,7 @@
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab-webrtc-docprovider-0.1.1-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_miami_nights-0.3.2-pyhd8ed1ab_0.tar.bz2",
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_widgets-3.0.5-pyhd8ed1ab_0.conda",
+      "https://conda.anaconda.org/conda-forge/noarch/plotly-5.14.0-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/theme-darcula-3.1.1-pyh3684270_0.tar.bz2",
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0/jupyterlite_p5_kernel-0.1.0-py3-none-any.whl",
       "https://github.com/jupyterlite/pyodide-kernel/releases/download/v0.0.6/jupyterlite_pyodide_kernel-0.0.6-py3-none-any.whl"
@@ -46,6 +47,7 @@
       "https://files.pythonhosted.org/packages/py2.py3/p/pandocfilters/pandocfilters-1.5.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/pexpect/pexpect-4.8.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/pickleshare/pickleshare-0.7.5-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py2.py3/p/plotly/plotly-5.14.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/ptyprocess/ptyprocess-0.7.0-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/p/python-dateutil/python_dateutil-2.8.2-py2.py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py2.py3/r/rfc3339-validator/rfc3339_validator-0.1.4-py2.py3-none-any.whl",
@@ -91,6 +93,7 @@
       "https://files.pythonhosted.org/packages/py3/r/requests/requests-2.28.2-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/s/sniffio/sniffio-1.3.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/s/stack-data/stack_data-0.6.2-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/py3/t/tenacity/tenacity-8.1.0-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/t/terminado/terminado-0.17.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/t/tinycss2/tinycss2-1.2.1-py3-none-any.whl",
       "https://files.pythonhosted.org/packages/py3/t/traitlets/traitlets-5.9.0-py3-none-any.whl",
