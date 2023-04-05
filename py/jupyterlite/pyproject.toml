@@ -21,6 +21,7 @@ keywords = [
     "pyodide",
     "schema",
 ]
+license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.8"
 dynamic = ["version", "description"]
