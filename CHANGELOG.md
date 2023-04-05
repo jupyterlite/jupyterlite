@@ -2,6 +2,30 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.0
+
+JupyterLite 0.1.0 is released :tada:
+
+If you are new to JupyterLite and would like to learn how to use it or deploy your own site, check out the [Get Started Guides](https://jupyterlite.readthedocs.io/en/latest/quickstart/index.html).
+
+If you were using the `jupyterlite` pre-release before, make sure to check the [Migration Guide](https://jupyterlite.readthedocs.io/en/latest/migration.html) for any potential breaking change that may affect your setup.
+
+Below are the changes since the last release candidate. Please have a look at the [Changelog](https://jupyterlite.readthedocs.io/en/latest/changelog.html) to learn more about the changes in previous pre-releases.
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0rc0...e932fa08941e4a88fa78d39a6e449d20747908a1))
+
+### Documentation improvements
+
+- Add back `plotly` to the examples [#950](https://github.com/jupyterlite/jupyterlite/pull/950) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-04-01&to=2023-04-05&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-04-01..2023-04-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-04-01..2023-04-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.0b22...4a269caca2dcdb137a927981cc1c05cd1813c8d3))
@@ -21,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-03-29&to=2023-04-01&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-03-29..2023-04-01&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-03-29..2023-04-01&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0b22
 
