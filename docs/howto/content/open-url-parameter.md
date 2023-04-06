@@ -11,13 +11,13 @@ in your JupyterLite site.
 By default in JupyterLite it is not possible to open a file from an external URL.
 
 However you can install the
-[jupyterlite-open-url-parameter](https://github.com/jupyterlab-contrib/jupyterlab-open-url-parameter)
+[jupyterlab-open-url-parameter](https://github.com/jupyterlab-contrib/jupyterlab-open-url-parameter)
 extension to enable this feature.
 
 In your build environment, install the extension:
 
 ```shell
-pip install jupyterlite-open-url-parameter
+pip install jupyterlab-open-url-parameter
 ```
 
 Then build your JupyterLite site as usual:
