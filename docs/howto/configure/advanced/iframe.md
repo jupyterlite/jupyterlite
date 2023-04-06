@@ -22,7 +22,7 @@ Follow the
 to create an environment:
 
 ```bash
-conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs
+conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs jupyterlite-core
 conda activate jupyterlab-iframe-ext
 ```
 
@@ -148,12 +148,6 @@ loaded in the environment:
 
 ```bash
 jupyter labextension list
-```
-
-Now, create the JupyterLite extension. Install the JupyterLite CLI:
-
-```bash
-pip install jupyterlite-core
 ```
 
 Move to a directory where the extension should be tested and run the build of this

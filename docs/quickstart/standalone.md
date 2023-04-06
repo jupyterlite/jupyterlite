@@ -22,11 +22,19 @@ To get the [Python CLI](../reference/cli.ipynb) and [API](../reference/api/index
 from [PyPI]:
 
 ```bash
-python -m pip install --pre jupyterlite-core
+python -m pip install jupyterlite-core
 ```
 
-```{note}
-`jupyterlite-core` will soon be available on [conda forge]
+You can also install the CLI from [conda forge] with `conda`:
+
+```bash
+conda install -c conda-forge jupyterlite-core
+```
+
+Or `mamba`:
+
+```bash
+mamba install -c conda-forge jupyterlite-core
 ```
 
 To build an empty site (just the JupyterLite static assets):
