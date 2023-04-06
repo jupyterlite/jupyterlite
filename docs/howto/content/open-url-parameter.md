@@ -1,4 +1,4 @@
-# Open a file from an external URL
+# Opening a file from an external URL
 
 ```{warning}
 The third-party extension mentioned in this guide is not included in JupyterLite by default.
