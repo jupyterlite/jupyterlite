@@ -1,5 +1,11 @@
 # Open a file from an external URL
 
+```{warning}
+The third-party extension mentioned in this guide is not included in JupyterLite by default.
+There might other JupyterLab extensions that can achieve the same behavior that
+you might want to consider.
+```
+
 By default in JupyterLite it is not possible to open a file from an external URL.
 
 However you can install the
