@@ -33,6 +33,7 @@ configure/latex
 content/files
 content/python
 content/filesystem-access
+content/open-url-parameter
 content/share
 ```
 
