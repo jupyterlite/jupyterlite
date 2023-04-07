@@ -2,7 +2,7 @@
 
 ```{warning}
 The third-party extension mentioned in this guide is not included in JupyterLite by default.
-There might other JupyterLab extensions that can achieve the same behavior that
+There might be other JupyterLab extensions achieving the same behavior, that
 you might want to consider.
 This guide is provided as a reference and for convenience to show how you can enable such feature
 in your JupyterLite site.
@@ -47,6 +47,11 @@ http://your-jupyterlite.example.com/lab?fromURL=https://raw.githubusercontent.co
 ```
 
 ![a screenshot showing how to use the jupyterlab-open-url-parameter extension](https://user-images.githubusercontent.com/591645/230444694-5297f8b7-4558-4a9c-bb05-918e1cdde3bc.gif)
+
+```{note}
+For more information about the extension, check out the
+[jupyterlab-open-url-parameter](https://github.com/jupyterlab-contrib/jupyterlab-open-url-parameter) repository.
+```
 
 ## References
 
