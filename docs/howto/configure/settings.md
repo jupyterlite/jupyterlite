@@ -45,5 +45,5 @@ If you want to add a download button in the notebook menu bar, you can add the f
 
 You will now have a menu bar similar to the one below:
 
-![](../../_static/notebook-menu-bar-download-button.png)
+![notebook-menu-bar-download-button](https://user-images.githubusercontent.com/733861/231521636-35d5a1c8-c80d-4d76-800e-426948cbc011.png)
 
