@@ -3,6 +3,10 @@
 JupyterLite can be extended to enable basic support for Real Time Collaboration over
 WebRTC.
 
+```{warning}
+Support for Real Time Collaboration in JupyterLite is still experimental.
+```
+
 ```{note}
 Prior to version `0.1.0b6`, the WebRTC document provider was built directly into
 JupyterLite. While still enabled on the JupyterLite demo site, this feature was moved to
