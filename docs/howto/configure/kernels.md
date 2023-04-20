@@ -78,7 +78,7 @@ There is ongoing work between the Pyodide and Emscripten Forge developers to mak
 ```
 
 ```{note}
-Both kernels run in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to allow for better isolation and to avoid blocking the main execution thread. However it is not possible to directly manipulate the DOM from inside a worker. So using the `document` module from the `js` in Pyodide to access elements on the page will likely give errors.
+Both kernels run in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to allow for better isolation and to avoid blocking the main execution thread. However it is not possible to directly manipulate the DOM from inside a worker. So using the `js.document` module in Pyodide to access elements on the page will likely give errors.
 ```
 
 ### Adding other kernels
