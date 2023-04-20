@@ -72,8 +72,13 @@ Check out the dedicated guides for configuring the Xeus Python kernel:
 
 ```{note}
 These two Python kernels are very similar but yet still have some slight differences.
+
 There are plans to converge the two implementations in the future. Concretely, this could mean being able to reuse packages from `emscripten-forge` and `conda-forge` in the Pyodide kernel. Or make some of the Pyodide features more easily reusable so they can be leveraged in the Xeus Python kernel as well.
 There is ongoing work between the Pyodide and Emscripten Forge developers to make this happen.
+```
+
+```{note}
+Both kernels run in a [Web Worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to allow for better isolation and to avoid blocking the main execution thread. However it is not possible to directly manipulate the DOM from inside a worker. So using the `document` module from the `js` in Pyodide to access elements on the page will likely give errors.
 ```
 
 ### Adding other kernels
