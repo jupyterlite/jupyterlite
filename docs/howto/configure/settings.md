@@ -26,19 +26,22 @@ One of the effects of using `terminal` for the `interactionMode` will be the swi
 
 ### Add a download button in the notebook menu bar
 
-If you want to add a download button in the notebook menu bar, you can add the following lines in `overrides.json`:
+If you want to add a download button in the notebook menu bar, you can add the following
+lines in `overrides.json`:
 
 ```json
 {
   "@jupyterlab/notebook-extension:panel": {
-    "toolbar": [{
-      "name": "download",
-      "label": "Download",
-      "args": {},
-      "command": "docmanager:download",
-      "icon": "ui-components:download",
-      "rank": 50
-    }]
+    "toolbar": [
+      {
+        "name": "download",
+        "label": "Download",
+        "args": {},
+        "command": "docmanager:download",
+        "icon": "ui-components:download",
+        "rank": 50
+      }
+    ]
   }
 }
 ```
@@ -46,4 +49,3 @@ If you want to add a download button in the notebook menu bar, you can add the f
 You will now have a menu bar similar to the one below:
 
 ![notebook-menu-bar-download-button](https://user-images.githubusercontent.com/733861/231521636-35d5a1c8-c80d-4d76-800e-426948cbc011.png)
-
