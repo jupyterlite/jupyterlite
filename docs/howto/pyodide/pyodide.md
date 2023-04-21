@@ -10,6 +10,11 @@ as might be downloaded via the
 [`--pyodide` CLI option](../../reference/cli.ipynb#pyodide), can also be configured.
 This can be either relative to the `lite_dir`, or as a full URL.
 
+First if you don't have a `jupyter-lite.json` file, create one where you will be
+executing the `jupyter lite build` command. Then add the following content to the file,
+or just the `litePluginSettings` section if you have some previous configuration
+already:
+
 ```json
 {
   "jupyter-lite-schema-version": 0,
@@ -22,6 +27,9 @@ This can be either relative to the `lite_dir`, or as a full URL.
   }
 }
 ```
+
+Then proceed with a new build (`jupyter lite build`) to make sure the file is correctly
+generated in the output directory.
 
 ```{hint}
 The performance of extracting a pyodide `.tar.bz2` can be improved by installing
