@@ -28,7 +28,7 @@ In the case of Python there are currently two options:
   [Pyodide](https://pyodide.org/en/stable/), a Python distribution running in the
   browser.
 - `jupyterlite-xeus-python`: a Python kernel based on
-  [xeus-python](https://jupyter-xeus/xeus-python).
+  [xeus-python](https://github.com/jupyter-xeus/xeus-python).
 
 #### `jupyterlite-pyodide-kernel`
 
