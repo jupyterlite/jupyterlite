@@ -44,6 +44,7 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 
 ## 🏗️ Build your own JupyterLite 🏗️
 
+
 You can build your own JupyterLite website in a couple of minutes, with custom
 extensions and packages.
 
