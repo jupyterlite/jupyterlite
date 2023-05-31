@@ -38,17 +38,17 @@ export async function main() {
   let baseMods = [
     // @jupyterlite plugins
     require('@jupyterlite/application-extension'),
-    require('@jupyterlite/retro-application-extension'),
-    // @retrolab plugins
-    // do not enable the document opener from RetroLab
-    require('@retrolab/application-extension').default.filter(
+    require('@jupyterlite/notebook-application-extension'),
+    // @jupyter-notebook plugins
+    // do not enable the document opener from Jupyter Notebook
+    require('@jupyter-notebook/application-extension').default.filter(
       ({ id }) => ![
-        '@retrolab/application-extension:logo',
-        '@retrolab/application-extension:opener'
+        '@jupyter-notebook/application-extension:logo',
+        '@jupyter-notebook/application-extension:opener'
       ].includes(id)
     ),
-    require('@retrolab/help-extension'),
-    require('@retrolab/notebook-extension'),
+    require('@jupyter-notebook/help-extension'),
+    require('@jupyter-notebook/notebook-extension'),
 
     // @jupyterlab plugins
     require('@jupyterlab/application-extension').default.filter(({ id }) =>
@@ -90,7 +90,7 @@ export async function main() {
       ].includes(id)
     ),
     require('@jupyterlab/mainmenu-extension'),
-    require('@jupyterlab/mathjax2-extension'),
+    require('@jupyterlab/mathjax-extension'),
     require('@jupyterlab/notebook-extension').default.filter(({ id }) =>
       [
         '@jupyterlab/notebook-extension:factory',
@@ -107,7 +107,7 @@ export async function main() {
 
   // The motivation here is to only load a specific set of plugins dependending on
   // the current page
-  const page = PageConfig.getOption('retroPage');
+  const page = PageConfig.getOption('notebookPage');
   switch (page) {
     case 'tree': {
       baseMods = baseMods.concat([
@@ -118,9 +118,9 @@ export async function main() {
             '@jupyterlab/filebrowser-extension:open-with',
           ].includes(id)
         ),
-        // do not enable the new terminal button from RetroLab
-        require('@retrolab/tree-extension').default.filter(
-          ({ id }) => id !== '@retrolab/tree-extension:new-terminal'
+        // do not enable the new terminal button from Jupyter Notebook
+        require('@jupyter-notebook/tree-extension').default.filter(
+          ({ id }) => id !== '@jupyter-notebook/tree-extension:new-terminal'
         )
       ]);
       break;
@@ -289,11 +289,11 @@ export async function main() {
   // retrieve the custom service manager from the server app
   const { serviceManager } = jupyterLiteServer;
 
-  // create a RetroLab frontend
-  const { RetroApp } = require('@retrolab/application');
-  const app = new RetroApp({ serviceManager, mimeExtensions });
+  // create a Jupyter Notebook frontend
+  const { NotebookApp } = require('@jupyter-notebook/application');
+  const app = new NotebookApp({ serviceManager, mimeExtensions });
 
-  app.name = PageConfig.getOption('appName') || 'RetroLite';
+  app.name = PageConfig.getOption('appName') || 'Jupyter Notebook';
 
   app.registerPluginModules(mods);
 

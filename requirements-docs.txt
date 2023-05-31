@@ -1,11 +1,11 @@
-# minimum needed to build jupyterlite docs... in addition to nodejs and yarn
+# minimum needed to build jupyterlite docs... in addition to nodejs
 # see .binder/ and docs/ for full development/docs environments
 -r requirements-test.txt
 
 # build
 docutils >=0.18
 jupyter-server-mathjax
-jupyterlab >=3.5.3,<3.6
+jupyterlab >=4.0.1,<5.0
 myst-nb
 pydata-sphinx-theme
 sphinx >=5.1,<6

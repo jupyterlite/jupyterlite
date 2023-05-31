@@ -1,7 +1,7 @@
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "retroPage": "notebooks",
+    "notebookPage": "notebooks",
     "faviconUrl": "./favicon.ico",
     "fullStaticUrl": "../../build"
   }

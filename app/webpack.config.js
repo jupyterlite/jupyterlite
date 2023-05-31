@@ -16,7 +16,7 @@ const topLevelData = require('./package.json');
 
 const liteAppData = topLevelData.jupyterlite.apps.reduce(
   (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
-  {}
+  {},
 );
 
 const licensePlugins = [];
@@ -165,11 +165,11 @@ for (const [name, data] of Object.entries(liteAppData)) {
   }
   // Create the entry point and other assets in build directory.
   const template = Handlebars.compile(
-    fs.readFileSync(path.resolve(`./${name}/index.template.js`)).toString()
+    fs.readFileSync(path.resolve(`./${name}/index.template.js`)).toString(),
   );
   fs.writeFileSync(
     path.join(name, 'build', 'index.js'),
-    template({ extensions, mimeExtensions })
+    template({ extensions, mimeExtensions }),
   );
   // Create the bootstrap file that loads federated extensions and calls the
   // initialization logic in index.js
@@ -186,7 +186,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
         minify: false,
         filename: `../${name}/${page}.html`,
         template: `${name}/${page}.template.html`,
-      })
+      }),
     );
   }
 }
@@ -239,26 +239,6 @@ class ServiceWorkerPlugin {
   }
 }
 
-/**
- * A helper for filtering deprecated webpack loaders, to be replaced with assets
- */
-function filterDeprecatedRule(rule) {
-  if (typeof rule.use === 'string' && rule.use.match(/^(file|url)-loader/)) {
-    return false;
-  }
-  return true;
-}
-
-baseConfig.module.rules = [
-  // add this before e.g. file-loader rules
-  {
-    test: /\.json$/,
-    use: ['json-loader'],
-    type: 'javascript/auto',
-  },
-  ...baseConfig.module.rules.filter(filterDeprecatedRule),
-];
-
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
@@ -280,13 +260,13 @@ module.exports = [
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]',
     },
-    cache: {
-      type: 'filesystem',
-      cacheDirectory: path.resolve(__dirname, '../build/webpack'),
-      buildDependencies: {
-        config: [__filename],
-      },
-    },
+    // cache: {
+    //   type: 'filesystem',
+    //   cacheDirectory: path.resolve(__dirname, '../build/webpack'),
+    //   buildDependencies: {
+    //     config: [__filename],
+    //   },
+    // },
     module: {
       rules: [
         {
@@ -296,7 +276,7 @@ module.exports = [
         // just keep the woff2 fonts from fontawesome
         {
           test: /fontawesome-free.*\.(svg|eot|ttf|woff)$/,
-          loader: 'ignore-loader',
+          exclude: /fontawesome-free.*\.woff2$/,
         },
         {
           test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
@@ -327,7 +307,7 @@ module.exports = [
         name: 'CORE_FEDERATION',
         shared: Object.values(liteAppData).reduce(
           (memo, data) => createShared(data, memo),
-          {}
+          {},
         ),
       }),
       new CompileSchemasPlugin(),

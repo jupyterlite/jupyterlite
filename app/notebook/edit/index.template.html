@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>JupyterLite Retro - Notebook</title>
+    <title>Jupyter Notebook - Edit</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       id="jupyter-lite-main"
       rel="preload"
-      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('retro/bundle') !== -1)[0] %>"
+      href="<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf('notebook/bundle') !== -1)[0] %>"
       main="index"
       as="script"
     />
@@ -27,10 +27,9 @@
         }
 
         await import(
-          '../../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("retro/bundle") !== -1)[0].split("?")[1] %>'
+          '../../config-utils.js?<%= htmlWebpackPlugin.files.js.filter((f) => f.indexOf("notebook/bundle") !== -1)[0].split("?")[1] %>'
         );
       })();
     </script>
   </head>
-  <body data-retro="notebooks"></body>
 </html>

@@ -15,6 +15,11 @@ import { Mutex } from 'async-mutex';
 import { PageConfig } from '@jupyterlab/coreutils';
 
 /**
+ * Use the default kernel wire protocol.
+ */
+const KERNEL_WEBSOCKET_PROTOCOL = 'v1.kernel.websocket.jupyter.org';
+
+/**
  * A class to handle requests to /api/kernels
  */
 export class Kernels implements IKernels {
@@ -50,7 +55,7 @@ export class Kernels implements IKernels {
     const hook = (
       kernelId: string,
       clientId: string,
-      socket: WebSocketClient
+      socket: WebSocketClient,
     ): void => {
       const kernel = this._kernels.get(kernelId);
 
@@ -74,9 +79,11 @@ export class Kernels implements IKernels {
           let msg;
           if (message instanceof ArrayBuffer) {
             message = new Uint8Array(message).buffer;
-            msg = deserialize(message);
+            msg = deserialize(message, KERNEL_WEBSOCKET_PROTOCOL);
           } else if (typeof message === 'string') {
-            msg = deserialize(message);
+            const encoder = new TextEncoder();
+            const encodedData = encoder.encode(message);
+            msg = deserialize(encodedData.buffer, KERNEL_WEBSOCKET_PROTOCOL);
           } else {
             return;
           }
@@ -88,7 +95,7 @@ export class Kernels implements IKernels {
           } else {
             void processMsg(msg);
           }
-        }
+        },
       );
 
       const removeClient = () => {
@@ -126,7 +133,7 @@ export class Kernels implements IKernels {
         return;
       }
 
-      const message = serialize(msg);
+      const message = serialize(msg, KERNEL_WEBSOCKET_PROTOCOL);
       // process iopub messages
       if (msg.channel === 'iopub') {
         const clients = this._kernelClients.get(kernelId);
@@ -149,7 +156,10 @@ export class Kernels implements IKernels {
     this._kernelClients.set(kernelId, new Set<string>());
 
     // create the websocket server for the kernel
-    const wsServer = new WebSocketServer(kernelUrl, { mock: false });
+    const wsServer = new WebSocketServer(kernelUrl, {
+      mock: false,
+      selectProtocol: () => 'v1.kernel.websocket.jupyter.org',
+    });
     wsServer.on('connection', (socket: WebSocketClient): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';

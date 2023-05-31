@@ -19,11 +19,11 @@ const test = base.extend({
 
 test.use(config);
 
-test.describe('Retro Tests', () => {
+test.describe('Notebook Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('retro/index.html');
+    await page.goto('notebook/index.html');
     // create a new directory for now to avoid showing the default content
-    const name = 'retro';
+    const name = 'notebook';
     await createNewDirectory({ page, name });
     await page.filebrowser.openDirectory(name);
   });

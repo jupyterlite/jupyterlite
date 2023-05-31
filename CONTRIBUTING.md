@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=18,<19`
-- `yarn <2`
+- `jupyterlab >=4,<5`
 - `python >=3.10,<3.11`
 
 Various package managers on different operating systems provide these.
@@ -67,7 +67,7 @@ To get information about a specific _task_, use the info `info` _action_ with th
 name from the first column of `list`:
 
 ```bash
-doit info build:js:app:retro
+doit info build:js:app:notebook
 ```
 
 #### Task and Action Defaults
@@ -110,7 +110,7 @@ The JupyterLite core JS development workflow builds:
 
 - a ready-to-serve, empty website with:
   - a `lab/index.html` and supporting assets
-  - a `retro/*/index.html` and supporting assets (for `tree`, `editor`, etc.)
+  - a `notebook/*/index.html` and supporting assets (for `tree`, `edit`, etc.)
   - common configuration tools
 - `typedoc` documentation
 - > _TBD: a set of component tarballs distributed on `npmjs.com`. See [#7]._
@@ -133,13 +133,13 @@ While most of the scripts below will be run (in the correct order based on chang
 Most of the [development tasks](#development-tasks) can be run with one command:
 
 ```bash
-yarn bootstrap
+jlpm bootstrap
 ```
 
 #### Install JavaScript Dependencies
 
 ```bash
-yarn
+jlpm
 ```
 
 #### Build Apps
@@ -147,13 +147,13 @@ yarn
 To build development assets:
 
 ```bash
-yarn build
+jlpm build
 ```
 
 To build production assets:
 
 ```bash
-yarn build:prod
+jlpm build:prod
 ```
 
 #### Serve Apps
@@ -165,7 +165,7 @@ To serve with `scripts/serve.js`, based on Node.js's
 [`http`](https://nodejs.org/api/http.html) module:
 
 ```bash
-yarn serve
+jlpm serve
 ```
 
 To serve with Python's built-in
@@ -173,26 +173,26 @@ To serve with Python's built-in
 Python 3.7+):
 
 ```bash
-yarn serve:py
+jlpm serve:py
 ```
 
 #### Watch Sources
 
 ```bash
-yarn watch
+jlpm watch
 ```
 
 #### Lint/Format Sources
 
 ```bash
-yarn lint
+jlpm lint
 ```
 
 #### Run Unit Tests
 
 ```bash
-yarn build:test
-yarn test
+jlpm build:test
+jlpm test
 ```
 
 ### UI Tests
@@ -210,7 +210,7 @@ First install the dependencies:
 
 ```sh
 cd ui-tests
-yarn install
+jlpm install
 ```
 
 The UI tests use a custom JupyterLite website:
@@ -219,18 +219,18 @@ The UI tests use a custom JupyterLite website:
 # in ui-tests directory
 
 # build
-yarn build
+jlpm build
 ```
 
 Then run the `test` script:
 
 ```sh
 # in the ui-tests directory
-yarn test
+jlpm test
 ```
 
 You can pass additional arguments to `playwright` by appending parameters to the
-command. For example to run the test in headed mode, `yarn test --headed`.
+command. For example to run the test in headed mode, `jlpm test --headed`.
 
 Checkout the [Playwright Command Line Reference](https://playwright.dev/docs/test-cli/)
 for more information about the available command line options.
@@ -250,7 +250,7 @@ your development environment, with a reference snapshots generated in your dev
 environment. You can generate new reference snapshots by running the following command:
 
 ```bash
-yarn test:update
+jlpm test:update
 ```
 
 To update the snapshots:
@@ -269,7 +269,7 @@ The generated snapshots can be found on the Summary page of the CI check:
 
 ### (Server) Python Development
 
-After all the `yarn`-related work has finished, the terminal-compatible python uses the
+After all the `jlpm`-related work has finished, the terminal-compatible python uses the
 `npm`-compatible tarball of `app` to build new sites combined with **original user
 content**.
 

@@ -40,10 +40,10 @@ export async function main() {
     require('@jupyterlite/application-extension'),
     require('@jupyterlite/repl-extension'),
 
-    // @retrolab plugins
-    require('@retrolab/application-extension').default.filter(({ id }) =>
+    // @jupyter-notebook plugins
+    require('@jupyter-notebook/application-extension').default.filter(({ id }) =>
       [
-        '@retrolab/application-extension:session-dialogs',
+        '@jupyter-notebook/application-extension:session-dialogs',
       ].includes(id)
     ),
 
@@ -86,7 +86,7 @@ export async function main() {
       ].includes(id)
     ),
     require('@jupyterlab/mainmenu-extension'),
-    require('@jupyterlab/mathjax2-extension'),
+    require('@jupyterlab/mathjax-extension'),
     require('@jupyterlab/rendermime-extension'),
     require('@jupyterlab/shortcuts-extension'),
     require('@jupyterlab/theme-light-extension'),
@@ -217,7 +217,6 @@ export async function main() {
   // retrieve the custom service manager from the server app
   const { serviceManager } = jupyterLiteServer;
 
-  // create a RetroLab frontend
   const { SingleWidgetApp } = require('@jupyterlite/application');
   const app = new SingleWidgetApp({ serviceManager, mimeExtensions });
 

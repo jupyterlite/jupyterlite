@@ -2,6 +2,8 @@
 lib/
 node_modules/
 .yarn-packages/
+.yarn/
+.pnp*
 *.egg-info/
 .ipynb_checkpoints
 *.tsbuildinfo
@@ -130,10 +132,10 @@ app/service-worker-*.js
 # generated html
 app/lab/index.html
 app/repl/index.html
-app/retro/consoles/index.html
-app/retro/edit/index.html
-app/retro/notebooks/index.html
-app/retro/tree/index.html
+app/notebook/consoles/index.html
+app/notebook/edit/index.html
+app/notebook/notebooks/index.html
+app/notebook/tree/index.html
 
 *.log
 
@@ -155,3 +157,9 @@ _output
 ui-tests/playwright-report
 ui-tests/test-results
 ui-tests/ui-tests-app
+
+# yarn >=2.x local files
+.yarn/*
+.pnp.*
+ui-tests/.yarn/*
+ui-tests/.pnp.*

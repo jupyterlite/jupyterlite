@@ -14,7 +14,7 @@ dependencies:
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - retrolab >=0.3.21,<0.4
+  - notebook >=7.0.0,<8
   # extra docs tools
   - sphinx-autobuild
   # avoid 200mb mkl
@@ -24,18 +24,26 @@ dependencies:
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
   - ipycytoscape
-  - jupyterlab_miami_nights
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab_miami_nights
   - jupyterlab_widgets >=3.0.4,<4.0.0
-  - jupyterlab-drawio
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
-  - jupyterlab-github
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab-github
   - jupyterlab-kernelspy
-  - jupyterlab-markup
-  - jupyterlab-myst
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab-markup
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab-myst
   - jupyterlab-tour >=3.1.0
-  - jupyterlab-webrtc-docprovider >=0.1.1
-  - theme-darcula >=3,<4
+  # TODO: re-add after JupyterLab 4 compatibility
+  # - jupyterlab-webrtc-docprovider >=0.1.1
+  # TODO: re-add after the feedstock has been updated for JupyterLab 4:
+  # https://github.com/conda-forge/theme-darcula-feedstock/pull/7
+  # - theme-darcula >=4,<5
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
@@ -57,14 +65,13 @@ dependencies:
   - hatch >=1.6.3,<2
   - jsonschema >=3
   - jupyter-server-mathjax >=0.2.3
-  - jupyterlab >=3.5.3,<3.6
+  - jupyterlab >=4.0.1,<5
   - pip
   - pkginfo
   - python-libarchive-c
   - requests_cache
   - twine
   - wheel
-  - yarn <2
   # cli
   - wheel
   # docs

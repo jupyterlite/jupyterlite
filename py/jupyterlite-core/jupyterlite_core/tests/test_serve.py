@@ -48,12 +48,12 @@ def test_serve(
     time.sleep(2)
 
     app_urls = [""]
-    for app in ["lab", "retro", "repl"]:
+    for app in ["lab", "notebook", "repl"]:
         app_urls += [
             f"{app}/",
             f"{app}/index.html",
         ]
-        if app == "retro":
+        if app == "notebook":
             app_urls += [f"{app}/tree/", f"{app}/tree/index.html"]
 
     maybe_errors = [

@@ -116,7 +116,7 @@ export class Settings implements ISettings {
           raw,
           settings: json5.parse(raw),
         };
-      })
+      }),
     );
     return { settings };
   }
@@ -150,7 +150,7 @@ export class Settings implements ISettings {
       packageName,
       'schemas',
       packageName,
-      `${schemaName}.json`
+      `${schemaName}.json`,
     );
     const packageUrl = URLExt.join(labExtensionsUrl, packageName, 'package.json');
     const schema = await (await fetch(schemaUrl)).json();
@@ -192,7 +192,7 @@ export namespace Settings {
  */
 namespace Private {
   const _overrides: Record<string, IPlugin['schema']['default']> = JSON.parse(
-    PageConfig.getOption('settingsOverrides') || '{}'
+    PageConfig.getOption('settingsOverrides') || '{}',
   );
 
   /**

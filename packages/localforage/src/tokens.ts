@@ -9,7 +9,7 @@ import { Token } from '@lumino/coreutils';
  * The token for the localforage singleton.
  */
 export const ILocalForage = new Token<ILocalForage>(
-  '@jupyterlite/localforge:ILocalForage'
+  '@jupyterlite/localforge:ILocalForage',
 );
 
 /**

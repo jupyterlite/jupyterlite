@@ -25,9 +25,9 @@ application, and will not load with this setting.
 
 ## Removing Source Maps
 
-Provide `--no-sourcemaps`, or configure `LiteBuildConfig/no_sourcemaps` in a
-config file to prevent any `.map` files from being copied to the output folder.
-This creates a _drastically_ smaller overall build.
+Provide `--no-sourcemaps`, or configure `LiteBuildConfig/no_sourcemaps` in a config file
+to prevent any `.map` files from being copied to the output folder. This creates a
+_drastically_ smaller overall build.
 
 ```{warning}
 Removing sourcemaps, in addition to making errors harder to debug, will _also_

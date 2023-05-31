@@ -17,25 +17,25 @@ import { liteWordmark } from '@jupyterlite/ui-components';
 
 import { Widget } from '@lumino/widgets';
 
-import { IRetroShell } from '@retrolab/application';
+import { INotebookShell } from '@jupyter-notebook/application';
 
 /**
  * Open consoles in a new tab.
  */
 const consoles: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/retro-application-extension:consoles',
+  id: '@jupyterlite/notebook-application-extension:consoles',
   requires: [IConsoleTracker],
   autoStart: true,
   activate: (app: JupyterFrontEnd, tracker: IConsoleTracker) => {
     const baseUrl = PageConfig.getBaseUrl();
     tracker.widgetAdded.connect(async (send, console) => {
       const { sessionContext } = console;
-      const page = PageConfig.getOption('retroPage');
+      const page = PageConfig.getOption('notebookPage');
       if (page === 'consoles') {
         return;
       }
       const path = sessionContext.path;
-      window.open(`${baseUrl}retro/consoles?path=${path}`, '_blank');
+      window.open(`${baseUrl}notebook/consoles?path=${path}`, '_blank');
 
       // the widget is not needed anymore
       console.dispose();
@@ -49,7 +49,7 @@ const consoles: JupyterFrontEndPlugin<void> = {
  * TODO: remove and use a custom doc manager?
  */
 const docmanager: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/retro-application-extension:docmanager',
+  id: '@jupyterlite/notebook-application-extension:docmanager',
   requires: [IDocumentManager],
   autoStart: true,
   activate: (app: JupyterFrontEnd, docManager: IDocumentManager) => {
@@ -61,7 +61,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       path: string,
       widgetName = 'default',
       kernel?: Partial<Kernel.IModel>,
-      options?: DocumentRegistry.IOpenOptions
+      options?: DocumentRegistry.IOpenOptions,
     ): IDocumentWidget | undefined => {
       const ref = options?.ref;
       if (ref === '_noref') {
@@ -70,7 +70,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       }
       const ext = PathExt.extname(path);
       const route = ext === '.ipynb' ? 'notebooks' : 'edit';
-      window.open(`${baseUrl}retro/${route}?path=${path}`);
+      window.open(`${baseUrl}notebook/${route}?path=${path}`);
       return undefined;
     };
   },
@@ -80,12 +80,12 @@ const docmanager: JupyterFrontEndPlugin<void> = {
  * The logo plugin.
  */
 const logo: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/retro-application-extension:logo',
+  id: '@jupyterlite/notebook-application-extension:logo',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     const baseUrl = PageConfig.getBaseUrl();
     const node = document.createElement('a');
-    node.href = `${baseUrl}retro/tree`;
+    node.href = `${baseUrl}notebook/tree`;
     node.target = '_blank';
     node.rel = 'noopener noreferrer';
     const logo = new Widget({ node });
@@ -97,7 +97,7 @@ const logo: JupyterFrontEndPlugin<void> = {
       height: '28px',
       width: 'auto',
     });
-    logo.id = 'jp-RetroLogo';
+    logo.id = 'jp-NotebookLogo';
     app.shell.add(logo, 'top', { rank: 0 });
   },
 };
@@ -106,12 +106,12 @@ const logo: JupyterFrontEndPlugin<void> = {
  * A plugin to trigger a refresh of the commands when the shell layout changes.
  */
 const notifyCommands: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/retro-application-extension:notify-commands',
+  id: '@jupyterlite/notebook-application-extension:notify-commands',
   autoStart: true,
-  optional: [IRetroShell],
-  activate: (app: JupyterFrontEnd, retroShell: IRetroShell | null) => {
-    if (retroShell) {
-      retroShell.currentChanged.connect(() => {
+  optional: [INotebookShell],
+  activate: (app: JupyterFrontEnd, notebookShell: INotebookShell | null) => {
+    if (notebookShell) {
+      notebookShell.currentChanged.connect(() => {
         requestAnimationFrame(() => {
           app.commands.notifyCommandChanged();
         });

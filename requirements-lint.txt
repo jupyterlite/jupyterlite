@@ -1,4 +1,4 @@
-# minimum needed to build jupyterlite... in addition to nodejs and yarn
+# minimum needed to build jupyterlite... in addition to nodejs
 # see .binder/ and docs/ for full development/docs environments
 -r requirements-build.txt
 

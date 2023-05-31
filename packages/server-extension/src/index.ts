@@ -56,7 +56,7 @@ const localforageMemoryPlugin: JupyterLiteServerPlugin<void> = {
   activate: async (app: JupyterLiteServer, forage: ILocalForage) => {
     if (JSON.parse(PageConfig.getOption('enableMemoryStorage') || 'false')) {
       console.warn(
-        'Memory storage fallback enabled: contents and settings may not be saved'
+        'Memory storage fallback enabled: contents and settings may not be saved',
       );
       await ensureMemoryStorage(forage.localforage);
     }
@@ -74,7 +74,7 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   activate: (app: JupyterLiteServer, forage: ILocalForage) => {
     const storageName = PageConfig.getOption('contentsStorageName');
     const storageDrivers = JSON.parse(
-      PageConfig.getOption('contentsStorageDrivers') || 'null'
+      PageConfig.getOption('contentsStorageDrivers') || 'null',
     );
     const { localforage } = forage;
     const contents = new Contents({
@@ -101,7 +101,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, filename: string) => {
         const res = await contents.listCheckpoints(filename);
         return new Response(JSON.stringify(res));
-      }
+      },
     );
 
     // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
@@ -110,7 +110,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await contents.restoreCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
-      }
+      },
     );
 
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
@@ -119,7 +119,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, filename: string) => {
         const res = await contents.createCheckpoint(filename);
         return new Response(JSON.stringify(res), { status: 201 });
-      }
+      },
     );
 
     // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
@@ -128,7 +128,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await contents.deleteCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
-      }
+      },
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
@@ -143,7 +143,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
           return new Response(null, { status: 404 });
         }
         return new Response(JSON.stringify(nb));
-      }
+      },
     );
 
     // POST /api/contents/{path} - Create a new file in the specified path
@@ -170,7 +170,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         filename = filename[0] === '/' ? filename.slice(1) : filename;
         const nb = await contents.rename(filename, newPath);
         return new Response(JSON.stringify(nb));
-      }
+      },
     );
 
     // PUT /api/contents/{path} - Save or upload a file
@@ -180,7 +180,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
         const body = req.body;
         const nb = await contents.save(filename, body);
         return new Response(JSON.stringify(nb));
-      }
+      },
     );
 
     // DELETE /api/contents/{path} - Delete a file in the given path
@@ -189,7 +189,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, filename: string) => {
         await contents.delete(filename);
         return new Response(null, { status: 204 });
-      }
+      },
     );
   },
 };
@@ -216,7 +216,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapp
   provides: IBroadcastChannelWrapper,
   activate: (
     app: JupyterLiteServer,
-    serviceWorkerRegistrationWrapper?: IServiceWorkerManager
+    serviceWorkerRegistrationWrapper?: IServiceWorkerManager,
   ): IBroadcastChannelWrapper => {
     const { contents } = app.serviceManager;
     const broadcaster = new BroadcastChannelWrapper({ contents });
@@ -280,7 +280,7 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, kernelId: string) => {
         const res = await kernels.restart(kernelId);
         return new Response(JSON.stringify(res));
-      }
+      },
     );
 
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
@@ -289,7 +289,7 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, kernelId: string) => {
         const res = await kernels.shutdown(kernelId);
         return new Response(JSON.stringify(res), { status: 204 });
-      }
+      },
     );
   },
 };
@@ -374,6 +374,20 @@ const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 /**
+ * A plugin providing the routes for the lsp service.
+ * TODO: provide the service in a separate plugin?
+ */
+const lspRoutesPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:lsp-routes',
+  autoStart: true,
+  activate: (app: JupyterLiteServer) => {
+    app.router.get('/lsp/status', async (req: Router.IRequest) => {
+      return new Response(JSON.stringify({ version: 2, sessions: {}, specs: {} }));
+    });
+  },
+};
+
+/**
  * A plugin providing the routes for the nbconvert service.
  * TODO: provide the service in a separate plugin?
  */
@@ -433,7 +447,7 @@ const sessionsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, id: string) => {
         await sessions.shutdown(id);
         return new Response(null, { status: 204 });
-      }
+      },
     );
 
     // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
@@ -456,7 +470,7 @@ const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
   activate: (app: JupyterLiteServer, forage: ILocalForage) => {
     const storageName = PageConfig.getOption('settingsStorageName');
     const storageDrivers = JSON.parse(
-      PageConfig.getOption('settingsStorageDrivers') || 'null'
+      PageConfig.getOption('settingsStorageDrivers') || 'null',
     );
     const { localforage } = forage;
     const settings = new Settings({ storageName, storageDrivers, localforage });
@@ -511,7 +525,7 @@ const translationPlugin: JupyterLiteServerPlugin<ITranslation> = {
       async (req: Router.IRequest, locale: string) => {
         const data = await translation.get(locale || 'all');
         return new Response(JSON.stringify(data));
-      }
+      },
     );
 
     return translation;
@@ -531,7 +545,7 @@ const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
       async (req: Router.IRequest, locale: string) => {
         const data = await translation.get(locale || 'all');
         return new Response(JSON.stringify(data));
-      }
+      },
     );
   },
 };
@@ -548,6 +562,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   licensesRoutesPlugin,
   localforageMemoryPlugin,
   localforagePlugin,
+  lspRoutesPlugin,
   nbconvertRoutesPlugin,
   serviceWorkerPlugin,
   sessionsPlugin,

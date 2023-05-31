@@ -7,13 +7,13 @@ module.exports = {
   retries: 1,
   webServer: [
     {
-      command: 'yarn run start',
+      command: 'jlpm run start',
       port: 8000,
       timeout: 120 * 1000,
       reuseExistingServer: true,
     },
     {
-      command: 'yarn run start:embed',
+      command: 'jlpm run start:embed',
       port: 8001,
       timeout: 120 * 1000,
       reuseExistingServer: true,

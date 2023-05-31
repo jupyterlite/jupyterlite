@@ -5,7 +5,7 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
-import { find, IIterator, iter } from '@lumino/algorithm';
+import { find } from '@lumino/algorithm';
 
 import { Token } from '@lumino/coreutils';
 
@@ -17,7 +17,7 @@ import { Panel, Widget, PanelLayout } from '@lumino/widgets';
  * The single widget application shell token.
  */
 export const ISingleWidgetShell = new Token<ISingleWidgetShell>(
-  '@jupyterlite/application:ISingleWidgetShell'
+  '@jupyterlite/application:ISingleWidgetShell',
 );
 
 /**
@@ -78,7 +78,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
   add(
     widget: Widget,
     area?: Shell.Area,
-    options?: DocumentRegistry.IOpenOptions
+    options?: DocumentRegistry.IOpenOptions,
   ): void {
     if (area === 'main' || area === undefined) {
       if (this._main.widgets.length > 0) {
@@ -96,10 +96,11 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
    *
    * @param area The area
    */
-  widgets(area: Shell.Area): IIterator<Widget> {
+  *widgets(area: Shell.Area): IterableIterator<Widget> {
     switch (area ?? 'main') {
       case 'main':
-        return iter(this._main.widgets);
+        yield* this._main.widgets;
+        break;
       default:
         throw new Error(`Invalid area: ${area}`);
     }

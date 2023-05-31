@@ -175,17 +175,17 @@
             "type": "object"
           }
         },
-        "retroPage": {
+        "notebookPage": {
           "description": "The page corresponding the named Notebook Classic UI section",
           "anyOf": [
             {
               "type": "string",
-              "description": "an unknown retro page"
+              "description": "an unknown notebook page"
             },
             {
               "type": "string",
               "enum": ["consoles", "notebooks", "edit", "tree"],
-              "description": "a well-known retro page"
+              "description": "a well-known notebook page"
             }
           ]
         },

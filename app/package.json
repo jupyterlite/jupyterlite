@@ -14,37 +14,32 @@
   "author": "JupyterLite Contributors",
   "scripts": {
     "build": "webpack",
-    "build:prod": "yarn clean && yarn build --mode=production",
-    "clean": "rimraf build **/build",
+    "build:prod": "jlpm clean && jlpm build --mode=production",
+    "clean": "rimraf -g build \"**/build\"",
     "watch": "webpack --config webpack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "~3.5.3",
+    "@jupyterlab/builder": "~4.0.4",
     "css-loader": "^6.6.0",
     "file-loader": "^6.2.0",
     "fs-extra": "^9.0.1",
     "glob": "^7.2.0",
     "handlebars": "^4.5.3",
-    "html-webpack-plugin": "^5.5.0",
-    "ignore-loader": "^0.1.2",
-    "json-loader": "^0.5.7",
+    "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.5.3",
-    "raw-loader": "^4.0.2",
-    "rimraf": "^3.0.2",
+    "rimraf": "^5.0.1",
     "source-map-loader": "^4.0.1",
     "style-loader": "^3.3.1",
-    "svg-url-loader": "^7.1.1",
-    "url-loader": "^4.1.1",
-    "webpack": "^5.68.0",
-    "webpack-bundle-analyzer": "^4.5.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-merge": "^5.8.0"
+    "webpack": "^5.88.2",
+    "webpack-bundle-analyzer": "^4.9.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^5.9.0"
   },
   "jupyterlite": {
     "apps": [
       "lab",
       "repl",
-      "retro"
+      "notebook"
     ]
   }
 }

@@ -52,10 +52,10 @@ eventually replace the classic Jupyter Notebook.
 
 ![image](https://user-images.githubusercontent.com/591645/153932638-771ca1f4-0ec0-4b77-a5d4-644748c7538e.png)
 
-### RetroLab
+### Jupyter Notebook
 
-RetroLab is a JupyterLab distribution with a retro look and feel, similar to the classic
-Jupyter Notebook.
+Jupyter Notebook is a document-centric UI for creating, editing and running Jupyter
+notebooks.
 
 ![image](https://user-images.githubusercontent.com/591645/153932487-7383ced5-003d-4752-99dc-450cc780443a.png)
 

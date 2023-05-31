@@ -279,7 +279,7 @@ export class Contents implements IContents {
    */
   async get(
     path: string,
-    options?: ServerContents.IFetchOptions
+    options?: ServerContents.IFetchOptions,
   ): Promise<IModel | null> {
     // remove leading slash
     path = decodeURIComponent(path.replace(/^\//, ''));
@@ -377,7 +377,7 @@ export class Contents implements IContents {
       for (child of file.content) {
         await this.rename(
           URLExt.join(oldLocalPath, child.name),
-          URLExt.join(newLocalPath, child.name)
+          URLExt.join(newLocalPath, child.name),
         );
       }
     }
@@ -480,7 +480,7 @@ export class Contents implements IContents {
     path = decodeURIComponent(path);
     const slashed = `${path}/`;
     const toDelete = (await (await this.storage).keys()).filter(
-      (key) => key === path || key.startsWith(slashed)
+      (key) => key === path || key.startsWith(slashed),
     );
     await Promise.all(toDelete.map(this.forgetPath, this));
   }
@@ -513,7 +513,7 @@ export class Contents implements IContents {
       throw Error(`Could not find file with path ${path}`);
     }
     const copies = (((await checkpoints.getItem(path)) as IModel[]) ?? []).filter(
-      Boolean
+      Boolean,
     );
     copies.push(item);
     // keep only a certain amount of checkpoints per file
@@ -540,7 +540,7 @@ export class Contents implements IContents {
 
   protected normalizeCheckpoint(
     model: IModel,
-    id: number
+    id: number,
   ): ServerContents.ICheckpointModel {
     return { id: id.toString(), last_modified: model.last_modified };
   }
@@ -588,7 +588,7 @@ export class Contents implements IContents {
   private _handleChunk(
     newContent: string,
     originalContent: string,
-    chunked?: boolean
+    chunked?: boolean,
   ): string {
     const escaped = decodeURIComponent(escape(atob(newContent)));
     const content = chunked ? originalContent + escaped : escaped;
@@ -645,7 +645,7 @@ export class Contents implements IContents {
    */
   private async _getServerContents(
     path: string,
-    options?: ServerContents.IFetchOptions
+    options?: ServerContents.IFetchOptions,
   ): Promise<IModel | null> {
     const name = PathExt.basename(path);
     const parentContents = await this._getServerDirectory(URLExt.join(path, '..'));
@@ -742,7 +742,7 @@ export class Contents implements IContents {
         PageConfig.getBaseUrl(),
         'api/contents',
         path,
-        'all.json'
+        'all.json',
       );
 
       try {
@@ -754,7 +754,7 @@ export class Contents implements IContents {
       } catch (err) {
         console.warn(
           `don't worry, about ${err}... nothing's broken. If there had been a
-          file at ${apiURL}, you might see some more files.`
+          file at ${apiURL}, you might see some more files.`,
         );
       }
       this._serverContents.set(path, content);

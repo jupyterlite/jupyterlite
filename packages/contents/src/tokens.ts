@@ -29,7 +29,7 @@ export interface IContents {
    * @returns A promise which resolves with the created file content when the file is created.
    */
   newUntitled(
-    options?: ServerContents.ICreateOptions
+    options?: ServerContents.ICreateOptions,
   ): Promise<ServerContents.IModel | null>;
 
   /**
@@ -56,7 +56,7 @@ export interface IContents {
    */
   get(
     path: string,
-    options?: ServerContents.IFetchOptions
+    options?: ServerContents.IFetchOptions,
   ): Promise<ServerContents.IModel | null>;
 
   /**
@@ -79,7 +79,7 @@ export interface IContents {
    */
   save(
     path: string,
-    options?: Partial<ServerContents.IModel>
+    options?: Partial<ServerContents.IModel>,
   ): Promise<ServerContents.IModel | null>;
 
   /**
@@ -147,7 +147,7 @@ export namespace FILE {
    * Build-time configured file types.
    */
   const TYPES: Record<string, Partial<IRenderMime.IFileType>> = JSON.parse(
-    PageConfig.getOption('fileTypes') || '{}'
+    PageConfig.getOption('fileTypes') || '{}',
   );
 
   /**
@@ -171,7 +171,7 @@ export namespace FILE {
    */
   export function hasFormat(
     ext: string,
-    fileFormat: 'base64' | 'text' | 'json'
+    fileFormat: 'base64' | 'text' | 'json',
   ): boolean {
     ext = ext.toLowerCase();
     for (const fileType of Object.values(TYPES)) {
@@ -192,7 +192,7 @@ export namespace FILE {
  * The token for the BroadcastChannel broadcaster.
  */
 export const IBroadcastChannelWrapper = new Token<IBroadcastChannelWrapper>(
-  '@jupyterlite/contents:IBroadcastChannelWrapper'
+  '@jupyterlite/contents:IBroadcastChannelWrapper',
 );
 
 export interface IBroadcastChannelWrapper extends IDisposable {

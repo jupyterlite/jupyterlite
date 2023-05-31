@@ -14,12 +14,6 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import {
-  IDocumentProvider,
-  IDocumentProviderFactory,
-  ProviderMock,
-} from '@jupyterlab/docprovider';
-
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -86,7 +80,7 @@ const about: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     translator: ITranslator,
     palette: ICommandPalette | null,
-    menu: IMainMenu | null
+    menu: IMainMenu | null,
   ): void => {
     const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
@@ -170,38 +164,6 @@ const about: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * An alternative document provider plugin
- */
-const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
-  id: '@jupyterlite/application-extension:docprovider',
-  provides: IDocumentProviderFactory,
-  requires: [ITranslator],
-  activate: (
-    app: JupyterFrontEnd,
-    translator: ITranslator
-  ): IDocumentProviderFactory => {
-    const collaborative = PageConfig.getOption('collaborative') === 'true';
-    const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
-      if (collaborative) {
-        const trans = translator.load(I18N_BUNDLE);
-        console.warn(
-          trans.__(
-            'The `collaborative` feature was enabled, but no docprovider is available.'
-          )
-        );
-        console.info(
-          trans.__(
-            'Install `jupyterlab-webrtc-docprovider` to enable WebRTC-based collaboration.'
-          )
-        );
-      }
-      return new ProviderMock();
-    };
-    return factory;
-  },
-};
-
-/**
  * A plugin providing download commands in the file menu and command palette.
  */
 const downloadPlugin: JupyterFrontEndPlugin<void> = {
@@ -214,7 +176,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
-    factory: IFileBrowserFactory | null
+    factory: IFileBrowserFactory | null,
   ) => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands, serviceManager, shell } = app;
@@ -239,7 +201,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         } else {
           const mime = model.mimetype ?? 'text/plain';
           element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
-            model.content
+            model.content,
           )}`;
         }
       } else {
@@ -310,7 +272,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:logo',
-  // marking as optional to not throw errors in retro
+  // marking as optional to not throw errors in Notebook
   optional: [ILabShell],
   autoStart: true,
   activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
@@ -359,7 +321,7 @@ const opener: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     router: IRouter,
     docManager: IDocumentManager,
-    labShell: ILabShell | null
+    labShell: ILabShell | null,
   ): void => {
     const { commands } = app;
 
@@ -381,7 +343,7 @@ const opener: JupyterFrontEndPlugin<void> = {
         }
         const files = paths.map((path) => decodeURIComponent(path));
         app.restored.then(() => {
-          const page = PageConfig.getOption('retroPage');
+          const page = PageConfig.getOption('notebookPage');
           const [file] = files;
           switch (page) {
             case 'consoles': {
@@ -443,7 +405,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
     factory: IFileBrowserFactory,
-    translator: ITranslator
+    translator: ITranslator,
   ): void => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands } = app;
@@ -461,7 +423,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
         const models = toArray(
-          filter(widget.selectedItems(), (item) => item.type !== 'directory')
+          filter(widget.selectedItems(), (item) => item.type !== 'directory'),
         );
         models.forEach((model) => {
           url.searchParams.append('path', model.path);
@@ -482,7 +444,6 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
-  docProviderPlugin,
   downloadPlugin,
   liteLogo,
   notifyCommands,

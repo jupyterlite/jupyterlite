@@ -5,7 +5,7 @@ and select `Copy Shareable Link`:
 
 ![share-link-file-browser](https://user-images.githubusercontent.com/591645/136811238-e4a021ef-1dbf-4cda-b38d-c0f83ec8082e.png)
 
-If you are using the RetroLab interface, you can simply copy the URL as is:
+If you are using the Jupyter Notebook interface, you can simply copy the URL as is:
 
 ![image](https://user-images.githubusercontent.com/591645/136811563-db16c258-d1b0-4771-b3be-5e72853dba5e.png)
 

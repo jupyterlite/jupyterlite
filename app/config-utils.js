@@ -46,7 +46,7 @@ const LITE_MAIN = 'jupyter-lite-main';
  */
 const HERE = `${window.location.origin}${window.location.pathname.replace(
   /(\/|\/index.html)?$/,
-  ''
+  '',
 )}/`;
 
 /**

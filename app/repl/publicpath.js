@@ -17,7 +17,7 @@
  * All values are treated as strings.
  * For browser based applications, it is assumed that the page HTML
  * includes a script tag with the id `jupyter-config-data` containing the
- * configuration as valid JSON.  In order to support the retro Notebook,
+ * configuration as valid JSON.  In order to support the Jupyter Notebook,
  * we fall back on checking for `body` data of the given `name`.
  */
 function getOption(name) {

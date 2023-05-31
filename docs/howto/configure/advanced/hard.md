@@ -7,7 +7,7 @@ resorting to the Hard Way.
 
 Assuming:
 
-- you have a running JupyterLab 3
+- you have a running JupyterLab 4
 - you want to add all of the files in the root folder of the current JupyterLab to your
   JupyterLite.
 
@@ -61,7 +61,7 @@ This is a very manual process, and other the methods in the other guides are rec
 
 ### Get the extension assets
 
-Assuming you have a working JupyterLab 3 installation, look in your
+Assuming you have a working JupyterLab 4 installation, look in your
 `{sys.prefix}/share/jupyter/labextensions`. Each folder contains either:
 
 - if it begins with `@`, a collection of packages

@@ -3,7 +3,7 @@
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { Contents as ServerContents, ContentsManager } from '@jupyterlab/services';
+import { Contents as ServerContents } from '@jupyterlab/services';
 
 import { DIR_MODE, FILE_MODE } from './emscripten';
 
@@ -163,14 +163,14 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
   };
 
   protected _channel: BroadcastChannel | null = null;
-  protected _contents: ContentsManager;
+  protected _contents: ServerContents.IManager;
   protected _enabled = false;
 }
 
 /** A namespace for  */
 export namespace BroadcastChannelWrapper {
   export interface IOptions {
-    contents: ContentsManager;
+    contents: ServerContents.IManager;
   }
   export type TBroadcastResponse = any;
 }

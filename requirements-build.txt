@@ -1,4 +1,4 @@
-# minimum needed to build jupyterlite... in addition to nodejs and yarn
+# minimum needed to build jupyterlite... in addition to nodejs
 # see .binder/ and docs/ for full development/docs environments
 doit >=0.34,<1
 hatch >=1.6.3,<2
@@ -7,5 +7,5 @@ requests_cache
 # bootstrap packages
 pkginfo
 jupyter_core >=4.7
-jupyterlab >=3.5.3,<3.6
+jupyterlab >=4.0.1,<5.0
 importlib_metadata

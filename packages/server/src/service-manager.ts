@@ -53,7 +53,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       } catch (err: any) {
         console.warn(err);
         console.warn(
-          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`
+          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
         );
       }
     }
@@ -74,7 +74,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
-    this
+    this,
   );
   private _ready = new PromiseDelegate<void>();
 }
