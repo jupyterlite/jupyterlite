@@ -59,7 +59,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     }
     const { _contents } = this;
     const request = event.data;
-    const { path } = request;
+    const path = request?.path;
 
     // many successful responses default to null
     let response: any = null;
@@ -67,7 +67,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     // most requests will use a model
     let model: ServerContents.IModel;
 
-    switch (request.method) {
+    switch (request?.method) {
       case 'readdir':
         model = await _contents.get(path, { content: true });
         response = [];
