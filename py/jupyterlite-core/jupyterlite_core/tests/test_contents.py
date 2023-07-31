@@ -72,10 +72,10 @@ def test_contents_with_space(
     an_empty_lite_dir,
     script_runner,
 ):
-    dir_name = 'dir with spaces'
-    contents_dir = an_empty_lite_dir / 'contents' / dir_name
+    dir_name = "dir with spaces"
+    contents_dir = an_empty_lite_dir / "contents" / dir_name
     contents_dir.mkdir(parents=True)
-    file_name = 'file name with spaces'
+    file_name = "file name with spaces"
     contents_file = contents_dir / file_name
     contents_file.touch()
 
@@ -84,7 +84,7 @@ def test_contents_with_space(
         "lite",
         "build",
         "--contents",
-        'contents',
+        "contents",
         cwd=str(an_empty_lite_dir),
     )
     assert result.success
@@ -99,4 +99,3 @@ def test_contents_with_space(
     content = contents["content"][0]
     assert content["name"] == file_name
     assert content["path"] == f"{dir_name}/{file_name}"
-    
