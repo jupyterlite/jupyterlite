@@ -66,3 +66,37 @@ def test_contents_with_dot(
         assert postbuild_content["path"] == ".binder/postBuild", postbuild_content
     else:
         assert not root_contents_json.exists()
+
+
+def test_contents_with_space(
+    an_empty_lite_dir,
+    script_runner,
+):
+    dir_name = 'dir with spaces'
+    contents_dir = an_empty_lite_dir / 'contents' / dir_name
+    contents_dir.mkdir(parents=True)
+    file_name = 'file name with spaces'
+    contents_file = contents_dir / file_name
+    contents_file.touch()
+
+    result = script_runner.run(
+        "jupyter",
+        "lite",
+        "build",
+        "--contents",
+        'contents',
+        cwd=str(an_empty_lite_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    root_contents_json = out / "api/contents/all.json"
+    contents_json = out / f"api/contents/{dir_name}/all.json"
+
+    root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
+    assert len(root_contents["content"]) == 1, root_contents
+    contents = json.loads(contents_json.read_text(encoding="utf-8"))
+    content = contents["content"][0]
+    assert content["name"] == file_name
+    assert content["path"] == f"{dir_name}/{file_name}"
+    

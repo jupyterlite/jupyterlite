@@ -163,9 +163,7 @@ class ContentsAddon(BaseAddon):
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
-        listing_path = output_file_dir.as_uri().replace(
-            self.output_files_dir.as_uri(), "/"
-        )
+        listing_path = str(output_file_dir.relative_to(self.output_files_dir))
 
         try:
             listing = fm.get(listing_path)
