@@ -149,7 +149,7 @@ export class Kernels implements IKernels {
     this._kernelClients.set(kernelId, new Set<string>());
 
     // create the websocket server for the kernel
-    const wsServer = new WebSocketServer(kernelUrl);
+    const wsServer = new WebSocketServer(kernelUrl, { mock: false });
     wsServer.on('connection', (socket: WebSocketClient): void => {
       const url = new URL(socket.url);
       const clientId = url.searchParams.get('session_id') ?? '';
