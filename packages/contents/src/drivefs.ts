@@ -39,6 +39,8 @@ export type TDriveMethod =
   | 'get'
   | 'put';
 
+const SENDER = 'drivefs.ts';
+
 /**
  * Interface of a request on the /api/drive endpoint
  */
@@ -47,6 +49,11 @@ export interface IDriveRequest {
    * The method of the request (rmdir, readdir etc)
    */
   method: TDriveMethod;
+
+  /**
+   * The sender of the request ('drivefs.ts' or 'broadcast.ts')
+   */
+  sender: 'drivefs.ts' | 'broadcast.ts';
 
   /**
    * The path to the file/directory for which the request was sent
@@ -301,7 +308,6 @@ export class ContentsAPI {
   request(data: IDriveRequest): any {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
-
     try {
       xhr.send(JSON.stringify(data));
     } catch (e) {
@@ -316,17 +322,26 @@ export class ContentsAPI {
   }
 
   lookup(path: string): DriveFS.ILookup {
-    return this.request({ method: 'lookup', path: this.normalizePath(path) });
+    return this.request({
+      sender: SENDER,
+      method: 'lookup',
+      path: this.normalizePath(path),
+    });
   }
 
   getmode(path: string): number {
     return Number.parseInt(
-      this.request({ method: 'getmode', path: this.normalizePath(path) })
+      this.request({
+        sender: SENDER,
+        method: 'getmode',
+        path: this.normalizePath(path),
+      })
     );
   }
 
   mknod(path: string, mode: number) {
     return this.request({
+      sender: SENDER,
       method: 'mknod',
       path: this.normalizePath(path),
       data: { mode },
@@ -335,6 +350,7 @@ export class ContentsAPI {
 
   rename(oldPath: string, newPath: string): void {
     return this.request({
+      sender: SENDER,
       method: 'rename',
       path: this.normalizePath(oldPath),
       data: { newPath: this.normalizePath(newPath) },
@@ -343,6 +359,7 @@ export class ContentsAPI {
 
   readdir(path: string): string[] {
     const dirlist = this.request({
+      sender: SENDER,
       method: 'readdir',
       path: this.normalizePath(path),
     });
@@ -352,11 +369,19 @@ export class ContentsAPI {
   }
 
   rmdir(path: string): void {
-    return this.request({ method: 'rmdir', path: this.normalizePath(path) });
+    return this.request({
+      sender: SENDER,
+      method: 'rmdir',
+      path: this.normalizePath(path),
+    });
   }
 
   get(path: string): DriveFS.IFile {
-    const response = this.request({ method: 'get', path: this.normalizePath(path) });
+    const response = this.request({
+      sender: SENDER,
+      method: 'get',
+      path: this.normalizePath(path),
+    });
 
     const serializedContent = response.content;
     const format: 'json' | 'text' | 'base64' | null = response.format;
@@ -390,6 +415,7 @@ export class ContentsAPI {
       case 'json':
       case 'text':
         return this.request({
+          sender: SENDER,
           method: 'put',
           path: this.normalizePath(path),
           data: {
@@ -403,6 +429,7 @@ export class ContentsAPI {
           binary += String.fromCharCode(value.data[i]);
         }
         return this.request({
+          sender: SENDER,
           method: 'put',
           path: this.normalizePath(path),
           data: {
@@ -416,6 +443,7 @@ export class ContentsAPI {
 
   getattr(path: string): IStats {
     const stats: IStats = this.request({
+      sender: SENDER,
       method: 'getattr',
       path: this.normalizePath(path),
     });

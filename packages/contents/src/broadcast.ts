@@ -54,12 +54,13 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   /** Handle a message received on the BroadcastChannel */
   protected _onMessage = async (event: MessageEvent<IDriveRequest>): Promise<void> => {
-    if (!this._channel) {
+    if (!this._channel || event.data?.sender === 'broadcast.ts') {
       return;
     }
     const { _contents } = this;
     const request = event.data;
-    const path = request?.path;
+
+    const { path } = request;
 
     // many successful responses default to null
     let response: any = null;
@@ -67,7 +68,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     // most requests will use a model
     let model: ServerContents.IModel;
 
-    switch (request?.method) {
+    switch (request.method) {
       case 'readdir':
         model = await _contents.get(path, { content: true });
         response = [];
@@ -154,7 +155,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         break;
     }
 
-    this._channel.postMessage(response);
+    this._channel.postMessage({ ...response, sender: 'broadcast.ts' });
   };
 
   protected _channel: BroadcastChannel | null = null;
