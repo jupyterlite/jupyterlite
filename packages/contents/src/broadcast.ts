@@ -63,7 +63,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     const path = request?.path;
 
     // many successful responses default to null
-    let response: any = null;
+    let response: { [key: string]: any } | null = null;
 
     // most requests will use a model
     let model: ServerContents.IModel;
@@ -71,9 +71,13 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     switch (request?.method) {
       case 'readdir':
         model = await _contents.get(path, { content: true });
-        response = [];
+        response = {
+          contents: [],
+        };
         if (model.type === 'directory' && model.content) {
-          response = model.content.map((subcontent: IModel) => subcontent.name);
+          response.contents = model.content.map(
+            (subcontent: IModel) => subcontent.name
+          );
         }
         break;
       case 'rmdir':
@@ -85,9 +89,9 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
       case 'getmode':
         model = await _contents.get(path);
         if (model.type === 'directory') {
-          response = DIR_MODE;
+          response = { mode: DIR_MODE };
         } else {
-          response = FILE_MODE;
+          response = { mode: FILE_MODE };
         }
         break;
       case 'lookup':
@@ -155,10 +159,10 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         break;
     }
 
-    if (Array.isArray(response)) {
-      this._channel.postMessage(response);
-    } else {
+    if (typeof response === 'object') {
       this._channel.postMessage({ ...response, sender: 'broadcast.ts' });
+    } else {
+      this._channel.postMessage(response);
     }
   };
 

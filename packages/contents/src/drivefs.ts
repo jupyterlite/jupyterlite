@@ -330,13 +330,13 @@ export class ContentsAPI {
   }
 
   getmode(path: string): number {
-    return Number.parseInt(
-      this.request({
-        sender: SENDER,
-        method: 'getmode',
-        path: this.normalizePath(path),
-      })
-    );
+    const { mode } = this.request({
+      sender: SENDER,
+      method: 'getmode',
+      path: this.normalizePath(path),
+    });
+
+    return Number.parseInt(mode);
   }
 
   mknod(path: string, mode: number) {
@@ -358,14 +358,14 @@ export class ContentsAPI {
   }
 
   readdir(path: string): string[] {
-    const dirlist = this.request({
+    const { contents } = this.request({
       sender: SENDER,
       method: 'readdir',
       path: this.normalizePath(path),
     });
-    dirlist.push('.');
-    dirlist.push('..');
-    return dirlist;
+    contents.push('.');
+    contents.push('..');
+    return contents;
   }
 
   rmdir(path: string): void {
