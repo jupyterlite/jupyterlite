@@ -159,7 +159,11 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         break;
     }
 
-    this._channel.postMessage({ ...response, sender: 'broadcast.ts' });
+    if (typeof response === 'object') {
+      this._channel.postMessage({ ...response, sender: 'broadcast.ts' });
+    } else {
+      this._channel.postMessage(response);
+    }
   };
 
   protected _channel: BroadcastChannel | null = null;
