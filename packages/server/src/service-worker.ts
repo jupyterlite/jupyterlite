@@ -126,7 +126,9 @@ async function broadcastOne(request: Request): Promise<Response> {
     };
   });
 
-  broadcast.postMessage(await request.json());
+  const message = await request.json();
+  message.receiver = 'broadcast.ts';
+  broadcast.postMessage(message);
 
   return await promise;
 }

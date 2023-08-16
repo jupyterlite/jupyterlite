@@ -54,16 +54,20 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   /** Handle a message received on the BroadcastChannel */
   protected _onMessage = async (event: MessageEvent<IDriveRequest>): Promise<void> => {
-    if (!this._channel || event.data?.sender === 'broadcast.ts') {
+    if (!this._channel) {
       return;
     }
     const { _contents } = this;
     const request = event.data;
-
     const path = request?.path;
+    const receiver = request?.receiver;
+    if (receiver !== 'broadcast.ts') {
+      // Message is not meant for us
+      return;
+    }
 
     // many successful responses default to null
-    let response: { [key: string]: any } | null = null;
+    let response: any = null;
 
     // most requests will use a model
     let model: ServerContents.IModel;
@@ -71,13 +75,9 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     switch (request?.method) {
       case 'readdir':
         model = await _contents.get(path, { content: true });
-        response = {
-          contents: [],
-        };
+        response = [];
         if (model.type === 'directory' && model.content) {
-          response.contents = model.content.map(
-            (subcontent: IModel) => subcontent.name
-          );
+          response = model.content.map((subcontent: IModel) => subcontent.name);
         }
         break;
       case 'rmdir':
@@ -89,9 +89,9 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
       case 'getmode':
         model = await _contents.get(path);
         if (model.type === 'directory') {
-          response = { mode: DIR_MODE };
+          response = DIR_MODE;
         } else {
-          response = { mode: FILE_MODE };
+          response = FILE_MODE;
         }
         break;
       case 'lookup':
@@ -159,11 +159,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         break;
     }
 
-    if (typeof response === 'object') {
-      this._channel.postMessage({ ...response, sender: 'broadcast.ts' });
-    } else {
-      this._channel.postMessage(response);
-    }
+    this._channel.postMessage(response);
   };
 
   protected _channel: BroadcastChannel | null = null;
