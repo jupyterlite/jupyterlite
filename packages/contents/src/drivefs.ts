@@ -309,6 +309,7 @@ export class ContentsAPI {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
     try {
+      console.log('drive.fs will send a message: ', JSON.stringify(data));
       xhr.send(JSON.stringify(data));
     } catch (e) {
       console.error(e);

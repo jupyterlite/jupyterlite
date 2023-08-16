@@ -54,6 +54,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   /** Handle a message received on the BroadcastChannel */
   protected _onMessage = async (event: MessageEvent<IDriveRequest>): Promise<void> => {
+    console.log('Got message event ', event);
     if (!this._channel || event.data?.sender === 'broadcast.ts') {
       return;
     }
