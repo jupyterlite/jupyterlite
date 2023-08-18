@@ -60,6 +60,11 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     const { _contents } = this;
     const request = event.data;
     const path = request?.path;
+    const receiver = request?.receiver;
+    if (receiver !== 'broadcast.ts') {
+      // Message is not meant for us
+      return;
+    }
 
     // many successful responses default to null
     let response: any = null;

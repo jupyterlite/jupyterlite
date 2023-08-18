@@ -49,6 +49,11 @@ export interface IDriveRequest {
   method: TDriveMethod;
 
   /**
+   * The expected receiver of the request
+   */
+  receiver?: 'broadcast.ts';
+
+  /**
    * The path to the file/directory for which the request was sent
    */
   path: string;
