@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/javascript-kernel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JupyterLite - JavaScript Kernel",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "^5.5.3",
-    "@jupyterlite/kernel": "^0.1.1",
+    "@jupyterlite/kernel": "^0.1.2",
     "comlink": "^4.3.1"
   },
   "devDependencies": {

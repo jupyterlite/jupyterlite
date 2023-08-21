@@ -2,6 +2,30 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.1...f06cdcc7b78617bfaeb3b76d19cc981cfbe9b59a))
+
+### Enhancements made
+
+- Do not stub out the native WebSocket [#1118](https://github.com/jupyterlite/jupyterlite/pull/1118) ([@oeway](https://github.com/oeway))
+
+### Bugs fixed
+
+- Only handle broadcasted messages meant to be received [#1075](https://github.com/jupyterlite/jupyterlite/pull/1075) ([@andeplane](https://github.com/andeplane))
+
+### Documentation improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.1.0` on RTD [#1120](https://github.com/jupyterlite/jupyterlite/pull/1120) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-07-31&to=2023-08-21&type=c))
+
+[@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-07-31..2023-08-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-07-31..2023-08-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-07-31..2023-08-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-07-31..2023-08-21&type=Issues) | [@oeway](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aoeway+updated%3A2023-07-31..2023-08-21&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.0...5ad72a8bd51d707d78eae9229f0392efc14b2073))
@@ -37,8 +61,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-04-05&to=2023-07-31&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-04-05..2023-07-31&type=Issues) | [@bartbroere](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abartbroere+updated%3A2023-04-05..2023-07-31&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-04-05..2023-07-31&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-04-05..2023-07-31&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-04-05..2023-07-31&type=Issues) | [@katotetsuro](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akatotetsuro+updated%3A2023-04-05..2023-07-31&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2023-04-05..2023-07-31&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-04-05..2023-07-31&type=Issues) | [@pierrepo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Apierrepo+updated%3A2023-04-05..2023-07-31&type=Issues) | [@sko-kr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Asko-kr+updated%3A2023-04-05..2023-07-31&type=Issues) | [@tylere](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atylere+updated%3A2023-04-05..2023-07-31&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.0
 
