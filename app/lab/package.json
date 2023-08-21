@@ -74,7 +74,7 @@
     "@jupyterlab/ui-components": "~4.0.4",
     "@jupyterlab/ui-components-extension": "~4.0.4",
     "@jupyterlab/vega5-extension": "~4.0.4",
-    "@jupyterlite/application-extension": "~0.1.1",
+    "@jupyterlite/application-extension": "~0.1.2",
     "@jupyterlite/contents": "~0.1.2",
     "@jupyterlite/iframe-extension": "~0.1.2",
     "@jupyterlite/kernel": "~0.1.2",
