@@ -2,7 +2,6 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
-// import SW_URL from '!!file-loader?name=[name]-[contenthash:7].[ext]&context=.!./service-worker';
 import SW_URL from './service-worker?text';
 
 /**
