@@ -242,6 +242,7 @@ class ServiceWorkerPlugin {
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
+    devtool: 'source-map',
     entry: allEntryPoints,
     resolve: {
       fallback: {
@@ -280,11 +281,6 @@ module.exports = [
         {
           test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
           type: 'asset/resource',
-        },
-        {
-          test: /\.js$/,
-          use: ['source-map-loader'],
-          enforce: 'pre',
         },
         {
           resourceQuery: /text/,
