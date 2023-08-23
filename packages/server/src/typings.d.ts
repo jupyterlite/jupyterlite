@@ -1,4 +1,4 @@
-declare module '!!file-loader*' {
-  const res: string;
-  return res;
+declare module '*?text' {
+  const value: string;
+  export default value;
 }

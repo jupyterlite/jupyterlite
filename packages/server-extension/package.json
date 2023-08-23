@@ -38,8 +38,8 @@
   },
   "dependencies": {
     "@jupyterlab/coreutils": "~6.0.4",
-    "@jupyterlite/kernel": "^0.1.1",
-    "@jupyterlite/licenses": "^0.1.1",
+    "@jupyterlite/kernel": "^0.1.2",
+    "@jupyterlite/licenses": "^0.1.2",
     "@jupyterlite/localforage": "^0.1.2",
     "@jupyterlite/server": "^0.1.2",
     "@jupyterlite/session": "^0.1.2",

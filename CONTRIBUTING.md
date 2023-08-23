@@ -20,7 +20,7 @@ git clone https://github.com/jupyterlite/jupyterlite
 You'll need:
 
 - `git`
-- `nodejs >=18,<19`
+- `nodejs >=20,<21`
 - `jupyterlab >=4,<5`
 - `python >=3.10,<3.11`
 

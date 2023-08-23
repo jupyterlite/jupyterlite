@@ -58,7 +58,7 @@ dependencies:
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
-  - nodejs >=18,<19
+  - nodejs >=20,<21
   - python >=3.10,<3.11
   # build
   - doit >=0.34,<1

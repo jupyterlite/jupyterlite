@@ -286,6 +286,13 @@ module.exports = [
           test: /\.js$/,
           use: ['source-map-loader'],
         },
+        {
+          resourceQuery: /text/,
+          type: 'asset/resource',
+          generator: {
+            filename: '[name]-[contenthash:7].[ext]'
+          }
+        }
       ],
     },
     optimization: {
