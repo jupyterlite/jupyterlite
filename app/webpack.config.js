@@ -242,7 +242,6 @@ class ServiceWorkerPlugin {
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
-    devtool: 'source-map',
     entry: allEntryPoints,
     resolve: {
       fallback: {
@@ -285,6 +284,7 @@ module.exports = [
         {
           test: /\.js$/,
           use: ['source-map-loader'],
+          enforce: 'pre',
         },
         {
           resourceQuery: /text/,
@@ -297,6 +297,15 @@ module.exports = [
     },
     optimization: {
       moduleIds: 'deterministic',
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          jlab_core: {
+            test: /[\\/]node_modules[\\/]@(jupyterlab|lumino(?!\/datagrid))[\\/]/,
+            name: 'jlab_core',
+          },
+        },
+      },
     },
     plugins: [
       ...licensePlugins,

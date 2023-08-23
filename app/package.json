@@ -20,10 +20,9 @@
   },
   "devDependencies": {
     "@jupyterlab/builder": "~4.0.4",
-    "css-loader": "^6.6.0",
     "fs-extra": "^9.0.1",
     "glob": "^7.2.0",
-    "handlebars": "^4.5.3",
+    "handlebars": "^4.7.8",
     "html-webpack-plugin": "^5.5.3",
     "rimraf": "^5.0.1",
     "source-map-loader": "^4.0.1",
