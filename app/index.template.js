@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterLab } from '@jupyterlab/application';
+import { {{ appClassName }} } from '{{ appModuleName }}';
 
 import { JupyterLiteServer } from '@jupyterlite/server';
 
@@ -16,16 +16,9 @@ const serverExtensions = [
 
 // custom list of disabled plugins
 const disabled = [
-  '@jupyterlab/apputils-extension:workspaces',
-  '@jupyterlab/application-extension:logo',
-  '@jupyterlab/application-extension:main',
-  '@jupyterlab/application-extension:tree-resolver',
-  '@jupyterlab/apputils-extension:announcements',
-  '@jupyterlab/apputils-extension:resolver',
-  '@jupyterlab/docmanager-extension:download',
-  '@jupyterlab/filebrowser-extension:download',
-  '@jupyterlab/filebrowser-extension:share-file',
-  '@jupyterlab/help-extension:about'
+{{#each disabledExtensions}}
+  "{{this}}",
+{{/each}}
 ];
 
 async function createModule(scope, module) {
@@ -193,24 +186,23 @@ export async function main() {
   const { serviceManager } = jupyterLiteServer;
 
   // create a full-blown JupyterLab frontend
-  const lab = new JupyterLab({
+  const app = new {{ appClassName }}({
     mimeExtensions,
-    serviceManager,
-    disabled
+    serviceManager
   });
-  lab.name = PageConfig.getOption('appName') || 'JupyterLite';
+  app.name = PageConfig.getOption('appName') || 'JupyterLite';
 
-  lab.registerPluginModules(pluginsToRegister);
+  app.registerPluginModules(pluginsToRegister);
 
   // Expose global app instance when in dev mode or when toggled explicitly.
   const exposeAppInBrowser =
     (PageConfig.getOption('exposeAppInBrowser') || '').toLowerCase() === 'true';
 
   if (exposeAppInBrowser) {
-    window.jupyterapp = lab;
+    window.jupyterapp = app;
   }
 
   /* eslint-disable no-console */
-  await lab.start();
-  await lab.restored;
+  await app.start();
+  await app.restored;
 }

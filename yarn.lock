@@ -3907,6 +3907,124 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlite/app-consoles@workspace:app/consoles":
+  version: 0.0.0-use.local
+  resolution: "@jupyterlite/app-consoles@workspace:app/consoles"
+  dependencies:
+    "@jupyterlab/application": ~4.0.4
+    "@jupyterlab/application-extension": ~4.0.4
+    "@jupyterlab/apputils-extension": ~4.0.4
+    "@jupyterlab/attachments": ~4.0.4
+    "@jupyterlab/cell-toolbar-extension": ~4.0.4
+    "@jupyterlab/codemirror-extension": ~4.0.4
+    "@jupyterlab/completer-extension": ~4.0.4
+    "@jupyterlab/console-extension": ~4.0.4
+    "@jupyterlab/csvviewer-extension": ~4.0.4
+    "@jupyterlab/docmanager-extension": ~4.0.4
+    "@jupyterlab/documentsearch-extension": ~4.0.4
+    "@jupyterlab/filebrowser-extension": ~4.0.4
+    "@jupyterlab/fileeditor-extension": ~4.0.4
+    "@jupyterlab/help-extension": ~4.0.4
+    "@jupyterlab/htmlviewer-extension": ~4.0.4
+    "@jupyterlab/imageviewer-extension": ~4.0.4
+    "@jupyterlab/inspector-extension": ~4.0.4
+    "@jupyterlab/javascript-extension": ~4.0.4
+    "@jupyterlab/json-extension": ~4.0.4
+    "@jupyterlab/launcher-extension": ~4.0.4
+    "@jupyterlab/logconsole-extension": ~4.0.4
+    "@jupyterlab/lsp-extension": ~4.0.4
+    "@jupyterlab/mainmenu-extension": ~4.0.4
+    "@jupyterlab/markdownviewer-extension": ~4.0.4
+    "@jupyterlab/mathjax-extension": ~4.0.4
+    "@jupyterlab/metadataform-extension": ~4.0.4
+    "@jupyterlab/notebook-extension": ~4.0.4
+    "@jupyterlab/pdf-extension": ~4.0.4
+    "@jupyterlab/rendermime-extension": ~4.0.4
+    "@jupyterlab/running-extension": ~4.0.4
+    "@jupyterlab/settingeditor-extension": ~4.0.4
+    "@jupyterlab/shortcuts-extension": ~4.0.4
+    "@jupyterlab/statusbar-extension": ~4.0.4
+    "@jupyterlab/theme-dark-extension": ~4.0.4
+    "@jupyterlab/theme-light-extension": ~4.0.4
+    "@jupyterlab/toc-extension": ~6.0.4
+    "@jupyterlab/tooltip-extension": ~4.0.4
+    "@jupyterlab/translation-extension": ~4.0.4
+    "@jupyterlab/ui-components-extension": ~4.0.4
+    "@jupyterlab/vega5-extension": ~4.0.4
+    "@jupyterlite/application-extension": ^0.1.2
+    "@jupyterlite/iframe-extension": ^0.1.2
+    "@jupyterlite/licenses": ^0.1.2
+    "@jupyterlite/localforage": ^0.1.2
+    "@jupyterlite/server": ^0.1.2
+    "@jupyterlite/server-extension": ^0.1.2
+    "@jupyterlite/types": ^0.1.2
+    "@jupyterlite/ui-components": ^0.1.2
+    es6-promise: ~4.2.8
+    react: ^17.0.1
+    react-dom: ^17.0.1
+    yjs: ^13.5.6
+  languageName: unknown
+  linkType: soft
+
+"@jupyterlite/app-edit@workspace:app/edit":
+  version: 0.0.0-use.local
+  resolution: "@jupyterlite/app-edit@workspace:app/edit"
+  dependencies:
+    "@jupyterlab/application": ~4.0.4
+    "@jupyterlab/application-extension": ~4.0.4
+    "@jupyterlab/apputils-extension": ~4.0.4
+    "@jupyterlab/attachments": ~4.0.4
+    "@jupyterlab/cell-toolbar-extension": ~4.0.4
+    "@jupyterlab/codemirror-extension": ~4.0.4
+    "@jupyterlab/completer-extension": ~4.0.4
+    "@jupyterlab/console-extension": ~4.0.4
+    "@jupyterlab/csvviewer-extension": ~4.0.4
+    "@jupyterlab/docmanager-extension": ~4.0.4
+    "@jupyterlab/documentsearch-extension": ~4.0.4
+    "@jupyterlab/filebrowser-extension": ~4.0.4
+    "@jupyterlab/fileeditor-extension": ~4.0.4
+    "@jupyterlab/help-extension": ~4.0.4
+    "@jupyterlab/htmlviewer-extension": ~4.0.4
+    "@jupyterlab/imageviewer-extension": ~4.0.4
+    "@jupyterlab/inspector-extension": ~4.0.4
+    "@jupyterlab/javascript-extension": ~4.0.4
+    "@jupyterlab/json-extension": ~4.0.4
+    "@jupyterlab/launcher-extension": ~4.0.4
+    "@jupyterlab/logconsole-extension": ~4.0.4
+    "@jupyterlab/lsp-extension": ~4.0.4
+    "@jupyterlab/mainmenu-extension": ~4.0.4
+    "@jupyterlab/markdownviewer-extension": ~4.0.4
+    "@jupyterlab/mathjax-extension": ~4.0.4
+    "@jupyterlab/metadataform-extension": ~4.0.4
+    "@jupyterlab/notebook-extension": ~4.0.4
+    "@jupyterlab/pdf-extension": ~4.0.4
+    "@jupyterlab/rendermime-extension": ~4.0.4
+    "@jupyterlab/running-extension": ~4.0.4
+    "@jupyterlab/settingeditor-extension": ~4.0.4
+    "@jupyterlab/shortcuts-extension": ~4.0.4
+    "@jupyterlab/statusbar-extension": ~4.0.4
+    "@jupyterlab/theme-dark-extension": ~4.0.4
+    "@jupyterlab/theme-light-extension": ~4.0.4
+    "@jupyterlab/toc-extension": ~6.0.4
+    "@jupyterlab/tooltip-extension": ~4.0.4
+    "@jupyterlab/translation-extension": ~4.0.4
+    "@jupyterlab/ui-components-extension": ~4.0.4
+    "@jupyterlab/vega5-extension": ~4.0.4
+    "@jupyterlite/application-extension": ^0.1.2
+    "@jupyterlite/iframe-extension": ^0.1.2
+    "@jupyterlite/licenses": ^0.1.2
+    "@jupyterlite/localforage": ^0.1.2
+    "@jupyterlite/server": ^0.1.2
+    "@jupyterlite/server-extension": ^0.1.2
+    "@jupyterlite/types": ^0.1.2
+    "@jupyterlite/ui-components": ^0.1.2
+    es6-promise: ~4.2.8
+    react: ^17.0.1
+    react-dom: ^17.0.1
+    yjs: ^13.5.6
+  languageName: unknown
+  linkType: soft
+
 "@jupyterlite/app-lab@workspace:app/lab":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-lab@workspace:app/lab"
@@ -3966,17 +4084,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/app-notebook@workspace:app/notebook":
+"@jupyterlite/app-notebooks@workspace:app/notebooks":
   version: 0.0.0-use.local
-  resolution: "@jupyterlite/app-notebook@workspace:app/notebook"
+  resolution: "@jupyterlite/app-notebooks@workspace:app/notebooks"
   dependencies:
-    "@jupyter-notebook/application": ^7.0.2
-    "@jupyter-notebook/application-extension": ^7.0.2
-    "@jupyter-notebook/docmanager-extension": ^7.0.2
-    "@jupyter-notebook/help-extension": ^7.0.2
-    "@jupyter-notebook/notebook-extension": ^7.0.2
-    "@jupyter-notebook/tree-extension": ^7.0.2
-    "@jupyter-notebook/ui-components": ^7.0.2
+    "@jupyterlab/application": ~4.0.4
     "@jupyterlab/application-extension": ~4.0.4
     "@jupyterlab/apputils-extension": ~4.0.4
     "@jupyterlab/attachments": ~4.0.4
@@ -3984,31 +4096,50 @@ __metadata:
     "@jupyterlab/codemirror-extension": ~4.0.4
     "@jupyterlab/completer-extension": ~4.0.4
     "@jupyterlab/console-extension": ~4.0.4
-    "@jupyterlab/coreutils": ~6.0.4
+    "@jupyterlab/csvviewer-extension": ~4.0.4
     "@jupyterlab/docmanager-extension": ~4.0.4
+    "@jupyterlab/documentsearch-extension": ~4.0.4
     "@jupyterlab/filebrowser-extension": ~4.0.4
     "@jupyterlab/fileeditor-extension": ~4.0.4
+    "@jupyterlab/help-extension": ~4.0.4
+    "@jupyterlab/htmlviewer-extension": ~4.0.4
+    "@jupyterlab/imageviewer-extension": ~4.0.4
+    "@jupyterlab/inspector-extension": ~4.0.4
     "@jupyterlab/javascript-extension": ~4.0.4
     "@jupyterlab/json-extension": ~4.0.4
+    "@jupyterlab/launcher-extension": ~4.0.4
+    "@jupyterlab/logconsole-extension": ~4.0.4
+    "@jupyterlab/lsp-extension": ~4.0.4
     "@jupyterlab/mainmenu-extension": ~4.0.4
+    "@jupyterlab/markdownviewer-extension": ~4.0.4
     "@jupyterlab/mathjax-extension": ~4.0.4
+    "@jupyterlab/metadataform-extension": ~4.0.4
     "@jupyterlab/notebook-extension": ~4.0.4
+    "@jupyterlab/pdf-extension": ~4.0.4
     "@jupyterlab/rendermime-extension": ~4.0.4
+    "@jupyterlab/running-extension": ~4.0.4
+    "@jupyterlab/settingeditor-extension": ~4.0.4
     "@jupyterlab/shortcuts-extension": ~4.0.4
+    "@jupyterlab/statusbar-extension": ~4.0.4
     "@jupyterlab/theme-dark-extension": ~4.0.4
     "@jupyterlab/theme-light-extension": ~4.0.4
+    "@jupyterlab/toc-extension": ~6.0.4
     "@jupyterlab/tooltip-extension": ~4.0.4
     "@jupyterlab/translation-extension": ~4.0.4
+    "@jupyterlab/ui-components-extension": ~4.0.4
+    "@jupyterlab/vega5-extension": ~4.0.4
     "@jupyterlite/application-extension": ^0.1.2
     "@jupyterlite/iframe-extension": ^0.1.2
+    "@jupyterlite/licenses": ^0.1.2
     "@jupyterlite/localforage": ^0.1.2
-    "@jupyterlite/notebook-application-extension": ^0.1.2
     "@jupyterlite/server": ^0.1.2
     "@jupyterlite/server-extension": ^0.1.2
     "@jupyterlite/types": ^0.1.2
+    "@jupyterlite/ui-components": ^0.1.2
     es6-promise: ~4.2.8
     react: ^17.0.1
     react-dom: ^17.0.1
+    yjs: ^13.5.6
   languageName: unknown
   linkType: soft
 
@@ -4049,6 +4180,52 @@ __metadata:
     react: ^17.0.1
     react-dom: ^17.0.1
     yjs: ^13.5.6
+  languageName: unknown
+  linkType: soft
+
+"@jupyterlite/app-tree@workspace:app/tree":
+  version: 0.0.0-use.local
+  resolution: "@jupyterlite/app-tree@workspace:app/tree"
+  dependencies:
+    "@jupyter-notebook/application": ^7.0.2
+    "@jupyter-notebook/application-extension": ^7.0.2
+    "@jupyter-notebook/docmanager-extension": ^7.0.2
+    "@jupyter-notebook/help-extension": ^7.0.2
+    "@jupyter-notebook/notebook-extension": ^7.0.2
+    "@jupyter-notebook/tree-extension": ^7.0.2
+    "@jupyter-notebook/ui-components": ^7.0.2
+    "@jupyterlab/application-extension": ~4.0.4
+    "@jupyterlab/apputils-extension": ~4.0.4
+    "@jupyterlab/attachments": ~4.0.4
+    "@jupyterlab/cell-toolbar-extension": ~4.0.4
+    "@jupyterlab/codemirror-extension": ~4.0.4
+    "@jupyterlab/completer-extension": ~4.0.4
+    "@jupyterlab/console-extension": ~4.0.4
+    "@jupyterlab/coreutils": ~6.0.4
+    "@jupyterlab/docmanager-extension": ~4.0.4
+    "@jupyterlab/filebrowser-extension": ~4.0.4
+    "@jupyterlab/fileeditor-extension": ~4.0.4
+    "@jupyterlab/javascript-extension": ~4.0.4
+    "@jupyterlab/json-extension": ~4.0.4
+    "@jupyterlab/mainmenu-extension": ~4.0.4
+    "@jupyterlab/mathjax-extension": ~4.0.4
+    "@jupyterlab/notebook-extension": ~4.0.4
+    "@jupyterlab/rendermime-extension": ~4.0.4
+    "@jupyterlab/shortcuts-extension": ~4.0.4
+    "@jupyterlab/theme-dark-extension": ~4.0.4
+    "@jupyterlab/theme-light-extension": ~4.0.4
+    "@jupyterlab/tooltip-extension": ~4.0.4
+    "@jupyterlab/translation-extension": ~4.0.4
+    "@jupyterlite/application-extension": ^0.1.2
+    "@jupyterlite/iframe-extension": ^0.1.2
+    "@jupyterlite/localforage": ^0.1.2
+    "@jupyterlite/notebook-application-extension": ^0.1.2
+    "@jupyterlite/server": ^0.1.2
+    "@jupyterlite/server-extension": ^0.1.2
+    "@jupyterlite/types": ^0.1.2
+    es6-promise: ~4.2.8
+    react: ^17.0.1
+    react-dom: ^17.0.1
   languageName: unknown
   linkType: soft
 

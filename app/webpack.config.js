@@ -14,7 +14,9 @@ const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
 
 const topLevelData = require('./package.json');
 
-const liteAppData = topLevelData.jupyterlite.apps.reduce(
+// TODO: re-enable
+// const liteAppData = topLevelData.jupyterlite.apps.reduce(
+const liteAppData = ['lab', 'repl'].reduce(
   (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
   {},
 );
@@ -163,32 +165,54 @@ for (const [name, data] of Object.entries(liteAppData)) {
       mimeExtensions[key] = mimeExtension === true ? '' : mimeExtension;
     }
   }
+  // Retrieve app info from package.json
+  const { appClassName, appModuleName, disabledExtensions } = data.jupyterlab;
+
   // Create the entry point and other assets in build directory.
   const template = Handlebars.compile(
-    fs.readFileSync(path.resolve(`./${name}/index.template.js`)).toString(),
+    fs.readFileSync(path.resolve(`./index.template.js`)).toString(),
   );
   fs.writeFileSync(
     path.join(name, 'build', 'index.js'),
-    template({ extensions, mimeExtensions }),
+    template({
+      name,
+      appClassName,
+      appModuleName,
+      extensions,
+      mimeExtensions,
+      disabledExtensions,
+    }),
   );
   // Create the bootstrap file that loads federated extensions and calls the
   // initialization logic in index.js
   const entryPoint = `./${name}/build/bootstrap.js`;
   fs.copySync('bootstrap.js', entryPoint);
+  // Copy the publicpath file
+  const publicPath = `./${name}/publicpath.js`;
+  fs.copySync('publicpath.js', publicPath);
   allEntryPoints[`${name}/bundle`] = entryPoint;
-  allEntryPoints[`${name}/publicpath`] = `./${name}/publicpath.js`;
+  allEntryPoints[`${name}/publicpath`] = publicPath;
 
+  // Inject the name of the app in the template to be able to filter bundle files
+  const indexTemplate = Handlebars.compile(
+    fs.readFileSync(path.resolve(`./index.template.html`)).toString(),
+  );
+  fs.writeFileSync(
+    path.join(name, 'build', 'index.template.html'),
+    indexTemplate({
+      name,
+    }),
+  );
   // Use templates to create cache-busting templates
-  for (const page of data.jupyterlite.pages) {
-    allHtmlPlugins.push(
-      new HtmlWebpackPlugin({
-        inject: false,
-        minify: false,
-        filename: `../${name}/${page}.html`,
-        template: `${name}/${page}.template.html`,
-      }),
-    );
-  }
+  allHtmlPlugins.push(
+    new HtmlWebpackPlugin({
+      inject: false,
+      minify: false,
+      title: data.jupyterlab.title,
+      filename: `../${name}/index.html`,
+      template: `${name}/build/index.template.html`,
+    }),
+  );
 }
 
 /**
