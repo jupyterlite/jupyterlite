@@ -1,4 +1,4 @@
-name: jupyterlite-dev
+name: stockwhiz-dev
 # this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
