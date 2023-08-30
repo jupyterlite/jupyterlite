@@ -23,3 +23,7 @@
 .jp-OutputArea-child {
   flex-direction: row;
 }
+
+.jp-MainAreaWidget {
+  height: 100%;
+}

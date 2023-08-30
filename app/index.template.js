@@ -125,7 +125,7 @@ export async function main() {
     }
   });
 
-  // Handled the standard extensions.
+  // Handle the standard extensions.
   {{#each extensions}}
   if (!federatedExtensionNames.has('{{@key}}')) {
     try {
