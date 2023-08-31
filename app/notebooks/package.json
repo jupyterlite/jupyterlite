@@ -259,7 +259,6 @@
       "@jupyterlab/application-extension:property-inspector",
       "@jupyterlab/application-extension:shell",
       "@jupyterlab/application-extension:status",
-      "@jupyterlab/application-extension:top-bar",
       "@jupyterlab/application-extension:tree-resolver",
       "@jupyterlab/apputils-extension:announcements",
       "@jupyterlab/apputils-extension:kernel-status",
