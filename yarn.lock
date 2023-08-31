@@ -4559,6 +4559,7 @@ __metadata:
     "@jupyterlab/json-extension": ~4.0.4
     "@jupyterlab/mainmenu-extension": ~4.0.4
     "@jupyterlab/mathjax-extension": ~4.0.4
+    "@jupyterlab/metadataform-extension": ~4.0.4
     "@jupyterlab/notebook-extension": ~4.0.4
     "@jupyterlab/rendermime-extension": ~4.0.4
     "@jupyterlab/shortcuts-extension": ~4.0.4
@@ -4566,6 +4567,7 @@ __metadata:
     "@jupyterlab/theme-light-extension": ~4.0.4
     "@jupyterlab/tooltip-extension": ~4.0.4
     "@jupyterlab/translation-extension": ~4.0.4
+    "@jupyterlab/ui-components-extension": ~4.0.4
     "@jupyterlite/application-extension": ^0.1.2
     "@jupyterlite/iframe-extension": ^0.1.2
     "@jupyterlite/localforage": ^0.1.2

@@ -342,7 +342,7 @@ const opener: JupyterFrontEndPlugin<void> = {
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
-        app.restored.then(() => {
+        app.started.then(() => {
           const page = PageConfig.getOption('notebookPage');
           const [file] = files;
           switch (page) {

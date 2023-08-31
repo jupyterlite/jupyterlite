@@ -70,7 +70,7 @@ const docmanager: JupyterFrontEndPlugin<void> = {
       }
       const ext = PathExt.extname(path);
       const route = ext === '.ipynb' ? 'notebooks' : 'edit';
-      window.open(`${baseUrl}notebook/${route}?path=${path}`);
+      window.open(`${baseUrl}${route}?path=${path}`);
       return undefined;
     };
   },
