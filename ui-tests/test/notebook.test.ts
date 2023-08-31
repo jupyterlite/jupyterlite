@@ -21,7 +21,7 @@ test.use(config);
 
 test.describe('Notebook Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('notebook/index.html');
+    await page.goto('tree/index.html');
     // create a new directory for now to avoid showing the default content
     const name = 'notebook';
     await createNewDirectory({ page, name });

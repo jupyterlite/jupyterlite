@@ -37,7 +37,8 @@
       "repl",
       "tree",
       "edit",
-      "notebooks"
+      "notebooks",
+      "consoles"
     ]
   }
 }

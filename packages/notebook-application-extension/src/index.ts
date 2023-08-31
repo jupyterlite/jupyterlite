@@ -35,7 +35,7 @@ const consoles: JupyterFrontEndPlugin<void> = {
         return;
       }
       const path = sessionContext.path;
-      window.open(`${baseUrl}notebook/consoles?path=${path}`, '_blank');
+      window.open(`${baseUrl}consoles?path=${path}`, '_blank');
 
       // the widget is not needed anymore
       console.dispose();
@@ -85,7 +85,7 @@ const logo: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd) => {
     const baseUrl = PageConfig.getBaseUrl();
     const node = document.createElement('a');
-    node.href = `${baseUrl}notebook/tree`;
+    node.href = `${baseUrl}tree`;
     node.target = '_blank';
     node.rel = 'noopener noreferrer';
     const logo = new Widget({ node });
