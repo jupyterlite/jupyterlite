@@ -272,7 +272,7 @@ def task_build():
         ]
         all_app_targets += app_targets
         extra_app_deps += [
-            app / "index.template.js",
+            "index.template.js",
             app_json,
         ]
 
