@@ -16,7 +16,7 @@ const topLevelData = require('./package.json');
 
 // TODO: re-enable
 // const liteAppData = topLevelData.jupyterlite.apps.reduce(
-const liteAppData = ['lab', 'repl'].reduce(
+const liteAppData = ['lab', 'repl', 'tree'].reduce(
   (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
   {},
 );
