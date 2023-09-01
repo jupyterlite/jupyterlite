@@ -48,13 +48,11 @@ def test_serve(
     time.sleep(2)
 
     app_urls = [""]
-    for app in ["lab", "notebook", "repl"]:
+    for app in ["lab", "tree", "repl"]:
         app_urls += [
             f"{app}/",
             f"{app}/index.html",
         ]
-        if app == "notebook":
-            app_urls += [f"{app}/tree/", f"{app}/tree/index.html"]
 
     maybe_errors = [
         _fetch_without_errors(f"{url}{frag}", expect_headers=all_headers)

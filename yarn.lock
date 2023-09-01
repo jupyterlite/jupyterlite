@@ -4405,6 +4405,7 @@ __metadata:
     "@jupyterlab/lsp-extension": ~4.0.4
     "@jupyterlab/mainmenu-extension": ~4.0.4
     "@jupyterlab/markdownviewer-extension": ~4.0.4
+    "@jupyterlab/markedparser-extension": ~4.0.4
     "@jupyterlab/mathjax-extension": ~4.0.4
     "@jupyterlab/metadataform-extension": ~4.0.4
     "@jupyterlab/notebook-extension": ~4.0.4
@@ -4464,6 +4465,7 @@ __metadata:
     "@jupyterlab/lsp-extension": ~4.0.4
     "@jupyterlab/mainmenu-extension": ~4.0.4
     "@jupyterlab/markdownviewer-extension": ~4.0.4
+    "@jupyterlab/markedparser-extension": ~4.0.4
     "@jupyterlab/mathjax-extension": ~4.0.4
     "@jupyterlab/metadataform-extension": ~4.0.4
     "@jupyterlab/notebook-extension": ~4.0.4
