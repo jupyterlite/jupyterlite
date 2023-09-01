@@ -38,8 +38,7 @@ JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterla
 [try it with jupyterlab!]: https://jupyterlite.readthedocs.io/en/latest/try/lab
 [lab-screenshot]:
   https://user-images.githubusercontent.com/591645/114009512-7fe79600-9863-11eb-9aac-3a9ef6345011.png
-[try it with jupyter notebook!]:
-  https://jupyterlite.readthedocs.io/en/latest/try/notebook
+[try it with jupyter notebook!]: https://jupyterlite.readthedocs.io/en/latest/try/tree
 [notebook-screenshot]:
   https://user-images.githubusercontent.com/591645/114454062-78fdb200-9bda-11eb-9cda-4ee327dd1c77.png
 
