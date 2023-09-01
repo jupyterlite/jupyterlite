@@ -5,19 +5,15 @@ import { galata, test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+// TODO: investigate why this is needed and why Galata is not able
+// to find the default launcher activity like in JupyterLab
 test.use({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
     const waitIsReady = async (page): Promise<void> => {
       await page.waitForSelector('.jp-Launcher');
     };
     await use(waitIsReady);
-  },
-  mockSettings: {
-    ...galata.DEFAULT_SETTINGS,
-    '@jupyterlab/apputils-extension:notification': {
-      fetchNews: 'none',
-    },
-  },
+  }
 });
 
 test.describe('General Tests', () => {

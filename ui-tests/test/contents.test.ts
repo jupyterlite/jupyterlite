@@ -5,11 +5,20 @@ import * as path from 'path';
 
 import * as fs from 'fs/promises';
 
-import { test } from '@jupyterlab/galata';
+import { galata, test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
 import { deleteItem, download } from './utils';
+
+test.use({
+  waitForApplication: async ({ baseURL }, use, testInfo) => {
+    const waitIsReady = async (page): Promise<void> => {
+      await page.waitForSelector('.jp-Launcher');
+    };
+    await use(waitIsReady);
+  }
+});
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -52,6 +61,9 @@ test.describe('Contents Tests', () => {
 
   test('Create a new notebook, edit and reload', async ({ page }) => {
     const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
 
     await page.notebook.setCell(0, 'markdown', '## This is a markdown cell');
     await page.notebook.addCell('raw', 'This is a raw cell');
@@ -60,7 +72,10 @@ test.describe('Contents Tests', () => {
     await page.notebook.run();
     await page.notebook.save();
 
-    expect((await page.notebook.getCellTextOutput(2))[0]).toBe('4');
+    const output = await page.notebook.getCellTextOutput(2);
+
+    expect(output).toBeTruthy();
+    expect(output![0]).toBe('4');
 
     await page.reload();
     expect(
@@ -69,11 +84,17 @@ test.describe('Contents Tests', () => {
 
     await page.notebook.open(name);
 
-    expect((await page.notebook.getCellTextOutput(2))[0]).toBe('4');
+    const output2 = await page.notebook.getCellTextOutput(2);
+
+    expect(output2).toBeTruthy();
+    expect(output2![0]).toBe('4');
   });
 
   test('Create a new notebook and delete it', async ({ page }) => {
     const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
     await page.notebook.close();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
@@ -102,6 +123,9 @@ test.describe('Contents Tests', () => {
 
   test('Download a notebook', async ({ page }) => {
     const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
     const source = '## Markdown cell';
     await page.notebook.setCell(0, 'markdown', source);
     await page.notebook.save();
