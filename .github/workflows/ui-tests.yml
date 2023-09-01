@@ -85,19 +85,3 @@ jobs:
           name: jupyterlite-${{ matrix.browser }}-test-report
           path: |
             ui-tests/playwright-report
-
-      - name: Update snapshots
-        if: failure()
-        run: |
-          cd ui-tests
-          # remove previous snapshots from other browser
-          jlpm run clean:snapshots
-          # generate new snapshots
-          jlpm run test:update --browser ${{ matrix.browser }}
-
-      - name: Upload updated snapshots
-        if: failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: jupyterlite-${{ matrix.browser }}-updated-snapshots
-          path: ui-tests/test

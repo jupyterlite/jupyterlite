@@ -25,7 +25,7 @@ dependencies:
   ### FEDERATED EXTENSIONS ###
   - ipycytoscape
   # TODO: re-add after JupyterLab 4 compatibility
-  # - jupyterlab_miami_nights
+  - jupyterlab_miami_nights
   - jupyterlab_widgets >=3.0.4,<4.0.0
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
@@ -34,14 +34,11 @@ dependencies:
   - jupyterlab-kernelspy
   # TODO: re-add after JupyterLab 4 compatibility
   # - jupyterlab-markup
-  # TODO: re-add after JupyterLab 4 compatibility
-  # - jupyterlab-myst
+  - jupyterlab-myst
   - jupyterlab-tour >=3.1.0
   # TODO: re-add after JupyterLab 4 compatibility
   # - jupyterlab-webrtc-docprovider >=0.1.1
-  # TODO: re-add after the feedstock has been updated for JupyterLab 4:
-  # https://github.com/conda-forge/theme-darcula-feedstock/pull/7
-  # - theme-darcula >=4,<5
+  - jupyterlab-night
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot

@@ -1,9 +1,24 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { test } from '@jupyterlab/galata';
+import { galata, test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
+
+test.use({
+  waitForApplication: async ({ baseURL }, use, testInfo) => {
+    const waitIsReady = async (page): Promise<void> => {
+      await page.waitForSelector('.jp-Launcher');
+    };
+    await use(waitIsReady);
+  },
+  mockSettings: {
+    ...galata.DEFAULT_SETTINGS,
+    '@jupyterlab/apputils-extension:notification': {
+      fetchNews: 'none'
+    }
+  }
+});
 
 test.describe('General Tests', () => {
   test.beforeEach(async ({ page }) => {

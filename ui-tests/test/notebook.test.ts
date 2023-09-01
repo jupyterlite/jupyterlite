@@ -5,7 +5,7 @@ import { test as base } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, config } from './utils';
+import { createNewDirectory } from './utils';
 
 // TODO: fix upstream condition so it's not specific to JupyterLab?
 const test = base.extend({
