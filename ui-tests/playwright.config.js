@@ -2,9 +2,12 @@ const baseConfig = require('@jupyterlab/galata/lib/playwright-config');
 
 module.exports = {
   ...baseConfig,
-  timeout: 240000,
-  reporter: [[process.env.CI ? 'github' : 'list'], ['html']],
-  retries: 1,
+  use: {
+    appPath: '',
+    autoGoto: false,
+    baseURL: 'http://localhost:8000',
+    video: 'retain-on-failure',
+  },
   webServer: [
     {
       command: 'jlpm run start',

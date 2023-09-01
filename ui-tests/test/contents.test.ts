@@ -9,9 +9,7 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { config, createNewDirectory, deleteItem, download } from './utils';
-
-test.use(config);
+import { createNewDirectory, deleteItem, download } from './utils';
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {

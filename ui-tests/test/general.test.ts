@@ -5,10 +5,6 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { config } from './utils';
-
-test.use(config);
-
 test.describe('General Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');

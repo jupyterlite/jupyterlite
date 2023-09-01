@@ -17,8 +17,6 @@ const test = base.extend({
   },
 });
 
-test.use(config);
-
 test.describe('Notebook Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('tree/index.html');
