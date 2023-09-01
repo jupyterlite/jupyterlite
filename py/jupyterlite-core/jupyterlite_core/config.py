@@ -40,9 +40,7 @@ class LiteBuildConfig(LoggingConfigurable):
 
     apps: _Tuple[_Text] = TypedTuple(
         Unicode(),
-        help=(
-            """the Lite apps to explicitly include in build e.g. lab, tree, repl"""
-        ),
+        help=("""the Lite apps to explicitly include in build e.g. lab, tree, repl"""),
     ).tag(config=True)
 
     app_archive: Path = CPath(
