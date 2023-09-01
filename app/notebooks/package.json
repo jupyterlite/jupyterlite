@@ -44,7 +44,7 @@
     "@jupyterlab/mainmenu-extension": "~4.0.4",
     "@jupyterlab/markdownviewer": "~4.0.4",
     "@jupyterlab/markdownviewer-extension": "~4.0.4",
-    "@jupyterlab/markedparser-extension": "~4.0.4",
+    "@jupyterlab/markedparser-extension": "~4.0.5",
     "@jupyterlab/mathjax-extension": "~4.0.4",
     "@jupyterlab/metadataform-extension": "~4.0.4",
     "@jupyterlab/notebook": "~4.0.4",
