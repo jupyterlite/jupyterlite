@@ -1,22 +1,5 @@
 import { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
-import { PlaywrightTestOptions } from '@playwright/test';
-
-// TODO: upstream in Galata?
-
-export async function createNewDirectory({
-  page,
-  name,
-}: {
-  page: IJupyterLabPageFixture;
-  name: string;
-}): Promise<void> {
-  await page.click('[data-icon="ui-components:new-folder"]');
-  await page.fill('.jp-DirListing-editor', name);
-  await page.keyboard.down('Enter');
-  await page.filebrowser.refresh();
-}
-
 export async function deleteItem({
   page,
   name,

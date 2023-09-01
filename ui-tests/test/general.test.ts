@@ -15,9 +15,9 @@ test.use({
   mockSettings: {
     ...galata.DEFAULT_SETTINGS,
     '@jupyterlab/apputils-extension:notification': {
-      fetchNews: 'none'
-    }
-  }
+      fetchNews: 'none',
+    },
+  },
 });
 
 test.describe('General Tests', () => {

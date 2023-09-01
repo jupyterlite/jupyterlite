@@ -24,7 +24,6 @@ dependencies:
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
   - ipycytoscape
-  # TODO: re-add after JupyterLab 4 compatibility
   - jupyterlab_miami_nights
   - jupyterlab_widgets >=3.0.4,<4.0.0
   - jupyterlab-fasta >=3,<4

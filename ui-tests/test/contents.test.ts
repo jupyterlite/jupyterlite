@@ -9,7 +9,7 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, deleteItem, download } from './utils';
+import { deleteItem, download } from './utils';
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
@@ -86,7 +86,8 @@ test.describe('Contents Tests', () => {
 
   test('Create a new folder with content and delete it', async ({ page }) => {
     const name = 'Custom Name';
-    await createNewDirectory({ page, name });
+    await page.menu.clickMenuItem('New>New Folder');
+    await page.fill('.jp-DirListing-editor', name);
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
     await page.filebrowser.openDirectory(name);
