@@ -7,13 +7,13 @@ import { IConsoleTracker } from '@jupyterlab/console';
 
 import { PageConfig, PathExt } from '@jupyterlab/coreutils';
 
-import { IDocumentManager } from '@jupyterlab/docmanager';
+import { IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
 import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
 
-import { Kernel } from '@jupyterlab/services';
-
 import { liteWordmark } from '@jupyterlite/ui-components';
+
+import { Signal } from '@lumino/signaling';
 
 import { Widget } from '@lumino/widgets';
 
@@ -44,35 +44,72 @@ const consoles: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * A plugin to open document in a new browser tab.
+ * A plugin to open documents in a new browser tab.
+ * This plugin is different than the Notebook plugin because JupyterLite creates
+ * links with `?path=...` to open documents.
+ * TODO: investigate how to use the same plugin but make the query parameter configurable
  *
- * TODO: remove and use a custom doc manager?
  */
-const docmanager: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/notebook-application-extension:docmanager',
-  requires: [IDocumentManager],
+const opener: JupyterFrontEndPlugin<IDocumentWidgetOpener> = {
+  id: '@jupyterlite/notebook-application-extension:opener',
   autoStart: true,
-  activate: (app: JupyterFrontEnd, docManager: IDocumentManager) => {
+  optional: [INotebookShell],
+  provides: IDocumentWidgetOpener,
+  activate: (app: JupyterFrontEnd, notebookShell: INotebookShell | null) => {
     const baseUrl = PageConfig.getBaseUrl();
+    const docRegistry = app.docRegistry;
+    let id = 0;
+    return new (class {
+      open(widget: IDocumentWidget, options?: DocumentRegistry.IOpenOptions) {
+        const widgetName = options?.type ?? '';
+        const ref = options?.ref;
+        // check if there is an setting override and if it would add the widget in the main area
+        const userLayoutArea = notebookShell?.userLayout?.[widgetName]?.area;
 
-    // patch the `docManager.open` option to prevent the default behavior
-    const docOpen = docManager.open;
-    docManager.open = (
-      path: string,
-      widgetName = 'default',
-      kernel?: Partial<Kernel.IModel>,
-      options?: DocumentRegistry.IOpenOptions,
-    ): IDocumentWidget | undefined => {
-      const ref = options?.ref;
-      if (ref === '_noref') {
-        docOpen.call(docManager, path, widgetName, kernel, options);
-        return;
+        if (ref !== '_noref' && userLayoutArea === undefined) {
+          const path = widget.context.path;
+          const ext = PathExt.extname(path);
+          let route = 'edit';
+          if (
+            (widgetName === 'default' && ext === '.ipynb') ||
+            widgetName.includes('Notebook')
+          ) {
+            route = 'notebooks';
+          }
+          let url = `${baseUrl}${route}?path=${path}`;
+          // append ?factory only if it's not the default
+          const defaultFactory = docRegistry.defaultWidgetFactory(path);
+          if (widgetName !== defaultFactory.name) {
+            url = `${url}?factory=${widgetName}`;
+          }
+          window.open(url);
+          // dispose the widget since it is not used on this page
+          widget.dispose();
+          return;
+        }
+
+        // otherwise open the document on the current page
+
+        if (!widget.id) {
+          widget.id = `document-manager-${++id}`;
+        }
+        widget.title.dataset = {
+          type: 'document-title',
+          ...widget.title.dataset,
+        };
+        if (!widget.isAttached) {
+          app.shell.add(widget, 'main', options || {});
+        }
+        app.shell.activateById(widget.id);
+        this._opened.emit(widget);
       }
-      const ext = PathExt.extname(path);
-      const route = ext === '.ipynb' ? 'notebooks' : 'edit';
-      window.open(`${baseUrl}${route}?path=${path}`);
-      return undefined;
-    };
+
+      get opened() {
+        return this._opened;
+      }
+
+      private _opened = new Signal<this, IDocumentWidget>(this);
+    })();
   },
 };
 
@@ -120,11 +157,6 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
   },
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [
-  consoles,
-  docmanager,
-  logo,
-  notifyCommands,
-];
+const plugins: JupyterFrontEndPlugin<any>[] = [consoles, logo, opener, notifyCommands];
 
 export default plugins;
