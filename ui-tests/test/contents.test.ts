@@ -17,7 +17,7 @@ test.use({
       await page.waitForSelector('.jp-Launcher');
     };
     await use(waitIsReady);
-  }
+  },
 });
 
 test.describe('Contents Tests', () => {
