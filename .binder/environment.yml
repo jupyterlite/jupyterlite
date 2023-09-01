@@ -27,8 +27,6 @@ dependencies:
   # TODO: re-add after JupyterLab 4 compatibility
   # - jupyterlab_miami_nights
   - jupyterlab_widgets >=3.0.4,<4.0.0
-  # TODO: re-add after JupyterLab 4 compatibility
-  # - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
   # TODO: re-add after JupyterLab 4 compatibility
