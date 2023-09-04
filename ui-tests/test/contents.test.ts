@@ -5,20 +5,11 @@ import * as path from 'path';
 
 import * as fs from 'fs/promises';
 
-import { galata, test } from '@jupyterlab/galata';
+import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
 import { deleteItem, download } from './utils';
-
-test.use({
-  waitForApplication: async ({ baseURL }, use, testInfo) => {
-    const waitIsReady = async (page): Promise<void> => {
-      await page.waitForSelector('.jp-Launcher');
-    };
-    await use(waitIsReady);
-  },
-});
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {

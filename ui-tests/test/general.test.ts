@@ -1,20 +1,9 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { galata, test } from '@jupyterlab/galata';
+import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
-
-// TODO: investigate why this is needed and why Galata is not able
-// to find the default launcher activity like in JupyterLab
-test.use({
-  waitForApplication: async ({ baseURL }, use, testInfo) => {
-    const waitIsReady = async (page): Promise<void> => {
-      await page.waitForSelector('.jp-Launcher');
-    };
-    await use(waitIsReady);
-  },
-});
 
 test.describe('General Tests', () => {
   test.beforeEach(async ({ page }) => {
