@@ -421,7 +421,15 @@ const shareFile: JupyterFrontEndPlugin<void> = {
           return;
         }
 
-        const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
+        const url = new URL(
+          URLExt.join(
+            PageConfig.getBaseUrl(),
+            PageConfig.getOption('appUrl').slice(
+              PageConfig.getOption('baseUrl').length,
+            ),
+            'index.html',
+          ),
+        );
         const models = toArray(
           filter(widget.selectedItems(), (item) => item.type !== 'directory'),
         );
