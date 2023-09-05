@@ -44,11 +44,6 @@ jobs:
       - name: Build
         uses: ./.github/actions/build-dist
 
-      - uses: actions/download-artifact@v3
-        with:
-          name: jupyterlite dist ${{ github.run_number }}
-          path: ./dist
-
       - name: Install the package
         run: |
           cd dist
