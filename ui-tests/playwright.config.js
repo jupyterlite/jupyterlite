@@ -2,6 +2,7 @@ const baseConfig = require('@jupyterlab/galata/lib/playwright-config');
 
 module.exports = {
   ...baseConfig,
+  retries: 1,
   use: {
     acceptDownloads: true,
     appPath: '',
