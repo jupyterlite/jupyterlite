@@ -188,7 +188,6 @@
       "@jupyter-notebook/application-extension",
       "@jupyter-notebook/docmanager-extension",
       "@jupyter-notebook/help-extension",
-      "@jupyter-notebook/notebook-extension",
       "@jupyterlite/application-extension",
       "@jupyterlite/iframe-extension",
       "@jupyterlite/notebook-application-extension",

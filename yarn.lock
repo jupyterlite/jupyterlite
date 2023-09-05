@@ -4127,6 +4127,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-notebooks@workspace:app/notebooks"
   dependencies:
+    "@jupyter-notebook/application": ^7.0.3
+    "@jupyter-notebook/application-extension": ^7.0.3
+    "@jupyter-notebook/docmanager-extension": ^7.0.3
+    "@jupyter-notebook/help-extension": ^7.0.3
+    "@jupyter-notebook/notebook-extension": ^7.0.3
     "@jupyterlab/application": ~4.0.5
     "@jupyterlab/application-extension": ~4.0.5
     "@jupyterlab/apputils-extension": ~4.0.5
@@ -4229,7 +4234,6 @@ __metadata:
     "@jupyter-notebook/application-extension": ^7.0.3
     "@jupyter-notebook/docmanager-extension": ^7.0.3
     "@jupyter-notebook/help-extension": ^7.0.3
-    "@jupyter-notebook/notebook-extension": ^7.0.3
     "@jupyter-notebook/tree-extension": ^7.0.3
     "@jupyter-notebook/ui-components": ^7.0.3
     "@jupyterlab/application-extension": ~4.0.5
