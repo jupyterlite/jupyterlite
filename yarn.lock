@@ -4250,6 +4250,7 @@ __metadata:
     "@jupyterlab/metadataform-extension": ~4.0.5
     "@jupyterlab/notebook-extension": ~4.0.5
     "@jupyterlab/rendermime-extension": ~4.0.5
+    "@jupyterlab/settingeditor-extension": ~4.0.5
     "@jupyterlab/shortcuts-extension": ~4.0.5
     "@jupyterlab/theme-dark-extension": ~4.0.5
     "@jupyterlab/theme-light-extension": ~4.0.5
