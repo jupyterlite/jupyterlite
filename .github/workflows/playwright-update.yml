@@ -2,10 +2,10 @@ name: Update Playwright Snapshots
 
 on:
   # TODO: re-enable
-  # issue_comment:
-  #   types: [created, edited]
-  pull_request:
-    types: [labeled, unlabeled, opened, edited, synchronize]
+  issue_comment:
+    types: [created, edited]
+  # pull_request:
+  #   types: [labeled, unlabeled, opened, edited, synchronize]
 
 permissions:
   contents: write
@@ -14,9 +14,9 @@ permissions:
 jobs:
   update-snapshots:
     # TODO: re-enable
-    # if:
-    #   ${{ github.event.issue.pull_request && contains(github.event.comment.body, 'update
-    #   playwright snapshots') }}
+    if:
+      ${{ github.event.issue.pull_request && contains(github.event.comment.body, 'update
+      playwright snapshots') }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
