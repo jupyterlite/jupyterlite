@@ -42,8 +42,8 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
       - name: Install dependencies
         run: jlpm
-      - name: Node
-        run: doit setup || doit setup || doit setup
+      # - name: Node
+      #   run: doit setup || doit setup || doit setup
       - name: Build
         run: doit build
       - name: Dist
