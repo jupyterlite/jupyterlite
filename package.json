@@ -15,7 +15,12 @@
   "workspaces": {
     "packages": [
       "app",
-      "app/*",
+      "app/consoles",
+      "app/edit",
+      "app/lab",
+      "app/notebooks",
+      "app/repl",
+      "app/tree",
       "packages/*",
       "py/jupyterlite-javascript-kernel"
     ]
@@ -55,8 +60,11 @@
     }
   },
   "resolutions": {
+    "@types/react": "^18.0.26",
     "json-schema": "^0.4.0",
-    "validator": "^13.7.0"
+    "react": "^18.2.0",
+    "validator": "^13.7.0",
+    "yjs": "^13.5.40"
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "^4.0.5",

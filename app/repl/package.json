@@ -75,8 +75,8 @@
     "@lumino/virtualdom": "~2.0.1",
     "@lumino/widgets": "~2.3.0",
     "es6-promise": "^4.2.8",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "yjs": "^13.6.7"
   },
   "dependencies": {
@@ -108,9 +108,9 @@
     "@jupyterlite/server-extension": "^0.1.2",
     "@jupyterlite/ui-components": "^0.1.2",
     "es6-promise": "~4.2.8",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "yjs": "^13.5.6"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "yjs": "^13.5.40"
   },
   "jupyterlab": {
     "title": "REPLite",
