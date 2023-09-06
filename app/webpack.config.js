@@ -25,6 +25,11 @@ if (!process.env.NO_WEBPACK_LICENSES) {
   licensePlugins.push(new WPPlugin.JSONLicenseWebpackPlugin({}));
 }
 
+// custom handlebars helper to check if a page corresponds to a value
+Handlebars.registerHelper('ispage', function (key, page) {
+  return key === page;
+});
+
 /**
  * Create the webpack ``shared`` configuration
  *
