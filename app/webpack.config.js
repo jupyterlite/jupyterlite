@@ -324,7 +324,7 @@ module.exports = [
         chunks: 'all',
         cacheGroups: {
           jlab_core: {
-            test: /[\\/]node_modules[\\/]@(jupyterlab|lumino(?!\/datagrid))[\\/]/,
+            test: /[\\/]node_modules[\\/]@(jupyterlab|jupyter\-notebook|lumino(?!\/datagrid))[\\/]/,
             name: 'jlab_core',
           },
         },
@@ -332,12 +332,6 @@ module.exports = [
     },
     plugins: [
       ...licensePlugins,
-      new webpack.DefinePlugin({
-        // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
-        'process.env': '{}',
-        // Needed for various packages using cwd(), like the path polyfill
-        process: { cwd: () => '/' },
-      }),
       new ModuleFederationPlugin({
         library: {
           type: 'var',
