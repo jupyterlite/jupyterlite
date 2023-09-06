@@ -42,12 +42,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.0.5",
-    "@jupyterlab/nbformat": "~4.0.5",
-    "@jupyterlab/observables": "~5.0.5",
-    "@jupyterlab/services": "~7.0.5",
-    "@jupyterlab/settingregistry": "~4.0.5",
-    "@jupyterlab/statedb": "~4.0.5",
+    "@jupyterlab/coreutils": "^6.0.5",
+    "@jupyterlab/nbformat": "^4.0.5",
+    "@jupyterlab/observables": "^5.0.5",
+    "@jupyterlab/services": "^7.0.5",
+    "@jupyterlab/settingregistry": "^4.0.5",
+    "@jupyterlab/statedb": "^4.0.5",
     "@jupyterlite/contents": "^0.1.2",
     "@jupyterlite/kernel": "^0.1.2",
     "@jupyterlite/session": "^0.1.2",

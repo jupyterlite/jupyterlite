@@ -42,7 +42,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/ui-components": "~4.0.5"
+    "@jupyterlab/ui-components": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",

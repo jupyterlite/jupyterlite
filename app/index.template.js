@@ -8,7 +8,7 @@ import { JupyterLiteServer } from '@jupyterlite/server';
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 
-const styles = import('./style.js');
+import './style.js';
 
 const serverExtensions = [
   import('@jupyterlite/server-extension')
@@ -35,9 +35,6 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 export async function main() {
-  // Make sure the styles have loaded
-  await styles;
-
   const pluginsToRegister = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
