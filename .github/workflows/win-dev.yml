@@ -45,7 +45,10 @@ jobs:
       # - name: Node
       #   run: doit setup || doit setup || doit setup
       - name: Build
-        run: doit build
+        run: |
+          jlpm build
+          jlpm install:py
+          jlpm install:js-kernel
       - name: Dist
         run: doit dist
       - name: Dev
