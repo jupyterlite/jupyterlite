@@ -524,7 +524,7 @@ def task_docs():
 
             for schema_html in all_schema_html:
                 print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
-                text = schema_html.read_text(encoding="utf-8")
+                text = schema_html.read_text(**C.ENC)
                 new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
                 if text != new_text:
                     schema_html.write_text(new_text, encoding="utf-8")
