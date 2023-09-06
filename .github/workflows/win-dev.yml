@@ -26,12 +26,11 @@ jobs:
           git config --global core.eol lf
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Conda
-        uses: conda-incubator/setup-miniconda@v2
+      - name: Install Conda environment with Micromamba
+        uses: mamba-org/provision-with-micromamba@main
         with:
+          environment-name: jupyterlite-dev
           environment-file: .binder/environment.yml
-          miniforge-variant: Mambaforge
-          use-mamba: true
       - name: Cache (node_modules)
         uses: actions/cache@v3
         id: cache-node-modules
