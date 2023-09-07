@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies
         run: jlpm
       - name: Node
-        run: doit setup || doit setup || doit setup
+        run: doit -n 1 setup || doit -n 1 setup || doit -n 1 setup
       # - name: Build
       #   run: |
       #     jlpm build

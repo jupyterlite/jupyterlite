@@ -1553,6 +1553,6 @@ if C.WIN:
 DOIT_CONFIG = {
     "backend": "sqlite3",
     "verbosity": 2,
-    # "par_type": "thread",
+    "par_type": "thread",
     "default_tasks": ["lint", "build", "docs:app:build"],
 }
