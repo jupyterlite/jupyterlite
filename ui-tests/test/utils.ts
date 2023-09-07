@@ -30,3 +30,16 @@ export async function download({
   // wait for download to complete
   return download.path();
 }
+
+export async function createNewDirectory({
+  page,
+  name,
+}: {
+  page: IJupyterLabPageFixture;
+  name: string;
+}): Promise<void> {
+  await page.click('[data-icon="ui-components:new-folder"]');
+  await page.fill('.jp-DirListing-editor', name);
+  await page.keyboard.down('Enter');
+  await page.filebrowser.refresh();
+}
