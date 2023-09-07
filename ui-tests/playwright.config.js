@@ -8,6 +8,7 @@ module.exports = {
     appPath: '',
     autoGoto: false,
     baseURL: 'http://localhost:8000',
+    trace: 'retain-on-failure',
     video: 'retain-on-failure',
   },
   webServer: [
