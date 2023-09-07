@@ -24,26 +24,26 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: mamba-org/setup-micromamba@v1
-        with:
-          micromamba-version: '1.4.9-0'
-          environment-file: .binder/environment.yml
-          init-shell: cmd.exe
-          cache-environment: true
-          post-cleanup: 'all'
-      - name: Cache (node_modules)
-        uses: actions/cache@v3
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Setup pip (base)
+        shell: bash
+        run: python3 -m pip install --user -U pip setuptools wheel
+
+      - name: Setup pip (build)
+        shell: bash
+        run: python3 -m pip install -r requirements-build.txt
+
       - name: Install dependencies
         run: jlpm
       - name: Node
         run: doit -n 1 setup || doit -n 1 setup || doit -n 1 setup
+
       # - name: Build
       #   run: |
       #     jlpm build
@@ -51,10 +51,9 @@ jobs:
       #     jlpm install:js-kernel
       - name: Dist
         run: doit dist
+
       - name: Dev
         run: doit dev
+
       - name: Lint
         run: doit lint || doit lint || doit lint
-      - name: Move conda cache
-        run: |-
-          move C:\Users\runneradmin\conda_pkgs_dir C:\Users\runneradmin\not_conda_pkgs_dir
