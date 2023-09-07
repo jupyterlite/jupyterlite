@@ -6,8 +6,9 @@ import { expect, test } from '@playwright/test';
 test.use({
   baseURL: 'http://localhost:8001',
   viewport: {
-    width: 1024, height: 768
-  }
+    width: 1024,
+    height: 768,
+  },
 });
 
 /**
