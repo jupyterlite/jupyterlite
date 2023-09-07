@@ -43,8 +43,8 @@ test.describe('General Tests', () => {
   });
 
   test('Toggle Federated Theme', async ({ page }) => {
-    await page.theme.setTheme('JupyterLab Miami Nights');
+    await page.theme.setTheme('Darcula');
 
-    expect(await page.theme.getTheme()).toEqual('JupyterLab Miami Nights');
+    expect(await page.theme.getTheme()).toEqual('Darcula');
   });
 });
