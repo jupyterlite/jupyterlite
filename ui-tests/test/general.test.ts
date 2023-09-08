@@ -5,6 +5,12 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import { firefoxWaitForApplication } from './utils';
+
+test.use({
+  waitForApplication: firefoxWaitForApplication,
+});
+
 test.describe('General Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');

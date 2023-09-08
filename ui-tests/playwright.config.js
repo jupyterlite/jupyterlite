@@ -10,6 +10,13 @@ module.exports = {
     baseURL: 'http://localhost:8000',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
+
+    waitForApplication: async ({ baseURL }, use, testInfo) => {
+      const waitIsReady = async (page) => {
+        await page.waitForSelector('.jp-LauncherCard');
+      };
+      await use(waitIsReady);
+    },
   },
   webServer: [
     {

@@ -11,6 +11,12 @@ import { expect } from '@playwright/test';
 
 import { createNewDirectory, deleteItem, download } from './utils';
 
+import { firefoxWaitForApplication } from './utils';
+
+test.use({
+  waitForApplication: firefoxWaitForApplication,
+});
+
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');
@@ -35,8 +41,10 @@ test.describe('Contents Tests', () => {
     await page.notebook.open(notebook);
     expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
-    await page.notebook.activate(notebook);
-    expect(await page.notebook.isActive(notebook)).toBeTruthy();
+    // TODO: uncomment after it is fixed upstream in Galata
+    // https://github.com/jupyterlab/jupyterlab/issues/15093
+    // await page.notebook.activate(notebook);
+    // expect(await page.notebook.isActive(notebook)).toBeTruthy();
 
     await page.notebook.runCellByCell();
   });

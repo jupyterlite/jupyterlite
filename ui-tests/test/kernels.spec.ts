@@ -5,6 +5,12 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import { firefoxWaitForApplication } from './utils';
+
+test.use({
+  waitForApplication: firefoxWaitForApplication,
+});
+
 test.describe('Kernels', () => {
   test('Default kernel name', async ({ page }) => {
     // mock the default kernel name

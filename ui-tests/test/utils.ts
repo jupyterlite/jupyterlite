@@ -22,7 +22,7 @@ export async function download({
   path: string;
 }): Promise<string> {
   await page.evaluate(async (path: string) => {
-    await window.galataip.app.commands.execute('filebrowser:download', { path });
+    await window.galata.app.commands.execute('filebrowser:download', { path });
   }, path);
 
   const download = await page.waitForEvent('download');
@@ -42,4 +42,15 @@ export async function createNewDirectory({
   await page.fill('.jp-DirListing-editor', name);
   await page.keyboard.down('Enter');
   await page.filebrowser.refresh();
+}
+
+/**
+ * Workaround for Galata being stuck when testing on Firefox:
+ * https://github.com/jupyterlab/jupyterlab/issues/15093
+ */
+export async function firefoxWaitForApplication({ baseURL }, use, testInfo) {
+  const waitIsReady = async (page): Promise<void> => {
+    await page.waitForSelector('.jp-LauncherCard');
+  };
+  await use(waitIsReady);
 }
