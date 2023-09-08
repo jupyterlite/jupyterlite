@@ -63,13 +63,6 @@ To see all of the _tasks_ available, use the `list` action:
 doit list --all --status
 ```
 
-To get information about a specific _task_, use the info `info` _action_ with the _task_
-name from the first column of `list`:
-
-```bash
-doit info build:js:app:notebook
-```
-
 #### Task and Action Defaults
 
 The default `doit` _action_ is `run` which... runs the named _tasks_.
