@@ -108,9 +108,12 @@ These offer different assets and tools, and obey different environment variables
 
 The JupyterLite core JS development workflow builds:
 
-- a ready-to-serve, empty website with:
-  - a `lab/index.html` and supporting assets
-  - a `notebook/*/index.html` and supporting assets (for `tree`, `edit`, etc.)
+- multiple apps for each of the `notebook`, `lab`, and `repl` frontends
+  - the entrypoint for each app is located under `{appName}/index.html`. For example:
+    - `lab/index.html`: opens the JupyterLab interface
+    - `notebooks/index.html?path=example.ipynb`: opens the notebook interface with the
+      `example.ipynb` notebook
+    - `tree/index.html`: opens the file browser via the Jupyter Notebook interface
   - common configuration tools
 - `typedoc` documentation
 - > _TBD: a set of component tarballs distributed on `npmjs.com`. See [#7]._

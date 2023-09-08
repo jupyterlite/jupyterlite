@@ -5,6 +5,8 @@ import sys
 import urllib.parse
 from pathlib import Path
 
+from traitlets import List, Unicode
+
 from ..constants import (
     FEDERATED_EXTENSIONS,
     JSON_FMT,
@@ -17,8 +19,6 @@ from ..constants import (
     UTF8,
 )
 from .base import BaseAddon
-
-from traitlets import List, Unicode
 
 
 class FederatedExtensionAddon(BaseAddon):
