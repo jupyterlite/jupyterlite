@@ -421,15 +421,14 @@ const shareFile: JupyterFrontEndPlugin<void> = {
           return;
         }
 
-        const url = new URL(
-          URLExt.join(
-            PageConfig.getBaseUrl(),
-            PageConfig.getOption('appUrl').slice(
-              PageConfig.getOption('baseUrl').length,
-            ),
-            'index.html',
-          ),
-        );
+        const baseUrl = PageConfig.getBaseUrl();
+        let appUrl = PageConfig.getOption('appUrl');
+        // open a notebook if on the file browser page
+        if (appUrl === '/tree') {
+          appUrl = '/notebooks';
+        }
+
+        const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
         const models = toArray(
           filter(widget.selectedItems(), (item) => item.type !== 'directory'),
         );
