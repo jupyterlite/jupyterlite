@@ -132,14 +132,6 @@ def task_lint():
         ],
     )
 
-    yield U.ok(
-        B.OK_PYFLAKES,
-        name="pyflakes",
-        doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_PYFLAKES, B.OK_BLACK],
-        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_PYFLAKES)],
-    )
-
     yield dict(
         name="schema:self",
         file_dep=[P.APP_SCHEMA],
@@ -995,10 +987,6 @@ class L:
         *(P.ROOT / "scripts").glob("*.py"),
         *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
     )
-    # ignore files in the jupyterlite metapackage
-    ALL_PYFLAKES = [
-        f for f in ALL_BLACK if str(P.PY_SETUP_PY[C.NAME].parent) not in str(f)
-    ]
 
 
 class B:
@@ -1047,11 +1035,9 @@ class B:
 
     OK = BUILD / "ok"
     OK_DOCS_APP = OK / "docs-app"
-    OK_BLACK = OK / "black"
     OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
     OK_PRETTIER = OK / "prettier"
-    OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
     PY_DISTRIBUTIONS = [

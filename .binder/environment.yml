@@ -10,7 +10,6 @@ dependencies:
   - depfinder
   - isort
   - nbstripout
-  - pyflakes
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy

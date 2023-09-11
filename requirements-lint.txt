@@ -7,4 +7,3 @@ isort
 jsonschema >=3
 nbconvert
 nbstripout
-pyflakes
