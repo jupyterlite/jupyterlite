@@ -158,7 +158,7 @@ export class Kernels implements IKernels {
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl, {
       mock: false,
-      selectProtocol: () => 'v1.kernel.websocket.jupyter.org',
+      selectProtocol: () => KERNEL_WEBSOCKET_PROTOCOL,
     });
     wsServer.on('connection', (socket: WebSocketClient): void => {
       const url = new URL(socket.url);
