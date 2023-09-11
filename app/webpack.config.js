@@ -191,7 +191,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
   const entryPoint = `./${name}/build/bootstrap.js`;
   fs.copySync('bootstrap.js', entryPoint);
   // Copy the publicpath file
-  const publicPath = `./${name}/publicpath.js`;
+  const publicPath = `./${name}/build/publicpath.js`;
   fs.copySync('publicpath.js', publicPath);
   allEntryPoints[`${name}/bundle`] = entryPoint;
   allEntryPoints[`${name}/publicpath`] = publicPath;
