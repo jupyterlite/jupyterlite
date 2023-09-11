@@ -33,6 +33,7 @@ dependencies:
   - jupyterlab-myst >=2.0.2
   - jupyterlab-tour >=3.1.0
   # TODO: re-add after JupyterLab 4 compatibility
+  # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
   # - jupyterlab-webrtc-docprovider >=0.1.1
   - jupyterlab-night
   - jupyterlite-pyodide-kernel >=0.1.1
