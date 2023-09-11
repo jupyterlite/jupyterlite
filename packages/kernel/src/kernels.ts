@@ -4,6 +4,8 @@ import { Kernel, KernelMessage } from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
+import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kernel/messages';
+
 import { UUID } from '@lumino/coreutils';
 
 import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
@@ -17,7 +19,8 @@ import { PageConfig } from '@jupyterlab/coreutils';
 /**
  * Use the default kernel wire protocol.
  */
-const KERNEL_WEBSOCKET_PROTOCOL = 'v1.kernel.websocket.jupyter.org';
+const KERNEL_WEBSOCKET_PROTOCOL =
+  supportedKernelWebSocketProtocols.v1KernelWebsocketJupyterOrg;
 
 /**
  * A class to handle requests to /api/kernels
