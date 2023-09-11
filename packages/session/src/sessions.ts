@@ -69,7 +69,7 @@ export class Sessions implements ISessions {
       // Kernel id takes precedence over name.
       if (kernel.id) {
         const session = this._sessions.find(
-          (session) => session.kernel?.id === kernel?.id,
+          (session) => session.kernel?.id === kernel?.id
         );
         if (session) {
           patched.kernel = session.kernel;

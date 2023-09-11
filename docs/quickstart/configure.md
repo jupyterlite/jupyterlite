@@ -9,7 +9,7 @@ Configuration values are set in one or more of the
 [well known locations in the Lite Dir](../reference/cli.ipynb#the-lite-dir).
 Configuration information is merged in a cascade, allowing settings to be set in the
 root of the [Lite Dir](../reference/cli.ipynb#the-lite-dir), and superceeded by settings
-for an individual app such as `notebook` and `lab`.
+for an individual app such as `repl` and `lab`.
 
 Available options are defined in the Jupyter Config Data
 [Schema](../reference/schema-v0.md) and include settings such as `appName`,

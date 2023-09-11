@@ -106,7 +106,7 @@ export class JupyterLiteServer extends Application<never> {
    */
   async fetch(
     req: RequestInfo,
-    init?: RequestInit | null | undefined,
+    init?: RequestInit | null | undefined
   ): Promise<Response> {
     if (!(req instanceof Request)) {
       throw Error('Request info is not a Request');

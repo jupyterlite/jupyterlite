@@ -139,7 +139,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     buffer: Uint8Array,
     offset: number,
     length: number,
-    position: number,
+    position: number
   ): number {
     if (
       length <= 0 ||
@@ -159,7 +159,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
     buffer: Uint8Array,
     offset: number,
     length: number,
-    position: number,
+    position: number
   ): number {
     if (length <= 0 || stream.file === undefined) {
       return 0;
@@ -244,7 +244,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
-    dev: number,
+    dev: number
   ): IEmscriptenFSNode {
     const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
     this.fs.API.mknod(path, mode);
@@ -256,7 +256,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
       oldNode.parent
         ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name)
         : oldNode.name,
-      this.fs.PATH.join2(this.fs.realPath(newDir), newName),
+      this.fs.PATH.join2(this.fs.realPath(newDir), newName)
     );
 
     // Updating the in-memory node
@@ -294,7 +294,7 @@ export class ContentsAPI {
     driveName: string,
     mountpoint: string,
     FS: FS,
-    ERRNO_CODES: ERRNO_CODES,
+    ERRNO_CODES: ERRNO_CODES
   ) {
     this._baseUrl = baseUrl;
     this._driveName = driveName;
@@ -326,7 +326,7 @@ export class ContentsAPI {
 
   getmode(path: string): number {
     return Number.parseInt(
-      this.request({ method: 'getmode', path: this.normalizePath(path) }),
+      this.request({ method: 'getmode', path: this.normalizePath(path) })
     );
   }
 
@@ -482,7 +482,7 @@ export class DriveFS {
       options.driveName,
       options.mountpoint,
       this.FS,
-      this.ERRNO_CODES,
+      this.ERRNO_CODES
     );
     this.driveName = options.driveName;
 
@@ -501,7 +501,7 @@ export class DriveFS {
     parent: IEmscriptenFSNode | null,
     name: string,
     mode: number,
-    dev: number,
+    dev: number
   ): IEmscriptenFSNode {
     const FS = this.FS;
     if (!FS.isDir(mode) && !FS.isFile(mode)) {

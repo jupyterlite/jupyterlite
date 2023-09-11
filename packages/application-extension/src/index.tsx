@@ -80,7 +80,7 @@ const about: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     translator: ITranslator,
     palette: ICommandPalette | null,
-    menu: IMainMenu | null,
+    menu: IMainMenu | null
   ): void => {
     const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
@@ -176,7 +176,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
     docManager: IDocumentManager,
     palette: ICommandPalette | null,
-    factory: IFileBrowserFactory | null,
+    factory: IFileBrowserFactory | null
   ) => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands, serviceManager, shell } = app;
@@ -201,7 +201,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         } else {
           const mime = model.mimetype ?? 'text/plain';
           element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
-            model.content,
+            model.content
           )}`;
         }
       } else {
@@ -321,7 +321,7 @@ const opener: JupyterFrontEndPlugin<void> = {
     app: JupyterFrontEnd,
     router: IRouter,
     docManager: IDocumentManager,
-    labShell: ILabShell | null,
+    labShell: ILabShell | null
   ): void => {
     const { commands } = app;
 
@@ -405,7 +405,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
     factory: IFileBrowserFactory,
-    translator: ITranslator,
+    translator: ITranslator
   ): void => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands } = app;
@@ -430,7 +430,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
         const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
         const models = toArray(
-          filter(widget.selectedItems(), (item) => item.type !== 'directory'),
+          filter(widget.selectedItems(), (item) => item.type !== 'directory')
         );
         models.forEach((model) => {
           url.searchParams.append('path', model.path);

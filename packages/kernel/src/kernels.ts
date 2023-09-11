@@ -55,7 +55,7 @@ export class Kernels implements IKernels {
     const hook = (
       kernelId: string,
       clientId: string,
-      socket: WebSocketClient,
+      socket: WebSocketClient
     ): void => {
       const kernel = this._kernels.get(kernelId);
 
@@ -95,7 +95,7 @@ export class Kernels implements IKernels {
           } else {
             void processMsg(msg);
           }
-        },
+        }
       );
 
       const removeClient = () => {

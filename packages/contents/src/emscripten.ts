@@ -65,7 +65,7 @@ export interface IEmscriptenNodeOps {
     parent: IEmscriptenFSNode,
     name: string,
     mode: number,
-    dev: number,
+    dev: number
   ): IEmscriptenFSNode;
   rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
   unlink(parent: IEmscriptenFSNode, name: string): void;
@@ -83,14 +83,14 @@ export interface IEmscriptenStreamOps {
     buffer: Uint8Array,
     offset: number,
     length: number,
-    position: number,
+    position: number
   ): number;
   write(
     stream: IEmscriptenStream,
     buffer: Uint8Array,
     offset: number,
     length: number,
-    position: number,
+    position: number
   ): number;
   llseek(stream: IEmscriptenStream, offset: number, whence: number): number;
 }
@@ -104,7 +104,7 @@ export type FS = EmscriptenFS & {
     parent: IEmscriptenFSNode | null,
     name: string,
     mode: number,
-    dev: number,
+    dev: number
   ) => IEmscriptenFSNode;
 };
 

@@ -39,7 +39,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
-    tracker: IConsoleTracker | null,
+    tracker: IConsoleTracker | null
   ) => {
     if (!tracker) {
       return;
@@ -131,7 +131,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
   activate: (
     app: JupyterFrontEnd,
     tracker: IConsoleTracker | null,
-    themeManager: IThemeManager | null,
+    themeManager: IThemeManager | null
   ) => {
     if (!tracker) {
       return;
