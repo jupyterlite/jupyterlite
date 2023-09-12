@@ -287,13 +287,13 @@ module.exports = [
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]',
     },
-    // cache: {
-    //   type: 'filesystem',
-    //   cacheDirectory: path.resolve(__dirname, '../build/webpack'),
-    //   buildDependencies: {
-    //     config: [__filename],
-    //   },
-    // },
+    cache: {
+      type: 'filesystem',
+      cacheDirectory: path.resolve(__dirname, '../build/webpack'),
+      buildDependencies: {
+        config: [__filename],
+      },
+    },
     module: {
       rules: [
         {
