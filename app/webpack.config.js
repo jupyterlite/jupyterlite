@@ -324,7 +324,7 @@ module.exports = [
         chunks: 'all',
         cacheGroups: {
           jlab_core: {
-            test: /[\\/]node_modules[\\/]@(jupyterlab|jupyter\-notebook|lumino(?!\/datagrid))[\\/]/,
+            test: /[\\/]node_modules[\\/]@(jupyterlab|lumino(?!\/datagrid))[\\/]/,
             name: 'jlab_core',
           },
         },
