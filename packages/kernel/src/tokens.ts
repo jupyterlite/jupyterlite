@@ -42,6 +42,11 @@ export interface IKernels {
   restart: (id: string) => Promise<Kernel.IModel>;
 
   /**
+   * List the running kernels.
+   */
+  list: () => Promise<Kernel.IModel[]>;
+
+  /**
    * Shut down a kernel.
    *
    * @param id The kernel id.

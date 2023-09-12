@@ -274,6 +274,12 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IKernels],
   activate: (app: JupyterLiteServer, kernels: IKernels) => {
+    // GET /api/kernels - List the running kernels
+    app.router.get('/api/kernels', async (req: Router.IRequest) => {
+      const res = await kernels.list();
+      return new Response(JSON.stringify(res));
+    });
+
     // POST /api/kernels/{kernel_id} - Restart a kernel
     app.router.post(
       '/api/kernels/(.*)/restart',

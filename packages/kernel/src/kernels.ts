@@ -209,6 +209,16 @@ export class Kernels implements IKernels {
   }
 
   /**
+   * List the running kernels.
+   */
+  async list(): Promise<Kernel.IModel[]> {
+    return [...this._kernels.values()].map((kernel) => ({
+      id: kernel.id,
+      name: kernel.name,
+    }));
+  }
+
+  /**
    * Shut down a kernel.
    *
    * @param id The kernel id.
