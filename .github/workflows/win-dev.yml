@@ -26,7 +26,7 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.eol lf
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: mamba-org/setup-micromamba@v1
         with:
           micromamba-version: '1.4.9-0'
