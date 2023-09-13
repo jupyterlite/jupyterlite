@@ -166,7 +166,7 @@ def task_lint():
         for ipynb in D.ALL_IPYNB:
             yield dict(
                 name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
-                file_dep=[ipynb, P.PRETTIER_RC],
+                file_dep=[ipynb],
                 actions=[
                     U.do("nbstripout", ipynb),
                     (U.notebook_lint, [ipynb]),
@@ -911,9 +911,6 @@ class P:
     # CI
     CI = ROOT / ".github"
 
-    # lint
-    PRETTIER_RC = ROOT / ".prettierrc"
-
 
 def _js_version_to_py_version(js_version):
     return (
@@ -1517,7 +1514,7 @@ class U:
                 files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
                 files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
 
-            args = [which("jlpm"), "prettier", "--config", P.PRETTIER_RC]
+            args = [which("jlpm"), "prettier"]
 
             args += ["--check"] if C.CI else ["--write", "--list-different"]
 
