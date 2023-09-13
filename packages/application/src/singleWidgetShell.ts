@@ -5,7 +5,7 @@ import { JupyterFrontEnd } from '@jupyterlab/application';
 
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 
-import { find, IIterator, iter } from '@lumino/algorithm';
+import { find } from '@lumino/algorithm';
 
 import { Token } from '@lumino/coreutils';
 
@@ -96,10 +96,11 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
    *
    * @param area The area
    */
-  widgets(area: Shell.Area): IIterator<Widget> {
+  *widgets(area: Shell.Area): IterableIterator<Widget> {
     switch (area ?? 'main') {
       case 'main':
-        return iter(this._main.widgets);
+        yield* this._main.widgets;
+        break;
       default:
         throw new Error(`Invalid area: ${area}`);
     }

@@ -16,14 +16,15 @@ jobs:
 
       - name: Install JupyterLite
         run: |
-          python3 -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core jupyterlab~=3.2
+          python3 -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core jupyterlab~=4.0
           python3 -m pip install --find-links dist --no-index jupyterlite_core
 
       - name: Build JupyterLite
         run: |
           cd ui-tests
+          jlpm
           # Build the JupyterLite website
-          yarn build
+          jlpm build
 
       - name: Upload the JupyterLite website
         uses: actions/upload-artifact@v3
@@ -58,14 +59,16 @@ jobs:
 
       - name: Install dependencies and browser
         run: |
+          # Install JupyterLab to get jlpm
+          python -m pip install jupyterlab~=4.0
           cd ui-tests
-          yarn --frozen-lockfile
-          yarn playwright install
+          jlpm
+          jlpm playwright install
 
       - name: Test
         run: |
           cd ui-tests
-          yarn run test --browser ${{ matrix.browser }}
+          jlpm run test --browser ${{ matrix.browser }}
 
       - name: Upload Playwright Test assets
         if: always()
@@ -88,9 +91,9 @@ jobs:
         run: |
           cd ui-tests
           # remove previous snapshots from other browser
-          yarn run clean:snapshots
+          jlpm run clean:snapshots
           # generate new snapshots
-          yarn run test:update --browser ${{ matrix.browser }}
+          jlpm run test:update --browser ${{ matrix.browser }}
 
       - name: Upload updated snapshots
         if: failure()

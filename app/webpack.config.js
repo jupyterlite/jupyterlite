@@ -25,6 +25,11 @@ if (!process.env.NO_WEBPACK_LICENSES) {
   licensePlugins.push(new WPPlugin.JSONLicenseWebpackPlugin({}));
 }
 
+// custom handlebars helper to check if a page corresponds to a value
+Handlebars.registerHelper('ispage', function (key, page) {
+  return key === page;
+});
+
 /**
  * Create the webpack ``shared`` configuration
  *
@@ -163,32 +168,54 @@ for (const [name, data] of Object.entries(liteAppData)) {
       mimeExtensions[key] = mimeExtension === true ? '' : mimeExtension;
     }
   }
+  // Retrieve app info from package.json
+  const { appClassName, appModuleName, disabledExtensions } = data.jupyterlab;
+
   // Create the entry point and other assets in build directory.
   const template = Handlebars.compile(
-    fs.readFileSync(path.resolve(`./${name}/index.template.js`)).toString()
+    fs.readFileSync(path.resolve(`./index.template.js`)).toString()
   );
   fs.writeFileSync(
     path.join(name, 'build', 'index.js'),
-    template({ extensions, mimeExtensions })
+    template({
+      name,
+      appClassName,
+      appModuleName,
+      extensions,
+      mimeExtensions,
+      disabledExtensions,
+    })
   );
   // Create the bootstrap file that loads federated extensions and calls the
   // initialization logic in index.js
   const entryPoint = `./${name}/build/bootstrap.js`;
   fs.copySync('bootstrap.js', entryPoint);
+  // Copy the publicpath file
+  const publicPath = `./${name}/build/publicpath.js`;
+  fs.copySync('publicpath.js', publicPath);
   allEntryPoints[`${name}/bundle`] = entryPoint;
-  allEntryPoints[`${name}/publicpath`] = `./${name}/publicpath.js`;
+  allEntryPoints[`${name}/publicpath`] = publicPath;
 
+  // Inject the name of the app in the template to be able to filter bundle files
+  const indexTemplate = Handlebars.compile(
+    fs.readFileSync(path.resolve(`./index.template.html`)).toString()
+  );
+  fs.writeFileSync(
+    path.join(name, 'build', 'index.template.html'),
+    indexTemplate({
+      name,
+    })
+  );
   // Use templates to create cache-busting templates
-  for (const page of data.jupyterlite.pages) {
-    allHtmlPlugins.push(
-      new HtmlWebpackPlugin({
-        inject: false,
-        minify: false,
-        filename: `../${name}/${page}.html`,
-        template: `${name}/${page}.template.html`,
-      })
-    );
-  }
+  allHtmlPlugins.push(
+    new HtmlWebpackPlugin({
+      inject: false,
+      minify: false,
+      title: data.jupyterlab.title,
+      filename: `../${name}/index.html`,
+      template: `${name}/build/index.template.html`,
+    })
+  );
 }
 
 /**
@@ -239,26 +266,6 @@ class ServiceWorkerPlugin {
   }
 }
 
-/**
- * A helper for filtering deprecated webpack loaders, to be replaced with assets
- */
-function filterDeprecatedRule(rule) {
-  if (typeof rule.use === 'string' && rule.use.match(/^(file|url)-loader/)) {
-    return false;
-  }
-  return true;
-}
-
-baseConfig.module.rules = [
-  // add this before e.g. file-loader rules
-  {
-    test: /\.json$/,
-    use: ['json-loader'],
-    type: 'javascript/auto',
-  },
-  ...baseConfig.module.rules.filter(filterDeprecatedRule),
-];
-
 module.exports = [
   merge(baseConfig, {
     mode: 'development',
@@ -296,29 +303,35 @@ module.exports = [
         // just keep the woff2 fonts from fontawesome
         {
           test: /fontawesome-free.*\.(svg|eot|ttf|woff)$/,
-          loader: 'ignore-loader',
+          exclude: /fontawesome-free.*\.woff2$/,
         },
         {
           test: /\.(jpe?g|png|gif|ico|eot|ttf|map|woff2?)(\?v=\d+\.\d+\.\d+)?$/i,
           type: 'asset/resource',
         },
         {
-          test: /\.js$/,
-          use: ['source-map-loader'],
+          resourceQuery: /text/,
+          type: 'asset/resource',
+          generator: {
+            filename: '[name]-[contenthash:7][ext]',
+          },
         },
       ],
     },
     optimization: {
       moduleIds: 'deterministic',
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          jlab_core: {
+            test: /[\\/]node_modules[\\/]@(jupyterlab|lumino(?!\/datagrid))[\\/]/,
+            name: 'jlab_core',
+          },
+        },
+      },
     },
     plugins: [
       ...licensePlugins,
-      new webpack.DefinePlugin({
-        // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
-        'process.env': '{}',
-        // Needed for various packages using cwd(), like the path polyfill
-        process: { cwd: () => '/' },
-      }),
       new ModuleFederationPlugin({
         library: {
           type: 'var',

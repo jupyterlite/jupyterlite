@@ -274,6 +274,12 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   autoStart: true,
   requires: [IKernels],
   activate: (app: JupyterLiteServer, kernels: IKernels) => {
+    // GET /api/kernels - List the running kernels
+    app.router.get('/api/kernels', async (req: Router.IRequest) => {
+      const res = await kernels.list();
+      return new Response(JSON.stringify(res));
+    });
+
     // POST /api/kernels/{kernel_id} - Restart a kernel
     app.router.post(
       '/api/kernels/(.*)/restart',
@@ -369,6 +375,20 @@ const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.get('/api/licenses', async (req: Router.IRequest) => {
       const res = await licenses.get();
       return new Response(JSON.stringify(res));
+    });
+  },
+};
+
+/**
+ * A plugin providing the routes for the lsp service.
+ * TODO: provide the service in a separate plugin?
+ */
+const lspRoutesPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:lsp-routes',
+  autoStart: true,
+  activate: (app: JupyterLiteServer) => {
+    app.router.get('/lsp/status', async (req: Router.IRequest) => {
+      return new Response(JSON.stringify({ version: 2, sessions: {}, specs: {} }));
     });
   },
 };
@@ -548,6 +568,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   licensesRoutesPlugin,
   localforageMemoryPlugin,
   localforagePlugin,
+  lspRoutesPlugin,
   nbconvertRoutesPlugin,
   serviceWorkerPlugin,
   sessionsPlugin,

@@ -10,8 +10,8 @@ node_modules/
 publicpath.js
 publicpath.js.map
 lab/build
+notebook/build
 repl/build
-retro/build
 tsconfig.*
 webpack.*.js
 webpack.config.*

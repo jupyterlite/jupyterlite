@@ -14,7 +14,7 @@ dependencies:
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - retrolab >=0.3.21,<0.4
+  - notebook >=7.0.3,<8
   # extra docs tools
   - sphinx-autobuild
   # avoid 200mb mkl
@@ -24,18 +24,21 @@ dependencies:
   # rewriting `anaconda.org` links to `conda-forge`'s GitHub releases
   ### FEDERATED EXTENSIONS ###
   - ipycytoscape
-  - jupyterlab_miami_nights
+  - jupyterlab_miami_nights >=0.4.0
   - jupyterlab_widgets >=3.0.4,<4.0.0
-  - jupyterlab-drawio
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
-  - jupyterlab-github
-  - jupyterlab-kernelspy
-  - jupyterlab-markup
-  - jupyterlab-myst
-  - jupyterlab-tour >=3.1.0
-  - jupyterlab-webrtc-docprovider >=0.1.1
-  - theme-darcula >=3,<4
+  - jupyterlab-github >=4.0.0
+  - jupyterlab-kernelspy >=4.0.0
+  - jupyterlab-myst >=2.0.2
+  # TODO: re-add after JupyterLab 4 compatibility
+  # https://github.com/jupyterlab-contrib/jupyterlab-tour/issues/76
+  # - jupyterlab-tour >=3.1.0
+  # TODO: re-add after JupyterLab 4 compatibility
+  # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
+  # - jupyterlab-webrtc-docprovider >=0.1.1
+  - jupyterlab-night
+  - jupyterlite-pyodide-kernel >=0.1.1
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
@@ -50,21 +53,21 @@ dependencies:
   # the chunk below gets copied from `../docs/environment.yml` by `doit env`
   ### DOCS ENV ###
   # runtimes
-  - nodejs >=18,<19
+  - nodejs >=20,<21
   - python >=3.10,<3.11
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
   - jsonschema >=3
   - jupyter-server-mathjax >=0.2.3
-  - jupyterlab >=3.5.3,<3.6
+  - jupyterlab >=4.0.5,<5.0
+  - notebook >=7.0.1,<8.0
   - pip
   - pkginfo
   - python-libarchive-c
   - requests_cache
   - twine
   - wheel
-  - yarn <2
   # cli
   - wheel
   # docs

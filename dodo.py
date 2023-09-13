@@ -30,7 +30,7 @@ def task_env():
     yield dict(
         name="binder",
         doc="update binder environment with docs environment",
-        file_dep=[P.DOCS_ENV, B.YARN_INTEGRITY],
+        file_dep=[P.DOCS_ENV],
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
@@ -68,11 +68,7 @@ def task_setup():
         return
 
     args = [
-        "yarn",
-        "--prefer-offline",
-        "--ignore-optional",
-        "--registry",
-        C.YARN_REGISTRY,
+        "jlpm",
     ]
     file_dep = [
         *P.APP_JSONS,
@@ -84,23 +80,14 @@ def task_setup():
     if P.YARN_LOCK.exists():
         file_dep += [P.YARN_LOCK]
 
-    if C.CI or C.WIN_DEV_IN_CI:
-        # .yarn-integrity will only exist on a full cache hit vs yarn.lock, saves 1min+
-        if B.YARN_INTEGRITY.exists():
-            return
-        args += ["--frozen-lockfile"]
-
     actions = [U.do(*args)]
-
-    if not (C.CI or C.RTD or C.BINDER):
-        actions += [U.do("yarn", "deduplicate")]
 
     yield dict(
         name="js",
         doc="install node packages",
         file_dep=file_dep,
         actions=actions,
-        targets=[B.YARN_INTEGRITY],
+        targets=[],
     )
 
 
@@ -121,8 +108,8 @@ def task_lint():
         B.OK_PRETTIER,
         name="prettier",
         doc="format .ts, .md, .json, etc. files with prettier",
-        file_dep=[*L.ALL_PRETTIER, B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "prettier:check-src" if C.CI else "prettier:fix")],
+        file_dep=[*L.ALL_PRETTIER],
+        actions=[U.do("jlpm", "prettier:check-src" if C.CI else "prettier:fix")],
     )
 
     if not C.SKIP_ESLINT:
@@ -131,7 +118,7 @@ def task_lint():
             name="eslint",
             doc="format and verify .ts, .js files with eslint",
             file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-            actions=[U.do("yarn", "eslint:check" if C.CI else "eslint:fix")],
+            actions=[U.do("jlpm", "eslint:check" if C.CI else "eslint:fix")],
         )
 
     yield U.ok(
@@ -179,7 +166,7 @@ def task_lint():
         for ipynb in D.ALL_IPYNB:
             yield dict(
                 name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
-                file_dep=[ipynb, B.YARN_INTEGRITY, P.PRETTIER_RC],
+                file_dep=[ipynb, P.PRETTIER_RC],
                 actions=[
                     U.do("nbstripout", ipynb),
                     (U.notebook_lint, [ipynb]),
@@ -235,7 +222,7 @@ def task_build():
     yield dict(
         name="js:ui-components",
         doc="copy the icon and wordmark to the ui-components package",
-        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_INTEGRITY],
+        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
@@ -255,11 +242,10 @@ def task_build():
         file_dep=[
             *L.ALL_ESLINT,
             *P.PACKAGE_JSONS.values(),
-            B.YARN_INTEGRITY,
             P.ROOT_PACKAGE_JSON,
         ],
         actions=[
-            U.do("yarn", "build:lib"),
+            U.do("jlpm", "build:lib"),
         ],
         targets=[B.META_BUILDINFO],
     )
@@ -286,7 +272,7 @@ def task_build():
         ]
         all_app_targets += app_targets
         extra_app_deps += [
-            app / "index.template.js",
+            app.parent / "index.template.js",
             app_json,
         ]
 
@@ -298,7 +284,7 @@ def task_build():
             *extra_app_deps,
         ],
         actions=[
-            U.do("yarn", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
+            U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
         ],
         targets=[*all_app_targets],
     )
@@ -365,8 +351,8 @@ def task_build():
         actions = []
         # make sure to build the lab extension before building the wheel
         if py_name == C.JS_KERNEL_NAME:
-            actions += [U.do("yarn", cwd=py_pkg)]
-            actions += [U.do("yarn", "build:prod", cwd=py_pkg)]
+            actions += [U.do("jlpm", cwd=py_pkg)]
+            actions += [U.do("jlpm", "build:prod", cwd=py_pkg)]
             targets.append(B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON)
 
         actions += [(U.build_one_hatch, [py_pkg])]
@@ -461,7 +447,7 @@ def task_docs():
     if not C.DOCS_IN_CI:
         yield dict(
             name="typedoc:ensure",
-            file_dep=[*P.PACKAGE_JSONS.values(), B.YARN_INTEGRITY],
+            file_dep=[*P.PACKAGE_JSONS.values()],
             actions=[
                 U.typedoc_conf,
                 U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
@@ -472,7 +458,7 @@ def task_docs():
             name="typedoc:build",
             doc="build the TS API documentation with typedoc",
             file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
-            actions=[U.do("yarn", "docs")],
+            actions=[U.do("jlpm", "docs")],
             targets=[B.DOCS_RAW_TYPEDOC_README],
         )
 
@@ -538,7 +524,7 @@ def task_docs():
 
             for schema_html in all_schema_html:
                 print(f"... fixing: {schema_html.relative_to(B.DOCS)}")
-                text = schema_html.read_text(encoding="utf-8")
+                text = schema_html.read_text(**C.ENC)
                 new_text = re.sub(r'<span id="([^"]*)"></span>', "", text)
                 if text != new_text:
                     schema_html.write_text(new_text, encoding="utf-8")
@@ -569,7 +555,7 @@ def task_docs():
             name="post:images",
             doc="clean sphinx-jsonschema duplicate ids",
             actions=[_optimize_images],
-            file_dep=[B.YARN_INTEGRITY],
+            file_dep=[],
         )
 
 
@@ -591,7 +577,7 @@ def task_serve():
         name="core:js",
         doc="serve the core app (no extensions) with nodejs",
         uptodate=[lambda: False],
-        actions=[U.do("yarn", "serve")],
+        actions=[U.do("jlpm", "serve")],
         file_dep=app_indexes,
     )
 
@@ -599,7 +585,7 @@ def task_serve():
         name="core:py",
         doc="serve the core app (no extensions) with python",
         uptodate=[lambda: False],
-        actions=[U.do("yarn", "serve:py")],
+        actions=[U.do("jlpm", "serve:py")],
         file_dep=app_indexes,
     )
 
@@ -667,8 +653,8 @@ def task_watch():
         name="js",
         doc="watch .ts, .js, and .css sources and rebuild packages and apps",
         uptodate=[lambda: False],
-        file_dep=[B.YARN_INTEGRITY],
-        actions=[U.do("yarn", "watch")],
+        file_dep=[],
+        actions=[U.do("jlpm", "watch")],
     )
     if shutil.which("sphinx-autobuild"):
         yield dict(
@@ -696,8 +682,8 @@ def task_test():
         B.OK_JEST,
         name="js",
         doc="run the .js, .ts unit tests with jest",
-        file_dep=[B.YARN_INTEGRITY, B.META_BUILDINFO],
-        actions=[U.do("yarn", "build:test"), U.do("yarn", "test")],
+        file_dep=[B.META_BUILDINFO],
+        actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
     )
 
     if C.LINTING_IN_CI:
@@ -766,7 +752,7 @@ def task_repo():
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
         actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
-        file_dep=[B.YARN_INTEGRITY, *pkg_jsons],
+        file_dep=[*pkg_jsons],
     )
 
 
@@ -799,7 +785,6 @@ class C:
     DOCS_ENV_MARKER = "### DOCS ENV ###"
     FED_EXT_MARKER = "### FEDERATED EXTENSIONS ###"
     RE_CONDA_FORGE_URL = r"/conda-forge/(.*/)?(noarch|linux-64|win-64|osx-64)/([^/]+)$"
-    YARN_REGISTRY = "https://registry.npmjs.org/"
     GH = "https://github.com"
     CONDA_FORGE_RELEASE = "https://conda.anaconda.org/conda-forge"
     LITE_GH_ORG = f"{GH}/{NAME}"
@@ -826,8 +811,8 @@ class C:
         .decode("utf-8")
         .strip()
     )
-    SVGO = ["yarn", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
-    PRETTIER = ["yarn", "prettier", "--write"]
+    SVGO = ["jlpm", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
+    PRETTIER = ["jlpm", "prettier", "--write"]
     PRETTIER_IGNORE = [
         ".ipynb_checkpoints",
         "node_modules",
@@ -855,8 +840,6 @@ class P:
     UI_COMPONENTS_ICONS = UI_COMPONENTS / "style" / "icons"
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
-
-    ENV_EXTENSIONS = Path(sys.prefix) / "share/jupyter/labextensions"
 
     EXAMPLES = ROOT / "examples"
     ALL_EXAMPLES = [
@@ -1024,7 +1007,6 @@ class L:
 class B:
     # built
     NODE_MODULES = P.ROOT / "node_modules"
-    YARN_INTEGRITY = NODE_MODULES / ".yarn-integrity"
     META_BUILDINFO = P.PACKAGES / "_metapackage/tsconfig.tsbuildinfo"
 
     # built things
@@ -1467,9 +1449,7 @@ class U:
             for name in packages:
                 package_json = P.ROOT / "node_modules" / name / "package.json"
                 data = json.loads(package_json.read_text(**C.ENC))
-                prefix = (
-                    "~" if re.search("^(@jupyter|@retrolab|@lumino).*", name) else "^"
-                )
+                prefix = "~" if re.search("^(@jupyter|@lumino).*", name) else "^"
                 app["resolutions"][name] = f"{prefix}{data['version']}"
 
             app["resolutions"] = {
@@ -1537,7 +1517,7 @@ class U:
                 files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
                 files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
 
-            args = [which("yarn"), "--silent", "prettier", "--config", P.PRETTIER_RC]
+            args = [which("jlpm"), "prettier", "--config", P.PRETTIER_RC]
 
             args += ["--check"] if C.CI else ["--write", "--list-different"]
 

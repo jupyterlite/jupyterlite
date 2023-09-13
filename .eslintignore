@@ -3,6 +3,8 @@ lint-staged.config.js
 scripts/serve.js
 
 .yarn-packages
+.yarn
+.pnp*
 node_modules
 **/build
 **/lib

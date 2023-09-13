@@ -11,7 +11,7 @@
     "packages/licenses",
     "packages/localforage",
     "packages/repl-extension",
-    "packages/retro-application-extension",
+    "packages/notebook-application-extension",
     "packages/server",
     "packages/server-extension",
     "packages/session",

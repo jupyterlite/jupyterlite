@@ -1,15 +1,50 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { ServerConnection, ServiceManager } from '@jupyterlab/services';
+import { Event, ServerConnection, ServiceManager } from '@jupyterlab/services';
 
 import { Application, IPlugin } from '@lumino/application';
+
+import { Stream } from '@lumino/signaling';
 
 import { WebSocket } from 'mock-socket';
 
 import { Router } from './router';
 
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
+
+/**
+ * Mock the Event Manager for now
+ */
+class MockEventManager implements Event.IManager {
+  constructor(options: { serverSettings: ServerConnection.ISettings }) {
+    this._stream = new Stream(this);
+    this._serverSettings = options.serverSettings;
+  }
+
+  async emit(event: Event.Request): Promise<void> {
+    // no-op
+  }
+
+  dispose(): void {
+    // no-op
+  }
+
+  get isDisposed(): boolean {
+    return true;
+  }
+
+  get stream() {
+    return this._stream;
+  }
+
+  get serverSettings(): ServerConnection.ISettings {
+    return this._serverSettings;
+  }
+
+  private _stream: Stream<this, Event.Emission>;
+  private _serverSettings: ServerConnection.ISettings;
+}
 
 /**
  * Server is the main application class. It is instantiated once and shared.
@@ -22,13 +57,15 @@ export class JupyterLiteServer extends Application<never> {
    */
   constructor(options: Application.IOptions<never>) {
     super(options);
+    const serverSettings = {
+      ...ServerConnection.makeSettings(),
+      WebSocket,
+      fetch: this.fetch.bind(this) ?? undefined,
+    };
     this._serviceManager = new ServiceManager({
       standby: 'never',
-      serverSettings: {
-        ...ServerConnection.makeSettings(),
-        WebSocket,
-        fetch: this.fetch.bind(this) ?? undefined,
-      },
+      serverSettings,
+      events: new MockEventManager({ serverSettings }),
     });
   }
 

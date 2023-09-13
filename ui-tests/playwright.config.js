@@ -2,18 +2,31 @@ const baseConfig = require('@jupyterlab/galata/lib/playwright-config');
 
 module.exports = {
   ...baseConfig,
-  timeout: 240000,
-  reporter: [[process.env.CI ? 'github' : 'list'], ['html']],
   retries: 1,
+  use: {
+    acceptDownloads: true,
+    appPath: '',
+    autoGoto: false,
+    baseURL: 'http://localhost:8000',
+    trace: 'retain-on-failure',
+    video: 'retain-on-failure',
+
+    waitForApplication: async ({ baseURL }, use, testInfo) => {
+      const waitIsReady = async (page) => {
+        await page.waitForSelector('.jp-LauncherCard');
+      };
+      await use(waitIsReady);
+    },
+  },
   webServer: [
     {
-      command: 'yarn run start',
+      command: 'jlpm run start',
       port: 8000,
       timeout: 120 * 1000,
       reuseExistingServer: true,
     },
     {
-      command: 'yarn run start:embed',
+      command: 'jlpm run start:embed',
       port: 8001,
       timeout: 120 * 1000,
       reuseExistingServer: true,

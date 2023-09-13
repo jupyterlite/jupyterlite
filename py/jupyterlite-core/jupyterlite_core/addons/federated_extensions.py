@@ -5,6 +5,8 @@ import sys
 import urllib.parse
 from pathlib import Path
 
+from traitlets import List, Unicode
+
 from ..constants import (
     FEDERATED_EXTENSIONS,
     JSON_FMT,
@@ -18,14 +20,17 @@ from ..constants import (
 )
 from .base import BaseAddon
 
-# TODO: improve this
-ENV_EXTENSIONS = Path(sys.prefix) / SHARE_LABEXTENSIONS
-
 
 class FederatedExtensionAddon(BaseAddon):
     """sync the as-installed federated_extensions and update `jupyter-lite.json`"""
 
     __all__ = ["pre_build", "post_build", "post_init"]
+
+    labextensions_path = Path(sys.prefix) / SHARE_LABEXTENSIONS
+
+    extra_labextensions_path = List(
+        Unicode(), help="""Extra paths to look for federated JupyterLab extensions"""
+    ).tag(config=True)
 
     def env_extensions(self, root):
         """a list of all federated extensions"""
@@ -60,10 +65,12 @@ class FederatedExtensionAddon(BaseAddon):
 
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
-        root = ENV_EXTENSIONS
-
         if not self.is_sys_prefix_ignored():
-            for pkg_json in self.env_extensions(root):
+            for pkg_json in self.env_extensions(self.labextensions_path):
+                yield from self.copy_one_extension(pkg_json)
+
+        for p in self.extra_labextensions_path:
+            for pkg_json in self.env_extensions(Path(p)):
                 yield from self.copy_one_extension(pkg_json)
 
         for path_or_url in manager.federated_extensions:

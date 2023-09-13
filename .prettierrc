@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
   "printWidth": 88,
-  "proseWrap": "always"
+  "proseWrap": "always",
+  "trailingComma": "es5"
 }

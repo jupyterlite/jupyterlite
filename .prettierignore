@@ -5,6 +5,8 @@
 
 .ipynb_checkpoints/
 .yarn-packages
+.yarn
+.pnp*
 build
 docs/_build
 node_modules

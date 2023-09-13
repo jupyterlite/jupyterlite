@@ -13,10 +13,6 @@ let local = {
       tsconfig: './tsconfig.test.json',
     },
   },
-  transform: {
-    '\\.(ts|tsx)?$': 'ts-jest',
-    '\\.svg$': 'jest-raw-loader',
-  },
 };
 
 Object.keys(local).forEach((option) => {

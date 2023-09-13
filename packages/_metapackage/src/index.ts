@@ -7,7 +7,7 @@ import '@jupyterlite/javascript-kernel';
 import '@jupyterlite/kernel';
 import '@jupyterlite/licenses';
 import '@jupyterlite/localforage';
-import '@jupyterlite/retro-application-extension';
+import '@jupyterlite/notebook-application-extension';
 import '@jupyterlite/server';
 import '@jupyterlite/server-extension';
 import '@jupyterlite/session';

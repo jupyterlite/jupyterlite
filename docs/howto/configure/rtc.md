@@ -5,6 +5,10 @@ WebRTC.
 
 ```{warning}
 Support for Real Time Collaboration in JupyterLite is still experimental.
+
+There is basic support for JupyterLite 0.1.x.
+
+Currently there is **no** support for JupyterLite 0.2.x, but it is tracked in [this issue](https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16)
 ```
 
 ```{note}

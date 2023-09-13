@@ -39,7 +39,7 @@ JupyterLab:
 All of the core JupyterLite [apps](../../quickstart/using.md#applications) support
 localization:
 
-![a screencast of selecting localization from the help menu](https://user-images.githubusercontent.com/591645/134638710-e99b9710-af61-43e0-856b-cb383b8e8181.gif 'JupyterLite and RetroLite localization')
+![a screencast of selecting localization from the help menu](https://user-images.githubusercontent.com/591645/134638710-e99b9710-af61-43e0-856b-cb383b8e8181.gif 'JupyterLab and Jupyter Notebook localization')
 
 ## Ignoring language packs from the environment
 

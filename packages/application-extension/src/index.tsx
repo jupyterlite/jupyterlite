@@ -14,12 +14,6 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
-import {
-  IDocumentProvider,
-  IDocumentProviderFactory,
-  ProviderMock,
-} from '@jupyterlab/docprovider';
-
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -170,38 +164,6 @@ const about: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * An alternative document provider plugin
- */
-const docProviderPlugin: JupyterFrontEndPlugin<IDocumentProviderFactory> = {
-  id: '@jupyterlite/application-extension:docprovider',
-  provides: IDocumentProviderFactory,
-  requires: [ITranslator],
-  activate: (
-    app: JupyterFrontEnd,
-    translator: ITranslator
-  ): IDocumentProviderFactory => {
-    const collaborative = PageConfig.getOption('collaborative') === 'true';
-    const factory = (options: IDocumentProviderFactory.IOptions): IDocumentProvider => {
-      if (collaborative) {
-        const trans = translator.load(I18N_BUNDLE);
-        console.warn(
-          trans.__(
-            'The `collaborative` feature was enabled, but no docprovider is available.'
-          )
-        );
-        console.info(
-          trans.__(
-            'Install `jupyterlab-webrtc-docprovider` to enable WebRTC-based collaboration.'
-          )
-        );
-      }
-      return new ProviderMock();
-    };
-    return factory;
-  },
-};
-
-/**
  * A plugin providing download commands in the file menu and command palette.
  */
 const downloadPlugin: JupyterFrontEndPlugin<void> = {
@@ -310,7 +272,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:logo',
-  // marking as optional to not throw errors in retro
+  // marking as optional to not throw errors in Notebook
   optional: [ILabShell],
   autoStart: true,
   activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
@@ -380,8 +342,8 @@ const opener: JupyterFrontEndPlugin<void> = {
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
-        app.restored.then(() => {
-          const page = PageConfig.getOption('retroPage');
+        app.started.then(() => {
+          const page = PageConfig.getOption('notebookPage');
           const [file] = files;
           switch (page) {
             case 'consoles': {
@@ -459,7 +421,14 @@ const shareFile: JupyterFrontEndPlugin<void> = {
           return;
         }
 
-        const url = new URL(URLExt.join(PageConfig.getBaseUrl(), 'lab'));
+        const baseUrl = PageConfig.getBaseUrl();
+        let appUrl = PageConfig.getOption('appUrl');
+        // open a notebook if on the file browser page
+        if (appUrl === '/tree') {
+          appUrl = '/notebooks';
+        }
+
+        const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
         const models = toArray(
           filter(widget.selectedItems(), (item) => item.type !== 'directory')
         );
@@ -482,7 +451,6 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
-  docProviderPlugin,
   downloadPlugin,
   liteLogo,
   notifyCommands,

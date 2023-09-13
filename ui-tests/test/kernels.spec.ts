@@ -5,9 +5,11 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { config } from './utils';
+import { firefoxWaitForApplication } from './utils';
 
-test.use(config);
+test.use({
+  waitForApplication: firefoxWaitForApplication,
+});
 
 test.describe('Kernels', () => {
   test('Default kernel name', async ({ page }) => {
