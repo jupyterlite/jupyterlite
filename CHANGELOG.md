@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0a0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.2...8cf661bdb5ce9e6fc413a9e7b6e3063321d55719))
+
+### Highlights :sparkles:
+
+This is the first version based on the JupyterLab 4 and Notebook 7 packages!
+
+:warning: There are still some known bugs and issues currently tracked in https://github.com/jupyterlite/jupyterlite/issues/1141 so we **do not recommend using this version in production just yet** :warning:
+
+### Enhancements made
+
+- Update to JupyterLab 4 and Notebook 7 [#1019](https://github.com/jupyterlite/jupyterlite/pull/1019) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump actions/checkout from 3 to 4 [#1137](https://github.com/jupyterlite/jupyterlite/pull/1137) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Update to jupyterlite-pyodide-kernel==0.1.1 on RTD [#1130](https://github.com/jupyterlite/jupyterlite/pull/1130) ([@andeplane](https://github.com/andeplane))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-08-21&to=2023-09-13&type=c))
+
+[@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-08-21..2023-09-13&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-08-21..2023-09-13&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-08-21..2023-09-13&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-08-21..2023-09-13&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-08-21..2023-09-13&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.1...f06cdcc7b78617bfaeb3b76d19cc981cfbe9b59a))
@@ -23,8 +53,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-07-31&to=2023-08-21&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-07-31..2023-08-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-07-31..2023-08-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-07-31..2023-08-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-07-31..2023-08-21&type=Issues) | [@oeway](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aoeway+updated%3A2023-07-31..2023-08-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.1
 
