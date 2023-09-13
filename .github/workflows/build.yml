@@ -18,7 +18,7 @@ jobs:
       BUILDING_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build dist
         uses: ./.github/actions/build-dist
@@ -35,7 +35,7 @@ jobs:
       LINTING_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
         uses: actions/cache@v3
@@ -100,7 +100,7 @@ jobs:
             python-version: pypy-3.8
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
@@ -167,7 +167,7 @@ jobs:
       DOCS_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Download (dist)
         uses: actions/download-artifact@v3
         with:
