@@ -54,7 +54,7 @@ test.describe('Contents Tests', () => {
     await page.filebrowser.refresh();
     await page.filebrowser.open(file);
     expect(
-      await page.filebrowser.isFileListedInBrowser(path.basename(file))
+      await page.filebrowser.isFileListedInBrowser(path.basename(file)),
     ).toBeTruthy();
   });
 
@@ -78,7 +78,7 @@ test.describe('Contents Tests', () => {
 
     await page.reload();
     expect(
-      await page.filebrowser.isFileListedInBrowser(path.basename(name))
+      await page.filebrowser.isFileListedInBrowser(path.basename(name)),
     ).toBeTruthy();
 
     await page.notebook.open(name);

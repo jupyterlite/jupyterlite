@@ -218,7 +218,7 @@ async function serve(request, response) {
       new Date().toISOString(),
       code,
       method,
-      url
+      url,
     );
     response.writeHead(code, { 'Content-Type': mime });
     response.end(content, 'utf-8');

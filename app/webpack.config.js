@@ -16,7 +16,7 @@ const topLevelData = require('./package.json');
 
 const liteAppData = topLevelData.jupyterlite.apps.reduce(
   (memo, app) => ({ ...memo, [app]: require(`./${app}/package.json`) }),
-  {}
+  {},
 );
 
 const licensePlugins = [];
@@ -26,7 +26,7 @@ if (!process.env.NO_WEBPACK_LICENSES) {
 }
 
 // custom handlebars helper to check if a page corresponds to a value
-Handlebars.registerHelper('ispage', function (key, page) {
+Handlebars.registerHelper('ispage', (key, page) => {
   return key === page;
 });
 
@@ -173,7 +173,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
 
   // Create the entry point and other assets in build directory.
   const template = Handlebars.compile(
-    fs.readFileSync(path.resolve(`./index.template.js`)).toString()
+    fs.readFileSync(path.resolve('./index.template.js')).toString(),
   );
   fs.writeFileSync(
     path.join(name, 'build', 'index.js'),
@@ -184,7 +184,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
       extensions,
       mimeExtensions,
       disabledExtensions,
-    })
+    }),
   );
   // Create the bootstrap file that loads federated extensions and calls the
   // initialization logic in index.js
@@ -198,13 +198,13 @@ for (const [name, data] of Object.entries(liteAppData)) {
 
   // Inject the name of the app in the template to be able to filter bundle files
   const indexTemplate = Handlebars.compile(
-    fs.readFileSync(path.resolve(`./index.template.html`)).toString()
+    fs.readFileSync(path.resolve('./index.template.html')).toString(),
   );
   fs.writeFileSync(
     path.join(name, 'build', 'index.template.html'),
     indexTemplate({
       name,
-    })
+    }),
   );
   // Use templates to create cache-busting templates
   allHtmlPlugins.push(
@@ -214,7 +214,7 @@ for (const [name, data] of Object.entries(liteAppData)) {
       title: data.jupyterlab.title,
       filename: `../${name}/index.html`,
       template: `${name}/build/index.template.html`,
-    })
+    }),
   );
 }
 
@@ -340,7 +340,7 @@ module.exports = [
         name: 'CORE_FEDERATION',
         shared: Object.values(liteAppData).reduce(
           (memo, data) => createShared(data, memo),
-          {}
+          {},
         ),
       }),
       new CompileSchemasPlugin(),

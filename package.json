@@ -62,8 +62,7 @@
   "prettier": {
     "singleQuote": true,
     "printWidth": 88,
-    "proseWrap": "always",
-    "trailingComma": "es5"
+    "proseWrap": "always"
   },
   "resolutions": {
     "@types/react": "^18.0.26",

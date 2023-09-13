@@ -93,7 +93,7 @@ export class Router {
           body,
           query: Object.fromEntries(url.searchParams),
         },
-        ...matches
+        ...matches,
       );
     }
 
@@ -110,7 +110,7 @@ export class Router {
   private _add(
     method: Router.Method,
     pattern: string | RegExp,
-    callback: Router.Callback
+    callback: Router.Callback,
   ): void {
     if (typeof pattern === 'string') {
       pattern = new RegExp(pattern);

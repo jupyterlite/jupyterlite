@@ -4,7 +4,7 @@ import { JSONObject, Token } from '@lumino/coreutils';
  * The token for the settings service.
  */
 export const ITranslation = new Token<ITranslation>(
-  '@jupyterlite/translation:ITranslation'
+  '@jupyterlite/translation:ITranslation',
 );
 
 /**

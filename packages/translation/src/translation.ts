@@ -19,7 +19,7 @@ export class Translation {
   async get(locale: string): Promise<JSONObject> {
     const apiURL = URLExt.join(
       PageConfig.getBaseUrl(),
-      `api/translations/${locale}.json`
+      `api/translations/${locale}.json`,
     );
     try {
       const response = await fetch(apiURL);
