@@ -276,6 +276,8 @@ To view the trace:
 3. navigate to the failing test
 4. scroll to the "Trace" section of the test to open the trace in a new tab
 
+![a screenshot showing the Playwright trace](https://github.com/jupyterlite/jupyterlite/assets/591645/76485f0e-0bc8-4d8e-9584-7e5f185c96cd)
+
 For more information: https://playwright.dev/docs/trace-viewer
 
 ### (Server) Python Development
