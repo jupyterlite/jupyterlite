@@ -42,7 +42,7 @@ jobs:
 
           # TODO: re-enable after testing
           # hub pr checkout ${{ github.event.issue.number }}
-          hub checkout 1146
+          hub pr checkout 1146
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
