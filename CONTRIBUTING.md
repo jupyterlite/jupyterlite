@@ -259,6 +259,15 @@ To update the snapshots:
 - copy the `-snapshots` directories to replace the existing ones
 - commit and push the changes
 
+Alternatively, you can also post a comment on the PR with the following content:
+
+```
+bot please update playwright snapshots
+```
+
+The bot should react to the comment by leaving a 👍 reaction, and trigger the snapshot
+update in a background GitHub Action run.
+
 The generated snapshots can be found on the Summary page of the CI check:
 
 ![reference-snapshots](https://user-images.githubusercontent.com/591645/141300086-d13c3221-a66d-45f5-b0ac-6f4795b16349.png)
