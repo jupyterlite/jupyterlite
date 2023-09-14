@@ -50,7 +50,7 @@ test.describe('Contents Tests', () => {
   });
 
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
-    const file = 'data/iri.csv';
+    const file = 'data/iris.csv';
     await page.filebrowser.refresh();
     await page.filebrowser.open(file);
     expect(
