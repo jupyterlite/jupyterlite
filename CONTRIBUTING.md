@@ -263,6 +263,21 @@ The generated snapshots can be found on the Summary page of the CI check:
 
 ![reference-snapshots](https://user-images.githubusercontent.com/591645/141300086-d13c3221-a66d-45f5-b0ac-6f4795b16349.png)
 
+#### Troubleshooting UI tests
+
+The UI tests have the Playwright `trace` option enabled which is useful to have a more
+in-depth look at failing tests on CI, including console errors and network calls.
+
+To view the trace:
+
+1. download the Playwright report from the GitHub Actions artifacts
+2. start a web server (for example with `python -m http.server`) and open the report in
+   a browser
+3. navigate to the failing test
+4. scroll to the "Trace" section of the test to open the trace in a new tab
+
+For more information: https://playwright.dev/docs/trace-viewer
+
 ### (Server) Python Development
 
 After all the `jlpm`-related work has finished, the terminal-compatible python uses the
