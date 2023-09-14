@@ -17,7 +17,7 @@ import { Panel, Widget, PanelLayout } from '@lumino/widgets';
  * The single widget application shell token.
  */
 export const ISingleWidgetShell = new Token<ISingleWidgetShell>(
-  '@jupyterlite/application:ISingleWidgetShell'
+  '@jupyterlite/application:ISingleWidgetShell',
 );
 
 /**
@@ -78,7 +78,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
   add(
     widget: Widget,
     area?: Shell.Area,
-    options?: DocumentRegistry.IOpenOptions
+    options?: DocumentRegistry.IOpenOptions,
   ): void {
     if (area === 'main' || area === undefined) {
       if (this._main.widgets.length > 0) {

@@ -59,6 +59,11 @@
       "pre-commit": "lint-staged"
     }
   },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 88,
+    "proseWrap": "always"
+  },
   "resolutions": {
     "@types/react": "^18.0.26",
     "json-schema": "^0.4.0",

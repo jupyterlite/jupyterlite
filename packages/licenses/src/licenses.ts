@@ -108,7 +108,7 @@ export class Licenses implements ILicenses {
         this.labExtensionsUrl,
         ext.name,
         'static',
-        THIRD_PARTY_LICENSES
+        THIRD_PARTY_LICENSES,
       );
       const response = await fetch(url);
       bundles[ext.name] = await response.json();
