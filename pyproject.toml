@@ -8,7 +8,7 @@ multi_line_output = 3
 known_first_party = [ "jupyterlite_core", "jupyterlite",]
 
 [tool.jupyter-releaser]
-skip = [ "build-python", "check-links",]
+skip = [ "build-python", "check-links", "check-python",]
 
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt", "jlpm", ]
@@ -18,11 +18,6 @@ after-check-npm = [ "rm dist/jupyterlite-app-*.tgz",]
 
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
-python_packages = [
-    "py/jupyterlite:jupyterlite",
-    "py/jupyterlite:jupyterlite-core",
-    "py/jupyterlite-javascript-kernel:jupyterlite-javascript-kernel",
-]
 
 [tool.check-wheel-contents]
 ignore = ["W002"]
