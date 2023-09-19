@@ -44,7 +44,7 @@ src = "py/jupyterlite/jupyterlite/__init__.py"
 
 [[tool.tbump.file]]
 src = "py/jupyterlite/pyproject.toml"
-search = "jupyterlite-core >={current_version}"
+search = "jupyterlite-core=={current_version}"
 
 [[tool.tbump.file]]
 src = "py/jupyterlite-core/src/jupyterlite_core/__init__.py"
