@@ -239,6 +239,7 @@
       "@jupyterlab/tooltip",
       "@jupyterlab/translation",
       "@jupyterlab/ui-components",
+      "@jupyter-notebook/application",
       "@jupyterlite/contents",
       "@jupyterlite/kernel",
       "@jupyterlite/localforage",

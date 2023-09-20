@@ -84,10 +84,6 @@ const pathOpener: JupyterFrontEndPlugin<INotebookPathOpener> = {
   },
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [
-  logo,
-  notifyCommands,
-  pathOpener,
-];
+const plugins: JupyterFrontEndPlugin<any>[] = [logo, notifyCommands, pathOpener];
 
 export default plugins;

@@ -225,6 +225,7 @@
       "@jupyterlab/tooltip",
       "@jupyterlab/translation",
       "@jupyterlab/ui-components",
+      "@jupyter-notebook/application",
       "@jupyterlite/contents",
       "@jupyterlite/kernel",
       "@jupyterlite/localforage",
@@ -284,6 +285,7 @@
       "@jupyterlab/notebook-extension:execution-indicator",
       "@jupyterlab/notebook-extension:kernel-status",
       "@jupyter-notebook/application-extension:logo",
+      "@jupyter-notebook/application-extension:opener",
       "@jupyter-notebook/application-extension:path-opener"
     ],
     "mimeExtensions": {
