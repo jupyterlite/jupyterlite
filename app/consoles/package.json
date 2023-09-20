@@ -3,6 +3,7 @@
   "version": "0.2.0-alpha.0",
   "private": true,
   "resolutions": {
+    "@jupyter-notebook/application": "~7.0.4",
     "@jupyterlab/application": "~4.0.6",
     "@jupyterlab/application-extension": "~4.0.6",
     "@jupyterlab/apputils": "~4.1.6",
