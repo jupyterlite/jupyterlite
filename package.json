@@ -35,6 +35,7 @@
     "build:prod": "lerna run build:prod",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
+    "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
     "docs": "typedoc",
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
