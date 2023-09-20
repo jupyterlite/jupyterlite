@@ -59,10 +59,11 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
  * A plugin to open paths in new browser tabs, using `?path=` to specify the path to open.
  */
 const pathOpener: JupyterFrontEndPlugin<INotebookPathOpener> = {
-  id: '@jupyter-notebook/application-extension:path-opener',
+  id: '@jupyterlite/notebook-application-extension:path-opener',
   autoStart: true,
   provides: INotebookPathOpener,
   activate: (app: JupyterFrontEnd): INotebookPathOpener => {
+    console.log('using the JupyterLite path opener');
     return {
       open(options: INotebookPathOpener.IOpenOptions): Window | null {
         const { prefix, path, searchParams, target, features } = options;

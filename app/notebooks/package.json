@@ -300,7 +300,7 @@
       "@jupyterlab/notebook-extension:execution-indicator",
       "@jupyterlab/notebook-extension:kernel-status",
       "@jupyter-notebook/application-extension:logo",
-      "@jupyter-notebook/application-extension:opener"
+      "@jupyter-notebook/application-extension:path-opener"
     ],
     "mimeExtensions": {
       "@jupyterlab/javascript-extension": "",
