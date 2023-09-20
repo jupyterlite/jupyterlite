@@ -4,8 +4,8 @@
 If you first want to get familiar with the interface, check out the [User Guide](./using.md).
 ```
 
-JupyterLite can easily be deployed on [GitHub Pages], using the `jupyterlite` CLI to add
-content and extensions.
+JupyterLite can easily be deployed on [GitHub Pages], using the `jupyter-lite` CLI to
+add content and extensions.
 
 ```{note}
 Deploying to GitHub Pages requires a Github account.
