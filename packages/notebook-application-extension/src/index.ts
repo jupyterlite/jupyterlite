@@ -3,115 +3,13 @@
 
 import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
 
-import { IConsoleTracker } from '@jupyterlab/console';
-
-import { PageConfig, PathExt } from '@jupyterlab/coreutils';
-
-import { IDocumentWidgetOpener } from '@jupyterlab/docmanager';
-
-import { DocumentRegistry, IDocumentWidget } from '@jupyterlab/docregistry';
+import { PageConfig } from '@jupyterlab/coreutils';
 
 import { liteWordmark } from '@jupyterlite/ui-components';
 
-import { Signal } from '@lumino/signaling';
-
 import { Widget } from '@lumino/widgets';
 
-import { INotebookShell } from '@jupyter-notebook/application';
-
-/**
- * Open consoles in a new tab.
- */
-const consoles: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/notebook-application-extension:consoles',
-  requires: [IConsoleTracker],
-  autoStart: true,
-  activate: (app: JupyterFrontEnd, tracker: IConsoleTracker) => {
-    const baseUrl = PageConfig.getBaseUrl();
-    tracker.widgetAdded.connect(async (send, console) => {
-      const { sessionContext } = console;
-      const page = PageConfig.getOption('notebookPage');
-      if (page === 'consoles') {
-        return;
-      }
-      const path = sessionContext.path;
-      window.open(`${baseUrl}consoles?path=${path}`, '_blank');
-
-      // the widget is not needed anymore
-      console.dispose();
-    });
-  },
-};
-
-/**
- * A plugin to open documents in a new browser tab.
- * This plugin is different than the Notebook plugin because JupyterLite creates
- * links with `?path=...` to open documents.
- * TODO: investigate how to use the same plugin but make the query parameter configurable
- *
- */
-const opener: JupyterFrontEndPlugin<IDocumentWidgetOpener> = {
-  id: '@jupyterlite/notebook-application-extension:opener',
-  autoStart: true,
-  optional: [INotebookShell],
-  provides: IDocumentWidgetOpener,
-  activate: (app: JupyterFrontEnd, notebookShell: INotebookShell | null) => {
-    const baseUrl = PageConfig.getBaseUrl();
-    const docRegistry = app.docRegistry;
-    let id = 0;
-    return new (class {
-      open(widget: IDocumentWidget, options?: DocumentRegistry.IOpenOptions) {
-        const widgetName = options?.type ?? '';
-        const ref = options?.ref;
-        // check if there is an setting override and if it would add the widget in the main area
-        const userLayoutArea = notebookShell?.userLayout?.[widgetName]?.area;
-
-        if (ref !== '_noref' && userLayoutArea === undefined) {
-          const path = widget.context.path;
-          const ext = PathExt.extname(path);
-          let route = 'edit';
-          if (
-            (widgetName === 'default' && ext === '.ipynb') ||
-            widgetName.includes('Notebook')
-          ) {
-            route = 'notebooks';
-          }
-          let url = `${baseUrl}${route}?path=${path}`;
-          // append ?factory only if it's not the default
-          const defaultFactory = docRegistry.defaultWidgetFactory(path);
-          if (widgetName !== defaultFactory.name) {
-            url = `${url}?factory=${widgetName}`;
-          }
-          window.open(url);
-          // dispose the widget since it is not used on this page
-          widget.dispose();
-          return;
-        }
-
-        // otherwise open the document on the current page
-
-        if (!widget.id) {
-          widget.id = `document-manager-${++id}`;
-        }
-        widget.title.dataset = {
-          type: 'document-title',
-          ...widget.title.dataset,
-        };
-        if (!widget.isAttached) {
-          app.shell.add(widget, 'main', options || {});
-        }
-        app.shell.activateById(widget.id);
-        this._opened.emit(widget);
-      }
-
-      get opened() {
-        return this._opened;
-      }
-
-      private _opened = new Signal<this, IDocumentWidget>(this);
-    })();
-  },
-};
+import { INotebookPathOpener, INotebookShell } from '@jupyter-notebook/application';
 
 /**
  * The logo plugin.
@@ -157,6 +55,39 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
   },
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [consoles, logo, opener, notifyCommands];
+/**
+ * A plugin to open paths in new browser tabs, using `?path=` to specify the path to open.
+ */
+const pathOpener: JupyterFrontEndPlugin<INotebookPathOpener> = {
+  id: '@jupyter-notebook/application-extension:path-opener',
+  autoStart: true,
+  provides: INotebookPathOpener,
+  activate: (app: JupyterFrontEnd): INotebookPathOpener => {
+    return {
+      open(options: INotebookPathOpener.IOpenOptions): Window | null {
+        const { prefix, path, searchParams, target, features } = options;
+        const url = new URL(prefix, window.location.origin);
+        // initialize the new search params
+        const search = new URLSearchParams(searchParams?.toString() ?? '');
+        // open paths by setting the `?path=` search parameter
+        if (path) {
+          search.set('path', path);
+        }
+        const searchString = search.toString();
+        if (searchString) {
+          url.search = searchString;
+        }
+        return window.open(url, target, features);
+      },
+    };
+  },
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  logo,
+  opener,
+  notifyCommands,
+  pathOpener,
+];
 
 export default plugins;

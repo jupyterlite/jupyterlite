@@ -39,9 +39,7 @@
   "dependencies": {
     "@jupyter-notebook/application": "^7.0.4",
     "@jupyterlab/application": "^4.0.6",
-    "@jupyterlab/console": "^4.0.6",
     "@jupyterlab/coreutils": "^6.0.6",
-    "@jupyterlab/docmanager": "^4.0.6",
     "@jupyterlab/services": "^7.0.6",
     "@jupyterlite/ui-components": "^0.2.0-alpha.0"
   },
