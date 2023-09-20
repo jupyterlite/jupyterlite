@@ -8,7 +8,7 @@ multi_line_output = 3
 known_first_party = [ "jupyterlite_core", "jupyterlite",]
 
 [tool.jupyter-releaser]
-skip = [ "build-python", "check-links", "check-manifest",]
+skip = [ "build-python", "check-links", "check-python",]
 
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt", "jlpm", ]
@@ -41,6 +41,10 @@ src = "pyproject.toml"
 
 [[tool.tbump.file]]
 src = "py/jupyterlite/jupyterlite/__init__.py"
+
+[[tool.tbump.file]]
+src = "py/jupyterlite/pyproject.toml"
+search = "jupyterlite-core >={current_version}"
 
 [[tool.tbump.file]]
 src = "py/jupyterlite-core/jupyterlite_core/__init__.py"
