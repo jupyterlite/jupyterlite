@@ -2,6 +2,8 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
+import SW_URL from './service-worker?text';
+
 /**
  * The token for the ServiceWorker.
  */
@@ -47,4 +49,4 @@ export namespace IServiceWorkerManager {
   }
 }
 
-export const WORKER_NAME = 'service-worker.js';
+export const WORKER_NAME = `${SW_URL}`.split('/').slice(-1)[0];
