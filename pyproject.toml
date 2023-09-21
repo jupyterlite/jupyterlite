@@ -31,6 +31,8 @@ select = [
   "W", "YTT",
 ]
 ignore = [
+# FBT001 Boolean positional arg in function definition
+"FBT001", "FBT002", "FBT003",
 # T201 `print` found
 "T201",
 # T203 `print` found
@@ -42,6 +44,9 @@ ignore = [
 [tool.ruff.per-file-ignores]
 # A001 Variable `copyright` is shadowing a Python builtin
 "docs/conf.py" = ["A001"]
+
+# TID252 [*] Relative imports from parent modules are banned
+"py/*" = ["TID252"]
 
 # S101 Use of `assert` detected
 "**/tests/*" = ["S101"]

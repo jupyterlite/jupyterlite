@@ -9,6 +9,7 @@ import warnings
 from pathlib import Path
 
 import pytest
+import socket
 
 from jupyterlite_core.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 
@@ -86,9 +87,6 @@ def a_simple_lite_ipynb():
         }
     )
     return writes(nb)
-
-
-import socket
 
 
 @pytest.fixture

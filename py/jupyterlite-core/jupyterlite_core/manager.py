@@ -107,9 +107,8 @@ class LiteManager(LiteBuildConfig):
 
         for hook in HOOKS:
             for phase in PHASES:
-                if phase == "pre_":
-                    if hook in HOOK_PARENTS:
-                        prev_attr = f"""post_{HOOK_PARENTS[hook]}"""
+                if phase == "pre_" and hook in HOOK_PARENTS:
+                    prev_attr = f"""post_{HOOK_PARENTS[hook]}"""
                 attr = f"{phase}{hook}"
                 tasks[f"task_{self.task_prefix}{attr}"] = self._gather_tasks(
                     attr, prev_attr
@@ -142,8 +141,7 @@ class LiteManager(LiteBuildConfig):
 
         @doit.create_after(f"{self.task_prefix}{prev_attr}")
         def _delayed_gather():
-            for task in _gather():
-                yield task
+            yield from _gather()
 
         return _delayed_gather
 

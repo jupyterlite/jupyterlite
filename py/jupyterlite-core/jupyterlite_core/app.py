@@ -97,7 +97,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
     @default("config_file_paths")
     def _config_file_paths_default(self):
-        return [str(Path.cwd())] + jupyter_config_path()
+        return [str(Path.cwd()), *jupyter_config_path()]
 
     def emit_alias_help(self):  # pragma: no cover
         """Yield the lines for alias part of the help.
@@ -123,11 +123,11 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
         for alias, longname in self.aliases.items():
             try:
                 if isinstance(longname, tuple):
-                    longname, fhelp = longname
+                    name, fhelp = longname
                 else:
                     fhelp = None
-                classname, traitname = longname.split(".")[-2:]
-                longname = classname + "." + traitname
+                classname, traitname = name.split(".")[-2:]
+                name = classname + "." + traitname
 
                 cls = classdict[classname]
 
@@ -141,9 +141,9 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
                 # reformat first line
                 assert fhelp is not None
-                fhelp[0] = fhelp[0].replace("--" + longname, alias)  # type:ignore
+                fhelp[0] = fhelp[0].replace("--" + name, alias)  # type:ignore
                 yield from fhelp
-                yield indent("Equivalent to: [--%s]" % longname)
+                yield indent("Equivalent to: [--%s]" % name)
             except Exception as ex:
                 self.log.error(
                     "Failed collecting help-message for alias %r, due to: %s", alias, ex
@@ -157,7 +157,7 @@ class ManagedApp(BaseLiteApp):
     lite_manager = Instance(LiteManager)
 
     @default("lite_manager")
-    def _default_manager(self):
+    def _default_manager(self): # noqa: C901, PLR0912
         kwargs = dict(
             parent=self,
         )
@@ -238,7 +238,7 @@ class LiteRawDoitApp(LiteDoitApp):
 class LiteListApp(LiteDoitApp):
     """describe a JupyterLite site"""
 
-    _doit_cmd = ["list", "--all", "--status"]
+    _doit_cmd: typing.ClassVar = ["list", "--all", "--status"]
 
 
 # task app base class
@@ -312,7 +312,7 @@ class LiteArchiveApp(LiteTaskApp):
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
 
-    subcommands = {
+    subcommands: typing.ClassVar = {
         k: (v, v.__doc__.splitlines()[0].strip())
         for k, v in dict(
             # special apps
