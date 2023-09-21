@@ -35,6 +35,7 @@
     "build:prod": "lerna run build:prod",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
+    "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
     "docs": "typedoc",
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
@@ -60,9 +61,9 @@
     }
   },
   "prettier": {
-    "singleQuote": true,
     "printWidth": 88,
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "singleQuote": true
   },
   "resolutions": {
     "@types/react": "^18.0.26",
@@ -72,7 +73,7 @@
     "yjs": "^13.5.40"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^4.0.5",
+    "@jupyterlab/buildutils": "~4.0.6",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
