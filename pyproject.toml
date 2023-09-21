@@ -39,6 +39,8 @@ ignore = [
 "T203",
 # C408 Unnecessary `dict` call (rewrite as a literal)
 "C408", "C416",
+# RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+"RUF012",
 ]
 
 [tool.ruff.per-file-ignores]
@@ -49,7 +51,7 @@ ignore = [
 "py/*" = ["TID252"]
 
 # S101 Use of `assert` detected
-"**/tests/*" = ["S101"]
+"**/tests/*" = ["S101", "PLR2004"]
 
  # E501 Line too long
 "ui-tests/build.py" = ["E501", "S602"]

@@ -238,7 +238,7 @@ class LiteRawDoitApp(LiteDoitApp):
 class LiteListApp(LiteDoitApp):
     """describe a JupyterLite site"""
 
-    _doit_cmd: typing.ClassVar = ["list", "--all", "--status"]
+    _doit_cmd = ["list", "--all", "--status"]
 
 
 # task app base class
@@ -312,7 +312,7 @@ class LiteArchiveApp(LiteTaskApp):
 class LiteApp(BaseLiteApp):
     """build ready-to-serve (or -publish) JupyterLite sites"""
 
-    subcommands: typing.ClassVar = {
+    subcommands = {
         k: (v, v.__doc__.splitlines()[0].strip())
         for k, v in dict(
             # special apps

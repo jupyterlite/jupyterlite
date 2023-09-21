@@ -150,7 +150,7 @@ class BaseAddon(LoggingConfigurable):
             elif src_dir.exists():
                 src_dir.unlink()
 
-    def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
+    def validate_one_json_file(self, validator, path=None, data=None, selector=None):
         if path:
             loaded = json.loads(path.read_text(**UTF8))
         else:

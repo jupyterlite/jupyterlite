@@ -42,7 +42,7 @@ def merge_addon_flags(base_flags, force=None):
                 new_flags[flag] = config_help
             else:
                 flag_config, flag_help = new_flags[flag]
-                config, help = config_help
+                config, help_str = config_help
                 for cls_name, traits in config.items():
                     if cls_name in flag_config:
                         warnings.warn(
@@ -50,7 +50,7 @@ def merge_addon_flags(base_flags, force=None):
                         )
                         continue
                     flag_config[cls_name] = traits
-                new_flags[flag] = (flag_config, "\n".join([flag_help, help]))
+                new_flags[flag] = (flag_config, "\n".join([flag_help, help_str]))
 
     return new_flags
 

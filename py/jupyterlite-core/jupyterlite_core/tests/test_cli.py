@@ -68,7 +68,7 @@ def test_cli_version(lite_args, script_runner):
 
 @mark.parametrize("lite_args", LITE_INVOCATIONS)
 @mark.parametrize("help", ["-h", "--help"])
-def test_cli_help(lite_args, help, script_runner):
+def test_cli_help(lite_args, help, script_runner): # noqa: A002
     """does help work"""
     returned_version = script_runner.run(*lite_args, help)
     assert returned_version.success
