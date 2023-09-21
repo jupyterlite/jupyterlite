@@ -128,6 +128,7 @@ app/test/data
 app/kernels
 app/extensions
 app/service-worker-*.js
+app/service-worker.js
 
 # generated html
 app/index.app.template.html

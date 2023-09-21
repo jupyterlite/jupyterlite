@@ -259,7 +259,7 @@ class CompileSchemasPlugin {
 class ServiceWorkerPlugin {
   apply(compiler) {
     compiler.hooks.done.tapAsync('ServiceWorkerPlugin', (compilation, callback) => {
-      const worker = glob.sync(`${topLevelBuild}/service-worker-*.js`)[0];
+      const worker = glob.sync(`${topLevelBuild}/service-worker.js`)[0];
       fs.copyFileSync(worker, path.resolve(path.basename(worker)));
       callback();
     });
