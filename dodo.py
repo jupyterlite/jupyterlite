@@ -360,7 +360,7 @@ def task_build():
 
 def task_dist():
     """fix up the state of the distribution directory"""
-    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+    if C.TESTING_IN_CI or C.DOCS_IN_CI:
         return
 
     py_dests = []
@@ -678,9 +678,6 @@ def task_test():
         actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
     )
 
-    if C.LINTING_IN_CI:
-        return
-
     env = dict(os.environ)
 
     pytest_args = [
@@ -793,7 +790,6 @@ class C:
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
-    LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
     WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
     PYM = [sys.executable, "-m"]
@@ -1447,7 +1443,7 @@ class U:
                     f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!"
                 )
                 return True
-            elif C.LINTING_IN_CI:
+            else:
                 print(
                     f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!"
                 )

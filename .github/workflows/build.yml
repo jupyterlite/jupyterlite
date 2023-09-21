@@ -31,8 +31,6 @@ jobs:
 
   lint-js-test:
     runs-on: ubuntu-latest
-    env:
-      LINTING_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4

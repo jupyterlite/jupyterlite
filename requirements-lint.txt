@@ -3,7 +3,7 @@
 -r requirements-build.txt
 
 black[jupyter]
-isort
+ruff
 jsonschema >=3
 nbconvert
 nbstripout
