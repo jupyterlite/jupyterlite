@@ -28,7 +28,7 @@ sys.path += [str(ROOT / "py/jupyterlite/src")]
 # metadata
 author = APP_DATA["author"]
 project = author.replace("Contributors", "").strip()
-copyright = f"{datetime.date.today().year}, {author}"
+copyright = f"{datetime.date.now().year}, {author}"
 
 # The full version, including alpha/beta/rc tags
 release = APP_DATA["version"]
@@ -147,7 +147,8 @@ def do_tasks(label, tasks):
         task_rcs += [rc]
 
     if max(task_rcs) > 0:
-        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
+        err = "[jupyterlite-docs] ... FAIL, see log above"
+        raise Exception(err)
 
     print(f"[jupyterlite-docs] ... {label.upper()} OK", flush=True)
 

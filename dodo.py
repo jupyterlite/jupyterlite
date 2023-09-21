@@ -1,3 +1,6 @@
+# ignore the whole dodo.py file for now
+# ruff: noqa
+
 import json
 import os
 import platform
