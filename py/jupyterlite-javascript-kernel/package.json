@@ -46,7 +46,7 @@
     "watch:src": "tsc -w"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "^6.0.6",
+    "@jupyterlab/coreutils": "~6.0.6",
     "@jupyterlite/javascript-kernel": "^0.2.0-alpha.0",
     "@jupyterlite/kernel": "^0.2.0-alpha.0",
     "@jupyterlite/server": "^0.2.0-alpha.0"
@@ -54,7 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/builder": "^4.0.6",
+    "@jupyterlab/builder": "~4.0.6",
     "@types/jest": "^29.5.3",
     "jest": "^29.6.2",
     "rimraf": "~5.0.1",
