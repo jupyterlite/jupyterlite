@@ -151,10 +151,7 @@ class BaseAddon(LoggingConfigurable):
                 src_dir.unlink()
 
     def validate_one_json_file(self, validator, path=None, data=None, selector=None):
-        if path:
-            loaded = json.loads(path.read_text(**UTF8))
-        else:
-            loaded = data
+        loaded = json.loads(path.read_text(**UTF8)) if path else data
 
         if selector:
             for sel in selector:
@@ -200,7 +197,7 @@ class BaseAddon(LoggingConfigurable):
                 in_config = json.loads(in_path.read_text(**UTF8))
                 if out_path.name == JUPYTERLITE_IPYNB:
                     in_config = in_config["metadata"].get(JUPYTERLITE_METADATA)
-            except:
+            except:  # noqa: E722, S110
                 pass
 
             if not in_config:
@@ -214,10 +211,9 @@ class BaseAddon(LoggingConfigurable):
                 self.log.debug(f"""[lite][config] ... updating {k} => {v}?""")
                 if k == JUPYTER_CONFIG_DATA:
                     config[k] = self.merge_jupyter_config_data(config.get(k) or {}, v)
-                else:
-                    if config.get(k) != v:
-                        self.log.debug(f"""[lite][config] ..... {k} updated""")
-                        config[k] = v
+                elif config.get(k) != v:
+                    self.log.debug(f"""[lite][config] ..... {k} updated""")
+                    config[k] = v
 
         if config and JUPYTER_CONFIG_DATA in config:
             self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])

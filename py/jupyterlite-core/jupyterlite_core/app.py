@@ -157,7 +157,7 @@ class ManagedApp(BaseLiteApp):
     lite_manager = Instance(LiteManager)
 
     @default("lite_manager")
-    def _default_manager(self): # noqa: C901, PLR0912
+    def _default_manager(self):  # noqa: C901, PLR0912
         kwargs = dict(
             parent=self,
         )

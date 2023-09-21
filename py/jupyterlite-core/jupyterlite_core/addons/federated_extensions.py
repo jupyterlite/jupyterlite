@@ -140,8 +140,7 @@ class FederatedExtensionAddon(BaseAddon):
             elif local_path.name.endswith(".conda"):
                 yield from self.copy_conda2_extensions(local_path)
             else:  # pragma: no cover
-                err = f"unknown archive {suffix}"
-                raise NotImplementedError(err)
+                raise NotImplementedError(f"unknown archive {suffix}")
         else:  # pragma: no cover
             raise FileNotFoundError(path_or_url)
 
@@ -150,8 +149,7 @@ class FederatedExtensionAddon(BaseAddon):
         pkg_json = path / PACKAGE_JSON
 
         if not pkg_json.exists():
-            err = f"[lite][federated_extensions] No package.json in {path}"
-            raise ValueError(err)
+            raise ValueError(f"[lite][federated_extensions] No package.json in {path}")
 
         yield from self.copy_one_extension(pkg_json)
 
@@ -206,10 +204,11 @@ class FederatedExtensionAddon(BaseAddon):
     def copy_conda2_extensions(self, conda_pkg):
         """copy the labextensions from a local, nested ``.conda`` package"""
         if self.manager.no_libarchive:
-            err = "`.conda` packages are not supported by python's stdlib. Please:\n\n"
-            "\tconda install python-libarchive-c\n\nor:\n\n"
-            "\tpip install libarchive-c"
-            raise RuntimeError(err)
+            raise RuntimeError(
+                "`.conda` packages are not supported by python's stdlib. Please:\n\n"
+                "\tconda install python-libarchive-c\n\nor:\n\n"
+                "\tpip install libarchive-c"
+            )
         unarchived = self.archive_cache / conda_pkg.name
         inner_archive = unarchived / f"pkg-{conda_pkg.stem}.tar.zst"
         inner_unarchived = self.archive_cache / inner_archive.name

@@ -31,6 +31,9 @@ select = [
   "W", "YTT",
 ]
 ignore = [
+# EM101 [*] Exception must not use a string literal, assign to variable first
+# EM102 [*] Exception must not use an f-string literal, assign to variable first
+"EM101", "EM102",
 # FBT001 Boolean positional arg in function definition
 "FBT001", "FBT002", "FBT003",
 # T201 `print` found

@@ -23,7 +23,9 @@ def merge_addon_aliases(base_aliases, force=None):
 
         for alias, trait_name in addon_aliases.items():
             if alias in new_aliases:
-                warnings.warn(f"[lite] [{name}] alias --{alias} cannot be redefined")
+                warnings.warn(
+                    f"[lite] [{name}] alias --{alias} cannot be redefined", stacklevel=2
+                )
                 continue
             new_aliases[alias] = trait_name
 
@@ -46,7 +48,8 @@ def merge_addon_flags(base_flags, force=None):
                 for cls_name, traits in config.items():
                     if cls_name in flag_config:
                         warnings.warn(
-                            f"[lite] [{name}] --{flag} cannot redefine {cls_name}"
+                            f"[lite] [{name}] --{flag} cannot redefine {cls_name}",
+                            stacklevel=2,
                         )
                         continue
                     flag_config[cls_name] = traits
@@ -66,7 +69,7 @@ def get_addon_implementations(force=None):
         try:
             addon_implementations[name] = entry_point.load()
         except Exception as err:  # pragma: no cover
-            warnings.warn(f"[lite] [{name}] failed to load: {err}")
+            warnings.warn(f"[lite] [{name}] failed to load: {err}", stacklevel=2)
     return addon_implementations
 
 
@@ -80,7 +83,7 @@ def get_addon_entry_points(force=None):
     for entry_point in entry_points(group=ADDON_ENTRYPOINT):
         name = entry_point.name
         if name in all_entry_points:  # pragma: no cover
-            warnings.warn(f"[lite] [{name}] addon already registered.")
+            warnings.warn(f"[lite] [{name}] addon already registered.", stacklevel=2)
             continue
         all_entry_points[name] = entry_point
     return dict(sorted(all_entry_points.items()))

@@ -14,7 +14,7 @@ from typing import Union as _Union
 from traitlets import Bool, CInt, Dict, Tuple, Unicode, Union, default
 from traitlets.config import LoggingConfigurable
 
-from . import constants as C
+from . import constants as C  # noqa: N812
 from .trait_types import CPath, TypedTuple
 
 
@@ -102,7 +102,7 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     base_url: str = Unicode(
-        help=("[serve] the prefix to use." " env: JUPYTERLITE_BASE_URL")
+        help=("[serve] the prefix to use. env: JUPYTERLITE_BASE_URL")
     ).tag(config=True)
 
     # patterns

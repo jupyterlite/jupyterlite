@@ -39,7 +39,8 @@ def an_empty_lite_dir(tmp_path):
                 shutil.rmtree(lite_dir)
             except Exception as error:  # pragma: no covers
                 warnings.warn(
-                    f"Attempt {retry}: failed to clean up {lite_dir}: {error}"
+                    f"Attempt {retry}: failed to clean up {lite_dir}: {error}",
+                    stacklevel=2,
                 )
                 time.sleep(5)
 

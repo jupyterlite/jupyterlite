@@ -147,8 +147,7 @@ def do_tasks(label, tasks):
         task_rcs += [rc]
 
     if max(task_rcs) > 0:
-        err = "[jupyterlite-docs] ... FAIL, see log above"
-        raise Exception(err)
+        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
 
     print(f"[jupyterlite-docs] ... {label.upper()} OK", flush=True)
 

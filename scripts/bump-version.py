@@ -25,8 +25,7 @@ APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 def bump(force, spec):
     status = run("git status --porcelain").strip()
     if len(status) > 0:
-        err = "Must be in a clean git state with no untracked files"
-        raise Exception(err)
+        raise Exception("Must be in a clean git state with no untracked files")
 
     # bump Python version
     bump_py(spec, changelog_path="CHANGELOG.md")

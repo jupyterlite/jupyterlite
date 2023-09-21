@@ -71,8 +71,7 @@ class SettingsAddon(BaseAddon):
             *manager.output_dir.rglob(JUPYTERLITE_JSON),
             *manager.output_dir.rglob(JUPYTERLITE_IPYNB),
         ]:
-            for task in self.check_one_lite_file(lite_file):
-                yield task
+            yield from self.check_one_lite_file(lite_file)
 
     def check_one_lite_file(self, lite_file):
         config = json.loads(lite_file.read_text(**UTF8))
@@ -108,7 +107,7 @@ class SettingsAddon(BaseAddon):
         """update and normalize settingsOverrides"""
         try:
             config = json.loads(jupyterlite_json.read_text(**UTF8))
-        except:
+        except (FileNotFoundError, json.JSONDecodeError):
             self.log.debug(f"[lite] [settings] Initializing {jupyterlite_json}")
             config = {JUPYTER_CONFIG_DATA: {}}
 
