@@ -47,20 +47,30 @@ jobs:
       - name: Setup pip (lint)
         run: python3 -m pip install -r requirements-lint.txt
       - name: Install
-        run: doit setup:js
-      - name: Test (js)
-        run: doit -n4 test:js
+        run: jlpm
       - name: Lint
-        run: doit lint
+        run: jlpm lint
+
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Repo Integrity
         run: doit repo
-      - name: Docs (typedoc)
-        run: doit -n4 docs:typedoc:mystify
-      - name: Upload (typedoc)
-        uses: actions/upload-artifact@v3
-        with:
-          name: jupyterlite typedoc ${{ github.run_number }}
-          path: ./docs/reference/api/ts
+
+  # TODO
+  # typedoc:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Docs (typedoc)
+  #       run: doit -n4 docs:typedoc:mystify
+  #     - name: Upload (typedoc)
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: jupyterlite typedoc ${{ github.run_number }}
+  #         path: ./docs/reference/api/ts
 
   test:
     needs: [build]

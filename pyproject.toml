@@ -22,6 +22,27 @@ version-cmd = "python scripts/bump-version.py --force"
 [tool.check-wheel-contents]
 ignore = ["W002"]
 
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+select = [
+  "A", "B", "C", "DTZ", "E", "EM", "F", "FBT", "I", "ICN", "ISC", "N",
+  "PLC", "PLE", "PLR", "PLW", "Q", "RUF", "S", "SIM", "T", "TID", "UP",
+  "W", "YTT",
+]
+ignore = [
+# T201 `print` found
+"T201",
+# T203 `print` found
+"T203",
+# C408 Unnecessary `dict` call (rewrite as a literal)
+"C408", "C416",
+]
+
+[tool.ruff.per-file-ignores]
+# S101 Use of `assert` detected
+"**/tests/*" = ["S101"]
+
 [tool.tbump.version]
 current = "0.2.0a1"
 regex = '''
