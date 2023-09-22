@@ -125,7 +125,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
                 if isinstance(longname, tuple):
                     name, fhelp = longname
                 else:
-                    fhelp = None
+                    name, fhelp = longname, None
                 classname, traitname = name.split(".")[-2:]
                 name = classname + "." + traitname
 

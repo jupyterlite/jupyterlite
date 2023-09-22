@@ -65,6 +65,7 @@ jobs:
           post-cleanup: 'all'
       - name: Repo Integrity
         run: doit repo
+        shell: bash -el {0}
 
   # TODO
   # typedoc:
