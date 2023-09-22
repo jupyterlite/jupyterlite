@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import socket
 import subprocess
 import sys
 import time
@@ -9,7 +10,6 @@ import warnings
 from pathlib import Path
 
 import pytest
-import socket
 
 from jupyterlite_core.constants import ALL_APP_ARCHIVES, NPM_SOURCE_DATE_EPOCH
 

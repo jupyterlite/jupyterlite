@@ -135,8 +135,7 @@ class ContentsAddon(BaseAddon):
 
         if path.is_dir():
             for child in path.glob("*"):
-                for from_child in self.maybe_add_one_path(child, root or path):
-                    yield from_child
+                yield from self.maybe_add_one_path(child, root or path)
         else:
             yield path.resolve()
 

@@ -106,7 +106,7 @@ class BaseAddon(LoggingConfigurable):
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url) as response: # noqa: S310
                 tmp_dest = tdp / dest.name
                 with tmp_dest.open("wb") as fd:
                     shutil.copyfileobj(response, fd)
@@ -183,7 +183,7 @@ class BaseAddon(LoggingConfigurable):
         schema = json.loads(schema_path.read_text(**UTF8))
         return klass(schema)
 
-    def merge_one_jupyterlite(self, out_path, in_paths):
+    def merge_one_jupyterlite(self, out_path, in_paths): # noqa: C901, PLR0912
         """write the ``out_path`` with the merge content of ``in_paths``, where
         all are valid ``jupyter-lite.*`` files.
         """

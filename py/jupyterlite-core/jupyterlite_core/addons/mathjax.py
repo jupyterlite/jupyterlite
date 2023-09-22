@@ -35,11 +35,8 @@ class MathjaxAddon(BaseAddon):
 
         manager_path = None
 
-        try:
-            if self.manager.mathjax_dir.exists():
-                manager_path = self.manager.mathjax_dir
-        except Exception:  # pragma: no cover
-            pass
+        if self.manager.mathjax_dir.exists():
+            manager_path = self.manager.mathjax_dir
 
         if manager_path is not None:
             path = manager_path
@@ -115,9 +112,12 @@ class MathjaxAddon(BaseAddon):
         )
 
         # overload this for the configs actually served
-        if self.mathjax_path and MATHJAX_PATH:
-            if self.mathjax_path.resolve() == MATHJAX_PATH.resolve():
-                config[JUPYTER_CONFIG_DATA][MATHJAX_CONFIG] = MATHJAX_CONFIG_SHIPPED
+        if (
+            self.mathjax_path
+            and MATHJAX_PATH
+            and self.mathjax_path.resolve() == MATHJAX_PATH.resolve()
+        ):
+            config[JUPYTER_CONFIG_DATA][MATHJAX_CONFIG] = MATHJAX_CONFIG_SHIPPED
 
         jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
@@ -134,5 +134,5 @@ class MathjaxAddon(BaseAddon):
         assert mathjax_js.exists(), f"{mathjax_js} not found"
 
         for mathjax_config in config.get(MATHJAX_CONFIG, "").split(","):
-            config_js = mathjax_path / f"config/{config}.js"
+            config_js = mathjax_path / f"config/{mathjax_config}.js"
             assert config_js.exists(), f"{config_js} doesn't exist, fix mathjaxConfig"

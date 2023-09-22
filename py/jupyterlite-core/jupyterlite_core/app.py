@@ -134,10 +134,9 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
                 trait = cls.class_traits(config=True)[traitname]
                 fhelp = cls.class_get_trait_help(trait, helptext=fhelp).splitlines()
 
-                if not isinstance(alias, tuple):
-                    alias = (alias,)
-                alias = sorted(alias, key=len)  # type:ignore[assignment]
-                alias = ", ".join(("--%s" if len(m) > 1 else "-%s") % m for m in alias)
+                aliases = (alias,) if not isinstance(alias, tuple) else alias
+                aliases = sorted(aliases, key=len)  # type:ignore[assignment]
+                aliases = ", ".join(("--%s" if len(m) > 1 else "-%s") % m for m in aliases)
 
                 # reformat first line
                 assert fhelp is not None
