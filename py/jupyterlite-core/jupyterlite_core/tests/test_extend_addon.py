@@ -45,11 +45,11 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
     assert addon.some_feature == 42, "some feature should have been 42"
     assert addon.some_other_feature == 1, "some other feature should have been 1"
 
-    with pytest.raises(SystemExit) as exit:
+    with pytest.raises(SystemExit) as system_exit:
         app.start()
 
-    assert exit.type == SystemExit, "should have raised a SystemExit"
-    assert exit.value.code == 0, "should have passed with rc 0"
+    assert system_exit.type == SystemExit, "should have raised a SystemExit"
+    assert system_exit.value.code == 0, "should have passed with rc 0"
     cap = capsys.readouterr()
     assert "hello world" in cap.out, "should have printed hello world"
 

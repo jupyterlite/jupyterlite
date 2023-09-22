@@ -96,7 +96,7 @@ def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
 
 
 @mark.parametrize("lite_hook", NOT_SERVE_HOOK)
-def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite_ipynb):
+def test_cli_any_hook(lite_hook, an_empty_lite_dir, script_runner, a_simple_lite_ipynb): # noqa: E501, PLR0915
     """does all the hooks basically work
 
     TODO: this should be broken up into a hypothesis state machine, perhaps

@@ -115,7 +115,7 @@ class ContentsAddon(BaseAddon):
                 to_path = self.output_files_dir / stem
                 resolved = str(to_path.resolve())
                 if resolved in yielded_dests:  # pragma: no cover
-                    self.log.debug("Already populated", resolved)
+                    self.log.debug("Already populated %s", resolved)
                     continue
                 yielded_dests += [resolved]
                 yield from_path, to_path
@@ -206,7 +206,9 @@ class ContentsAddon(BaseAddon):
 
             pre-validated this structure with the ``jupyter_server`` API spec
         """
-        sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
+        sde = datetime.datetime.fromtimestamp(
+            self.manager.source_date_epoch, tz=datetime.timezone.utc
+        )
 
         if isinstance(listing, dict):
             for field in ["created", "last_modified"]:

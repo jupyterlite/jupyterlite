@@ -44,7 +44,7 @@ def test_serve(
 
     url = f"http://127.0.0.1:{an_unused_port}{base_url}"
 
-    server = subprocess.Popen(args, cwd=str(an_empty_lite_dir))
+    server = subprocess.Popen(args, cwd=str(an_empty_lite_dir)) # noqa: S603
     time.sleep(2)
 
     app_urls = [""]
