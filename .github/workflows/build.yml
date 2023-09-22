@@ -57,6 +57,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: '1.5.1-0'
+          environment-file: .binder/environment.yml
+          cache-environment: true
+          post-cleanup: 'all'
       - name: Repo Integrity
         run: doit repo
 
