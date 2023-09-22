@@ -6,8 +6,10 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
 export class ServiceWorkerManager implements IServiceWorkerManager {
-  constructor() {
-    void this.initialize().catch(console.warn);
+  constructor(options?: IServiceWorkerManager.IOptions) {
+    const workerUrl =
+      options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
+    void this.initialize(workerUrl).catch(console.warn);
   }
 
   /**
@@ -31,9 +33,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
-  private async initialize(): Promise<void> {
+  private async initialize(workerUrl: string): Promise<void> {
     const { serviceWorker } = navigator;
-    const workerUrl = URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
+
     let registration: ServiceWorkerRegistration | null = null;
 
     if (!serviceWorker) {

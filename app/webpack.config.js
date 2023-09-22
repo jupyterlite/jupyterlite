@@ -259,7 +259,7 @@ class CompileSchemasPlugin {
 class ServiceWorkerPlugin {
   apply(compiler) {
     compiler.hooks.done.tapAsync('ServiceWorkerPlugin', (compilation, callback) => {
-      const worker = glob.sync(`${topLevelBuild}/service-worker-*.js`)[0];
+      const worker = glob.sync(`${topLevelBuild}/service-worker.js`)[0];
       fs.copyFileSync(worker, path.resolve(path.basename(worker)));
       callback();
     });
@@ -313,7 +313,7 @@ module.exports = [
           resourceQuery: /text/,
           type: 'asset/resource',
           generator: {
-            filename: '[name]-[contenthash:7][ext]',
+            filename: '[name][ext]',
           },
         },
       ],

@@ -34,4 +34,19 @@ export interface IServiceWorkerManager {
   ready: Promise<void>;
 }
 
+/**
+ * A namespace for `ServiceWorkerManager` class.
+ */
+export namespace IServiceWorkerManager {
+  /**
+   * An options object for initializing a worker manager.
+   */
+  export interface IOptions {
+    /**
+     * URL to load the worker file. Default to "{baseURL}/service-worker.js"
+     */
+    workerUrl?: string;
+  }
+}
+
 export const WORKER_NAME = `${SW_URL}`.split('/').slice(-1)[0];
