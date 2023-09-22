@@ -64,7 +64,7 @@ jobs:
       - name: Repo Integrity
         shell: bash -el {0}
         run: |
-          doit repo
+          doit repo:integrity:check
 
   typedoc:
     runs-on: ubuntu-latest

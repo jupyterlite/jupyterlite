@@ -267,9 +267,7 @@ def task_build():
             *app_deps,
             *extra_app_deps,
         ],
-        actions=[
-            U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
-        ],
+        actions=[U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")],
         targets=[*all_app_targets],
     )
 
@@ -313,10 +311,7 @@ def task_build():
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
-        wheel = (
-            py_pkg
-            / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-        )
+        wheel = py_pkg / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
         pyproj_toml = py_pkg / "pyproject.toml"
@@ -736,6 +731,15 @@ def task_repo():
         file_dep=[*pkg_jsons],
     )
 
+    yield dict(
+        name="integrity:check",
+        doc="check app yarn resolutions are up-to-date",
+        actions=[
+            (U.integrity, [True]),
+        ],
+        file_dep=[*pkg_jsons],
+    )
+
 
 class C:
     NAME = "jupyterlite"
@@ -757,9 +761,7 @@ class C:
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     LAB_ARGS = json.loads(
-        os.environ.get(
-            "LAB_ARGS", """["--no-browser","--debug","--expose-app-in-browser"]"""
-        )
+        os.environ.get("LAB_ARGS", """["--no-browser","--debug","--expose-app-in-browser"]""")
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
 
@@ -787,9 +789,7 @@ class C:
     PYM = [sys.executable, "-m"]
     HATCH = [*PYM, "hatch"]
     SOURCE_DATE_EPOCH = (
-        subprocess.check_output([which("git"), "log", "-1", "--format=%ct"])
-        .decode("utf-8")
-        .strip()
+        subprocess.check_output([which("git"), "log", "-1", "--format=%ct"]).decode("utf-8").strip()
     )
     SVGO = ["jlpm", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
     PRETTIER = ["jlpm", "prettier", "--write"]
@@ -836,11 +836,7 @@ class P:
     APP_HTMLS = [
         APP / "index.html",
         *APP.rglob("*/index.template.html"),
-        *[
-            p
-            for p in APP.rglob("*/index.html")
-            if not (p.parent / "index.template.html").exists()
-        ],
+        *[p for p in APP.rglob("*/index.html") if not (p.parent / "index.template.html").exists()],
     ]
 
     WEBPACK_CONFIG = APP / "webpack.config.js"
@@ -870,11 +866,7 @@ class P:
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
     DOCS_SRC_MD = sorted(
-        [
-            p
-            for p in DOCS.rglob("*.md")
-            if "docs/reference/api/ts" not in str(p.as_posix())
-        ]
+        [p for p in DOCS.rglob("*.md") if "docs/reference/api/ts" not in str(p.as_posix())]
     )
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
@@ -893,9 +885,7 @@ class P:
 
 
 def _js_version_to_py_version(js_version):
-    return (
-        js_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
-    )
+    return js_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
 
 
 class D:
@@ -910,8 +900,7 @@ class D:
     PY_VERSION = _js_version_to_py_version(APP["version"])
 
     PACKAGE_JSONS = {
-        parent: json.loads(p.read_text(**C.ENC))
-        for parent, p in P.PACKAGE_JSONS.items()
+        parent: json.loads(p.read_text(**C.ENC)) for parent, p in P.PACKAGE_JSONS.items()
     }
 
     APP_CONFIGS = [
@@ -960,14 +949,10 @@ class L:
         P.ROOT_PACKAGE_JSON,
         P.ROOT.glob("*.json"),
     )
-    ALL_JS = _clean_paths(
-        (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
-    )
+    ALL_JS = _clean_paths((P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js"))
     ALL_HTML = [*P.APP_HTMLS]
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = _clean_paths(
-        P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml")
-    )
+    ALL_YAML = _clean_paths(P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml"))
     ALL_PRETTIER = _clean_paths(ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS)
     ALL_BLACK = _clean_paths(
         *P.DOCS_PY,
@@ -986,9 +971,7 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PY_APP_PACK = (
-        P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
-    )
+    PY_APP_PACK = P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
@@ -1015,8 +998,7 @@ class B:
     DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
     DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
     DOCS_TS_MODULES = [
-        P.ROOT
-        / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
+        P.ROOT / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
@@ -1035,10 +1017,7 @@ class B:
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
     JS_KERNEL_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
     JS_KERNEL_LABEXTENSION_PACKAGE_JSON = (
-        JS_KERNEL_PY_PACKAGE
-        / C.JS_KERNEL_NAME.replace("-", "_")
-        / "labextension"
-        / "package.json"
+        JS_KERNEL_PY_PACKAGE / C.JS_KERNEL_NAME.replace("-", "_") / "labextension" / "package.json"
     )
 
 
@@ -1047,11 +1026,7 @@ class BB:
 
     # not exhaustive, because of per-class API pages
     ALL_DOCS_HTML = [
-        (
-            B.DOCS
-            / src.parent.relative_to(P.DOCS)
-            / (src.name.rsplit(".", 1)[0] + ".html")
-        )
+        (B.DOCS / src.parent.relative_to(P.DOCS) / (src.name.rsplit(".", 1)[0] + ".html"))
         for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
         if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
@@ -1094,9 +1069,7 @@ class U:
         except Exception:
             print(args[0], "is not available (this might not be a problem)")
             return ["echo", f"{args[0]} not available"]
-        return doit.action.CmdAction(
-            [cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs
-        )
+        return doit.action.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs)
 
     def ok(ok, **task):
         task.setdefault("targets", []).append(ok)
@@ -1176,11 +1149,7 @@ class U:
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
-            [
-                f"packages/{parent}"
-                for parent in P.PACKAGE_JSONS
-                if parent not in C.NO_TYPEDOC
-            ]
+            [f"packages/{parent}" for parent in P.PACKAGE_JSONS if parent not in C.NO_TYPEDOC]
         )
 
         if json.dumps(original_entry_points) != json.dumps(new_entry_points):
@@ -1408,7 +1377,7 @@ class U:
                 subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
-    def integrity():
+    def integrity(check=False):
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
             old_text = app_json.read_text(**C.ENC)
@@ -1424,21 +1393,16 @@ class U:
                 app["resolutions"][name] = f"{prefix}{data['version']}"
 
             app["resolutions"] = {
-                k: v
-                for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
+                k: v for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
             }
 
             new_text = json.dumps(app, indent=2) + "\n"
 
             if new_text.strip() == old_text.strip():
-                print(
-                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!"
-                )
+                print(f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!")
                 return True
-            else:
-                print(
-                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!"
-                )
+            elif check:
+                print(f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!")
                 return False
 
             # Write the package.json back to disk.
@@ -1495,9 +1459,7 @@ class U:
             subprocess.call([*args, tdp])
 
             for i, cell in enumerate(cells):
-                cells[i]["source"] = (
-                    files[i].read_text(**C.ENC).rstrip().splitlines(True)
-                )
+                cells[i]["source"] = files[i].read_text(**C.ENC).rstrip().splitlines(True)
 
     def check_contains(path: Path, pattern: str):
         if pattern not in path.read_text(**C.ENC):
