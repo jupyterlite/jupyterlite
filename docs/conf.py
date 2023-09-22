@@ -28,7 +28,7 @@ sys.path += [str(ROOT / "py/jupyterlite/src")]
 # metadata
 author = APP_DATA["author"]
 project = author.replace("Contributors", "").strip()
-copyright = f"{datetime.date.now().year}, {author}"
+copyright = f"{datetime.datetime.now().year}, {author}"
 
 # The full version, including alpha/beta/rc tags
 release = APP_DATA["version"]
