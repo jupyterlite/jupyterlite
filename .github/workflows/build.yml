@@ -64,8 +64,10 @@ jobs:
           cache-environment: true
           post-cleanup: 'all'
       - name: Repo Integrity
-        run: doit repo
         shell: bash -el {0}
+        run: |
+          jlpm
+          doit repo
 
   # TODO
   # typedoc:
