@@ -7,7 +7,7 @@ skip = [ "build-python", "check-links", "check-python",]
 
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt", "jlpm", ]
-after-bump-version = [ "doit repo:integrity", "doit lint", "jlpm",]
+after-bump-version = [ "doit repo:integrity", "jlpm lint", "jlpm",]
 before-build-npm = [ "doit build",]
 after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 
