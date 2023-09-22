@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0a1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a0...38266d3be040c5bd92e8298f4bbb121b67c6f1a0))
+
+### Enhancements made
+
+- Allow config worker url in ServiceWorkerManager [#1159](https://github.com/jupyterlite/jupyterlite/pull/1159) ([@trungleduc](https://github.com/trungleduc))
+- Update to JupyterLab 4.0.6 and Notebook 7.0.4 [#1154](https://github.com/jupyterlite/jupyterlite/pull/1154) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump systeminformation from 5.18.11 to 5.21.8 in /ui-tests [#1160](https://github.com/jupyterlite/jupyterlite/pull/1160) ([@dependabot](https://github.com/dependabot))
+- Add bot reaction to the snapshot update comment [#1146](https://github.com/jupyterlite/jupyterlite/pull/1146) ([@jtpio](https://github.com/jtpio))
+- Move prettier config to `package.json`, drop `trailingComma` [#1143](https://github.com/jupyterlite/jupyterlite/pull/1143) ([@jtpio](https://github.com/jtpio))
+- Add a lower bound on `jupyterlite-core` [#1010](https://github.com/jupyterlite/jupyterlite/pull/1010) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.2.0a1` on ReadTheDocs [#1162](https://github.com/jupyterlite/jupyterlite/pull/1162) ([@jtpio](https://github.com/jtpio))
+- Mention the Playwright trace in the contributing guide [#1145](https://github.com/jupyterlite/jupyterlite/pull/1145) ([@jtpio](https://github.com/jtpio))
+- Add a section to the migration guide for `0.2.0` [#1144](https://github.com/jupyterlite/jupyterlite/pull/1144) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-13&to=2023-09-22&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-09-13..2023-09-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-13..2023-09-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-13..2023-09-22&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-09-13..2023-09-22&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2023-09-13..2023-09-22&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0a0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.2...8cf661bdb5ce9e6fc413a9e7b6e3063321d55719))
@@ -29,8 +59,6 @@ This is the first version based on the JupyterLab 4 and Notebook 7 packages!
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-08-21&to=2023-09-13&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-08-21..2023-09-13&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-08-21..2023-09-13&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-08-21..2023-09-13&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-08-21..2023-09-13&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-08-21..2023-09-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.2
 
