@@ -93,9 +93,7 @@ class FederatedExtensionAddon(BaseAddon):
         stem = json.loads(pkg_json.read_text(**UTF8))["name"]
         dest = self.output_extensions / stem
         file_dep = [
-            p
-            for p in pkg_path.rglob("*")
-            if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
+            p for p in pkg_path.rglob("*") if not (p.is_dir() or self.is_ignored_sourcemap(p.name))
         ]
         targets = [dest / p.relative_to(pkg_path) for p in file_dep]
 
@@ -180,13 +178,9 @@ class FederatedExtensionAddon(BaseAddon):
 
     def copy_all_federated_extensions(self, unarchived):
         """actually copy all federated extensions found in a folder."""
-        for simple_pkg_json in unarchived.rglob(
-            f"{SHARE_LABEXTENSIONS}/*/package.json"
-        ):
+        for simple_pkg_json in unarchived.rglob(f"{SHARE_LABEXTENSIONS}/*/package.json"):
             self.copy_one_federated_extension(simple_pkg_json)
-        for org_pkg_json in unarchived.rglob(
-            f"{SHARE_LABEXTENSIONS}/@*/*/package.json"
-        ):
+        for org_pkg_json in unarchived.rglob(f"{SHARE_LABEXTENSIONS}/@*/*/package.json"):
             self.copy_one_federated_extension(org_pkg_json)
 
     def copy_one_federated_extension(self, pkg_json):

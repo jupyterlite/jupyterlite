@@ -104,12 +104,8 @@ class MathjaxAddon(BaseAddon):
 
     def patch_mathjax_config(self, jupyterlite_json):
         config = json.loads(jupyterlite_json.read_text(**UTF8))
-        mathjax_url = str(
-            self.mathjax_output.relative_to(self.manager.output_dir).as_posix()
-        )
-        config[JUPYTER_CONFIG_DATA].update(
-            {FULL_MATHJAX_URL: f"./{mathjax_url}/{MATHJAX_JS}"}
-        )
+        mathjax_url = str(self.mathjax_output.relative_to(self.manager.output_dir).as_posix())
+        config[JUPYTER_CONFIG_DATA].update({FULL_MATHJAX_URL: f"./{mathjax_url}/{MATHJAX_JS}"})
 
         # overload this for the configs actually served
         if (

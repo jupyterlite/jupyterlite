@@ -153,7 +153,6 @@ def task_lint():
                 file_dep=[ipynb],
                 actions=[
                     U.do("nbstripout", ipynb),
-                    (U.notebook_lint, [ipynb]),
                     U.do(
                         "jupyter-nbconvert",
                         "--log-level=WARN",
@@ -797,7 +796,6 @@ class C:
         ".ipynb_checkpoints",
         "node_modules",
     ]
-    MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
     COV_THRESHOLD = 82
@@ -954,12 +952,6 @@ class L:
     ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
     ALL_YAML = _clean_paths(P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml"))
     ALL_PRETTIER = _clean_paths(ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS)
-    ALL_BLACK = _clean_paths(
-        *P.DOCS_PY,
-        P.DODO,
-        *(P.ROOT / "scripts").glob("*.py"),
-        *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
-    )
 
 
 class B:
@@ -1420,21 +1412,6 @@ class U:
             print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
 
         return all_up_to_date
-
-    def notebook_lint(ipynb: Path):
-        nb_text = ipynb.read_text(**C.ENC)
-        nb_json = json.loads(nb_text)
-
-        U.pretty_markdown_cells(ipynb, nb_json)
-
-        ipynb.write_text(json.dumps(nb_json), **C.ENC)
-
-        if C.MIME_IPYTHON in nb_text:
-            print(f"... blackening {ipynb.stem}")
-            black_args = []
-            black_args += ["--check"] if C.CI else ["--quiet"]
-            if subprocess.call([which("black"), *black_args, ipynb]) != 0:
-                return False
 
     def pretty_markdown_cells(ipynb, nb_json):
         cells = [c for c in nb_json["cells"] if c["cell_type"] == "markdown"]

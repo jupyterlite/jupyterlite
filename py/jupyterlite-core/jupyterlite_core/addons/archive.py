@@ -36,9 +36,7 @@ class ArchiveAddon(BaseAddon):
 
         tarball = self.manager.output_archive
 
-        file_dep = [
-            p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]
-        ]
+        file_dep = [p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]]
 
         yield self.task(
             name=f"archive:{tarball.name}",
@@ -100,9 +98,7 @@ class ArchiveAddon(BaseAddon):
             temp_ball = Path(td) / tarball.name
             with os.fdopen(
                 os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb"
-            ) as tar_gz, gzip.GzipFile(
-                fileobj=tar_gz, mode="wb", mtime=0
-            ) as gz, tarfile.open(
+            ) as tar_gz, gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz, tarfile.open(
                 fileobj=gz, mode="w:"
             ) as tar:
                 for i, path in enumerate(members):

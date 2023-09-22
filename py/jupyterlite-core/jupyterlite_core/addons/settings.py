@@ -61,9 +61,7 @@ class SettingsAddon(BaseAddon):
             yield self.task(
                 name=f"patch:overrides:{app}",
                 file_dep=[overrides_json, jupyterlite_json],
-                actions=[
-                    (self.patch_one_overrides, [jupyterlite_json, overrides_json])
-                ],
+                actions=[(self.patch_one_overrides, [jupyterlite_json, overrides_json])],
             )
 
     def check(self, manager):
@@ -90,9 +88,7 @@ class SettingsAddon(BaseAddon):
                 if core_schema.exists():
                     schema = core_schema
                 else:
-                    self.log.debug(
-                        f"[lite] [settings] Missing {plugin} (probably harmless)"
-                    )
+                    self.log.debug(f"[lite] [settings] Missing {plugin} (probably harmless)")
                     continue
 
             validator = self.get_validator(schema)

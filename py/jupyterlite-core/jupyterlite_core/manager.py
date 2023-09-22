@@ -17,9 +17,9 @@ class LiteManager(LiteBuildConfig):
     and then calling the ``doit`` API.
     """
 
-    strict = Bool(
-        True, help=("if `True`, stop the current workflow on the first error")
-    ).tag(config=True)
+    strict = Bool(True, help=("if `True`, stop the current workflow on the first error")).tag(
+        config=True
+    )
 
     task_prefix = Unicode(
         default_value="",
@@ -29,9 +29,7 @@ class LiteManager(LiteBuildConfig):
     parsed_extra_args = Dict(help="extra CLI args unused by the ``LiteManager``")
 
     # "private" traits (at least not configurable)
-    _addons = Dict(
-        help="""concrete addons that have named iterable methods of doit tasks"""
-    )
+    _addons = Dict(help="""concrete addons that have named iterable methods of doit tasks""")
     _doit_config = Dict(help="the DOIT_CONFIG for tasks")
     _doit_tasks = Dict(help="the doit task generators")
 
@@ -110,9 +108,7 @@ class LiteManager(LiteBuildConfig):
                 if phase == "pre_" and hook in HOOK_PARENTS:
                     prev_attr = f"""post_{HOOK_PARENTS[hook]}"""
                 attr = f"{phase}{hook}"
-                tasks[f"task_{self.task_prefix}{attr}"] = self._gather_tasks(
-                    attr, prev_attr
-                )
+                tasks[f"task_{self.task_prefix}{attr}"] = self._gather_tasks(attr, prev_attr)
                 prev_attr = attr
 
         return tasks
@@ -126,9 +122,7 @@ class LiteManager(LiteBuildConfig):
                     try:
                         for task in getattr(addon, attr)(self):
                             patched_task = {**task}
-                            patched_task[
-                                "name"
-                            ] = f"""{self.task_prefix}{name}:{task["name"]}"""
+                            patched_task["name"] = f"""{self.task_prefix}{name}:{task["name"]}"""
                             print(patched_task["name"])
                             yield patched_task
                     except Exception as error:

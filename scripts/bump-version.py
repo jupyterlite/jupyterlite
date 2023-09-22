@@ -33,9 +33,7 @@ def bump(force, spec):
     # read the new app version
     app_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
     py_version = app_json["version"]
-    js_version = (
-        py_version.replace("a", "-alpha.").replace("b", "-beta.").replace("rc", "-rc.")
-    )
+    js_version = py_version.replace("a", "-alpha.").replace("b", "-beta.").replace("rc", "-rc.")
 
     # save the new version to the app jupyter-lite.json
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))

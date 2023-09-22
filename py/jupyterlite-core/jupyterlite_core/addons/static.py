@@ -39,12 +39,8 @@ class StaticAddon(BaseAddon):
                 ),
                 lambda: print(f"""    output:          {self.manager.output_dir}"""),
                 lambda: print(f"""    lite dir:        {self.manager.lite_dir}"""),
-                lambda: print(
-                    f"""    apps:            {", ".join(self.manager.apps)}"""
-                ),
-                lambda: print(
-                    f"""    sourcemaps:      {not self.manager.no_sourcemaps}"""
-                ),
+                lambda: print(f"""    apps:            {", ".join(self.manager.apps)}"""),
+                lambda: print(f"""    sourcemaps:      {not self.manager.no_sourcemaps}"""),
                 lambda: print(
                     f"""    unused packages: {not self.manager.no_unused_shared_packages}"""
                 ),
@@ -91,9 +87,7 @@ class StaticAddon(BaseAddon):
         output_dir = manager.output_dir
 
         with tarfile.open(str(self.app_archive), "r:gz") as tar:
-            pkg_data = json.loads(
-                tar.extractfile(tar.getmember("package/package.json")).read()
-            )
+            pkg_data = json.loads(tar.extractfile(tar.getmember("package/package.json")).read())
 
         all_apps = set(pkg_data["jupyterlite"]["apps"])
         mgr_apps = set(manager.apps if manager.apps else all_apps)
@@ -106,14 +100,10 @@ class StaticAddon(BaseAddon):
 
         if apps_to_remove and self.manager.no_unused_shared_packages:
             shared_prune_name = "prune:shared-packages"
-            app_prune_task_dep = [
-                f"{self.manager.task_prefix}post_init:static:{shared_prune_name}"
-            ]
+            app_prune_task_dep = [f"{self.manager.task_prefix}post_init:static:{shared_prune_name}"]
             yield self.task(
                 name=shared_prune_name,
-                actions=[
-                    (self.prune_unused_shared_packages, [all_apps, apps_to_remove])
-                ],
+                actions=[(self.prune_unused_shared_packages, [all_apps, apps_to_remove])],
             )
 
         for to_remove in apps_to_remove:
@@ -164,7 +154,6 @@ class StaticAddon(BaseAddon):
             unused = sorted(build_dir.glob(f"{chunk_id}.{chunk_hash}.*"))
             if unused:
                 self.log.debug(
-                    f"[static] pruning unused shared package {chunk_id}: "
-                    f"{len(unused)} files"
+                    f"[static] pruning unused shared package {chunk_id}: {len(unused)} files"
                 )
                 self.delete_one(*unused)

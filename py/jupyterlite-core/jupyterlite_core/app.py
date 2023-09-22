@@ -81,9 +81,9 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
     config_file_name = Unicode("jupyter_lite_config").tag(config=True)
 
-    config_file_paths = List(
-        Unicode(help="Paths to search for jupyter_lite.(py|json)")
-    ).tag(config=True)
+    config_file_paths = List(Unicode(help="Paths to search for jupyter_lite.(py|json)")).tag(
+        config=True
+    )
 
     @property
     def aliases(self):
@@ -144,9 +144,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
                 yield from fhelp
                 yield indent("Equivalent to: [--%s]" % name)
             except Exception as ex:
-                self.log.error(
-                    "Failed collecting help-message for alias %r, due to: %s", alias, ex
-                )
+                self.log.error("Failed collecting help-message for alias %r, due to: %s", alias, ex)
                 raise
 
 
@@ -244,9 +242,9 @@ class LiteListApp(LiteDoitApp):
 class LiteTaskApp(LiteDoitApp):
     """run a doit task, optionally with --force"""
 
-    force = Bool(
-        False, help="forget previous runs of task and re-run from the beginning"
-    ).tag(config=True)
+    force = Bool(False, help="forget previous runs of task and re-run from the beginning").tag(
+        config=True
+    )
 
     @property
     def flags(self):

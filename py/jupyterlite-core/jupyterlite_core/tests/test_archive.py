@@ -57,9 +57,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
     assert subsequent.success, "failed to build the second tarball"
 
     # check them
-    _assert_same_tarball(
-        "two successive builds should be the same", script_runner, before, after
-    )
+    _assert_same_tarball("two successive builds should be the same", script_runner, before, after)
 
 
 def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epoch):
@@ -85,9 +83,7 @@ def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epo
     assert subsequent.success, "failed to build the second tarball"
 
     # check them
-    _assert_same_tarball(
-        "a build repeated should be the same", script_runner, before, after
-    )
+    _assert_same_tarball("a build repeated should be the same", script_runner, before, after)
 
 
 def _reset_a_lite_dir(lite_dir, *skip):

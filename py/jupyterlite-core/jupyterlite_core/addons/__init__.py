@@ -23,9 +23,7 @@ def merge_addon_aliases(base_aliases, force=None):
 
         for alias, trait_name in addon_aliases.items():
             if alias in new_aliases:
-                warnings.warn(
-                    f"[lite] [{name}] alias --{alias} cannot be redefined", stacklevel=2
-                )
+                warnings.warn(f"[lite] [{name}] alias --{alias} cannot be redefined", stacklevel=2)
                 continue
             new_aliases[alias] = trait_name
 
