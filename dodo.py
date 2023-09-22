@@ -124,17 +124,6 @@ def task_lint():
             actions=[U.do("jlpm", "eslint:check" if C.CI else "eslint:fix")],
         )
 
-    yield U.ok(
-        B.OK_BLACK,
-        name="black",
-        doc="format python files with black",
-        file_dep=L.ALL_BLACK,
-        actions=[
-            U.do(*C.PYM, "isort", *L.ALL_BLACK),
-            U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
-        ],
-    )
-
     yield dict(
         name="schema:self",
         file_dep=[P.APP_SCHEMA],
