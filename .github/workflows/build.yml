@@ -49,7 +49,7 @@ jobs:
       - name: Install
         run: jlpm
       - name: Lint
-        run: jlpm lint
+        run: jlpm lint:check
 
   integrity:
     runs-on: ubuntu-latest
