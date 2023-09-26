@@ -37,7 +37,7 @@ def task_env():
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
-            *([U.do(*C.PRETTIER, P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
+            *([U.do(P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
         ],
     )
 
@@ -60,7 +60,7 @@ def task_env():
                         all_deps,
                     ],
                 ),
-                U.do(*C.PRETTIER, P.EXAMPLE_LITE_BUILD_CONFIG),
+                U.do(P.EXAMPLE_LITE_BUILD_CONFIG),
             ],
         )
 
@@ -410,7 +410,7 @@ def task_docs():
             file_dep=[*P.PACKAGE_JSONS.values()],
             actions=[
                 U.typedoc_conf,
-                U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
+                U.do(*P.TYPEDOC_CONF),
             ],
             targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
         )
@@ -429,7 +429,7 @@ def task_docs():
             targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
             actions=[
                 U.mystify,
-                U.do(*C.PRETTIER, B.DOCS_TS),
+                U.do(B.DOCS_TS),
             ],
         )
 
@@ -708,7 +708,7 @@ def task_repo():
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
+        actions=[U.integrity, U.do(*pkg_jsons)],
         file_dep=[*pkg_jsons],
     )
 
@@ -773,11 +773,6 @@ class C:
         subprocess.check_output([which("git"), "log", "-1", "--format=%ct"]).decode("utf-8").strip()
     )
     SVGO = ["jlpm", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
-    PRETTIER = ["jlpm", "prettier", "--write"]
-    PRETTIER_IGNORE = [
-        ".ipynb_checkpoints",
-        "node_modules",
-    ]
 
     # coverage varies based on excursions
     COV_THRESHOLD = 82
@@ -897,22 +892,6 @@ class D:
         C.NOT_SKIP_LINT,
         [*P.DOCS_IPYNB, *[p for p in P.ALL_EXAMPLES if p.name.endswith(".ipynb")]],
     )
-
-
-def _clean_paths(*paths_or_globs):
-    final_paths = []
-    for pg in paths_or_globs:
-        if pg is None:
-            continue
-        elif isinstance(pg, Path):
-            paths = [pg]
-        else:
-            paths = set(pg)
-        for path in paths:
-            if any(p in str(path) for p in C.PRETTIER_IGNORE):
-                continue
-            final_paths += [path]
-    return sorted(set(final_paths))
 
 
 class B:
@@ -1371,37 +1350,6 @@ class U:
             print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
 
         return all_up_to_date
-
-    def pretty_markdown_cells(ipynb, nb_json):
-        cells = [c for c in nb_json["cells"] if c["cell_type"] == "markdown"]
-
-        if not cells:
-            return
-
-        print(f"... prettying {len(cells)} markdown cells of {ipynb.stem}")
-        with tempfile.TemporaryDirectory() as td:
-            tdp = Path(td)
-
-            files = {}
-
-            for i, cell in enumerate(cells):
-                files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
-                files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
-
-            args = [which("jlpm"), "prettier"]
-
-            args += ["--check"] if C.CI else ["--write", "--list-different"]
-
-            subprocess.call([*args, tdp])
-
-            for i, cell in enumerate(cells):
-                cells[i]["source"] = files[i].read_text(**C.ENC).rstrip().splitlines(True)
-
-    def check_contains(path: Path, pattern: str):
-        if pattern not in path.read_text(**C.ENC):
-            print(f"!!! {pattern} not found in:")
-            print("", path)
-            return False
 
 
 # environment overloads
