@@ -67,13 +67,12 @@ doit list --all --status
 
 The default `doit` _action_ is `run` which... runs the named _tasks_.
 
-The default tasks are `lint`, `build` and `docs:app:build`, so the following are
-equivalent:
+The default tasks are `build` and `docs:app:build`, so the following are equivalent:
 
 ```bash
 doit
-doit lint build docs:app:build
-doit run lint build docs:app:build
+doit build docs:app:build
+doit run build docs:app:build
 ```
 
 ```{note}

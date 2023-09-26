@@ -42,7 +42,7 @@
     "install": "lerna bootstrap",
     "install:js-kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "install:py": "python -m pip install -r requirements-editable.txt",
-    "lint": "jlpm prettier:fix && jlpm eslint:fix",
+    "lint": "jlpm prettier:fix && jlpm eslint:fix && jlpm lint:py",
     "lint:check": "jlpm prettier:check && jlpm eslint:check && jlpm lint:py:check",
     "lint:py": "jlpm lint:py:black && jlpm lint:py:ruff --fix-only",
     "lint:py:check": "jlpm lint:py:black:check && jlpm lint:py:ruff:check",

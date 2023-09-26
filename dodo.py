@@ -107,23 +107,6 @@ def task_lint():
         actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
     )
 
-    yield U.ok(
-        B.OK_PRETTIER,
-        name="prettier",
-        doc="format .ts, .md, .json, etc. files with prettier",
-        file_dep=[*L.ALL_PRETTIER],
-        actions=[U.do("jlpm", "prettier:check-src" if C.CI else "prettier:fix")],
-    )
-
-    if not C.SKIP_ESLINT:
-        yield U.ok(
-            B.OK_ESLINT,
-            name="eslint",
-            doc="format and verify .ts, .js files with eslint",
-            file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-            actions=[U.do("jlpm", "eslint:check" if C.CI else "eslint:fix")],
-        )
-
     yield dict(
         name="schema:self",
         file_dep=[P.APP_SCHEMA],
@@ -223,7 +206,6 @@ def task_build():
         name="js:lib",
         doc="build .ts files into .js files",
         file_dep=[
-            *L.ALL_ESLINT,
             *P.PACKAGE_JSONS.values(),
             P.ROOT_PACKAGE_JSON,
         ],
@@ -806,7 +788,6 @@ class C:
         "/_static/",
     ]
     NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
-    SKIP_ESLINT = json.loads(os.environ.get("SKIP_ESLINT", "0"))
 
 
 class P:
@@ -934,26 +915,6 @@ def _clean_paths(*paths_or_globs):
     return sorted(set(final_paths))
 
 
-class L:
-    # linting
-    ALL_ESLINT = _clean_paths(
-        P.PACKAGES.rglob("*/src/**/*.js"),
-        P.PACKAGES.rglob("*/src/**/*.ts"),
-    )
-    ALL_JSON = _clean_paths(
-        P.PACKAGE_JSONS.values(),
-        P.APP_JSONS,
-        P.APP_EXTRA_JSON,
-        P.ROOT_PACKAGE_JSON,
-        P.ROOT.glob("*.json"),
-    )
-    ALL_JS = _clean_paths((P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js"))
-    ALL_HTML = [*P.APP_HTMLS]
-    ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = _clean_paths(P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml"))
-    ALL_PRETTIER = _clean_paths(ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS)
-
-
 class B:
     # built
     NODE_MODULES = P.ROOT / "node_modules"
@@ -997,9 +958,7 @@ class B:
 
     OK = BUILD / "ok"
     OK_DOCS_APP = OK / "docs-app"
-    OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
-    OK_PRETTIER = OK / "prettier"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
     PY_DISTRIBUTIONS = [
@@ -1464,5 +1423,5 @@ DOIT_CONFIG = {
     "backend": "sqlite3",
     "verbosity": 2,
     "par_type": "thread",
-    "default_tasks": ["lint", "build", "docs:app:build"],
+    "default_tasks": ["build", "docs:app:build"],
 }
