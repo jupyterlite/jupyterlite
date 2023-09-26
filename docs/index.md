@@ -18,7 +18,7 @@
     </a>
   </li>
   <li>
-    <a href="./_static/repl/index.html?kernel=python&code=import%20this" target="_blank" title="try REPL, the minimal console app">
+    <a href="./_static/repl/index.html?toolbar=1&kernel=python&code=import%20this" target="_blank" title="try REPL, the minimal console app">
       <i class="fa-solid fa-terminal"></i>
       REPL
     </a>
