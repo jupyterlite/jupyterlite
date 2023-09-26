@@ -8,8 +8,8 @@ dependencies:
   # build stuff
   - black-jupyter
   - depfinder
-  - isort
   - nbstripout
+  - ruff
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
