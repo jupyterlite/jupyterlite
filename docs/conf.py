@@ -106,6 +106,7 @@ html_logo = "_static/wordmark.svg"
 html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
+    "navbar_start": ["navbar-logo", "version-switcher"],
     "icon_links": [
         {
             "name": "PyPI",
