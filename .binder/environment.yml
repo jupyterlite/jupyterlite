@@ -9,7 +9,7 @@ dependencies:
   - black-jupyter
   - depfinder
   - nbstripout
-  - ruff
+  - ruff =0.0.291
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
