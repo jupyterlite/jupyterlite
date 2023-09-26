@@ -121,6 +121,12 @@ html_theme_options = {
         "image_light": "_static/wordmark.svg",
         "image_dark": "_static/wordmark-dark.svg",
     },
+    "switcher": {
+        "json_url": "/".join(
+            ("https://jupyterlite.readthedocs.io/en", "latest", "_static/switcher.json")
+        ),
+        "version_match": os.environ.get("READTHEDOCS_VERSION", "latest"),
+    }
 }
 
 html_context = {
