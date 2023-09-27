@@ -4,7 +4,6 @@
     "appName": "JupyterLite",
     "appVersion": "0.2.0-alpha.1",
     "baseUrl": "./",
-    "appUrl": "/lab",
     "defaultKernelName": "python",
     "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [],
