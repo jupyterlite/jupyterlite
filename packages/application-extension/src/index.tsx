@@ -26,7 +26,7 @@ import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
-import { filter, toArray } from '@lumino/algorithm';
+import { filter } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
 
@@ -252,13 +252,13 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           if (!widget) {
             return;
           }
-          const selected = toArray(widget.selectedItems());
-          selected.forEach(async (item: Contents.IModel) => {
+          const selected = widget.selectedItems();
+          for (const item of selected) {
             if (item.type === 'directory') {
-              return;
+              continue;
             }
             await downloadContent(item.path, item.name);
-          });
+          };
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
@@ -429,7 +429,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
         }
 
         const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
-        const models = toArray(
+        const models = Array.from(
           filter(widget.selectedItems(), (item) => item.type !== 'directory'),
         );
         models.forEach((model) => {
@@ -442,7 +442,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
       },
       isVisible: () =>
         !!tracker.currentWidget &&
-        toArray(tracker.currentWidget.selectedItems()).length >= 1,
+        Array.from(tracker.currentWidget.selectedItems()).length >= 1,
       icon: linkIcon.bindprops({ stylesheet: 'menuItem' }),
       label: trans.__('Copy Shareable Link'),
     });
