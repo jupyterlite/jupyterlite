@@ -1,0 +1,12 @@
+[
+  {
+    "name": "latest",
+    "version": "latest",
+    "url": "https://jupyterlite.readthedocs.io/en/latest/"
+  },
+  {
+    "name": "stable",
+    "version": "stable",
+    "url": "https://jupyterlite.readthedocs.io/en/stable/"
+  }
+]
