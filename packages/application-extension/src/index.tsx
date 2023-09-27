@@ -18,8 +18,6 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
-import { Contents } from '@jupyterlab/services';
-
 import { ITranslator } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
@@ -258,7 +256,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
               continue;
             }
             await downloadContent(item.path, item.name);
-          };
+          }
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
