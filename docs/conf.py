@@ -106,22 +106,21 @@ html_logo = "_static/wordmark.svg"
 html_theme_options = {
     "github_url": APP_DATA["homepage"],
     "use_edit_page_button": True,
-    "navbar_start": ["launch.html"],
-    "navbar_center": ["navbar-logo.html", "navbar-nav.html"],
+    "navbar_start": ["navbar-logo", "version-switcher"],
     "icon_links": [
         {
             "name": "PyPI",
             "url": "https://pypi.org/project/jupyterlite",
             "icon": "fa-solid fa-box",
         },
-        {
-            "name": "GitHub",
-            "url": APP_DATA["repository"]["url"],
-            "icon": "fa-solid fa-github-square",
-        },
     ],
     "pygment_light_style": "github-light",
     "pygment_dark_style": "github-dark",
+    "logo": {
+        "alt_text": "JupyterLite",
+        "image_light": "_static/wordmark.svg",
+        "image_dark": "_static/wordmark-dark.svg",
+    },
 }
 
 html_context = {
