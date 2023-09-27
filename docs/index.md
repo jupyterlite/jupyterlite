@@ -12,7 +12,7 @@
     </a>
   </li>
   <li>
-    <a href="./_static/notebooks/index.html?path=intro.ipynb" target="_blank" title="try RetroLab, a single-document app">
+    <a href="./_static/retro/index.html?path=intro.ipynb" target="_blank" title="try RetroLab, a single-document app">
       <i class="fa-solid fa-book"></i>
       Jupyter Notebook
     </a>
