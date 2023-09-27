@@ -281,7 +281,6 @@
       "@jupyterlab/apputils-extension:resolver",
       "@jupyterlab/apputils-extension:running-sessions-status",
       "@jupyterlab/apputils-extension:splash",
-      "@jupyterlab/apputils-extension:utilityCommands",
       "@jupyterlab/apputils-extension:workspaces",
       "@jupyterlab/console-extension:kernel-status",
       "@jupyterlab/docmanager-extension:download",
