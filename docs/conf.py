@@ -126,7 +126,7 @@ html_theme_options = {
             ("https://jupyterlite.readthedocs.io/en", "latest", "_static/switcher.json")
         ),
         "version_match": os.environ.get("READTHEDOCS_VERSION", "latest"),
-    }
+    },
 }
 
 html_context = {
