@@ -19,9 +19,7 @@ class LiteAddon(BaseAddon):
         yield self.task(
             name=JUPYTERLITE_JSON,
             actions=[
-                lambda: self.log.debug(
-                    f"""    jupyter-lite.(json|ipynb): {self.lite_files}"""
-                ),
+                lambda: self.log.debug(f"""    jupyter-lite.(json|ipynb): {self.lite_files}"""),
                 lambda: self.log.info(
                     f"""    jupyter-lite.(json|ipynb): {len(self.lite_files)} files"""
                 ),
@@ -61,9 +59,7 @@ class LiteAddon(BaseAddon):
         ]:
             stem = lite_file.relative_to(manager.output_dir)
             selector = (
-                None
-                if lite_file.name == JUPYTERLITE_JSON
-                else ["metadata", JUPYTERLITE_METADATA]
+                None if lite_file.name == JUPYTERLITE_JSON else ["metadata", JUPYTERLITE_METADATA]
             )
             yield self.task(
                 name=f"validate:{stem}",
@@ -84,8 +80,4 @@ class LiteAddon(BaseAddon):
             *lite_dir.rglob(JUPYTERLITE_JSON),
             *lite_dir.rglob(JUPYTERLITE_IPYNB),
         ]
-        return [
-            p
-            for p in all_lite_files
-            if not str(p).startswith(str(self.manager.output_dir))
-        ]
+        return [p for p in all_lite_files if not str(p).startswith(str(self.manager.output_dir))]

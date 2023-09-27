@@ -8,14 +8,13 @@
 import os
 from pathlib import Path
 from typing import Optional as _Optional
-from typing import Text as _Text
 from typing import Tuple as _Tuple
 from typing import Union as _Union
 
 from traitlets import Bool, CInt, Dict, Tuple, Unicode, Union, default
 from traitlets.config import LoggingConfigurable
 
-from . import constants as C
+from . import constants as C  # noqa: N812
 from .trait_types import CPath, TypedTuple
 
 
@@ -33,19 +32,19 @@ class LiteBuildConfig(LoggingConfigurable):
     loader paths
     """
 
-    disable_addons: _Tuple[_Text] = TypedTuple(
+    disable_addons: _Tuple[str] = TypedTuple(
         Unicode(),
         help=("skip loading `entry_point` for these addons. TODO: should be a dict"),
     ).tag(config=True)
 
-    apps: _Tuple[_Text] = TypedTuple(
+    apps: _Tuple[str] = TypedTuple(
         Unicode(),
         help=("""the Lite apps to explicitly include in build e.g. lab, tree, repl"""),
     ).tag(config=True)
 
-    app_archive: Path = CPath(
-        help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE"
-    ).tag(config=True)
+    app_archive: Path = CPath(help="The app archive to use. env: JUPYTERLITE_APP_ARCHIVE").tag(
+        config=True
+    )
 
     no_libarchive: bool = Bool(
         help="Don't detect and use libarchive-c for higher performance and more archives",
@@ -62,15 +61,13 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Where to build the JupyterLite site. env: JUPYTERLITE_OUTPUT_DIR"
     ).tag(config=True)
 
-    output_archive: Path = CPath(
-        help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")
-    ).tag(config=True)
-
-    contents: _Tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(
+    output_archive: Path = CPath(help=("Archive to create. env: JUPYTERLITE_OUTPUT_ARCHIVE")).tag(
         config=True
     )
 
-    ignore_sys_prefix: _Union[bool, _Tuple[_Text]] = Union(
+    contents: _Tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(config=True)
+
+    ignore_sys_prefix: _Union[bool, _Tuple[str]] = Union(
         [Bool(), TypedTuple(Unicode())], help="ignore components from sys.prefix"
     ).tag(config=True)
 
@@ -82,7 +79,7 @@ class LiteBuildConfig(LoggingConfigurable):
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
-    settings_overrides: _Tuple[_Text] = TypedTuple(
+    settings_overrides: _Tuple[str] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
@@ -96,22 +93,19 @@ class LiteBuildConfig(LoggingConfigurable):
 
     # serving
     port: int = CInt(
-        help=(
-            "[serve] the port to (insecurely) expose on http://127.0.0.1."
-            " env: JUPYTERLITE_PORT"
-        )
+        help=("[serve] the port to (insecurely) expose on http://127.0.0.1. env: JUPYTERLITE_PORT")
     ).tag(config=True)
 
-    base_url: str = Unicode(
-        help=("[serve] the prefix to use." " env: JUPYTERLITE_BASE_URL")
-    ).tag(config=True)
+    base_url: str = Unicode(help=("[serve] the prefix to use. env: JUPYTERLITE_BASE_URL")).tag(
+        config=True
+    )
 
     # patterns
-    ignore_contents: _Tuple[_Text] = Tuple(
+    ignore_contents: _Tuple[str] = Tuple(
         help="Path regular expressions that should never be included as contents"
     ).tag(config=True)
 
-    extra_ignore_contents: _Tuple[_Text] = Tuple(
+    extra_ignore_contents: _Tuple[str] = Tuple(
         help="Additional path regular expressions that should never be included as contents"
     ).tag(config=True)
 
@@ -121,17 +115,17 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Trigger reproducible builds, clamping timestamps to this value",
     ).tag(config=True)
 
-    http_headers: dict = Dict(
-        help="the HTTP headers to add to all served responses"
-    ).tag(config=True)
+    http_headers: dict = Dict(help="the HTTP headers to add to all served responses").tag(
+        config=True
+    )
 
     extra_http_headers: dict = Dict(
         help="the HTTP headers to add to default headers on all served responses"
     ).tag(config=True)
 
-    file_types: dict = Dict(
-        help="JupyterLab-compatible file types for the server and browser"
-    ).tag(config=True)
+    file_types: dict = Dict(help="JupyterLab-compatible file types for the server and browser").tag(
+        config=True
+    )
 
     extra_file_types: dict = Dict(
         help="extra JupyterLab-compatible file types for the server and browser"
@@ -149,8 +143,7 @@ class LiteBuildConfig(LoggingConfigurable):
     @default("output_dir")
     def _default_output_dir(self):
         return Path(
-            os.environ.get("JUPYTERLITE_OUTPUT_DIR")
-            or self.lite_dir / C.DEFAULT_OUTPUT_DIR
+            os.environ.get("JUPYTERLITE_OUTPUT_DIR") or self.lite_dir / C.DEFAULT_OUTPUT_DIR
         )
 
     @default("cache_dir")

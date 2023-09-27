@@ -36,9 +36,7 @@ class ArchiveAddon(BaseAddon):
 
         tarball = self.manager.output_archive
 
-        file_dep = [
-            p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]
-        ]
+        file_dep = [p for p in output_dir.rglob("*") if not p.is_dir() and p not in [tarball]]
 
         yield self.task(
             name=f"archive:{tarball.name}",
@@ -100,28 +98,26 @@ class ArchiveAddon(BaseAddon):
             temp_ball = Path(td) / tarball.name
             with os.fdopen(
                 os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb"
-            ) as tar_gz:
-                with gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz:
-                    with tarfile.open(fileobj=gz, mode="w:") as tar:
-                        for i, path in enumerate(members):
-                            if path.is_dir():
-                                continue
-                            if i == 0:
-                                self.log.info(
-                                    f"""[lite] [archive] files: {len_members}"""
-                                )
-                            if not (i % 100):
-                                self.log.info(
-                                    """[lite] [archive] """
-                                    f"""... {str(i + 1).rjust(rjust)} """
-                                    f"""of {len_members}"""
-                                )
-                            tar.add(
-                                path,
-                                arcname=f"package/{path.relative_to(root)}",
-                                filter=self.filter_tarinfo,
-                                recursive=False,
-                            )
+            ) as tar_gz, gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz, tarfile.open(
+                fileobj=gz, mode="w:"
+            ) as tar:
+                for i, path in enumerate(members):
+                    if path.is_dir():
+                        continue
+                    if i == 0:
+                        self.log.info(f"""[lite] [archive] files: {len_members}""")
+                    if not (i % 100):
+                        self.log.info(
+                            """[lite] [archive] """
+                            f"""... {str(i + 1).rjust(rjust)} """
+                            f"""of {len_members}"""
+                        )
+                    tar.add(
+                        path,
+                        arcname=f"package/{path.relative_to(root)}",
+                        filter=self.filter_tarinfo,
+                        recursive=False,
+                    )
 
             self.copy_one(temp_ball, tarball)
 

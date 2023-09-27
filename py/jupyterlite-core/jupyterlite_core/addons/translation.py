@@ -38,7 +38,7 @@ class TranslationAddon(BaseAddon):
         metadata, packs = self.translation_data
 
         targets = [api_path]
-        targets += [self.get_language_pack_file(locale) for locale in packs.keys()]
+        targets += [self.get_language_pack_file(locale) for locale in packs]
 
         yield self.task(
             name="copy",
@@ -85,22 +85,21 @@ class TranslationAddon(BaseAddon):
         }
         packs = {"en": {"data": {}, "message": "Language pack 'en' not installed!"}}
 
-        if not self.is_sys_prefix_ignored():
-            if has_optional_dependency(
-                "jupyterlab_server",
-                "[lite] [translation] install `jupyterlab_server` to load translations: {error}",
-            ):
-                from jupyterlab_server.translation_utils import (
-                    get_language_pack,
-                    get_language_packs,
-                )
+        if not self.is_sys_prefix_ignored() and has_optional_dependency(
+            "jupyterlab_server",
+            "[lite] [translation] install `jupyterlab_server` to load translations: {error}",
+        ):
+            from jupyterlab_server.translation_utils import (
+                get_language_pack,
+                get_language_packs,
+            )
 
-                all_packs, _ = get_language_packs()
-                packs = {
-                    locale: {"data": get_language_pack(locale)[0], "message": ""}
-                    for locale in sorted(all_packs.keys())
-                }
-                metadata = {"data": all_packs, "message": ""}
+            all_packs, _ = get_language_packs()
+            packs = {
+                locale: {"data": get_language_pack(locale)[0], "message": ""}
+                for locale in sorted(all_packs.keys())
+            }
+            metadata = {"data": all_packs, "message": ""}
 
         return metadata, packs
 

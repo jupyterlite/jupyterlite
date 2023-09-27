@@ -126,7 +126,7 @@ class ServeAddon(BaseAddon):
         from functools import partial
         from http.server import SimpleHTTPRequestHandler
 
-        HttpRequestHandler = SimpleHTTPRequestHandler
+        HttpRequestHandler = SimpleHTTPRequestHandler  # noqa: N806
 
         mime_map = self._patch_mime()
 

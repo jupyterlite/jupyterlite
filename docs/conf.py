@@ -28,7 +28,7 @@ sys.path += [str(ROOT / "py/jupyterlite/src")]
 # metadata
 author = APP_DATA["author"]
 project = author.replace("Contributors", "").strip()
-copyright = f"{datetime.date.today().year}, {author}"
+copyright = f"{datetime.datetime.now(tz=datetime.timezone.utc).year}, {author}"
 
 # The full version, including alpha/beta/rc tags
 release = APP_DATA["version"]
@@ -167,9 +167,7 @@ def before_rtd_build(app: Sphinx, error):
 
 def after_build(app: Sphinx, error):
     """sphinx-jsonschema makes duplicate ids. clean them"""
-    os.environ.update(
-        JLITE_DOCS_OUT=app.builder.outdir
-    )  # <--- dodo.py already looking for this
+    os.environ.update(JLITE_DOCS_OUT=app.builder.outdir)  # <--- dodo.py already looking for this
     do_tasks("post", RTD_POST_TASKS)
 
 

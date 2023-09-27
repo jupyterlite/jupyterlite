@@ -24,9 +24,7 @@ class ContentsAddon(BaseAddon):
                     "[lite] [contents] All Contents %s",
                     pprint.pformat([str(p[0]) for p in self.file_src_dest]),
                 ),
-                lambda: print(
-                    f"""    contents: {len(list(self.file_src_dest))} files"""
-                ),
+                lambda: print(f"""    contents: {len(list(self.file_src_dest))} files"""),
             ],
         )
 
@@ -63,9 +61,9 @@ class ContentsAddon(BaseAddon):
         if not self.output_files_dir.exists():
             return
 
-        output_file_dirs = [
-            d for d in self.output_files_dir.rglob("*") if d.is_dir()
-        ] + [self.output_files_dir]
+        output_file_dirs = [d for d in self.output_files_dir.rglob("*") if d.is_dir()] + [
+            self.output_files_dir
+        ]
         for output_file_dir in output_file_dirs:
             stem = output_file_dir.relative_to(self.output_files_dir)
             api_path = self.api_dir / stem / ALL_JSON
@@ -115,7 +113,7 @@ class ContentsAddon(BaseAddon):
                 to_path = self.output_files_dir / stem
                 resolved = str(to_path.resolve())
                 if resolved in yielded_dests:  # pragma: no cover
-                    self.log.debug("Already populated", resolved)
+                    self.log.debug("Already populated %s", resolved)
                     continue
                 yielded_dests += [resolved]
                 yield from_path, to_path
@@ -135,8 +133,7 @@ class ContentsAddon(BaseAddon):
 
         if path.is_dir():
             for child in path.glob("*"):
-                for from_child in self.maybe_add_one_path(child, root or path):
-                    yield from_child
+                yield from self.maybe_add_one_path(child, root or path)
         else:
             yield path.resolve()
 
@@ -207,7 +204,9 @@ class ContentsAddon(BaseAddon):
 
             pre-validated this structure with the ``jupyter_server`` API spec
         """
-        sde = datetime.datetime.utcfromtimestamp(self.manager.source_date_epoch)
+        sde = datetime.datetime.fromtimestamp(
+            self.manager.source_date_epoch, tz=datetime.timezone.utc
+        )
 
         if isinstance(listing, dict):
             for field in ["created", "last_modified"]:
@@ -215,9 +214,7 @@ class ContentsAddon(BaseAddon):
                     continue
                 value = listing[field]
                 if isoformat(value) > isoformat(sde):
-                    self.log.info(
-                        f"""[lite][contents][patch] {field} on {listing["name"]}"""
-                    )
+                    self.log.info(f"""[lite][contents][patch] {field} on {listing["name"]}""")
                     listing[field] = sde
             if listing["type"] == "directory":
                 for child in listing.get("content") or []:

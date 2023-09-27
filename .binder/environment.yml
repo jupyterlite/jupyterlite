@@ -8,9 +8,8 @@ dependencies:
   # build stuff
   - black-jupyter
   - depfinder
-  - isort
   - nbstripout
-  - pyflakes
+  - ruff =0.0.291
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy

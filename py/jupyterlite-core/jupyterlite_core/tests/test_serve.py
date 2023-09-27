@@ -17,9 +17,7 @@ if CI and LINUX and PYPY:  # pragma: no cover
 
 
 @pytest.mark.parametrize("base_url", [None, "/@foo/"])
-def test_serve(
-    an_empty_lite_dir, script_runner, base_url, an_unused_port
-):  # pragma: no cover
+def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # pragma: no cover
     """verify that serving kinda works"""
     args = ["jupyter", "lite", "serve", "--port", f"{an_unused_port}"]
 
@@ -44,7 +42,7 @@ def test_serve(
 
     url = f"http://127.0.0.1:{an_unused_port}{base_url}"
 
-    server = subprocess.Popen(args, cwd=str(an_empty_lite_dir))
+    server = subprocess.Popen(args, cwd=str(an_empty_lite_dir))  # noqa: S603
     time.sleep(2)
 
     app_urls = [""]
@@ -55,8 +53,7 @@ def test_serve(
         ]
 
     maybe_errors = [
-        _fetch_without_errors(f"{url}{frag}", expect_headers=all_headers)
-        for frag in app_urls
+        _fetch_without_errors(f"{url}{frag}", expect_headers=all_headers) for frag in app_urls
     ]
 
     errors = [e for e in maybe_errors if e]

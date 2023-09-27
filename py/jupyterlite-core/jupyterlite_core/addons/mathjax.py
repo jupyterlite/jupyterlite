@@ -35,11 +35,8 @@ class MathjaxAddon(BaseAddon):
 
         manager_path = None
 
-        try:
-            if self.manager.mathjax_dir.exists():
-                manager_path = self.manager.mathjax_dir
-        except Exception:  # pragma: no cover
-            pass
+        if self.manager.mathjax_dir.exists():
+            manager_path = self.manager.mathjax_dir
 
         if manager_path is not None:
             path = manager_path
@@ -107,17 +104,16 @@ class MathjaxAddon(BaseAddon):
 
     def patch_mathjax_config(self, jupyterlite_json):
         config = json.loads(jupyterlite_json.read_text(**UTF8))
-        mathjax_url = str(
-            self.mathjax_output.relative_to(self.manager.output_dir).as_posix()
-        )
-        config[JUPYTER_CONFIG_DATA].update(
-            {FULL_MATHJAX_URL: f"./{mathjax_url}/{MATHJAX_JS}"}
-        )
+        mathjax_url = str(self.mathjax_output.relative_to(self.manager.output_dir).as_posix())
+        config[JUPYTER_CONFIG_DATA].update({FULL_MATHJAX_URL: f"./{mathjax_url}/{MATHJAX_JS}"})
 
         # overload this for the configs actually served
-        if self.mathjax_path and MATHJAX_PATH:
-            if self.mathjax_path.resolve() == MATHJAX_PATH.resolve():
-                config[JUPYTER_CONFIG_DATA][MATHJAX_CONFIG] = MATHJAX_CONFIG_SHIPPED
+        if (
+            self.mathjax_path
+            and MATHJAX_PATH
+            and self.mathjax_path.resolve() == MATHJAX_PATH.resolve()
+        ):
+            config[JUPYTER_CONFIG_DATA][MATHJAX_CONFIG] = MATHJAX_CONFIG_SHIPPED
 
         jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
 
@@ -133,6 +129,6 @@ class MathjaxAddon(BaseAddon):
         mathjax_js = mathjax_path / MATHJAX_JS
         assert mathjax_js.exists(), f"{mathjax_js} not found"
 
-        for config in config.get(MATHJAX_CONFIG, "").split(","):
-            config_js = mathjax_path / f"config/{config}.js"
+        for mathjax_config in config.get(MATHJAX_CONFIG, "").split(","):
+            config_js = mathjax_path / f"config/{mathjax_config}.js"
             assert config_js.exists(), f"{config_js} doesn't exist, fix mathjaxConfig"

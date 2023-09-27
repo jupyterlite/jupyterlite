@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: mamba-org/setup-micromamba@v1
         with:
-          micromamba-version: '1.4.9-0'
+          micromamba-version: '1.5.1-0'
           environment-file: .binder/environment.yml
           init-shell: cmd.exe
           cache-environment: true
@@ -50,4 +50,4 @@ jobs:
       - name: Dev
         run: doit dev
       - name: Lint
-        run: doit lint || doit lint || doit lint
+        run: jlpm lint

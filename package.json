@@ -42,8 +42,14 @@
     "install": "lerna bootstrap",
     "install:js-kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "install:py": "python -m pip install -r requirements-editable.txt",
-    "lint": "jlpm prettier:fix && jlpm eslint:fix",
-    "lint:check": "jlpm prettier:check && jlpm eslint:check",
+    "lint": "jlpm prettier:fix && jlpm eslint:fix && jlpm lint:py",
+    "lint:check": "jlpm prettier:check && jlpm eslint:check && jlpm lint:py:check",
+    "lint:py": "jlpm lint:py:black && jlpm lint:py:ruff --fix-only",
+    "lint:py:check": "jlpm lint:py:black:check && jlpm lint:py:ruff:check",
+    "lint:py:black": "black .",
+    "lint:py:black:check": "black . --check",
+    "lint:py:ruff": "ruff .",
+    "lint:py:ruff:check": "ruff check .",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "prettier:check-src": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml}\"",
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
@@ -54,11 +60,6 @@
     "watch": "run-p watch:lib watch:app",
     "watch:app": "lerna exec --stream --stream --parallel --scope @jupyterlite/app jlpm watch",
     "watch:lib": "lerna exec --stream --scope @jupyterlite/metapackage jlpm watch"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "prettier": {
     "printWidth": 88,
@@ -82,12 +83,10 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.1",
     "extra-watch-webpack-plugin": "^1.0.3",
-    "husky": "^3",
     "jest": "^29.6.2",
     "jest-junit": "^16.0.0",
     "jest-raw-loader": "^1.0.1",
     "lerna": "^6.6.2",
-    "lint-staged": "^10.4.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.0.0",
     "rimraf": "^5.0.1",

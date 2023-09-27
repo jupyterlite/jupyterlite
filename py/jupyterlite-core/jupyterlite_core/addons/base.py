@@ -106,7 +106,7 @@ class BaseAddon(LoggingConfigurable):
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url) as response:  # noqa: S310
                 tmp_dest = tdp / dest.name
                 with tmp_dest.open("wb") as fd:
                     shutil.copyfileobj(response, fd)
@@ -135,9 +135,7 @@ class BaseAddon(LoggingConfigurable):
         sde = self.manager.source_date_epoch
         if stat.st_mtime > sde:
             cls = self.__class__.__name__
-            self.log.debug(
-                f"[lite][base] <{cls}> set time to source_date_epoch {sde} on {path}"
-            )
+            self.log.debug(f"[lite][base] <{cls}> set time to source_date_epoch {sde} on {path}")
             os.utime(path, (sde, sde))
             return
         return
@@ -150,11 +148,8 @@ class BaseAddon(LoggingConfigurable):
             elif src_dir.exists():
                 src_dir.unlink()
 
-    def validate_one_json_file(self, validator, path=None, data=None, selector=[]):
-        if path:
-            loaded = json.loads(path.read_text(**UTF8))
-        else:
-            loaded = data
+    def validate_one_json_file(self, validator, path=None, data=None, selector=None):
+        loaded = json.loads(path.read_text(**UTF8)) if path else data
 
         if selector:
             for sel in selector:
@@ -186,7 +181,7 @@ class BaseAddon(LoggingConfigurable):
         schema = json.loads(schema_path.read_text(**UTF8))
         return klass(schema)
 
-    def merge_one_jupyterlite(self, out_path, in_paths):
+    def merge_one_jupyterlite(self, out_path, in_paths):  # noqa: C901, PLR0912
         """write the ``out_path`` with the merge content of ``in_paths``, where
         all are valid ``jupyter-lite.*`` files.
         """
@@ -200,7 +195,7 @@ class BaseAddon(LoggingConfigurable):
                 in_config = json.loads(in_path.read_text(**UTF8))
                 if out_path.name == JUPYTERLITE_IPYNB:
                     in_config = in_config["metadata"].get(JUPYTERLITE_METADATA)
-            except:
+            except:  # noqa: E722, S110
                 pass
 
             if not in_config:
@@ -214,10 +209,9 @@ class BaseAddon(LoggingConfigurable):
                 self.log.debug(f"""[lite][config] ... updating {k} => {v}?""")
                 if k == JUPYTER_CONFIG_DATA:
                     config[k] = self.merge_jupyter_config_data(config.get(k) or {}, v)
-                else:
-                    if config.get(k) != v:
-                        self.log.debug(f"""[lite][config] ..... {k} updated""")
-                        config[k] = v
+                elif config.get(k) != v:
+                    self.log.debug(f"""[lite][config] ..... {k} updated""")
+                    config[k] = v
 
         if config and JUPYTER_CONFIG_DATA in config:
             self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
@@ -350,9 +344,7 @@ class BaseAddon(LoggingConfigurable):
         from hashlib import sha256
 
         lines = [
-            "  ".join(
-                [sha256(p.read_bytes()).hexdigest(), p.relative_to(root).as_posix()]
-            )
+            "  ".join([sha256(p.read_bytes()).hexdigest(), p.relative_to(root).as_posix()])
             for p in sorted(paths)
         ]
         hashfile.write_text("\n".join(lines))
@@ -374,9 +366,7 @@ class BaseAddon(LoggingConfigurable):
                 config_path = app_dir / path_name
                 yield config_path
 
-    def get_lite_plugin_settings(
-        self, config_path: Path, plugin_id: str
-    ) -> Dict[str, Any]:
+    def get_lite_plugin_settings(self, config_path: Path, plugin_id: str) -> Dict[str, Any]:
         """Get the plugin settings from a config path.
 
         The keys follow the JupyterLab settings naming convention, of module and
@@ -393,11 +383,7 @@ class BaseAddon(LoggingConfigurable):
         if config_path.name == JUPYTERLITE_IPYNB:
             config = config["metadata"].get(JUPYTERLITE_METADATA, {})
 
-        return (
-            config.get(JUPYTER_CONFIG_DATA, {})
-            .get(LITE_PLUGIN_SETTINGS, {})
-            .get(plugin_id, {})
-        )
+        return config.get(JUPYTER_CONFIG_DATA, {}).get(LITE_PLUGIN_SETTINGS, {}).get(plugin_id, {})
 
     def set_lite_plugin_settings(
         self, config_path: Path, plugin_id: str, settings: Dict[str, Any]
@@ -407,9 +393,9 @@ class BaseAddon(LoggingConfigurable):
         if config_path.name == JUPYTERLITE_IPYNB:
             config = whole_file["metadata"][JUPYTERLITE_METADATA]
 
-        config.setdefault(JUPYTER_CONFIG_DATA, {}).setdefault(
-            LITE_PLUGIN_SETTINGS, {}
-        ).update({plugin_id: settings})
+        config.setdefault(JUPYTER_CONFIG_DATA, {}).setdefault(LITE_PLUGIN_SETTINGS, {}).update(
+            {plugin_id: settings}
+        )
 
         config_path.write_text(json.dumps(whole_file, **JSON_FMT), **UTF8)
         self.log.debug("%s wrote settings in %s: %s", plugin_id, config_path, settings)

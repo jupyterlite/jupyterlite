@@ -3,8 +3,8 @@
 -r requirements-build.txt
 
 black[jupyter]
-isort
+jupyterlab >=4.0.5,<5.0
 jsonschema >=3
 nbconvert
 nbstripout
-pyflakes
+ruff==0.0.291

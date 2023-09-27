@@ -16,7 +16,9 @@ to update to a newer version of the extension that is compatible with JupyterLab
 
 ### Service Worker
 
-The service worker file name has been changed. In `0.1.0`, it was `service-worker-[hash].js` with the `hash` computed by webpack, in `0.2.0` the hash is removed and the new file name is `service-worker.js`.
+The service worker file name has been changed. In `0.1.0`, it was
+`service-worker-[hash].js` with the `hash` computed by webpack, in `0.2.0` the hash is
+removed and the new file name is `service-worker.js`.
 
 ## `0.1.0b19` to `0.1.0b20`
 

@@ -19,5 +19,5 @@ def has_optional_dependency(importable: str, hint: Optional[str] = None) -> bool
         return True
     except Exception as error:
         if hint:
-            warnings.warn(hint.format(error=error))
+            warnings.warn(hint.format(error=error), stacklevel=2)
         return False

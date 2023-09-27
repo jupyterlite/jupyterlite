@@ -1,3 +1,6 @@
+# ignore the whole dodo.py file for now
+# ruff: noqa
+
 import json
 import os
 import platform
@@ -34,7 +37,7 @@ def task_env():
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
-            *([U.do(*C.PRETTIER, P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
+            *([U.do(P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
         ],
     )
 
@@ -57,7 +60,7 @@ def task_env():
                         all_deps,
                     ],
                 ),
-                U.do(*C.PRETTIER, P.EXAMPLE_LITE_BUILD_CONFIG),
+                U.do(P.EXAMPLE_LITE_BUILD_CONFIG),
             ],
         )
 
@@ -104,42 +107,6 @@ def task_lint():
         actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
     )
 
-    yield U.ok(
-        B.OK_PRETTIER,
-        name="prettier",
-        doc="format .ts, .md, .json, etc. files with prettier",
-        file_dep=[*L.ALL_PRETTIER],
-        actions=[U.do("jlpm", "prettier:check-src" if C.CI else "prettier:fix")],
-    )
-
-    if not C.SKIP_ESLINT:
-        yield U.ok(
-            B.OK_ESLINT,
-            name="eslint",
-            doc="format and verify .ts, .js files with eslint",
-            file_dep=[B.OK_PRETTIER, *L.ALL_ESLINT],
-            actions=[U.do("jlpm", "eslint:check" if C.CI else "eslint:fix")],
-        )
-
-    yield U.ok(
-        B.OK_BLACK,
-        name="black",
-        doc="format python files with black",
-        file_dep=L.ALL_BLACK,
-        actions=[
-            U.do(*C.PYM, "isort", *L.ALL_BLACK),
-            U.do(*C.PYM, "black", *(["--check"] if C.CI else []), *L.ALL_BLACK),
-        ],
-    )
-
-    yield U.ok(
-        B.OK_PYFLAKES,
-        name="pyflakes",
-        doc="ensure python code style with pyflakes",
-        file_dep=[*L.ALL_PYFLAKES, B.OK_BLACK],
-        actions=[U.do(*C.PYM, "pyflakes", *L.ALL_PYFLAKES)],
-    )
-
     yield dict(
         name="schema:self",
         file_dep=[P.APP_SCHEMA],
@@ -169,7 +136,6 @@ def task_lint():
                 file_dep=[ipynb],
                 actions=[
                     U.do("nbstripout", ipynb),
-                    (U.notebook_lint, [ipynb]),
                     U.do(
                         "jupyter-nbconvert",
                         "--log-level=WARN",
@@ -240,7 +206,6 @@ def task_build():
         name="js:lib",
         doc="build .ts files into .js files",
         file_dep=[
-            *L.ALL_ESLINT,
             *P.PACKAGE_JSONS.values(),
             P.ROOT_PACKAGE_JSON,
         ],
@@ -283,9 +248,7 @@ def task_build():
             *app_deps,
             *extra_app_deps,
         ],
-        actions=[
-            U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")
-        ],
+        actions=[U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")],
         targets=[*all_app_targets],
     )
 
@@ -329,10 +292,7 @@ def task_build():
 
     for py_name, setup_py in P.PY_SETUP_PY.items():
         py_pkg = setup_py.parent
-        wheel = (
-            py_pkg
-            / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
-        )
+        wheel = py_pkg / f"""dist/{py_name.replace("-", "_")}-{D.PY_VERSION}-{C.NOARCH_WHL}"""
         sdist = py_pkg / f"""dist/{py_name.replace("_", "-")}-{D.PY_VERSION}.tar.gz"""
 
         pyproj_toml = py_pkg / "pyproject.toml"
@@ -368,7 +328,7 @@ def task_build():
 
 def task_dist():
     """fix up the state of the distribution directory"""
-    if C.TESTING_IN_CI or C.DOCS_IN_CI or C.LINTING_IN_CI:
+    if C.TESTING_IN_CI or C.DOCS_IN_CI:
         return
 
     py_dests = []
@@ -450,7 +410,7 @@ def task_docs():
             file_dep=[*P.PACKAGE_JSONS.values()],
             actions=[
                 U.typedoc_conf,
-                U.do(*C.PRETTIER, *P.TYPEDOC_CONF),
+                U.do(*P.TYPEDOC_CONF),
             ],
             targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
         )
@@ -469,7 +429,7 @@ def task_docs():
             targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
             actions=[
                 U.mystify,
-                U.do(*C.PRETTIER, B.DOCS_TS),
+                U.do(B.DOCS_TS),
             ],
         )
 
@@ -686,9 +646,6 @@ def task_test():
         actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
     )
 
-    if C.LINTING_IN_CI:
-        return
-
     env = dict(os.environ)
 
     pytest_args = [
@@ -751,7 +708,16 @@ def task_repo():
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[U.integrity, U.do(*C.PRETTIER, *pkg_jsons)],
+        actions=[U.integrity, U.do(*pkg_jsons)],
+        file_dep=[*pkg_jsons],
+    )
+
+    yield dict(
+        name="integrity:check",
+        doc="check app yarn resolutions are up-to-date",
+        actions=[
+            (U.integrity, [True]),
+        ],
         file_dep=[*pkg_jsons],
     )
 
@@ -776,9 +742,7 @@ class C:
     PYTEST_PROCS = json.loads(os.environ.get("PYTEST_PROCS", "4"))
     LITE_ARGS = json.loads(os.environ.get("LITE_ARGS", "[]"))
     LAB_ARGS = json.loads(
-        os.environ.get(
-            "LAB_ARGS", """["--no-browser","--debug","--expose-app-in-browser"]"""
-        )
+        os.environ.get("LAB_ARGS", """["--no-browser","--debug","--expose-app-in-browser"]""")
     )
     SPHINX_ARGS = json.loads(os.environ.get("SPHINX_ARGS", "[]"))
 
@@ -801,23 +765,14 @@ class C:
 
     BUILDING_IN_CI = json.loads(os.environ.get("BUILDING_IN_CI", "0"))
     DOCS_IN_CI = json.loads(os.environ.get("DOCS_IN_CI", "0"))
-    LINTING_IN_CI = json.loads(os.environ.get("LINTING_IN_CI", "0"))
     TESTING_IN_CI = json.loads(os.environ.get("TESTING_IN_CI", "0"))
     WIN_DEV_IN_CI = json.loads(os.environ.get("WIN_DEV_IN_CI", "0"))
     PYM = [sys.executable, "-m"]
     HATCH = [*PYM, "hatch"]
     SOURCE_DATE_EPOCH = (
-        subprocess.check_output([which("git"), "log", "-1", "--format=%ct"])
-        .decode("utf-8")
-        .strip()
+        subprocess.check_output([which("git"), "log", "-1", "--format=%ct"]).decode("utf-8").strip()
     )
     SVGO = ["jlpm", "svgo", "--multipass", "--pretty", "--indent=2", "--final-newline"]
-    PRETTIER = ["jlpm", "prettier", "--write"]
-    PRETTIER_IGNORE = [
-        ".ipynb_checkpoints",
-        "node_modules",
-    ]
-    MIME_IPYTHON = "text/x-python"
 
     # coverage varies based on excursions
     COV_THRESHOLD = 82
@@ -828,7 +783,6 @@ class C:
         "/_static/",
     ]
     NOT_SKIP_LINT = lambda p: not re.findall("|".join(C.SKIP_LINT), str(p.as_posix()))
-    SKIP_ESLINT = json.loads(os.environ.get("SKIP_ESLINT", "0"))
 
 
 class P:
@@ -856,11 +810,7 @@ class P:
     APP_HTMLS = [
         APP / "index.html",
         *APP.rglob("*/index.template.html"),
-        *[
-            p
-            for p in APP.rglob("*/index.html")
-            if not (p.parent / "index.template.html").exists()
-        ],
+        *[p for p in APP.rglob("*/index.html") if not (p.parent / "index.template.html").exists()],
     ]
 
     WEBPACK_CONFIG = APP / "webpack.config.js"
@@ -890,11 +840,7 @@ class P:
     TYPEDOC_JSON = ROOT / "typedoc.json"
     TYPEDOC_CONF = [TSCONFIG_TYPEDOC, TYPEDOC_JSON]
     DOCS_SRC_MD = sorted(
-        [
-            p
-            for p in DOCS.rglob("*.md")
-            if "docs/reference/api/ts" not in str(p.as_posix())
-        ]
+        [p for p in DOCS.rglob("*.md") if "docs/reference/api/ts" not in str(p.as_posix())]
     )
     DOCS_ENV = DOCS / "environment.yml"
     DOCS_PY = sorted([p for p in DOCS.rglob("*.py") if "jupyter_execute" not in str(p)])
@@ -913,9 +859,7 @@ class P:
 
 
 def _js_version_to_py_version(js_version):
-    return (
-        js_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
-    )
+    return js_version.replace("-alpha.", "a").replace("-beta.", "b").replace("-rc.", "rc")
 
 
 class D:
@@ -930,8 +874,7 @@ class D:
     PY_VERSION = _js_version_to_py_version(APP["version"])
 
     PACKAGE_JSONS = {
-        parent: json.loads(p.read_text(**C.ENC))
-        for parent, p in P.PACKAGE_JSONS.items()
+        parent: json.loads(p.read_text(**C.ENC)) for parent, p in P.PACKAGE_JSONS.items()
     }
 
     APP_CONFIGS = [
@@ -951,56 +894,6 @@ class D:
     )
 
 
-def _clean_paths(*paths_or_globs):
-    final_paths = []
-    for pg in paths_or_globs:
-        if pg is None:
-            continue
-        elif isinstance(pg, Path):
-            paths = [pg]
-        else:
-            paths = set(pg)
-        for path in paths:
-            if any(p in str(path) for p in C.PRETTIER_IGNORE):
-                continue
-            final_paths += [path]
-    return sorted(set(final_paths))
-
-
-class L:
-    # linting
-    ALL_ESLINT = _clean_paths(
-        P.PACKAGES.rglob("*/src/**/*.js"),
-        P.PACKAGES.rglob("*/src/**/*.ts"),
-    )
-    ALL_JSON = _clean_paths(
-        P.PACKAGE_JSONS.values(),
-        P.APP_JSONS,
-        P.APP_EXTRA_JSON,
-        P.ROOT_PACKAGE_JSON,
-        P.ROOT.glob("*.json"),
-    )
-    ALL_JS = _clean_paths(
-        (P.ROOT / "scripts").glob("*.js"), P.APP.glob("*/index.template.js")
-    )
-    ALL_HTML = [*P.APP_HTMLS]
-    ALL_MD = [*P.CI.rglob("*.md"), *P.DOCS_MD]
-    ALL_YAML = _clean_paths(
-        P.ROOT.glob("*.yml"), P.BINDER.glob("*.yml"), P.CI.rglob("*.yml")
-    )
-    ALL_PRETTIER = _clean_paths(ALL_JSON, ALL_MD, ALL_YAML, ALL_ESLINT, ALL_JS)
-    ALL_BLACK = _clean_paths(
-        *P.DOCS_PY,
-        P.DODO,
-        *(P.ROOT / "scripts").glob("*.py"),
-        *sum([[*p.parent.rglob("*.py")] for p in P.PY_SETUP_PY.values()], []),
-    )
-    # ignore files in the jupyterlite metapackage
-    ALL_PYFLAKES = [
-        f for f in ALL_BLACK if str(P.PY_SETUP_PY[C.NAME].parent) not in str(f)
-    ]
-
-
 class B:
     # built
     NODE_MODULES = P.ROOT / "node_modules"
@@ -1010,9 +903,7 @@ class B:
     BUILD = P.ROOT / "build"
     DIST = P.ROOT / "dist"
     APP_PACK = DIST / f"""{C.NAME}-app-{D.APP_VERSION}.tgz"""
-    PY_APP_PACK = (
-        P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
-    )
+    PY_APP_PACK = P.ROOT / "py" / C.CORE_NAME / C.CORE_NAME.replace("-", "_") / APP_PACK.name
     REQ_CACHE = BUILD / "requests-cache.sqlite"
 
     EXAMPLE_DEPS = BUILD / "depfinder"
@@ -1039,19 +930,14 @@ class B:
     DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
     DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
     DOCS_TS_MODULES = [
-        P.ROOT
-        / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
+        P.ROOT / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
 
     OK = BUILD / "ok"
     OK_DOCS_APP = OK / "docs-app"
-    OK_BLACK = OK / "black"
-    OK_ESLINT = OK / "eslint"
     OK_JEST = OK / "jest"
-    OK_PRETTIER = OK / "prettier"
-    OK_PYFLAKES = OK / "pyflakes"
     OK_LITE_PYTEST = OK / "jupyterlite.pytest"
     OK_LITE_VERSION = OK / "lite.version"
     PY_DISTRIBUTIONS = [
@@ -1061,10 +947,7 @@ class B:
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
     JS_KERNEL_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
     JS_KERNEL_LABEXTENSION_PACKAGE_JSON = (
-        JS_KERNEL_PY_PACKAGE
-        / C.JS_KERNEL_NAME.replace("-", "_")
-        / "labextension"
-        / "package.json"
+        JS_KERNEL_PY_PACKAGE / C.JS_KERNEL_NAME.replace("-", "_") / "labextension" / "package.json"
     )
 
 
@@ -1073,11 +956,7 @@ class BB:
 
     # not exhaustive, because of per-class API pages
     ALL_DOCS_HTML = [
-        (
-            B.DOCS
-            / src.parent.relative_to(P.DOCS)
-            / (src.name.rsplit(".", 1)[0] + ".html")
-        )
+        (B.DOCS / src.parent.relative_to(P.DOCS) / (src.name.rsplit(".", 1)[0] + ".html"))
         for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
         if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
@@ -1120,9 +999,7 @@ class U:
         except Exception:
             print(args[0], "is not available (this might not be a problem)")
             return ["echo", f"{args[0]} not available"]
-        return doit.action.CmdAction(
-            [cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs
-        )
+        return doit.action.CmdAction([cmd, *args[1:]], shell=False, cwd=str(Path(cwd)), **kwargs)
 
     def ok(ok, **task):
         task.setdefault("targets", []).append(ok)
@@ -1202,11 +1079,7 @@ class U:
         typedoc = json.loads(P.TYPEDOC_JSON.read_text(**C.ENC))
         original_entry_points = sorted(typedoc["entryPoints"])
         new_entry_points = sorted(
-            [
-                f"packages/{parent}"
-                for parent in P.PACKAGE_JSONS
-                if parent not in C.NO_TYPEDOC
-            ]
+            [f"packages/{parent}" for parent in P.PACKAGE_JSONS if parent not in C.NO_TYPEDOC]
         )
 
         if json.dumps(original_entry_points) != json.dumps(new_entry_points):
@@ -1434,7 +1307,7 @@ class U:
                 subprocess.call(args, cwd=str(py_tmp), env=env)
                 shutil.copytree(py_tmp / "dist", py_dist)
 
-    def integrity():
+    def integrity(check=False):
         def _ensure_resolutions(app_name):
             app_json = P.ROOT / "app" / app_name / "package.json"
             old_text = app_json.read_text(**C.ENC)
@@ -1450,21 +1323,16 @@ class U:
                 app["resolutions"][name] = f"{prefix}{data['version']}"
 
             app["resolutions"] = {
-                k: v
-                for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
+                k: v for k, v in sorted(app["resolutions"].items(), key=lambda item: item[0])
             }
 
             new_text = json.dumps(app, indent=2) + "\n"
 
             if new_text.strip() == old_text.strip():
-                print(
-                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!"
-                )
+                print(f"... {app_json.relative_to(P.ROOT)} `resolutions` are up-to-date!")
                 return True
-            elif C.LINTING_IN_CI:
-                print(
-                    f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!"
-                )
+            elif check:
+                print(f"... {app_json.relative_to(P.ROOT)} `resolutions` are out-of-date!")
                 return False
 
             # Write the package.json back to disk.
@@ -1482,54 +1350,6 @@ class U:
             print("\n\t!!! Re-run `doit repo` locally and commit the results.\n")
 
         return all_up_to_date
-
-    def notebook_lint(ipynb: Path):
-        nb_text = ipynb.read_text(**C.ENC)
-        nb_json = json.loads(nb_text)
-
-        U.pretty_markdown_cells(ipynb, nb_json)
-
-        ipynb.write_text(json.dumps(nb_json), **C.ENC)
-
-        if C.MIME_IPYTHON in nb_text:
-            print(f"... blackening {ipynb.stem}")
-            black_args = []
-            black_args += ["--check"] if C.CI else ["--quiet"]
-            if subprocess.call([which("black"), *black_args, ipynb]) != 0:
-                return False
-
-    def pretty_markdown_cells(ipynb, nb_json):
-        cells = [c for c in nb_json["cells"] if c["cell_type"] == "markdown"]
-
-        if not cells:
-            return
-
-        print(f"... prettying {len(cells)} markdown cells of {ipynb.stem}")
-        with tempfile.TemporaryDirectory() as td:
-            tdp = Path(td)
-
-            files = {}
-
-            for i, cell in enumerate(cells):
-                files[i] = tdp / f"{ipynb.stem}-{i:03d}.md"
-                files[i].write_text("".join([*cell["source"], "\n"]), **C.ENC)
-
-            args = [which("jlpm"), "prettier"]
-
-            args += ["--check"] if C.CI else ["--write", "--list-different"]
-
-            subprocess.call([*args, tdp])
-
-            for i, cell in enumerate(cells):
-                cells[i]["source"] = (
-                    files[i].read_text(**C.ENC).rstrip().splitlines(True)
-                )
-
-    def check_contains(path: Path, pattern: str):
-        if pattern not in path.read_text(**C.ENC):
-            print(f"!!! {pattern} not found in:")
-            print("", path)
-            return False
 
 
 # environment overloads
@@ -1551,5 +1371,5 @@ DOIT_CONFIG = {
     "backend": "sqlite3",
     "verbosity": 2,
     "par_type": "thread",
-    "default_tasks": ["lint", "build", "docs:app:build"],
+    "default_tasks": ["build", "docs:app:build"],
 }

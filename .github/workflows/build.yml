@@ -29,10 +29,8 @@ jobs:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
 
-  lint-js-test:
+  lint:
     runs-on: ubuntu-latest
-    env:
-      LINTING_IN_CI: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,16 +44,38 @@ jobs:
           restore-keys: |
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-lint-
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
-      - name: Setup pip (lint)
-        run: python3 -m pip install -r requirements-lint.txt
-      - name: Install
-        run: doit setup:js
-      - name: Test (js)
-        run: doit -n4 test:js
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-lint.txt
+          jlpm
       - name: Lint
-        run: doit lint
+        run: jlpm lint:check
+
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-lint.txt
+          jlpm
       - name: Repo Integrity
-        run: doit repo
+        shell: bash -el {0}
+        run: |
+          doit repo:integrity:check
+
+  typedoc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+      - name: Install dependencies
+        run: |
+          python -m pip install -r requirements-build.txt
+          jlpm
       - name: Docs (typedoc)
         run: doit -n4 docs:typedoc:mystify
       - name: Upload (typedoc)
@@ -161,7 +181,7 @@ jobs:
             build/pytest
 
   docs:
-    needs: [build, lint-js-test]
+    needs: [build, typedoc]
     runs-on: ubuntu-latest
     env:
       DOCS_IN_CI: 1

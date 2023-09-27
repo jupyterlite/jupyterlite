@@ -16,14 +16,10 @@ except Exception:  # pragma: no cover
 @mark.parametrize("remote", [True, False])
 @mark.parametrize(
     "ext_name",
-    [
-        p.name
-        for p in [*WHEELS, *CONDA_PKGS]
-        if HAS_LIBARCHIVE or not p.name.endswith(".conda")
-    ],
+    [p.name for p in [*WHEELS, *CONDA_PKGS] if HAS_LIBARCHIVE or not p.name.endswith(".conda")],
 )
 @mark.parametrize("use_libarchive", [True, False] if HAS_LIBARCHIVE else [False])
-def test_federated_extensions(
+def test_federated_extensions(  # noqa: PLR0913
     an_empty_lite_dir, script_runner, remote, ext_name, use_libarchive, a_fixture_server
 ):
     """can we include a single extension from an archive"""
@@ -48,9 +44,7 @@ def test_federated_extensions(
 
     extra_args = [] if use_libarchive else ["--no-libarchive"]
 
-    build = script_runner.run(
-        "jupyter", "lite", "build", *extra_args, cwd=str(an_empty_lite_dir)
-    )
+    build = script_runner.run("jupyter", "lite", "build", *extra_args, cwd=str(an_empty_lite_dir))
 
     if ext_name.endswith(".conda") and not use_libarchive:
         assert not build.success
@@ -58,9 +52,7 @@ def test_federated_extensions(
 
     assert build.success
 
-    check = script_runner.run(
-        "jupyter", "lite", "check", *extra_args, cwd=str(an_empty_lite_dir)
-    )
+    check = script_runner.run("jupyter", "lite", "check", *extra_args, cwd=str(an_empty_lite_dir))
     assert check.success
 
     output = an_empty_lite_dir / "_output"

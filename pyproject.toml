@@ -2,17 +2,12 @@
 name = "jupyterlite-root"
 version = "0.2.0a1"
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-known_first_party = [ "jupyterlite_core", "jupyterlite",]
-
 [tool.jupyter-releaser]
 skip = [ "build-python", "check-links", "check-python",]
 
 [tool.jupyter-releaser.hooks]
 before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt", "jlpm", ]
-after-bump-version = [ "doit repo:integrity", "doit lint", "jlpm",]
+after-bump-version = [ "doit repo:integrity", "jlpm lint", "jlpm",]
 before-build-npm = [ "doit build",]
 after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 
@@ -21,6 +16,52 @@ version-cmd = "python scripts/bump-version.py --force"
 
 [tool.check-wheel-contents]
 ignore = ["W002"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+select = [
+  "A", "B", "C", "DTZ", "E", "EM", "F", "FBT", "I", "ICN", "ISC", "N",
+  "PLC", "PLE", "PLR", "PLW", "Q", "RUF", "S", "SIM", "T", "TID", "UP",
+  "W", "YTT",
+]
+ignore = [
+# EM101 [*] Exception must not use a string literal, assign to variable first
+# EM102 [*] Exception must not use an f-string literal, assign to variable first
+"EM101", "EM102",
+# FBT001 Boolean positional arg in function definition
+"FBT001", "FBT002", "FBT003",
+# S101 Use of `assert` detected
+"S101",
+# T201 `print` found
+"T201",
+# T203 `print` found
+"T203",
+# C408 Unnecessary `dict` call (rewrite as a literal)
+"C408", "C416",
+# RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+"RUF012",
+]
+
+[tool.ruff.per-file-ignores]
+# A001 Variable `copyright` is shadowing a Python builtin
+# S603 `subprocess` call: check for execution of untrusted input
+# S607 Starting a process with a partial executable path
+"docs/conf.py" = ["A001", "S603", "S607"]
+"**/conftest.py" = ["S603", "S607"]
+
+# TID252 [*] Relative imports from parent modules are banned
+"py/*" = ["TID252"]
+
+# S101 Use of `assert` detected
+"**/tests/*" = ["S101", "PLR2004"]
+
+# E501 Line too long
+"ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
 current = "0.2.0a1"

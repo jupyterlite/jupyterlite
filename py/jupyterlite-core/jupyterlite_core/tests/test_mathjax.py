@@ -37,9 +37,7 @@ def test_mathjax(
     build = script_runner.run("jupyter", "lite", "build", *extra_args, **kwargs)
     assert build.success, "the build did NOT succeed"
 
-    mathjax_path = (
-        an_empty_lite_dir / "_output/static/jupyter_server_mathjax/MathJax.js"
-    )
+    mathjax_path = an_empty_lite_dir / "_output/static/jupyter_server_mathjax/MathJax.js"
 
     if expected:
         assert mathjax_path.exists(), f"{mathjax_path} was expected"
