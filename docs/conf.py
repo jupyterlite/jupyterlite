@@ -127,6 +127,7 @@ html_theme_options = {
         ),
         "version_match": os.environ.get("READTHEDOCS_VERSION", "latest"),
     },
+    "check_switcher": False,
 }
 
 html_context = {
