@@ -250,13 +250,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           if (!widget) {
             return;
           }
-          const selected = widget.selectedItems();
-          for (const item of selected) {
-            if (item.type === 'directory') {
-              continue;
+          const selected = Array.from(widget.selectedItems());
+          selected.forEach(async (item) => {
+            if (item.type !== 'directory') {
+              await downloadContent(item.path, item.name);
             }
-            await downloadContent(item.path, item.name);
-          }
+          });
         },
         icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
