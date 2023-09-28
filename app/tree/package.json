@@ -5,6 +5,7 @@
   "resolutions": {
     "@jupyter-notebook/application": "~7.0.4",
     "@jupyter-notebook/application-extension": "~7.0.4",
+    "@jupyter-notebook/console-extension": "~7.0.4",
     "@jupyter-notebook/docmanager-extension": "~7.0.4",
     "@jupyter-notebook/help-extension": "~7.0.4",
     "@jupyter-notebook/tree-extension": "~7.0.4",
@@ -91,6 +92,7 @@
   "dependencies": {
     "@jupyter-notebook/application": "~7.0.4",
     "@jupyter-notebook/application-extension": "~7.0.4",
+    "@jupyter-notebook/console-extension": "~7.0.4",
     "@jupyter-notebook/docmanager-extension": "~7.0.4",
     "@jupyter-notebook/help-extension": "~7.0.4",
     "@jupyter-notebook/tree-extension": "~7.0.4",
@@ -161,6 +163,7 @@
       "@jupyterlab/ui-components-extension",
       "@jupyterlab/vega5-extension",
       "@jupyter-notebook/application-extension",
+      "@jupyter-notebook/console-extension",
       "@jupyter-notebook/docmanager-extension",
       "@jupyter-notebook/help-extension",
       "@jupyter-notebook/tree-extension",
@@ -242,7 +245,6 @@
       "@jupyterlab/apputils-extension:resolver",
       "@jupyterlab/apputils-extension:running-sessions-status",
       "@jupyterlab/apputils-extension:splash",
-      "@jupyterlab/apputils-extension:utilityCommands",
       "@jupyterlab/apputils-extension:workspaces",
       "@jupyterlab/console-extension:kernel-status",
       "@jupyterlab/docmanager-extension:download",

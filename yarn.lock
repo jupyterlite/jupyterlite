@@ -2106,6 +2106,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyter-notebook/console-extension@npm:~7.0.4":
+  version: 7.0.4
+  resolution: "@jupyter-notebook/console-extension@npm:7.0.4"
+  dependencies:
+    "@jupyter-notebook/application": ^7.0.4
+    "@jupyterlab/application": ^4.0.6
+    "@jupyterlab/console": ^4.0.6
+    "@jupyterlab/coreutils": ^6.0.6
+    "@lumino/algorithm": ^2.0.1
+  checksum: e604cc1092731772608d4bd3166d253a16662dfc930735e9e2537e1c7ec596168e97984bedef2acc942cde6e849713361d3a8654fb6855d7c4a4303872513eaf
+  languageName: node
+  linkType: hard
+
 "@jupyter-notebook/docmanager-extension@npm:~7.0.4":
   version: 7.0.4
   resolution: "@jupyter-notebook/docmanager-extension@npm:7.0.4"
@@ -3994,6 +4007,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-edit@workspace:app/edit"
   dependencies:
+    "@jupyter-notebook/application": ~7.0.4
+    "@jupyter-notebook/application-extension": ~7.0.4
+    "@jupyter-notebook/console-extension": ~7.0.4
+    "@jupyter-notebook/docmanager-extension": ~7.0.4
+    "@jupyter-notebook/help-extension": ~7.0.4
     "@jupyterlab/application": ~4.0.6
     "@jupyterlab/application-extension": ~4.0.6
     "@jupyterlab/apputils-extension": ~4.0.6
@@ -4115,6 +4133,7 @@ __metadata:
   dependencies:
     "@jupyter-notebook/application": ~7.0.4
     "@jupyter-notebook/application-extension": ~7.0.4
+    "@jupyter-notebook/console-extension": ~7.0.4
     "@jupyter-notebook/docmanager-extension": ~7.0.4
     "@jupyter-notebook/help-extension": ~7.0.4
     "@jupyter-notebook/notebook-extension": ~7.0.4
@@ -4218,6 +4237,7 @@ __metadata:
   dependencies:
     "@jupyter-notebook/application": ~7.0.4
     "@jupyter-notebook/application-extension": ~7.0.4
+    "@jupyter-notebook/console-extension": ~7.0.4
     "@jupyter-notebook/docmanager-extension": ~7.0.4
     "@jupyter-notebook/help-extension": ~7.0.4
     "@jupyter-notebook/tree-extension": ~7.0.4

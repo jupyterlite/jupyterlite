@@ -63,7 +63,6 @@ const pathOpener: JupyterFrontEndPlugin<INotebookPathOpener> = {
   autoStart: true,
   provides: INotebookPathOpener,
   activate: (app: JupyterFrontEnd): INotebookPathOpener => {
-    console.log('using the JupyterLite path opener');
     return {
       open(options: INotebookPathOpener.IOpenOptions): Window | null {
         const { prefix, path, searchParams, target, features } = options;

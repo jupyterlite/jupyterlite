@@ -219,7 +219,6 @@
       "@jupyterlab/apputils-extension:splash",
       "@jupyterlab/apputils-extension:toggle-header",
       "@jupyterlab/apputils-extension:toolbar-registry",
-      "@jupyterlab/apputils-extension:utilityCommands",
       "@jupyterlab/apputils-extension:workspaces",
       "@jupyterlab/console-extension:kernel-status",
       "@jupyterlab/docmanager-extension:download",
