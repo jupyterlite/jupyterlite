@@ -143,6 +143,10 @@
       "@jupyterlite/server-extension"
     ],
     "singletonPackages": [
+      "@codemirror/language",
+      "@codemirror/state",
+      "@codemirror/view",
+      "@jupyter/ydoc",
       "@codemirror/state",
       "@codemirror/view",
       "@jupyter/ydoc",
@@ -175,6 +179,8 @@
       "@jupyterlab/ui-components",
       "@jupyterlite/contents",
       "@jupyterlite/kernel",
+      "@lezer/common",
+      "@lezer/highlight",
       "@lumino/algorithm",
       "@lumino/application",
       "@lumino/commands",
