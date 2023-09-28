@@ -34,6 +34,7 @@ repos:
     rev: 23.9.1
     hooks:
       - id: black
+        args: [--config=./pyproject.toml]
 
   # Check ruff version is aligned in .binder/environment.yml
   - repo: https://github.com/astral-sh/ruff-pre-commit
