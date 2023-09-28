@@ -24,7 +24,9 @@ class ContentsAddon(BaseAddon):
                     "[lite] [contents] All Contents %s",
                     pprint.pformat([str(p[0]) for p in self.file_src_dest]),
                 ),
-                lambda: print(f"""    contents: {len(list(self.file_src_dest))} files"""),
+                lambda: print(
+                    f"""    contents: {len(list(self.file_src_dest))} files"""
+                ),
             ],
         )
 
@@ -61,9 +63,9 @@ class ContentsAddon(BaseAddon):
         if not self.output_files_dir.exists():
             return
 
-        output_file_dirs = [d for d in self.output_files_dir.rglob("*") if d.is_dir()] + [
-            self.output_files_dir
-        ]
+        output_file_dirs = [
+            d for d in self.output_files_dir.rglob("*") if d.is_dir()
+        ] + [self.output_files_dir]
         for output_file_dir in output_file_dirs:
             stem = output_file_dir.relative_to(self.output_files_dir)
             api_path = self.api_dir / stem / ALL_JSON
@@ -161,6 +163,9 @@ class ContentsAddon(BaseAddon):
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
         listing_path = str(output_file_dir.relative_to(self.output_files_dir))
+        # normalize the root folder
+        if listing_path == ".":
+            listing_path = ""
 
         try:
             listing = fm.get(listing_path)
@@ -214,7 +219,9 @@ class ContentsAddon(BaseAddon):
                     continue
                 value = listing[field]
                 if isoformat(value) > isoformat(sde):
-                    self.log.info(f"""[lite][contents][patch] {field} on {listing["name"]}""")
+                    self.log.info(
+                        f"""[lite][contents][patch] {field} on {listing["name"]}"""
+                    )
                     listing[field] = sde
             if listing["type"] == "directory":
                 for child in listing.get("content") or []:
