@@ -8,7 +8,7 @@ authors = [
     {name = "JupyterLite Contributors"},
 ]
 dependencies = [
-    "jupyterlite-core >=0.2.0a1",
+    "jupyterlite-core >=0.2.0a2",
     "jupyterlite-pyodide-kernel >=0.1.2",
     "jupyterlite-javascript-kernel",
 ]
