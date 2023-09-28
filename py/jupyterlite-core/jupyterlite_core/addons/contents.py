@@ -161,7 +161,8 @@ class ContentsAddon(BaseAddon):
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
         listing_path = str(output_file_dir.relative_to(self.output_files_dir))
-        # normalize the root folder
+        # normalize the root folder to avoid adding a `./` prefix to the
+        # path field in the generated listing
         if listing_path == ".":
             listing_path = ""
 
