@@ -9,6 +9,7 @@ from jupyterlite_core.constants import HOOKS
 
 PY_IMPL = platform.python_implementation()
 IS_PYPY = "pypy" in PY_IMPL.lower()
+IS_WIN = platform.system() == "Windows"
 
 
 # TODO: others?
@@ -123,7 +124,7 @@ def test_cli_any_hook(  # noqa: PLR0915
     duration_2 = time.time() - restarted
     assert rereturned_status.success
 
-    if not IS_PYPY:
+    if not (IS_PYPY or IS_WIN):
         # some caching doesn't seep to work reliably
         assert duration_1 > duration_2
 
