@@ -36,11 +36,7 @@ def test_contents_with_dot(  # noqa: PLR0913
     postbuild.write_text("#!/usr/bin/env bash\necho ok")
 
     result = script_runner.run(
-        "jupyter",
-        "lite",
-        "build",
-        "--contents",
-        ".",
+        ["jupyter", "lite", "build", "--contents", "."],
         cwd=str(an_empty_lite_dir),
     )
     if expect_success:
@@ -80,11 +76,7 @@ def test_contents_with_space(
     contents_file.touch()
 
     result = script_runner.run(
-        "jupyter",
-        "lite",
-        "build",
-        "--contents",
-        "contents",
+        ["jupyter", "lite", "build", "--contents", "contents"],
         cwd=str(an_empty_lite_dir),
     )
     assert result.success

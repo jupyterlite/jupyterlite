@@ -44,7 +44,7 @@ def test_federated_extensions(  # noqa: PLR0913
 
     extra_args = [] if use_libarchive else ["--no-libarchive"]
 
-    build = script_runner.run("jupyter", "lite", "build", *extra_args, cwd=str(an_empty_lite_dir))
+    build = script_runner.run(["jupyter", "lite", "build", *extra_args], cwd=str(an_empty_lite_dir))
 
     if ext_name.endswith(".conda") and not use_libarchive:
         assert not build.success
@@ -52,7 +52,7 @@ def test_federated_extensions(  # noqa: PLR0913
 
     assert build.success
 
-    check = script_runner.run("jupyter", "lite", "check", *extra_args, cwd=str(an_empty_lite_dir))
+    check = script_runner.run(["jupyter", "lite", "check", *extra_args], cwd=str(an_empty_lite_dir))
     assert check.success
 
     output = an_empty_lite_dir / "_output"

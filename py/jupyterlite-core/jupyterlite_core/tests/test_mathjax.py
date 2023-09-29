@@ -31,10 +31,10 @@ def test_mathjax(
     extra_args = extra_args or []
     kwargs = dict(cwd=str(an_empty_lite_dir))
 
-    status = script_runner.run("jupyter", "lite", "status", *extra_args, **kwargs)
+    status = script_runner.run(["jupyter", "lite", "status", *extra_args], **kwargs)
     assert status.success, "the status did NOT succeed"
 
-    build = script_runner.run("jupyter", "lite", "build", *extra_args, **kwargs)
+    build = script_runner.run(["jupyter", "lite", "build", *extra_args], **kwargs)
     assert build.success, "the build did NOT succeed"
 
     mathjax_path = an_empty_lite_dir / "_output/static/jupyter_server_mathjax/MathJax.js"
@@ -44,5 +44,5 @@ def test_mathjax(
     else:
         assert not mathjax_path.exists(), f"{mathjax_path} was NOT expected"
 
-    check = script_runner.run("jupyter", "lite", "check", *extra_args, **kwargs)
+    check = script_runner.run(["jupyter", "lite", "check", *extra_args], **kwargs)
     assert check.success, "the build did NOT check out"

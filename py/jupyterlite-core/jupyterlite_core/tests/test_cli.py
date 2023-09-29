@@ -60,7 +60,7 @@ A_SIMPLE_JUPYTERLITE_JSON = """{ "jupyter-config-data": {
 @mark.parametrize("lite_args", LITE_INVOCATIONS)
 def test_cli_version(lite_args, script_runner):
     """do various invocations work"""
-    returned_version = script_runner.run(*lite_args, "--version")
+    returned_version = script_runner.run([*lite_args, "--version"])
     assert returned_version.success
     assert __version__ in returned_version.stdout
     assert returned_version.stderr == ""
@@ -70,21 +70,21 @@ def test_cli_version(lite_args, script_runner):
 @mark.parametrize("help", ["-h", "--help"])
 def test_cli_help(lite_args, help, script_runner):  # noqa: A002
     """does help work"""
-    returned_version = script_runner.run(*lite_args, help)
+    returned_version = script_runner.run([*lite_args, help])
     assert returned_version.success
     assert returned_version.stderr == ""
 
 
 @mark.parametrize("lite_args", LITE_INVOCATIONS)
 def test_nonzero_rc(lite_args, script_runner):
-    a_step = script_runner.run(*lite_args, "doit", "this-is-not-a-step")
+    a_step = script_runner.run([*lite_args, "doit", "this-is-not-a-step"])
     assert not a_step.success
 
 
 @mark.parametrize("lite_hook", ["list", "status"])
 def test_cli_status_null(lite_hook, an_empty_lite_dir, script_runner):
     """do the "side-effect-free" commands create exactly one file?"""
-    returned_status = script_runner.run("jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir))
+    returned_status = script_runner.run(["jupyter", "lite", lite_hook], cwd=str(an_empty_lite_dir))
     assert returned_status.success
     files = set(an_empty_lite_dir.rglob("*"))
     # we would expect to see our build cruft sqlite
@@ -103,7 +103,7 @@ def test_cli_any_hook(  # noqa: PLR0915
     """
     expected_files = TRASH if lite_hook in FAST_HOOKS else A_GOOD_BUILD
     started = time.time()
-    returned_status = script_runner.run("jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir))
+    returned_status = script_runner.run(["jupyter", "lite", lite_hook], cwd=str(an_empty_lite_dir))
     duration_1 = time.time() - started
     assert returned_status.success
     files = set(an_empty_lite_dir.rglob("*"))
@@ -116,7 +116,10 @@ def test_cli_any_hook(  # noqa: PLR0915
 
     # re-run, be faster
     restarted = time.time()
-    rereturned_status = script_runner.run("jupyter", "lite", lite_hook, cwd=str(an_empty_lite_dir))
+    rereturned_status = script_runner.run(
+        ["jupyter", "lite", lite_hook],
+        cwd=str(an_empty_lite_dir),
+    )
     duration_2 = time.time() - restarted
     assert rereturned_status.success
 
@@ -148,14 +151,16 @@ def test_cli_any_hook(  # noqa: PLR0915
     app_overrides.write_text(AN_OVERRIDES, encoding="utf-8")
 
     forced_status = script_runner.run(
-        "jupyter",
-        "lite",
-        lite_hook,
-        "--force",
-        "--contents",
-        str(readme),
-        "--contents",
-        str(more),
+        [
+            "jupyter",
+            "lite",
+            lite_hook,
+            "--force",
+            "--contents",
+            str(readme),
+            "--contents",
+            str(more),
+        ],
         cwd=str(an_empty_lite_dir),
     )
 
@@ -194,7 +199,7 @@ def test_cli_any_hook(  # noqa: PLR0915
 def test_cli_raw_doit(an_empty_lite_dir, script_runner):
     """does raw doit work"""
     returned_status = script_runner.run(
-        "jupyter", "lite", "doit", "--", "--help", cwd=str(an_empty_lite_dir)
+        ["jupyter", "lite", "doit", "--", "--help"], cwd=str(an_empty_lite_dir)
     )
     assert returned_status.success
     assert "http://pydoit.org" in returned_status.stdout
@@ -205,13 +210,13 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     out = an_empty_lite_dir / "_output"
 
     args = original_args = "jupyter", "lite", "build"
-    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     norm_files = sorted(out.rglob("*"))
     assert status.success
     assert [f for f in norm_files if f.name.endswith(".map")], "expected maps"
 
     args = [*args, "--apps", "repl", "--apps", "foobarbaz"]
-    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     repl_files = sorted(out.rglob("*"))
     repl_bundles = sorted(out.glob("build/*/bundle.js"))
     assert status.success
@@ -221,7 +226,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert "'foobarbaz' is not one of" in status.stderr
 
     args = [*args, "--no-unused-shared-packages"]
-    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     no_chunk_files = sorted(out.rglob("*"))
     # assert "pruning unused shared package" in status.stderr
 
@@ -230,7 +235,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert len(no_chunk_files) < len(repl_files), f"unexpected {unexpected}"
 
     args = [*args, "--no-sourcemaps"]
-    status = script_runner.run(*args, cwd=str(an_empty_lite_dir))
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     min_files = sorted(out.rglob("*"))
     assert status.success
 
@@ -238,7 +243,7 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
 
     assert len(min_files) < len(no_chunk_files), "expected fewer files still"
 
-    status = script_runner.run(*original_args, cwd=str(an_empty_lite_dir))
+    status = script_runner.run(original_args, cwd=str(an_empty_lite_dir))
     rebuild_files = sorted(out.rglob("*"))
     assert status.success
 
