@@ -124,9 +124,10 @@ app/artifacts/videos
 app/test/data
 
 # extras
-# do not include kernels such as Pyodide
+# do not include generated content
 app/kernels
 app/extensions
+app/files
 app/service-worker.js
 
 # generated html
