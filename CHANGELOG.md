@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0a3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a2...9542a7e25447cacbb1c160d07fc32f67dbe388e0))
+
+### Bugs fixed
+
+- Add missing singleton packages, fix extra newlines, fix duplicated content [#1176](https://github.com/jupyterlite/jupyterlite/pull/1176) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add Jupyter Notebook 7 to the migration guide [#1177](https://github.com/jupyterlite/jupyterlite/pull/1177) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-28&to=2023-09-29&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-28..2023-09-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-28..2023-09-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0a2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a1...cc6bd4974d40a3e3ca3d995f917c6ff090d87368))
@@ -25,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-22&to=2023-09-28&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-22..2023-09-28&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-22..2023-09-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0a1
 
