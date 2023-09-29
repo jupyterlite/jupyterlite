@@ -14,6 +14,25 @@ JupyterLab 4 comes with a couple of breaking changes which likely affect extensi
 If you were using JupyterLab 3 extensions in your JupyterLite deployment, you might have
 to update to a newer version of the extension that is compatible with JupyterLab 4.
 
+### Jupyter Notebook 7
+
+In JupyterLite 0.1.x the Notebook interface was provided by
+[RetroLab](https://github.com/jupyterlab/retrolab).
+
+In JupyterLite 0.2.0, the Notebook interface is now provided by
+[Jupyter Notebook 7](https://github.com/jupyter/notebook)
+
+Jupyter Notebook 7 is the successor of RetroLab and the Classic Notebook, based on
+JupyterLab components.
+
+This means the URL have also changed to be aligned with the ones provided by Jupyter
+Notebook 7:
+
+- `/retro/consoles` -> `/consoles`
+- `/retro/edit` -> `/edit`
+- `/retro/notebooks` -> `/notebooks`
+- `/retro/tree` -> `/tree`
+
 ### Service Worker
 
 The service worker file name has been changed. In `0.1.0`, it was
