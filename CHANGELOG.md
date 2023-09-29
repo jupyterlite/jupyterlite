@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.1.2...0a079185d89d75350864ef0f77a090fde5760559))
+
+### Bugs fixed
+
+- Fix file indexing that caused content duplication [#1178](https://github.com/jupyterlite/jupyterlite/pull/1178) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Add bounds to the `jupyterlite-core` dependency [#1142](https://github.com/jupyterlite/jupyterlite/pull/1142) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add version switcher to the docs [#1167](https://github.com/jupyterlite/jupyterlite/pull/1167) ([@jtpio](https://github.com/jtpio))
+- Fix docs for the new pydata sphinx theme [#1165](https://github.com/jupyterlite/jupyterlite/pull/1165) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-08-21&to=2023-09-29&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-08-21..2023-09-29&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-08-21..2023-09-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-08-21..2023-09-29&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-08-21..2023-09-29&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ameeseeksmachine+updated%3A2023-08-21..2023-09-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.1...f06cdcc7b78617bfaeb3b76d19cc981cfbe9b59a))
@@ -23,8 +48,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-07-31&to=2023-08-21&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-07-31..2023-08-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-07-31..2023-08-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-07-31..2023-08-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-07-31..2023-08-21&type=Issues) | [@oeway](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aoeway+updated%3A2023-07-31..2023-08-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.1.1
 

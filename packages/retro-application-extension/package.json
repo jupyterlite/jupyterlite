@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/retro-application-extension",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JupyterLite - Retro Application Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -42,7 +42,7 @@
     "@jupyterlab/coreutils": "~5.5.3",
     "@jupyterlab/docmanager": "~3.5.3",
     "@jupyterlab/services": "~6.5.3",
-    "@jupyterlite/ui-components": "^0.1.2",
+    "@jupyterlite/ui-components": "^0.1.3",
     "@retrolab/application": "^0.3.21"
   },
   "devDependencies": {
