@@ -12,7 +12,7 @@
     "@jupyter-notebook/docmanager-extension": "~7.0.4",
     "@jupyter-notebook/help-extension": "~7.0.4",
     "@jupyter-notebook/notebook-extension": "~7.0.4",
-    "@jupyter/ydoc": "~1.0.2",
+    "@jupyter/ydoc": "~1.1.1",
     "@jupyterlab/application": "~4.0.6",
     "@jupyterlab/application-extension": "~4.0.6",
     "@jupyterlab/apputils": "~4.1.6",
