@@ -3,6 +3,7 @@
   "jupyter-config-data": {
     "appName": "JupyterLite",
     "appVersion": "0.2.0-alpha.2",
+    "appUrl": "./lab",
     "baseUrl": "./",
     "defaultKernelName": "python",
     "faviconUrl": "./lab/favicon.ico",
