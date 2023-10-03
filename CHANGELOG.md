@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0a4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a3...0a07d92a2748df614690472dcbc5e03129cf08b5))
+
+### Bugs fixed
+
+- Fix handling of kernels and sessions [#1186](https://github.com/jupyterlite/jupyterlite/pull/1186) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Switch from `hub` to `gh` in the Playwright snapshots update workflow [#1187](https://github.com/jupyterlite/jupyterlite/pull/1187) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Bump `ipyleaflet` [#1184](https://github.com/jupyterlite/jupyterlite/pull/1184) ([@jtpio](https://github.com/jtpio))
+- Bump `ipyvue` and `ipyvuetify` [#1182](https://github.com/jupyterlite/jupyterlite/pull/1182) ([@jtpio](https://github.com/jtpio))
+- Fix deprecation warning in the Altair example [#1181](https://github.com/jupyterlite/jupyterlite/pull/1181) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-29&to=2023-10-03&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-09-29..2023-10-03&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-29..2023-10-03&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-29..2023-10-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0a3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a2...9542a7e25447cacbb1c160d07fc32f67dbe388e0))
@@ -19,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-28&to=2023-09-29&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-28..2023-09-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-28..2023-09-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0a2
 
