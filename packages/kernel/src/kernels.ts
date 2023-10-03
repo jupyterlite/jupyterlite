@@ -227,6 +227,13 @@ export class Kernels implements IKernels {
     this._kernels.delete(id)?.dispose();
   }
 
+  /**
+   * Get a kernel by id
+   */
+  async get(id: string): Promise<IKernel | undefined> {
+    return this._kernels.get(id);
+  }
+
   private _kernels = new ObservableMap<IKernel>();
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();

@@ -50,6 +50,7 @@
     "lint:py:black:check": "black . --check",
     "lint:py:ruff": "ruff .",
     "lint:py:ruff:check": "ruff check .",
+    "pack:app": "npm pack app/ --pack-destination py/jupyterlite-core/jupyterlite_core/",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "prettier:check-src": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.yml}\"",
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",

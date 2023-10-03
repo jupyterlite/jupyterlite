@@ -39,6 +39,16 @@ The service worker file name has been changed. In `0.1.0`, it was
 `service-worker-[hash].js` with the `hash` computed by webpack, in `0.2.0` the hash is
 removed and the new file name is `service-worker.js`.
 
+### API changes
+
+#### `@jupyterlite` packages
+
+These API changes are only relevant if you are reusing `@jupyterlite` packages in
+downstream applications.
+
+- The `IKernel` interface exposed by `@jupyterlite/kernels` has a new `get` method to
+  retrieve a running kernel by id.
+
 ## `0.1.0b19` to `0.1.0b20`
 
 ### `jupyterlite-core`
