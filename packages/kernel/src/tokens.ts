@@ -52,6 +52,13 @@ export interface IKernels {
    * @param id The kernel id.
    */
   shutdown: (id: string) => Promise<void>;
+
+  /**
+   * Get a kernel by id
+   *
+   * @param id The kernel id.
+   */
+  get(id: string): Promise<IKernel | undefined>;
 }
 
 /**

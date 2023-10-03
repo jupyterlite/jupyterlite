@@ -84,6 +84,14 @@ export class Sessions implements ISessions {
         if (newKernel) {
           patched.kernel = newKernel;
         }
+
+        // clean up the session on kernel shutdown
+        const runningKernel = await this._kernels.get(newKernel.id);
+        if (runningKernel) {
+          runningKernel.disposed.connect(() => {
+            this.shutdown(session.id);
+          });
+        }
       }
     }
 
@@ -121,6 +129,15 @@ export class Sessions implements ISessions {
       },
     };
     this._sessions.push(session);
+
+    // clean up the session on kernel shutdown
+    const runningKernel = await this._kernels.get(id);
+    if (runningKernel) {
+      runningKernel.disposed.connect(() => {
+        this.shutdown(session.id);
+      });
+    }
+
     return session;
   }
 
