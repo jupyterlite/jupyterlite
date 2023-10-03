@@ -86,12 +86,10 @@ export class Sessions implements ISessions {
         }
 
         // clean up the session on kernel shutdown
-        const runningKernel = await this._kernels.get(newKernel.id);
-        if (runningKernel) {
-          runningKernel.disposed.connect(() => {
-            this.shutdown(session.id);
-          });
-        }
+        void this._handleKernelShutdown({
+          kernelId: newKernel.id,
+          sessionId: session.id,
+        });
       }
     }
 
@@ -131,12 +129,7 @@ export class Sessions implements ISessions {
     this._sessions.push(session);
 
     // clean up the session on kernel shutdown
-    const runningKernel = await this._kernels.get(id);
-    if (runningKernel) {
-      runningKernel.disposed.connect(() => {
-        this.shutdown(session.id);
-      });
-    }
+    void this._handleKernelShutdown({ kernelId: id, sessionId: session.id });
 
     return session;
   }
@@ -156,6 +149,24 @@ export class Sessions implements ISessions {
       await this._kernels.shutdown(kernelId);
     }
     ArrayExt.removeFirstOf(this._sessions, session);
+  }
+
+  /**
+   * Handle kernel shutdown
+   */
+  private async _handleKernelShutdown({
+    kernelId,
+    sessionId,
+  }: {
+    kernelId: string;
+    sessionId: string;
+  }): Promise<void> {
+    const runningKernel = await this._kernels.get(kernelId);
+    if (runningKernel) {
+      runningKernel.disposed.connect(() => {
+        this.shutdown(sessionId);
+      });
+    }
   }
 
   private _kernels: IKernels;
