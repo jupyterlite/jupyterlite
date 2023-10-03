@@ -57,6 +57,7 @@ export interface IKernels {
    * Get a kernel by id
    *
    * @param id The kernel id.
+   * @returns the kernel if it exists, undefined otherwise.
    */
   get(id: string): Promise<IKernel | undefined>;
 }
