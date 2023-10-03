@@ -42,7 +42,7 @@ test.describe('Kernels', () => {
       throw new Error('Notebook name is undefined');
     }
 
-    await page.notebook.close(true);
+    await page.notebook.save();
 
     // shut down the kernel
     await page.getByTitle('Running Terminals and Kernels').first().click();
