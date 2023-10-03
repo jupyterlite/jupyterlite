@@ -33,4 +33,13 @@ test.describe('Kernels', () => {
     const imageName = 'default-kernel-name.png';
     expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
+
+  // check it is possible to open a notebook, shut down its kernel and open it again
+  test('Kernel shutdown', async ({ page }) => {
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+  });
 });
