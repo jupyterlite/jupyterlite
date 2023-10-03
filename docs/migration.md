@@ -14,6 +14,10 @@ JupyterLab 4 comes with a couple of breaking changes which likely affect extensi
 If you were using JupyterLab 3 extensions in your JupyterLite deployment, you might have
 to update to a newer version of the extension that is compatible with JupyterLab 4.
 
+```{note}
+For extensions authors, check out the [extension migration guide](https://jupyterlab.readthedocs.io/en/latest/extension/extension_migration.html) in the JupyterLab documentation.
+```
+
 ### Jupyter Notebook 7
 
 In JupyterLite 0.1.x the Notebook interface was provided by
