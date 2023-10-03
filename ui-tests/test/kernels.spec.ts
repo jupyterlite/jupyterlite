@@ -41,5 +41,11 @@ test.describe('Kernels', () => {
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+
+    await page.click('[title="Running Terminals and Kernels"]');
+
+    await page
+      .locator(`.jp-RunningSessions-item.jp-mod-kernel >> text="${name}"`)
+      .waitFor();
   });
 });
