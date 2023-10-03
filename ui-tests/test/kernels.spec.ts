@@ -43,6 +43,7 @@ test.describe('Kernels', () => {
     }
 
     await page.notebook.save();
+    await page.notebook.close(true);
 
     // shut down the kernel
     await page.getByTitle('Running Terminals and Kernels').first().click();
