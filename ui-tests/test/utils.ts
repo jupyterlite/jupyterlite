@@ -54,3 +54,13 @@ export async function firefoxWaitForApplication({ baseURL }, use, testInfo) {
   };
   await use(waitIsReady);
 }
+
+/**
+ * Custom waitForApplication for the notebook file browser page
+ */
+export async function treeWaitForApplication({ baseURL }, use, testInfo) {
+  const waitIsReady = async (page): Promise<void> => {
+    await page.waitForSelector('#filebrowser');
+  };
+  await use(waitIsReady);
+}

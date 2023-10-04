@@ -9,7 +9,12 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, deleteItem, download } from './utils';
+import {
+  createNewDirectory,
+  deleteItem,
+  download,
+  treeWaitForApplication,
+} from './utils';
 
 import { firefoxWaitForApplication } from './utils';
 
@@ -164,28 +169,75 @@ test.describe('Copy shareable link', () => {
     permissions: ['clipboard-read', 'clipboard-write'],
   });
 
-  test.beforeEach(async ({ page }) => {
-    await page.goto('lab/index.html');
+  const copyShareableLink = 'Copy Shareable Link';
+
+  test.describe('JupyterLab application', () => {
+    test('Copy shareable link in JupyterLab', async ({ page, baseURL }) => {
+      await page.goto('lab/index.html');
+
+      const name = await page.notebook.createNew();
+
+      await page.sidebar.openTab('filebrowser');
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/lab/index.html?path=${name}`);
+    });
   });
 
-  test('Copy shareable link in JupyterLab', async ({ page, baseURL }) => {
-    const name = await page.notebook.createNew();
+  test.describe('Notebook application', () => {
+    test.use({
+      waitForApplication: treeWaitForApplication,
+    });
 
-    await page.sidebar.openTab('filebrowser');
-    const contextmenu = await page.menu.openContextMenu(
-      `.jp-DirListing-content >> text="${name}"`,
-    );
-    if (!contextmenu) {
-      throw new Error('Could not open the context menu');
-    }
-    const label = 'Copy Shareable Link';
-    const item = await page.menu.getMenuItemInMenu(contextmenu, label);
-    if (!item) {
-      throw new Error(`${label} menu item is missing`);
-    }
-    await item.click();
+    test.beforeEach(async ({ page }) => {
+      await page.goto('tree/index.html');
+    });
 
-    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboardText).toEqual(`${baseURL}/lab/index.html?path=${name}`);
+    test('Copy Shareable Link to a notebook file', async ({ page, baseURL }) => {
+      const name = 'javascript.ipynb';
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/notebooks/index.html?path=${name}`);
+    });
+
+    test('Copy Shareable Link to a markdown file', async ({ page, baseURL }) => {
+      const name = 'README.md';
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/edit/index.html?path=${name}`);
+    });
   });
 });

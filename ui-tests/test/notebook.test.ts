@@ -5,13 +5,10 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import { treeWaitForApplication } from './utils';
+
 test.use({
-  waitForApplication: async ({ baseURL }, use, testInfo) => {
-    const waitIsReady = async (page): Promise<void> => {
-      await page.waitForSelector('#filebrowser');
-    };
-    await use(waitIsReady);
-  },
+  waitForApplication: treeWaitForApplication,
 });
 
 test.describe('Notebook Tests', () => {
