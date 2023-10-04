@@ -405,7 +405,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     translator: ITranslator,
   ): void => {
     const trans = translator.load(I18N_BUNDLE);
-    const { commands } = app;
+    const { commands, docRegistry } = app;
     const { tracker } = factory;
 
     const roomName = getParam('--room', '').trim();
@@ -420,15 +420,29 @@ const shareFile: JupyterFrontEndPlugin<void> = {
 
         const baseUrl = PageConfig.getBaseUrl();
         let appUrl = PageConfig.getOption('appUrl');
-        // open a notebook if on the file browser page
-        if (appUrl === '/tree') {
-          appUrl = '/notebooks';
-        }
 
-        const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
         const models = Array.from(
           filter(widget.selectedItems(), (item) => item.type !== 'directory'),
         );
+
+        if (!models.length) {
+          return;
+        }
+
+        // In the notebook application:
+        // - only copy the first element
+        // - open /notebooks if it's a notebook, /edit otherwise
+        if (appUrl === '/tree') {
+          const [model] = models;
+          const defaultFactory = docRegistry.defaultWidgetFactory(model.path);
+          if (defaultFactory.name === 'Notebook') {
+            appUrl = '/notebooks';
+          } else {
+            appUrl = '/edit';
+          }
+        }
+
+        const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
         models.forEach((model) => {
           url.searchParams.append('path', model.path);
         });

@@ -12,6 +12,17 @@ test.use({
 });
 
 test.describe('Kernels', () => {
+  test('Basic code execution', async ({ page }) => {
+    await page.goto('lab/index.html');
+    const name = 'javascript.ipynb';
+    await page.filebrowser.open(name);
+    await page.notebook.run();
+    await page.notebook.save();
+
+    const output = await page.notebook.getCellTextOutput(2);
+    expect(output).toBeTruthy();
+  });
+
   test('Default kernel name', async ({ page }) => {
     // mock the default kernel name
     await page.route('jupyter-lite.json', async (route, request) => {

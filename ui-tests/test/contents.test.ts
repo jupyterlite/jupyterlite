@@ -9,7 +9,12 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { createNewDirectory, deleteItem, download } from './utils';
+import {
+  createNewDirectory,
+  deleteItem,
+  download,
+  treeWaitForApplication,
+} from './utils';
 
 import { firefoxWaitForApplication } from './utils';
 
@@ -47,6 +52,19 @@ test.describe('Contents Tests', () => {
     // expect(await page.notebook.isActive(notebook)).toBeTruthy();
 
     await page.notebook.runCellByCell();
+  });
+
+  test('Edit a file existing on the server should not create a duplicate', async ({
+    page,
+  }) => {
+    const notebook = 'javascript.ipynb';
+    await page.filebrowser.refresh();
+    await page.notebook.open(notebook);
+    await page.notebook.addCell('code', '2 + 2');
+    await page.notebook.save();
+    const entries = page.locator(`.jp-DirListing-content >> text="${notebook}"`);
+    const count = await entries.count();
+    expect(count).toBe(1);
   });
 
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
@@ -140,5 +158,86 @@ test.describe('Contents Tests', () => {
     const parsed = JSON.parse(content);
 
     expect(parsed.cells[0].source).toEqual(source);
+  });
+});
+
+test.describe('Copy shareable link', () => {
+  // Playwright allows setting clipboard permissions only for Chromium
+  // https://github.com/microsoft/playwright/issues/13037
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
+  test.use({
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
+
+  const copyShareableLink = 'Copy Shareable Link';
+
+  test.describe('JupyterLab application', () => {
+    test('Copy shareable link in JupyterLab', async ({ page, baseURL }) => {
+      await page.goto('lab/index.html');
+
+      const name = await page.notebook.createNew();
+
+      await page.sidebar.openTab('filebrowser');
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/lab/index.html?path=${name}`);
+    });
+  });
+
+  test.describe('Notebook application', () => {
+    test.use({
+      waitForApplication: treeWaitForApplication,
+    });
+
+    test.beforeEach(async ({ page }) => {
+      await page.goto('tree/index.html');
+    });
+
+    test('Copy Shareable Link to a notebook file', async ({ page, baseURL }) => {
+      const name = 'javascript.ipynb';
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/notebooks/index.html?path=${name}`);
+    });
+
+    test('Copy Shareable Link to a markdown file', async ({ page, baseURL }) => {
+      const name = 'README.md';
+      const contextmenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextmenu) {
+        throw new Error('Could not open the context menu');
+      }
+      const item = await page.menu.getMenuItemInMenu(contextmenu, copyShareableLink);
+      if (!item) {
+        throw new Error(`${copyShareableLink} menu item is missing`);
+      }
+      await item.click();
+
+      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboardText).toEqual(`${baseURL}/edit/index.html?path=${name}`);
+    });
   });
 });
