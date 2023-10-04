@@ -14,9 +14,9 @@ test.use({
 test.describe('Kernels', () => {
   test('Basic code execution', async ({ page }) => {
     await page.goto('lab/index.html');
-    const name = 'javascript.ipynb'
+    const name = 'javascript.ipynb';
     await page.filebrowser.open(name);
-    await page.notebook.run()
+    await page.notebook.run();
     await page.notebook.save();
 
     const output = await page.notebook.getCellTextOutput(2);
