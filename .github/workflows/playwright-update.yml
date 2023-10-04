@@ -88,7 +88,7 @@ jobs:
           jlpm
           python3 -m pip install -r requirements.txt --no-deps
           jlpm build
-          jlpm playwright install
+          jlpm playwright install --with-deps
 
       - name: Update snapshots
         uses: jupyterlab/maintainer-tools/.github/actions/update-snapshots@v1
