@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox, chromium]
+        browser: [firefox, chromium, webkit]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
