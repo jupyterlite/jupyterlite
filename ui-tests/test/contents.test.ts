@@ -49,6 +49,19 @@ test.describe('Contents Tests', () => {
     await page.notebook.runCellByCell();
   });
 
+  test('Edit a file existing on the server should not create a duplicate', async ({
+    page,
+  }) => {
+    const notebook = 'javascript.ipynb';
+    await page.filebrowser.refresh();
+    await page.notebook.open(notebook);
+    await page.notebook.addCell('code', '2 + 2');
+    await page.notebook.save();
+    const entries = page.locator(`.jp-DirListing-content >> text="${notebook}"`);
+    const count = await entries.count();
+    expect(count).toBe(1);
+  });
+
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
     const file = 'data/iris.csv';
     await page.filebrowser.refresh();
