@@ -78,7 +78,7 @@ jobs:
           python -m pip install --group build
           cd ui-tests
           jlpm
-          jlpm playwright install
+          jlpm playwright install --with-deps
 
       - name: Test
         env:
