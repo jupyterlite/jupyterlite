@@ -142,3 +142,37 @@ test.describe('Contents Tests', () => {
     expect(parsed.cells[0].source).toEqual(source);
   });
 });
+
+test.describe('Copy shareable link', () => {
+  // Playwright allows setting clipboard permissions only for Chromium
+  // https://github.com/microsoft/playwright/issues/13037
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Chromium only!');
+  test.use({
+    permissions: ['clipboard-read', 'clipboard-write'],
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('lab/index.html');
+  });
+
+  test('Copy shareable link in JupyterLab', async ({ page, baseURL }) => {
+    const name = await page.notebook.createNew();
+
+    await page.sidebar.openTab('filebrowser');
+    const contextmenu = await page.menu.openContextMenu(
+      `.jp-DirListing-content >> text="${name}"`,
+    );
+    if (!contextmenu) {
+      throw new Error('Could not open the context menu');
+    }
+    const label = 'Copy Shareable Link';
+    const item = await page.menu.getMenuItemInMenu(contextmenu, label);
+    if (!item) {
+      throw new Error(`${label} menu item is missing`);
+    }
+    await item.click();
+
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    expect(clipboardText).toEqual(`${baseURL}/lab/index.html?path=${name}`);
+  });
+});
