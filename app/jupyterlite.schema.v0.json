@@ -86,12 +86,6 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
-        "fullMathjaxUrl": {
-          "type": "string",
-          "description": "path to MathJax2 assets",
-          "default": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
-          "format": "uri"
-        },
         "fullWebRtcSignalingUrls": {
           "type": "array",
           "items": {
@@ -105,11 +99,6 @@
             "wss://y-webrtc-signaling-us.herokuapp.com"
           ],
           "minItems": 1
-        },
-        "mathjaxConfig": {
-          "type": "string",
-          "default": "TeX-AMS_CHTML-full,Safe",
-          "description": "a valid MathJax configuration blob, a comma-delimited list of MathJax profiles"
         },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
