@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a4...706bcf5a84257248ae3f72e90ee4dac569bbf48b))
+
+### Maintenance and upkeep improvements
+
+- Bump postcss from 8.4.27 to 8.4.31 in /ui-tests [#1191](https://github.com/jupyterlite/jupyterlite/pull/1191) ([@dependabot](https://github.com/dependabot))
+- Add more UI tests [#1189](https://github.com/jupyterlite/jupyterlite/pull/1189) ([@jtpio](https://github.com/jtpio))
+- Remove dependency on `jupyterlite-pyodide-kernel` [#1147](https://github.com/jupyterlite/jupyterlite/pull/1147) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add note about extension authoring in 0.2.0 [#1188](https://github.com/jupyterlite/jupyterlite/pull/1188) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Remove dependency on `jupyterlite-pyodide-kernel` [#1147](https://github.com/jupyterlite/jupyterlite/pull/1147) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-03&to=2023-10-05&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-10-03..2023-10-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-03..2023-10-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-03..2023-10-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0a4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a3...0a07d92a2748df614690472dcbc5e03129cf08b5))
@@ -25,8 +51,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-09-29&to=2023-10-03&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-09-29..2023-10-03&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-09-29..2023-10-03&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-09-29..2023-10-03&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0a3
 
