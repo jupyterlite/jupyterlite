@@ -1221,7 +1221,6 @@ class U:
     def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
 
-
         for task in ["status", lite_task]:
             args = [
                 "jupyter",
