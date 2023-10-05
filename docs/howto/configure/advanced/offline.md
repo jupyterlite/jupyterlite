@@ -23,14 +23,6 @@ _same_ `x.y.z` version against which the release was tested, as both python
 and JS APIs are still changing frequently on both sides of the dependency.
 ```
 
-## Configure Mathjax
-
-By default Mathjax is fetched from a CDN.
-
-To retrieve the static asssets at built time and serve them alongside the main website
-assets, make sure to install `jupyterlite-core` with
-`pip install jupyterlite-core[mathjax]`.
-
 ## Configure the piplite wheels
 
 By default calling `%pip install` or `piplite.install()` downloads and installs packages
