@@ -67,6 +67,9 @@ removed and the new file name is `service-worker.js`.
   See the [jupyter-renderers](https://github.com/jupyterlab/jupyter-renderers)
   repository for more information.
 
+  For reference, see the
+  [JupyterLab Pull Request that updated to Mathjax 3](https://github.com/jupyterlab/jupyterlab/pull/13877)
+
 #### `@jupyterlite` packages
 
 These API changes are only relevant if you are reusing `@jupyterlite` packages in
