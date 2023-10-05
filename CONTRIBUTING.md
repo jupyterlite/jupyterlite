@@ -190,6 +190,16 @@ jlpm build:test
 jlpm test
 ```
 
+#### Installing other kernels
+
+By default this repository only includes the JavaScript kernel.
+
+If you would like to setup a local environment with an additional, you can install
+explicitely, before running the `jupyter lite build` command. For example:
+
+- To install the Pyodide kernel: `pip install jupyterlite-pyodide-kernel`
+- To install the Xeus Python kernel: `pip install jupyterlite-xeus-python`
+
 ### UI Tests
 
 `jupyterlite` uses the

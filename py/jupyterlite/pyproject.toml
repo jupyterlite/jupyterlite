@@ -9,7 +9,6 @@ authors = [
 ]
 dependencies = [
     "jupyterlite-core >=0.2.0a4",
-    "jupyterlite-pyodide-kernel >=0.1.2",
     "jupyterlite-javascript-kernel",
 ]
 keywords = [

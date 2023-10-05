@@ -37,6 +37,18 @@ Notebook 7:
 - `/retro/notebooks` -> `/notebooks`
 - `/retro/tree` -> `/tree`
 
+### `jupyterlite` metapackage
+
+In version `0.1.x`, installing the `jupyterlite` metapackage would automatically install
+the Pyodide kernel by default, since the `jupyterlite` metapackage would depend on
+`jupyterlite-pyodide-kernel`.
+
+In version `0.2.0` this is not the case anymore. You will need to install the
+`jupyterlite-pyodide-kernel` explicitely in your build environment alongside
+`jupyterlite-core` (the package providing the `jupyter-lite` CLI).
+
+See [the documentation for adding kernels](./howto/configure/kernels.md) to learn more.
+
 ### Service Worker
 
 The service worker file name has been changed. In `0.1.0`, it was
