@@ -5,6 +5,12 @@ import { test } from '@jupyterlab/galata';
 
 import { ConsoleMessage, expect } from '@playwright/test';
 
+import { firefoxWaitForApplication } from './utils';
+
+test.use({
+  waitForApplication: firefoxWaitForApplication,
+});
+
 test.describe('Renderers', () => {
   test('MathJax', async ({ page }) => {
     await page.goto('lab/index.html');
