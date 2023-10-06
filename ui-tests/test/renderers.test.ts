@@ -10,11 +10,7 @@ test.describe('Renderers', () => {
     await page.goto('lab/index.html');
 
     let errorLogs = 0;
-
     const handleMessage = async (msg: ConsoleMessage) => {
-      const text = msg.text();
-      console.log(msg.type(), '>>', text);
-
       // Count 404 for MathJax fonts
       if (
         msg.type() === 'error' &&
