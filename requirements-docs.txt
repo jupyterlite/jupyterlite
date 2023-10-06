@@ -4,7 +4,6 @@
 
 # build
 docutils >=0.18
-jupyter-server-mathjax
 jupyterlab >=4.0.5,<5.0
 myst-nb
 pydata-sphinx-theme

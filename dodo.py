@@ -1221,13 +1221,6 @@ class U:
     def docs_app(lite_task="build"):
         """before sphinx ensure a custom build of JupyterLite"""
 
-        MATHJAX_DIR = None
-
-        try:
-            from jupyter_server_mathjax.app import STATIC_ASSETS_PATH as MATHJAX_DIR
-        except Exception:
-            pass
-
         for task in ["status", lite_task]:
             args = [
                 "jupyter",
@@ -1241,10 +1234,6 @@ class U:
             # prefer the shipped archive in CI
             if not C.CI:
                 args += ["--app-archive", B.APP_PACK]
-
-            # ignoring sys-prefix for fine-grained extensions, add mathjax dir
-            if MATHJAX_DIR:
-                args += ["--mathjax-dir", MATHJAX_DIR]
 
             args += C.LITE_ARGS
 

@@ -22,7 +22,6 @@ configure/storage
 configure/settings
 configure/translation
 configure/rtc
-configure/latex
 configure/config_files
 ```
 

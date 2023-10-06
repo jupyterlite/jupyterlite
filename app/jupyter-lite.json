@@ -9,9 +9,7 @@
     "faviconUrl": "./lab/favicon.ico",
     "federated_extensions": [],
     "fullLabextensionsUrl": "./extensions",
-    "fullMathjaxUrl": "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses",
-    "mathjaxConfig": "TeX-AMS_CHTML-full,Safe"
+    "licensesUrl": "./lab/api/licenses"
   }
 }

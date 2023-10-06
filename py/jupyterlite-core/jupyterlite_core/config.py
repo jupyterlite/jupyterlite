@@ -71,10 +71,6 @@ class LiteBuildConfig(LoggingConfigurable):
         [Bool(), TypedTuple(Unicode())], help="ignore components from sys.prefix"
     ).tag(config=True)
 
-    mathjax_dir: Path = CPath(
-        help="A local path to a complete/sufficient installation of MathJax 2"
-    ).tag(config=True)
-
     federated_extensions: _Tuple[str] = TypedTuple(
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)

@@ -54,7 +54,6 @@ lite_aliases = dict(
         "extra-ignore-contents": "LiteBuildConfig.extra_ignore_contents",
         # settings
         "settings-overrides": "LiteBuildConfig.settings_overrides",
-        "mathjax-dir": "LiteBuildConfig.mathjax_dir",
         # output options
         "output-dir": "LiteBuildConfig.output_dir",
         "output-archive": "LiteBuildConfig.output_archive",
@@ -166,8 +165,6 @@ class ManagedApp(BaseLiteApp):
             kwargs["no_libarchive"] = self.no_libarchive
         if self.output_dir:
             kwargs["output_dir"] = self.output_dir
-        if self.mathjax_dir:
-            kwargs["mathjax_dir"] = self.mathjax_dir
         if self.file_types:
             kwargs["file_types"] = self.file_types
         if self.extra_file_types:

@@ -57,6 +57,19 @@ removed and the new file name is `service-worker.js`.
 
 ### API changes
 
+#### `jupyterlite-core`
+
+- The Mathjax addon was removed from the `jupyterlite-core` package. As a consequence
+  the `mathjaxConfig` and `fullMathjaxUrl` options in `jupyter-lite.json` can be removed
+  as they do not have any effect anymore.
+
+  If you would like to use Mathjax 2, it's possible to install `jupyterlab-mathjax2`.
+  See the [jupyter-renderers](https://github.com/jupyterlab/jupyter-renderers)
+  repository for more information.
+
+  For reference, see the
+  [JupyterLab Pull Request that updated to Mathjax 3](https://github.com/jupyterlab/jupyterlab/pull/13877)
+
 #### `@jupyterlite` packages
 
 These API changes are only relevant if you are reusing `@jupyterlite` packages in
