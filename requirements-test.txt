@@ -5,7 +5,7 @@
 ansi2html
 diffoscope; sys_platform == 'linux'
 libarchive-c; sys_platform == 'linux'
-pytest-console-scripts
+pytest-console-scripts >=1.4.0
 pytest-cov
 pytest-html
 pytest-xdist

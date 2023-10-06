@@ -44,7 +44,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
     # build once for initial tarball
     before = an_empty_lite_dir / "v1.tgz"
     initial = script_runner.run(
-        *archive_args, "--output-archive", str(before), "--no-libarchive", **cwd
+        [*archive_args, "--output-archive", str(before), "--no-libarchive"], **cwd
     )
     assert initial.success, "failed to build the first tarball"
 
@@ -53,7 +53,7 @@ def test_archive_is_reproducible(an_empty_lite_dir, script_runner, source_date_e
 
     # build another tarball
     after = an_empty_lite_dir / "v2.tgz"
-    subsequent = script_runner.run(*archive_args, "--output-archive", str(after), **cwd)
+    subsequent = script_runner.run([*archive_args, "--output-archive", str(after)], **cwd)
     assert subsequent.success, "failed to build the second tarball"
 
     # check them
@@ -67,17 +67,13 @@ def test_archive_is_idempotent(an_empty_lite_dir, script_runner, source_date_epo
 
     # build once for initial tarball
     before = an_empty_lite_dir / "v1.tgz"
-    initial = script_runner.run(*archive_args, "--output-archive", str(before), **cwd)
+    initial = script_runner.run([*archive_args, "--output-archive", str(before)], **cwd)
     assert initial.success, "failed to build the first tarball"
 
     # build another tarball
     after = an_empty_lite_dir / "v2.tgz"
     subsequent = script_runner.run(
-        *archive_args,
-        "--app-archive",
-        str(before),
-        "--output-archive",
-        str(after),
+        [*archive_args, "--app-archive", str(before), "--output-archive", str(after)],
         **cwd,
     )
     assert subsequent.success, "failed to build the second tarball"
@@ -118,7 +114,7 @@ def _assert_same_tarball(message, script_runner, before, after):  # pragma: no c
             tdp = Path(td)
             print(tdp)
 
-        diffoscope_result = script_runner.run(diffoscope, str(before), str(after))
+        diffoscope_result = script_runner.run([diffoscope, str(before), str(after)])
 
         if not diffoscope_result.success:
             fails += [diffoscope_result.stdout, diffoscope_result.stderr]

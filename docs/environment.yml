@@ -38,7 +38,7 @@ dependencies:
   - pytest-check-links
   # test
   - ansi2html
-  - pytest-console-scripts
+  - pytest-console-scripts >=1.4.0
   - pytest-cov
   - pytest-html
   - pytest-xdist
