@@ -38,12 +38,17 @@ $$
 $$
 `;
     await page.notebook.setCell(0, 'markdown', latex);
+    await page.notebook.addCell('raw', '');
     await page.notebook.run();
     await page.notebook.save();
 
     // wait for MathJax to render
     await page.locator('.MathJax').last().isVisible();
 
+    const cell = await page.notebook.getCell(0);
+    expect(await cell!.screenshot()).toMatchSnapshot('latex.png');
+
+    // there should not be any MathJax related 404
     expect(errorLogs).toEqual(0);
   });
 });
