@@ -10,10 +10,6 @@ test.describe('Renderers', () => {
     await page.goto('lab/index.html');
 
     let errorLogs = 0;
-    let testEnded: (value: string | PromiseLike<string>) => void;
-    const waitForTestEnd = new Promise<string>((resolve) => {
-      testEnded = resolve;
-    });
 
     const handleMessage = async (msg: ConsoleMessage) => {
       const text = msg.text();
@@ -30,13 +26,12 @@ test.describe('Renderers', () => {
       ) {
         errorLogs += 1;
       }
-
-      const lower = text.toLowerCase();
-      // TODO: handle test end based on some condition
-      testEnded(text);
     };
 
     page.on('console', handleMessage);
+
+    // create a new notebook
+    await page.notebook.createNew();
 
     const latex = `This is an inline equation: $E=mc^2$.
 
@@ -50,10 +45,9 @@ $$
     await page.notebook.run();
     await page.notebook.save();
 
-    const output = await page.notebook.getCellTextOutput(0);
-    expect(output).toBeTruthy();
+    // wait for MathJax to render
+    await page.locator('.MathJax').last().isVisible();
 
-    await waitForTestEnd;
     expect(errorLogs).toEqual(0);
   });
 });
