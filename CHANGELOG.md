@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0b0...8c3ed87769a8b8f36b9f5db7923435767ccdf3c2))
+
+### Maintenance and upkeep improvements
+
+- Cleanup Mathjax [#1193](https://github.com/jupyterlite/jupyterlite/pull/1193) ([@jtpio](https://github.com/jtpio))
+- Clean up log messages, flaky tests on Windows [#1183](https://github.com/jupyterlite/jupyterlite/pull/1183) ([@bollwyvl](https://github.com/bollwyvl))
+
+### API and Breaking Changes
+
+- Cleanup Mathjax [#1193](https://github.com/jupyterlite/jupyterlite/pull/1193) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-05&to=2023-10-06&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-10-05..2023-10-06&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-05..2023-10-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-05..2023-10-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0a4...706bcf5a84257248ae3f72e90ee4dac569bbf48b))
@@ -25,8 +46,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-03&to=2023-10-05&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-10-03..2023-10-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-03..2023-10-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-03..2023-10-05&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0a4
 
