@@ -39,3 +39,29 @@ test.describe('Notebook Tests', () => {
     expect(await page.theme.getTheme()).toEqual('JupyterLab Light');
   });
 });
+
+test.describe('Notebook file opener', () => {
+  test('Open a notebook with the JSON factory', async ({ page }) => {
+    await page.goto('tree/index.html');
+    const notebook = 'javascript.ipynb';
+
+    const contextMenu = await page.menu.openContextMenu(
+      `.jp-DirListing-content >> text="${notebook}"`,
+    );
+    if (!contextMenu) {
+      throw new Error('Could not open the context menu');
+    }
+    await page.click('text=Open With');
+
+    // Create a new notebook
+    const [documentTab] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.click('text=JSON'),
+    ]);
+
+    await documentTab.waitForLoadState('domcontentloaded');
+    await documentTab.waitForSelector('.jp-RenderedJSON ');
+
+    await documentTab.close();
+  });
+});
