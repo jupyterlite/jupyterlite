@@ -23,7 +23,7 @@ Here is an example of a `jupyter_lite_config.json` to configure the `contents` a
 ```json
 {
   "LiteBuildConfig": {
-    "contents": "notebooks",
+    "contents": ["notebooks"],
     "outputDir": "dist"
   }
 }
