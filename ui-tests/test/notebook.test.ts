@@ -43,7 +43,7 @@ test.describe('Notebook Tests', () => {
 test.describe('Notebook file opener', () => {
   test('Open a notebook with the JSON factory', async ({ page }) => {
     await page.goto('tree/index.html');
-    const notebook = 'javascript.ipynb';
+    const notebook = 'intro.ipynb';
 
     const contextMenu = await page.menu.openContextMenu(
       `.jp-DirListing-content >> text="${notebook}"`,
@@ -60,7 +60,10 @@ test.describe('Notebook file opener', () => {
     ]);
 
     await documentTab.waitForLoadState('domcontentloaded');
-    await documentTab.waitForSelector('.jp-RenderedJSON ');
+    await documentTab.waitForSelector('.jp-RenderedJSON >> text="nbformat_minor"');
+
+    const imageName = 'notebook-as-json.png';
+    expect(await documentTab.screenshot()).toMatchSnapshot(imageName.toLowerCase());
 
     await documentTab.close();
   });
