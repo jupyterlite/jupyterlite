@@ -4012,6 +4012,7 @@ __metadata:
     "@jupyter-notebook/console-extension": ~7.0.4
     "@jupyter-notebook/docmanager-extension": ~7.0.4
     "@jupyter-notebook/help-extension": ~7.0.4
+    "@jupyter-notebook/notebook-extension": ~7.0.4
     "@jupyterlab/application": ~4.0.6
     "@jupyterlab/application-extension": ~4.0.6
     "@jupyterlab/apputils-extension": ~4.0.6
