@@ -62,6 +62,15 @@ test.describe('Notebook file opener', () => {
     await documentTab.waitForLoadState('domcontentloaded');
     await documentTab.waitForSelector('.jp-RenderedJSON >> text="nbformat_minor"');
 
+    const checkpointLocator = '.jp-NotebookCheckpoint';
+    // wait for the checkpoint indicator to be displayed
+    await documentTab.waitForSelector(checkpointLocator);
+
+    // set the amount of seconds manually since it might display something different at each run
+    await documentTab
+      .locator(checkpointLocator)
+      .evaluate((element) => (element.innerHTML = 'Last Checkpoint: 3 seconds ago'));
+
     const imageName = 'notebook-as-json.png';
     expect(await documentTab.screenshot()).toMatchSnapshot(imageName.toLowerCase());
 
