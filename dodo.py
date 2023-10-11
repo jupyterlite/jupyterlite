@@ -73,6 +73,10 @@ def task_setup():
     args = [
         "jlpm",
     ]
+
+    if C.CI or C.RTD:
+        args += ["--immutable"]
+
     file_dep = [
         *P.APP_JSONS,
         *P.PACKAGE_JSONS.values(),
@@ -90,7 +94,7 @@ def task_setup():
         doc="install node packages",
         file_dep=file_dep,
         actions=actions,
-        targets=[],
+        targets=[B.YARN_STATE],
     )
 
 
@@ -188,7 +192,7 @@ def task_build():
     yield dict(
         name="js:ui-components",
         doc="copy the icon and wordmark to the ui-components package",
-        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK],
+        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_STATE],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
@@ -208,6 +212,7 @@ def task_build():
         file_dep=[
             *P.PACKAGE_JSONS.values(),
             P.ROOT_PACKAGE_JSON,
+            B.YARN_STATE,
         ],
         actions=[
             U.do("jlpm", "build:lib"),
@@ -222,6 +227,7 @@ def task_build():
         P.LITE_WORDMARK,
         P.APP_PACKAGE_JSON,
         *[p for p in P.APP_HTMLS if p.name == "index.template.html"],
+        B.YARN_STATE,
     ]
 
     all_app_targets = []
@@ -302,6 +308,7 @@ def task_build():
             *py_pkg.glob("*.md"),
             setup_py,
             pyproj_toml,
+            B.YARN_STATE,
         ]
 
         if py_name == "jupyterlite-core":
@@ -417,7 +424,7 @@ def task_docs():
         yield dict(
             name="typedoc:build",
             doc="build the TS API documentation with typedoc",
-            file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF],
+            file_dep=[B.META_BUILDINFO, *P.TYPEDOC_CONF, B.YARN_STATE],
             actions=[U.do("jlpm", "docs")],
             targets=[B.DOCS_RAW_TYPEDOC_README],
         )
@@ -613,7 +620,7 @@ def task_watch():
         name="js",
         doc="watch .ts, .js, and .css sources and rebuild packages and apps",
         uptodate=[lambda: False],
-        file_dep=[],
+        file_dep=[B.YARN_STATE],
         actions=[U.do("jlpm", "watch")],
     )
     if shutil.which("sphinx-autobuild"):
@@ -642,7 +649,7 @@ def task_test():
         B.OK_JEST,
         name="js",
         doc="run the .js, .ts unit tests with jest",
-        file_dep=[B.META_BUILDINFO],
+        file_dep=[B.META_BUILDINFO, B.YARN_STATE],
         actions=[U.do("jlpm", "build:test"), U.do("jlpm", "test")],
     )
 
@@ -795,6 +802,7 @@ class P:
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
+
     EXAMPLES = ROOT / "examples"
     ALL_EXAMPLES = [
         p
@@ -897,6 +905,7 @@ class D:
 class B:
     # built
     NODE_MODULES = P.ROOT / "node_modules"
+    YARN_STATE = NODE_MODULES / ".yarn-state.yml"
     META_BUILDINFO = P.PACKAGES / "_metapackage/tsconfig.tsbuildinfo"
 
     # built things
