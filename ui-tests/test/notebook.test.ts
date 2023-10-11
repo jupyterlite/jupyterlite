@@ -41,39 +41,63 @@ test.describe('Notebook Tests', () => {
 });
 
 test.describe('Notebook file opener', () => {
-  test('Open a notebook with the JSON factory', async ({ page }) => {
-    await page.goto('tree/index.html');
-    const notebook = 'intro.ipynb';
+  const files = [
+    {
+      name: 'intro.ipynb',
+      factory: 'JSON',
+      imageName: 'notebook-as-json.png',
+    },
+    {
+      directory: 'data',
+      name: 'matplotlib.png',
+      factory: 'Image',
+      imageName: 'imageviewer.png',
+    },
+    {
+      directory: 'data',
+      name: 'iris.csv',
+      factory: 'CSV Viewer',
+      imageName: 'csvviewer.png',
+    },
+  ];
 
-    const contextMenu = await page.menu.openContextMenu(
-      `.jp-DirListing-content >> text="${notebook}"`,
-    );
-    if (!contextMenu) {
-      throw new Error('Could not open the context menu');
-    }
-    await page.click('text=Open With');
+  files.forEach((file) => {
+    const { name, directory, factory, imageName } = file;
+    test(`Open ${name} with the ${factory} factory`, async ({ page }) => {
+      await page.goto('tree/index.html');
 
-    // Create a new notebook
-    const [documentTab] = await Promise.all([
-      page.waitForEvent('popup'),
-      await page.click('text=JSON'),
-    ]);
+      if (directory) {
+        await page.filebrowser.openDirectory(directory);
+      }
 
-    await documentTab.waitForLoadState('domcontentloaded');
-    await documentTab.waitForSelector('.jp-RenderedJSON >> text="nbformat_minor"');
+      const contextMenu = await page.menu.openContextMenu(
+        `.jp-DirListing-content >> text="${name}"`,
+      );
+      if (!contextMenu) {
+        throw new Error('Could not open the context menu');
+      }
+      await page.click('text=Open With');
 
-    const checkpointLocator = '.jp-NotebookCheckpoint';
-    // wait for the checkpoint indicator to be displayed
-    await documentTab.waitForSelector(checkpointLocator);
+      // Create a new notebook
+      const [documentTab] = await Promise.all([
+        page.waitForEvent('popup'),
+        page.click(`.lm-Menu-itemLabel >> text=${factory}`),
+      ]);
 
-    // set the amount of seconds manually since it might display something different at each run
-    await documentTab
-      .locator(checkpointLocator)
-      .evaluate((element) => (element.innerHTML = 'Last Checkpoint: 3 seconds ago'));
+      await documentTab.waitForLoadState('domcontentloaded');
 
-    const imageName = 'notebook-as-json.png';
-    expect(await documentTab.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+      const checkpointLocator = '.jp-NotebookCheckpoint';
+      // wait for the checkpoint indicator to be displayed
+      await documentTab.waitForSelector(checkpointLocator);
 
-    await documentTab.close();
+      // set the amount of seconds manually since it might display something different at each run
+      await documentTab
+        .locator(checkpointLocator)
+        .evaluate((element) => (element.innerHTML = 'Last Checkpoint: 3 seconds ago'));
+
+      expect(await documentTab.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+
+      await documentTab.close();
+    });
   });
 });
