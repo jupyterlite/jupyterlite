@@ -39,3 +39,41 @@ test.describe('Notebook Tests', () => {
     expect(await page.theme.getTheme()).toEqual('JupyterLab Light');
   });
 });
+
+test.describe('Notebook file opener', () => {
+  test('Open a notebook with the JSON factory', async ({ page }) => {
+    await page.goto('tree/index.html');
+    const notebook = 'intro.ipynb';
+
+    const contextMenu = await page.menu.openContextMenu(
+      `.jp-DirListing-content >> text="${notebook}"`,
+    );
+    if (!contextMenu) {
+      throw new Error('Could not open the context menu');
+    }
+    await page.click('text=Open With');
+
+    // Create a new notebook
+    const [documentTab] = await Promise.all([
+      page.waitForEvent('popup'),
+      await page.click('text=JSON'),
+    ]);
+
+    await documentTab.waitForLoadState('domcontentloaded');
+    await documentTab.waitForSelector('.jp-RenderedJSON >> text="nbformat_minor"');
+
+    const checkpointLocator = '.jp-NotebookCheckpoint';
+    // wait for the checkpoint indicator to be displayed
+    await documentTab.waitForSelector(checkpointLocator);
+
+    // set the amount of seconds manually since it might display something different at each run
+    await documentTab
+      .locator(checkpointLocator)
+      .evaluate((element) => (element.innerHTML = 'Last Checkpoint: 3 seconds ago'));
+
+    const imageName = 'notebook-as-json.png';
+    expect(await documentTab.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+
+    await documentTab.close();
+  });
+});

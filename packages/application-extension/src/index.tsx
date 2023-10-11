@@ -18,6 +18,8 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import { ITranslator } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
@@ -33,19 +35,14 @@ import { getParam } from 'lib0/environment';
 import React from 'react';
 
 /**
- * The default notebook factory.
- */
-const NOTEBOOK_FACTORY = 'Notebook';
-
-/**
- * The editor factory.
- */
-const EDITOR_FACTORY = 'Editor';
-
-/**
  * A regular expression to match path to notebooks, documents and consoles
  */
 const URL_PATTERN = new RegExp('/(lab|notebooks|edit|consoles)\\/?');
+
+/**
+ * The JupyterLab document manager plugin id.
+ */
+const JUPYTERLAB_DOCMANAGER_PLUGIN_ID = '@jupyterlab/docmanager-extension:plugin';
 
 /**
  * The command IDs used by the application extension.
@@ -313,14 +310,15 @@ const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
-  optional: [ILabShell],
+  optional: [ILabShell, ISettingRegistry],
   activate: (
     app: JupyterFrontEnd,
     router: IRouter,
     docManager: IDocumentManager,
     labShell: ILabShell | null,
+    settingRegistry: ISettingRegistry | null,
   ): void => {
-    const { commands } = app;
+    const { commands, docRegistry } = app;
 
     const command = 'router:tree';
     commands.addCommand(command, {
@@ -339,45 +337,61 @@ const opener: JupyterFrontEndPlugin<void> = {
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
-        app.started.then(() => {
+        app.started.then(async () => {
           const page = PageConfig.getOption('notebookPage');
           const [file] = files;
-          switch (page) {
-            case 'consoles': {
-              commands.execute('console:create', { path: file });
-              return;
-            }
-            case 'notebooks': {
-              docManager.open(file, NOTEBOOK_FACTORY, undefined, {
-                ref: '_noref',
-              });
-              return;
-            }
-            case 'edit': {
-              docManager.open(file, EDITOR_FACTORY, undefined, {
-                ref: '_noref',
-              });
-              return;
-            }
-            default: {
-              // open all files in the lab interface
-              files.forEach((file) => docManager.open(file));
-              const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
-              // only remove the path (to keep extra parameters like the RTC room)
-              url.searchParams.delete('path');
-              const { pathname, search } = url;
-              router.navigate(`${pathname}${search}`, { skipRouting: true });
+          if (page === 'consoles') {
+            commands.execute('console:create', { path: file });
+            return;
+          } else if (page === 'notebooks' || page === 'edit') {
+            let defaultFactory = docRegistry.defaultWidgetFactory(file).name;
 
-              if (labShell) {
-                // open the folder where the files are located on startup
-                const showInBrowser = () => {
-                  commands.execute('docmanager:show-in-file-browser');
-                  labShell.currentChanged.disconnect(showInBrowser);
-                };
+            // Explicitly get the default viewers from the settings because
+            // JupyterLab might not have had the time to load the settings yet (race condition)
+            // Relevant code: https://github.com/jupyterlab/jupyterlab/blob/d56ff811f39b3c10c6d8b6eb27a94624b753eb53/packages/docmanager-extension/src/index.tsx#L265-L293
+            if (settingRegistry) {
+              const settings = await settingRegistry.load(
+                JUPYTERLAB_DOCMANAGER_PLUGIN_ID,
+              );
+              const defaultViewers = settings.get('defaultViewers').composite as {
+                [ft: string]: string;
+              };
+              // get the file types for the path
+              const types = docRegistry.getFileTypesForPath(file);
+              // for each file type, check if there is a default viewer and if it
+              // is available in the docRegistry. If it is the case, use it as the
+              // default factory
+              types.forEach((ft) => {
+                if (
+                  defaultViewers[ft.name] !== undefined &&
+                  docRegistry.getWidgetFactory(defaultViewers[ft.name])
+                ) {
+                  defaultFactory = defaultViewers[ft.name];
+                }
+              });
+            }
 
-                labShell.currentChanged.connect(showInBrowser);
-              }
-              break;
+            const factory = urlParams.get('factory') ?? defaultFactory;
+            docManager.open(file, factory, undefined, {
+              ref: '_noref',
+            });
+          } else {
+            // open all files in the lab interface
+            files.forEach((file) => docManager.open(file));
+            const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
+            // only remove the path (to keep extra parameters like the RTC room)
+            url.searchParams.delete('path');
+            const { pathname, search } = url;
+            router.navigate(`${pathname}${search}`, { skipRouting: true });
+
+            if (labShell) {
+              // open the folder where the files are located on startup
+              const showInBrowser = () => {
+                commands.execute('docmanager:show-in-file-browser');
+                labShell.currentChanged.disconnect(showInBrowser);
+              };
+
+              labShell.currentChanged.connect(showInBrowser);
             }
           }
         });
