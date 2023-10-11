@@ -4254,6 +4254,7 @@ __metadata:
     "@jupyterlab/docmanager-extension": ~4.0.6
     "@jupyterlab/filebrowser-extension": ~4.0.6
     "@jupyterlab/fileeditor-extension": ~4.0.6
+    "@jupyterlab/imageviewer-extension": ~4.0.6
     "@jupyterlab/javascript-extension": ~4.0.6
     "@jupyterlab/json-extension": ~4.0.6
     "@jupyterlab/mainmenu-extension": ~4.0.6
