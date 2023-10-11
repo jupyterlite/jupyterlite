@@ -802,7 +802,6 @@ class P:
     ROOT_PACKAGE_JSON = ROOT / "package.json"
     YARN_LOCK = ROOT / "yarn.lock"
 
-
     EXAMPLES = ROOT / "examples"
     ALL_EXAMPLES = [
         p
