@@ -3998,14 +3998,14 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.0.7
     "@jupyterlab/ui-components-extension": ~4.0.7
     "@jupyterlab/vega5-extension": ~4.0.7
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/types": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/types": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4063,14 +4063,14 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.0.7
     "@jupyterlab/ui-components-extension": ~4.0.7
     "@jupyterlab/vega5-extension": ~4.0.7
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/types": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/types": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4123,14 +4123,14 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.0.7
     "@jupyterlab/ui-components-extension": ~4.0.7
     "@jupyterlab/vega5-extension": ~4.0.7
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/types": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/types": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4189,14 +4189,14 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.0.7
     "@jupyterlab/ui-components-extension": ~4.0.7
     "@jupyterlab/vega5-extension": ~4.0.7
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/types": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/types": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4229,12 +4229,12 @@ __metadata:
     "@jupyterlab/tooltip-extension": ~4.0.7
     "@jupyterlab/translation-extension": ~4.0.7
     "@jupyterlab/vega5-extension": ~4.0.7
-    "@jupyterlite/application": ^0.2.0-beta.1
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application": ^0.2.0-rc.0
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4279,13 +4279,13 @@ __metadata:
     "@jupyterlab/tooltip-extension": ~4.0.6
     "@jupyterlab/translation-extension": ~4.0.6
     "@jupyterlab/ui-components-extension": ~4.0.6
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/notebook-application-extension": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/server-extension": ^0.2.0-beta.1
-    "@jupyterlite/types": ^0.2.0-beta.1
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/notebook-application-extension": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/server-extension": ^0.2.0-rc.0
+    "@jupyterlite/types": ^0.2.0-rc.0
     es6-promise: ~4.2.8
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4310,7 +4310,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/application-extension@^0.2.0-beta.1, @jupyterlite/application-extension@workspace:packages/application-extension":
+"@jupyterlite/application-extension@^0.2.0-rc.0, @jupyterlite/application-extension@workspace:packages/application-extension":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/application-extension@workspace:packages/application-extension"
   dependencies:
@@ -4326,7 +4326,7 @@ __metadata:
     "@jupyterlab/settingregistry": ~4.0.7
     "@jupyterlab/translation": ~4.0.7
     "@jupyterlab/ui-components": ~4.0.7
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     "@lumino/algorithm": ^2.0.1
     "@lumino/coreutils": ^2.1.2
     "@lumino/widgets": ^2.3.0
@@ -4338,7 +4338,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/application@^0.2.0-beta.1, @jupyterlite/application@workspace:packages/application":
+"@jupyterlite/application@^0.2.0-rc.0, @jupyterlite/application@workspace:packages/application":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/application@workspace:packages/application"
   dependencies:
@@ -4360,7 +4360,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/contents@^0.2.0-beta.1, @jupyterlite/contents@workspace:packages/contents":
+"@jupyterlite/contents@^0.2.0-rc.0, @jupyterlite/contents@workspace:packages/contents":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/contents@workspace:packages/contents"
   dependencies:
@@ -4369,7 +4369,7 @@ __metadata:
     "@jupyterlab/nbformat": ~4.0.7
     "@jupyterlab/services": ~7.0.7
     "@jupyterlab/testutils": ~4.0.7
-    "@jupyterlite/localforage": ^0.2.0-beta.1
+    "@jupyterlite/localforage": ^0.2.0-rc.0
     "@lumino/coreutils": ^2.1.2
     "@types/emscripten": ^1.39.6
     "@types/jest": ^29.5.3
@@ -4383,7 +4383,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/iframe-extension@^0.2.0-beta.1, @jupyterlite/iframe-extension@workspace:packages/iframe-extension":
+"@jupyterlite/iframe-extension@^0.2.0-rc.0, @jupyterlite/iframe-extension@workspace:packages/iframe-extension":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/iframe-extension@workspace:packages/iframe-extension"
   dependencies:
@@ -4403,9 +4403,9 @@ __metadata:
     "@babel/preset-env": ^7.12.1
     "@jupyterlab/builder": ~4.0.7
     "@jupyterlab/coreutils": ~6.0.7
-    "@jupyterlite/javascript-kernel": ^0.2.0-beta.1
-    "@jupyterlite/kernel": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
+    "@jupyterlite/javascript-kernel": ^0.2.0-rc.0
+    "@jupyterlite/kernel": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
     "@types/jest": ^29.5.3
     jest: ^29.6.2
     rimraf: ~5.0.1
@@ -4414,7 +4414,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/javascript-kernel@^0.2.0-beta.1, @jupyterlite/javascript-kernel@workspace:packages/javascript-kernel":
+"@jupyterlite/javascript-kernel@^0.2.0-rc.0, @jupyterlite/javascript-kernel@workspace:packages/javascript-kernel":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/javascript-kernel@workspace:packages/javascript-kernel"
   dependencies:
@@ -4422,7 +4422,7 @@ __metadata:
     "@babel/preset-env": ^7.12.1
     "@jupyterlab/coreutils": ~6.0.7
     "@jupyterlab/testutils": ~4.0.7
-    "@jupyterlite/kernel": ^0.2.0-beta.1
+    "@jupyterlite/kernel": ^0.2.0-rc.0
     "@types/jest": ^29.5.3
     comlink: ^4.3.1
     jest: ^29.6.2
@@ -4432,7 +4432,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/kernel@^0.2.0-beta.1, @jupyterlite/kernel@workspace:packages/kernel":
+"@jupyterlite/kernel@^0.2.0-rc.0, @jupyterlite/kernel@workspace:packages/kernel":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/kernel@workspace:packages/kernel"
   dependencies:
@@ -4456,18 +4456,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/licenses@^0.2.0-beta.1, @jupyterlite/licenses@workspace:packages/licenses":
+"@jupyterlite/licenses@^0.2.0-rc.0, @jupyterlite/licenses@workspace:packages/licenses":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/licenses@workspace:packages/licenses"
   dependencies:
     "@jupyterlab/coreutils": ~6.0.7
-    "@jupyterlite/types": ^0.2.0-beta.1
+    "@jupyterlite/types": ^0.2.0-rc.0
     rimraf: ~5.0.1
     typescript: ~5.0.4
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/localforage@^0.2.0-beta.1, @jupyterlite/localforage@workspace:packages/localforage":
+"@jupyterlite/localforage@^0.2.0-rc.0, @jupyterlite/localforage@workspace:packages/localforage":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/localforage@workspace:packages/localforage"
   dependencies:
@@ -4484,26 +4484,26 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/metapackage@workspace:packages/_metapackage"
   dependencies:
-    "@jupyterlite/application": ^0.2.0-beta.1
-    "@jupyterlite/application-extension": ^0.2.0-beta.1
-    "@jupyterlite/contents": ^0.2.0-beta.1
-    "@jupyterlite/iframe-extension": ^0.2.0-beta.1
-    "@jupyterlite/javascript-kernel": ^0.2.0-beta.1
-    "@jupyterlite/kernel": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/notebook-application-extension": ^0.2.0-beta.1
-    "@jupyterlite/repl-extension": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/session": ^0.2.0-beta.1
-    "@jupyterlite/settings": ^0.2.0-beta.1
-    "@jupyterlite/translation": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application": ^0.2.0-rc.0
+    "@jupyterlite/application-extension": ^0.2.0-rc.0
+    "@jupyterlite/contents": ^0.2.0-rc.0
+    "@jupyterlite/iframe-extension": ^0.2.0-rc.0
+    "@jupyterlite/javascript-kernel": ^0.2.0-rc.0
+    "@jupyterlite/kernel": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/notebook-application-extension": ^0.2.0-rc.0
+    "@jupyterlite/repl-extension": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/session": ^0.2.0-rc.0
+    "@jupyterlite/settings": ^0.2.0-rc.0
+    "@jupyterlite/translation": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     typescript: ~5.0.4
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/notebook-application-extension@^0.2.0-beta.1, @jupyterlite/notebook-application-extension@workspace:packages/notebook-application-extension":
+"@jupyterlite/notebook-application-extension@^0.2.0-rc.0, @jupyterlite/notebook-application-extension@workspace:packages/notebook-application-extension":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/notebook-application-extension@workspace:packages/notebook-application-extension"
   dependencies:
@@ -4513,7 +4513,7 @@ __metadata:
     "@jupyterlab/application": ~4.0.7
     "@jupyterlab/coreutils": ~6.0.7
     "@jupyterlab/services": ~7.0.7
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     "@types/jest": ^29.5.3
     jest: ^29.6.2
     rimraf: ~5.0.1
@@ -4522,7 +4522,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/repl-extension@^0.2.0-beta.1, @jupyterlite/repl-extension@workspace:packages/repl-extension":
+"@jupyterlite/repl-extension@^0.2.0-rc.0, @jupyterlite/repl-extension@workspace:packages/repl-extension":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/repl-extension@workspace:packages/repl-extension"
   dependencies:
@@ -4533,8 +4533,8 @@ __metadata:
     "@jupyterlab/console": ~4.0.7
     "@jupyterlab/translation": ~4.0.7
     "@jupyterlab/ui-components": ~4.0.7
-    "@jupyterlite/application": ^0.2.0-beta.1
-    "@jupyterlite/ui-components": ^0.2.0-beta.1
+    "@jupyterlite/application": ^0.2.0-rc.0
+    "@jupyterlite/ui-components": ^0.2.0-rc.0
     "@lumino/widgets": ^2.3.0
     "@types/jest": ^29.5.3
     jest: ^29.6.2
@@ -4572,20 +4572,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/server-extension@^0.2.0-beta.1, @jupyterlite/server-extension@workspace:packages/server-extension":
+"@jupyterlite/server-extension@^0.2.0-rc.0, @jupyterlite/server-extension@workspace:packages/server-extension":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/server-extension@workspace:packages/server-extension"
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.12.1
     "@jupyterlab/coreutils": ~6.0.7
-    "@jupyterlite/kernel": ^0.2.0-beta.1
-    "@jupyterlite/licenses": ^0.2.0-beta.1
-    "@jupyterlite/localforage": ^0.2.0-beta.1
-    "@jupyterlite/server": ^0.2.0-beta.1
-    "@jupyterlite/session": ^0.2.0-beta.1
-    "@jupyterlite/settings": ^0.2.0-beta.1
-    "@jupyterlite/translation": ^0.2.0-beta.1
+    "@jupyterlite/kernel": ^0.2.0-rc.0
+    "@jupyterlite/licenses": ^0.2.0-rc.0
+    "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/server": ^0.2.0-rc.0
+    "@jupyterlite/session": ^0.2.0-rc.0
+    "@jupyterlite/settings": ^0.2.0-rc.0
+    "@jupyterlite/translation": ^0.2.0-rc.0
     "@types/jest": ^29.5.3
     jest: ^29.6.2
     rimraf: ~5.0.1
@@ -4594,7 +4594,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/server@^0.2.0-beta.1, @jupyterlite/server@workspace:packages/server":
+"@jupyterlite/server@^0.2.0-rc.0, @jupyterlite/server@workspace:packages/server":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/server@workspace:packages/server"
   dependencies:
@@ -4607,11 +4607,11 @@ __metadata:
     "@jupyterlab/settingregistry": ~4.0.7
     "@jupyterlab/statedb": ~4.0.7
     "@jupyterlab/testutils": ~4.0.7
-    "@jupyterlite/contents": ^0.2.0-beta.1
-    "@jupyterlite/kernel": ^0.2.0-beta.1
-    "@jupyterlite/session": ^0.2.0-beta.1
-    "@jupyterlite/settings": ^0.2.0-beta.1
-    "@jupyterlite/translation": ^0.2.0-beta.1
+    "@jupyterlite/contents": ^0.2.0-rc.0
+    "@jupyterlite/kernel": ^0.2.0-rc.0
+    "@jupyterlite/session": ^0.2.0-rc.0
+    "@jupyterlite/settings": ^0.2.0-rc.0
+    "@jupyterlite/translation": ^0.2.0-rc.0
     "@lumino/application": ^2.2.1
     "@lumino/coreutils": ^2.1.2
     "@lumino/signaling": ^2.1.2
@@ -4625,7 +4625,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/session@^0.2.0-beta.1, @jupyterlite/session@workspace:packages/session":
+"@jupyterlite/session@^0.2.0-rc.0, @jupyterlite/session@workspace:packages/session":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/session@workspace:packages/session"
   dependencies:
@@ -4634,7 +4634,7 @@ __metadata:
     "@jupyterlab/coreutils": ~6.0.7
     "@jupyterlab/services": ~7.0.7
     "@jupyterlab/testutils": ~4.0.7
-    "@jupyterlite/kernel": ^0.2.0-beta.1
+    "@jupyterlite/kernel": ^0.2.0-rc.0
     "@lumino/algorithm": ^2.0.1
     "@lumino/coreutils": ^2.1.2
     "@types/jest": ^29.5.3
@@ -4645,7 +4645,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/settings@^0.2.0-beta.1, @jupyterlite/settings@workspace:packages/settings":
+"@jupyterlite/settings@^0.2.0-rc.0, @jupyterlite/settings@workspace:packages/settings":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/settings@workspace:packages/settings"
   dependencies:
@@ -4654,7 +4654,7 @@ __metadata:
     "@jupyterlab/coreutils": ~6.0.7
     "@jupyterlab/settingregistry": ~4.0.7
     "@jupyterlab/testutils": ~4.0.7
-    "@jupyterlite/localforage": ^0.2.0-beta.1
+    "@jupyterlite/localforage": ^0.2.0-rc.0
     "@lumino/coreutils": ^2.1.2
     "@types/jest": ^29.5.3
     jest: ^29.6.2
@@ -4666,7 +4666,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/translation@^0.2.0-beta.1, @jupyterlite/translation@workspace:packages/translation":
+"@jupyterlite/translation@^0.2.0-rc.0, @jupyterlite/translation@workspace:packages/translation":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/translation@workspace:packages/translation"
   dependencies:
@@ -4683,7 +4683,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/types@^0.2.0-beta.1, @jupyterlite/types@workspace:packages/types":
+"@jupyterlite/types@^0.2.0-rc.0, @jupyterlite/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/types@workspace:packages/types"
   dependencies:
@@ -4693,7 +4693,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/ui-components@^0.2.0-beta.1, @jupyterlite/ui-components@workspace:packages/ui-components":
+"@jupyterlite/ui-components@^0.2.0-rc.0, @jupyterlite/ui-components@workspace:packages/ui-components":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/ui-components@workspace:packages/ui-components"
   dependencies:

@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0b1...ccbeffeeed7117fc904f7c21d169323093e98f3a))
+
+### Enhancements made
+
+- Update to JupyterLab 4.0.7 and Notebook 7.0.5 [#1205](https://github.com/jupyterlite/jupyterlite/pull/1205) ([@jtpio](https://github.com/jtpio))
+- Fix document viewers in Notebook [#1202](https://github.com/jupyterlite/jupyterlite/pull/1202) ([@jtpio](https://github.com/jtpio))
+- Fix opening files with a different factory [#1199](https://github.com/jupyterlite/jupyterlite/pull/1199) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Add UI test for MathJax [#1198](https://github.com/jupyterlite/jupyterlite/pull/1198) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix contents example in `jupyter_lite_config.json` [#1200](https://github.com/jupyterlite/jupyterlite/pull/1200) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-06&to=2023-10-12&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-06..2023-10-12&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-06..2023-10-12&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0b1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0b0...8c3ed87769a8b8f36b9f5db7923435767ccdf3c2))
@@ -20,8 +46,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-05&to=2023-10-06&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-10-05..2023-10-06&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-05..2023-10-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-05..2023-10-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0b0
 
