@@ -55,6 +55,6 @@ $$
     expect(await cell!.screenshot()).toMatchSnapshot('latex.png');
 
     // there should not be any MathJax related 404
-    // expect(errorLogs).toEqual(0);
+    expect(errorLogs).toEqual(0);
   });
 });
