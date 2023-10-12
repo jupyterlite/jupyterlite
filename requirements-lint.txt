@@ -3,7 +3,7 @@
 -r requirements-build.txt
 
 black[jupyter]
-jupyterlab >=4.0.5,<5.0
+jupyterlab >=4.0.7,<5.0
 jsonschema >=3
 nbconvert
 nbstripout

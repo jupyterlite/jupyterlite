@@ -37,10 +37,10 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyter-notebook/application": "~7.0.4",
-    "@jupyterlab/application": "~4.0.6",
-    "@jupyterlab/coreutils": "~6.0.6",
-    "@jupyterlab/services": "~7.0.6",
+    "@jupyter-notebook/application": "~7.0.5",
+    "@jupyterlab/application": "~4.0.7",
+    "@jupyterlab/coreutils": "~6.0.7",
+    "@jupyterlab/services": "~7.0.7",
     "@jupyterlite/ui-components": "^0.2.0-beta.1"
   },
   "devDependencies": {

@@ -15,7 +15,7 @@ dependencies:
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
   - jsonschema >=3
-  - jupyterlab >=4.0.5,<5.0
+  - jupyterlab >=4.0.7,<5.0
   - notebook >=7.0.1,<8.0
   - pip
   - pkginfo
