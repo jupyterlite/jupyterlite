@@ -37,7 +37,6 @@ def task_env():
         targets=[P.BINDER_ENV],
         actions=[
             (U.sync_env, [P.DOCS_ENV, P.BINDER_ENV, C.DOCS_ENV_MARKER]),
-            *([U.do(P.BINDER_ENV)] if not C.DOCS_IN_CI else []),
         ],
     )
 
@@ -60,7 +59,6 @@ def task_env():
                         all_deps,
                     ],
                 ),
-                U.do(P.EXAMPLE_LITE_BUILD_CONFIG),
             ],
         )
 
@@ -415,10 +413,7 @@ def task_docs():
         yield dict(
             name="typedoc:ensure",
             file_dep=[*P.PACKAGE_JSONS.values()],
-            actions=[
-                U.typedoc_conf,
-                U.do(*P.TYPEDOC_CONF),
-            ],
+            actions=[U.typedoc_conf],
             targets=[P.TYPEDOC_JSON, P.TSCONFIG_TYPEDOC],
         )
         yield dict(
@@ -434,10 +429,7 @@ def task_docs():
             doc="transform raw typedoc into myst markdown",
             file_dep=[B.DOCS_RAW_TYPEDOC_README],
             targets=[B.DOCS_TS_MYST_INDEX, *B.DOCS_TS_MODULES],
-            actions=[
-                U.mystify,
-                U.do(B.DOCS_TS),
-            ],
+            actions=[U.mystify],
         )
 
     app_build_deps = [
@@ -715,7 +707,7 @@ def task_repo():
     yield dict(
         name="integrity",
         doc="ensure app yarn resolutions are up-to-date",
-        actions=[U.integrity, U.do(*pkg_jsons)],
+        actions=[U.integrity],
         file_dep=[*pkg_jsons],
     )
 
