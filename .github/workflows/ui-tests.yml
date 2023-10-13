@@ -7,6 +7,10 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        shell: cmd /C CALL {0}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,6 +27,10 @@ jobs:
         run: |
           cd ui-tests
           jlpm
+
+          # Install test dependencies
+          python3 -m pip install ui-tests/requirements.txt
+
           # Build the JupyterLite website
           jlpm build
 
