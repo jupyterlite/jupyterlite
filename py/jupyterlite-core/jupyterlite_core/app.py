@@ -139,7 +139,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
                 # reformat first line
                 assert fhelp is not None
-                fhelp[0] = fhelp[0].replace("--" + name, alias)  # type:ignore
+                fhelp[0] = fhelp[0].replace(f"--{name}", f"--{alias}")  # type:ignore
                 yield from fhelp
                 yield indent("Equivalent to: [--%s]" % name)
             except Exception as ex:
