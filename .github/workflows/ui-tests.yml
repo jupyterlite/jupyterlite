@@ -7,10 +7,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        shell: cmd /C CALL {0}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
