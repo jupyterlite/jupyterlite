@@ -529,6 +529,9 @@ const translationPlugin: JupyterLiteServerPlugin<ITranslation> = {
     app.router.get(
       '/api/translations/?(.*)',
       async (req: Router.IRequest, locale: string) => {
+        if (locale === 'default') {
+          locale = 'en';
+        }
         const data = await translation.get(locale || 'all');
         return new Response(JSON.stringify(data));
       },
