@@ -2,3 +2,4 @@
 jupyterlite-pyodide-kernel==0.2.0a2
 jupyterlite-p5-kernel==0.1.1
 jupyterlab-language-pack-fr-FR
+theme-darcula==4.0.0
