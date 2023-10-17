@@ -27,7 +27,7 @@ class IconsAddon(BaseAddon):
     __all__ = ["build", "status"]
 
     def status(self, manager: "LiteManager"):
-        """yield some status information about the state of the translation"""
+        """yield some status information about the icons"""
         yield self.task(
             name="icons",
             actions=[
