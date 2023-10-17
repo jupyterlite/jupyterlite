@@ -113,6 +113,7 @@ test.describe('Notebook favicons', () => {
 
   // TODO: rewrite with page.notebook when fixed upstream in Galata
   // and usable in Jupyter Notebook without active tabs
+  // https://github.com/jupyterlab/jupyterlab/issues/11763
   test('Busy favicon when executing a cell', async ({ page }) => {
     await page.goto('notebooks/index.html?path=empty.ipynb');
 
