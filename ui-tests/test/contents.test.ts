@@ -22,7 +22,7 @@ test.use({
   waitForApplication: firefoxWaitForApplication,
 });
 
-test.describe('Contents Tests', () => {
+test.describe.only('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');
   });
@@ -110,7 +110,25 @@ test.describe('Contents Tests', () => {
     expect(output2![0]).toBe('4');
   });
 
-  test('Create a new notebook and delete it', async ({ page }) => {
+  test.only('Create a new notebook and delete it', async ({ page }) => {
+    await page.menu.clickMenuItem('File>Open from URL…');
+    await page.pause();
+
+    await page.locator('#jp-dialog-input-id').fill("https://raw.githubusercontent.com/mds2/rocketry/main/rocket%20equations.ipynb");
+    await page.locator(".jp-mod-accept").click();
+    await page.pause();
+
+    // await page.notebook.close();
+
+    // expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+
+    // await deleteItem({ page, name });
+    // await page.filebrowser.refresh();
+
+    // expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
+  });
+
+  test('Create a new notebook from a URL', async ({ page }) => {
     const name = await page.notebook.createNew();
     if (!name) {
       throw new Error('Notebook name is undefined');
