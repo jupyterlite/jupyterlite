@@ -1,6 +1,6 @@
 {
   "LiteBuildConfig": {
-    "contents": ["../examples"],
+    "contents": ["../examples", "contents"],
     "output_dir": "ui-tests-app"
   }
 }
