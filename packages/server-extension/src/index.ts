@@ -87,6 +87,7 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   },
 };
 
+
 /**
  * A plugin providing the routes for the contents service.
  */
@@ -99,6 +100,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.get(
       '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         const res = await contents.listCheckpoints(filename);
         return new Response(JSON.stringify(res));
       },
@@ -108,6 +110,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.post(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
+        filename = decodeURIComponent(filename);
         const res = await contents.restoreCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
       },
@@ -117,6 +120,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.post(
       '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         const res = await contents.createCheckpoint(filename);
         return new Response(JSON.stringify(res), { status: 201 });
       },
@@ -126,6 +130,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.delete(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
+        filename = decodeURIComponent(filename);
         const res = await contents.deleteCheckpoint(filename, checkpoint);
         return new Response(JSON.stringify(res), { status: 204 });
       },
@@ -135,6 +140,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.get(
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         const options: ServerContents.IFetchOptions = {
           content: req.query?.content === '1',
         };
@@ -177,6 +183,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.put(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         const body = req.body;
         const nb = await contents.save(filename, body);
         return new Response(JSON.stringify(nb));
@@ -187,6 +194,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.delete(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         await contents.delete(filename);
         return new Response(null, { status: 204 });
       },

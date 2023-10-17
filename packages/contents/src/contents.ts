@@ -477,7 +477,6 @@ export class Contents implements IContents {
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
-    path = decodeURIComponent(path);
     const slashed = `${path}/`;
     const toDelete = (await (await this.storage).keys()).filter(
       (key) => key === path || key.startsWith(slashed),
@@ -507,7 +506,6 @@ export class Contents implements IContents {
    */
   async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
     const checkpoints = await this.checkpoints;
-    path = decodeURIComponent(path);
     const item = await this.get(path, { content: true });
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
@@ -570,7 +568,6 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
-    path = decodeURIComponent(path);
     const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
