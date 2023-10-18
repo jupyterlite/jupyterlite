@@ -64,3 +64,13 @@ export async function treeWaitForApplication({ baseURL }, use, testInfo) {
   };
   await use(waitIsReady);
 }
+
+/**
+ * Custom waitForApplication for the notebooks  page
+ */
+export async function notebooksWaitForApplication({ baseURL }, use, testInfo) {
+  const waitIsReady = async (page): Promise<void> => {
+    await page.waitForSelector('.jp-NotebookPanel');
+  };
+  await use(waitIsReady);
+}

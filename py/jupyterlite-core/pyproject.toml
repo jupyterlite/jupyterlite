@@ -92,6 +92,7 @@ all = [
 archive = "jupyterlite_core.addons.archive:ArchiveAddon"
 contents = "jupyterlite_core.addons.contents:ContentsAddon"
 federated_extensions = "jupyterlite_core.addons.federated_extensions:FederatedExtensionAddon"
+icons = "jupyterlite_core.addons.icons:IconsAddon"
 lite = "jupyterlite_core.addons.lite:LiteAddon"
 mimetypes = "jupyterlite_core.addons.mimetypes:MimetypesAddon"
 report = "jupyterlite_core.addons.report:ReportAddon"

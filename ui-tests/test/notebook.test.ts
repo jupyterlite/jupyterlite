@@ -5,13 +5,13 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { treeWaitForApplication } from './utils';
-
-test.use({
-  waitForApplication: treeWaitForApplication,
-});
+import { notebooksWaitForApplication, treeWaitForApplication } from './utils';
 
 test.describe('Notebook Tests', () => {
+  test.use({
+    waitForApplication: treeWaitForApplication,
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto('tree/index.html');
     // create a new directory for now to avoid showing the default content
@@ -41,6 +41,10 @@ test.describe('Notebook Tests', () => {
 });
 
 test.describe('Notebook file opener', () => {
+  test.use({
+    waitForApplication: treeWaitForApplication,
+  });
+
   const files = [
     {
       name: 'intro.ipynb',
@@ -78,7 +82,7 @@ test.describe('Notebook file opener', () => {
       }
       await page.click('text=Open With');
 
-      // Create a new notebook
+      // Open the document
       const [documentTab] = await Promise.all([
         page.waitForEvent('popup'),
         page.click(`.lm-Menu-itemLabel >> text=${factory}`),
@@ -99,5 +103,43 @@ test.describe('Notebook file opener', () => {
 
       await documentTab.close();
     });
+  });
+});
+
+test.describe('Notebook favicons', () => {
+  test.use({
+    waitForApplication: notebooksWaitForApplication,
+  });
+
+  // TODO: rewrite with page.notebook when fixed upstream in Galata
+  // and usable in Jupyter Notebook without active tabs
+  // https://github.com/jupyterlab/jupyterlab/issues/11763
+  test('Busy favicon when executing a cell', async ({ page }) => {
+    await page.goto('notebooks/index.html?path=empty.ipynb');
+
+    const getFavicon = async () => {
+      return page.locator('link[rel="icon"]').first().getAttribute('href');
+    };
+
+    // wait for the kernel to be ready
+    await page.hover('.jp-Notebook-ExecutionIndicator');
+    await page.getByText('Kernel Status: Idle').waitFor();
+
+    const favicon = await getFavicon();
+
+    // execute a cell that takes 5 seconds to complete
+    await page.getByRole('textbox').fill('import asyncio\nawait asyncio.sleep(5)');
+    await page.keyboard.press('Control+Enter');
+
+    const busyFavicon = await getFavicon();
+
+    expect(busyFavicon).not.toEqual(favicon);
+    expect(busyFavicon).toContain('busy');
+
+    // wait for execution to complete
+    await page.locator('.jp-InputArea-prompt >> text="[1]:"').first().waitFor();
+
+    const finalFavicon = await getFavicon();
+    expect(finalFavicon).toEqual(favicon);
   });
 });
