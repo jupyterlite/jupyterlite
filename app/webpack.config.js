@@ -228,9 +228,8 @@ class CompileSchemasPlugin {
       // ensure all schemas are statically compiled
       const schemaDir = path.resolve(topLevelBuild, './schemas');
       const allCore = 'all.json';
-      const allFederated = 'all_federated.json';
       const files = glob.sync(`${schemaDir}/**/*.json`, {
-        ignore: [`${schemaDir}/${allCore}`, `${schemaDir}/${allFederated}`],
+        ignore: [`${schemaDir}/all*.json`],
       });
       const all = files.map((file) => {
         const schema = fs.readJSONSync(file);
