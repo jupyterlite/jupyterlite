@@ -295,9 +295,9 @@ class FederatedExtensionAddon(BaseAddon):
 
     def ensure_federated_settings(self, manager, lab_extensions):
         """ensure settings from federated extensions are aggregated in a single file"""
-        all_federated_settings = [
-            setting for p in lab_extensions for setting in self.get_federated_settings(p.parent)
-        ]
+        all_federated_settings = sorted(
+            [setting for p in lab_extensions for setting in self.get_federated_settings(p.parent)]
+        )
 
         app_schemas = manager.output_dir / "build" / "schemas"
         if not app_schemas.is_dir():
@@ -314,7 +314,7 @@ class FederatedExtensionAddon(BaseAddon):
         if not settings_dir.is_dir():
             # bail if there is no settings for that extension
             return []
-        setting_files = settings_dir.rglob("*.json")
+        setting_files = sorted(settings_dir.rglob("*.json"))
 
         pkg_name = pkg_data["name"]
         pkg_version = pkg_data["version"]
