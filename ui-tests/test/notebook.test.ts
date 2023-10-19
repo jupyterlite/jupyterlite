@@ -167,7 +167,6 @@ test.describe('Switch between Notebook and JupyterLab', () => {
       page.menu.clickMenuItem('Help>Launch Jupyter Notebook File Browser'),
     ]);
 
-    await treePage.waitForLoadState('domcontentloaded');
     await treePage.waitForSelector('#filebrowser');
 
     expect(treePage.url()).toContain('tree');
@@ -181,7 +180,6 @@ test.describe('Switch between Notebook and JupyterLab', () => {
       page.locator('.jp-ToolbarButtonComponent >> text=JupyterLab').first().click(),
     ]);
 
-    await labPage.waitForLoadState('domcontentloaded');
     await labPage.waitForSelector('.jp-NotebookPanel');
 
     expect(labPage.url()).toContain('lab');
@@ -195,7 +193,6 @@ test.describe('Switch between Notebook and JupyterLab', () => {
       page.locator('.jp-ToolbarButtonComponent >> text=Notebook').first().click(),
     ]);
 
-    await notebookPage.waitForLoadState('domcontentloaded');
     await notebookPage.waitForSelector('.jp-NotebookPanel');
 
     expect(notebookPage.url()).toContain('notebooks');
