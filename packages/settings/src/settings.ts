@@ -1,13 +1,14 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
+import { PromiseDelegate } from '@lumino/coreutils';
+
 import * as json5 from 'json5';
 
 import type localforage from 'localforage';
 
-import { IFederatedExtension } from '@jupyterlite/types';
+// import { IFederatedExtension } from '@jupyterlite/types';
 
 import { IPlugin, ISettings } from './tokens';
-import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
  * The name of the local storage.
@@ -144,45 +145,32 @@ export class Settings implements ISettings {
    * Get all the settings from federated plugins
    */
   private async _getAllFederated(): Promise<IPlugin[]> {
-    let federated: IFederatedExtension[];
-    try {
-      federated = JSON.parse(PageConfig.getOption('federated_extensions'));
-    } catch {
-      return [];
-    }
-
-    const promises = [] as Promise<any>[];
-    for (const ext of federated) {
-      promises.push(this._getFederated(ext));
-    }
-    let settings = [];
-    try {
-      settings = await Promise.all(promises);
-    } catch (err) {
-      console.warn('Error resolving federated settings', err);
-    }
-    return settings.flat();
+    const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
+    const all = (await (
+      await fetch(URLExt.join(settingsUrl, 'all_federated.json'))
+    ).json()) as IPlugin[];
+    return all;
   }
 
-  /**
-   * Get the settings for a federated extension
-   *
-   * @param pluginId The id of a plugin
-   */
-  private async _getFederated(
-    ext: IFederatedExtension,
-  ): Promise<IPlugin[] | undefined> {
-    const packageName = ext.name;
-    const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
-    const schemaUrl = URLExt.join(labExtensionsUrl, packageName, 'all.json');
-    const settings = await (await fetch(schemaUrl)).json();
-    return settings.map((setting: IPlugin) => {
-      return {
-        ...settings,
-        raw: json5.parse(setting.raw) || {},
-      };
-    });
-  }
+  // /**
+  //  * Get the settings for a federated extension
+  //  *
+  //  * @param pluginId The id of a plugin
+  //  */
+  // private async _getFederated(
+  //   ext: IFederatedExtension,
+  // ): Promise<IPlugin[] | undefined> {
+  //   const packageName = ext.name;
+  //   const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
+  //   const schemaUrl = URLExt.join(labExtensionsUrl, packageName, 'all.json');
+  //   const settings = await (await fetch(schemaUrl)).json();
+  //   return settings.map((setting: IPlugin) => {
+  //     return {
+  //       ...settings,
+  //       raw: json5.parse(setting.raw) || {},
+  //     };
+  //   });
+  // }
 
   private _storageName: string = DEFAULT_STORAGE_NAME;
   private _storageDrivers: string[] | null = null;

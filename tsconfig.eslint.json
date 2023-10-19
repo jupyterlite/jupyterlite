@@ -3,6 +3,7 @@
   "include": [
     "*",
     ".eslintrc.js",
+    "app/**/*.config.js",
     "docs/**/*",
     "packages/**/src/**/*",
     "packages/**/test/**/*",
