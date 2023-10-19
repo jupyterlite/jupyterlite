@@ -8,6 +8,7 @@ from pathlib import Path
 from traitlets import List, Unicode
 
 from ..constants import (
+    ALL_JSON,
     FEDERATED_EXTENSIONS,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
@@ -101,7 +102,7 @@ class FederatedExtensionAddon(BaseAddon):
             name=f"copy:ext:{stem}",
             file_dep=file_dep,
             targets=targets,
-            actions=[(self.copy_one, [pkg_path, dest])],
+            actions=[(self.copy_one, [pkg_path, dest]), (self.ensure_settings, [dest])],
         )
 
     def resolve_one_extension(self, path_or_url, init):
@@ -189,7 +190,39 @@ class FederatedExtensionAddon(BaseAddon):
 
         if self.is_prebuilt(pkg_data):
             pkg_name = pkg_data["name"]
-            self.copy_one(pkg_json.parent, self.output_extensions / f"{pkg_name}")
+            output_pkg = self.output_extensions / pkg_name
+            self.copy_one(pkg_json.parent, output_pkg)
+            # aggregate the federated settings so they can be fetched in one go
+            self.ensure_settings(output_pkg)
+
+    def ensure_settings(self, output_pkg):
+        """ensure the federated settings are aggregated in a all.json file"""
+        pkg_json = output_pkg / PACKAGE_JSON
+        pkg_data = json.loads(pkg_json.read_text(**UTF8))
+        settings_dir = output_pkg / "schemas"
+        if not settings_dir.is_dir():
+            # bail if there is no settings for that extension
+            return
+        setting_files = settings_dir.rglob("*.json")
+
+        pkg_name = pkg_data["name"]
+        pkg_version = pkg_data["version"]
+        all_settings = []
+        for setting_file in setting_files:
+            plugin_id = f"{pkg_name}:{setting_file.stem}"
+            schema = json.loads(setting_file.read_text(**UTF8))
+            setting = {
+                "id": plugin_id,
+                "raw": "{}",
+                "schema": schema,
+                "settings": {},
+                "version": pkg_version,
+            }
+            all_settings.append(setting)
+
+        # write aggregated settings to the all.json
+        all_settings_file = output_pkg / ALL_JSON
+        all_settings_file.write_text(json.dumps(all_settings, **JSON_FMT), **UTF8)
 
     def is_prebuilt(self, pkg_json):
         """verify this is an actual pre-built extension, containing load information"""
