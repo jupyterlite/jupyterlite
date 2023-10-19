@@ -86,19 +86,21 @@ export class Settings implements ISettings {
   async get(pluginId: string): Promise<IPlugin | undefined> {
     const all = await this.getAll();
     const settings = all.settings as IPlugin[];
-    const found = settings.find((setting: IPlugin) => {
+    const setting = settings.find((setting: IPlugin) => {
       return setting.id === pluginId;
     });
-    return found;
+    return setting;
   }
 
   /**
    * Get all the settings
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
-    const allCore = await this._getAllCore();
-    const allFederated = await this._getAllFederated();
+    const allCore = await this._getAll('core');
+    const allFederated = await this._getAll('federated');
+
     // JupyterLab 4 expects all settings to be returned in one go
+    // so append the settings from federated plugins to the core ones
     const all = allCore.concat(allFederated);
 
     // return existing user settings if they exist
@@ -129,23 +131,13 @@ export class Settings implements ISettings {
   }
 
   /**
-   * Get all the settings from core plugins
+   * Get all the settings for core or federated plugins
    */
-  private async _getAllCore(): Promise<IPlugin[]> {
+  private async _getAll(type: 'core' | 'federated' = 'core'): Promise<IPlugin[]> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
+    const file = type === 'core' ? 'all.json' : 'all_federated.json';
     const all = (await (
-      await fetch(URLExt.join(settingsUrl, 'all.json'))
-    ).json()) as IPlugin[];
-    return all;
-  }
-
-  /**
-   * Get all the settings from federated plugins
-   */
-  private async _getAllFederated(): Promise<IPlugin[]> {
-    const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
-    const all = (await (
-      await fetch(URLExt.join(settingsUrl, 'all_federated.json'))
+      await fetch(URLExt.join(settingsUrl, file))
     ).json()) as IPlugin[];
     return all;
   }

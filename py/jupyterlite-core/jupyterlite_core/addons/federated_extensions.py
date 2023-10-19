@@ -286,12 +286,15 @@ class FederatedExtensionAddon(BaseAddon):
                 actions=[(self.copy_one, [theme_dir, dest])],
             )
 
-        # ensure settings from federated extensions are aggregated in a single file
-        self.ensure_federated_settings(manager)
+        yield self.task(
+            name="settings",
+            doc=f"ensure {ALL_FEDERATED_JSON} includes the settings of federated extensions",
+            file_dep=[*lab_extensions],
+            actions=[(self.ensure_federated_settings, [manager, lab_extensions])],
+        )
 
-    def ensure_federated_settings(self, manager):
-        lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
-        lab_extensions = self.env_extensions(lab_extensions_root)
+    def ensure_federated_settings(self, manager, lab_extensions):
+        """ensure settings from federated extensions are aggregated in a single file"""
         all_federated_settings = [
             setting for p in lab_extensions for setting in self.get_federated_settings(p.parent)
         ]
