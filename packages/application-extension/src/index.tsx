@@ -333,7 +333,7 @@ const opener: JupyterFrontEndPlugin<void> = {
 
         const urlParams = new URLSearchParams(search);
         const paths = urlParams.getAll('path');
-        if (!paths) {
+        if (paths.length === 0) {
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
