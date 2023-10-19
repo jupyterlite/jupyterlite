@@ -143,3 +143,19 @@ test.describe('Notebook favicons', () => {
     expect(finalFavicon).toEqual(favicon);
   });
 });
+
+test.describe('Switch between Notebook and JupyterLab', () => {
+  test('Switch to Notebook from JupyterLab', async ({ page }) => {
+    await page.goto('lab/index.html');
+
+    const [treePage] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.menu.clickMenuItem('Help>Launch Jupyter Notebook File Browser'),
+    ]);
+
+    await treePage.waitForLoadState('domcontentloaded');
+    await treePage.waitForSelector('#filebrowser');
+
+    expect(treePage.url()).toContain('tree');
+  });
+});
