@@ -6,8 +6,6 @@ import * as json5 from 'json5';
 
 import type localforage from 'localforage';
 
-// import { IFederatedExtension } from '@jupyterlite/types';
-
 import { IPlugin, ISettings } from './tokens';
 
 /**
@@ -151,26 +149,6 @@ export class Settings implements ISettings {
     ).json()) as IPlugin[];
     return all;
   }
-
-  // /**
-  //  * Get the settings for a federated extension
-  //  *
-  //  * @param pluginId The id of a plugin
-  //  */
-  // private async _getFederated(
-  //   ext: IFederatedExtension,
-  // ): Promise<IPlugin[] | undefined> {
-  //   const packageName = ext.name;
-  //   const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
-  //   const schemaUrl = URLExt.join(labExtensionsUrl, packageName, 'all.json');
-  //   const settings = await (await fetch(schemaUrl)).json();
-  //   return settings.map((setting: IPlugin) => {
-  //     return {
-  //       ...settings,
-  //       raw: json5.parse(setting.raw) || {},
-  //     };
-  //   });
-  // }
 
   private _storageName: string = DEFAULT_STORAGE_NAME;
   private _storageDrivers: string[] | null = null;

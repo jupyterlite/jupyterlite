@@ -8,7 +8,7 @@ from pathlib import Path
 from traitlets import List, Unicode
 
 from ..constants import (
-    ALL_JSON,
+    ALL_FEDERATED_JSON,
     FEDERATED_EXTENSIONS,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
@@ -102,7 +102,7 @@ class FederatedExtensionAddon(BaseAddon):
             name=f"copy:ext:{stem}",
             file_dep=file_dep,
             targets=targets,
-            actions=[(self.copy_one, [pkg_path, dest]), (self.ensure_settings, [dest])],
+            actions=[(self.copy_one, [pkg_path, dest])],
         )
 
     def resolve_one_extension(self, path_or_url, init):
@@ -192,37 +192,6 @@ class FederatedExtensionAddon(BaseAddon):
             pkg_name = pkg_data["name"]
             output_pkg = self.output_extensions / pkg_name
             self.copy_one(pkg_json.parent, output_pkg)
-            # aggregate the federated settings so they can be fetched in one go
-            self.ensure_settings(output_pkg)
-
-    def ensure_settings(self, output_pkg):
-        """ensure the federated settings are aggregated in a all.json file"""
-        pkg_json = output_pkg / PACKAGE_JSON
-        pkg_data = json.loads(pkg_json.read_text(**UTF8))
-        settings_dir = output_pkg / "schemas"
-        if not settings_dir.is_dir():
-            # bail if there is no settings for that extension
-            return
-        setting_files = settings_dir.rglob("*.json")
-
-        pkg_name = pkg_data["name"]
-        pkg_version = pkg_data["version"]
-        all_settings = []
-        for setting_file in setting_files:
-            plugin_id = f"{pkg_name}:{setting_file.stem}"
-            schema = json.loads(setting_file.read_text(**UTF8))
-            setting = {
-                "id": plugin_id,
-                "raw": "{}",
-                "schema": schema,
-                "settings": {},
-                "version": pkg_version,
-            }
-            all_settings.append(setting)
-
-        # write aggregated settings to the all.json
-        all_settings_file = output_pkg / ALL_JSON
-        all_settings_file.write_text(json.dumps(all_settings, **JSON_FMT), **UTF8)
 
     def is_prebuilt(self, pkg_json):
         """verify this is an actual pre-built extension, containing load information"""
@@ -316,6 +285,47 @@ class FederatedExtensionAddon(BaseAddon):
                 targets=targets,
                 actions=[(self.copy_one, [theme_dir, dest])],
             )
+
+        # ensure settings from federated extensions are aggregated in a single file
+        self.ensure_federated_settings(manager)
+
+    def ensure_federated_settings(self, manager):
+        lab_extensions_root = manager.output_dir / LAB_EXTENSIONS
+        lab_extensions = self.env_extensions(lab_extensions_root)
+        all_federated_settings = [
+            setting for p in lab_extensions for setting in self.get_federated_settings(p.parent)
+        ]
+
+        app_schemas = manager.output_dir / "build" / "schemas"
+        all_federated_json = app_schemas / ALL_FEDERATED_JSON
+        all_federated_json.write_text(json.dumps(all_federated_settings), **UTF8)
+
+    def get_federated_settings(self, extension):
+        """get the settings for a federated extension"""
+        pkg_json = extension / PACKAGE_JSON
+        pkg_data = json.loads(pkg_json.read_text(**UTF8))
+        settings_dir = extension / "schemas"
+        if not settings_dir.is_dir():
+            # bail if there is no settings for that extension
+            return []
+        setting_files = settings_dir.rglob("*.json")
+
+        pkg_name = pkg_data["name"]
+        pkg_version = pkg_data["version"]
+        all_settings = []
+        for setting_file in setting_files:
+            plugin_id = f"{pkg_name}:{setting_file.stem}"
+            schema = json.loads(setting_file.read_text(**UTF8))
+            setting = {
+                "id": plugin_id,
+                "raw": "{}",
+                "schema": schema,
+                "settings": {},
+                "version": pkg_version,
+            }
+            all_settings.append(setting)
+
+        return all_settings
 
     def patch_jupyterlite_json(self, jupyterlite_json):
         """add the federated_extensions to jupyter-lite.json

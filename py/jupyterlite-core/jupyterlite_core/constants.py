@@ -80,8 +80,9 @@ JUPYTER_LITE_CONFIG = "jupyter_lite_config.json"
 #: Needs a better canonical location
 DEFAULT_OUTPUT_DIR = "_output"
 
-#: commonly-used filename for response fixtures, e.g. settings
+#: commonly-used filenames for response fixtures, e.g. settings
 ALL_JSON = "all.json"
+ALL_FEDERATED_JSON = "all_federated.json"
 
 ### Environment Variables
 
