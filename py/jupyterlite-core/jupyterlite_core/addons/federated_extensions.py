@@ -297,6 +297,9 @@ class FederatedExtensionAddon(BaseAddon):
         ]
 
         app_schemas = manager.output_dir / "build" / "schemas"
+        if not app_schemas.is_dir():
+            # bail if there is no schemas dir
+            return
         all_federated_json = app_schemas / ALL_FEDERATED_JSON
         all_federated_json.write_text(json.dumps(all_federated_settings), **UTF8)
 
