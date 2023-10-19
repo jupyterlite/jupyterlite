@@ -145,7 +145,21 @@ test.describe('Notebook favicons', () => {
 });
 
 test.describe('Switch between Notebook and JupyterLab', () => {
-  test('Switch to Notebook from JupyterLab', async ({ page }) => {
+  const NOTEBOOK = 'empty.ipynb';
+
+  test.use({
+    waitForApplication: async function ({ baseURL }, use, testInfo) {
+      const waitIsReady = async (page): Promise<void> => {
+        const selector = page.url().includes('lab')
+          ? `text=${NOTEBOOK}`
+          : '.jp-NotebookPanel';
+        await page.waitForSelector(selector);
+      };
+      await use(waitIsReady);
+    },
+  });
+
+  test('Open the notebook file browser', async ({ page }) => {
     await page.goto('lab/index.html');
 
     const [treePage] = await Promise.all([
@@ -157,5 +171,33 @@ test.describe('Switch between Notebook and JupyterLab', () => {
     await treePage.waitForSelector('#filebrowser');
 
     expect(treePage.url()).toContain('tree');
+  });
+
+  test('Open a notebook with JupyterLab', async ({ page }) => {
+    await page.goto(`notebooks/index.html?path=${NOTEBOOK}`);
+
+    const [labPage] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.locator('.jp-ToolbarButtonComponent >> text=JupyterLab').first().click(),
+    ]);
+
+    await labPage.waitForLoadState('domcontentloaded');
+    await labPage.waitForSelector('.jp-NotebookPanel');
+
+    expect(labPage.url()).toContain('lab');
+  });
+
+  test('Open a notebook with Notebook', async ({ page }) => {
+    await page.goto(`lab/index.html?path=${NOTEBOOK}`);
+
+    const [notebookPage] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.locator('.jp-ToolbarButtonComponent >> text=Notebook').first().click(),
+    ]);
+
+    await notebookPage.waitForLoadState('domcontentloaded');
+    await notebookPage.waitForSelector('.jp-NotebookPanel');
+
+    expect(notebookPage.url()).toContain('notebooks');
   });
 });
