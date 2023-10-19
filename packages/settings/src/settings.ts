@@ -6,7 +6,7 @@ import * as json5 from 'json5';
 
 import type localforage from 'localforage';
 
-import { IPlugin, ISettings } from './tokens';
+import { IPlugin, ISettings, SettingsFile } from './tokens';
 
 /**
  * The name of the local storage.
@@ -96,8 +96,8 @@ export class Settings implements ISettings {
    * Get all the settings
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
-    const allCore = await this._getAll('core');
-    const allFederated = await this._getAll('federated');
+    const allCore = await this._getAll('all.json');
+    const allFederated = await this._getAll('all_federated.json');
 
     // JupyterLab 4 expects all settings to be returned in one go
     // so append the settings from federated plugins to the core ones
@@ -133,9 +133,8 @@ export class Settings implements ISettings {
   /**
    * Get all the settings for core or federated plugins
    */
-  private async _getAll(type: 'core' | 'federated' = 'core'): Promise<IPlugin[]> {
+  private async _getAll(file: SettingsFile): Promise<IPlugin[]> {
     const settingsUrl = PageConfig.getOption('settingsUrl') ?? '/';
-    const file = type === 'core' ? 'all.json' : 'all_federated.json';
     const all = (await (
       await fetch(URLExt.join(settingsUrl, file))
     ).json()) as IPlugin[];
