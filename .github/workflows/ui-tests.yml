@@ -23,6 +23,10 @@ jobs:
         run: |
           cd ui-tests
           jlpm
+
+          # Install test dependencies
+          python3 -m pip install -r requirements.txt
+
           # Build the JupyterLite website
           jlpm build
 
