@@ -4118,6 +4118,7 @@ __metadata:
     "@jupyterlite/iframe-extension": ^0.2.0-rc.0
     "@jupyterlite/licenses": ^0.2.0-rc.0
     "@jupyterlite/localforage": ^0.2.0-rc.0
+    "@jupyterlite/notebook-application-extension": ^0.2.0-rc.0
     "@jupyterlite/server": ^0.2.0-rc.0
     "@jupyterlite/server-extension": ^0.2.0-rc.0
     "@jupyterlite/types": ^0.2.0-rc.0
