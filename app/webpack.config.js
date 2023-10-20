@@ -227,8 +227,9 @@ class CompileSchemasPlugin {
     compiler.hooks.done.tapAsync('CompileSchemasPlugin', (compilation, callback) => {
       // ensure all schemas are statically compiled
       const schemaDir = path.resolve(topLevelBuild, './schemas');
+      const allCore = 'all.json';
       const files = glob.sync(`${schemaDir}/**/*.json`, {
-        ignore: [`${schemaDir}/all.json`],
+        ignore: [`${schemaDir}/all*.json`],
       });
       const all = files.map((file) => {
         const schema = fs.readJSONSync(file);
@@ -247,7 +248,7 @@ class CompileSchemasPlugin {
         };
       });
 
-      fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
+      fs.writeFileSync(path.resolve(schemaDir, allCore), JSON.stringify(all));
       callback();
     });
   }

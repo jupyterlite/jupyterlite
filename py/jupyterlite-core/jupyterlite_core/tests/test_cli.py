@@ -210,7 +210,8 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     """does (re-)building create a predictable pattern of file counts"""
     out = an_empty_lite_dir / "_output"
 
-    args = original_args = "jupyter", "lite", "build"
+    # disable the federated_extensions addon as it may output settings for federated extensions
+    args = original_args = "jupyter", "lite", "build", "--disable-addons", "federated_extensions"
     status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     norm_files = sorted(out.rglob("*"))
     assert status.success

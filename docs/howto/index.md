@@ -23,6 +23,7 @@ configure/settings
 configure/translation
 configure/rtc
 configure/config_files
+configure/interface_switcher
 ```
 
 ## Contents

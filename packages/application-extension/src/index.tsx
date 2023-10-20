@@ -37,7 +37,7 @@ import React from 'react';
 /**
  * A regular expression to match path to notebooks, documents and consoles
  */
-const URL_PATTERN = new RegExp('/(lab|notebooks|edit|consoles)\\/?');
+const URL_PATTERN = new RegExp('/(lab|tree|notebooks|edit|consoles)\\/?');
 
 /**
  * The JupyterLab document manager plugin id.
@@ -333,14 +333,28 @@ const opener: JupyterFrontEndPlugin<void> = {
 
         const urlParams = new URLSearchParams(search);
         const paths = urlParams.getAll('path');
-        if (!paths) {
+        if (paths.length === 0) {
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
         app.started.then(async () => {
           const page = PageConfig.getOption('notebookPage');
           const [file] = files;
-          if (page === 'consoles') {
+          if (page === 'tree') {
+            let appUrl = '/edit';
+            // check if the file is a notebook
+            const defaultFactory = docRegistry.defaultWidgetFactory(file);
+            if (defaultFactory.name === 'Notebook') {
+              appUrl = '/notebooks';
+            }
+            const baseUrl = PageConfig.getBaseUrl();
+            const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
+            url.searchParams.append('path', file);
+
+            // redirect to the proper page
+            window.location.href = url.toString();
+            return;
+          } else if (page === 'consoles') {
             commands.execute('console:create', { path: file });
             return;
           } else if (page === 'notebooks' || page === 'edit') {

@@ -8,6 +8,11 @@ import { JSONObject, PartialJSONObject, Token } from '@lumino/coreutils';
 export const ISettings = new Token<ISettings>('@jupyterlite/settings:ISettings');
 
 /**
+ * The settings file to request
+ */
+export type SettingsFile = 'all.json' | 'all_federated.json';
+
+/**
  * An interface for the plugin settings.
  */
 export interface IPlugin extends PartialJSONObject {
