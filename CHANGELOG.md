@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.2.0rc1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0rc0...38c6fb14b6411338f6ca1d06fcc20c037d5f2bed))
+
+### Bugs fixed
+
+- Load all settings from federated extensions at startup [#1220](https://github.com/jupyterlite/jupyterlite/pull/1220) ([@jtpio](https://github.com/jtpio))
+- Update to Notebook 7.0.6, copy Jupyter Server favicons [#1214](https://github.com/jupyterlite/jupyterlite/pull/1214) ([@jtpio](https://github.com/jtpio))
+- Fix handling of `default` locale [#1209](https://github.com/jupyterlite/jupyterlite/pull/1209) ([@jtpio](https://github.com/jtpio))
+- Fix CLI help for aliases [#1207](https://github.com/jupyterlite/jupyterlite/pull/1207) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Add `tsconfig.eslint.json` with a list of `include` [#1212](https://github.com/jupyterlite/jupyterlite/pull/1212) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-12&to=2023-10-20&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-10-12..2023-10-20&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-12..2023-10-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-12..2023-10-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.2.0b1...ccbeffeeed7117fc904f7c21d169323093e98f3a))
@@ -25,8 +48,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-06&to=2023-10-12&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-06..2023-10-12&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-06..2023-10-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0b1
 

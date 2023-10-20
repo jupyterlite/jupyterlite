@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/settings",
-  "version": "0.2.0-rc.0",
+  "version": "0.2.0-rc.1",
   "description": "JupyterLite - Settings",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -44,7 +44,7 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.0.7",
     "@jupyterlab/settingregistry": "~4.0.7",
-    "@jupyterlite/localforage": "^0.2.0-rc.0",
+    "@jupyterlite/localforage": "^0.2.0-rc.1",
     "@lumino/coreutils": "^2.1.2",
     "json5": "^2.2.0",
     "localforage": "^1.9.0"
