@@ -453,6 +453,8 @@ const sessionContextPatch: JupyterFrontEndPlugin<void> = {
       // with a kernel.
       // This was changed in JupyterLab 4 in https://github.com/jupyterlab/jupyterlab/pull/14519
       // and is needed for the kernel to be aware of the drive it is associated with.
+      // This is a temporary fix until a better solution is found upstream in JupyterLab ideally.
+      // This also avoid having to patch the downstream kernels (e.g. xeus-python and pyodide)
       sessionContext['_name'] = context?.path;
       sessionContext['_path'] = context?.path;
     });
