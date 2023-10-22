@@ -8,7 +8,13 @@ import {
   ILabShell,
 } from '@jupyterlab/application';
 
-import { Clipboard, ICommandPalette, Dialog, showDialog, SessionContext } from '@jupyterlab/apputils';
+import {
+  Clipboard,
+  ICommandPalette,
+  Dialog,
+  showDialog,
+  SessionContext,
+} from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
@@ -442,6 +448,9 @@ const sessionContextPatch: JupyterFrontEndPlugin<void> = {
       }
       const sessionContext = widget.context.sessionContext as SessionContext;
       // Path the session context to include the drive name
+      // In JupyterLab 3 the path used to contain the drive name as prefix, which was
+      // also part of the /api/sessions requests. Which allowed for knowing the drive associated
+      // with a kernel.
       // This was changed in JupyterLab 4 in https://github.com/jupyterlab/jupyterlab/pull/14519
       // and is needed for the kernel to be aware of the drive it is associated with.
       sessionContext['_name'] = context?.path;

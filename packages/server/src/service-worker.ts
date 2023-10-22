@@ -78,14 +78,16 @@ async function maybeFromCache(event: FetchEvent): Promise<Response> {
  * Restore a response from the cache based on the request.
  */
 async function fromCache(request: Request): Promise<Response | null> {
-  const cache = await openCache();
-  const response = await cache.match(request);
+  // disable cache for now
+  return null;
+  // const cache = await openCache();
+  // const response = await cache.match(request);
 
-  if (!response || response.status === 404) {
-    return null;
-  }
+  // if (!response || response.status === 404) {
+  //   return null;
+  // }
 
-  return response;
+  // return response;
 }
 
 /**
