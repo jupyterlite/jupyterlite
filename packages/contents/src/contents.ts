@@ -282,7 +282,7 @@ export class Contents implements IContents {
     options?: ServerContents.IFetchOptions,
   ): Promise<IModel | null> {
     // remove leading slash
-    path = decodeURIComponent(path.replace(/^\//, ''));
+    path = path.replace(/^\//, '');
 
     if (path === '') {
       return await this._getFolder(path);
@@ -352,10 +352,10 @@ export class Contents implements IContents {
    * @returns A promise which resolves with the new file content model when the file is renamed.
    */
   async rename(oldLocalPath: string, newLocalPath: string): Promise<IModel> {
-    const path = decodeURIComponent(oldLocalPath);
-    const file = await this.get(path, { content: true });
+    console.log('rename:', oldLocalPath, newLocalPath);
+    const file = await this.get(oldLocalPath, { content: true });
     if (!file) {
-      throw Error(`Could not find file with path ${path}`);
+      throw Error(`Could not find file with path ${oldLocalPath}`);
     }
     const modified = new Date().toISOString();
     const name = PathExt.basename(newLocalPath);
@@ -368,9 +368,9 @@ export class Contents implements IContents {
     const storage = await this.storage;
     await storage.setItem(newLocalPath, newFile);
     // remove the old file
-    await storage.removeItem(path);
+    await storage.removeItem(oldLocalPath);
     // remove the corresponding checkpoint
-    await (await this.checkpoints).removeItem(path);
+    await (await this.checkpoints).removeItem(oldLocalPath);
     // if a directory, recurse through all children
     if (file.type === 'directory') {
       let child: IModel;
@@ -394,8 +394,6 @@ export class Contents implements IContents {
    * @returns A promise which resolves with the file content model when the file is saved.
    */
   async save(path: string, options: Partial<IModel> = {}): Promise<IModel | null> {
-    path = decodeURIComponent(path);
-
     // process the file if coming from an upload
     const ext = PathExt.extname(options.name ?? '');
     const chunk = options.chunk;
@@ -552,7 +550,6 @@ export class Contents implements IContents {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
-    path = decodeURIComponent(path);
     const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];

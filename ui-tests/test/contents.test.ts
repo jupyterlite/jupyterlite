@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 
 import { test } from '@jupyterlab/galata';
+import { Dialog } from '@jupyterlab/apputils';
 
 import { expect } from '@playwright/test';
 
@@ -22,7 +23,7 @@ test.use({
   waitForApplication: firefoxWaitForApplication,
 });
 
-test.describe.only('Contents Tests', () => {
+test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');
   });
@@ -110,13 +111,19 @@ test.describe.only('Contents Tests', () => {
     expect(output2![0]).toBe('4');
   });
 
-  test('WIP test: Open a URL with a percent-encoded filename', async ({ page }) => {
+  test('Open a URL with a percent-encoded filename', async ({ page }) => {
     await page.menu.clickMenuItem('File>Open from URL…');
+    // This test relies on JupyterLab's behavior of using the response as the file contents when it is a 404.
+    // We can't mock a response with page.route() because the requests come from JupyterLite's service worker
+    const name = 'test file.txt';
+    const url = encodeURIComponent(name);
+    await page.locator('#jp-dialog-input-id').fill(url);
+    await page.locator('.jp-mod-accept').click();
 
-    await page.locator('#jp-dialog-input-id').fill("https://raw.githubusercontent.com/mds2/rocketry/main/rocket%20equations.ipynb");
-    await page.locator(".jp-mod-accept").click();
+    await page.filebrowser.refresh();
 
-    await page.notebook.close();
+    // this is wrong… it should be "test file.txt"
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
   });
 
   test('Create a new notebook from a URL', async ({ page }) => {

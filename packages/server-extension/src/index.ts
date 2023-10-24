@@ -87,7 +87,6 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   },
 };
 
-
 /**
  * A plugin providing the routes for the contents service.
  */
@@ -156,6 +155,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.post('/api/contents(.*)', async (req: Router.IRequest, path: string) => {
       const options = req.body;
       const copyFrom = options?.copy_from as string;
+      path = decodeURIComponent(path);
       let file: ServerContents.IModel | null;
       if (copyFrom) {
         file = await contents.copy(copyFrom, path);
@@ -172,6 +172,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     app.router.patch(
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
+        filename = decodeURIComponent(filename);
         const newPath = (req.body?.path as string) ?? '';
         filename = filename[0] === '/' ? filename.slice(1) : filename;
         const nb = await contents.rename(filename, newPath);
@@ -195,6 +196,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         filename = decodeURIComponent(filename);
+        console.log('deleting', filename);
         await contents.delete(filename);
         return new Response(null, { status: 204 });
       },
