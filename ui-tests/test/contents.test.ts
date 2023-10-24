@@ -111,20 +111,26 @@ test.describe('Contents Tests', () => {
     expect(output2![0]).toBe('4');
   });
 
-  test('Open a URL with a percent-encoded filename', async ({ page }) => {
-    await page.menu.clickMenuItem('File>Open from URL…');
-    // This test relies on JupyterLab's behavior of using the response as the file contents when it is a 404.
-    // We can't mock a response with page.route() because the requests come from JupyterLite's service worker
-    const name = 'test file.txt';
-    const url = encodeURIComponent(name);
-    await page.locator('#jp-dialog-input-id').fill(url);
-    await page.locator('.jp-mod-accept').click();
+  // These tests rely on JupyterLab's behavior of using a 404's response body as the file contents.  In this
+  // case the 404 is from the test server.
+  // We can't mock a response with page.route() because Playwright doesn't support intercepting the network
+  // for a service worker
+  const names = ['test file.txt', 'test%20file.txt'];
+  for (const name of names) {
+    const url = '/' + name;
+    test(`Open a URL from ${url}`, async ({ page }) => {
+      await page.menu.clickMenuItem('File>Open from URL…');
 
-    await page.filebrowser.refresh();
+      await page.locator('#jp-dialog-input-id').fill(url);
+      await page.locator('.jp-mod-accept').click();
+      await page.filebrowser.refresh();
+      expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
-    // this is wrong… it should be "test file.txt"
-    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
-  });
+      await page.filebrowser.open(name);
+
+      // TODO: assert contents somehow?
+    });
+  }
 
   test('Create a new notebook from a URL', async ({ page }) => {
     const name = await page.notebook.createNew();
