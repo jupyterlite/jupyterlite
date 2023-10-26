@@ -113,8 +113,11 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
         });
         await _contents.rename(model.path, path);
         break;
-      case 'getattr':
+      case 'getattr': {
         model = await _contents.get(path);
+        // create a default date for drives that send incomplete information
+        // for nested foldes and files
+        const defaultDate = new Date(0).toISOString();
 
         response = {
           dev: 1,
@@ -125,12 +128,13 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
           size: model.size || 0,
           blksize: BLOCK_SIZE,
           blocks: Math.ceil(model.size || 0 / BLOCK_SIZE),
-          atime: model.last_modified, // TODO Get the proper atime?
-          mtime: model.last_modified,
-          ctime: model.created,
+          atime: model.last_modified || defaultDate, // TODO Get the proper atime?
+          mtime: model.last_modified || defaultDate,
+          ctime: model.created || defaultDate,
           timestamp: 0,
         };
         break;
+      }
       case 'get':
         model = await _contents.get(path, { content: true });
 

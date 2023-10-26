@@ -8,11 +8,17 @@ import {
   ILabShell,
 } from '@jupyterlab/application';
 
-import { Clipboard, ICommandPalette, Dialog, showDialog } from '@jupyterlab/apputils';
+import {
+  Clipboard,
+  ICommandPalette,
+  Dialog,
+  showDialog,
+  SessionContext,
+} from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { IDocumentManager } from '@jupyterlab/docmanager';
+import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
@@ -417,6 +423,45 @@ const opener: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin to patch the session context path so it includes the drive name.
+ * TODO: investigate a better way for the kernel to be aware of the drive it is
+ * associated with.
+ */
+const sessionContextPatch: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:session-context-patch',
+  autoStart: true,
+  requires: [IDocumentManager, IDocumentWidgetOpener],
+  activate: (
+    app: JupyterFrontEnd,
+    docManager: IDocumentManager,
+    widgetOpener: IDocumentWidgetOpener,
+  ) => {
+    const contents = app.serviceManager.contents;
+
+    widgetOpener.opened.connect((_, widget) => {
+      console.log('widget opened', widget);
+      const context = docManager.contextForWidget(widget);
+      const driveName = contents.driveName(context?.path ?? '');
+      if (driveName === '') {
+        // do nothing if this is the default drive
+        return;
+      }
+      const sessionContext = widget.context.sessionContext as SessionContext;
+      // Path the session context to include the drive name
+      // In JupyterLab 3 the path used to contain the drive name as prefix, which was
+      // also part of the /api/sessions requests. Which allowed for knowing the drive associated
+      // with a kernel.
+      // This was changed in JupyterLab 4 in https://github.com/jupyterlab/jupyterlab/pull/14519
+      // and is needed for the kernel to be aware of the drive it is associated with.
+      // This is a temporary fix until a better solution is found upstream in JupyterLab ideally.
+      // This also avoid having to patch the downstream kernels (e.g. xeus-python and pyodide)
+      sessionContext['_name'] = context?.path;
+      sessionContext['_path'] = context?.path;
+    });
+  },
+};
+
+/**
  * A custom plugin to share a link to a file.
  *
  * This url can be used to open a particular file in JupyterLab.
@@ -494,6 +539,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   liteLogo,
   notifyCommands,
   opener,
+  sessionContextPatch,
   shareFile,
 ];
 
