@@ -22,6 +22,8 @@ license = { file = "LICENSE" }
 requires-python = ">=3.7"
 classifiers = [
     "Framework :: Jupyter",
+    "Framework :: Jupyter :: JupyterLab",
+    "Framework :: Jupyter :: JupyterLab :: 4",
     "License :: OSI Approved :: BSD License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
