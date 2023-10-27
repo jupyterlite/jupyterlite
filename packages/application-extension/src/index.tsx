@@ -439,7 +439,6 @@ const sessionContextPatch: JupyterFrontEndPlugin<void> = {
     const contents = app.serviceManager.contents;
 
     widgetOpener.opened.connect((_, widget) => {
-      console.log('widget opened', widget);
       const context = docManager.contextForWidget(widget);
       const driveName = contents.driveName(context?.path ?? '');
       if (driveName === '') {
