@@ -232,6 +232,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapp
       if (err || msg) {
         console.warn(`${what} will NOT be synced`);
       } else {
+        // eslint-disable-next-line no-console
         console.info(`${what} will be synced`);
       }
     }
