@@ -7,6 +7,7 @@ export class JavaScriptRemoteKernel {
    * @param options The options for the kernel.
    */
   async initialize(options: IJavaScriptWorkerKernel.IOptions) {
+    // eslint-disable-next-line no-console
     console.log = function (...args) {
       const bundle = {
         name: 'stdout',
@@ -17,6 +18,7 @@ export class JavaScriptRemoteKernel {
         bundle,
       });
     };
+    // eslint-disable-next-line no-console
     console.info = console.log;
 
     console.error = function (...args) {
