@@ -40,27 +40,30 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
-    } else if (serviceWorker.controller) {
-      registration =
-        (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
-        null;
-      // eslint-disable-next-line no-console
-      console.info('JupyterLite ServiceWorker was already registered');
+      this._ready.reject(void 0); // Reject the promise if service workers are not supported.
+      return;
     }
 
-    if (!registration && serviceWorker) {
-      try {
-        // eslint-disable-next-line no-console
-        console.info('Registering new JupyterLite ServiceWorker', workerUrl);
-        registration = await serviceWorker.register(workerUrl);
-        // eslint-disable-next-line no-console
-        console.info('JupyterLite ServiceWorker was sucessfully registered');
-      } catch (err: any) {
-        console.warn(err);
-        console.warn(
-          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
-        );
-      }
+    // Unregister any existing service workers before registering the new one.
+    const registrations = await serviceWorker.getRegistrations();
+    for (const registration of registrations) {
+      await registration.unregister();
+      // eslint-disable-next-line no-console
+      console.info('Existing JupyterLite ServiceWorker unregistered');
+    }
+
+    // After unregistration, proceed to register the new service worker.
+    try {
+      // eslint-disable-next-line no-console
+      console.info('Registering new JupyterLite ServiceWorker', workerUrl);
+      registration = await serviceWorker.register(workerUrl);
+      // eslint-disable-next-line no-console
+      console.info('JupyterLite ServiceWorker was successfully registered');
+    } catch (err) {
+      console.warn(err);
+      console.warn(
+        `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`
+      );
     }
 
     this.setRegistration(registration);
@@ -79,7 +82,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
-    this,
+    this
   );
   private _ready = new PromiseDelegate<void>();
 }
