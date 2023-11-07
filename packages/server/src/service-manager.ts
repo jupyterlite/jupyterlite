@@ -40,7 +40,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
-      this._ready.reject(void 0); // Reject the promise if service workers are not supported.
+      this._ready.reject('Not supported'); // Reject the promise if service workers are not supported.
       return;
     }
 
@@ -69,9 +69,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this.setRegistration(registration);
 
     if (!registration) {
-      this._ready.reject(void 0);
+      this._ready.reject('Registration failed');
     } else {
-      this._ready.resolve(void 0);
+      this._ready.resolve();
     }
   }
 
