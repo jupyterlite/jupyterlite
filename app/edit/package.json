@@ -193,6 +193,7 @@
       "@jupyterlab/json-extension",
       "@jupyterlab/lsp-extension",
       "@jupyterlab/mainmenu-extension",
+      "@jupyterlab/markdownviewer-extension",
       "@jupyterlab/markedparser-extension",
       "@jupyterlab/mathjax-extension",
       "@jupyterlab/metadataform-extension",
