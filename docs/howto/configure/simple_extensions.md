@@ -62,9 +62,9 @@ jupyter labextension list
 Which should return something similar to the following:
 
 ```text
-JupyterLab v3.*.*
+JupyterLab v4.*.*
 PREFIX/share/jupyter/labextensions
-        jupyterlab-tour  v3.1.4 enabled OK
+        jupyterlab-tour  v4.0.0 enabled OK
         jupyterlab-night v0.4.0 enabled OK
 ```
 
