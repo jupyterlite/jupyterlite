@@ -44,26 +44,30 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       return;
     }
 
-    // Unregister any existing service workers before registering the new one.
-    const registrations = await serviceWorker.getRegistrations();
-    for (const registration of registrations) {
-      await registration.unregister();
+    if (serviceWorker.controller) {
+      registration =
+        (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
+        null;
+    } else {
+      // Unregister any existing service workers before registering the new one.
+      const registrations = await serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((r) => r.unregister()));
       // eslint-disable-next-line no-console
-      console.info('Existing JupyterLite ServiceWorker unregistered');
-    }
+      console.info('Existing JupyterLite ServiceWorkers unregistered');
 
-    // After unregistration, proceed to register the new service worker.
-    try {
-      // eslint-disable-next-line no-console
-      console.info('Registering new JupyterLite ServiceWorker', workerUrl);
-      registration = await serviceWorker.register(workerUrl);
-      // eslint-disable-next-line no-console
-      console.info('JupyterLite ServiceWorker was successfully registered');
-    } catch (err) {
-      console.warn(err);
-      console.warn(
-        `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
-      );
+      // After unregistration, proceed to register the new service worker.
+      try {
+        // eslint-disable-next-line no-console
+        console.info('Registering new JupyterLite ServiceWorker', workerUrl);
+        registration = await serviceWorker.register(workerUrl);
+        // eslint-disable-next-line no-console
+        console.info('JupyterLite ServiceWorker was successfully registered');
+      } catch (err) {
+        console.warn(err);
+        console.warn(
+          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
+        );
+      }
     }
 
     this.setRegistration(registration);
