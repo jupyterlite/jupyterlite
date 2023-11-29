@@ -40,29 +40,28 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
-      this._ready.reject('Not supported'); // Reject the promise if service workers are not supported.
-      return;
-    }
-
-    if (serviceWorker.controller) {
+    } else if (serviceWorker.controller) {
       registration =
         (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
         null;
-    } else {
-      // Unregister any existing service workers before registering the new one.
-      const registrations = await serviceWorker.getRegistrations();
-      await Promise.all(registrations.map((r) => r.unregister()));
       // eslint-disable-next-line no-console
-      console.info('Existing JupyterLite ServiceWorkers unregistered');
+      console.info('JupyterLite ServiceWorker was already registered');
+    }
 
-      // After unregistration, proceed to register the new service worker.
+    if (!registration && serviceWorker) {
       try {
+        // Unregister any existing service workers before registering the new one.
+        const registrations = await serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((r) => r.unregister()));
+        // eslint-disable-next-line no-console
+        console.info('Existing JupyterLite ServiceWorkers unregistered');
+
         // eslint-disable-next-line no-console
         console.info('Registering new JupyterLite ServiceWorker', workerUrl);
         registration = await serviceWorker.register(workerUrl);
         // eslint-disable-next-line no-console
-        console.info('JupyterLite ServiceWorker was successfully registered');
-      } catch (err) {
+        console.info('JupyterLite ServiceWorker was sucessfully registered');
+      } catch (err: any) {
         console.warn(err);
         console.warn(
           `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
@@ -73,9 +72,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this.setRegistration(registration);
 
     if (!registration) {
-      this._ready.reject('Registration failed');
+      this._ready.reject(void 0);
     } else {
-      this._ready.resolve();
+      this._ready.resolve(void 0);
     }
   }
 
