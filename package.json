@@ -75,7 +75,7 @@
     "yjs": "^13.5.40"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~4.0.11",
+    "@jupyterlab/buildutils": "~4.1.0-beta.2",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
@@ -95,6 +95,6 @@
     "svgo": "^3.0.1",
     "typedoc": "~0.23.21",
     "typedoc-plugin-markdown": "~3.14.0",
-    "typescript": "~5.0.4"
+    "typescript": "~5.1.6"
   }
 }

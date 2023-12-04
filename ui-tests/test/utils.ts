@@ -31,6 +31,34 @@ export async function download({
   return download.path();
 }
 
+/**
+ * Custom filebrowser refresh helper
+ *
+ * Temporary fix as Galata makes an API call to the server
+ * https://github.com/jupyterlab/jupyterlab/pull/15607
+ */
+export async function refreshFilebrowser({ page }): Promise<void> {
+  try {
+    await page.filebrowser.refresh();
+  } catch (e) {
+    // no-op
+  }
+}
+
+/**
+ * Custom filebrowser open directory helper
+ *
+ * Temporary fix as Galata makes an API call to the server
+ * https://github.com/jupyterlab/jupyterlab/pull/15607
+ */
+export async function openDirectory({ page, directory }): Promise<void> {
+  try {
+    await page.filebrowser.openDirectory(directory);
+  } catch (e) {
+    // no-op
+  }
+}
+
 export async function createNewDirectory({
   page,
   name,
@@ -38,10 +66,10 @@ export async function createNewDirectory({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<void> {
-  await page.click('[data-icon="ui-components:new-folder"]');
+  await page.click('[data-command="filebrowser:create-new-directory"]');
   await page.fill('.jp-DirListing-editor', name);
   await page.keyboard.down('Enter');
-  await page.filebrowser.refresh();
+  refreshFilebrowser({ page });
 }
 
 /**

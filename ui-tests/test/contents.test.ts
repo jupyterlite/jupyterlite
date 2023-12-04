@@ -13,6 +13,8 @@ import {
   createNewDirectory,
   deleteItem,
   download,
+  openDirectory,
+  refreshFilebrowser,
   treeWaitForApplication,
 } from './utils';
 
@@ -42,7 +44,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
-    await page.filebrowser.refresh();
+    refreshFilebrowser({ page });
     await page.notebook.open(notebook);
     expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
@@ -58,7 +60,7 @@ test.describe('Contents Tests', () => {
     page,
   }) => {
     const notebook = 'javascript.ipynb';
-    await page.filebrowser.refresh();
+
     await page.notebook.open(notebook);
     await page.notebook.addCell('code', '2 + 2');
     await page.notebook.save();
@@ -69,7 +71,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
     const file = 'data/iris.csv';
-    await page.filebrowser.refresh();
+    refreshFilebrowser({ page });
     await page.filebrowser.open(file);
     expect(
       await page.filebrowser.isFileListedInBrowser(path.basename(file)),
@@ -120,7 +122,7 @@ test.describe('Contents Tests', () => {
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
     await deleteItem({ page, name });
-    await page.filebrowser.refresh();
+    refreshFilebrowser({ page });
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
   });
@@ -130,12 +132,12 @@ test.describe('Contents Tests', () => {
     await createNewDirectory({ page, name });
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
-    await page.filebrowser.openDirectory(name);
+    await openDirectory({ page, directory: name });
     await page.notebook.createNew();
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();
     await deleteItem({ page, name });
-    await page.filebrowser.refresh();
+    refreshFilebrowser({ page });
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
   });

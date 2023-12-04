@@ -1,11 +1,13 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { test } from '@jupyterlab/galata';
+import { expect, test } from '@jupyterlab/galata';
 
-import { expect } from '@playwright/test';
-
-import { notebooksWaitForApplication, treeWaitForApplication } from './utils';
+import {
+  notebooksWaitForApplication,
+  openDirectory,
+  treeWaitForApplication,
+} from './utils';
 
 test.describe('Notebook Tests', () => {
   test.use({
@@ -18,7 +20,7 @@ test.describe('Notebook Tests', () => {
     const name = 'notebook';
     await page.menu.clickMenuItem('New>New Folder');
     await page.fill('.jp-DirListing-editor', name);
-    await page.filebrowser.openDirectory(name);
+    await openDirectory({ page, directory: name });
   });
 
   test('Tree Screen', async ({ page }) => {
@@ -71,7 +73,7 @@ test.describe('Notebook file opener', () => {
       await page.goto('tree/index.html');
 
       if (directory) {
-        await page.filebrowser.openDirectory(directory);
+        await openDirectory({ page, directory });
       }
 
       const contextMenu = await page.menu.openContextMenu(
