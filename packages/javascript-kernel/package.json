@@ -44,13 +44,15 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.0.7",
     "@jupyterlite/kernel": "^0.2.1",
-    "comlink": "^4.3.1"
+    "comlink": "^4.3.1",
+    "object-inspect": "^1.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
     "@jupyterlab/testutils": "~4.0.7",
     "@types/jest": "^29.5.3",
+    "@types/object-inspect": "^1.8.4",
     "jest": "^29.6.2",
     "rimraf": "~5.0.1",
     "ts-jest": "^29.1.1",
