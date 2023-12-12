@@ -18,7 +18,7 @@
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_miami_nights-0.4.0-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab_widgets-3.0.8-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/notebook-7.0.6-pyhd8ed1ab_0.conda",
-      "https://conda.anaconda.org/conda-forge/label/jupyterlite_pyodide_kernel_alpha/noarch/jupyterlite-pyodide-kernel-0.2.0a1-pyh9178eb9_0.conda",
+      "https://conda.anaconda.org/conda-forge/noarch/jupyterlite-pyodide-kernel-0.2.0-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/plotly-5.15.0-pyhd8ed1ab_0.conda",
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.1.0/jupyterlite_p5_kernel-0.1.0-py3-none-any.whl"
     ],

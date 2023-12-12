@@ -37,7 +37,7 @@ dependencies:
   # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
   # - jupyterlab-webrtc-docprovider >=0.1.1
   - jupyterlab-night
-  - jupyterlite-pyodide-kernel >=0.1.1
+  - jupyterlite-pyodide-kernel >=0.2.0
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
