@@ -248,10 +248,6 @@ class CompileSchemasPlugin {
       });
 
       fs.writeFileSync(path.resolve(schemaDir, 'all.json'), JSON.stringify(all));
-
-      // ensure the settings file for federated is also created
-      fs.writeFileSync(path.resolve(schemaDir, 'all_federated.json'), {});
-
       callback();
     });
   }
