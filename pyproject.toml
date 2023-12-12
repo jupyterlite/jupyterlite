@@ -44,6 +44,9 @@ ignore = [
 "RUF012",
 ]
 
+[tool.ruff.lint]
+exclude = ["*.ipynb"]
+
 [tool.ruff.lint.per-file-ignores]
 # A001 Variable `copyright` is shadowing a Python builtin
 # S603 `subprocess` call: check for execution of untrusted input
