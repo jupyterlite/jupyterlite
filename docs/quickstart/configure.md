@@ -12,7 +12,7 @@ root of the [Lite Dir](../reference/cli.ipynb#the-lite-dir), and superceeded by 
 for an individual app such as `repl` and `lab`.
 
 Available options are defined in the Jupyter Config Data
-[Schema](../reference/schema-v0.md) and include settings such as `appName`,
+[Schema](../reference/schema-v0.rst) and include settings such as `appName`,
 `appVersion`, `settingsOverrides`, `exposeAppInBrowser`.
 
 ## Overrides
