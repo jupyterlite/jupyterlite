@@ -17,10 +17,6 @@ version-cmd = "python scripts/bump-version.py --force"
 [tool.check-wheel-contents]
 ignore = ["W002"]
 
-[tool.black]
-line-length = 100
-target-version = ["py38"]
-
 [tool.ruff]
 target-version = "py38"
 line-length = 100
@@ -47,7 +43,7 @@ ignore = [
 "RUF012",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 # A001 Variable `copyright` is shadowing a Python builtin
 # S603 `subprocess` call: check for execution of untrusted input
 # S607 Starting a process with a partial executable path
