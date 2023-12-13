@@ -6,10 +6,9 @@ channels:
 
 dependencies:
   # build stuff
-  - black-jupyter
   - depfinder
   - nbstripout
-  - ruff =0.0.291
+  - ruff =0.1.7
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
