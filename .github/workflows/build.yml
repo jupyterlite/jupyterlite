@@ -127,7 +127,7 @@ jobs:
       - name: Setup pip (base)
         run: ${{ matrix.python-command }} -m pip install --user -U pip setuptools wheel
       - name: Download (dist)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -189,12 +189,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Download (dist)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Download (typedoc)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts

@@ -48,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
