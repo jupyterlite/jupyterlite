@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/build-dist
 
       - name: Upload (dist)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -79,7 +79,7 @@ jobs:
       - name: Docs (typedoc)
         run: doit -n4 docs:typedoc:mystify
       - name: Upload (typedoc)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
@@ -172,7 +172,7 @@ jobs:
         run: doit test:py:*
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -229,7 +229,7 @@ jobs:
       - name: Docs (app archive)
         run: doit docs:app:pack
       - name: Upload (docs app archive)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jupyterlite docs archive ${{ github.run_number }}
           path: |
@@ -242,7 +242,7 @@ jobs:
         run: doit test:py:jupyterlite-core
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -251,7 +251,7 @@ jobs:
             build/pytest
       - name: Upload (sphinx logs)
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
