@@ -9,4 +9,4 @@ updates:
     groups:
       actions:
         patterns:
-          - "*"
+          - '*'
