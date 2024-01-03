@@ -6,3 +6,7 @@ updates:
     schedule:
       # Check for updates to GitHub Actions every month
       interval: 'monthly'
+    groups:
+      actions:
+        patterns:
+          - '*'
