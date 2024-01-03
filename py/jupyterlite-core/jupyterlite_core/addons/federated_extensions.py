@@ -286,24 +286,25 @@ class FederatedExtensionAddon(BaseAddon):
                 actions=[(self.copy_one, [theme_dir, dest])],
             )
 
-        yield self.task(
-            name="settings",
-            doc=f"ensure {ALL_FEDERATED_JSON} includes the settings of federated extensions",
-            file_dep=[*lab_extensions],
-            actions=[(self.ensure_federated_settings, [manager, lab_extensions])],
-        )
+        app_schemas = manager.output_dir / "build" / "schemas"
+        all_federated_json = app_schemas / ALL_FEDERATED_JSON
 
-    def ensure_federated_settings(self, manager, lab_extensions):
+        if app_schemas.is_dir():
+            yield self.task(
+                name="settings",
+                doc=f"ensure {ALL_FEDERATED_JSON} includes the settings of federated extensions",
+                file_dep=[*lab_extensions],
+                targets=[all_federated_json],
+                actions=[
+                    (self.ensure_federated_settings, [manager, lab_extensions, all_federated_json])
+                ],
+            )
+
+    def ensure_federated_settings(self, manager, lab_extensions, all_federated_json):
         """ensure settings from federated extensions are aggregated in a single file"""
         all_federated_settings = [
             setting for p in lab_extensions for setting in self.get_federated_settings(p.parent)
         ]
-
-        app_schemas = manager.output_dir / "build" / "schemas"
-        if not app_schemas.is_dir():
-            # bail if there is no schemas dir
-            return
-        all_federated_json = app_schemas / ALL_FEDERATED_JSON
         all_federated_json.write_text(json.dumps(all_federated_settings), **UTF8)
 
     def get_federated_settings(self, extension):
