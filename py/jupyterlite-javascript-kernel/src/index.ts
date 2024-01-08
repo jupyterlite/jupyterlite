@@ -3,7 +3,7 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { JupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server';
+import { IJupyterLiteServer, JupyterLiteServerPlugin } from '@jupyterlite/server';
 
 import { IKernel, IKernelSpecs } from '@jupyterlite/kernel';
 
@@ -16,7 +16,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/javascript-kernel-extension:kernel',
   autoStart: true,
   requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  activate: (app: IJupyterLiteServer, kernelspecs: IKernelSpecs) => {
     const baseUrl = PageConfig.getBaseUrl();
     kernelspecs.register({
       spec: {

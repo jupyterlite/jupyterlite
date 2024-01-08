@@ -3,24 +3,26 @@
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { Contents as ServerContents, KernelSpec } from '@jupyterlab/services';
+import { KernelSpec, Contents as ServerContents } from '@jupyterlab/services';
 
 import {
   BroadcastChannelWrapper,
   Contents,
-  IContents,
   IBroadcastChannelWrapper,
+  IContents,
 } from '@jupyterlite/contents';
 
-import { IKernels, Kernels, IKernelSpecs, KernelSpecs } from '@jupyterlite/kernel';
+import { IKernelSpecs, IKernels, KernelSpecs, Kernels } from '@jupyterlite/kernel';
 
 import { ILicenses, Licenses } from '@jupyterlite/licenses';
 
 import {
+  IJupyterLiteServer,
+  IServerRouter,
+  IServiceWorkerManager,
   JupyterLiteServer,
   JupyterLiteServerPlugin,
   Router,
-  IServiceWorkerManager,
   ServiceWorkerManager,
 } from '@jupyterlite/server';
 
@@ -32,6 +34,8 @@ import { ITranslation, Translation } from '@jupyterlite/translation';
 
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
 
+import { IPlugin } from '@lumino/application';
+
 import localforage from 'localforage';
 
 /**
@@ -41,7 +45,7 @@ const localforagePlugin: JupyterLiteServerPlugin<ILocalForage> = {
   id: '@jupyterlite/server-extension:localforage',
   autoStart: true,
   provides: ILocalForage,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: IJupyterLiteServer) => {
     return { localforage };
   },
 };
@@ -53,13 +57,25 @@ const localforageMemoryPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:localforage-memory-storage',
   autoStart: true,
   requires: [ILocalForage],
-  activate: async (app: JupyterLiteServer, forage: ILocalForage) => {
+  activate: async (app: IJupyterLiteServer, forage: ILocalForage) => {
     if (JSON.parse(PageConfig.getOption('enableMemoryStorage') || 'false')) {
       console.warn(
         'Memory storage fallback enabled: contents and settings may not be saved',
       );
       await ensureMemoryStorage(forage.localforage);
     }
+  },
+};
+
+/**
+ * Server router
+ */
+const serverRouterPlugin: IPlugin<JupyterLiteServer, IServerRouter> = {
+  id: '@jupyterlite/server-extension:server-router',
+  description: 'Provides the server request router for JupyterLite.',
+  provides: IServerRouter,
+  activate: (app: JupyterLiteServer) => {
+    return app.router;
   },
 };
 
@@ -71,7 +87,7 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
   requires: [ILocalForage],
   autoStart: true,
   provides: IContents,
-  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+  activate: (app: IJupyterLiteServer, forage: ILocalForage) => {
     const storageName = PageConfig.getOption('contentsStorageName');
     const storageDrivers = JSON.parse(
       PageConfig.getOption('contentsStorageDrivers') || 'null',
@@ -93,10 +109,10 @@ const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
 const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:contents-routes',
   autoStart: true,
-  requires: [IContents],
-  activate: (app: JupyterLiteServer, contents: IContents) => {
+  requires: [IServerRouter, IContents],
+  activate: (app: IJupyterLiteServer, router: IServerRouter, contents: IContents) => {
     // GET /api/contents/{path}/checkpoints - Get a list of checkpoints for a file
-    app.router.get(
+    router.get(
       '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await contents.listCheckpoints(filename);
@@ -105,7 +121,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // POST /api/contents/{path}/checkpoints/{checkpoint_id} - Restore a file to a particular checkpointed state
-    app.router.post(
+    router.post(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await contents.restoreCheckpoint(filename, checkpoint);
@@ -114,7 +130,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // POST /api/contents/{path}/checkpoints - Create a new checkpoint for a file
-    app.router.post(
+    router.post(
       '/api/contents/(.+)/checkpoints',
       async (req: Router.IRequest, filename: string) => {
         const res = await contents.createCheckpoint(filename);
@@ -123,7 +139,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // DELETE /api/contents/{path}/checkpoints/{checkpoint_id} - Delete a checkpoint
-    app.router.delete(
+    router.delete(
       '/api/contents/(.+)/checkpoints/(.*)',
       async (req: Router.IRequest, filename: string, checkpoint: string) => {
         const res = await contents.deleteCheckpoint(filename, checkpoint);
@@ -132,22 +148,19 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // GET /api/contents/{path} - Get contents of file or directory
-    app.router.get(
-      '/api/contents(.*)',
-      async (req: Router.IRequest, filename: string) => {
-        const options: ServerContents.IFetchOptions = {
-          content: req.query?.content === '1',
-        };
-        const nb = await contents.get(filename, options);
-        if (!nb) {
-          return new Response(null, { status: 404 });
-        }
-        return new Response(JSON.stringify(nb));
-      },
-    );
+    router.get('/api/contents(.*)', async (req: Router.IRequest, filename: string) => {
+      const options: ServerContents.IFetchOptions = {
+        content: req.query?.content === '1',
+      };
+      const nb = await contents.get(filename, options);
+      if (!nb) {
+        return new Response(null, { status: 404 });
+      }
+      return new Response(JSON.stringify(nb));
+    });
 
     // POST /api/contents/{path} - Create a new file in the specified path
-    app.router.post('/api/contents(.*)', async (req: Router.IRequest, path: string) => {
+    router.post('/api/contents(.*)', async (req: Router.IRequest, path: string) => {
       const options = req.body;
       const copyFrom = options?.copy_from as string;
       let file: ServerContents.IModel | null;
@@ -163,7 +176,7 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     });
 
     // PATCH /api/contents/{path} - Rename a file or directory without re-uploading content
-    app.router.patch(
+    router.patch(
       '/api/contents(.*)',
       async (req: Router.IRequest, filename: string) => {
         const newPath = (req.body?.path as string) ?? '';
@@ -174,17 +187,14 @@ const contentsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // PUT /api/contents/{path} - Save or upload a file
-    app.router.put(
-      '/api/contents/(.+)',
-      async (req: Router.IRequest, filename: string) => {
-        const body = req.body;
-        const nb = await contents.save(filename, body);
-        return new Response(JSON.stringify(nb));
-      },
-    );
+    router.put('/api/contents/(.+)', async (req: Router.IRequest, filename: string) => {
+      const body = req.body;
+      const nb = await contents.save(filename, body);
+      return new Response(JSON.stringify(nb));
+    });
 
     // DELETE /api/contents/{path} - Delete a file in the given path
-    app.router.delete(
+    router.delete(
       '/api/contents/(.+)',
       async (req: Router.IRequest, filename: string) => {
         await contents.delete(filename);
@@ -201,7 +211,7 @@ const serviceWorkerPlugin: JupyterLiteServerPlugin<IServiceWorkerManager> = {
   id: '@jupyterlite/server-extension:service-worker',
   autoStart: true,
   provides: IServiceWorkerManager,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: IJupyterLiteServer) => {
     return new ServiceWorkerManager();
   },
 };
@@ -215,7 +225,7 @@ const emscriptenFileSystemPlugin: JupyterLiteServerPlugin<IBroadcastChannelWrapp
   optional: [IServiceWorkerManager],
   provides: IBroadcastChannelWrapper,
   activate: (
-    app: JupyterLiteServer,
+    app: IJupyterLiteServer,
     serviceWorkerRegistrationWrapper?: IServiceWorkerManager,
   ): IBroadcastChannelWrapper => {
     const { contents } = app.serviceManager;
@@ -262,7 +272,7 @@ const kernelsPlugin: JupyterLiteServerPlugin<IKernels> = {
   autoStart: true,
   provides: IKernels,
   requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  activate: (app: IJupyterLiteServer, kernelspecs: IKernelSpecs) => {
     return new Kernels({ kernelspecs });
   },
 };
@@ -273,16 +283,16 @@ const kernelsPlugin: JupyterLiteServerPlugin<IKernels> = {
 const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:kernels-routes',
   autoStart: true,
-  requires: [IKernels],
-  activate: (app: JupyterLiteServer, kernels: IKernels) => {
+  requires: [IServerRouter, IKernels],
+  activate: (app: IJupyterLiteServer, router: IServerRouter, kernels: IKernels) => {
     // GET /api/kernels - List the running kernels
-    app.router.get('/api/kernels', async (req: Router.IRequest) => {
+    router.get('/api/kernels', async (req: Router.IRequest) => {
       const res = await kernels.list();
       return new Response(JSON.stringify(res));
     });
 
     // POST /api/kernels/{kernel_id} - Restart a kernel
-    app.router.post(
+    router.post(
       '/api/kernels/(.*)/restart',
       async (req: Router.IRequest, kernelId: string) => {
         const res = await kernels.restart(kernelId);
@@ -291,7 +301,7 @@ const kernelsRoutesPlugin: JupyterLiteServerPlugin<void> = {
     );
 
     // DELETE /api/kernels/{kernel_id} - Kill a kernel and delete the kernel id
-    app.router.delete(
+    router.delete(
       '/api/kernels/(.*)',
       async (req: Router.IRequest, kernelId: string) => {
         const res = await kernels.shutdown(kernelId);
@@ -308,7 +318,7 @@ const kernelSpecPlugin: JupyterLiteServerPlugin<IKernelSpecs> = {
   id: '@jupyterlite/server-extension:kernelspec',
   autoStart: true,
   provides: IKernelSpecs,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: IJupyterLiteServer) => {
     return new KernelSpecs();
   },
 };
@@ -319,9 +329,13 @@ const kernelSpecPlugin: JupyterLiteServerPlugin<IKernelSpecs> = {
 const kernelSpecRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:kernelspec-routes',
   autoStart: true,
-  requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
-    app.router.get('/api/kernelspecs', async (req: Router.IRequest) => {
+  requires: [IServerRouter, IKernelSpecs],
+  activate: (
+    app: IJupyterLiteServer,
+    router: IServerRouter,
+    kernelspecs: IKernelSpecs,
+  ) => {
+    router.get('/api/kernelspecs', async (req: Router.IRequest) => {
       const { specs } = kernelspecs;
       if (!specs) {
         return new Response(null);
@@ -360,7 +374,7 @@ const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
   id: '@jupyterlite/server-extension:licenses',
   autoStart: true,
   provides: ILicenses,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: IJupyterLiteServer) => {
     return new Licenses();
   },
 };
@@ -371,9 +385,9 @@ const licensesPlugin: JupyterLiteServerPlugin<ILicenses> = {
 const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:licenses-routes',
   autoStart: true,
-  requires: [ILicenses],
-  activate(app: JupyterLiteServer, licenses: ILicenses) {
-    app.router.get('/api/licenses', async (req: Router.IRequest) => {
+  requires: [IServerRouter, ILicenses],
+  activate(app: IJupyterLiteServer, router: IServerRouter, licenses: ILicenses) {
+    router.get('/api/licenses', async (req: Router.IRequest) => {
       const res = await licenses.get();
       return new Response(JSON.stringify(res));
     });
@@ -386,9 +400,10 @@ const licensesRoutesPlugin: JupyterLiteServerPlugin<void> = {
  */
 const lspRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:lsp-routes',
+  requires: [IServerRouter],
   autoStart: true,
-  activate: (app: JupyterLiteServer) => {
-    app.router.get('/lsp/status', async (req: Router.IRequest) => {
+  activate: (app: IJupyterLiteServer, router: IServerRouter) => {
+    router.get('/lsp/status', async (req: Router.IRequest) => {
       return new Response(JSON.stringify({ version: 2, sessions: {}, specs: {} }));
     });
   },
@@ -400,9 +415,10 @@ const lspRoutesPlugin: JupyterLiteServerPlugin<void> = {
  */
 const nbconvertRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:nbconvert-routes',
+  requires: [IServerRouter],
   autoStart: true,
-  activate: (app: JupyterLiteServer) => {
-    app.router.get('/api/nbconvert', async (req: Router.IRequest) => {
+  activate: (app: IJupyterLiteServer, router: IServerRouter) => {
+    router.get('/api/nbconvert', async (req: Router.IRequest) => {
       return new Response(JSON.stringify({}));
     });
   },
@@ -416,7 +432,7 @@ const sessionsPlugin: JupyterLiteServerPlugin<ISessions> = {
   autoStart: true,
   provides: ISessions,
   requires: [IKernels],
-  activate: (app: JupyterLiteServer, kernels: IKernels) => {
+  activate: (app: IJupyterLiteServer, kernels: IKernels) => {
     return new Sessions({ kernels });
   },
 };
@@ -427,38 +443,35 @@ const sessionsPlugin: JupyterLiteServerPlugin<ISessions> = {
 const sessionsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:sessions-routes',
   autoStart: true,
-  requires: [ISessions],
-  activate: (app: JupyterLiteServer, sessions: ISessions) => {
+  requires: [IServerRouter, ISessions],
+  activate: (app: IJupyterLiteServer, router: IServerRouter, sessions: ISessions) => {
     // GET /api/sessions/{session} - Get session
-    app.router.get('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
+    router.get('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
       const session = await sessions.get(id);
       return new Response(JSON.stringify(session), { status: 200 });
     });
 
     // GET /api/sessions - List available sessions
-    app.router.get('/api/sessions', async (req: Router.IRequest) => {
+    router.get('/api/sessions', async (req: Router.IRequest) => {
       const list = await sessions.list();
       return new Response(JSON.stringify(list), { status: 200 });
     });
 
     // PATCH /api/sessions/{session} - This can be used to rename a session
-    app.router.patch('/api/sessions(.*)', async (req: Router.IRequest, id: string) => {
+    router.patch('/api/sessions(.*)', async (req: Router.IRequest, id: string) => {
       const options = req.body as any;
       const session = await sessions.patch(options);
       return new Response(JSON.stringify(session), { status: 200 });
     });
 
     // DELETE /api/sessions/{session} - Delete a session
-    app.router.delete(
-      '/api/sessions/(.+)',
-      async (req: Router.IRequest, id: string) => {
-        await sessions.shutdown(id);
-        return new Response(null, { status: 204 });
-      },
-    );
+    router.delete('/api/sessions/(.+)', async (req: Router.IRequest, id: string) => {
+      await sessions.shutdown(id);
+      return new Response(null, { status: 204 });
+    });
 
     // POST /api/sessions - Create a new session or return an existing session if a session of the same name already exists
-    app.router.post('/api/sessions', async (req: Router.IRequest) => {
+    router.post('/api/sessions', async (req: Router.IRequest) => {
       const options = req.body as any;
       const session = await sessions.startNew(options);
       return new Response(JSON.stringify(session), { status: 201 });
@@ -474,7 +487,7 @@ const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
   autoStart: true,
   requires: [ILocalForage],
   provides: ISettings,
-  activate: (app: JupyterLiteServer, forage: ILocalForage) => {
+  activate: (app: IJupyterLiteServer, forage: ILocalForage) => {
     const storageName = PageConfig.getOption('settingsStorageName');
     const storageDrivers = JSON.parse(
       PageConfig.getOption('settingsStorageDrivers') || 'null',
@@ -492,25 +505,25 @@ const settingsPlugin: JupyterLiteServerPlugin<ISettings> = {
 const settingsRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:settings-routes',
   autoStart: true,
-  requires: [ISettings],
-  activate: (app: JupyterLiteServer, settings: ISettings) => {
+  requires: [IServerRouter, ISettings],
+  activate: (app: IJupyterLiteServer, router: IServerRouter, settings: ISettings) => {
     // TODO: improve the regex
     // const pluginPattern = new RegExp(/(?:@([^/]+?)[/])?([^/]+?):(\w+)/);
     const pluginPattern = '/api/settings/((?:@([^/]+?)[/])?([^/]+?):([^:]+))$';
 
-    app.router.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
+    router.get(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
       const setting = await settings.get(pluginId);
       return new Response(JSON.stringify(setting));
     });
 
-    app.router.put(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
+    router.put(pluginPattern, async (req: Router.IRequest, pluginId: string) => {
       const body = req.body as any;
       const { raw } = body;
       await settings.save(pluginId, raw);
       return new Response(null, { status: 204 });
     });
 
-    app.router.get('/api/settings', async (req: Router.IRequest) => {
+    router.get('/api/settings', async (req: Router.IRequest) => {
       const plugins = await settings.getAll();
       return new Response(JSON.stringify(plugins));
     });
@@ -523,11 +536,12 @@ const settingsRoutesPlugin: JupyterLiteServerPlugin<void> = {
 const translationPlugin: JupyterLiteServerPlugin<ITranslation> = {
   id: '@jupyterlite/server-extension:translation',
   autoStart: true,
+  requires: [IServerRouter],
   provides: ITranslation,
-  activate: (app: JupyterLiteServer) => {
+  activate: (app: IJupyterLiteServer, router: IServerRouter) => {
     const translation = new Translation();
 
-    app.router.get(
+    router.get(
       '/api/translations/?(.*)',
       async (req: Router.IRequest, locale: string) => {
         if (locale === 'default') {
@@ -548,9 +562,13 @@ const translationPlugin: JupyterLiteServerPlugin<ITranslation> = {
 const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:translation-routes',
   autoStart: true,
-  requires: [ITranslation],
-  activate: (app: JupyterLiteServer, translation: ITranslation) => {
-    app.router.get(
+  requires: [IServerRouter, ITranslation],
+  activate: (
+    app: IJupyterLiteServer,
+    router: IServerRouter,
+    translation: ITranslation,
+  ) => {
+    router.get(
       '/api/translations/?(.*)',
       async (req: Router.IRequest, locale: string) => {
         const data = await translation.get(locale || 'all');
@@ -560,7 +578,7 @@ const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
   },
 };
 
-const plugins: JupyterLiteServerPlugin<any>[] = [
+const plugins: IPlugin<JupyterLiteServer, any>[] = [
   contentsPlugin,
   contentsRoutesPlugin,
   emscriptenFileSystemPlugin,
@@ -574,6 +592,7 @@ const plugins: JupyterLiteServerPlugin<any>[] = [
   localforagePlugin,
   lspRoutesPlugin,
   nbconvertRoutesPlugin,
+  serverRouterPlugin,
   serviceWorkerPlugin,
   sessionsPlugin,
   sessionsRoutesPlugin,

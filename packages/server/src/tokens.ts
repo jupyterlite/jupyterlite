@@ -2,7 +2,22 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
+import type { Router } from './router';
+
 import SW_URL from './service-worker?text';
+
+/**
+ * The server router token.
+ */
+export const IServerRouter = new Token<IServerRouter>(
+  '@jupyterlite/server:IServerRouter',
+  'Provides the server request router.',
+);
+
+/**
+ * Server router interface
+ */
+export type IServerRouter = Router;
 
 /**
  * The token for the ServiceWorker.

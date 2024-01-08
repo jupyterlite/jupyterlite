@@ -19,7 +19,7 @@ const kernel: JupyterLiteServerPlugin<void> = {
   id: 'my-custom-kernel:plugin',
   autoStart: true,
   requires: [IKernelSpecs],
-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
+  activate: (app: IJupyterLiteServer, kernelspecs: IKernelSpecs) => {
     kernelspecs.register({
       spec: {
         name: 'custom',

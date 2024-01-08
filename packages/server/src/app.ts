@@ -11,7 +11,27 @@ import { WebSocket } from 'mock-socket';
 
 import { Router } from './router';
 
-export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
+/**
+ * JupyterLiteServer application interface
+ */
+export interface IJupyterLiteServer extends Application<never> {
+  /**
+   * Get the underlying `Router` instance.
+   *
+   * @deprecated Please use the token {@link IServerRouter}. This will be removed in a future release.
+   */
+  readonly router: Router;
+
+  /**
+   * Get the underlying lite service manager for this app.
+   */
+  readonly serviceManager: ServiceManager;
+}
+
+/**
+ * A user-defined JupyterLiteServer plugin
+ */
+export type JupyterLiteServerPlugin<T> = IPlugin<IJupyterLiteServer, T>;
 
 /**
  * Mock the Event Manager for now
@@ -186,6 +206,6 @@ export namespace JupyterLiteServer {
     /**
      * The default export.
      */
-    default: IPlugin<JupyterLiteServer, any> | IPlugin<JupyterLiteServer, any>[];
+    default: IPlugin<IJupyterLiteServer, any> | IPlugin<IJupyterLiteServer, any>[];
   }
 }
