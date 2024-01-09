@@ -14,8 +14,8 @@ generating a new repository from the template.
 Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
 dependency.
 
-Finally specify `jupyter lite build --contents content --output-dir dist` as the "Build Command", and
-`dist` as "Published Directory":
+Finally specify `jupyter lite build --contents content --output-dir dist` as the "Build
+Command", and `dist` as "Published Directory":
 
 ![netlify-build](https://github.com/jupyterlite/jupyterlite/assets/44312563/64a23fa0-465a-4629-b26a-ca44aaee2280)
 
@@ -29,8 +29,8 @@ Just like Netlify, [Vercel](https://vercel.com) can connect to an existing git
 repository and seamlessly deploy static files on push and PR events (previews).
 
 Here the configuration is very similar to Netlify. You can specify the same
-`jupyter lite build --contents content --output-dir dist` build command and configure `dist` as the
-published directory.
+`jupyter lite build --contents content --output-dir dist` build command and configure
+`dist` as the published directory.
 
 ## Using `micromamba` to create the build environment
 
