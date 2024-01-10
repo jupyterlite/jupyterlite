@@ -46,9 +46,10 @@ module.exports = {
     ],
     'jest/no-done-callback': 'off',
     'jest/no-standalone-expect': 'off',
+    'no-console': ['error', { allow: ['warn', 'error'] }],
+    'prefer-arrow-callback': 'error',
     curly: ['error', 'all'],
     eqeqeq: ['error'],
-    'prefer-arrow-callback': 'error',
   },
   settings: {
     react: {

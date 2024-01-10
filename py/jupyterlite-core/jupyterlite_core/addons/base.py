@@ -293,7 +293,7 @@ class BaseAddon(LoggingConfigurable):
 
         return has_optional_dependency(
             "libarchive",
-            "install libarchive-c for better perfomance when working with archives: {error}",
+            "install libarchive-c for better performance when working with archives: {error}",
         )
 
     def extract_one(self, archive: Path, dest: Path):

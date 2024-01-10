@@ -96,10 +96,13 @@ export class Settings implements ISettings {
    * Get all the settings
    */
   async getAll(): Promise<{ settings: IPlugin[] }> {
-    const [allCore, allFederated] = await Promise.all([
-      this._getAll('all.json'),
-      this._getAll('all_federated.json'),
-    ]);
+    const allCore = await this._getAll('all.json');
+    let allFederated: IPlugin[] = [];
+    try {
+      allFederated = await this._getAll('all_federated.json');
+    } catch {
+      // handle the case where there is no federated extension
+    }
 
     // JupyterLab 4 expects all settings to be returned in one go
     // so append the settings from federated plugins to the core ones

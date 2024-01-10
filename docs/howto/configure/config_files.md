@@ -36,7 +36,7 @@ You can refer to some of the guides to learn more about the configuration option
 
 ```{note}
 
-Check out the [CLI reference](../../reference/cli.md) for a more complete list of build time configuration options
+Check out the [CLI reference](../../reference/cli.ipynb) for a more complete list of build time configuration options
 ```
 
 ## `jupyter-lite.json`

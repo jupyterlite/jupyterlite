@@ -111,10 +111,16 @@ export class Sessions implements ISessions {
     }
     const kernelName = options.kernel?.name ?? '';
     const id = options.id ?? UUID.uuid4();
+    const nameOrPath = options.name ?? options.path;
+    const dirname = PathExt.dirname(options.name) || PathExt.dirname(options.path);
+    const hasDrive = nameOrPath.includes(':');
+    const driveName = hasDrive ? nameOrPath.split(':')[0] : '';
+    // add drive name if missing (top level directory)
+    const location = dirname.includes(driveName) ? dirname : `${driveName}:${dirname}`;
     const kernel = await this._kernels.startNew({
       id,
       name: kernelName,
-      location: PathExt.dirname(options.path),
+      location,
     });
     const session: Session.IModel = {
       id,

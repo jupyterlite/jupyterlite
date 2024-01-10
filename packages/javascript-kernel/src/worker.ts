@@ -1,4 +1,6 @@
 import { IJavaScriptWorkerKernel } from './tokens';
+import { KernelMessage } from '@jupyterlab/services';
+import objectInspect from 'object-inspect';
 
 export class JavaScriptRemoteKernel {
   /**
@@ -7,6 +9,7 @@ export class JavaScriptRemoteKernel {
    * @param options The options for the kernel.
    */
   async initialize(options: IJavaScriptWorkerKernel.IOptions) {
+    // eslint-disable-next-line no-console
     console.log = function (...args) {
       const bundle = {
         name: 'stdout',
@@ -17,6 +20,7 @@ export class JavaScriptRemoteKernel {
         bundle,
       });
     };
+    // eslint-disable-next-line no-console
     console.info = console.log;
 
     console.error = function (...args) {
@@ -42,13 +46,17 @@ export class JavaScriptRemoteKernel {
   async execute(content: any, parent: any) {
     const { code } = content;
     try {
-      const result = self.eval(code);
+      const result = self.eval(code) as unknown;
       this._executionCount++;
 
-      const bundle = {
-        data: {
-          'text/plain': result,
-        },
+      const textPlain = this._inspect(result);
+      const data: { ['text/plain']?: string } = {};
+      if (typeof textPlain === 'string') {
+        data['text/plain'] = textPlain;
+      }
+
+      const bundle: KernelMessage.IExecuteResultMsg['content'] = {
+        data,
         metadata: {},
         execution_count: this._executionCount,
       };
@@ -102,6 +110,14 @@ export class JavaScriptRemoteKernel {
       metadata: {},
       status: 'ok',
     };
+  }
+
+  private _inspect(val: unknown): string | undefined {
+    if (typeof val === 'undefined') {
+      return undefined;
+    } else {
+      return objectInspect(val);
+    }
   }
 
   private _executionCount = 0;
