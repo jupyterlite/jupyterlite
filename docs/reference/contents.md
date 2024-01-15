@@ -92,7 +92,7 @@ sequenceDiagram
   D->>+S: Send HTTP POST /api/drive
   S->>+M: Broadcast message via channel
   M->>+C: Call `save`
-  C-->>-M:
+  C-->>-M: None
   M-->>-S: Response
   S-->>-D: Response
   D-->>-F: Return
