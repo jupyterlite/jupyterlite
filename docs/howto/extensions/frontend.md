@@ -91,7 +91,7 @@ If you would like to have a Python kernel available in your test JupyterLite dep
 Once you have your extension running you might want to publish to PyPI so it can be
 installed by other folks.
 
-By default the extension created from the cookiecutter is compatible with the Jupyter
+By default the extension created from the template is compatible with the Jupyter
 Releaser.
 
 The Jupyter Releaser simplifies the release process and ensure best practices.
