@@ -42,7 +42,7 @@ filebrowser) will be available within the kernel under the folder `/drive`.
 The website base URL is required for the `DriveFS` to request its content from the main
 application. Diving into the drive architecture will clarify that.
 
-```mermaid
+```{mermaid}
 flowchart LR
     subgraph main thread
         direction TB
@@ -78,7 +78,7 @@ Path("dummy.txt").write_text("Writing on Emscripten filesystem")
 Here is a simplification sequence of interaction happening to perform the filesystem
 operation:
 
-```mermaid
+```{mermaid}
 sequenceDiagram
   participant P as Python interpreter
   participant F as Emscripten FS

@@ -51,6 +51,7 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
+    "sphinxcontrib.mermaid",
 ]
 
 autosectionlabel_prefix_document = True
