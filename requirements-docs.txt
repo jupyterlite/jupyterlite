@@ -11,6 +11,7 @@ sphinx >=5.1,<6
 sphinx-autodoc-typehints
 sphinx-jsonschema
 sphinxext-rediraffe
+sphinxcontrib-mermaid
 
 # check
 pytest-check-links
