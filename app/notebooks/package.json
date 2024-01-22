@@ -100,7 +100,7 @@
     "@lezer/highlight": "^1.1.6",
     "@lumino/algorithm": "~2.0.1",
     "@lumino/application": "~2.3.0",
-    "@lumino/commands": "~2.1.3",
+    "@lumino/commands": "~2.2.0",
     "@lumino/coreutils": "~2.1.2",
     "@lumino/disposable": "~2.1.2",
     "@lumino/domutils": "~2.0.1",
