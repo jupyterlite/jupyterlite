@@ -38,20 +38,20 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.0.9",
-    "@jupyterlab/apputils": "~4.1.9",
-    "@jupyterlab/docmanager": "~4.0.9",
-    "@jupyterlab/filebrowser": "~4.0.9",
-    "@jupyterlab/help-extension": "~4.0.9",
-    "@jupyterlab/mainmenu": "~4.0.9",
-    "@jupyterlab/services": "~7.0.9",
-    "@jupyterlab/settingregistry": "~4.0.9",
-    "@jupyterlab/translation": "~4.0.9",
-    "@jupyterlab/ui-components": "~4.0.9",
+    "@jupyterlab/application": "~4.0.11",
+    "@jupyterlab/apputils": "~4.1.11",
+    "@jupyterlab/docmanager": "~4.0.11",
+    "@jupyterlab/filebrowser": "~4.0.11",
+    "@jupyterlab/help-extension": "~4.0.11",
+    "@jupyterlab/mainmenu": "~4.0.11",
+    "@jupyterlab/services": "~7.0.11",
+    "@jupyterlab/settingregistry": "~4.0.11",
+    "@jupyterlab/translation": "~4.0.11",
+    "@jupyterlab/ui-components": "~4.0.11",
     "@jupyterlite/ui-components": "^0.2.2",
     "@lumino/algorithm": "^2.0.1",
     "@lumino/coreutils": "^2.1.2",
-    "@lumino/widgets": "^2.3.0"
+    "@lumino/widgets": "^2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
