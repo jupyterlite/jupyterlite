@@ -12,7 +12,7 @@ dependencies:
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - notebook >=7.0.3,<8
+  - notebook >=7.0.7,<8
   # extra docs tools
   - sphinx-autobuild
   # avoid 200mb mkl
@@ -57,8 +57,8 @@ dependencies:
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
   - jsonschema >=3
-  - jupyterlab >=4.0.7,<5.0
-  - notebook >=7.0.1,<8.0
+  - jupyterlab >=4.0.11,<5.0
+  - notebook >=7.0.7,<8.0
   - pip
   - pkginfo
   - python-libarchive-c
