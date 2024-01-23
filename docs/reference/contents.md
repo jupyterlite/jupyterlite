@@ -1,18 +1,22 @@
 # Contents
 
-This section describes how contents is integrated on a JupyterLite site and how it is used.
+This section describes how contents is integrated on a JupyterLite site and how it is
+used.
 
 ## Access within the kernel
 
-By default, contents accessible via the default filebrowser is independent of the contents
-accessible within an execution kernel. Making the files available to the kernel may depend on how kernels are implemented.
+By default, contents accessible via the default filebrowser is independent of the
+contents accessible within an execution kernel. Making the files available to the kernel
+may depend on how kernels are implemented.
 
 ### Emscripten kernel
 
 Kernels using Emscripten (like [pyodide](https://github.com/jupyterlite/pyodide-kernel/)
 or [xeus kernels](https://github.com/jupyterlite/xeus/)) relies on the
 [Emscripten filesystem](https://emscripten.org/docs/api_reference/Filesystem-API.html)
-to access their contents. For such case, `@jupyterlite/contents` provides a [`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/classes/jupyterlite_contents.DriveFS-1.html) helper class which can be used to mount files in the Emscripten filesystem:
+to access their contents. For such case, `@jupyterlite/contents` provides a
+[`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/classes/jupyterlite_contents.DriveFS-1.html)
+helper class which can be used to mount files in the Emscripten filesystem:
 
 ```ts
   const mountpoint = '/drive';
@@ -63,8 +67,8 @@ Three threads are at play when running a kernel inside JupyterLite:
 - The kernel web worker: it executes the kernel (e.g. evaluate the code snippet from a
   notebook sent by the main thread). It mounts a `DriveFS` into the Emscripten
   filesystem.
-- The service worker: it serves website assets from cache (to work offline). And it can also
-  capture any other network requests.
+- The service worker: it serves website assets from cache (to work offline). And it can
+  also capture any other network requests.
 
 Assuming the kernel executes the following python snippet code writing into a text file:
 
@@ -96,10 +100,12 @@ sequenceDiagram
   F-->>-P: Done
 ```
 
-When the code interact with the filesystem, it interacts with the [Emscripten virtual filesystem](https://emscripten.org/docs/porting/files/file_systems_overview.html).  That virtual filesystem
-allows classical code (like the Python snippet in this example) to be run with little or no change.
-Moreover the virtual filesystem allows developer to provide their own mechanism for dealing
-with filesystem io through a [filesystem API](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api).
+When the code interact with the filesystem, it interacts with the
+[Emscripten virtual filesystem](https://emscripten.org/docs/porting/files/file_systems_overview.html).
+That virtual filesystem allows classical code (like the Python snippet in this example)
+to be run with little or no change. Moreover the virtual filesystem allows developer to
+provide their own mechanism for dealing with filesystem io through a
+[filesystem API](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api).
 In the sequence, we simplify the API triggered to a single `put` (in truth multiple
 calls will happen when writing a file). As we plugged a custom drive implementation
 `DriveFS`, the put resolution will therefore be the responsibility of that code. The
@@ -128,4 +134,6 @@ The need to use a HTTP request raises to the constrain of answering a synchronou
 (aka the Emscripten filesystem) with an asynchronous API (aka the Jupyter contents
 manager).
 
-That architecture makes it possible for lite kernel to access contents from a custom [JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html) to have multiple source of contents.
+That architecture makes it possible for lite kernel to access contents from a custom
+[JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html)
+to have multiple source of contents.
