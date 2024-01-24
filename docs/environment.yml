@@ -32,6 +32,7 @@ dependencies:
   - sphinx >=5.1,<6
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
+  - sphinxcontrib-mermaid
   - sphinxext-rediraffe
   # check
   - pytest-check-links
