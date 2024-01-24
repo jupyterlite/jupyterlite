@@ -136,4 +136,4 @@ manager).
 
 That architecture makes it possible for lite kernel to access contents from a custom
 [JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html)
-to have multiple source of contents.
+to have multiple sources of contents.
