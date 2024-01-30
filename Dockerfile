@@ -30,3 +30,6 @@ RUN add-apt-repository ppa:git-core/ppa \
 RUN git config --global user.name "YOUR NAME" \
     && git config --global user.email yourname@gmail.com \
     && git config --global init.defaultBranch main
+# Building the docker file
+# docker build -t jupyterlite-dev .
+# docker run -it --rm -v $pwd/:/code jupyterlite-dev:1.4.0 bash 
