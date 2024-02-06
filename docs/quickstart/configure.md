@@ -1,14 +1,14 @@
 # Configure a JupyterLite site
 
 Once you have initialized a JupyterLite site, configuration changes can be made by
-either adding or editing configutation files in the
+either adding or editing configuration files in the
 [Lite Dir](../reference/cli.ipynb#the-lite-dir).
 
 Configuration values are set in one or more of the
 [Runtime Configuration Files](../reference/config.md) in
 [well known locations in the Lite Dir](../reference/cli.ipynb#the-lite-dir).
 Configuration information is merged in a cascade, allowing settings to be set in the
-root of the [Lite Dir](../reference/cli.ipynb#the-lite-dir), and superceeded by settings
+root of the [Lite Dir](../reference/cli.ipynb#the-lite-dir), and superseded by settings
 for an individual app such as `repl` and `lab`.
 
 Available options are defined in the Jupyter Config Data

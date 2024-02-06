@@ -77,7 +77,7 @@ Check out the [](../../reference/schema.md) for a complete list of the available
 The `overrides.json` file is used to override the plugins and extension settings of
 JupyterLite.
 
-For example it can be used to overridde the default theme when users launch JupyterLite.
+For example it can be used to override the default theme when users launch JupyterLite.
 The content of the file then be:
 
 ```json
