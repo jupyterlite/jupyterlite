@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=20,<21`
-- `jupyterlab >=4,<5`
+- `jupyterlab >=4.0,<4.1`
 - `python >=3.10,<3.11`
 
 Various package managers on different operating systems provide these.
