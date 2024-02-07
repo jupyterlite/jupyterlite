@@ -170,7 +170,9 @@ jobs:
         run: ${{ matrix.python-command }} -m pip install -r requirements-test.txt
       - name: Pin pytest for pypy
         if: ${{ matrix.python-version == 'pypy-3.8' }}
-        run: ${{ matrix.python-command }} -m pip install "pytest<8"
+        run: |
+          ${{ matrix.python-command }} -m pip install "pytest<8"
+          echo 'See https://github.com/jupyterlite/jupyterlite/issues/1308' >> $GITHUB_STEP_SUMMARY
       - name: Test (py)
         run: doit test:py:*
       - name: Upload (reports)
