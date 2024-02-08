@@ -49,4 +49,4 @@ Notebook interfaces:
 ## References
 
 Check out the [guide for adding extensions](../configure/simple_extensions.md) for more
-informations about how to add extensions to your JupyterLite site.
+information about how to add extensions to your JupyterLite site.

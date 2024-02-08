@@ -44,7 +44,7 @@ the Pyodide kernel by default, since the `jupyterlite` metapackage would depend 
 `jupyterlite-pyodide-kernel`.
 
 In version `0.2.0` this is not the case anymore. You will need to install the
-`jupyterlite-pyodide-kernel` explicitely in your build environment alongside
+`jupyterlite-pyodide-kernel` explicitly in your build environment alongside
 `jupyterlite-core` (the package providing the `jupyter-lite` CLI).
 
 See [the documentation for adding kernels](./howto/configure/kernels.md) to learn more.
