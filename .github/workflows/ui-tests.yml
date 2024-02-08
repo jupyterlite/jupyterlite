@@ -54,7 +54,7 @@ jobs:
           path: ./ui-tests/ui-tests-app
 
       - name: Cache (ui-tests/node_modules)
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-ui-tests-node-modules
         with:
           path: ui-tests/node_modules/
