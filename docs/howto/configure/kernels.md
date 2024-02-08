@@ -52,7 +52,7 @@ Check out the dedicated guides for configuring the Pyodide kernel:
 
 #### `jupyterlite-xeus`
 
-`jupyterlite/xeus` is a loader package to enable
+`jupyterlite-xeus` is a loader package to enable
 [Xeus-based](https://github.com/jupyter-xeus/xeus) kernels in JupyterLite.
 
 In particular it can enable [xeus-python](https://github.com/jupyter-xeus/xeus-python)
