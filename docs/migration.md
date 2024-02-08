@@ -133,8 +133,8 @@ The `jupyterlite` package currently provides a couple of shims as well as the Py
 kernel for better compatibility with existing deployments.
 
 We recommend you start using the `jupyterlite-core` package for your deployments, and
-additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or
-`jupyterlite-xeus-python`.
+additionally install a Python kernel such as `jupyterlite-pyodide-kernel` or a Xeus
+kernel.
 
 ### `jupyterlite-pyodide-kernel`
 
