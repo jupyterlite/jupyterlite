@@ -79,8 +79,7 @@ The JupyterLite contributors develop and maintain the following kernels:
 - a JavaScript kernel running in a Web Worker, developed as part of the
   `jupyterlite/jupyterlite` repository but distributed via the
   `jupyterlite-javascript-kernel` package on PyPI
-- a Python kernel based on [Xeus Python][xeus-python]:
-  [https://github.com/jupyterlite/xeus-python-kernel](https://github.com/jupyterlite/xeus-python-kernel)
+- a Python kernel based on [Xeus Python][xeus-python]
 
 There are a few more third-party in-browser kernels also compatible with JupyterLite.
 See this [GitHub discussion][github-discussion-kernels] for more information.

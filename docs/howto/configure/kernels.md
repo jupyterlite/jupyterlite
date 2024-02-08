@@ -27,8 +27,8 @@ In the case of Python there are currently two options:
 - `jupyterlite-pyodide-kernel`: a Python kernel based on
   [Pyodide](https://pyodide.org/en/stable/), a Python distribution running in the
   browser.
-- `jupyterlite-xeus-python`: a Python kernel based on
-  [xeus-python](https://github.com/jupyter-xeus/xeus-python).
+- `jupyterlite-xeus`: JupyterLite loader for Xeus kernels
+  (https://github.com/jupyterlite/xeus).
 
 #### `jupyterlite-pyodide-kernel`
 
@@ -50,9 +50,16 @@ Check out the dedicated guides for configuring the Pyodide kernel:
 ../pyodide/pyodide
 ```
 
-#### `jupyterlite-xeus-python`
+#### `jupyterlite-xeus`
 
-- Is based on [xeus-python](https://github.com/jupyter-xeus/xeus-python)
+`jupyterlite-xeus` is a loader package to enable
+[Xeus-based](https://github.com/jupyter-xeus/xeus) kernels in JupyterLite.
+
+In particular it can enable [xeus-python](https://github.com/jupyter-xeus/xeus-python)
+to be used in JupyterLite.
+
+Xeus Python:
+
 - Uses [IPython](https://github.com/ipython/ipython) for the code execution (access to
   IPython magics, support for the inline Matplotlib backend, _etc_)
 - **Does not provide** (yet) a way to dynamically install packages. There is ongoing
