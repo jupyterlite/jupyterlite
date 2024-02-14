@@ -99,3 +99,17 @@ export async function notebooksWaitForApplication({ baseURL }, use, testInfo) {
   };
   await use(waitIsReady);
 }
+
+/**
+ * Check if a directory is listed in the file browser
+ */
+export async function isDirectoryListedInBrowser({
+  page,
+  name,
+}: {
+  page: IJupyterLabPageFixture;
+  name: string;
+}): Promise<boolean> {
+  const item = await page.$(`xpath=${page.filebrowser.xpBuildDirectorySelector(name)}`);
+  return item !== null;
+}

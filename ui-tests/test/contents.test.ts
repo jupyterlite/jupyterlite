@@ -13,6 +13,7 @@ import {
   createNewDirectory,
   deleteItem,
   download,
+  isDirectoryListedInBrowser,
   openDirectory,
   refreshFilebrowser,
   treeWaitForApplication,
@@ -128,9 +129,9 @@ test.describe('Contents Tests', () => {
   });
 
   test('Create a new folder with content and delete it', async ({ page }) => {
-    const name = 'Custom Name';
+    const name = 'Custom';
     await createNewDirectory({ page, name });
-    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+    expect(await isDirectoryListedInBrowser({ page, name })).toBeTruthy();
 
     await openDirectory({ page, directory: name });
     await page.notebook.createNew();
@@ -139,7 +140,7 @@ test.describe('Contents Tests', () => {
     await deleteItem({ page, name });
     refreshFilebrowser({ page });
 
-    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
+    expect(await isDirectoryListedInBrowser({ page, name })).toBeFalsy();
   });
 
   test('Download a notebook', async ({ page }) => {
