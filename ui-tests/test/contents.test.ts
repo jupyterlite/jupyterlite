@@ -45,7 +45,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
-    refreshFilebrowser({ page });
+    await refreshFilebrowser({ page });
     await page.notebook.open(notebook);
     expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
@@ -72,7 +72,7 @@ test.describe('Contents Tests', () => {
 
   test('Open a file in a subfolder existing on the server', async ({ page }) => {
     const file = 'data/iris.csv';
-    refreshFilebrowser({ page });
+    await refreshFilebrowser({ page });
     await page.filebrowser.open(file);
     expect(
       await page.filebrowser.isFileListedInBrowser(path.basename(file)),
@@ -123,7 +123,7 @@ test.describe('Contents Tests', () => {
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
     await deleteItem({ page, name });
-    refreshFilebrowser({ page });
+    await refreshFilebrowser({ page });
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
   });
@@ -138,7 +138,7 @@ test.describe('Contents Tests', () => {
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();
     await deleteItem({ page, name });
-    refreshFilebrowser({ page });
+    await refreshFilebrowser({ page });
 
     expect(await isDirectoryListedInBrowser({ page, name })).toBeFalsy();
   });

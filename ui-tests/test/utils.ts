@@ -66,7 +66,7 @@ export async function createNewDirectory({
   await page.click('[data-command="filebrowser:create-new-directory"]');
   await page.fill('.jp-DirListing-editor', name);
   await page.press('.jp-DirListing-editor', 'Enter');
-  refreshFilebrowser({ page });
+  await refreshFilebrowser({ page });
 }
 
 /**
