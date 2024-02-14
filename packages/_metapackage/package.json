@@ -37,6 +37,6 @@
     "@jupyterlite/ui-components": "^0.2.3"
   },
   "devDependencies": {
-    "typescript": "~5.0.4"
+    "typescript": "~5.1.6"
   }
 }

@@ -12,7 +12,6 @@ dependencies:
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy
-  - notebook >=7.0.7,<8
   # extra docs tools
   - sphinx-autobuild
   # avoid 200mb mkl
@@ -28,7 +27,10 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - jupyterlab-github >=4.0.0
   - jupyterlab-kernelspy >=4.0.0
-  - jupyterlab-myst >=2.0.2
+  # TODO: re-add later?
+  # disable for now to avoid collisions with default mermaid diagrams:
+  # https://github.com/jupyterlite/jupyterlite/pull/1263
+  # - jupyterlab-myst >=2.0.2
   # TODO: re-add after JupyterLab 4 compatibility
   # https://github.com/jupyterlab-contrib/jupyterlab-tour/issues/76
   # - jupyterlab-tour >=3.1.0
@@ -57,8 +59,8 @@ dependencies:
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
   - jsonschema >=3
-  - jupyterlab >=4.0.11,<4.1.0
-  - notebook >=7.0.7,<8.0
+  - jupyterlab >=4.1.1,<4.2
+  - notebook >=7.1.0,<7.2
   - pip
   - pkginfo
   - python-libarchive-c
