@@ -52,11 +52,8 @@ export async function refreshFilebrowser({ page }): Promise<void> {
  * https://github.com/jupyterlab/jupyterlab/pull/15607
  */
 export async function openDirectory({ page, directory }): Promise<void> {
-  try {
-    await page.filebrowser.openDirectory(directory);
-  } catch (e) {
-    // no-op
-  }
+  // workaround: double click on the directory to open it
+  await page.dblclick(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
 }
 
 export async function createNewDirectory({
@@ -68,7 +65,7 @@ export async function createNewDirectory({
 }): Promise<void> {
   await page.click('[data-command="filebrowser:create-new-directory"]');
   await page.fill('.jp-DirListing-editor', name);
-  await page.keyboard.down('Enter');
+  await page.press('.jp-DirListing-editor', 'Enter');
   refreshFilebrowser({ page });
 }
 

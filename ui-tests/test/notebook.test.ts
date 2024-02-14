@@ -20,6 +20,7 @@ test.describe('Notebook Tests', () => {
     const name = 'notebook';
     await page.menu.clickMenuItem('New>New Folder');
     await page.fill('.jp-DirListing-editor', name);
+    await page.press('.jp-DirListing-editor', 'Enter');
     await openDirectory({ page, directory: name });
   });
 
