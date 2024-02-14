@@ -26,9 +26,9 @@
   },
   "scripts": {
     "bootstrap": "jlpm && jlpm clean && jlpm build && jlpm lint",
-    "build": "jlpm build:lib && jlpm run build:js-kernel && jlpm build:app",
+    "build": "jlpm build:lib && jlpm build:app",
     "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
-    "build:lib": "lerna run build --scope @jupyterlite/metapackage && jlpm run build:js-kernel:lib",
+    "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:prod": "lerna run build:prod",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",

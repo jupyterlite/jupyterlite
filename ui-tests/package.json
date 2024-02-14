@@ -6,9 +6,7 @@
   "license": "BSD-3-Clause",
   "description": "JupyterLite UI Tests",
   "scripts": {
-    "build": "jlpm run build:js-kernel && jlpm run build:lite",
-    "build:js-kernel": "cd ../ && jlpm && jlpm run build:js-kernel",
-    "build:lite": "python build.py",
+    "build": "python build.py",
     "clean": "rimraf .jupyterlite.doit.db ui-tests-app",
     "clean:snapshots": "rimraf -g \"test/**/*-snapshots/*.png\"",
     "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
