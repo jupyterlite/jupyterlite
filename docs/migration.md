@@ -12,6 +12,24 @@ JupyterLite 0.3.0 is based on the JupyterLab 4.1 and Jupyter Notebook 7.1 packag
 Although no breaking changes are expected, this may affect the extensions you are using
 as they may rely on features added to JupyterLab 4.1 and Notebook 7.1.
 
+### `jupyterlite` metapackage
+
+Prior to JupyterLite 0.3.0, installing the `jupyterlite` metapackage would also install
+the JavaScript (Web Worker) kernel by default via the dependency on
+`jupyterlite-javascript-kernel`.
+
+This dependency on `jupyterlite-javascript-kernel` has now been removed, so you may need
+to explicitely add `jupyterlite-javascript-kernel` to your build dependencies if you
+want to use that kernel.
+
+```{note}
+As an alternative to `jupyterlite-javascript-kernel`, you may also want to use [Xeus JavaScript](https://github.com/jupyter-xeus/xeus-javascript), which currently offers more features and is generally more usable.
+```
+
+```{note}
+`jupyterlite-javascript-kernel` has now been moved to https://github.com/jupyterlite/javascript-kernel.
+```
+
 ## `0.1.0` to `0.2.0`
 
 ### Extensions
