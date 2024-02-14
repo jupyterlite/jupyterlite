@@ -21,16 +21,13 @@
       "app/notebooks",
       "app/repl",
       "app/tree",
-      "packages/*",
-      "py/jupyterlite-javascript-kernel"
+      "packages/*"
     ]
   },
   "scripts": {
     "bootstrap": "jlpm && jlpm clean && jlpm build && jlpm lint",
     "build": "jlpm build:lib && jlpm run build:js-kernel && jlpm build:app",
     "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
-    "build:js-kernel": "lerna run build --scope @jupyterlite/javascript-kernel-extension",
-    "build:js-kernel:lib": "lerna run build:lib --scope @jupyterlite/javascript-kernel-extension",
     "build:lib": "lerna run build --scope @jupyterlite/metapackage && jlpm run build:js-kernel:lib",
     "build:prod": "lerna run build:prod",
     "build:test": "lerna run build:test",
@@ -40,7 +37,6 @@
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
     "install": "lerna bootstrap",
-    "install:js-kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "install:py": "python -m pip install -r requirements-editable.txt",
     "lint": "jlpm prettier:fix && jlpm eslint:fix && jlpm lint:py",
     "lint:check": "jlpm prettier:check && jlpm eslint:check && jlpm lint:py:check",

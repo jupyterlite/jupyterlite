@@ -90,9 +90,6 @@ search = "jupyterlite-core >={current_version}"
 [[tool.tbump.file]]
 src = "py/jupyterlite-core/jupyterlite_core/__init__.py"
 
-[[tool.tbump.file]]
-src = "py/jupyterlite-javascript-kernel/pyproject.toml"
-
 [[tool.tbump.field]]
 name = "channel"
 default = ""

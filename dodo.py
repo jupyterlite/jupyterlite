@@ -308,14 +308,7 @@ def task_build():
             file_dep += [B.PY_APP_PACK]
 
         targets = [wheel, sdist]
-        actions = []
-        # make sure to build the lab extension before building the wheel
-        if py_name == C.JS_KERNEL_NAME:
-            actions += [U.do("jlpm", cwd=py_pkg)]
-            actions += [U.do("jlpm", "build:prod", cwd=py_pkg)]
-            targets.append(B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON)
-
-        actions += [(U.build_one_hatch, [py_pkg])]
+        actions = [(U.build_one_hatch, [py_pkg])]
 
         yield dict(
             name=f"py:{py_name}",
@@ -435,7 +428,6 @@ def task_docs():
 
     app_build_deps = [
         *([] if C.CI else [B.PY_APP_PACK]),
-        B.JS_KERNEL_LABEXTENSION_PACKAGE_JSON,
         *P.ALL_EXAMPLES,
         # NOTE: these won't always trigger a rebuild because of the inner dodo
         *P.PY_SETUP_PY[C.CORE_NAME].rglob("*.py"),
@@ -725,7 +717,6 @@ def task_repo():
 class C:
     NAME = "jupyterlite"
     CORE_NAME = "jupyterlite-core"
-    JS_KERNEL_NAME = "jupyterlite-javascript-kernel"
     NOARCH_WHL = "py3-none-any.whl"
     ENC = dict(encoding="utf-8")
     JSON = dict(indent=2, sort_keys=True)
@@ -945,10 +936,6 @@ class B:
         *P.ROOT.glob("py/*/dist/*.tar.gz"),
     ]
     DIST_HASH_INPUTS = sorted([*PY_DISTRIBUTIONS, APP_PACK])
-    JS_KERNEL_PY_PACKAGE = P.ROOT / "py" / C.JS_KERNEL_NAME
-    JS_KERNEL_LABEXTENSION_PACKAGE_JSON = (
-        JS_KERNEL_PY_PACKAGE / C.JS_KERNEL_NAME.replace("-", "_") / "labextension" / "package.json"
-    )
 
 
 class BB:

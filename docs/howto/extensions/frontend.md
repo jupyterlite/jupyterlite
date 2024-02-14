@@ -83,7 +83,7 @@ If you iterate and make new changes to the extension:
 
 ```{note}
 By default the `jupyterlite-core` package does not include any kernels.
-If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies. There is also a JavaScript kernel available via the `jupyterlite-javascript-kernel` package.
+If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies.
 ```
 
 ## Publishing the extension

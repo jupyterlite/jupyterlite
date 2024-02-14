@@ -147,7 +147,6 @@ app/tree/index.html
 docs/.jupyter_cache
 docs/reference/api/ts
 docs/jupyter_execute
-py/jupyterlite-javascript-kernel/jupyterlite_javascript_kernel/labextension
 .vercel
 *.bz2
 *.tar.gz

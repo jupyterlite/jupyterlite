@@ -4507,45 +4507,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/javascript-kernel-extension@workspace:py/jupyterlite-javascript-kernel":
-  version: 0.0.0-use.local
-  resolution: "@jupyterlite/javascript-kernel-extension@workspace:py/jupyterlite-javascript-kernel"
-  dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.12.1
-    "@jupyterlab/builder": ~4.1.1
-    "@jupyterlab/coreutils": ~6.1.1
-    "@jupyterlite/javascript-kernel": ^0.2.1
-    "@jupyterlite/kernel": ^0.2.1
-    "@jupyterlite/server": ^0.2.1
-    "@types/jest": ^29.5.3
-    jest: ^29.6.2
-    rimraf: ~5.0.1
-    ts-jest: ^29.1.1
-    typescript: ~5.1.6
-  languageName: unknown
-  linkType: soft
-
-"@jupyterlite/javascript-kernel@^0.2.1, @jupyterlite/javascript-kernel@^0.2.3, @jupyterlite/javascript-kernel@workspace:packages/javascript-kernel":
-  version: 0.0.0-use.local
-  resolution: "@jupyterlite/javascript-kernel@workspace:packages/javascript-kernel"
-  dependencies:
-    "@babel/core": ^7.11.6
-    "@babel/preset-env": ^7.12.1
-    "@jupyterlab/coreutils": ~6.1.1
-    "@jupyterlab/testutils": ~4.1.1
-    "@jupyterlite/kernel": ^0.2.1
-    "@types/jest": ^29.5.3
-    "@types/object-inspect": ^1.8.4
-    comlink: ^4.3.1
-    jest: ^29.6.2
-    object-inspect: ^1.13.1
-    rimraf: ~5.0.1
-    ts-jest: ^29.1.1
-    typescript: ~5.1.6
-  languageName: unknown
-  linkType: soft
-
 "@jupyterlite/kernel@^0.2.1, @jupyterlite/kernel@^0.2.3, @jupyterlite/kernel@workspace:packages/kernel":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/kernel@workspace:packages/kernel"
@@ -4602,7 +4563,6 @@ __metadata:
     "@jupyterlite/application-extension": ^0.2.3
     "@jupyterlite/contents": ^0.2.3
     "@jupyterlite/iframe-extension": ^0.2.3
-    "@jupyterlite/javascript-kernel": ^0.2.3
     "@jupyterlite/kernel": ^0.2.3
     "@jupyterlite/licenses": ^0.2.3
     "@jupyterlite/localforage": ^0.2.3
@@ -6270,13 +6230,6 @@ __metadata:
   version: 2.4.1
   resolution: "@types/normalize-package-data@npm:2.4.1"
   checksum: e87bccbf11f95035c89a132b52b79ce69a1e3652fe55962363063c9c0dae0fe2477ebc585e03a9652adc6f381d24ba5589cc5e51849df4ced3d3e004a7d40ed5
-  languageName: node
-  linkType: hard
-
-"@types/object-inspect@npm:^1.8.4":
-  version: 1.8.4
-  resolution: "@types/object-inspect@npm:1.8.4"
-  checksum: 06e1993607285603c619e6f8402effb8d3a7a797fc857a96f9d8200eb31e0e2017d26efc82b0a5e40ae82f6da5caa824edc4dff798afb63dbfaa8a029cd3b4ad
   languageName: node
   linkType: hard
 
@@ -15519,7 +15472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-inspect@npm:^1.12.3, object-inspect@npm:^1.13.1, object-inspect@npm:^1.9.0":
+"object-inspect@npm:^1.12.3, object-inspect@npm:^1.9.0":
   version: 1.13.1
   resolution: "object-inspect@npm:1.13.1"
   checksum: 7d9fa9221de3311dcb5c7c307ee5dc011cdd31dc43624b7c184b3840514e118e05ef0002be5388304c416c0eb592feb46e983db12577fc47e47d5752fbbfb61f
