@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0a0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.3...eb8b62a234aa342841d6609ffd07bdf864ac7420))
+
+### Enhancements made
+
+- Update to JupyterLab 4.1 and Notebook 7.1 [#1263](https://github.com/jupyterlite/jupyterlite/pull/1263) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Remove `jupyterlite-javascript-kernel` [#1313](https://github.com/jupyterlite/jupyterlite/pull/1313) ([@jtpio](https://github.com/jtpio))
+- Pin `pytest<8` for pypy [#1309](https://github.com/jupyterlite/jupyterlite/pull/1309) ([@jtpio](https://github.com/jtpio))
+- Pin to `jupyterlab<4.1.0` [#1306](https://github.com/jupyterlite/jupyterlite/pull/1306) ([@jtpio](https://github.com/jtpio))
+- Bump the actions group with 1 update [#1303](https://github.com/jupyterlite/jupyterlite/pull/1303) ([@dependabot](https://github.com/dependabot))
+- Bump notebook from 7.0.6 to 7.0.7 in /ui-tests [#1296](https://github.com/jupyterlite/jupyterlite/pull/1296) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Update xeus python documentation [#1310](https://github.com/jupyterlite/jupyterlite/pull/1310) ([@jtpio](https://github.com/jtpio))
+- Fix a few typos in documentation [#1305](https://github.com/jupyterlite/jupyterlite/pull/1305) ([@ianthomas23](https://github.com/ianthomas23))
+- Initiate documentation on the kernel contents [#1293](https://github.com/jupyterlite/jupyterlite/pull/1293) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-01-22&to=2024-02-16&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-01-22..2024-02-16&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-01-22..2024-02-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-01-22..2024-02-16&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-01-22..2024-02-16&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2024-01-22..2024-02-16&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-01-22..2024-02-16&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.2.3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.2...4fa05578099c74dcd2fef43d8ebe2a2d1ab6a069))
@@ -25,8 +55,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-01-03&to=2024-01-22&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-01-03..2024-01-22&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-01-03..2024-01-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-01-03..2024-01-22&type=Issues) | [@jeremy-feng](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajeremy-feng+updated%3A2024-01-03..2024-01-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-01-03..2024-01-22&type=Issues) | [@Rjchauhan18](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ARjchauhan18+updated%3A2024-01-03..2024-01-22&type=Issues) | [@tgourdel](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atgourdel+updated%3A2024-01-03..2024-01-22&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.2
 
