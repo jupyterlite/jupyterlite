@@ -23,12 +23,15 @@ to explicitely add `jupyterlite-javascript-kernel` to your build dependencies if
 want to use that kernel.
 
 ```{note}
-As an alternative to `jupyterlite-javascript-kernel`, you may also want to use [Xeus JavaScript](https://github.com/jupyter-xeus/xeus-javascript), which currently offers more features and is generally more usable.
+As an alternative to `jupyterlite-javascript-kernel`, you may also want to use [Xeus JavaScript], which currently offers more features and is generally more usable.
 ```
 
 ```{note}
-`jupyterlite-javascript-kernel` has now been moved to https://github.com/jupyterlite/javascript-kernel.
+`jupyterlite-javascript-kernel` has now been moved to the [jupyterlite-javascript-kernel] repo.
 ```
+
+[Xeus JavaScript]: https://github.com/jupyter-xeus/xeus-javascript
+[jupyterlite-javascript-kernel]: https://github.com/jupyterlite/javascript-kernel
 
 ## `0.1.0` to `0.2.0`
 
