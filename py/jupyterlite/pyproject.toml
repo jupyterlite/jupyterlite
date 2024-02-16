@@ -9,7 +9,6 @@ authors = [
 ]
 dependencies = [
     "jupyterlite-core >=0.2.3",
-    "jupyterlite-javascript-kernel",
 ]
 keywords = [
     "browser",

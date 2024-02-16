@@ -10,7 +10,6 @@
     { "path": "../application-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
-    { "path": "../javascript-kernel" },
     { "path": "../kernel" },
     { "path": "../licenses" },
     { "path": "../localforage" },

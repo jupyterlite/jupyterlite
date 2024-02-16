@@ -24,7 +24,6 @@
     "@jupyterlite/application-extension": "^0.2.3",
     "@jupyterlite/contents": "^0.2.3",
     "@jupyterlite/iframe-extension": "^0.2.3",
-    "@jupyterlite/javascript-kernel": "^0.2.3",
     "@jupyterlite/kernel": "^0.2.3",
     "@jupyterlite/licenses": "^0.2.3",
     "@jupyterlite/localforage": "^0.2.3",

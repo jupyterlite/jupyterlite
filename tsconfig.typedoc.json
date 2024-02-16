@@ -22,9 +22,6 @@
       "path": "./packages/iframe-extension"
     },
     {
-      "path": "./packages/javascript-kernel"
-    },
-    {
       "path": "./packages/kernel"
     },
     {

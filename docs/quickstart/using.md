@@ -76,9 +76,6 @@ The JupyterLite contributors develop and maintain the following kernels:
 
 - a Python kernel based on [Pyodide][pyodide]:
   [https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
-- a JavaScript kernel running in a Web Worker, developed as part of the
-  `jupyterlite/jupyterlite` repository but distributed via the
-  `jupyterlite-javascript-kernel` package on PyPI
 - a Python kernel based on [Xeus Python][xeus-python]
 
 There are a few more third-party in-browser kernels also compatible with JupyterLite.
