@@ -12,6 +12,11 @@ const CACHE = 'precache';
 const broadcast = new BroadcastChannel('/api/drive.v1');
 
 /**
+ * Whether to enable the cache
+ */
+let enableCache = false;
+
+/**
  * Install event listeners
  */
 self.addEventListener('install', onInstall);
@@ -24,6 +29,9 @@ self.addEventListener('fetch', onFetch);
  * Handle installation with the cache
  */
 function onInstall(event: ExtendableEvent): void {
+  // check if we should enable the cache
+  const searchParams = new URL(location.href).searchParams;
+  enableCache = searchParams.get('enableCache') === 'true';
   void self.skipWaiting();
   event.waitUntil(cacheAll());
 }
@@ -61,6 +69,10 @@ async function onFetch(event: FetchEvent): Promise<void> {
 /** Get a cached response, and update cache. */
 async function maybeFromCache(event: FetchEvent): Promise<Response> {
   const { request } = event;
+
+  if (!enableCache) {
+    return await fetch(request);
+  }
 
   let response: Response | null = await fromCache(request);
 

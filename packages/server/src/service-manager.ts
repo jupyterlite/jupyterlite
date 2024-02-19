@@ -11,7 +11,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
       options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
-    void this.initialize(workerUrl).catch(console.warn);
+    const fullWorkerUrl = new URL(workerUrl, window.location.href);
+    // TODO: read from page config
+    fullWorkerUrl.searchParams.set('enableCache', 'true');
+    void this.initialize(fullWorkerUrl.href).catch(console.warn);
   }
 
   /**
@@ -91,7 +94,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       }
     }
 
-    this.setRegistration(registration);
+    this._setRegistration(registration);
 
     if (!registration) {
       this._ready.reject(void 0);
@@ -100,7 +103,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
   }
 
-  private setRegistration(registration: ServiceWorkerRegistration | null) {
+  private _setRegistration(registration: ServiceWorkerRegistration | null) {
     this._registration = registration;
     this._registrationChanged.emit(this._registration);
   }
