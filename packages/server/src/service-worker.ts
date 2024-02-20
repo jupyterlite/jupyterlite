@@ -29,9 +29,6 @@ self.addEventListener('fetch', onFetch);
  * Handle installation with the cache
  */
 function onInstall(event: ExtendableEvent): void {
-  // check if we should enable the cache
-  const searchParams = new URL(location.href).searchParams;
-  enableCache = searchParams.get('enableCache') === 'true';
   void self.skipWaiting();
   event.waitUntil(cacheAll());
 }
@@ -40,6 +37,9 @@ function onInstall(event: ExtendableEvent): void {
  * Handle activation.
  */
 function onActivate(event: ExtendableEvent): void {
+  // check if we should enable the cache
+  const searchParams = new URL(location.href).searchParams;
+  enableCache = searchParams.get('enableCache') === 'true';
   event.waitUntil(self.clients.claim());
 }
 
