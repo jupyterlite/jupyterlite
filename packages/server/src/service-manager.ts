@@ -13,7 +13,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     const fullWorkerUrl = new URL(workerUrl, window.location.href);
     // TODO: read from page config
-    fullWorkerUrl.searchParams.set('enableCache', 'true');
+    fullWorkerUrl.searchParams.set('enableCache', 'false');
     void this.initialize(fullWorkerUrl.href).catch(console.warn);
   }
 
