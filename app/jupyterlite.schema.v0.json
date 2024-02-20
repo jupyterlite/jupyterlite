@@ -189,7 +189,7 @@
           "default": false
         },
         "enableServiceWorkerCache": {
-          "description": "Whether to enable the service worker cache for offline use",
+          "description": "Whether to enable the service worker cache",
           "type": "boolean",
           "default": false
         }
