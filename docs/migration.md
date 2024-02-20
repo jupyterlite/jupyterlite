@@ -33,6 +33,33 @@ As an alternative to `jupyterlite-javascript-kernel`, you may also want to use [
 [Xeus JavaScript]: https://github.com/jupyter-xeus/xeus-javascript
 [jupyterlite-javascript-kernel]: https://github.com/jupyterlite/javascript-kernel
 
+### Service Worker
+
+JupyterLite uses a Service Worker to make files and notebooks visible to the kernels, so
+they can be manipulated by the user via code in the notebook.
+
+In previous versions, the Service Worker had caching enabled by default, and it was not
+possible to easily disable it.
+
+The Service Worker cache was however the source of many issues when accessing files from
+a kernel, often giving errors to users, who would have to clear their cache to fix the
+issue.
+
+In JupyterLite 0.3.0, the Service Worker cache is **disabled** by default, but it is
+still possible to enable it if needed.
+
+To enable the Service Worker cache, add the `enableServiceWorkerCache` option to your
+`jupyter-lite.json` file. For example:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "enableServiceWorkerCache": true
+  }
+}
+```
+
 ## `0.1.0` to `0.2.0`
 
 ### Extensions
