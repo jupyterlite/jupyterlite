@@ -309,7 +309,6 @@
       "@jupyterlab/application-extension:tree-resolver",
       "@jupyterlab/apputils-extension:announcements",
       "@jupyterlab/apputils-extension:kernel-status",
-      "@jupyterlab/apputils-extension:notification",
       "@jupyterlab/apputils-extension:palette-restorer",
       "@jupyterlab/apputils-extension:print",
       "@jupyterlab/apputils-extension:resolver",
