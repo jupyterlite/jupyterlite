@@ -3,7 +3,26 @@
 It is possible to create a fully self-contained JupyterLite archive with no request to
 external services.
 
-## Configure the Pyodide kernel
+Some configuration parts depend on the kernels you might be using.
+
+This guide focuses on two Python kernels only: Xeus Python and Pyodide.
+
+## With the Xeus Python kernel
+
+Using the [Xeus Python kernel](../../xeus-python/preinstalled_packages.md), packages are
+automatically pre-installed at build time.
+
+They are then available as static assets in the JupyterLite output directory.
+
+These assets are available offline by default, there is no extra configuration
+necessary.
+
+See the [related guide](../../xeus-python/preinstalled_packages.md) for more
+information.
+
+## With the Pyodide kernel
+
+### Configure the Pyodide kernel
 
 By default the Pyodide files are fetched from a CDN.
 
@@ -23,7 +42,7 @@ _same_ `x.y.z` version against which the release was tested, as both python
 and JS APIs are still changing frequently on both sides of the dependency.
 ```
 
-## Configure the piplite wheels
+### Configure the piplite wheels
 
 By default calling `%pip install` or `piplite.install()` downloads and installs packages
 from the public [PyPI].
