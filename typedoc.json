@@ -6,7 +6,6 @@
     "packages/application-extension",
     "packages/contents",
     "packages/iframe-extension",
-    "packages/javascript-kernel",
     "packages/kernel",
     "packages/licenses",
     "packages/localforage",

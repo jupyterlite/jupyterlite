@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/licenses",
-  "version": "0.2.0",
+  "version": "0.3.0-alpha.1",
   "description": "JupyterLite - Licenses",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -20,7 +20,8 @@
   "files": [
     "lib/*.d.ts",
     "lib/*.js.map",
-    "lib/*.js"
+    "lib/*.js",
+    "src/**/*.{ts,tsx}"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -30,12 +31,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.0.7"
+    "@jupyterlab/coreutils": "~6.1.2"
   },
   "devDependencies": {
-    "@jupyterlite/types": "^0.2.0",
+    "@jupyterlite/types": "^0.3.0-alpha.1",
     "rimraf": "~5.0.1",
-    "typescript": "~5.0.4"
+    "typescript": "~5.1.6"
   },
   "publishConfig": {
     "access": "public"

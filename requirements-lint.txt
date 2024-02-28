@@ -2,9 +2,8 @@
 # see .binder/ and docs/ for full development/docs environments
 -r requirements-build.txt
 
-black[jupyter]
-jupyterlab >=4.0.7,<5.0
+jupyterlab >=4.1.1,<4.2
 jsonschema >=3
 nbconvert
 nbstripout
-ruff==0.0.291
+ruff==0.1.7

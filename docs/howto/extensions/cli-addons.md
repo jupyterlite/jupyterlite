@@ -196,5 +196,5 @@ my-unique-addon = "my_module:MyAddon"
 ## General Guidance
 
 - it's worth looking at how what `BaseAddon` and its subclasses handle certain tasks
-- keeping reproducbility in mind, cache liberally, and make use of `file_deps`,
+- keeping reproducibility in mind, cache liberally, and make use of `file_deps`,
   `targets`, and `uptodate` to keep builds snappy

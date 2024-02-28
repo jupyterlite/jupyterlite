@@ -72,15 +72,11 @@ JupyterLite Kernels implement [Jupyter Kernel Messaging][jkm] in the browser wit
 help of [`mock-socket`][mock-socket] and [WebAssembly][webassembly], without relying on
 any external infrastructure.
 
-The JupyterLite contibutors develop and maintain the following kernels:
+The JupyterLite contributors develop and maintain the following kernels:
 
 - a Python kernel based on [Pyodide][pyodide]:
   [https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
-- a JavaScript kernel running in a Web Worker, developed as part of the
-  `jupyterlite/jupyterlite` repository but distributed via the
-  `jupyterlite-javascript-kernel` package on PyPI
-- a Python kernel based on [Xeus Python][xeus-python]:
-  [https://github.com/jupyterlite/xeus-python-kernel](https://github.com/jupyterlite/xeus-python-kernel)
+- a Python kernel based on [Xeus Python][xeus-python]
 
 There are a few more third-party in-browser kernels also compatible with JupyterLite.
 See this [GitHub discussion][github-discussion-kernels] for more information.

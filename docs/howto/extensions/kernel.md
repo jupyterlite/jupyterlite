@@ -66,7 +66,6 @@ If you want to start from that kernel:
 
 For inspiration you can also check the other JupyterLite kernels:
 
-- [Xeus Python](https://github.com/jupyterlite/xeus-python-kernel)
-- [Xeus Lua](https://github.com/jupyterlite/xeus-lua-kernel)
-- [Xeus SQLite](https://github.com/jupyterlite/xeus-sqlite-kernel)
+- [Xeus Python](https://github.com/jupyterlite/xeus)
+- [Xeus JavaScript](https://github.com/jupyter-xeus/xeus-javascript)
 - [p5.js](https://github.com/jupyterlite/p5-kernel)

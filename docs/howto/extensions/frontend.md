@@ -83,7 +83,7 @@ If you iterate and make new changes to the extension:
 
 ```{note}
 By default the `jupyterlite-core` package does not include any kernels.
-If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies. There is also a JavaScript kernel available via the `jupyterlite-javascript-kernel` package.
+If you would like to have a Python kernel available in your test JupyterLite deployment, you can install the `jupyterlite-pyodide-kernel` package with `pip`, or add it to your list of dependencies.
 ```
 
 ## Publishing the extension
@@ -91,7 +91,7 @@ If you would like to have a Python kernel available in your test JupyterLite dep
 Once you have your extension running you might want to publish to PyPI so it can be
 installed by other folks.
 
-By default the extension created from the cookiecutter is compatible with the Jupyter
+By default the extension created from the template is compatible with the Jupyter
 Releaser.
 
 The Jupyter Releaser simplifies the release process and ensure best practices.

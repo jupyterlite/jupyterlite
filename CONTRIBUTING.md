@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=20,<21`
-- `jupyterlab >=4,<5`
+- `jupyterlab >=4.0,<4.1`
 - `python >=3.10,<3.11`
 
 Various package managers on different operating systems provide these.
@@ -198,7 +198,8 @@ If you would like to setup a local environment with an additional, you can insta
 explicitely, before running the `jupyter lite build` command. For example:
 
 - To install the Pyodide kernel: `pip install jupyterlite-pyodide-kernel`
-- To install the Xeus Python kernel: `pip install jupyterlite-xeus-python`
+- To install the Xeus Python kernel:
+  https://jupyterlite-xeus.readthedocs.io/en/latest/environment.html
 
 ### UI Tests
 

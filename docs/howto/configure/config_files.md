@@ -36,7 +36,7 @@ You can refer to some of the guides to learn more about the configuration option
 
 ```{note}
 
-Check out the [CLI reference](../../reference/cli.md) for a more complete list of build time configuration options
+Check out the [CLI reference](../../reference/cli.ipynb) for a more complete list of build time configuration options
 ```
 
 ## `jupyter-lite.json`
@@ -77,7 +77,7 @@ Check out the [](../../reference/schema.md) for a complete list of the available
 The `overrides.json` file is used to override the plugins and extension settings of
 JupyterLite.
 
-For example it can be used to overridde the default theme when users launch JupyterLite.
+For example it can be used to override the default theme when users launch JupyterLite.
 The content of the file then be:
 
 ```json

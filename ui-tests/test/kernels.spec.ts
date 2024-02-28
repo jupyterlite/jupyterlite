@@ -47,6 +47,10 @@ test.describe('Kernels', () => {
 
   // check it is possible to open a notebook, shut down its kernel and open it again
   test('Kernel shutdown', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    // TODO: remove
+    test.setTimeout(120000);
+
     await page.goto('lab/index.html');
     const name = await page.notebook.createNew();
     if (!name) {

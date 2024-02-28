@@ -30,18 +30,13 @@ repos:
     hooks:
       - id: check-github-workflows
 
-  - repo: https://github.com/psf/black
-    rev: 23.9.1
-    hooks:
-      - id: black
-        args: [--config=./pyproject.toml]
-
   # Check ruff version is aligned in .binder/environment.yml
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.291
+    rev: v0.1.7
     hooks:
       - id: ruff
         args: ["--fix"]
+      - id: ruff-format
 
   - repo: local
     hooks:

@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.2.0",
+  "version": "0.3.0a1",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -21,17 +21,14 @@
       "app/notebooks",
       "app/repl",
       "app/tree",
-      "packages/*",
-      "py/jupyterlite-javascript-kernel"
+      "packages/*"
     ]
   },
   "scripts": {
     "bootstrap": "jlpm && jlpm clean && jlpm build && jlpm lint",
-    "build": "jlpm build:lib && jlpm run build:js-kernel && jlpm build:app",
+    "build": "jlpm build:lib && jlpm build:app",
     "build:app": "lerna run build --stream --parallel --scope @jupyterlite/app",
-    "build:js-kernel": "lerna run build --scope @jupyterlite/javascript-kernel-extension",
-    "build:js-kernel:lib": "lerna run build:lib --scope @jupyterlite/javascript-kernel-extension",
-    "build:lib": "lerna run build --scope @jupyterlite/metapackage && jlpm run build:js-kernel:lib",
+    "build:lib": "lerna run build --scope @jupyterlite/metapackage",
     "build:prod": "lerna run build:prod",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
@@ -40,14 +37,13 @@
     "eslint:check": "eslint . --ext .ts,.tsx --cache",
     "eslint:fix": "eslint . --ext .ts,.tsx --fix --cache",
     "install": "lerna bootstrap",
-    "install:js-kernel": "jupyter labextension develop py/jupyterlite-javascript-kernel --overwrite",
     "install:py": "python -m pip install -r requirements-editable.txt",
     "lint": "jlpm prettier:fix && jlpm eslint:fix && jlpm lint:py",
     "lint:check": "jlpm prettier:check && jlpm eslint:check && jlpm lint:py:check",
-    "lint:py": "jlpm lint:py:black && jlpm lint:py:ruff --fix-only",
-    "lint:py:check": "jlpm lint:py:black:check && jlpm lint:py:ruff:check",
-    "lint:py:black": "black .",
-    "lint:py:black:check": "black . --check",
+    "lint:py": "jlpm lint:py:format && jlpm lint:py:ruff --fix-only",
+    "lint:py:check": "jlpm lint:py:format:check && jlpm lint:py:ruff:check",
+    "lint:py:format": "ruff format .",
+    "lint:py:format:check": "ruff format . --check",
     "lint:py:ruff": "ruff .",
     "lint:py:ruff:check": "ruff check .",
     "pack:app": "npm pack app/ --pack-destination py/jupyterlite-core/jupyterlite_core/",
@@ -75,7 +71,7 @@
     "yjs": "^13.5.40"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~4.0.7",
+    "@jupyterlab/buildutils": "~4.1.2",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
@@ -95,6 +91,6 @@
     "svgo": "^3.0.1",
     "typedoc": "~0.23.21",
     "typedoc-plugin-markdown": "~3.14.0",
-    "typescript": "~5.0.4"
+    "typescript": "~5.1.6"
   }
 }

@@ -126,3 +126,12 @@ See also:
   literal notebooks
 - [Basthon](https://basthon.fr/about.html): A Jupyter notebook implementation using
   Pyodide
+
+## 👥 Contributors
+
+<div align="center">
+  <a href="https://github.com/jupyterlite/jupyterlite/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=jupyterlite/jupyterlite&max=100&columns=10" style="margin: 5px;" />
+  </a>
+  <p>Join our community and become a contributor today! 🚀 </p>
+</div>

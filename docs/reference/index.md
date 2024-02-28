@@ -13,6 +13,7 @@ schema
 cli
 api/index
 architecture
+contents
 doit
 demo
 ```

@@ -31,6 +31,31 @@ export async function download({
   return download.path();
 }
 
+/**
+ * Custom filebrowser refresh helper
+ *
+ * Temporary fix as Galata makes an API call to the server
+ * https://github.com/jupyterlab/jupyterlab/pull/15607
+ */
+export async function refreshFilebrowser({ page }): Promise<void> {
+  try {
+    await page.filebrowser.refresh();
+  } catch (e) {
+    // no-op
+  }
+}
+
+/**
+ * Custom filebrowser open directory helper
+ *
+ * Temporary fix as Galata makes an API call to the server
+ * https://github.com/jupyterlab/jupyterlab/pull/15607
+ */
+export async function openDirectory({ page, directory }): Promise<void> {
+  // workaround: double click on the directory to open it
+  await page.dblclick(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
+}
+
 export async function createNewDirectory({
   page,
   name,
@@ -38,10 +63,10 @@ export async function createNewDirectory({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<void> {
-  await page.click('[data-icon="ui-components:new-folder"]');
+  await page.click('[data-command="filebrowser:create-new-directory"]');
   await page.fill('.jp-DirListing-editor', name);
-  await page.keyboard.down('Enter');
-  await page.filebrowser.refresh();
+  await page.press('.jp-DirListing-editor', 'Enter');
+  await refreshFilebrowser({ page });
 }
 
 /**
@@ -73,4 +98,18 @@ export async function notebooksWaitForApplication({ baseURL }, use, testInfo) {
     await page.waitForSelector('.jp-NotebookPanel');
   };
   await use(waitIsReady);
+}
+
+/**
+ * Check if a directory is listed in the file browser
+ */
+export async function isDirectoryListedInBrowser({
+  page,
+  name,
+}: {
+  page: IJupyterLabPageFixture;
+  name: string;
+}): Promise<boolean> {
+  const item = await page.$(`xpath=${page.filebrowser.xpBuildDirectorySelector(name)}`);
+  return item !== null;
 }

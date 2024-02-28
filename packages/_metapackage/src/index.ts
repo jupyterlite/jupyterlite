@@ -3,7 +3,6 @@ import '@jupyterlite/application-extension';
 import '@jupyterlite/contents';
 import '@jupyterlite/repl-extension';
 import '@jupyterlite/iframe-extension';
-import '@jupyterlite/javascript-kernel';
 import '@jupyterlite/kernel';
 import '@jupyterlite/licenses';
 import '@jupyterlite/localforage';

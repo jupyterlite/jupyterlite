@@ -22,15 +22,15 @@ Follow the
 to create an environment:
 
 ```bash
-conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=3 cookiecutter nodejs jupyterlite-core
+conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core
 conda activate jupyterlab-iframe-ext
 ```
 
 Create a directory in your workspace, move to this directory, then generate an extension
-template using [cookiecutter](https://github.com/cookiecutter/cookiecutter):
+template using [copier](https://copier.readthedocs.io):
 
 ```bash
-cookiecutter https://github.com/jupyterlab/extension-cookiecutter-ts
+copier copy https://github.com/jupyterlab/extension-template .
 ```
 
 ```bash

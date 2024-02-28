@@ -81,7 +81,7 @@ For example, to ensure the `.fasta` file format is served correctly as `text/pla
       "fasta": {
         "name": "fasta",
         "extensions": [".fasta"],
-        "mimetypes": ["text/plain"],
+        "mimeTypes": ["text/plain"],
         "fileFormat": "text"
       }
     }

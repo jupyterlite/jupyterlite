@@ -15,8 +15,8 @@ dependencies:
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
   - jsonschema >=3
-  - jupyterlab >=4.0.7,<5.0
-  - notebook >=7.0.1,<8.0
+  - jupyterlab >=4.1.1,<4.2
+  - notebook >=7.1.0,<7.2
   - pip
   - pkginfo
   - python-libarchive-c
@@ -27,11 +27,12 @@ dependencies:
   - wheel
   # docs
   - docutils >=0.18
-  - myst-nb <1
+  - myst-nb >=1
   - pydata-sphinx-theme
   - sphinx >=5.1,<6
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
+  - sphinxcontrib-mermaid
   - sphinxext-rediraffe
   # check
   - pytest-check-links

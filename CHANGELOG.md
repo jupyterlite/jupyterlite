@@ -2,6 +2,138 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0a1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0a0...669ed1e15f4a2842302208f079437dc58437fa3f))
+
+### Enhancements made
+
+- Enable the notifications plugin in Notebook 7 [#1325](https://github.com/jupyterlite/jupyterlite/pull/1325) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to the JupyterLab 4.1.2 and Notebook 7.1.1 packages [#1327](https://github.com/jupyterlite/jupyterlite/pull/1327) ([@jtpio](https://github.com/jtpio))
+- Bump ip from 2.0.0 to 2.0.1 in /ui-tests [#1322](https://github.com/jupyterlite/jupyterlite/pull/1322) ([@dependabot](https://github.com/dependabot))
+- Bump UI tests dependencies [#1314](https://github.com/jupyterlite/jupyterlite/pull/1314) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update offline guide to mention xeus python [#1326](https://github.com/jupyterlite/jupyterlite/pull/1326) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-16&to=2024-02-26&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-02-16..2024-02-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-02-16..2024-02-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-16..2024-02-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-16..2024-02-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 0.3.0a0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.3...eb8b62a234aa342841d6609ffd07bdf864ac7420))
+
+### Enhancements made
+
+- Update to JupyterLab 4.1 and Notebook 7.1 [#1263](https://github.com/jupyterlite/jupyterlite/pull/1263) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Remove `jupyterlite-javascript-kernel` [#1313](https://github.com/jupyterlite/jupyterlite/pull/1313) ([@jtpio](https://github.com/jtpio))
+- Pin `pytest<8` for pypy [#1309](https://github.com/jupyterlite/jupyterlite/pull/1309) ([@jtpio](https://github.com/jtpio))
+- Pin to `jupyterlab<4.1.0` [#1306](https://github.com/jupyterlite/jupyterlite/pull/1306) ([@jtpio](https://github.com/jtpio))
+- Bump the actions group with 1 update [#1303](https://github.com/jupyterlite/jupyterlite/pull/1303) ([@dependabot](https://github.com/dependabot))
+- Bump notebook from 7.0.6 to 7.0.7 in /ui-tests [#1296](https://github.com/jupyterlite/jupyterlite/pull/1296) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Update xeus python documentation [#1310](https://github.com/jupyterlite/jupyterlite/pull/1310) ([@jtpio](https://github.com/jtpio))
+- Fix a few typos in documentation [#1305](https://github.com/jupyterlite/jupyterlite/pull/1305) ([@ianthomas23](https://github.com/ianthomas23))
+- Initiate documentation on the kernel contents [#1293](https://github.com/jupyterlite/jupyterlite/pull/1293) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-01-22&to=2024-02-16&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-01-22..2024-02-16&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-01-22..2024-02-16&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-01-22..2024-02-16&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-01-22..2024-02-16&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2024-01-22..2024-02-16&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-01-22..2024-02-16&type=Issues)
+
+## 0.2.3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.2...4fa05578099c74dcd2fef43d8ebe2a2d1ab6a069))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.0.11 and Notebook 7.0.7 [#1297](https://github.com/jupyterlite/jupyterlite/pull/1297) ([@jtpio](https://github.com/jtpio))
+- Include src in published library for sourcemap resolution [#1291](https://github.com/jupyterlite/jupyterlite/pull/1291) ([@fcollonval](https://github.com/fcollonval))
+- Bump the actions group with 2 updates [#1282](https://github.com/jupyterlite/jupyterlite/pull/1282) ([@dependabot](https://github.com/dependabot))
+- Group dependabot updates [#1281](https://github.com/jupyterlite/jupyterlite/pull/1281) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update the IFrame guide to reference the JupyterLab extension template [#1290](https://github.com/jupyterlite/jupyterlite/pull/1290) ([@jtpio](https://github.com/jtpio))
+- Update Vercel documentation [#1289](https://github.com/jupyterlite/jupyterlite/pull/1289) ([@jeremy-feng](https://github.com/jeremy-feng))
+- Fix typo in docs for adding custom file type [#1287](https://github.com/jupyterlite/jupyterlite/pull/1287) ([@tgourdel](https://github.com/tgourdel))
+- Add contributors to the README [#1225](https://github.com/jupyterlite/jupyterlite/pull/1225) ([@Rjchauhan18](https://github.com/Rjchauhan18))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-01-03&to=2024-01-22&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-01-03..2024-01-22&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-01-03..2024-01-22&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-01-03..2024-01-22&type=Issues) | [@jeremy-feng](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajeremy-feng+updated%3A2024-01-03..2024-01-22&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-01-03..2024-01-22&type=Issues) | [@Rjchauhan18](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ARjchauhan18+updated%3A2024-01-03..2024-01-22&type=Issues) | [@tgourdel](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atgourdel+updated%3A2024-01-03..2024-01-22&type=Issues)
+
+## 0.2.2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.1...19b0a411eb442a92688517284fd71799897ae7b8))
+
+### Bugs fixed
+
+- Handle missing `all_federated.json` [#1269](https://github.com/jupyterlite/jupyterlite/pull/1269) ([@jtpio](https://github.com/jtpio))
+- Re-add `@jupyterlab/celltags-extension`, bump to `@jupyterlab` 4.0.9 packages [#1267](https://github.com/jupyterlite/jupyterlite/pull/1267) ([@jtpio](https://github.com/jtpio))
+- javascript-kernel: use string repr of eval result [#1264](https://github.com/jupyterlite/jupyterlite/pull/1264) ([@tomjakubowski](https://github.com/tomjakubowski))
+
+### Maintenance and upkeep improvements
+
+- Bump actions/setup-python from 4 to 5 [#1278](https://github.com/jupyterlite/jupyterlite/pull/1278) ([@dependabot](https://github.com/dependabot))
+- Update to `jupyterlite-pyodide-kernel==0.2.0` [#1271](https://github.com/jupyterlite/jupyterlite/pull/1271) ([@jtpio](https://github.com/jtpio))
+- Adopt ruff format [#1266](https://github.com/jupyterlite/jupyterlite/pull/1266) ([@jtpio](https://github.com/jtpio))
+- Update publish workflow for trusted publishers [#1261](https://github.com/jupyterlite/jupyterlite/pull/1261) ([@jtpio](https://github.com/jtpio))
+- Bump actions/github-script from 6 to 7 [#1260](https://github.com/jupyterlite/jupyterlite/pull/1260) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- DOCS: unpin myst-nb [#1270](https://github.com/jupyterlite/jupyterlite/pull/1270) ([@agoose77](https://github.com/agoose77))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-11-30&to=2024-01-03&type=c))
+
+[@agoose77](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagoose77+updated%3A2023-11-30..2024-01-03&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-11-30..2024-01-03&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-11-30..2024-01-03&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-11-30..2024-01-03&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-11-30..2024-01-03&type=Issues) | [@tomjakubowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atomjakubowski+updated%3A2023-11-30..2024-01-03&type=Issues)
+
+## 0.2.1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.0...68ad05a86e812d068091b559a0c3f15bc5aa9326))
+
+### Bugs fixed
+
+- Fixed so hard refresh loads service worker properly [#1251](https://github.com/jupyterlite/jupyterlite/pull/1251) ([@andeplane](https://github.com/andeplane))
+- Add markdownviewer-extension to edit app [#1249](https://github.com/jupyterlite/jupyterlite/pull/1249) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Troubleshoot docs build on CI [#1256](https://github.com/jupyterlite/jupyterlite/pull/1256) ([@jtpio](https://github.com/jtpio))
+- fix typo in the libarchive help message [#1240](https://github.com/jupyterlite/jupyterlite/pull/1240) ([@Tialo](https://github.com/Tialo))
+- Fix extra console.log, avoid future console.log noise [#1235](https://github.com/jupyterlite/jupyterlite/pull/1235) ([@bollwyvl](https://github.com/bollwyvl))
+- update jupyterlab trove classifiers [#1232](https://github.com/jupyterlite/jupyterlite/pull/1232) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Documentation improvements
+
+- Update link to Notebook 7 in the README [#1234](https://github.com/jupyterlite/jupyterlite/pull/1234) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-10-26&to=2023-11-30&type=c))
+
+[@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-10-26..2023-11-30&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-10-26..2023-11-30&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-10-26..2023-11-30&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-10-26..2023-11-30&type=Issues) | [@Tialo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ATialo+updated%3A2023-10-26..2023-11-30&type=Issues)
+
 ## 0.2.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/app-lab@0.1.2...fabb7a35553b997cfe8f897d5c3a012f95c4439a))
@@ -84,8 +216,6 @@ Below is the full changelog since the last stable release.
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2023-08-21&to=2023-10-26&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2023-08-21..2023-10-26&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2023-08-21..2023-10-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2023-08-21..2023-10-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2023-08-21..2023-10-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2023-08-21..2023-10-26&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2023-08-21..2023-10-26&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2023-08-21..2023-10-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.2.0rc1
 

@@ -160,7 +160,7 @@ demonstrates a few [extensions](../../reference/demo.md).
 [#9461]: https://github.com/jupyterlab/jupyterlab/issues/9461
 [pre-built extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
-## Avanced extension configuration
+## Advanced extension configuration
 
 If you are looking for more options to configure extensions, check out the dedicated
 guide on [Advanced extension configuration](./advanced/extensions.md).
