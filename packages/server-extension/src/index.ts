@@ -64,6 +64,23 @@ const localforageMemoryPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 /**
+ * A plugin providing the routes for the config section.
+ * TODO: implement logic to persist the config sections?
+ */
+const configSectionRoutesPlugin: JupyterLiteServerPlugin<void> = {
+  id: '@jupyterlite/server-extension:config-section-routes',
+  autoStart: true,
+  activate: (app: JupyterLiteServer) => {
+    app.router.get('/api/config', async (req: Router.IRequest) => {
+      return new Response(JSON.stringify({}));
+    });
+    app.router.patch('/api/config', async (req: Router.IRequest) => {
+      return new Response(JSON.stringify({}));
+    });
+  },
+};
+
+/**
  * The contents service plugin.
  */
 const contentsPlugin: JupyterLiteServerPlugin<IContents> = {
@@ -561,6 +578,7 @@ const translationRoutesPlugin: JupyterLiteServerPlugin<void> = {
 };
 
 const plugins: JupyterLiteServerPlugin<any>[] = [
+  configSectionRoutesPlugin,
   contentsPlugin,
   contentsRoutesPlugin,
   emscriptenFileSystemPlugin,
