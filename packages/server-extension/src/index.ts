@@ -71,11 +71,17 @@ const configSectionRoutesPlugin: JupyterLiteServerPlugin<void> = {
   id: '@jupyterlite/server-extension:config-section-routes',
   autoStart: true,
   activate: (app: JupyterLiteServer) => {
-    app.router.get('/api/config', async (req: Router.IRequest) => {
-      return new Response(JSON.stringify({}));
+    const sections: {
+      [id: string]: string;
+    } = {};
+    app.router.get('/api/config/(.*)', async (req: Router.IRequest, id: string) => {
+      const section = sections[id] ?? JSON.stringify({});
+      return new Response(section);
     });
-    app.router.patch('/api/config', async (req: Router.IRequest) => {
-      return new Response(JSON.stringify({}));
+    app.router.patch('/api/config/(.*)', async (req: Router.IRequest, id: string) => {
+      const payload = req.body as any;
+      sections[id] = payload;
+      return new Response(payload);
     });
   },
 };
