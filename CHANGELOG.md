@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0a1...a254cfcad5826c8390286cd04fb2f0db84799644))
+
+### Maintenance and upkeep improvements
+
+- Mock `/api/config` endpoint [#1329](https://github.com/jupyterlite/jupyterlite/pull/1329) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Re-add `jupyterlab-tour` [#1258](https://github.com/jupyterlite/jupyterlite/pull/1258) ([@jtpio](https://github.com/jtpio))
+- Add seaborn example [#940](https://github.com/jupyterlite/jupyterlite/pull/940) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-26&to=2024-02-29&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-02-26..2024-02-29&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-26..2024-02-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-26..2024-02-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.3.0a1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0a0...669ed1e15f4a2842302208f079437dc58437fa3f))
@@ -25,8 +46,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-16&to=2024-02-26&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-02-16..2024-02-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-02-16..2024-02-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-16..2024-02-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-16..2024-02-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.3.0a0
 
