@@ -64,7 +64,7 @@ Which should return something similar to the following:
 ```text
 JupyterLab v4.*.*
 PREFIX/share/jupyter/labextensions
-        jupyterlab-tour  v4.0.0 enabled OK
+        jupyterlab-tour  v4.0.1 enabled OK
         jupyterlab-night v0.4.0 enabled OK
 ```
 

@@ -27,7 +27,7 @@ dependencies:
   - jupyterlab-geojson >=3,<4
   - jupyterlab-github >=4.0.0
   - jupyterlab-kernelspy >=4.0.0
-  - jupyterlab-tour >=4.0.0
+  - jupyterlab-tour >=4.0.1
   # TODO: re-add after JupyterLab 4 compatibility
   # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
   # - jupyterlab-webrtc-docprovider >=0.1.1
