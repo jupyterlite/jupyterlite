@@ -5,7 +5,7 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
-const VERSION = '0.2.3'; // TODO: read this from elsewhere
+const VERSION = PageConfig.getOption('appVersion');
 
 export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
