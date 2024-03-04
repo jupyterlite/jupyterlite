@@ -37,7 +37,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
   private unregisterOldServiceWorkers = () => {
     // Check if we have an installed version. If we do, compare it to the current version
-    // And unregister all service workers if they are different.
+    // and unregister all service workers if they are different.
     const installedVersion = localStorage.getItem('jupyterlite-version');
 
     if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
