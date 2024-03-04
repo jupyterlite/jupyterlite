@@ -5,6 +5,8 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
+const VERSION = '0.2.3'; // TODO: read this from elsewhere
+
 export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
@@ -33,7 +35,32 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
+  private unregisterOldServiceWorkers = () => {
+    // Check if we have an installed version. If we do, compare it to the current version
+    // And unregister all service workers if they are different.
+    const installedVersion = localStorage.getItem('jupyterlite-version');
+
+    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
+      // eslint-disable-next-line no-console
+      console.info('New version, unregistering existing service workers.');
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        })
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.info('All existing service workers have been unregistered.');
+        });
+    }
+
+    localStorage.setItem('jupyterlite-version', VERSION);
+  };
+
   private async initialize(workerUrl: string): Promise<void> {
+    this.unregisterOldServiceWorkers();
     const { serviceWorker } = navigator;
 
     let registration: ServiceWorkerRegistration | null = null;
