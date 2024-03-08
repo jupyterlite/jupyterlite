@@ -35,10 +35,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
-  private unregisterOldServiceWorkers = () => {
+  private unregisterOldServiceWorkers = (scriptURL: string) => {
+    const versionKey = `${scriptURL}-version`;
     // Check if we have an installed version. If we do, compare it to the current version
     // and unregister all service workers if they are different.
-    const installedVersion = localStorage.getItem('jupyterlite-version');
+    const installedVersion = localStorage.getItem(versionKey);
 
     if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
       // eslint-disable-next-line no-console
@@ -56,11 +57,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         });
     }
 
-    localStorage.setItem('jupyterlite-version', VERSION);
+    localStorage.setItem(versionKey, VERSION);
   };
 
   private async initialize(workerUrl: string): Promise<void> {
-    this.unregisterOldServiceWorkers();
     const { serviceWorker } = navigator;
 
     let registration: ServiceWorkerRegistration | null = null;
@@ -68,9 +68,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
     } else if (serviceWorker.controller) {
-      registration =
-        (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
-        null;
+      const scriptURL = serviceWorker.controller.scriptURL;
+      this.unregisterOldServiceWorkers(scriptURL);
+
+      registration = (await serviceWorker.getRegistration(scriptURL)) || null;
       // eslint-disable-next-line no-console
       console.info('JupyterLite ServiceWorker was already registered');
     }
