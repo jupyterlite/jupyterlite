@@ -5,6 +5,8 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
+const VERSION = PageConfig.getOption('appVersion');
+
 export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
@@ -33,6 +35,31 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
+  private unregisterOldServiceWorkers = (scriptURL: string) => {
+    const versionKey = `${scriptURL}-version`;
+    // Check if we have an installed version. If we do, compare it to the current version
+    // and unregister all service workers if they are different.
+    const installedVersion = localStorage.getItem(versionKey);
+
+    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
+      // eslint-disable-next-line no-console
+      console.info('New version, unregistering existing service workers.');
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        })
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.info('All existing service workers have been unregistered.');
+        });
+    }
+
+    localStorage.setItem(versionKey, VERSION);
+  };
+
   private async initialize(workerUrl: string): Promise<void> {
     const { serviceWorker } = navigator;
 
@@ -41,21 +68,16 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
     } else if (serviceWorker.controller) {
-      registration =
-        (await serviceWorker.getRegistration(serviceWorker.controller.scriptURL)) ||
-        null;
+      const scriptURL = serviceWorker.controller.scriptURL;
+      this.unregisterOldServiceWorkers(scriptURL);
+
+      registration = (await serviceWorker.getRegistration(scriptURL)) || null;
       // eslint-disable-next-line no-console
       console.info('JupyterLite ServiceWorker was already registered');
     }
 
     if (!registration && serviceWorker) {
       try {
-        // Unregister any existing service workers before registering the new one.
-        const registrations = await serviceWorker.getRegistrations();
-        await Promise.all(registrations.map((r) => r.unregister()));
-        // eslint-disable-next-line no-console
-        console.info('Existing JupyterLite ServiceWorkers unregistered');
-
         // eslint-disable-next-line no-console
         console.info('Registering new JupyterLite ServiceWorker', workerUrl);
         registration = await serviceWorker.register(workerUrl);
