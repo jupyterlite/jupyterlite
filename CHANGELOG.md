@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0b0...2499e8f49c6e39854b72bc0a56cae24e7986202b))
+
+### Bugs fixed
+
+- Unregistering old service workers when there is a new version  [#1336](https://github.com/jupyterlite/jupyterlite/pull/1336) ([@andeplane](https://github.com/andeplane))
+
+### Maintenance and upkeep improvements
+
+- Bump to `jupyterlab-tour==4.0.1` [#1330](https://github.com/jupyterlite/jupyterlite/pull/1330) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-29&to=2024-03-14&type=c))
+
+[@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2024-02-29..2024-03-14&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-29..2024-03-14&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-29..2024-03-14&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.3.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0a1...a254cfcad5826c8390286cd04fb2f0db84799644))
@@ -20,8 +40,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-26&to=2024-02-29&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-02-26..2024-02-29&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-26..2024-02-29&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-26..2024-02-29&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.3.0a1
 
