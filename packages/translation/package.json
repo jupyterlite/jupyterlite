@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/translation",
-  "version": "0.3.0-rc.0",
+  "version": "0.3.0-rc.1",
   "description": "JupyterLite - Translation",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {

@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0rc1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0rc0...05478dcf4957fb254fd9d0b44b068921f1bd14f6))
+
+### Bugs fixed
+
+- Add an option to enable the service worker cache [#1316](https://github.com/jupyterlite/jupyterlite/pull/1316) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.1.5 and Notebook 7.1.2 [#1349](https://github.com/jupyterlite/jupyterlite/pull/1349) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-03-14&to=2024-03-18&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-03-14..2024-03-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-03-14..2024-03-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.3.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0b0...2499e8f49c6e39854b72bc0a56cae24e7986202b))
@@ -19,8 +39,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-02-29&to=2024-03-14&type=c))
 
 [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2024-02-29..2024-03-14&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-02-29..2024-03-14&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-02-29..2024-03-14&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.3.0b0
 
