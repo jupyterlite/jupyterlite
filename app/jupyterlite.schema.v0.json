@@ -187,6 +187,11 @@
           "description": "Whether to enable collaborative editing over WebRTC. Should be paired with the ``?room=<room name>`` URL parameter",
           "type": "boolean",
           "default": false
+        },
+        "enableServiceWorkerCache": {
+          "description": "Whether to enable the service worker cache",
+          "type": "boolean",
+          "default": false
         }
       }
     },
