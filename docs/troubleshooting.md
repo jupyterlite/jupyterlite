@@ -6,6 +6,10 @@ JupyterLite lets you access files displayed in the file browser from within the 
 
 However in some cases you might see some errors such as the following:
 
+```
+FileNotFoundError: [Errno 44] No such file or directory: 'data/iris.csv'
+```
+
 ![a screenshot showing an error while trying to access a local file from the kernel](https://github.com/jupyterlite/jupyterlite/assets/591645/3edffdc3-77ef-45fe-8a4a-8cd7147dd235)
 
 JupyterLite uses a [Service Worker](./howto/configure/advanced/service-worker.md) to
@@ -17,9 +21,8 @@ register, which results in an error displayed in the dev tools console:
 To fix this issue, you can try the following:
 
 - Use a different browser. Currently we support the latest Chrome and Firefox versions.
-  However it is known that Service Workers are not supported in the private mode of
-  Firefox.
-- Clear the browser cache. This may help purge older versions of the Service Worker that
-  might still be registered, for example after an update of JupyterLite.
+  However it is known that Service Workers are not supported in Firefox private windows.
+- Clear the browser cache. This can help purge older versions of the Service Worker that
+  might still be registered, for example after a JupyterLite version update.
 
 See the [Contents](./reference/contents.md) documentation for more information.
