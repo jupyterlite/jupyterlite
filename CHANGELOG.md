@@ -2,6 +2,53 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.3.0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.2.3...8efa36629954af7e21b043fdf805552f646077af))
+
+### Enhancements made
+
+- Enable the notifications plugin in Notebook 7 [#1325](https://github.com/jupyterlite/jupyterlite/pull/1325) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.1 and Notebook 7.1 [#1263](https://github.com/jupyterlite/jupyterlite/pull/1263) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Unregistering old service workers when there is a new version  [#1336](https://github.com/jupyterlite/jupyterlite/pull/1336) ([@andeplane](https://github.com/andeplane))
+- Add an option to enable the service worker cache [#1316](https://github.com/jupyterlite/jupyterlite/pull/1316) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to Python 3.11 for the dev environment [#1355](https://github.com/jupyterlite/jupyterlite/pull/1355) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.1.5 and Notebook 7.1.2 [#1349](https://github.com/jupyterlite/jupyterlite/pull/1349) ([@jtpio](https://github.com/jtpio))
+- Bump to `jupyterlab-tour==4.0.1` [#1330](https://github.com/jupyterlite/jupyterlite/pull/1330) ([@jtpio](https://github.com/jtpio))
+- Mock `/api/config` endpoint [#1329](https://github.com/jupyterlite/jupyterlite/pull/1329) ([@jtpio](https://github.com/jtpio))
+- Update to the JupyterLab 4.1.2 and Notebook 7.1.1 packages [#1327](https://github.com/jupyterlite/jupyterlite/pull/1327) ([@jtpio](https://github.com/jtpio))
+- Bump ip from 2.0.0 to 2.0.1 in /ui-tests [#1322](https://github.com/jupyterlite/jupyterlite/pull/1322) ([@dependabot](https://github.com/dependabot))
+- Bump UI tests dependencies [#1314](https://github.com/jupyterlite/jupyterlite/pull/1314) ([@jtpio](https://github.com/jtpio))
+- Remove `jupyterlite-javascript-kernel` [#1313](https://github.com/jupyterlite/jupyterlite/pull/1313) ([@jtpio](https://github.com/jtpio))
+- Pin `pytest<8` for pypy [#1309](https://github.com/jupyterlite/jupyterlite/pull/1309) ([@jtpio](https://github.com/jtpio))
+- Pin to `jupyterlab<4.1.0` [#1306](https://github.com/jupyterlite/jupyterlite/pull/1306) ([@jtpio](https://github.com/jtpio))
+- Bump the actions group with 1 update [#1303](https://github.com/jupyterlite/jupyterlite/pull/1303) ([@dependabot](https://github.com/dependabot))
+- Bump notebook from 7.0.6 to 7.0.7 in /ui-tests [#1296](https://github.com/jupyterlite/jupyterlite/pull/1296) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Add troubleshooting page to the documentation [#1352](https://github.com/jupyterlite/jupyterlite/pull/1352) ([@jtpio](https://github.com/jtpio))
+- Update offline guide to mention xeus python [#1326](https://github.com/jupyterlite/jupyterlite/pull/1326) ([@jtpio](https://github.com/jtpio))
+- Update xeus python documentation [#1310](https://github.com/jupyterlite/jupyterlite/pull/1310) ([@jtpio](https://github.com/jtpio))
+- Fix a few typos in documentation [#1305](https://github.com/jupyterlite/jupyterlite/pull/1305) ([@ianthomas23](https://github.com/ianthomas23))
+- Initiate documentation on the kernel contents [#1293](https://github.com/jupyterlite/jupyterlite/pull/1293) ([@fcollonval](https://github.com/fcollonval))
+- Re-add `jupyterlab-tour` [#1258](https://github.com/jupyterlite/jupyterlite/pull/1258) ([@jtpio](https://github.com/jtpio))
+- Add seaborn example [#940](https://github.com/jupyterlite/jupyterlite/pull/940) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-01-22&to=2024-03-26&type=c))
+
+[@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2024-01-22..2024-03-26&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-01-22..2024-03-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-01-22..2024-03-26&type=Issues) | [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-01-22..2024-03-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-01-22..2024-03-26&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2024-01-22..2024-03-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-01-22..2024-03-26&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-01-22..2024-03-26&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.3.0rc1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.3.0rc0...05478dcf4957fb254fd9d0b44b068921f1bd14f6))
@@ -19,8 +66,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-03-14&to=2024-03-18&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-03-14..2024-03-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-03-14..2024-03-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.3.0rc0
 
