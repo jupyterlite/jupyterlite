@@ -57,6 +57,7 @@
 quickstart/index
 howto/index
 reference/index
+troubleshooting
 migration
 contributing
 changelog
