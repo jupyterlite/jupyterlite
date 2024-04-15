@@ -12,10 +12,10 @@ FileNotFoundError: [Errno 44] No such file or directory: 'data/iris.csv'
 
 ![a screenshot showing an error while trying to access a local file from the kernel](https://github.com/jupyterlite/jupyterlite/assets/591645/3edffdc3-77ef-45fe-8a4a-8cd7147dd235)
 
-This seem to happen when code try to get executed before a kernel is fully
+This seem to happen when code is executed before a kernel is fully
 ready. See [issue #1371
 ](https://github.com/jupyterlite/jupyterlite/issues/1371). If this regularly
-happen, please try to wait until the kernel indicator is ready before starting
+happens, please try to wait until the kernel indicator is ready before starting
 to execute code.
 
 
