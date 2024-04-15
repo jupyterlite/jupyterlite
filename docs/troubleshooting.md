@@ -12,6 +12,13 @@ FileNotFoundError: [Errno 44] No such file or directory: 'data/iris.csv'
 
 ![a screenshot showing an error while trying to access a local file from the kernel](https://github.com/jupyterlite/jupyterlite/assets/591645/3edffdc3-77ef-45fe-8a4a-8cd7147dd235)
 
+This seem to happen when code try to get executed before a kernel is fully
+ready. See [issue #1371
+](https://github.com/jupyterlite/jupyterlite/issues/1371). If this regularly
+happen, please try to wait until the kernel indicator is ready before starting
+to execute code.
+
+
 JupyterLite uses a [Service Worker](./howto/configure/advanced/service-worker.md) to
 allow accessing files from a kernel. But in some cases the Service Worker may fail to
 register, which results in an error displayed in the dev tools console:
