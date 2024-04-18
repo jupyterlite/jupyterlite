@@ -3,6 +3,15 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `0.3.0` to `0.4.0`
+
+### Extensions
+
+JupyterLite 0.4.0 is based on the JupyterLab 4.2 and Jupyter Notebook 7.2 packages.
+
+Although no breaking changes are expected, this may affect the extensions you are using
+as they may rely on features added to JupyterLab 4.2 and Notebook 7.2.
+
 ## `0.2.0` to `0.3.0`
 
 ### Extensions
