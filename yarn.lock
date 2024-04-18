@@ -4004,6 +4004,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/theme-dark-high-contrast-extension@npm:~4.2.0-beta.1":
+  version: 4.2.0-beta.1
+  resolution: "@jupyterlab/theme-dark-high-contrast-extension@npm:4.2.0-beta.1"
+  dependencies:
+    "@jupyterlab/application": ^4.2.0-beta.1
+    "@jupyterlab/apputils": ^4.3.0-beta.1
+    "@jupyterlab/translation": ^4.2.0-beta.1
+  checksum: 6d282b3a7d19b32a608164489bd7f6b1bd9733fb2d3120c6f4fe8af2deaaf54cb57f2d70859e0b4123b3e45b7275852cc31868115768b4deba9e8e94a849a73b
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/theme-light-extension@npm:~4.2.0-beta.1":
   version: 4.2.0-beta.1
   resolution: "@jupyterlab/theme-light-extension@npm:4.2.0-beta.1"
@@ -4218,6 +4229,7 @@ __metadata:
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/statusbar-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/toc-extension": ~6.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
@@ -4284,6 +4296,7 @@ __metadata:
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/statusbar-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/toc-extension": ~6.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
@@ -4346,6 +4359,7 @@ __metadata:
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/statusbar-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/toc-extension": ~6.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
@@ -4415,6 +4429,7 @@ __metadata:
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/statusbar-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/toc-extension": ~6.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
@@ -4457,6 +4472,7 @@ __metadata:
     "@jupyterlab/rendermime-extension": ~4.2.0-beta.1
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
     "@jupyterlab/translation-extension": ~4.2.0-beta.1
@@ -4507,6 +4523,7 @@ __metadata:
     "@jupyterlab/settingeditor-extension": ~4.2.0-beta.1
     "@jupyterlab/shortcuts-extension": ~5.0.0-beta.1
     "@jupyterlab/theme-dark-extension": ~4.2.0-beta.1
+    "@jupyterlab/theme-dark-high-contrast-extension": ~4.2.0-beta.1
     "@jupyterlab/theme-light-extension": ~4.2.0-beta.1
     "@jupyterlab/tooltip-extension": ~4.2.0-beta.1
     "@jupyterlab/translation-extension": ~4.2.0-beta.1
