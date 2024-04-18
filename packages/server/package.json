@@ -54,7 +54,7 @@
     "@jupyterlite/session": "^0.3.0",
     "@jupyterlite/settings": "^0.3.0",
     "@jupyterlite/translation": "^0.3.0",
-    "@lumino/application": "^2.3.0",
+    "@lumino/application": "^2.3.1",
     "@lumino/coreutils": "^2.1.2",
     "@lumino/signaling": "^2.1.2",
     "mock-socket": "^9.1.0"
