@@ -219,6 +219,7 @@
       "@jupyterlab/shortcuts-extension",
       "@jupyterlab/statusbar-extension",
       "@jupyterlab/theme-dark-extension",
+      "@jupyterlab/theme-dark-high-contrast-extension",
       "@jupyterlab/theme-light-extension",
       "@jupyterlab/toc-extension",
       "@jupyterlab/tooltip-extension",
