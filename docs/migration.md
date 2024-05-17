@@ -12,6 +12,11 @@ JupyterLite 0.4.0 is based on the JupyterLab 4.2 and Jupyter Notebook 7.2 packag
 Although no breaking changes are expected, this may affect the extensions you are using
 as they may rely on features added to JupyterLab 4.2 and Notebook 7.2.
 
+See the JupyterLab and Notebook changelogs for more information:
+
+- [JupyterLab 4.2](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-2-0)
+- [Jupyter Notebook 7.2](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-2)
+
 ## `0.2.0` to `0.3.0`
 
 ### Extensions
