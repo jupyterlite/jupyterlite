@@ -2,7 +2,7 @@
 # see .binder/ and docs/ for full development/docs environments
 -r requirements-build.txt
 
-jupyterlab >=4.1.1,<4.2
+jupyterlab >=4.2.0,<4.3
 jsonschema >=3
 nbconvert
 nbstripout

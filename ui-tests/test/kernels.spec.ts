@@ -66,7 +66,7 @@ test.describe('Kernels', () => {
       .locator(`.jp-RunningSessions-item.jp-mod-kernel >> text="${name}"`)
       .waitFor();
     await page.locator('.jp-RunningSessions-item.jp-mod-kernel').first().hover();
-    await page.getByTitle('Shut Down Kernel').first().click();
+    await page.getByTitle('Shut Down').first().click();
 
     // re-open the notebook
     await page.sidebar.openTab('filebrowser');

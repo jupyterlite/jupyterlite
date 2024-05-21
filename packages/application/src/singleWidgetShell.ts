@@ -11,7 +11,7 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
-import { Panel, Widget, PanelLayout } from '@lumino/widgets';
+import { FocusTracker, Panel, Widget, PanelLayout } from '@lumino/widgets';
 
 /**
  * The single widget application shell token.
@@ -43,7 +43,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
   /**
    * A signal emitted when the current widget changes.
    */
-  get currentChanged(): ISignal<ISingleWidgetShell, void> {
+  get currentChanged(): ISignal<ISingleWidgetShell, FocusTracker.IChangedArgs<Widget>> {
     return this._currentChanged;
   }
 
@@ -85,9 +85,13 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
         // do not add the widget if there is already one
         return;
       }
+      const previousWidget = this.currentWidget;
       this._main.addWidget(widget);
       this._main.update();
-      this._currentChanged.emit(void 0);
+      this._currentChanged.emit({
+        newValue: widget,
+        oldValue: previousWidget,
+      });
     }
   }
 
@@ -107,7 +111,7 @@ export class SingleWidgetShell extends Widget implements JupyterFrontEnd.IShell 
   }
 
   private _main: Panel;
-  private _currentChanged = new Signal<this, void>(this);
+  private _currentChanged = new Signal<this, FocusTracker.IChangedArgs<Widget>>(this);
 }
 
 /**
