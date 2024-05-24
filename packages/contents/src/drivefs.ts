@@ -14,6 +14,7 @@ import {
   SEEK_CUR,
   SEEK_END,
   IEmscriptenStream,
+  instanceOfStream,
   IEmscriptenStreamOps,
   IEmscriptenNodeOps,
   IEmscriptenFSNode,
@@ -207,7 +208,17 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     this.fs = fs;
   }
 
-  getattr(node: IEmscriptenFSNode): IStats {
+  protected node(
+    nodeOrStream: IEmscriptenFSNode | IEmscriptenStream,
+  ): IEmscriptenFSNode {
+    if (instanceOfStream(nodeOrStream)) {
+      return nodeOrStream.node;
+    }
+    return nodeOrStream;
+  }
+
+  getattr(value: IEmscriptenFSNode | IEmscriptenStream): IStats {
+    const node = this.node(value);
     return {
       ...this.fs.API.getattr(this.fs.realPath(node)),
       mode: node.mode,
@@ -215,7 +226,8 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     };
   }
 
-  setattr(node: IEmscriptenFSNode, attr: IStats): void {
+  setattr(value: IEmscriptenFSNode | IEmscriptenStream, attr: IStats): void {
+    const node = this.node(value);
     for (const [key, value] of Object.entries(attr)) {
       switch (key) {
         case 'mode':
@@ -231,56 +243,71 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     }
   }
 
-  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode {
-    const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
+  lookup(
+    parent: IEmscriptenFSNode | IEmscriptenStream,
+    name: string,
+  ): IEmscriptenFSNode {
+    const node = this.node(parent);
+    const path = this.fs.PATH.join2(this.fs.realPath(node), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
       throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
     }
-    return this.fs.createNode(parent, name, result.mode, 0);
+    return this.fs.createNode(node, name, result.mode, 0);
   }
 
   mknod(
-    parent: IEmscriptenFSNode,
+    parent: IEmscriptenFSNode | IEmscriptenStream,
     name: string,
     mode: number,
     dev: number,
   ): IEmscriptenFSNode {
-    const path = this.fs.PATH.join2(this.fs.realPath(parent), name);
+    const node = this.node(parent);
+    const path = this.fs.PATH.join2(this.fs.realPath(node), name);
     this.fs.API.mknod(path, mode);
-    return this.fs.createNode(parent, name, mode, dev);
+    return this.fs.createNode(node, name, mode, dev);
   }
 
-  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void {
+  rename(
+    value: IEmscriptenFSNode | IEmscriptenStream,
+    newDir: IEmscriptenFSNode | IEmscriptenStream,
+    newName: string,
+  ): void {
+    const oldNode = this.node(value);
+    const newDirNode = this.node(newDir);
     this.fs.API.rename(
       oldNode.parent
         ? this.fs.PATH.join2(this.fs.realPath(oldNode.parent), oldNode.name)
         : oldNode.name,
-      this.fs.PATH.join2(this.fs.realPath(newDir), newName),
+      this.fs.PATH.join2(this.fs.realPath(newDirNode), newName),
     );
 
     // Updating the in-memory node
     oldNode.name = newName;
-    oldNode.parent = newDir;
+    oldNode.parent = newDirNode;
   }
 
-  unlink(parent: IEmscriptenFSNode, name: string): void {
-    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
+  unlink(parent: IEmscriptenFSNode | IEmscriptenStream, name: string): void {
+    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(this.node(parent)), name));
   }
 
-  rmdir(parent: IEmscriptenFSNode, name: string) {
-    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(parent), name));
+  rmdir(parent: IEmscriptenFSNode | IEmscriptenStream, name: string) {
+    this.fs.API.rmdir(this.fs.PATH.join2(this.fs.realPath(this.node(parent)), name));
   }
 
-  readdir(node: IEmscriptenFSNode): string[] {
-    return this.fs.API.readdir(this.fs.realPath(node));
+  readdir(value: IEmscriptenFSNode | IEmscriptenStream): string[] {
+    return this.fs.API.readdir(this.fs.realPath(this.node(value)));
   }
 
-  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void {
+  symlink(
+    parent: IEmscriptenFSNode | IEmscriptenStream,
+    newName: string,
+    oldPath: string,
+  ): void {
     throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 
-  readlink(node: IEmscriptenFSNode): string {
+  readlink(node: IEmscriptenFSNode | IEmscriptenStream): string {
     throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EPERM']);
   }
 }

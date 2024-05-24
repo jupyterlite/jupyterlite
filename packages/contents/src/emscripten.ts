@@ -57,6 +57,12 @@ export interface IEmscriptenStream {
   position: number;
 }
 
+export function instanceOfStream(
+  nodeOrStream: IEmscriptenFSNode | IEmscriptenStream,
+): nodeOrStream is IEmscriptenStream {
+  return 'node' in nodeOrStream;
+}
+
 export interface IEmscriptenNodeOps {
   getattr(node: IEmscriptenFSNode): IStats;
   setattr(node: IEmscriptenFSNode, attr: IStats): void;
