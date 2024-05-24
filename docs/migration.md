@@ -17,6 +17,17 @@ See the JupyterLab and Notebook changelogs for more information:
 - [JupyterLab 4.2](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-2-0)
 - [Jupyter Notebook 7.2](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-2)
 
+### API changes
+
+#### `@jupyterlite/application`
+
+- The signature of the `currentChanged` signal for the `SingleWidgetShell` has changed
+  from `ISignal<ISingleWidgetShell, void>` to
+  `ISignal<ISingleWidgetShell, FocusTracker.IChangedArgs<Widget>>`.
+
+This follows this change in JupyterLab:
+[Add `IShell.currentChanged` and notify commands based on it](https://github.com/jupyterlab/jupyterlab/pull/15449)
+
 ## `0.2.0` to `0.3.0`
 
 ### Extensions
