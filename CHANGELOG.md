@@ -2,6 +2,33 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.0a1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.0...46f36170d9ddeb071953b53bb6c54b4c51fc0870))
+
+### Enhancements made
+
+- Add `@jupyterlab/terminal-extension` [#1397](https://github.com/jupyterlite/jupyterlite/pull/1397) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump `ejs` [#1392](https://github.com/jupyterlite/jupyterlite/pull/1392) ([@jtpio](https://github.com/jtpio))
+- Fix playwright update workflow [#1391](https://github.com/jupyterlite/jupyterlite/pull/1391) ([@jtpio](https://github.com/jtpio))
+- Update UI-tests snapshots [#1390](https://github.com/jupyterlite/jupyterlite/pull/1390) ([@martinRenou](https://github.com/martinRenou))
+- Bump some dependencies [#1389](https://github.com/jupyterlite/jupyterlite/pull/1389) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add note about `currentChanged` to the migration guide [#1394](https://github.com/jupyterlite/jupyterlite/pull/1394) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-05-21&to=2024-05-28&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-05-21..2024-05-28&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-05-21..2024-05-28&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-05-21..2024-05-28&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0a0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.3.0...6e488569ce124005e474986172123a0b7bf9e427))
@@ -25,8 +52,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-03-26&to=2024-05-21&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-03-26..2024-05-21&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ACarreau+updated%3A2024-03-26..2024-05-21&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-03-26..2024-05-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-03-26..2024-05-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-03-26..2024-05-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.3.0
 
