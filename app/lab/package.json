@@ -300,6 +300,7 @@
       "@lumino/widgets",
       "@microsoft/fast-element",
       "@microsoft/fast-foundation",
+      "mock-socket",
       "react",
       "react-dom",
       "yjs"
