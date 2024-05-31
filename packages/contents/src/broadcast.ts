@@ -6,7 +6,7 @@ import { Contents as ServerContents } from '@jupyterlab/services';
 import { TDriveRequest, DRIVE_API_PATH, TDriveMethod } from './drivefs';
 
 import { IBroadcastChannelWrapper } from './tokens';
-import { IDriveContentsProcessor, DriveContentsProcessor } from './drivecontent';
+import { IDriveContentsProcessor, DriveContentsProcessor } from './drivecontents';
 
 /** A broadcaster for the ServiceWorker */
 export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
