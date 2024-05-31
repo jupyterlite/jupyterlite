@@ -28,6 +28,13 @@ See the JupyterLab and Notebook changelogs for more information:
 This follows this change in JupyterLab:
 [Add `IShell.currentChanged` and notify commands based on it](https://github.com/jupyterlab/jupyterlab/pull/15449)
 
+#### `@jupyterlite/contents` package
+
+The TypeScript interface `IEmscriptenNodeOps` has changed. All methods now take
+`IEmscriptenFSNode | IEmscriptenStream` as input instead of only `IEmscriptenFSNode`.
+Classes implementing `IEmscriptenNodeOps` will need to be updated accordingly. See
+https://github.com/jupyterlite/jupyterlite/pull/1395 for an example implementation.
+
 ## `0.2.0` to `0.3.0`
 
 ### Extensions
