@@ -2,6 +2,27 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.0a2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.1...727767eb31d0765784a606fc5c6cf18d844bb17d))
+
+### Enhancements made
+
+- Update to Jupyterlab 4.2.1 [#1400](https://github.com/jupyterlite/jupyterlite/pull/1400) ([@jtpio](https://github.com/jtpio))
+- DriveFS: Handle receiving a stream instead of a node [#1395](https://github.com/jupyterlite/jupyterlite/pull/1395) ([@martinRenou](https://github.com/martinRenou))
+
+### API and Breaking Changes
+
+- DriveFS: Handle receiving a stream instead of a node [#1395](https://github.com/jupyterlite/jupyterlite/pull/1395) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-05-28&to=2024-05-31&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-05-28..2024-05-31&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-05-28..2024-05-31&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-05-28..2024-05-31&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0a1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.0...46f36170d9ddeb071953b53bb6c54b4c51fc0870))
@@ -26,8 +47,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-05-21&to=2024-05-28&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-05-21..2024-05-28&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-05-21..2024-05-28&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-05-21..2024-05-28&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0a0
 
