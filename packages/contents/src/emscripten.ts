@@ -64,21 +64,32 @@ export function instanceOfStream(
 }
 
 export interface IEmscriptenNodeOps {
-  getattr(node: IEmscriptenFSNode): IStats;
-  setattr(node: IEmscriptenFSNode, attr: IStats): void;
-  lookup(parent: IEmscriptenFSNode, name: string): IEmscriptenFSNode;
+  getattr(node: IEmscriptenFSNode | IEmscriptenStream): IStats;
+  setattr(node: IEmscriptenFSNode | IEmscriptenStream, attr: IStats): void;
+  lookup(
+    parent: IEmscriptenFSNode | IEmscriptenStream,
+    name: string,
+  ): IEmscriptenFSNode;
   mknod(
-    parent: IEmscriptenFSNode,
+    parent: IEmscriptenFSNode | IEmscriptenStream,
     name: string,
     mode: number,
     dev: number,
   ): IEmscriptenFSNode;
-  rename(oldNode: IEmscriptenFSNode, newDir: IEmscriptenFSNode, newName: string): void;
-  unlink(parent: IEmscriptenFSNode, name: string): void;
-  rmdir(parent: IEmscriptenFSNode, name: string): void;
-  readdir(node: IEmscriptenFSNode): string[];
-  symlink(parent: IEmscriptenFSNode, newName: string, oldPath: string): void;
-  readlink(node: IEmscriptenFSNode): string;
+  rename(
+    oldNode: IEmscriptenFSNode | IEmscriptenStream,
+    newDir: IEmscriptenFSNode | IEmscriptenStream,
+    newName: string,
+  ): void;
+  unlink(parent: IEmscriptenFSNode | IEmscriptenStream, name: string): void;
+  rmdir(parent: IEmscriptenFSNode | IEmscriptenStream, name: string): void;
+  readdir(node: IEmscriptenFSNode | IEmscriptenStream): string[];
+  symlink(
+    parent: IEmscriptenFSNode | IEmscriptenStream,
+    newName: string,
+    oldPath: string,
+  ): void;
+  readlink(node: IEmscriptenFSNode | IEmscriptenStream): string;
 }
 
 export interface IEmscriptenStreamOps {
