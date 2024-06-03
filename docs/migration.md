@@ -35,6 +35,12 @@ The TypeScript interface `IEmscriptenNodeOps` has changed. All methods now take
 Classes implementing `IEmscriptenNodeOps` will need to be updated accordingly. See
 https://github.com/jupyterlite/jupyterlite/pull/1395 for an example implementation.
 
+The TypeScript interface `IDriveRequest` has been removed. It has been replaced by the type definition `TDriveRequest<T extends TDriveMethod>`.
+This allows to have a more refined typing depending on the type of request. The same goes for the drive response type `TDriveResponse<T extends TDriveMethod>`.
+For example, a 'readdir' drive request would have the type `TDriveRequest<'readdir'>`, and its response would be of the type `TDriveResponse<'readdir'>`.
+
+A new class `DriveContentsProcessor` is provided, which allows to perform drive requests using the jupyterlite contents manager. It can be used by Emscripten kernel authors in combination to extending the abstract `ContentsAPI` class in order to provide a custom way to implement file access from the kernel (e.g. bypassing the service worker approach).
+
 ## `0.2.0` to `0.3.0`
 
 ### Extensions
