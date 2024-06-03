@@ -157,7 +157,14 @@ class ContentsAddon(BaseAddon):
 
         self.maybe_timestamp(self.output_files_dir)
 
-        from jupyter_server.services.contents.filemanager import FileContentsManager
+        try:
+            from jupyter_server.services.contents.filemanager import FileContentsManager
+        except ImportError as e:
+            raise RuntimeError(
+                """jupyter-server is not installed. You cannot add custom content to jupyterlite.
+                Please install jupyter-server and try again.
+                """
+            ) from e
 
         fm = FileContentsManager(root_dir=str(self.output_files_dir), parent=self)
 
