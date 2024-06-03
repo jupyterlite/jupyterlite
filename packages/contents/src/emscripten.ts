@@ -24,8 +24,8 @@ export const SEEK_END = 2;
 
 export interface IStats {
   dev: number;
-  ino: number;
-  mode: number;
+  ino?: number;
+  mode?: number;
   nlink: number;
   uid: number;
   gid: number;
@@ -33,9 +33,9 @@ export interface IStats {
   size: number;
   blksize: number;
   blocks: number;
-  atime: Date;
-  mtime: Date;
-  ctime: Date;
+  atime: Date | string;
+  mtime: Date | string;
+  ctime: Date | string;
   timestamp?: number;
 }
 

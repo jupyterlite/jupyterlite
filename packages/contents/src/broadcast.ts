@@ -1,17 +1,12 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PathExt } from '@jupyterlab/coreutils';
-
 import { Contents as ServerContents } from '@jupyterlab/services';
 
-import { DIR_MODE, FILE_MODE } from './emscripten';
-
-import { BLOCK_SIZE, IDriveRequest, DRIVE_API_PATH } from './drivefs';
-
-import { IModel } from './contents';
+import { TDriveRequest, DRIVE_API_PATH, TDriveMethod } from './drivefs';
 
 import { IBroadcastChannelWrapper } from './tokens';
+import { IDriveContentsProcessor, DriveContentsProcessor } from './drivecontents';
 
 /** A broadcaster for the ServiceWorker */
 export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
@@ -19,6 +14,9 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   constructor(options: BroadcastChannelWrapper.IOptions) {
     this._contents = options.contents;
+    this._driveContentsProcessor = new DriveContentsProcessor({
+      contentsManager: this._contents,
+    });
   }
 
   get enabled() {
@@ -53,121 +51,28 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
   }
 
   /** Handle a message received on the BroadcastChannel */
-  protected _onMessage = async (event: MessageEvent<IDriveRequest>): Promise<void> => {
+  protected _onMessage = async <T extends TDriveMethod>(
+    event: MessageEvent<TDriveRequest<T>>,
+  ): Promise<void> => {
     if (!this._channel) {
       return;
     }
-    const { _contents } = this;
+
     const request = event.data;
-    const path = request?.path;
     const receiver = request?.receiver;
     if (receiver !== 'broadcast.ts') {
       // Message is not meant for us
       return;
     }
 
-    // many successful responses default to null
-    let response: any = null;
-
-    // most requests will use a model
-    let model: ServerContents.IModel;
-
-    switch (request?.method) {
-      case 'readdir':
-        model = await _contents.get(path, { content: true });
-        response = [];
-        if (model.type === 'directory' && model.content) {
-          response = model.content.map((subcontent: IModel) => subcontent.name);
-        }
-        break;
-      case 'rmdir':
-        await _contents.delete(path);
-        break;
-      case 'rename':
-        await _contents.rename(path, request.data.newPath);
-        break;
-      case 'getmode':
-        model = await _contents.get(path);
-        if (model.type === 'directory') {
-          response = DIR_MODE;
-        } else {
-          response = FILE_MODE;
-        }
-        break;
-      case 'lookup':
-        try {
-          model = await _contents.get(path);
-          response = {
-            ok: true,
-            mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
-          };
-        } catch (e) {
-          response = { ok: false };
-        }
-        break;
-      case 'mknod':
-        model = await _contents.newUntitled({
-          path: PathExt.dirname(path),
-          type: Number.parseInt(request.data.mode) === DIR_MODE ? 'directory' : 'file',
-          ext: PathExt.extname(path),
-        });
-        await _contents.rename(model.path, path);
-        break;
-      case 'getattr': {
-        model = await _contents.get(path);
-        // create a default date for drives that send incomplete information
-        // for nested foldes and files
-        const defaultDate = new Date(0).toISOString();
-
-        response = {
-          dev: 1,
-          nlink: 1,
-          uid: 0,
-          gid: 0,
-          rdev: 0,
-          size: model.size || 0,
-          blksize: BLOCK_SIZE,
-          blocks: Math.ceil(model.size || 0 / BLOCK_SIZE),
-          atime: model.last_modified || defaultDate, // TODO Get the proper atime?
-          mtime: model.last_modified || defaultDate,
-          ctime: model.created || defaultDate,
-          timestamp: 0,
-        };
-        break;
-      }
-      case 'get':
-        model = await _contents.get(path, { content: true });
-
-        if (model.type === 'directory') {
-          break;
-        }
-
-        response = {
-          content:
-            model.format === 'json' ? JSON.stringify(model.content) : model.content,
-          format: model.format,
-        };
-        break;
-      case 'put':
-        await _contents.save(path, {
-          content:
-            request.data.format === 'json'
-              ? JSON.parse(request.data.data)
-              : request.data.data,
-          type: 'file',
-          format: request.data.format as ServerContents.FileFormat,
-        });
-        break;
-      default:
-        response = null as never;
-        break;
-    }
+    const response = await this._driveContentsProcessor.processDriveRequest(request);
 
     this._channel.postMessage(response);
   };
 
   protected _channel: BroadcastChannel | null = null;
   protected _contents: ServerContents.IManager;
+  protected _driveContentsProcessor: IDriveContentsProcessor;
   protected _enabled = false;
 }
 
