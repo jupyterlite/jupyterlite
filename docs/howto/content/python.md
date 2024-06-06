@@ -50,7 +50,7 @@ TODO: mention GitHub Pages
 
 ### 2. Service Worker
 
-If the `SharedArrayBuffer` are not available in the browser, JuptyerLite will default
+If the `SharedArrayBuffer` are not available in the browser, JupyterLite will default
 back to using the Service Worker (which was used by default until JupyterLite 0.4.0).
 
 Synchronized content works by mounting a custom [Emscripten Filesystem][fs] (FS) which
