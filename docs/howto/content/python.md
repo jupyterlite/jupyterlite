@@ -28,8 +28,8 @@ exposed to the kernels with two different ways:
 By default, if the kernel supports it, synchronous communication via `SharedArrayBuffer`
 will be used for accessing files from the kernels.
 
-This approach should be more robust and avoid most of the issues related to the Service
-Worker and browser caching.
+This approach should be more robust and help avoid most of the issues related to the
+Service Worker and browser caching.
 
 However they require setting proper HTTP headers when serving the JupyterLite
 application:
