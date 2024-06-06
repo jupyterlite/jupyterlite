@@ -23,10 +23,13 @@ exposed to the kernels with two different ways:
    `SharedArrayBuffer`)
 2. Via a Service Worker
 
-### 1. `Atomics.wait`
+### 1. Synchronous communication with the kernel over `Atomics.wait` (via `SharedArrayBuffer`)
 
 By default, if the kernel supports it, synchronous communication via `SharedArrayBuffer`
 will be used for accessing files from the kernels.
+
+This approach should be more robust and avoid most of the issues related to the Service
+Worker and browser caching.
 
 However they require setting proper HTTP headers when serving the JupyterLite
 application:
