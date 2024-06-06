@@ -14,6 +14,45 @@ data = pd.read_csv('file.csv')
 data
 ```
 
+## How filesystem access works
+
+Starting with JupyterLite 0.4.0, the contents of the user's _File Browser_ can be
+exposed to the kernels with two different ways:
+
+1. Synchronous communication with the kernel over `Atomics.wait` (via
+   `SharedArrayBuffer`)
+2. Via a Service Worker
+
+### 1. `Atomics.wait`
+
+By default, if the kernel supports it, synchronous communication via `SharedArrayBuffer`
+will be used for accessing files from the kernels.
+
+However they require setting proper HTTP headers when serving the JupyterLite
+application:
+
+- [Cross-Origin-Opener-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy)
+- [Cross-Origin-Embedder-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy)
+
+These headers enable the use of `SharedArrayBuffer` in the browser, used by this
+approach for exposing the file system contents.
+
+As an example, you can start a local server with the following command to enable the
+headers:
+
+```
+npx static-handler --cors --coop --coep --corp ./
+```
+
+```{note}
+TODO: mention GitHub Pages
+```
+
+### 2. Service Worker
+
+If the `SharedArrayBuffer` are not available in the browser, JuptyerLite will default
+back to using the Service Worker (which was used by default until JupyterLite 0.4.0).
+
 Synchronized content works by mounting a custom [Emscripten Filesystem][fs] (FS) which
 communicates with the JupyterLite content manager through the JupyterLite
 [`ServiceWorker`](../configure/advanced/service-worker.md)-enabled.
@@ -22,6 +61,10 @@ communicates with the JupyterLite content manager through the JupyterLite
 The `ServiceWorker` will not always be enabled, based on
 [limitations](../configure/advanced/service-worker.md#limitations) of both the
 user's browser and the HTTP server.
+```
+
+```{warning}
+If none of these two components are enabled, the kernel will not be able to access and manipulate files listed in the File Browser.
 ```
 
 ## Verifying the Filesystem
