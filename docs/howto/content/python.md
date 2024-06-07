@@ -47,8 +47,15 @@ headers:
 npx static-handler --cors --coop --coep --corp ./
 ```
 
+```{tip}
+See the various deployment guides in the [How-to section of the documentation](../).
+```
+
 ```{note}
-TODO: mention GitHub Pages
+File system access via `SharedArrayBuffer` is available with the following Python kernels:
+
+- `jupyterlite-pyodide-kernel`
+- `jupyterlite-xeus` with the Xeus Python kernel
 ```
 
 ### 2. Service Worker
@@ -68,6 +75,13 @@ user's browser and the HTTP server.
 
 ```{warning}
 If none of these two components are enabled, the kernel will not be able to access and manipulate files listed in the File Browser.
+```
+
+```{info}
+File system access via the Service Worker is available with the following Python kernels:
+
+- `jupyterlite-pyodide-kernel`
+- `jupyterlite-xeus` with the Xeus Python kernel
 ```
 
 ## Verifying the Filesystem
