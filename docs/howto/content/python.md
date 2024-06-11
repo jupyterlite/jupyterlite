@@ -77,7 +77,7 @@ user's browser and the HTTP server.
 If none of these two components are enabled, the kernel will not be able to access and manipulate files listed in the File Browser.
 ```
 
-```{info}
+```{note}
 File system access via the Service Worker is available with the following Python kernels:
 
 - ✅ `jupyterlite-pyodide-kernel`
