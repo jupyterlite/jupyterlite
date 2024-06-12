@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.3...dc2e0a8da28770684afa497770d8b80586b1f366))
+
+### Documentation improvements
+
+- Add docs about the use of `SharedArrayBuffer` [#1405](https://github.com/jupyterlite/jupyterlite/pull/1405) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-06-03&to=2024-06-12&type=c))
+
+[@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-06-03..2024-06-12&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0a3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.2...ea956070bd735af2ce8c180a87bb639a4acc2d4c))
@@ -15,8 +31,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-05-31&to=2024-06-03&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-05-31..2024-06-03&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-05-31..2024-06-03&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0a2
 
