@@ -91,6 +91,52 @@ You might also want to specify the `--debug` flag to get extra log messages:
 jupyter lite build --debug
 ```
 
+## Configuring HTTP headers
+
+Starting with JupyterLite 0.4.0, it is possible to have more reliable file system access
+from the kernel via the use of synchronous communication with the kernel over the
+`SharedArrayBuffer` browser feature. See the [Contents guide](../content/python.md) for
+more information.
+
+However this requires setting two HTTP headers for the `SharedArrayBuffer` to be enabled
+on the page.
+
+### Adding the headers to Netlify
+
+Create a `netlify.toml` file at the root of the repo with the following content:
+
+```toml
+[[headers]]
+for = "/*"
+  [headers.values]
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Embedder-Policy = "require-corp"
+```
+
+### Adding the headers to Vercel
+
+Create a `vercel.json` file at the root of the repo with the following content:
+
+```json
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
+      ]
+    }
+  ]
+}
+```
+
 [vercel]: https://vercel.com
 [netlify]: https://netlify.com
 [jupyterlite demo]: https://github.com/jupyterlite/demo
