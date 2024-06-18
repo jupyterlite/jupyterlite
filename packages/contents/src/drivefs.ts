@@ -387,7 +387,7 @@ export abstract class ContentsAPI {
     return this.request({ method: 'getmode', path: this.normalizePath(path) });
   }
 
-  mknod(path: string, mode: number) {
+  mknod(path: string, mode: number): null {
     return this.request({
       method: 'mknod',
       path: this.normalizePath(path),
@@ -454,7 +454,7 @@ export abstract class ContentsAPI {
     }
   }
 
-  put(path: string, value: DriveFS.IFile) {
+  put(path: string, value: DriveFS.IFile): null {
     switch (value.format) {
       case 'json':
       case 'text':
