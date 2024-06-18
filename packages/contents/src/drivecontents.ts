@@ -139,10 +139,12 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
 
   async rmdir(request: TDriveRequest<'rmdir'>): Promise<TDriveResponse<'rmdir'>> {
     await this.contentsManager.delete(request.path);
+    return null;
   }
 
   async rename(request: TDriveRequest<'rename'>): Promise<TDriveResponse<'rename'>> {
     await this.contentsManager.rename(request.path, request.data.newPath);
+    return null;
   }
 
   async getmode(request: TDriveRequest<'getmode'>): Promise<TDriveResponse<'getmode'>> {
@@ -179,6 +181,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
       ext: PathExt.extname(request.path),
     });
     await this.contentsManager.rename(model.path, request.path);
+    return null;
   }
 
   async getattr(request: TDriveRequest<'getattr'>): Promise<TDriveResponse<'getattr'>> {
@@ -228,6 +231,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
       type: 'file',
       format: request.data.format as Contents.FileFormat,
     });
+    return null;
   }
 }
 

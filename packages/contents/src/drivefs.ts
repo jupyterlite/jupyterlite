@@ -93,11 +93,11 @@ export type TDriveRequest<T extends TDriveMethod> = {
 
 type TDriveResponses = {
   readdir: string[];
-  rmdir: void;
-  rename: void;
+  rmdir: null;
+  rename: null;
   getmode: number;
   lookup: DriveFS.ILookup;
-  mknod: void;
+  mknod: null;
   getattr: IStats;
   get:
     | {
@@ -112,7 +112,7 @@ type TDriveResponses = {
         format: Contents.FileFormat;
       }
     | undefined;
-  put: void;
+  put: null;
 };
 
 /**
@@ -387,7 +387,7 @@ export abstract class ContentsAPI {
     return this.request({ method: 'getmode', path: this.normalizePath(path) });
   }
 
-  mknod(path: string, mode: number) {
+  mknod(path: string, mode: number): null {
     return this.request({
       method: 'mknod',
       path: this.normalizePath(path),
@@ -395,7 +395,7 @@ export abstract class ContentsAPI {
     });
   }
 
-  rename(oldPath: string, newPath: string): void {
+  rename(oldPath: string, newPath: string): null {
     return this.request({
       method: 'rename',
       path: this.normalizePath(oldPath),
@@ -413,7 +413,7 @@ export abstract class ContentsAPI {
     return dirlist;
   }
 
-  rmdir(path: string): void {
+  rmdir(path: string): null {
     return this.request({ method: 'rmdir', path: this.normalizePath(path) });
   }
 
@@ -454,7 +454,7 @@ export abstract class ContentsAPI {
     }
   }
 
-  put(path: string, value: DriveFS.IFile) {
+  put(path: string, value: DriveFS.IFile): null {
     switch (value.format) {
       case 'json':
       case 'text':
