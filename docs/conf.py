@@ -115,8 +115,8 @@ html_theme_options = {
             "icon": "fa-solid fa-box",
         },
     ],
-    "pygment_light_style": "github-light",
-    "pygment_dark_style": "github-dark",
+    "pygments_light_style": "github-light",
+    "pygments_dark_style": "github-dark",
     "logo": {
         "alt_text": "JupyterLite",
         "image_light": "_static/wordmark.svg",
