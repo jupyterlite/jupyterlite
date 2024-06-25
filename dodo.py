@@ -135,7 +135,7 @@ def task_lint():
                 name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
                 file_dep=[ipynb],
                 actions=[
-                    U.do("nbstripout", ipynb),
+                    U.do("nbstripout", "--keep-id", ipynb),
                     U.do(
                         "jupyter-nbconvert",
                         "--log-level=WARN",

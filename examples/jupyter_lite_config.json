@@ -25,7 +25,6 @@
     "output_dir": "../build/docs-app"
   },
   "PipliteAddon": {
-    "piplite_urls": [
-    ]
+    "piplite_urls": []
   }
 }
