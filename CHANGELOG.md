@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-beta.0...c571888f49c9d9c78d8ed557da93a292c18c940a))
+
+### Enhancements made
+
+- Update to JupyterLab 4.2.2 [#1420](https://github.com/jupyterlite/jupyterlite/pull/1420) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix some drive methods return types [#1418](https://github.com/jupyterlite/jupyterlite/pull/1418) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Add `packageManager` to `package.json` [#1419](https://github.com/jupyterlite/jupyterlite/pull/1419) ([@jtpio](https://github.com/jtpio))
+- Bump ws from 8.13.0 to 8.17.1 in /ui-tests [#1417](https://github.com/jupyterlite/jupyterlite/pull/1417) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-06-12&to=2024-06-25&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-06-12..2024-06-25&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-06-12..2024-06-25&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-06-12..2024-06-25&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-06-12..2024-06-25&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-alpha.3...dc2e0a8da28770684afa497770d8b80586b1f366))
@@ -15,8 +40,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-06-03&to=2024-06-12&type=c))
 
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-06-03..2024-06-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0a3
 
