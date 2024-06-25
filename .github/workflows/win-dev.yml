@@ -9,7 +9,7 @@ on:
       - '*'
 
 env:
-  CACHE_EPOCH: 5
+  CACHE_EPOCH: 6
   CI: 0
   WIN_DEV_IN_CI: 1
   PYTHONUTF8: 1

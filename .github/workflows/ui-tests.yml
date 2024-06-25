@@ -2,6 +2,9 @@ name: UI Tests
 
 on: [push, pull_request]
 
+env:
+  CACHE_EPOCH: 0
+
 jobs:
   build:
     name: Build

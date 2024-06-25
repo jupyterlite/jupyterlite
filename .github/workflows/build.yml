@@ -9,7 +9,7 @@ on:
       - '*'
 
 env:
-  CACHE_EPOCH: 3
+  CACHE_EPOCH: 4
 
 jobs:
   build:
