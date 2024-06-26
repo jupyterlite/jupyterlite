@@ -90,7 +90,7 @@ def task_setup():
         doc="install node packages",
         file_dep=file_dep,
         actions=actions,
-        targets=[],
+        targets=[B.YARN_STATE],
     )
 
 
@@ -135,7 +135,7 @@ def task_lint():
                 name=f"ipynb:{ipynb.relative_to(P.ROOT)}",
                 file_dep=[ipynb],
                 actions=[
-                    U.do("nbstripout", ipynb),
+                    U.do("nbstripout", "--keep-id", ipynb),
                     U.do(
                         "jupyter-nbconvert",
                         "--log-level=WARN",
@@ -188,7 +188,7 @@ def task_build():
     yield dict(
         name="js:ui-components",
         doc="copy the icon and wordmark to the ui-components package",
-        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK],
+        file_dep=[P.DOCS_ICON, P.DOCS_WORDMARK, B.YARN_STATE],
         targets=[P.LITE_ICON, P.LITE_WORDMARK],
         actions=[
             U.do(
@@ -208,6 +208,7 @@ def task_build():
         file_dep=[
             *P.PACKAGE_JSONS.values(),
             P.ROOT_PACKAGE_JSON,
+            B.YARN_STATE,
         ],
         actions=[
             U.do("jlpm", "build:lib"),
@@ -216,6 +217,7 @@ def task_build():
     )
 
     app_deps = [
+        B.YARN_STATE,
         B.META_BUILDINFO,
         P.WEBPACK_CONFIG,
         P.LITE_ICON,
@@ -888,6 +890,7 @@ class D:
 class B:
     # built
     NODE_MODULES = P.ROOT / "node_modules"
+    YARN_STATE = NODE_MODULES / ".yarn-state.yml"
     META_BUILDINFO = P.PACKAGES / "_metapackage/tsconfig.tsbuildinfo"
 
     # built things

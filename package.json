@@ -68,7 +68,11 @@
     "json-schema": "^0.4.0",
     "react": "^18.2.0",
     "validator": "^13.7.0",
-    "yjs": "^13.5.40"
+    "yjs": "^13.5.40",
+    "typescript": "~5.1.6",
+    "uuid": "^9.0.0",
+    "prettier": "^3.0.0",
+    "schema-utils": "^4.0.0"
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "~4.2.2",
