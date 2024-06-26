@@ -25,6 +25,28 @@
     "output_dir": "../build/docs-app"
   },
   "PipliteAddon": {
-    "piplite_urls": []
+    "piplite_urls": [
+      "https://files.pythonhosted.org/packages/0b/f8/b65cdd2be32e442c4efe7b672f73c90b05eab5a7f3f4115efe181d432c60/plotly-5.22.0-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/26/a3/b40b8460c20bbe5bd1bde85f5f1046600be2c64a1499f6883f560c5b01a0/ipycanvas-0.13.2-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/3c/ed/3964d25c5998190844c4d91cc895d7ab9247ee73a75ce4704e36676b3f50/ipyleaflet-0.19.1-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/4c/0f/b66d63d4a5426c09005d3713b056e634e00e69788fdc88d1ffe40e5b7654/ipycytoscape-1.3.3-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/65/f6/659ca44182c86f57977e946047c339c717745fda9f43b7ac47f274e86553/jupyterlab_widgets-3.0.11-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/68/13/2aa1f0e1364feb2c9ef45302f387ac0bd81484e9c9a4c5688a322fbdfd08/platformdirs-4.2.2-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/6b/51/69ae61c456ecb27cda9e1676ee5798d10cd741579cfd292d7719d217852d/jupyter_leaflet-0.19.1-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/6d/ca/086311cdfc017ec964b2436fe0c98c1f4efcb7e4c328956a22456e497655/fastjsonschema-2.20.0-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/71/49/b172872b119ddf7f9027b977bb4ddcced31f5e901f055b22c8087fc4160b/ipyvuetify-1.9.4-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/75/ca/6074ab4a04dd1a503201c18091b3426f3709670115fae316907a97f98d75/branca-0.7.2-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/81/ec/8bdccea3ff7d557601183581340c3768b7bb7b1e32c8991f1130f0c1e2c4/spectate-1.0.1-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/97/ff/75d0b7cc41c6f18113a5522a73f99595bd967f1d0fe3495cd27e09d6b58a/ipyvue-1.11.0-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/9c/d1/8d5bd662703cc1764d986f6908a608777305946fa634d34c470cd4a1e729/traittypes-0.2.1-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/a9/82/0340caa499416c78e5d8f5f05947ae4bc3cba53c9f038ab6e9ed964e22f1/nbformat-5.10.4-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/ad/f5/717a355a47e8ba28ff9fcbe63d3014b55a8d20f3983582205085e85e2869/bqplot-0.12.43-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/ae/6d/18a7546e1748ecdd6ed7cd00d3f183faf1df08bd4f5e5e0eb3e72458b862/folium-0.17.0-py2.py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/c9/fb/108ecd1fe961941959ad0ee4e12ee7b8b1477247f30b1fdfd83ceaf017f0/jupyter_core-5.7.2-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/d4/17/8b2ce5765dd423433d2e0727712629c46152fb0bc706b0977f847480f262/ipywidgets-8.1.3-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/d8/50/d6f4e7eb0e7d198b431d8259bc9a6035f879d4df487448b196cdf1e84155/ipympl-0.9.4-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/e3/ee/b179c3ab5cb842d75c65339c4b86b572eaf8f43407890bd1d2c7b72eb829/tenacity-8.4.2-py3-none-any.whl",
+      "https://files.pythonhosted.org/packages/e6/75/49e5bfe642f71f272236b5b2d2691cf915a7283cc0ceda56357b61daa538/comm-0.2.2-py3-none-any.whl"
+    ]
   }
 }
