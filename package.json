@@ -66,16 +66,16 @@
   "resolutions": {
     "@types/react": "^18.0.26",
     "json-schema": "^0.4.0",
+    "prettier": "^3.0.0",
     "react": "^18.2.0",
-    "validator": "^13.7.0",
-    "yjs": "^13.5.40",
+    "schema-utils": "^4.0.0",
     "typescript": "~5.1.6",
     "uuid": "^9.0.0",
-    "prettier": "^3.0.0",
-    "schema-utils": "^4.0.0"
+    "validator": "^13.7.0",
+    "yjs": "^13.5.40"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~4.2.2",
+    "@jupyterlab/buildutils": "~4.2.3",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
