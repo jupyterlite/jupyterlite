@@ -14,7 +14,7 @@ dependencies:
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
-  - importlib_metadata !=8.0.0
+  - importlib_metadata
   - jsonschema >=3
   - jupyterlab >=4.2.2,<4.3
   - notebook >=7.2.0,<7.3

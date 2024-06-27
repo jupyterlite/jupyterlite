@@ -10,4 +10,4 @@ jupyter_core >=4.7
 jupyterlab >=4.2.2,<4.3
 # TODO: remove pin once working with twine
 # https://github.com/pypa/twine/pull/1126
-importlib_metadata !=8.0.0
+importlib_metadata
