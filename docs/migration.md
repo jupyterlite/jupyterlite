@@ -269,9 +269,13 @@ approach).
 
 #### `jupyterlite-core`
 
-Previously, running a build with the contents option specified (for example with `jupyter lite build --contents contents`) would simply log a warning in the build logs if the `jupyter-server` dependency (used for indexing the files) was missing. Making it difficult to debug issues with missing content and files.
+Previously, running a build with the contents option specified (for example with
+`jupyter lite build --contents contents`) would simply log a warning in the build logs
+if the `jupyter-server` dependency (used for indexing the files) was missing. Making it
+difficult to debug issues with missing content and files.
 
-In JupyterLite 0.4.0, the build now fails if the `contents` option is provided when the `jupyter-server` is not installed.
+In JupyterLite 0.4.0, the build now fails if the `contents` option is provided when the
+`jupyter-server` is not installed.
 
 ## `0.2.0` to `0.3.0`
 
