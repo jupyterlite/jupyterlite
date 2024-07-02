@@ -54,7 +54,7 @@ See the various deployment guides in the [How-to section of the documentation](.
 ```{note}
 File system access via `SharedArrayBuffer` is available with the following Python kernels:
 
-- ❌ `jupyterlite-pyodide-kernel`
+- ✅ `jupyterlite-pyodide-kernel`
 - ✅ `jupyterlite-xeus` with the Xeus Python kernel
 ```
 
