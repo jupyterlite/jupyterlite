@@ -2,6 +2,31 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-beta.1...02880b14c1a5f0b3d9a71438de15b8408506538a))
+
+### Enhancements made
+
+- Update to JupyterLab 4.2.3 [#1425](https://github.com/jupyterlite/jupyterlite/pull/1425) ([@jtpio](https://github.com/jtpio))
+- Reduce final package size, start updating demo [#1423](https://github.com/jupyterlite/jupyterlite/pull/1423) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Maintenance and upkeep improvements
+
+- Updated integration tests workflow [#1434](https://github.com/jupyterlite/jupyterlite/pull/1434) ([@krassowski](https://github.com/krassowski))
+
+### Documentation improvements
+
+- Mention `jupyterlite-pyodide-kernel` supports the `SharedArrayBuffer` in the documentation [#1428](https://github.com/jupyterlite/jupyterlite/pull/1428) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-06-25&to=2024-07-18&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-06-25..2024-07-18&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-06-25..2024-07-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-06-25..2024-07-18&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2024-06-25..2024-07-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0b1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0-beta.0...c571888f49c9d9c78d8ed557da93a292c18c940a))
@@ -24,8 +49,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-06-12&to=2024-06-25&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-06-12..2024-06-25&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-06-12..2024-06-25&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-06-12..2024-06-25&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-06-12..2024-06-25&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0b0
 
