@@ -39,9 +39,9 @@
   },
   "dependencies": {
     "@jupyter-notebook/application": "~7.2.0",
-    "@jupyterlab/application": "~4.2.3",
-    "@jupyterlab/coreutils": "~6.2.3",
-    "@jupyterlab/services": "~7.2.3",
+    "@jupyterlab/application": "~4.2.4",
+    "@jupyterlab/coreutils": "~6.2.4",
+    "@jupyterlab/services": "~7.2.4",
     "@jupyterlite/ui-components": "^0.4.0-rc.0"
   },
   "devDependencies": {
