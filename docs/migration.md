@@ -17,6 +17,18 @@ See the JupyterLab and Notebook changelogs for more information:
 - [JupyterLab 4.2](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-2-0)
 - [Jupyter Notebook 7.2](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-2)
 
+### Accessing files from the kernel
+
+JupyterLite 0.4.0 introduces a more robust way for accessing files from kernels.
+
+Previously, JupyterLite was relying on a Service Worker to make the files visible to the
+kernel. Starting with version 0.4.0, JupyterLite allows kernels to leverage the use of
+shared memory (via `SharedArrayBuffer`) to make accessing files more robust and
+resilient, and avoid caching issues.
+
+See the [documentation on accessing files](./howto/content/files.md) for more
+information.
+
 ### API changes
 
 #### `@jupyterlite/application`
