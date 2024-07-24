@@ -26,6 +26,9 @@ kernel. Starting with version 0.4.0, JupyterLite allows kernels to leverage the 
 shared memory (via `SharedArrayBuffer`) to make accessing files more robust and
 resilient, and avoid caching issues.
 
+If the COOP and COEP headers, JupyterLite uses shared memory via `SharedArrayBuffer` to
+enable file access. Otherwise, it defaults to using the Service Worker, like before.
+
 See the [documentation on accessing files](./howto/content/files.md) for more
 information.
 
