@@ -62,7 +62,7 @@ dependencies:
   - pkginfo
   - python-libarchive-c
   - requests_cache
-  - twine
+  - twine >=5.1.1
   - wheel
   # cli
   - wheel
