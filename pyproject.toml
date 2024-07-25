@@ -76,6 +76,7 @@ tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
 src = "package.json"
+search = "\"version\": \"{current_version}\""
 
 [[tool.tbump.file]]
 src = "pyproject.toml"
