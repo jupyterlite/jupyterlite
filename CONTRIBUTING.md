@@ -22,7 +22,7 @@ You'll need:
 - `git`
 - `nodejs >=20,<21`
 - `jupyterlab >=4.3,<4.4`
-- `python >=3.11,<3.12`
+- `python >=3.12,<3.13`
 
 Various package managers on different operating systems provide these.
 
@@ -165,7 +165,7 @@ jlpm serve
 
 To serve with Python's built-in
 [`http.server`](https://docs.python.org/3/library/http.server.html) module (requires
-Python 3.7+):
+Python 3.8+):
 
 ```bash
 jlpm serve:py
