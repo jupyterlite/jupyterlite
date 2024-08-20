@@ -165,7 +165,7 @@ jlpm serve
 
 To serve with Python's built-in
 [`http.server`](https://docs.python.org/3/library/http.server.html) module (requires
-Python 3.8+):
+Python 3.7+):
 
 ```bash
 jlpm serve:py
