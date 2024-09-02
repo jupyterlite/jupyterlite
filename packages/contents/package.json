@@ -46,7 +46,7 @@
     "@jupyterlab/nbformat": "~4.2.5",
     "@jupyterlab/services": "~7.2.5",
     "@jupyterlite/localforage": "^0.4.0",
-    "@lumino/coreutils": "^2.1.2",
+    "@lumino/coreutils": "^2.2.0",
     "@types/emscripten": "^1.39.6",
     "localforage": "^1.9.0",
     "mime": "^3.0.0"
