@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0...f4700e077b0ef9ee354edcb871132f1013c7a19d))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.2.5 and Notebook 7.2.2 [#1473](https://github.com/jupyterlite/jupyterlite/pull/1473) ([@jtpio](https://github.com/jtpio))
+- Fix tbump rule [#1446](https://github.com/jupyterlite/jupyterlite/pull/1446) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update Vercel Setup Instructions for Node.js v20 [#1450](https://github.com/jupyterlite/jupyterlite/pull/1450) ([@michaelweinold](https://github.com/michaelweinold))
+- docs: update config file example with correct output dir parameter name [#1443](https://github.com/jupyterlite/jupyterlite/pull/1443) ([@zonca](https://github.com/zonca))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-07-25&to=2024-09-02&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-07-25..2024-09-02&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-07-25..2024-09-02&type=Issues) | [@michaelweinold](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amichaelweinold+updated%3A2024-07-25..2024-09-02&type=Issues) | [@zonca](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Azonca+updated%3A2024-07-25..2024-09-02&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.3.0...cdbb58bc93704da7b662d07a39df8779178a9385))
@@ -53,8 +75,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-03-26&to=2024-07-25&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-03-26..2024-07-25&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-03-26..2024-07-25&type=Issues) | [@Carreau](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ACarreau+updated%3A2024-03-26..2024-07-25&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-03-26..2024-07-25&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-03-26..2024-07-25&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-03-26..2024-07-25&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2024-03-26..2024-07-25&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2024-03-26..2024-07-25&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-03-26..2024-07-25&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0rc0
 
