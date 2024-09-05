@@ -1,5 +1,5 @@
 jupyterlab-language-pack-fr-FR
-jupyterlite-javascript-kernel==0.3.0a1
+jupyterlite-javascript-kernel==0.4.0a0
 jupyterlite-p5-kernel==0.1.1
 jupyterlite-pyodide-kernel==0.4.2
 notebook==7.2.2
