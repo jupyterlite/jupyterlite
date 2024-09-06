@@ -27,7 +27,6 @@ dependencies:
   - jupyterlab_widgets >=3.0.4,<4.0.0
   - jupyterlab-fasta >=3,<4
   - jupyterlab-geojson >=3,<4
-  - jupyterlab-github >=4.0.0
   - jupyterlab-kernelspy >=4.0.0
   - jupyterlab-tour >=4.0.1
   # TODO: re-add after JupyterLab 4 compatibility
