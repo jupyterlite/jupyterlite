@@ -98,5 +98,7 @@ jobs:
           test_folder: ui-tests
           start_server_script: 'null'
           update_script: test:update --browser ${{ matrix.browser }}
+          artifact_name: playwright-snapshots-${{ matrix.browser }}
+          report_name: playwright-report-${{ matrix.browser }}
         env:
           DEBUG: pw:webserver
