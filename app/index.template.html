@@ -35,5 +35,11 @@
   </head>
   {{#unless (ispage name 'tree')}}
   <body class="jp-ThemedContainer" data-notebook="{{ name }}"></body>
+    <noscript>
+      <div style="color: red; font-weight: bold; text-align: center; padding: 20px;">
+          JupyterLite requires JavaScript to be enabled in your browser.
+      </div>
+  </noscript>
+  </body>
   {{/unless}}
 </html>
