@@ -12,6 +12,6 @@ test.describe('JavaScript disabled', () => {
     await page.waitForLoadState('domcontentloaded');
 
     const message = 'JupyterLite requires JavaScript to be enabled in your browser.';
-    expect(page.getByText(message)).toBeVisible();
+    await expect(page.getByText(message)).toBeVisible();
   });
 });
