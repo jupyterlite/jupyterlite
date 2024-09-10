@@ -86,7 +86,7 @@ jobs:
         run: |
           cd ui-tests
           jlpm
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt --no-deps
           jlpm build
           jlpm playwright install
 
