@@ -50,9 +50,12 @@ async function onFetch(event: FetchEvent): Promise<void> {
   const { request } = event;
 
   const url = new URL(event.request.url);
+  if (url.pathname === '/api/keep-sw-alive') {
+    event.respondWith(new Response('ok'));
+    return;
+  }
 
   let responsePromise: Promise<Response> | null = null;
-
   if (shouldBroadcast(url)) {
     responsePromise = broadcastOne(request);
   } else if (!shouldDrop(request, url)) {

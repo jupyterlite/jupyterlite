@@ -6,7 +6,7 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
 const VERSION = PageConfig.getOption('appVersion');
-
+const SW_PING_ENDPOINT = '/api/keep-sw-alive';
 export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
@@ -100,9 +100,16 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       this._ready.reject(void 0);
     } else {
       this._ready.resolve(void 0);
+      setTimeout(this._pingServiceWorker, 20000);
     }
   }
-
+  private _pingServiceWorker = async (): Promise<void> => {
+    const response = await fetch(SW_PING_ENDPOINT);
+    const text = await response.text();
+    if (text === 'ok') {
+      setTimeout(this._pingServiceWorker, 20000);
+    }
+  };
   private _setRegistration(registration: ServiceWorkerRegistration | null) {
     this._registration = registration;
     this._registrationChanged.emit(this._registration);
