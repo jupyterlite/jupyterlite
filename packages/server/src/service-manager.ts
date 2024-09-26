@@ -6,7 +6,7 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
 const VERSION = PageConfig.getOption('appVersion');
-const SW_PING_ENDPOINT = '/api/keep-sw-alive';
+const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
 export class ServiceWorkerManager implements IServiceWorkerManager {
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
