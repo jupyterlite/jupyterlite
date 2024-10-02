@@ -5,7 +5,7 @@ import { Event, ServerConnection, ServiceManager } from '@jupyterlab/services';
 
 import { Application, IPlugin } from '@lumino/application';
 
-import { Stream } from '@lumino/signaling';
+import { Signal, Stream } from '@lumino/signaling';
 
 import { WebSocket } from 'mock-socket';
 
@@ -14,24 +14,32 @@ import { Router } from './router';
 export type JupyterLiteServerPlugin<T> = IPlugin<JupyterLiteServer, T>;
 
 /**
- * Mock the Event Manager for now
+ * A local event manager service.
+ *
+ * #### Notes
+ * Schema IDs are not verified and all client-emitted events emit.
  */
-class MockEventManager implements Event.IManager {
+class LocalEventManager implements Event.IManager {
   constructor(options: { serverSettings: ServerConnection.ISettings }) {
-    this._stream = new Stream(this);
     this._serverSettings = options.serverSettings;
+    this._stream = new Stream(this);
   }
 
   async emit(event: Event.Request): Promise<void> {
-    // no-op
+    this._stream.emit(event);
   }
 
   dispose(): void {
-    // no-op
+    if (this.isDisposed) {
+      return;
+    }
+    this._isDisposed = true;
+    Signal.clearData(this);
+    this._stream.stop();
   }
 
   get isDisposed(): boolean {
-    return true;
+    return this._isDisposed;
   }
 
   get stream() {
@@ -42,8 +50,9 @@ class MockEventManager implements Event.IManager {
     return this._serverSettings;
   }
 
-  private _stream: Stream<this, Event.Emission>;
+  private _isDisposed = false;
   private _serverSettings: ServerConnection.ISettings;
+  private _stream: Stream<this, Event.Emission>;
 }
 
 /**
@@ -65,7 +74,7 @@ export class JupyterLiteServer extends Application<never> {
     this._serviceManager = new ServiceManager({
       standby: 'never',
       serverSettings,
-      events: new MockEventManager({ serverSettings }),
+      events: new LocalEventManager({ serverSettings }),
     });
   }
 
