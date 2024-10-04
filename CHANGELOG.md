@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.1...80c64a52cb3e0990a032075efb6bc8d0fcdb0a80))
+
+### Enhancements made
+
+- Add a partially functional local event manager [#1481](https://github.com/jupyterlite/jupyterlite/pull/1481) ([@afshin](https://github.com/afshin))
+
+### Bugs fixed
+
+- Ping service worker every 20s [#1489](https://github.com/jupyterlite/jupyterlite/pull/1489) ([@trungleduc](https://github.com/trungleduc))
+
+### Maintenance and upkeep improvements
+
+- Use custom `artifact_name` and `report_name` in `playwright-update.yml` [#1478](https://github.com/jupyterlite/jupyterlite/pull/1478) ([@jtpio](https://github.com/jtpio))
+- Troubleshoot UI tests [#1477](https://github.com/jupyterlite/jupyterlite/pull/1477) ([@jtpio](https://github.com/jtpio))
+- Bump `jupyterlite-pyodide-kernel` [#1448](https://github.com/jupyterlite/jupyterlite/pull/1448) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- remove jupyterlab-github [#1474](https://github.com/jupyterlite/jupyterlite/pull/1474) ([@bollwyvl](https://github.com/bollwyvl))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-09-02&to=2024-10-04&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-09-02..2024-10-04&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-09-02..2024-10-04&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-09-02..2024-10-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-09-02..2024-10-04&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2024-09-02..2024-10-04&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.0...f4700e077b0ef9ee354edcb871132f1013c7a19d))
@@ -21,8 +51,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-07-25&to=2024-09-02&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-07-25..2024-09-02&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-07-25..2024-09-02&type=Issues) | [@michaelweinold](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amichaelweinold+updated%3A2024-07-25..2024-09-02&type=Issues) | [@zonca](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Azonca+updated%3A2024-07-25..2024-09-02&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.0
 
