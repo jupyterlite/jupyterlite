@@ -25,8 +25,8 @@ class LocalEventManager implements Event.IManager {
     this._stream = new Stream(this);
   }
 
-  async emit(event: Event.Request): Promise<void> {
-    this._stream.emit(event);
+  async emit({ data, schema_id }: Event.Request): Promise<void> {
+    this._stream.emit({ ...data, schema_id });
   }
 
   dispose(): void {
