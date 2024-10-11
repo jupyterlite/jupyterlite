@@ -455,7 +455,11 @@ export class Contents implements IContents {
           size: content.length,
         };
       } else {
-        let content = this._handleBinaryChunk(options.content, originalContent, chunked);
+        let content = this._handleBinaryChunk(
+          options.content,
+          originalContent,
+          chunked,
+        );
 
         if (lastChunk) {
           content = btoa(content);
@@ -616,7 +620,7 @@ export class Contents implements IContents {
     chunked?: boolean,
   ): string {
     const base64Decoded = atob(newContent);
-    const padEscaped = base64Decoded.replace(/=+$/, '')
+    const padEscaped = base64Decoded.replace(/=+$/, '');
     const content = chunked ? originalContent + padEscaped : padEscaped;
     return content;
   }
