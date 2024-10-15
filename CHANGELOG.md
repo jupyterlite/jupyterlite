@@ -2,6 +2,28 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.2...6e316cc6f4fdd5ece61afb619a7822f730fb4d83))
+
+### Bugs fixed
+
+- handle binary file chunks [#1497](https://github.com/jupyterlite/jupyterlite/pull/1497) ([@katotetsuro](https://github.com/katotetsuro))
+- Service worker unregistering should be completed before registering new service worker [#1495](https://github.com/jupyterlite/jupyterlite/pull/1495) ([@andeplane](https://github.com/andeplane))
+- Update `LocalEventManager` to emit an `Event.Emission` that mimics the back-end [#1494](https://github.com/jupyterlite/jupyterlite/pull/1494) ([@afshin](https://github.com/afshin))
+
+### Documentation improvements
+
+- Fix deployment issue by removing reliance on .bashrc for Vercel and Netlify environments [#1491](https://github.com/jupyterlite/jupyterlite/pull/1491) ([@diegofcornejo](https://github.com/diegofcornejo))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-10-04&to=2024-10-15&type=c))
+
+[@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-10-04..2024-10-15&type=Issues) | [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2024-10-04..2024-10-15&type=Issues) | [@diegofcornejo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adiegofcornejo+updated%3A2024-10-04..2024-10-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-10-04..2024-10-15&type=Issues) | [@katotetsuro](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akatotetsuro+updated%3A2024-10-04..2024-10-15&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.1...80c64a52cb3e0990a032075efb6bc8d0fcdb0a80))
@@ -29,8 +51,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-09-02&to=2024-10-04&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-09-02..2024-10-04&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-09-02..2024-10-04&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-09-02..2024-10-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-09-02..2024-10-04&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2024-09-02..2024-10-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.1
 
