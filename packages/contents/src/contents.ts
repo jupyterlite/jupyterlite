@@ -455,11 +455,20 @@ export class Contents implements IContents {
           size: content.length,
         };
       } else {
-        const content = options.content;
+        let content = this._handleBinaryChunk(
+          options.content,
+          originalContent,
+          chunked,
+        );
+
+        if (lastChunk) {
+          content = btoa(content);
+        }
+
         item = {
           ...item,
           content,
-          size: atob(content).length,
+          size: content.length,
         };
       }
     }
@@ -592,6 +601,27 @@ export class Contents implements IContents {
   ): string {
     const escaped = decodeURIComponent(escape(atob(newContent)));
     const content = chunked ? originalContent + escaped : escaped;
+    return content;
+  }
+
+  /**
+   * Handle a chunk of a binary file.
+   * each chunk is base64 encoded, so we need to decode it and append it to the
+   * original content.
+   * if the chunk has padding, we need to remove it before appending.
+   * @param content the content to process
+   *
+   * @returns the decoded string, appended to the original content if chunked
+   * /
+   */
+  private _handleBinaryChunk(
+    newContent: string,
+    originalContent: string,
+    chunked?: boolean,
+  ): string {
+    const base64Decoded = atob(newContent);
+    const padEscaped = base64Decoded.replace(/=+$/, '');
+    const content = chunked ? originalContent + padEscaped : padEscaped;
     return content;
   }
 
