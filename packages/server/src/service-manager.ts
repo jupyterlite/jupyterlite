@@ -38,7 +38,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
-  private unregisterOldServiceWorkers = (scriptURL: string) => {
+  private unregisterOldServiceWorkers = async (scriptURL: string) => {
     const versionKey = `${scriptURL}-version`;
     // Check if we have an installed version. If we do, compare it to the current version
     // and unregister all service workers if they are different.
@@ -47,17 +47,12 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
       // eslint-disable-next-line no-console
       console.info('New version, unregistering existing service workers.');
-      navigator.serviceWorker
-        .getRegistrations()
-        .then((registrations) => {
-          for (const registration of registrations) {
-            registration.unregister();
-          }
-        })
-        .then(() => {
-          // eslint-disable-next-line no-console
-          console.info('All existing service workers have been unregistered.');
-        });
+      const registrations = await navigator.serviceWorker.getRegistrations();
+
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+
+      // eslint-disable-next-line no-console
+      console.info('All existing service workers have been unregistered.');
     }
 
     localStorage.setItem(versionKey, VERSION);
@@ -72,7 +67,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       console.warn('ServiceWorkers not supported in this browser');
     } else if (serviceWorker.controller) {
       const scriptURL = serviceWorker.controller.scriptURL;
-      this.unregisterOldServiceWorkers(scriptURL);
+      await this.unregisterOldServiceWorkers(scriptURL);
 
       registration = (await serviceWorker.getRegistration(scriptURL)) || null;
       // eslint-disable-next-line no-console
