@@ -43,6 +43,7 @@ export interface IEmscriptenFSNode {
   id: number;
   name: string;
   mode: number;
+  size: number;
   parent: IEmscriptenFSNode;
   mount: { opts: { root: string } };
   stream_ops: IEmscriptenStreamOps;

@@ -291,6 +291,9 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         case 'timestamp':
           node.timestamp = value;
           break;
+        case 'size':
+          node.size = value;
+          break;
         default:
           console.warn('setattr', key, 'of', value, 'on', node, 'not yet implemented');
           break;
