@@ -1,6 +1,6 @@
 import { ObservableMap } from '@jupyterlab/observables';
 
-import { Kernel, KernelMessage } from '@jupyterlab/services';
+import { KernelAPI, Kernel, KernelMessage } from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
@@ -14,7 +14,7 @@ import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
 import { Mutex } from 'async-mutex';
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 /**
  * Use the default kernel wire protocol.
@@ -118,7 +118,12 @@ export class Kernels implements IKernels {
     const kernelId = id ?? UUID.uuid4();
 
     // There is one server per kernel which handles multiple clients
-    const kernelUrl = `${Kernels.WS_BASE_URL}api/kernels/${kernelId}/channels`;
+    const kernelUrl = URLExt.join(
+      Kernels.WS_BASE_URL,
+      KernelAPI.KERNEL_SERVICE_URL,
+      encodeURIComponent(kernelId),
+      'channels'
+    );
     const runningKernel = this._kernels.get(kernelId);
     if (runningKernel) {
       return {
