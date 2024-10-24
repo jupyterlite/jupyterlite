@@ -122,7 +122,7 @@ export class Kernels implements IKernels {
       Kernels.WS_BASE_URL,
       KernelAPI.KERNEL_SERVICE_URL,
       encodeURIComponent(kernelId),
-      'channels'
+      'channels',
     );
     const runningKernel = this._kernels.get(kernelId);
     if (runningKernel) {
