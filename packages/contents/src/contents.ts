@@ -421,6 +421,7 @@ export class Contents implements IContents {
     item = {
       ...item,
       ...options,
+      size: options.content?.length || 0,
       last_modified: modified,
     };
 
@@ -472,8 +473,6 @@ export class Contents implements IContents {
         };
       }
     }
-
-    item = { ...item, size: item.content.length };
 
     await (await this.storage).setItem(path, item);
     return item;
