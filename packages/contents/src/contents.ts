@@ -421,6 +421,7 @@ export class Contents implements IContents {
     item = {
       ...item,
       ...options,
+      size: options.content?.length || 0,
       last_modified: modified,
     };
 
