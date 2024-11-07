@@ -27,6 +27,10 @@ test.use({
 
 test.describe('Contents Tests', () => {
   test.beforeEach(async ({ page }) => {
+    page.on('console', message => {
+      console.log('CONSOLE MSG', message.text());
+    });
+
     await page.goto('lab/index.html');
   });
 
