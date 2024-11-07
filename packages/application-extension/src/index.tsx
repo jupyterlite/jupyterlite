@@ -262,7 +262,15 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           const selected = Array.from(widget.selectedItems());
           selected.forEach(async (item) => {
             if (item.type !== 'directory') {
-              await downloadContent(item.path, item.name);
+              try {
+                await downloadContent(item.path, item.name);
+              } catch (e) {
+                return showDialog({
+                  title: trans.__('Cannot Download!!!'),
+                  body: JSON.stringify(e),
+                  buttons: [Dialog.okButton({ label: trans.__('OK') })],
+                });
+              }
             }
           });
         },
