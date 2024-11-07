@@ -210,9 +210,10 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           model.content,
         )}`;
       } else {
-        throw new Error(
+        console.log(
           `Content whose mimetype is "${model.mimetype}" cannot be downloaded`,
         );
+        return;
       }
       element.download = fileName;
       document.body.appendChild(element);
