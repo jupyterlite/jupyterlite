@@ -167,6 +167,21 @@ test.describe('Contents Tests', () => {
   });
 });
 
+test('Download a custom file type', async ({ page }) => {
+  const path = await download({ page, path: 'test.customfile' });
+  expect(path).toBeTruthy();
+
+  const content = await fs.readFile(path, { encoding: 'utf-8' });
+  const lines = content.split('\n');
+
+  // check the file is correctly formatted
+  expect(lines.length).toBeGreaterThan(1);
+
+  const parsed = JSON.parse(content);
+
+  expect(parsed.hello).toEqual('coucou');
+});
+
 test.describe('Copy shareable link', () => {
   // Playwright allows setting clipboard permissions only for Chromium
   // https://github.com/microsoft/playwright/issues/13037

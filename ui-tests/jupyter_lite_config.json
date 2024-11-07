@@ -1,6 +1,14 @@
 {
   "LiteBuildConfig": {
     "contents": ["../examples", "contents"],
-    "output_dir": "ui-tests-app"
+    "output_dir": "ui-tests-app",
+    "extra_file_types": {
+      "customfile": {
+        "name": "customfile",
+        "extensions": [".customfile"],
+        "mimeTypes": ["text/plain"],
+        "fileFormat": "text"
+      }
+    }
   }
 }
