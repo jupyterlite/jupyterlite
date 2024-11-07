@@ -189,6 +189,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     };
 
     const downloadContent = async (contentPath: string, fileName: string) => {
+      console.log('TRYING TO DOWNLOAD CONTENT', contentPath, fileName);
       const model = await contents.get(contentPath, { content: true });
       const element = document.createElement('a');
       if (
