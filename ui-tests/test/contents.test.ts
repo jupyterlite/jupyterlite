@@ -172,6 +172,7 @@ test.describe('Contents Tests', () => {
   });
 
   test('Download a custom file type', async ({ page }) => {
+    await refreshFilebrowser({ page });
     const path = await download({ page, path: 'test.customfile' });
     expect(path).toBeTruthy();
 
