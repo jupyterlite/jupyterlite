@@ -199,10 +199,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         const mime = model.mimetype ?? 'text/json';
         const content = JSON.stringify(model.content, null, 2);
         element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
-      } else if (
-        model.format === 'text' ||
-        model.mimetype === 'text/plain'
-      ) {
+      } else if (model.format === 'text' || model.mimetype === 'text/plain') {
         const mime = model.mimetype ?? 'text/plain';
         element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
           model.content,
