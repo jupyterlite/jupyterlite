@@ -2,6 +2,26 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.3...e59c81b6492654b009dcb2e749a6de86830adc83))
+
+### Enhancements made
+
+- Update download logic so that it relies on mimetype instead of solely content.type [#1521](https://github.com/jupyterlite/jupyterlite/pull/1521) ([@martinRenou](https://github.com/martinRenou))
+
+### Bugs fixed
+
+- Align kernel URL for server with client kernel URL [#1509](https://github.com/jupyterlite/jupyterlite/pull/1509) ([@fcollonval](https://github.com/fcollonval))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-10-15&to=2024-11-08&type=c))
+
+[@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-10-15..2024-11-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-10-15..2024-11-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-10-15..2024-11-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-10-15..2024-11-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.2...6e316cc6f4fdd5ece61afb619a7822f730fb4d83))
@@ -21,8 +41,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-10-04&to=2024-10-15&type=c))
 
 [@afshin](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aafshin+updated%3A2024-10-04..2024-10-15&type=Issues) | [@andeplane](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aandeplane+updated%3A2024-10-04..2024-10-15&type=Issues) | [@diegofcornejo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adiegofcornejo+updated%3A2024-10-04..2024-10-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-10-04..2024-10-15&type=Issues) | [@katotetsuro](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akatotetsuro+updated%3A2024-10-04..2024-10-15&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.2
 
