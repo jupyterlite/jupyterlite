@@ -22,6 +22,7 @@ export async function download({
   path: string;
 }): Promise<string> {
   await page.evaluate(async (path: string) => {
+    // TODO Fix this. There is no such thing as passing a `path` here, the filebrowser will download any selected file
     await window.galata.app.commands.execute('filebrowser:download', { path });
   }, path);
 

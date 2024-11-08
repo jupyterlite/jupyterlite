@@ -165,6 +165,23 @@ test.describe('Contents Tests', () => {
 
     expect(parsed.cells[0].source).toEqual(source);
   });
+
+  test('Download a custom file type', async ({ page }) => {
+    await refreshFilebrowser({ page });
+    await page.filebrowser.open('test.customfile');
+    const path = await download({ page, path: 'test.customfile' });
+    expect(path).toBeTruthy();
+
+    const content = await fs.readFile(path, { encoding: 'utf-8' });
+    const lines = content.split('\n');
+
+    // check the file is correctly formatted
+    expect(lines.length).toBeGreaterThan(1);
+
+    const parsed = JSON.parse(content);
+
+    expect(parsed.hello).toEqual('coucou');
+  });
 });
 
 test.describe('Copy shareable link', () => {

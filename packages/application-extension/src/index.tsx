@@ -191,22 +191,29 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     const downloadContent = async (contentPath: string, fileName: string) => {
       const model = await contents.get(contentPath, { content: true });
       const element = document.createElement('a');
-      if (model.type === 'notebook' || model.format === 'json') {
+      if (
+        model.type === 'notebook' ||
+        model.format === 'json' ||
+        model.mimetype === 'text/json'
+      ) {
         const mime = model.mimetype ?? 'text/json';
         const content = JSON.stringify(model.content, null, 2);
         element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
-      } else if (model.type === 'file') {
-        if (model.format === 'base64') {
-          const mime = model.mimetype ?? 'application/octet-stream';
-          element.href = `data:${mime};base64,${model.content}`;
-        } else {
-          const mime = model.mimetype ?? 'text/plain';
-          element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
-            model.content,
-          )}`;
-        }
+      } else if (model.format === 'text' || model.mimetype === 'text/plain') {
+        const mime = model.mimetype ?? 'text/plain';
+        element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
+          model.content,
+        )}`;
+      } else if (
+        model.format === 'base64' ||
+        model.mimetype === 'application/octet-stream'
+      ) {
+        const mime = model.mimetype ?? 'application/octet-stream';
+        element.href = `data:${mime};base64,${model.content}`;
       } else {
-        throw new Error(`Content whose type is "${model.type}" cannot be downloaded`);
+        throw new Error(
+          `Content whose mimetype is "${model.mimetype}" cannot be downloaded`,
+        );
       }
       element.download = fileName;
       document.body.appendChild(element);
@@ -233,7 +240,15 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           });
         }
         await context.save();
-        await downloadContent(context.path, context.path);
+        try {
+          await downloadContent(context.path, context.path);
+        } catch (e) {
+          return showDialog({
+            title: trans.__('Cannot Download'),
+            body: JSON.stringify(e),
+            buttons: [Dialog.okButton({ label: trans.__('OK') })],
+          });
+        }
       },
     });
 
@@ -256,7 +271,15 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           const selected = Array.from(widget.selectedItems());
           selected.forEach(async (item) => {
             if (item.type !== 'directory') {
-              await downloadContent(item.path, item.name);
+              try {
+                await downloadContent(item.path, item.name);
+              } catch (e) {
+                return showDialog({
+                  title: trans.__('Cannot Download'),
+                  body: JSON.stringify(e),
+                  buttons: [Dialog.okButton({ label: trans.__('OK') })],
+                });
+              }
             }
           });
         },
