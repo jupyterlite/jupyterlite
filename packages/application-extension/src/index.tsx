@@ -243,7 +243,15 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           });
         }
         await context.save();
-        await downloadContent(context.path, context.path);
+        try {
+          await downloadContent(context.path, context.path);
+        } catch (e) {
+          return showDialog({
+            title: trans.__('Cannot Download!!!'),
+            body: JSON.stringify(e),
+            buttons: [Dialog.okButton({ label: trans.__('OK') })],
+          });
+        }
       },
     });
 
