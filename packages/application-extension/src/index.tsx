@@ -189,7 +189,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     };
 
     const downloadContent = async (contentPath: string, fileName: string) => {
-      console.log('TRYING TO DOWNLOAD CONTENT', contentPath, fileName);
       const model = await contents.get(contentPath, { content: true });
       const element = document.createElement('a');
       if (
@@ -201,20 +200,23 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         const content = JSON.stringify(model.content, null, 2);
         element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
       } else if (
+        model.format === 'text' ||
+        model.mimetype === 'text/plain'
+      ) {
+        const mime = model.mimetype ?? 'text/plain';
+        element.href = `data:${mime};charset=utf-8,${encodeURIComponent(
+          model.content,
+        )}`;
+      } else if (
         model.format === 'base64' ||
         model.mimetype === 'application/octet-stream'
       ) {
         const mime = model.mimetype ?? 'application/octet-stream';
         element.href = `data:${mime};base64,${model.content}`;
-      } else if (model.mimetype === 'text/plain') {
-        element.href = `data:${model.mimetype};charset=utf-8,${encodeURIComponent(
-          model.content,
-        )}`;
       } else {
-        console.log(
+        throw new Error(
           `Content whose mimetype is "${model.mimetype}" cannot be downloaded`,
         );
-        return;
       }
       element.download = fileName;
       document.body.appendChild(element);
