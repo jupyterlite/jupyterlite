@@ -244,7 +244,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
           await downloadContent(context.path, context.path);
         } catch (e) {
           return showDialog({
-            title: trans.__('Cannot Download!!!'),
+            title: trans.__('Cannot Download'),
             body: JSON.stringify(e),
             buttons: [Dialog.okButton({ label: trans.__('OK') })],
           });
@@ -275,7 +275,7 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
                 await downloadContent(item.path, item.name);
               } catch (e) {
                 return showDialog({
-                  title: trans.__('Cannot Download!!!'),
+                  title: trans.__('Cannot Download'),
                   body: JSON.stringify(e),
                   buttons: [Dialog.okButton({ label: trans.__('OK') })],
                 });
