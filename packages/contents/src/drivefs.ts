@@ -291,13 +291,13 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         case 'timestamp':
           node.timestamp = value;
           break;
-        case 'size':
+        case 'size': {
           const size = value;
           const path = this.fs.realPath(node);
           if (this.fs.FS.isFile(node.mode) && size >= 0) {
             const file = this.fs.API.get(path);
             const oldData = file.data ? file.data : new Uint8Array();
-            if (size != oldData.length) {
+            if (size !== oldData.length) {
               if (size < oldData.length) {
                 file.data = file.data.slice(0, size);
               } else {
@@ -310,6 +310,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
             console.warn('setattr size of', size, 'on', node, 'not yet implemented');
           }
           break;
+        }
         default:
           console.warn('setattr', key, 'of', value, 'on', node, 'not yet implemented');
           break;
