@@ -109,7 +109,7 @@ jobs:
           # python-specifics for tests
           - python-version: '3.9'
             pytest-args: '[]'
-          - python-version: '3.11'
+          - python-version: '3.12'
             pytest-args: '[]'
           - python-version: 'pypy-3.9'
             # TODO: some instability with libarchive, might be better with pypy-3.8
