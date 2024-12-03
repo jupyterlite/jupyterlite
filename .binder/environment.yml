@@ -49,7 +49,7 @@ dependencies:
   ### DOCS ENV ###
   # runtimes
   - nodejs >=20,<21
-  - python >=3.11,<3.12
+  - python >=3.12,<3.13
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
