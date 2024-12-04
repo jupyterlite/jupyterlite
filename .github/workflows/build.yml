@@ -94,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: ['3.8', '3.11', 'pypy-3.8']
+        python-version: ['3.9', '3.13', 'pypy-3.9']
         include:
           # OS-specifics for running pip
           - os: ubuntu
@@ -107,17 +107,17 @@ jobs:
             pip-cache: ~\AppData\Local\pip\Cache
             python-command: python
           # python-specifics for tests
-          - python-version: '3.8'
+          - python-version: '3.9'
             pytest-args: '[]'
-          - python-version: '3.11'
+          - python-version: '3.13'
             pytest-args: '[]'
-          - python-version: 'pypy-3.8'
+          - python-version: 'pypy-3.9'
             # TODO: some instability with libarchive, might be better with pypy-3.8
             # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
         exclude:
           - os: windows
-            python-version: pypy-3.8
+            python-version: pypy-3.9
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -169,7 +169,7 @@ jobs:
       - name: Setup pip (test)
         run: ${{ matrix.python-command }} -m pip install -r requirements-test.txt
       - name: Pin pytest for pypy
-        if: ${{ matrix.python-version == 'pypy-3.8' }}
+        if: ${{ matrix.python-version == 'pypy-3.9' }}
         run: |
           ${{ matrix.python-command }} -m pip install "pytest<8"
           echo 'See https://github.com/jupyterlite/jupyterlite/issues/1308' >> $GITHUB_STEP_SUMMARY
