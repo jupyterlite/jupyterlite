@@ -3,7 +3,6 @@ name: jupyterlite-docs
 
 channels:
   - conda-forge
-  - conda-forge/label/notebook_beta
   - nodefaults
 
 dependencies:
