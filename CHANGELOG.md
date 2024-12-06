@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.4.5
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.4...1f784cbf7f2392a9258d20b2b8fcaf6269c8b8d6))
+
+### Bugs fixed
+
+- Fix file size handling for the contents drive [#1530](https://github.com/jupyterlite/jupyterlite/pull/1530) ([@juntyr](https://github.com/juntyr))
+- Fix contents copy stripping part of path [#1524](https://github.com/jupyterlite/jupyterlite/pull/1524) ([@juntyr](https://github.com/juntyr))
+
+### Maintenance and upkeep improvements
+
+- Test on Python 3.9 - 3.13 on CI [#1531](https://github.com/jupyterlite/jupyterlite/pull/1531) ([@jtpio](https://github.com/jtpio))
+- Bump cross-spawn from 7.0.3 to 7.0.6 in /ui-tests [#1528](https://github.com/jupyterlite/jupyterlite/pull/1528) ([@dependabot](https://github.com/dependabot))
+- Bump markdown-to-jsx from 7.3.2 to 7.5.0 in /ui-tests [#1522](https://github.com/jupyterlite/jupyterlite/pull/1522) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-11-08&to=2024-12-06&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-11-08..2024-12-06&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-11-08..2024-12-06&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-11-08..2024-12-06&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2024-11-08..2024-12-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.4.4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.3...e59c81b6492654b009dcb2e749a6de86830adc83))
@@ -19,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-10-15&to=2024-11-08&type=c))
 
 [@fcollonval](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Afcollonval+updated%3A2024-10-15..2024-11-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-10-15..2024-11-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-10-15..2024-11-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2024-10-15..2024-11-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.3
 
