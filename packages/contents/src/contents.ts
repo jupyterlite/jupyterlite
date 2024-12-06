@@ -23,6 +23,9 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
  */
 const N_CHECKPOINTS = 5;
 
+const encoder = new TextEncoder();
+const decoder = new TextDecoder('utf-8');
+
 /**
  * A class to handle requests to /api/contents
  */
@@ -192,7 +195,7 @@ export class Contents implements IContents {
           format: 'json',
           mimetype: MIME.JSON,
           content: Private.EMPTY_NB,
-          size: JSON.stringify(Private.EMPTY_NB).length,
+          size: encoder.encode(JSON.stringify(Private.EMPTY_NB)).length,
           writable: true,
           type: 'notebook',
         };
@@ -402,8 +405,8 @@ export class Contents implements IContents {
 
     // retrieve the content if it is a later chunk or the last one
     // the new content will then be appended to the existing one
-    const chunked = chunk ? chunk > 1 || chunk === -1 : false;
-    let item: IModel | null = await this.get(path, { content: chunked });
+    const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
+    let item: IModel | null = await this.get(path, { content: appendChunk });
 
     if (!item) {
       item = await this.newUntitled({ path, ext, type: 'file' });
@@ -427,50 +430,79 @@ export class Contents implements IContents {
     if (options.content && options.format === 'base64') {
       const lastChunk = chunk ? chunk === -1 : true;
 
+      const contentBinaryString = this._handleUploadChunk(
+        options.content,
+        originalContent,
+        appendChunk,
+      );
+
       if (ext === '.ipynb') {
-        const content = this._handleChunk(options.content, originalContent, chunked);
+        const content = lastChunk
+          ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
+          : contentBinaryString;
         item = {
           ...item,
-          content: lastChunk ? JSON.parse(content) : content,
+          content,
           format: 'json',
           type: 'notebook',
-          size: content.length,
+          size: contentBinaryString.length,
         };
       } else if (FILE.hasFormat(ext, 'json')) {
-        const content = this._handleChunk(options.content, originalContent, chunked);
+        const content = lastChunk
+          ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
+          : contentBinaryString;
         item = {
           ...item,
-          content: lastChunk ? JSON.parse(content) : content,
+          content,
           format: 'json',
           type: 'file',
-          size: content.length,
+          size: contentBinaryString.length,
         };
       } else if (FILE.hasFormat(ext, 'text')) {
-        const content = this._handleChunk(options.content, originalContent, chunked);
+        const content = lastChunk
+          ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
+          : contentBinaryString;
         item = {
           ...item,
           content,
           format: 'text',
           type: 'file',
-          size: content.length,
+          size: contentBinaryString.length,
         };
       } else {
-        let content = this._handleBinaryChunk(
-          options.content,
-          originalContent,
-          chunked,
-        );
-
-        if (lastChunk) {
-          content = btoa(content);
-        }
-
+        const content = lastChunk ? btoa(contentBinaryString) : contentBinaryString;
         item = {
           ...item,
           content,
-          size: content.length,
+          format: 'base64',
+          type: 'file',
+          size: contentBinaryString.length,
         };
       }
+    }
+
+    // fixup content sizes if necessary
+    if (item.content) {
+      switch (options.format) {
+        case 'json': {
+          item = { ...item, size: encoder.encode(JSON.stringify(item.content)).length };
+          break;
+        }
+        case 'text': {
+          item = { ...item, size: encoder.encode(item.content).length };
+          break;
+        }
+        // base64 save was already handled above
+        case 'base64': {
+          break;
+        }
+        default: {
+          item = { ...item, size: 0 };
+          break;
+        }
+      }
+    } else {
+      item = { ...item, size: 0 };
     }
 
     await (await this.storage).setItem(path, item);
@@ -587,42 +619,40 @@ export class Contents implements IContents {
   }
 
   /**
-   * Handle a chunk of a file.
-   * Decode and unescape a base64-encoded string.
-   * @param content the content to process
+   * Handle an upload chunk for a file.
+   * each chunk is base64 encoded, so we need to decode it and append it to the
+   * original content.
+   * @param newContent the new content to process, base64 encoded
+   * @param originalContent the original content, must be null or a binary string if chunked is true
+   * @param appendChunk whether the chunk should be appended to the originalContent
    *
-   * @returns the decoded string, appended to the original content if chunked
+   *
+   * @returns the decoded binary string, appended to the original content if requested
    * /
    */
-  private _handleChunk(
+  private _handleUploadChunk(
     newContent: string,
-    originalContent: string,
-    chunked?: boolean,
+    originalContent: any,
+    appendChunk: boolean,
   ): string {
-    const escaped = decodeURIComponent(escape(atob(newContent)));
-    const content = chunked ? originalContent + escaped : escaped;
-    return content;
+    const newContentBinaryString = atob(newContent);
+    const contentBinaryString = appendChunk
+      ? originalContent + newContentBinaryString
+      : newContentBinaryString;
+    return contentBinaryString;
   }
 
   /**
-   * Handle a chunk of a binary file.
-   * each chunk is base64 encoded, so we need to decode it and append it to the
-   * original content.
-   * if the chunk has padding, we need to remove it before appending.
-   * @param content the content to process
-   *
-   * @returns the decoded string, appended to the original content if chunked
-   * /
+   * Convert a binary string to an Uint8Array
+   * @param binaryString the binary string
+   * @returns the bytes of the binary string
    */
-  private _handleBinaryChunk(
-    newContent: string,
-    originalContent: string,
-    chunked?: boolean,
-  ): string {
-    const base64Decoded = atob(newContent);
-    const padEscaped = base64Decoded.replace(/=+$/, '');
-    const content = chunked ? originalContent + padEscaped : padEscaped;
-    return content;
+  private _binaryStringToBytes(binaryString: string): Uint8Array {
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
   }
 
   /**
@@ -721,7 +751,7 @@ export class Contents implements IContents {
             content: JSON.parse(contentText),
             format: 'json',
             mimetype: model.mimetype || MIME.JSON,
-            size: contentText.length,
+            size: encoder.encode(contentText).length,
           };
         } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           const contentText = await response.text();
@@ -730,17 +760,17 @@ export class Contents implements IContents {
             content: contentText,
             format: 'text',
             mimetype: mimetype || MIME.PLAIN_TEXT,
-            size: contentText.length,
+            size: encoder.encode(contentText).length,
           };
         } else {
-          const contentBytes = await response.arrayBuffer();
-          const contentBuffer = new Uint8Array(contentBytes);
+          const contentBuffer = await response.arrayBuffer();
+          const contentBytes = new Uint8Array(contentBuffer);
           model = {
             ...model,
-            content: btoa(contentBuffer.reduce(this.reduceBytesToString, '')),
+            content: btoa(contentBytes.reduce(this.reduceBytesToString, '')),
             format: 'base64',
             mimetype: mimetype || MIME.OCTET_STREAM,
-            size: contentBuffer.length,
+            size: contentBytes.length,
           };
         }
       }
