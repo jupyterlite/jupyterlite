@@ -3,6 +3,18 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `0.4.0` to `0.5.0`
+
+JupyterLite 0.5.0 is based on the JupyterLab 4.3 and Jupyter Notebook 7.3 packages.
+
+Although no breaking changes are expected, this may affect the extensions you are using
+as they may rely on features added to JupyterLab 4.3 and Notebook 7.3.
+
+See the JupyterLab and Notebook changelogs for more information:
+
+- [JupyterLab 4.3](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-3)
+- [Jupyter Notebook 7.3](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-3)
+
 ## `0.3.0` to `0.4.0`
 
 ### Extensions
