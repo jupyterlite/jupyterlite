@@ -53,8 +53,8 @@ export async function refreshFilebrowser({ page }): Promise<void> {
  * https://github.com/jupyterlab/jupyterlab/pull/15607
  */
 export async function openDirectory({ page, directory }): Promise<void> {
-  // workaround: double click on the directory to open it
-  await page.dblclick(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
+  // workaround: click on the directory to open it
+  await page.click(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
 }
 
 export async function createNewDirectory({
