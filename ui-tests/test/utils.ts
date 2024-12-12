@@ -1,5 +1,8 @@
 import { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
+const dirListingItemTextSelector = (name: string) =>
+  `span.jp-DirListing-itemText > span:text-is("${name}")`;
+
 export async function deleteItem({
   page,
   name,
@@ -7,10 +10,10 @@ export async function deleteItem({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<void> {
-  const item = await page.$(`xpath=${page.filebrowser.xpBuildFileSelector(name)}`);
+  const item = page.locator(dirListingItemTextSelector(name));
   await item.click({ button: 'right' });
   await page.click('[data-command="filebrowser:delete"]');
-  const button = await page.$('.jp-mod-accept');
+  const button = page.locator('.jp-mod-accept');
   await button.click();
 }
 
@@ -44,6 +47,17 @@ export async function refreshFilebrowser({ page }): Promise<void> {
   } catch (e) {
     // no-op
   }
+}
+
+/**
+ * Custom filebrowser open directory helper
+ *
+ * Temporary fix as Galata makes an API call to the server
+ * https://github.com/jupyterlab/jupyterlab/pull/15607
+ */
+export async function openDirectory({ page, directory }): Promise<void> {
+  // workaround: double click on the directory to open it
+  await page.dblclick(dirListingItemTextSelector(directory));
 }
 
 export async function createNewDirectory({
@@ -100,6 +114,6 @@ export async function isDirectoryListedInBrowser({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<boolean> {
-  const item = await page.$(`xpath=${page.filebrowser.xpBuildDirectorySelector(name)}`);
-  return item !== null;
+  const item = page.locator(dirListingItemTextSelector(name));
+  return item.isVisible();
 }

@@ -132,7 +132,7 @@ test.describe('Contents Tests', () => {
     await createNewDirectory({ page, name });
     expect(await isDirectoryListedInBrowser({ page, name })).toBeTruthy();
 
-    await page.dblclick(`span.jp-DirListing-itemText:has-text("${name}")`);
+    await page.dblclick(`span.jp-DirListing-itemText > span:text-is("${name}")`);
     await page.notebook.createNew();
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();

@@ -3,7 +3,11 @@
 
 import { expect, test } from '@jupyterlab/galata';
 
-import { notebooksWaitForApplication, treeWaitForApplication } from './utils';
+import {
+  notebooksWaitForApplication,
+  openDirectory,
+  treeWaitForApplication,
+} from './utils';
 
 test.describe('Notebook Tests', () => {
   test.use({
@@ -19,7 +23,7 @@ test.describe('Notebook Tests', () => {
     await page.press('.jp-DirListing-editor', 'Enter');
 
     // simply press Enter
-    await page.keyboard.press('Enter');
+    await openDirectory({ page, directory: name });
   });
 
   test('Tree Screen', async ({ page }) => {
@@ -72,7 +76,9 @@ test.describe('Notebook file opener', () => {
       await page.goto('tree/index.html');
 
       if (directory) {
-        await page.dblclick(`span.jp-DirListing-itemText:has-text("${directory}")`);
+        await page.dblclick(
+          `span.jp-DirListing-itemText > span:text-is("${directory}")`,
+        );
       }
 
       const contextMenu = await page.menu.openContextMenuLocator(
