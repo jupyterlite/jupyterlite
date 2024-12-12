@@ -24,12 +24,13 @@ export async function download({
   page: IJupyterLabPageFixture;
   path: string;
 }): Promise<string> {
-  await page.evaluate(async (path: string) => {
-    // TODO Fix this. There is no such thing as passing a `path` here, the filebrowser will download any selected file
-    await window.galata.app.commands.execute('filebrowser:download', { path });
-  }, path);
+  const item = page.locator(dirListingItemTextSelector(path));
+  await item.click({ button: 'right' });
 
-  const download = await page.waitForEvent('download');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.click('[data-command="filebrowser:download"]'),
+  ]);
 
   // wait for download to complete
   return download.path();
