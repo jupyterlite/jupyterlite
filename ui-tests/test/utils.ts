@@ -46,17 +46,6 @@ export async function refreshFilebrowser({ page }): Promise<void> {
   }
 }
 
-/**
- * Custom filebrowser open directory helper
- *
- * Temporary fix as Galata makes an API call to the server
- * https://github.com/jupyterlab/jupyterlab/pull/15607
- */
-export async function openDirectory({ page, directory }): Promise<void> {
-  // workaround: click on the directory to open it
-  await page.click(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
-}
-
 export async function createNewDirectory({
   page,
   name,
