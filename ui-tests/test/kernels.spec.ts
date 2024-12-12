@@ -63,7 +63,8 @@ test.describe('Kernels', () => {
     // shut down the kernel
     await page.getByTitle('Running Terminals and Kernels').first().click();
     await page
-      .locator(`.jp-RunningSessions-item.jp-mod-kernel >> text="${name}"`)
+      .locator(`.jp-RunningSessions-item.jp-TreeItem.jp-mod-kernel >> text="${name}"`)
+      .first()
       .waitFor();
     await page.locator('.jp-RunningSessions-item.jp-mod-kernel').first().hover();
     await page.getByTitle('Shut Down').first().click();
