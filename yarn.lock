@@ -4158,6 +4158,7 @@ __metadata:
     "@jupyterlab/mainmenu-extension": ~4.3.3
     "@jupyterlab/markdownviewer-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
+    "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/metadataform-extension": ~4.3.3
     "@jupyterlab/notebook-extension": ~4.3.3
     "@jupyterlab/pdf-extension": ~4.3.3
@@ -4263,6 +4264,7 @@ __metadata:
     "@jupyterlab/application": ~4.3.3
     "@jupyterlab/application-extension": ~4.3.3
     "@jupyterlab/apputils-extension": ~4.3.3
+    "@jupyterlab/attachments": ~4.3.3
     "@jupyterlab/cell-toolbar-extension": ~4.3.3
     "@jupyterlab/celltags-extension": ~4.3.3
     "@jupyterlab/codemirror-extension": ~4.3.3
@@ -4285,6 +4287,7 @@ __metadata:
     "@jupyterlab/mainmenu-extension": ~4.3.3
     "@jupyterlab/markdownviewer-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
+    "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/metadataform-extension": ~4.3.3
     "@jupyterlab/notebook-extension": ~4.3.3
     "@jupyterlab/pdf-extension": ~4.3.3
@@ -4353,6 +4356,7 @@ __metadata:
     "@jupyterlab/mainmenu-extension": ~4.3.3
     "@jupyterlab/markdownviewer-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
+    "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/metadataform-extension": ~4.3.3
     "@jupyterlab/notebook-extension": ~4.3.3
     "@jupyterlab/pdf-extension": ~4.3.3
@@ -4389,23 +4393,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-repl@workspace:app/repl"
   dependencies:
-    "@jupyterlab/application": ~4.3.3
-    "@jupyterlab/application-extension": ~4.3.3
     "@jupyterlab/apputils-extension": ~4.3.3
     "@jupyterlab/attachments": ~4.3.3
     "@jupyterlab/codemirror-extension": ~4.3.3
     "@jupyterlab/completer-extension": ~4.3.3
     "@jupyterlab/console-extension": ~4.3.3
     "@jupyterlab/docmanager-extension": ~4.3.3
-    "@jupyterlab/documentsearch-extension": ~4.3.3
-    "@jupyterlab/filebrowser-extension": ~4.3.3
-    "@jupyterlab/fileeditor-extension": ~4.3.3
     "@jupyterlab/imageviewer-extension": ~4.3.3
     "@jupyterlab/javascript-extension": ~4.3.3
     "@jupyterlab/json-extension": ~4.3.3
     "@jupyterlab/markdownviewer-extension": ~4.3.3
     "@jupyterlab/markedparser-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
+    "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/pdf-extension": ~4.3.3
     "@jupyterlab/rendermime-extension": ~4.3.3
     "@jupyterlab/shortcuts-extension": ~5.1.3
@@ -4419,8 +4419,6 @@ __metadata:
     "@jupyterlite/application": ^0.4.5
     "@jupyterlite/application-extension": ^0.4.5
     "@jupyterlite/iframe-extension": ^0.4.5
-    "@jupyterlite/licenses": ^0.4.5
-    "@jupyterlite/localforage": ^0.4.5
     "@jupyterlite/repl-extension": ^0.4.5
     "@jupyterlite/server": ^0.4.5
     "@jupyterlite/server-extension": ^0.4.5
@@ -4460,6 +4458,7 @@ __metadata:
     "@jupyterlab/json-extension": ~4.3.3
     "@jupyterlab/mainmenu-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
+    "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/metadataform-extension": ~4.3.3
     "@jupyterlab/notebook-extension": ~4.3.3
     "@jupyterlab/rendermime-extension": ~4.3.3
