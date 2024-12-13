@@ -86,20 +86,6 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
-        "fullWebRtcSignalingUrls": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          },
-          "description": "WebSocket URLs to use for finding WebRTC peers. Requires `jupyterlab-webrtc-docprovider`.",
-          "default": [
-            "wss://signaling.yjs.dev",
-            "wss://y-webrtc-signaling-eu.herokuapp.com",
-            "wss://y-webrtc-signaling-us.herokuapp.com"
-          ],
-          "minItems": 1
-        },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
           "default": "./build",
