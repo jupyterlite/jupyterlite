@@ -4335,6 +4335,7 @@ __metadata:
     "@jupyterlab/application": ~4.3.3
     "@jupyterlab/application-extension": ~4.3.3
     "@jupyterlab/apputils-extension": ~4.3.3
+    "@jupyterlab/attachments": ~4.3.3
     "@jupyterlab/cell-toolbar-extension": ~4.3.3
     "@jupyterlab/celltags-extension": ~4.3.3
     "@jupyterlab/codemirror-extension": ~4.3.3
@@ -4356,6 +4357,7 @@ __metadata:
     "@jupyterlab/lsp-extension": ~4.3.3
     "@jupyterlab/mainmenu-extension": ~4.3.3
     "@jupyterlab/markdownviewer-extension": ~4.3.3
+    "@jupyterlab/markedparser-extension": ~4.3.3
     "@jupyterlab/mathjax-extension": ~4.3.3
     "@jupyterlab/mermaid-extension": ~4.3.3
     "@jupyterlab/metadataform-extension": ~4.3.3
