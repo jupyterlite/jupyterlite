@@ -21,8 +21,6 @@ test.describe('Notebook Tests', () => {
     await page.menu.clickMenuItem('New>New Folder');
     await page.fill('.jp-DirListing-editor', name);
     await page.press('.jp-DirListing-editor', 'Enter');
-
-    // simply press Enter
     await openDirectory({ page, directory: name });
   });
 
@@ -76,9 +74,7 @@ test.describe('Notebook file opener', () => {
       await page.goto('tree/index.html');
 
       if (directory) {
-        await page.dblclick(
-          `span.jp-DirListing-itemText > span:text-is("${directory}")`,
-        );
+        await openDirectory({ page, directory });
       }
 
       const contextMenu = await page.menu.openContextMenuLocator(

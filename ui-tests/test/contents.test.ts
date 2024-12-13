@@ -14,6 +14,7 @@ import {
   deleteItem,
   download,
   isDirectoryListedInBrowser,
+  openDirectory,
   refreshFilebrowser,
   treeWaitForApplication,
 } from './utils';
@@ -132,7 +133,7 @@ test.describe('Contents Tests', () => {
     await createNewDirectory({ page, name });
     expect(await isDirectoryListedInBrowser({ page, name })).toBeTruthy();
 
-    await page.dblclick(`span.jp-DirListing-itemText > span:text-is("${name}")`);
+    await openDirectory({ page, directory: name });
     await page.notebook.createNew();
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();
