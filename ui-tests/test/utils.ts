@@ -1,5 +1,8 @@
 import { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
+const dirListingItemTextSelector = (name: string) =>
+  `span.jp-DirListing-itemText > span:text-is("${name}")`;
+
 export async function deleteItem({
   page,
   name,
@@ -7,10 +10,10 @@ export async function deleteItem({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<void> {
-  const item = await page.$(`xpath=${page.filebrowser.xpBuildFileSelector(name)}`);
+  const item = page.locator(dirListingItemTextSelector(name));
   await item.click({ button: 'right' });
   await page.click('[data-command="filebrowser:delete"]');
-  const button = await page.$('.jp-mod-accept');
+  const button = page.locator('.jp-mod-accept');
   await button.click();
 }
 
@@ -21,12 +24,13 @@ export async function download({
   page: IJupyterLabPageFixture;
   path: string;
 }): Promise<string> {
-  await page.evaluate(async (path: string) => {
-    // TODO Fix this. There is no such thing as passing a `path` here, the filebrowser will download any selected file
-    await window.galata.app.commands.execute('filebrowser:download', { path });
-  }, path);
+  const item = page.locator(dirListingItemTextSelector(path));
+  await item.click({ button: 'right' });
 
-  const download = await page.waitForEvent('download');
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.click('[data-command="filebrowser:download"]'),
+  ]);
 
   // wait for download to complete
   return download.path();
@@ -54,7 +58,7 @@ export async function refreshFilebrowser({ page }): Promise<void> {
  */
 export async function openDirectory({ page, directory }): Promise<void> {
   // workaround: double click on the directory to open it
-  await page.dblclick(`xpath=${page.filebrowser.xpBuildDirectorySelector(directory)}`);
+  await page.dblclick(dirListingItemTextSelector(directory));
 }
 
 export async function createNewDirectory({
@@ -111,6 +115,6 @@ export async function isDirectoryListedInBrowser({
   page: IJupyterLabPageFixture;
   name: string;
 }): Promise<boolean> {
-  const item = await page.$(`xpath=${page.filebrowser.xpBuildDirectorySelector(name)}`);
-  return item !== null;
+  const item = page.locator(dirListingItemTextSelector(name));
+  return item.isVisible();
 }

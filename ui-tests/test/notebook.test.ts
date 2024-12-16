@@ -77,7 +77,7 @@ test.describe('Notebook file opener', () => {
         await openDirectory({ page, directory });
       }
 
-      const contextMenu = await page.menu.openContextMenu(
+      const contextMenu = await page.menu.openContextMenuLocator(
         `.jp-DirListing-content >> text="${name}"`,
       );
       if (!contextMenu) {
