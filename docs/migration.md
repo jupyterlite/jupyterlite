@@ -15,6 +15,14 @@ See the JupyterLab and Notebook changelogs for more information:
 - [JupyterLab 4.3](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-3)
 - [Jupyter Notebook 7.3](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-3)
 
+## Configuration
+
+The following configuration options were removed from the
+[JupyterLite schema](./reference/schema-v0.rst):
+
+- `collaborative`
+- `fullWebRtcSignalingUrls`
+
 ## `0.3.0` to `0.4.0`
 
 ### Extensions
