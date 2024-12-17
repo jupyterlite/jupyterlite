@@ -9,7 +9,6 @@
 import os
 from pathlib import Path
 from typing import Optional as _Optional
-from typing import Tuple as _Tuple
 from typing import Union as _Union
 
 from traitlets import Bool, CInt, Dict, Tuple, Unicode, Union, default
@@ -33,12 +32,12 @@ class LiteBuildConfig(LoggingConfigurable):
     loader paths
     """
 
-    disable_addons: _Tuple[str] = TypedTuple(
+    disable_addons: tuple[str] = TypedTuple(
         Unicode(),
         help=("skip loading `entry_point` for these addons. TODO: should be a dict"),
     ).tag(config=True)
 
-    apps: _Tuple[str] = TypedTuple(
+    apps: tuple[str] = TypedTuple(
         Unicode(),
         help=("""the Lite apps to explicitly include in build e.g. lab, tree, repl"""),
     ).tag(config=True)
@@ -66,17 +65,17 @@ class LiteBuildConfig(LoggingConfigurable):
         config=True
     )
 
-    contents: _Tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(config=True)
+    contents: tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(config=True)
 
-    ignore_sys_prefix: _Union[bool, _Tuple[str]] = Union(
+    ignore_sys_prefix: _Union[bool, tuple[str]] = Union(
         [Bool(), TypedTuple(Unicode())], help="ignore components from sys.prefix"
     ).tag(config=True)
 
-    federated_extensions: _Tuple[str] = TypedTuple(
+    federated_extensions: tuple[str] = TypedTuple(
         Unicode(), help="Local paths or URLs in which to find federated_extensions"
     ).tag(config=True)
 
-    settings_overrides: _Tuple[str] = TypedTuple(
+    settings_overrides: tuple[str] = TypedTuple(
         CPath(), help=("Specific overrides.json to include")
     ).tag(config=True)
 
@@ -98,11 +97,11 @@ class LiteBuildConfig(LoggingConfigurable):
     )
 
     # patterns
-    ignore_contents: _Tuple[str] = Tuple(
+    ignore_contents: tuple[str] = Tuple(
         help="Path regular expressions that should never be included as contents"
     ).tag(config=True)
 
-    extra_ignore_contents: _Tuple[str] = Tuple(
+    extra_ignore_contents: tuple[str] = Tuple(
         help="Additional path regular expressions that should never be included as contents"
     ).tag(config=True)
 

@@ -142,7 +142,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
                 assert fhelp is not None
                 fhelp[0] = fhelp[0].replace(f"--{name}", f"--{alias}")  # type:ignore
                 yield from fhelp
-                yield indent("Equivalent to: [--%s]" % name)
+                yield indent(f"Equivalent to: [--{name}]")
             except Exception as ex:
                 self.log.error("Failed collecting help-message for alias %r, due to: %s", alias, ex)
                 raise
