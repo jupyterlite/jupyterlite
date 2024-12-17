@@ -1,4 +1,5 @@
 """tests for more kinds of contents"""
+
 import json
 
 import pytest

@@ -1,4 +1,5 @@
 """a JupyterLite addon for serving"""
+
 import json
 import os
 

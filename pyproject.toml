@@ -21,6 +21,9 @@ ignore = ["W002"]
 target-version = "py39"
 line-length = 100
 extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+exclude = ["*.ipynb"]
 select = [
   "A", "B", "C", "DTZ", "E", "EM", "F", "FBT", "I", "ICN", "N",
   "PLC", "PLE", "PLR", "PLW", "Q", "RUF", "S", "SIM", "T", "TID", "UP",
@@ -43,9 +46,6 @@ ignore = [
 # RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
 "RUF012",
 ]
-
-[tool.ruff.lint]
-exclude = ["*.ipynb"]
 
 [tool.ruff.lint.per-file-ignores]
 # A001 Variable `copyright` is shadowing a Python builtin

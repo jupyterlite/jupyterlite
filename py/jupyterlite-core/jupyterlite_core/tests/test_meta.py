@@ -1,4 +1,5 @@
 """basic smoke tests of jupyterlite_core infrastructure"""
+
 import jupyterlite_core
 
 

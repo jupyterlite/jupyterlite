@@ -5,6 +5,7 @@
     Move to a canonical JSON schema?
 
 """
+
 import os
 from pathlib import Path
 from typing import Optional as _Optional

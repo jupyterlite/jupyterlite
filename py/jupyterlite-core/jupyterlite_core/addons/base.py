@@ -6,8 +6,9 @@ import tarfile
 import tempfile
 import time
 import zipfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Dict, Generator, List
+from typing import Any, Dict, List
 
 from traitlets import Bool, Instance
 from traitlets.config import LoggingConfigurable

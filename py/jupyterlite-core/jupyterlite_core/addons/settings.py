@@ -1,4 +1,5 @@
 """a JupyterLite addon for supporting extension settings"""
+
 import json
 
 from ..constants import (

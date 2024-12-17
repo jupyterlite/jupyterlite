@@ -1,4 +1,5 @@
 """a JupyterLite addon for Jupyter Server-compatible contents"""
+
 import datetime
 import json
 import pprint
