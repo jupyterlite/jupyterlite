@@ -107,10 +107,6 @@ export class Kernels implements IKernels {
       };
 
       kernel.disposed.connect(removeClient);
-
-      // TODO: check whether this is called
-      // https://github.com/thoov/mock-socket/issues/298
-      // https://github.com/jupyterlab/jupyterlab/blob/6bc884a7a8ed73c615ce72ba097bdb790482b5bf/packages/services/src/kernel/default.ts#L1245
       socket.onclose = removeClient;
     };
 
@@ -210,7 +206,8 @@ export class Kernels implements IKernels {
     }
     const { id, name, location } = kernel;
     kernel.dispose();
-    return this.startNew({ id, name, location });
+    const newKernel = await this.startNew({ id, name, location });
+    return newKernel;
   }
 
   /**

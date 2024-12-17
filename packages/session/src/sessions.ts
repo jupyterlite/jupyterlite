@@ -44,7 +44,7 @@ export class Sessions implements ISessions {
   }
 
   /**
-   * Path an existing session.
+   * Patch an existing session.
    * This can be used to rename a session.
    *
    * - path updates session to track renamed paths
@@ -170,7 +170,9 @@ export class Sessions implements ISessions {
     const runningKernel = await this._kernels.get(kernelId);
     if (runningKernel) {
       runningKernel.disposed.connect(() => {
-        this.shutdown(sessionId);
+        // eslint-disable-next-line no-console
+        console.log('Session', sessionId, 'shut down');
+        // this.shutdown(sessionId);
       });
     }
   }
