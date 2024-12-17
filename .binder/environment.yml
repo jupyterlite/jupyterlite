@@ -10,7 +10,7 @@ dependencies:
   # build stuff
   - depfinder
   - nbstripout
-  - ruff =0.1.7
+  - ruff =0.8.3
   # demo stuff
   - ipywidgets >=8.0.4,<9
   - jupyter-server-proxy

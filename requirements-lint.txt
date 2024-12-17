@@ -6,4 +6,4 @@ jupyterlab >=4.3.2,<4.4
 jsonschema >=3
 nbconvert
 nbstripout
-ruff==0.1.7
+ruff==0.8.3
