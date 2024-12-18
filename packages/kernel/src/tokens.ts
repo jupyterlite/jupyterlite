@@ -3,11 +3,15 @@
 
 import type { Remote } from 'comlink';
 
+import { IObservableMap } from '@jupyterlab/observables';
+
 import { Kernel, KernelMessage, KernelSpec } from '@jupyterlab/services';
 
 import { Token } from '@lumino/coreutils';
 
 import { IObservableDisposable } from '@lumino/disposable';
+
+import { ISignal } from '@lumino/signaling';
 
 import { Kernels } from './kernels';
 
@@ -27,6 +31,11 @@ export const FALLBACK_KERNEL = 'javascript';
  * An interface for the Kernels service.
  */
 export interface IKernels {
+  /**
+   * Signal emitted when the kernels map changes
+   */
+  readonly changed: ISignal<IKernels, IObservableMap.IChangedArgs<IKernel>>;
+
   /**
    * Start a new kernel.
    *

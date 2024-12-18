@@ -1,4 +1,6 @@
-import { ObservableMap } from '@jupyterlab/observables';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
+import { IObservableMap, ObservableMap } from '@jupyterlab/observables';
 
 import { KernelAPI, Kernel, KernelMessage } from '@jupyterlab/services';
 
@@ -8,13 +10,13 @@ import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kern
 
 import { UUID } from '@lumino/coreutils';
 
-import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
-
-import { IKernel, IKernels, IKernelSpecs } from './tokens';
+import { ISignal, Signal } from '@lumino/signaling';
 
 import { Mutex } from 'async-mutex';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
+
+import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
 /**
  * Use the default kernel wire protocol.
@@ -34,6 +36,17 @@ export class Kernels implements IKernels {
   constructor(options: Kernels.IOptions) {
     const { kernelspecs } = options;
     this._kernelspecs = kernelspecs;
+    // Forward the changed signal from _kernels
+    this._kernels.changed.connect((_, args) => {
+      this._changed.emit(args);
+    });
+  }
+
+  /**
+   * Signal emitted when the kernels map changes
+   */
+  get changed(): ISignal<this, IObservableMap.IChangedArgs<IKernel>> {
+    return this._changed;
   }
 
   /**
@@ -206,8 +219,7 @@ export class Kernels implements IKernels {
     }
     const { id, name, location } = kernel;
     kernel.dispose();
-    const newKernel = await this.startNew({ id, name, location });
-    return newKernel;
+    return this.startNew({ id, name, location });
   }
 
   /**
@@ -240,6 +252,7 @@ export class Kernels implements IKernels {
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
+  private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
 }
 
 /**

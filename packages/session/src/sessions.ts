@@ -21,6 +21,41 @@ export class Sessions implements ISessions {
    */
   constructor(options: Sessions.IOptions) {
     this._kernels = options.kernels;
+    // Listen for kernel removals
+    this._kernels.changed.connect((_, args) => {
+      switch (args.type) {
+        case 'remove': {
+          const kernelId = args.oldValue?.id;
+          if (!kernelId) {
+            return;
+          }
+          // find the session associated with the kernel
+          const session = this._sessions.find((s) => s.kernel?.id === kernelId);
+          if (!session) {
+            return;
+          }
+          // Track the kernel ID for restart detection
+          this._pendingRestarts.add(kernelId);
+          setTimeout(async () => {
+            // If after a short delay the kernel hasn't been re-added, it was terminated
+            if (this._pendingRestarts.has(kernelId)) {
+              this._pendingRestarts.delete(kernelId);
+              await this.shutdown(session.id);
+            }
+          }, 100);
+          break;
+        }
+        case 'add': {
+          // If this was a restart, remove it from pending
+          const kernelId = args.newValue?.id;
+          if (!kernelId) {
+            return;
+          }
+          this._pendingRestarts.delete(kernelId);
+          break;
+        }
+      }
+    });
   }
 
   /**
@@ -167,19 +202,12 @@ export class Sessions implements ISessions {
     kernelId: string;
     sessionId: string;
   }): Promise<void> {
-    const runningKernel = await this._kernels.get(kernelId);
-    if (runningKernel) {
-      runningKernel.disposed.connect(() => {
-        // eslint-disable-next-line no-console
-        console.log('Session', sessionId, 'shut down');
-        // this.shutdown(sessionId);
-      });
-    }
+    // No need to handle kernel shutdown here anymore since we're using the changed signal
   }
 
   private _kernels: IKernels;
-  // TODO: offload to a database
   private _sessions: Session.IModel[] = [];
+  private _pendingRestarts = new Set<string>();
 }
 
 /**
