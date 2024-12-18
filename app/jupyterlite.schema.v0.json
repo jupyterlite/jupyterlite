@@ -86,20 +86,6 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
-        "fullWebRtcSignalingUrls": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          },
-          "description": "WebSocket URLs to use for finding WebRTC peers. Requires `jupyterlab-webrtc-docprovider`.",
-          "default": [
-            "wss://signaling.yjs.dev",
-            "wss://y-webrtc-signaling-eu.herokuapp.com",
-            "wss://y-webrtc-signaling-us.herokuapp.com"
-          ],
-          "minItems": 1
-        },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
           "default": "./build",
@@ -180,11 +166,6 @@
         },
         "exposeAppInBrowser": {
           "description": "Whether to make the top-level Application instance available as ``window.jupyterapp``",
-          "type": "boolean",
-          "default": false
-        },
-        "collaborative": {
-          "description": "Whether to enable collaborative editing over WebRTC. Should be paired with the ``?room=<room name>`` URL parameter",
           "type": "boolean",
           "default": false
         },

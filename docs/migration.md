@@ -20,6 +20,14 @@ See the JupyterLab and Notebook changelogs for more information:
 Support for Python 3.8 has been dropped. `jupyterlite-core` now requires Python 3.9 or
 higher.
 
+### Configuration
+
+The following configuration options were removed from the
+[JupyterLite schema](./reference/schema-v0.rst):
+
+- `collaborative`
+- `fullWebRtcSignalingUrls`
+
 ## `0.3.0` to `0.4.0`
 
 ### Extensions

@@ -36,8 +36,6 @@ import { filter } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
 
-import { getParam } from 'lib0/environment';
-
 import React from 'react';
 
 /**
@@ -503,9 +501,6 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     const { commands, docRegistry } = app;
     const { tracker } = factory;
 
-    const roomName = getParam('--room', '').trim();
-    const collaborative = PageConfig.getOption('collaborative') === 'true' && roomName;
-
     commands.addCommand(CommandIDs.copyShareableLink, {
       execute: () => {
         const widget = tracker.currentWidget;
@@ -541,9 +536,6 @@ const shareFile: JupyterFrontEndPlugin<void> = {
         models.forEach((model) => {
           url.searchParams.append('path', model.path);
         });
-        if (collaborative) {
-          url.searchParams.append('room', roomName);
-        }
         Clipboard.copyToSystem(url.href);
       },
       isVisible: () =>
