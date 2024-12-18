@@ -17,7 +17,8 @@ See the JupyterLab and Notebook changelogs for more information:
 
 ### `jupyterlite-core`
 
-Support for Python 3.8 has been dropped. `jupyterlite-core` now requires Python 3.9 or higher.
+Support for Python 3.8 has been dropped. `jupyterlite-core` now requires Python 3.9 or
+higher.
 
 ## `0.3.0` to `0.4.0`
 
