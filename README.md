@@ -1,6 +1,7 @@
 # JupyterLite
 
-[![ci-badge]][ci] [![lite-badge]][lite] [![binder-badge]][binder] [![docs-badge]][docs] [![zulip-badge]][zulip]
+[![ci-badge]][ci] [![lite-badge]][lite] [![binder-badge]][binder] [![docs-badge]][docs]
+[![zulip-badge]][zulip]
 
 [ci-badge]: https://github.com/jupyterlite/jupyterlite/workflows/Build/badge.svg
 [lite-badge]: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
