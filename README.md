@@ -12,7 +12,7 @@
 [docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=latest
 [docs]: https://jupyterlite.readthedocs.io/en/stable/?badge=latest
 [zulip-badge]: https://img.shields.io/badge/social_chat-zulip-blue.svg
-[zulip]: https://jupyter.zulipchat.com/#narrow/channel/474838-jupyterlite
+[zulip]: https://jupyter.zulipchat.com
 
 JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built
 from the ground-up using JupyterLab components and extensions.
