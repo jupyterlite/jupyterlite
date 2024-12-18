@@ -317,7 +317,7 @@ class BaseAddon(LoggingConfigurable):
 
         if archive.name.endswith(EXTENSION_ZIP):
             with zipfile.ZipFile(archive) as zf:
-                zf.extractall(dest)
+                zf.extractall(dest)  # noqa: S202
         elif archive.name.endswith(EXTENSION_TAR):
             mode = "r:bz2" if archive.name.endswith(".bz2") else "r:gz"
             with tarfile.open(archive, mode) as tf:
@@ -339,7 +339,7 @@ class BaseAddon(LoggingConfigurable):
             member_path = os.path.join(path, member.name)
             if not self.is_within_directory(path, member_path):
                 raise Exception("Attempted Path Traversal in Tar File")
-        tar.extractall(path, members, numeric_owner=numeric_owner)
+        tar.extractall(path, members, numeric_owner=numeric_owner)  # noqa: S202
 
     def hash_all(self, hashfile: Path, root: Path, paths: list[Path]):
         from hashlib import sha256
