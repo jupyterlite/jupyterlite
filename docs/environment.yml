@@ -10,7 +10,7 @@ dependencies:
   ### DOCS ENV ###
   # runtimes
   - nodejs >=20,<21
-  - python >=3.11,<3.12
+  - python >=3.12,<3.13
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
@@ -30,7 +30,7 @@ dependencies:
   - docutils >=0.18
   - myst-nb >=1
   - pydata-sphinx-theme
-  - sphinx >=5.1,<6
+  - sphinx >=5.1,<9
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxcontrib-mermaid

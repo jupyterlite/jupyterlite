@@ -1,4 +1,5 @@
 """documentation for jupyterlite"""
+
 import datetime
 import json
 import os
@@ -169,7 +170,8 @@ def before_rtd_build(app: Sphinx, error):
 
 def after_build(app: Sphinx, error):
     """sphinx-jsonschema makes duplicate ids. clean them"""
-    os.environ.update(JLITE_DOCS_OUT=app.builder.outdir)  # <--- dodo.py already looking for this
+    # dodo.py already looking for this
+    os.environ.update(JLITE_DOCS_OUT=str(app.builder.outdir))
     do_tasks("post", RTD_POST_TASKS)
 
 

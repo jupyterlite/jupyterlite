@@ -6,8 +6,9 @@ import tarfile
 import tempfile
 import time
 import zipfile
+from collections.abc import Generator
 from pathlib import Path
-from typing import Any, Dict, Generator, List
+from typing import Any
 
 from traitlets import Bool, Instance
 from traitlets.config import LoggingConfigurable
@@ -316,7 +317,7 @@ class BaseAddon(LoggingConfigurable):
 
         if archive.name.endswith(EXTENSION_ZIP):
             with zipfile.ZipFile(archive) as zf:
-                zf.extractall(dest)
+                zf.extractall(dest)  # noqa: S202
         elif archive.name.endswith(EXTENSION_TAR):
             mode = "r:bz2" if archive.name.endswith(".bz2") else "r:gz"
             with tarfile.open(archive, mode) as tf:
@@ -338,9 +339,9 @@ class BaseAddon(LoggingConfigurable):
             member_path = os.path.join(path, member.name)
             if not self.is_within_directory(path, member_path):
                 raise Exception("Attempted Path Traversal in Tar File")
-        tar.extractall(path, members, numeric_owner=numeric_owner)
+        tar.extractall(path, members, numeric_owner=numeric_owner)  # noqa: S202
 
-    def hash_all(self, hashfile: Path, root: Path, paths: List[Path]):
+    def hash_all(self, hashfile: Path, root: Path, paths: list[Path]):
         from hashlib import sha256
 
         lines = [
@@ -366,7 +367,7 @@ class BaseAddon(LoggingConfigurable):
                 config_path = app_dir / path_name
                 yield config_path
 
-    def get_lite_plugin_settings(self, config_path: Path, plugin_id: str) -> Dict[str, Any]:
+    def get_lite_plugin_settings(self, config_path: Path, plugin_id: str) -> dict[str, Any]:
         """Get the plugin settings from a config path.
 
         The keys follow the JupyterLab settings naming convention, of module and
@@ -386,7 +387,7 @@ class BaseAddon(LoggingConfigurable):
         return config.get(JUPYTER_CONFIG_DATA, {}).get(LITE_PLUGIN_SETTINGS, {}).get(plugin_id, {})
 
     def set_lite_plugin_settings(
-        self, config_path: Path, plugin_id: str, settings: Dict[str, Any]
+        self, config_path: Path, plugin_id: str, settings: dict[str, Any]
     ) -> None:
         """Overwrite the plugin settings for a single plugin in a config path."""
         whole_file = config = json.loads(config_path.read_text(**UTF8))

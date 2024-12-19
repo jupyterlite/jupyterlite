@@ -1,4 +1,5 @@
 """Well-known (and otherwise) constants used by JupyterLite"""
+
 import shutil
 from pathlib import Path
 

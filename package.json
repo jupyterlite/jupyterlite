@@ -44,7 +44,7 @@
     "lint:py:check": "jlpm lint:py:format:check && jlpm lint:py:ruff:check",
     "lint:py:format": "ruff format .",
     "lint:py:format:check": "ruff format . --check",
-    "lint:py:ruff": "ruff .",
+    "lint:py:ruff": "ruff check . --fix",
     "lint:py:ruff:check": "ruff check .",
     "pack:app": "npm pack app/ --pack-destination py/jupyterlite-core/jupyterlite_core/",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",

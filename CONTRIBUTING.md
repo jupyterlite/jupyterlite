@@ -22,7 +22,7 @@ You'll need:
 - `git`
 - `nodejs >=20,<21`
 - `jupyterlab >=4.3,<4.4`
-- `python >=3.11,<3.12`
+- `python >=3.12,<3.13`
 
 Various package managers on different operating systems provide these.
 

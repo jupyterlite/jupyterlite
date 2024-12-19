@@ -1,4 +1,5 @@
 """a JupyterLite addon for customizing mime types"""
+
 import json
 
 import doit

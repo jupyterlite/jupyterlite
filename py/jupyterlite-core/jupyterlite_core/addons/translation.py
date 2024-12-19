@@ -1,4 +1,5 @@
 """a JupyterLite addon to expose translation data"""
+
 import json
 import pprint
 from typing import TYPE_CHECKING

@@ -1,4 +1,5 @@
 """integration tests for overall CLI functionality"""
+
 import platform
 import time
 

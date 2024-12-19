@@ -126,7 +126,6 @@ If _included_, users will be able to open these files directly:
 - clicking links to the file in files that are not hidden
 - via the _Open from Path..._ JupyterLab command
 - from within kernels that support unified contents like the default [python kernel](./python.md)
-- from within [collaborative editing](../configure/rtc.md) sessions
 ```
 
 ### Showing Hidden Files

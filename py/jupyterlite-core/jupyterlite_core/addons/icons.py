@@ -6,7 +6,6 @@ TODO:
 """
 
 import pprint
-import sys
 from typing import TYPE_CHECKING
 
 from ..optional import has_optional_dependency
@@ -15,10 +14,7 @@ from .base import BaseAddon
 if TYPE_CHECKING:  # pragma: no cover
     from ..manager import LiteManager
 
-if sys.version_info < (3, 9):
-    from importlib_resources import files
-else:
-    from importlib.resources import files
+from importlib.resources import files
 
 
 class IconsAddon(BaseAddon):

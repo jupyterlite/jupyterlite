@@ -48,7 +48,7 @@ def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys)
     with pytest.raises(SystemExit) as system_exit:
         app.start()
 
-    assert system_exit.type == SystemExit, "should have raised a SystemExit"
+    assert system_exit.type is SystemExit, "should have raised a SystemExit"
     assert system_exit.value.code == 0, "should have passed with rc 0"
     cap = capsys.readouterr()
     assert "hello world" in cap.out, "should have printed hello world"
