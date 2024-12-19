@@ -1,4 +1,5 @@
 """a JupyterLite addon for generating hashes"""
+
 from typing import TYPE_CHECKING
 
 from ..constants import SHA256SUMS

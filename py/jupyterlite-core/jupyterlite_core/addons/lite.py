@@ -1,6 +1,5 @@
 """a JupyterLite addon for jupyterlite-specific tasks"""
 
-
 from ..constants import (
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_JSON,

@@ -1,5 +1,4 @@
-"""re-export the core constants and addons from the core package.
-"""
+"""re-export the core constants and addons from the core package."""
 
 import warnings
 

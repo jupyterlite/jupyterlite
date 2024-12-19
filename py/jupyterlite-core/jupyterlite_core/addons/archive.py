@@ -1,4 +1,5 @@
 """a JupyterLite addon for generating app archives which can be used as input"""
+
 import contextlib
 import gzip
 import locale
@@ -96,11 +97,11 @@ class ArchiveAddon(BaseAddon):
 
         with tempfile.TemporaryDirectory() as td:
             temp_ball = Path(td) / tarball.name
-            with os.fdopen(
-                os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb"
-            ) as tar_gz, gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz, tarfile.open(
-                fileobj=gz, mode="w:"
-            ) as tar:
+            with (
+                os.fdopen(os.open(temp_ball, os.O_WRONLY | os.O_CREAT, MOD_FILE), "wb") as tar_gz,
+                gzip.GzipFile(fileobj=tar_gz, mode="wb", mtime=0) as gz,
+                tarfile.open(fileobj=gz, mode="w:") as tar,
+            ):
                 for i, path in enumerate(members):
                     if path.is_dir():
                         continue

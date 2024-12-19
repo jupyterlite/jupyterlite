@@ -1,4 +1,5 @@
 """a JupyterLite addon for supporting federated_extensions"""
+
 import json
 import re
 import sys

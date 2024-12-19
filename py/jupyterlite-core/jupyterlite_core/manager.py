@@ -1,5 +1,5 @@
-"""Manager for JupyterLite
-"""
+"""Manager for JupyterLite"""
+
 from logging import getLogger
 
 import doit

@@ -1,4 +1,5 @@
 """a JupyterLite addon for jupyterlab core"""
+
 import json
 import re
 import shutil

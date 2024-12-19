@@ -1,4 +1,5 @@
 """tests of various mechanisms of providing federated_extensions"""
+
 import json
 import shutil
 

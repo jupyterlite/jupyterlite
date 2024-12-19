@@ -15,7 +15,12 @@ See the JupyterLab and Notebook changelogs for more information:
 - [JupyterLab 4.3](https://jupyterlab.readthedocs.io/en/stable/getting_started/changelog.html#v4-3)
 - [Jupyter Notebook 7.3](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#v7-3)
 
-## Configuration
+### `jupyterlite-core`
+
+Support for Python 3.8 has been dropped. `jupyterlite-core` now requires Python 3.9 or
+higher.
+
+### Configuration
 
 The following configuration options were removed from the
 [JupyterLite schema](./reference/schema-v0.rst):

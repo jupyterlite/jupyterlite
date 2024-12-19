@@ -1,4 +1,5 @@
-"""Handle efficient discovery of """
+"""Handle efficient discovery of"""
+
 import sys
 import warnings
 from copy import deepcopy
