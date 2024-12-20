@@ -1,4 +1,6 @@
-import { ObservableMap } from '@jupyterlab/observables';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
+import { IObservableMap, ObservableMap } from '@jupyterlab/observables';
 
 import { KernelAPI, Kernel, KernelMessage } from '@jupyterlab/services';
 
@@ -8,13 +10,13 @@ import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kern
 
 import { UUID } from '@lumino/coreutils';
 
-import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
-
-import { IKernel, IKernels, IKernelSpecs } from './tokens';
+import { ISignal, Signal } from '@lumino/signaling';
 
 import { Mutex } from 'async-mutex';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
+
+import { IKernel, IKernels, IKernelSpecs } from './tokens';
 
 /**
  * Use the default kernel wire protocol.
@@ -34,6 +36,17 @@ export class Kernels implements IKernels {
   constructor(options: Kernels.IOptions) {
     const { kernelspecs } = options;
     this._kernelspecs = kernelspecs;
+    // Forward the changed signal from _kernels
+    this._kernels.changed.connect((_, args) => {
+      this._changed.emit(args);
+    });
+  }
+
+  /**
+   * Signal emitted when the kernels map changes
+   */
+  get changed(): ISignal<this, IObservableMap.IChangedArgs<IKernel>> {
+    return this._changed;
   }
 
   /**
@@ -107,10 +120,6 @@ export class Kernels implements IKernels {
       };
 
       kernel.disposed.connect(removeClient);
-
-      // TODO: check whether this is called
-      // https://github.com/thoov/mock-socket/issues/298
-      // https://github.com/jupyterlab/jupyterlab/blob/6bc884a7a8ed73c615ce72ba097bdb790482b5bf/packages/services/src/kernel/default.ts#L1245
       socket.onclose = removeClient;
     };
 
@@ -243,6 +252,7 @@ export class Kernels implements IKernels {
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
+  private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
 }
 
 /**

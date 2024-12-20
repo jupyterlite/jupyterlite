@@ -20,6 +20,14 @@ See the JupyterLab and Notebook changelogs for more information:
 Support for Python 3.8 has been dropped. `jupyterlite-core` now requires Python 3.9 or
 higher.
 
+### API Changes
+
+#### `@jupyterlite/kernel`
+
+The `IKernel` interface now includes a `changed` signal which is emitted when a kernel
+is started or stopped. This should only affect extensions providing implementing that
+interface to provide a custom kernel manager for JupyterLite.
+
 ### Configuration
 
 The following configuration options were removed from the
