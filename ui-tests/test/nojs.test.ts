@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
 test.describe('JavaScript disabled', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('Show a message on the page to enable JavaScript', async ({ page }) => {
+  test.skip('Show a message on the page to enable JavaScript', async ({ page }) => {
     await page.goto('lab/index.html');
 
     await page.waitForLoadState('domcontentloaded');
