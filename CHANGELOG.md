@@ -2,6 +2,33 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.5.0a1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-alpha.0...efd9e089ab4ffd062e6b67b3c859bf3d95a370bc))
+
+### Bugs fixed
+
+- Fix handling of sessions and kernels restarts [#1538](https://github.com/jupyterlite/jupyterlite/pull/1538) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Drop Python 3.8 [#1537](https://github.com/jupyterlite/jupyterlite/pull/1537) ([@jtpio](https://github.com/jtpio))
+- Bump nanoid from 3.3.6 to 3.3.8 in /ui-tests [#1535](https://github.com/jupyterlite/jupyterlite/pull/1535) ([@dependabot](https://github.com/dependabot))
+- Bump `sphinx` in the docs environment [#1493](https://github.com/jupyterlite/jupyterlite/pull/1493) ([@jtpio](https://github.com/jtpio))
+- Update to Python 3.12 for the dev environment and CI [#1462](https://github.com/jupyterlite/jupyterlite/pull/1462) ([@EwoutH](https://github.com/EwoutH))
+
+### Documentation improvements
+
+- Fix outdated RTC docs, clean up handling of the `collaborative` flag [#1536](https://github.com/jupyterlite/jupyterlite/pull/1536) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-16&to=2024-12-20&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-16..2024-12-20&type=Issues) | [@EwoutH](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEwoutH+updated%3A2024-12-16..2024-12-20&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-16..2024-12-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-16..2024-12-20&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2024-12-16..2024-12-20&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0a0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.5...c01599ff0cc2fb64e22d87ec29199183ce5cf888))
@@ -15,8 +42,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-06&to=2024-12-16&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-12-06..2024-12-16&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-06..2024-12-16&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-06..2024-12-16&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.4.5
 
