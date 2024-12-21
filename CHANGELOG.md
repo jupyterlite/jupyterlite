@@ -2,6 +2,25 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.5.0a2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-alpha.1...c916274a07551bc9570f66c0047c5ef899c4256f))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.3.4 and Notebook 7.3.2 [#1545](https://github.com/jupyterlite/jupyterlite/pull/1545) ([@jtpio](https://github.com/jtpio))
+- Bump systeminformation from 5.21.8 to 5.23.14 in /ui-tests [#1544](https://github.com/jupyterlite/jupyterlite/pull/1544) ([@dependabot](https://github.com/dependabot))
+- Bump mamba-org/setup-micromamba from 1 to 2 in the actions group [#1515](https://github.com/jupyterlite/jupyterlite/pull/1515) ([@dependabot](https://github.com/dependabot))
+- Add noscript tag [#1476](https://github.com/jupyterlite/jupyterlite/pull/1476) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-20&to=2024-12-21&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-20..2024-12-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-20..2024-12-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-20..2024-12-21&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0a1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-alpha.0...efd9e089ab4ffd062e6b67b3c859bf3d95a370bc))
@@ -26,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-16&to=2024-12-20&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-16..2024-12-20&type=Issues) | [@EwoutH](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEwoutH+updated%3A2024-12-16..2024-12-20&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-16..2024-12-20&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-16..2024-12-20&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2024-12-16..2024-12-20&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.0a0
 
