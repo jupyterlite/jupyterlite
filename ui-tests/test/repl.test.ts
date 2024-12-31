@@ -15,7 +15,7 @@ const test = base.extend({
   },
 });
 
-test.describe('REPL Tests', () => {
+test.describe('Basic REPL Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('repl/index.html?toolbar=1&kernel=javascript');
   });
@@ -36,5 +36,18 @@ test.describe('REPL Tests', () => {
     await page.theme.setLightTheme();
 
     expect(await page.theme.getTheme()).toEqual('JupyterLab Light');
+  });
+});
+
+test.describe('Populate REPL prompt', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(
+      'repl/index.html?toolbar=1&kernel=javascript&console.log("hello")&code=console.log("world")&execute=0',
+    );
+  });
+
+  test('Populate prompt without executing', async ({ page }) => {
+    const imageName = 'populate-prompt.png';
+    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
 });
