@@ -65,6 +65,18 @@ Custom code can automatically be executed on startup:
 ></iframe>
 ```
 
+### Populate the prompt without executing
+
+To populate the prompt cell without executing the code:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?kernel=python&code=import numpy as np&execute=0"
+  width="100%"
+  height="100%"
+></iframe>
+```
+
 ### Themes
 
 It is also possible to select a theme, for example to use `JupyterLab Dark`:
