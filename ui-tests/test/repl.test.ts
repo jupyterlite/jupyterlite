@@ -42,7 +42,7 @@ test.describe('Basic REPL Tests', () => {
 test.describe('Populate REPL prompt', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(
-      'repl/index.html?toolbar=1&kernel=javascript&console.log("hello")&code=console.log("world")&execute=0',
+      'repl/index.html?toolbar=1&kernel=javascript&code=console.log("hello")&code=console.log("world")&execute=0',
     );
   });
 
