@@ -1,3 +1,3 @@
 """tools for building JupyterLite sites"""
 
-__version__ = "0.5.0a2"
+__version__ = "0.5.0b0"
