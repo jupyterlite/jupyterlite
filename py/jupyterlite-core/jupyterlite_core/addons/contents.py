@@ -150,6 +150,11 @@ class ContentsAddon(BaseAddon):
             "jupyter_server",
             "[lite] [contents] install `jupyter_server` to index contents: {error}",
         ):
+            raise RuntimeError(
+                """jupyter-server is not installed. You cannot add custom content to jupyterlite.
+                Please install jupyter-server and try again.
+                """
+            )
             return
 
         if not self.output_files_dir.exists():
