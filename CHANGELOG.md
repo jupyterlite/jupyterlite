@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.5.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-beta.0...36e6367592e9498e40936ed50a7bb0d11d235a63))
+
+### Enhancements made
+
+- Increase nbformat_minor to 5 in contents package [#1550](https://github.com/jupyterlite/jupyterlite/pull/1550) ([@martenrichter](https://github.com/martenrichter))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-01&to=2025-01-06&type=c))
+
+[@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-01..2025-01-06&type=Issues) | [@martenrichter](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amartenrichter+updated%3A2025-01-01..2025-01-06&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-alpha.2...3262a8f074bf6ae21c04de7d0004af570df8c45e))
@@ -20,8 +36,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-21&to=2025-01-01&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-21..2025-01-01&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-21..2025-01-01&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.0a2
 
