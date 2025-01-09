@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/kernel",
-  "version": "0.5.0-rc.0",
+  "version": "0.5.0",
   "description": "JupyterLite - Kernel",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {

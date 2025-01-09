@@ -1,6 +1,6 @@
 [project]
 name = "jupyterlite-root"
-version = "0.5.0rc0"
+version = "0.5.0"
 
 [tool.jupyter-releaser]
 skip = [ "build-python", "check-links", "check-python",]
@@ -64,7 +64,7 @@ ignore = [
 "ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
-current = "0.5.0rc0"
+current = "0.5.0"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?

@@ -2,6 +2,45 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.5.0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.5...36e6367592e9498e40936ed50a7bb0d11d235a63))
+
+### Enhancements made
+
+- Increase nbformat_minor to 5 in contents package [#1550](https://github.com/jupyterlite/jupyterlite/pull/1550) ([@martenrichter](https://github.com/martenrichter))
+- Allow not executing code with the repl [#1547](https://github.com/jupyterlite/jupyterlite/pull/1547) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.3 and Notebook 7.3 [#1514](https://github.com/jupyterlite/jupyterlite/pull/1514) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix handling of sessions and kernels restarts [#1538](https://github.com/jupyterlite/jupyterlite/pull/1538) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump `jupyterlite-pyodide-kernel` [#1546](https://github.com/jupyterlite/jupyterlite/pull/1546) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.3.4 and Notebook 7.3.2 [#1545](https://github.com/jupyterlite/jupyterlite/pull/1545) ([@jtpio](https://github.com/jtpio))
+- Bump systeminformation from 5.21.8 to 5.23.14 in /ui-tests [#1544](https://github.com/jupyterlite/jupyterlite/pull/1544) ([@dependabot](https://github.com/dependabot))
+- Add Zulip badge to the README [#1539](https://github.com/jupyterlite/jupyterlite/pull/1539) ([@jtpio](https://github.com/jtpio))
+- Drop Python 3.8 [#1537](https://github.com/jupyterlite/jupyterlite/pull/1537) ([@jtpio](https://github.com/jtpio))
+- Bump nanoid from 3.3.6 to 3.3.8 in /ui-tests [#1535](https://github.com/jupyterlite/jupyterlite/pull/1535) ([@dependabot](https://github.com/dependabot))
+- Bump mamba-org/setup-micromamba from 1 to 2 in the actions group [#1515](https://github.com/jupyterlite/jupyterlite/pull/1515) ([@dependabot](https://github.com/dependabot))
+- Bump `sphinx` in the docs environment [#1493](https://github.com/jupyterlite/jupyterlite/pull/1493) ([@jtpio](https://github.com/jtpio))
+- Add noscript tag [#1476](https://github.com/jupyterlite/jupyterlite/pull/1476) ([@jtpio](https://github.com/jtpio))
+- Update to Python 3.12 for the dev environment and CI [#1462](https://github.com/jupyterlite/jupyterlite/pull/1462) ([@EwoutH](https://github.com/EwoutH))
+
+### Documentation improvements
+
+- Fix outdated RTC docs, clean up handling of the `collaborative` flag [#1536](https://github.com/jupyterlite/jupyterlite/pull/1536) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-06&to=2025-01-09&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-12-06..2025-01-09&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-06..2025-01-09&type=Issues) | [@EwoutH](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEwoutH+updated%3A2024-12-06..2025-01-09&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-06..2025-01-09&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-06..2025-01-09&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2024-12-06..2025-01-09&type=Issues) | [@martenrichter](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amartenrichter+updated%3A2024-12-06..2025-01-09&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0-beta.0...36e6367592e9498e40936ed50a7bb0d11d235a63))
@@ -15,8 +54,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-01&to=2025-01-06&type=c))
 
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-01..2025-01-06&type=Issues) | [@martenrichter](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amartenrichter+updated%3A2025-01-01..2025-01-06&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.0b0
 
