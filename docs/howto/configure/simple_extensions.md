@@ -17,7 +17,7 @@ The easiest way to add new extensions is to use the JupyterLite CLI in a Python
 environment where extensions have already been installed.
 
 You can choose the tool of your choice to manage these dependencies, such as `pip`,
-`conda` or `mamba`. For `conda` and `mamba` there are typically defined in
+`conda` or `mamba`. For `conda` and `mamba` they are typically defined in
 `environment.yml`, and in `requirements.txt` for `pip`.
 
 If you want to build a JupyterLite website locally on your machine, it is preferable to
