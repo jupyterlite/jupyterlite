@@ -46,7 +46,7 @@ jupyterlab-tour
 jupyterlab-night
 ```
 
-This file defines list two extensions, one of them is a theme. Run the following command
+This file lists two extensions, one of them is a theme. Run the following command
 to install them:
 
 ```bash
