@@ -44,7 +44,7 @@ jupyter lite init
 ```
 
 By default the JupyterLite website will be placed in the `_output` folder. You can
-specific a different with `--output-dir` parameter. For instance:
+specify a different one with the `--output-dir` parameter. For instance:
 
 ```bash
 jupyter lite build --output-dir dist
