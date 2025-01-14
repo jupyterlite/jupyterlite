@@ -46,8 +46,8 @@ jupyterlab-tour
 jupyterlab-night
 ```
 
-This file lists two extensions, one of them is a theme. Run the following command
-to install them:
+This file lists two extensions, one of them is a theme. Run the following command to
+install them:
 
 ```bash
 python -m pip install -r requirements.txt
