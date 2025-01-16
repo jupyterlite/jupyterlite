@@ -3,8 +3,6 @@ name: jupyterlite-dev
 
 channels:
   - conda-forge
-  - conda-forge/label/jupyterlite_pyodide_kernel_alpha
-  - conda-forge/label/jupyterlite_core_alpha
 
 dependencies:
   # build stuff
@@ -33,7 +31,7 @@ dependencies:
   # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
   # - jupyterlab-webrtc-docprovider >=0.1.1
   - jupyterlab-night
-  - jupyterlite-pyodide-kernel >=0.5.0a1
+  - jupyterlite-pyodide-kernel >=0.5.1
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot

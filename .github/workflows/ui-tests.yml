@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies and browser
         run: |
           # Install JupyterLab to get jlpm
-          python -m pip install jupyterlab~=4.0
+          python -m pip install "jupyterlab>=4.3.4,<4.4"
           cd ui-tests
           jlpm
           jlpm playwright install
