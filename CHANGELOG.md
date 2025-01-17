@@ -2,6 +2,29 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0...9320a83f78b207d08916fbabb03aed769e4b99b3))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.4 and Notebook 7.4 [#1561](https://github.com/jupyterlite/jupyterlite/pull/1561) ([@jtpio](https://github.com/jtpio))
+- Troubleshoot UI tests [#1560](https://github.com/jupyterlite/jupyterlite/pull/1560) ([@jtpio](https://github.com/jtpio))
+- Bump `jupyterlite-pyodide-kernel` [#1559](https://github.com/jupyterlite/jupyterlite/pull/1559) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix typo in CLI addons doc [#1558](https://github.com/jupyterlite/jupyterlite/pull/1558) ([@lesteve](https://github.com/lesteve))
+- Fix typo [#1555](https://github.com/jupyterlite/jupyterlite/pull/1555) ([@davidbrochart](https://github.com/davidbrochart))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-09&to=2025-01-17&type=c))
+
+[@davidbrochart](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adavidbrochart+updated%3A2025-01-09..2025-01-17&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-01-09..2025-01-17&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-09..2025-01-17&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2025-01-09..2025-01-17&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.5...36e6367592e9498e40936ed50a7bb0d11d235a63))
@@ -38,8 +61,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-06&to=2025-01-09&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-12-06..2025-01-09&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-06..2025-01-09&type=Issues) | [@EwoutH](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEwoutH+updated%3A2024-12-06..2025-01-09&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-06..2025-01-09&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-06..2025-01-09&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2024-12-06..2025-01-09&type=Issues) | [@martenrichter](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amartenrichter+updated%3A2024-12-06..2025-01-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.0rc0
 
