@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.5.1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0...87b41e3bfd48e9e92026f4c9ab6a158819eceb1c))
+
+### Bugs fixed
+
+- Emscripten DriveFS: Use ErronoError instead of genericErrors in the lookup function [#1568](https://github.com/jupyterlite/jupyterlite/pull/1568) ([@anutosh491](https://github.com/anutosh491))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-09&to=2025-01-29&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-01-09..2025-01-29&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-01-09..2025-01-29&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ameeseeksmachine+updated%3A2025-01-09..2025-01-29&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.5.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.4.5...36e6367592e9498e40936ed50a7bb0d11d235a63))
@@ -38,8 +54,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2024-12-06&to=2025-01-09&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2024-12-06..2025-01-09&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2024-12-06..2025-01-09&type=Issues) | [@EwoutH](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AEwoutH+updated%3A2024-12-06..2025-01-09&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2024-12-06..2025-01-09&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2024-12-06..2025-01-09&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2024-12-06..2025-01-09&type=Issues) | [@martenrichter](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amartenrichter+updated%3A2024-12-06..2025-01-09&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.5.0rc0
 

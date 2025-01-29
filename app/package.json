@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/app",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
