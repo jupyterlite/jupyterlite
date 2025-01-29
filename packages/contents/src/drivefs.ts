@@ -326,7 +326,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     const path = this.fs.PATH.join2(this.fs.realPath(node), name);
     const result = this.fs.API.lookup(path);
     if (!result.ok) {
-      throw this.fs.FS.genericErrors[this.fs.ERRNO_CODES['ENOENT']];
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['ENOENT']);
     }
     return this.fs.createNode(node, name, result.mode!, 0);
   }
