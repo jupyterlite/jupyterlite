@@ -2,9 +2,7 @@
   "title": "REPL extension settings",
   "description": "REPL extension settings.",
   "jupyter.lab.toolbars": {
-    "ConsolePanel": [
-      { "name": "liteIcon", "rank": 10000 }
-    ]
+    "ConsolePanel": [{ "name": "liteIcon", "rank": 10000 }]
   },
   "properties": {
     "toolbar": {
