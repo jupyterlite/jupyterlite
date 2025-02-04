@@ -95,7 +95,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const clearCellsOnExecute =
       urlParams.get('clearCellsOnExecute') === '1' || undefined;
     const clearCodeContentOnExecute =
-      urlParams.get('clearCodeContentOnExecute') === '1' || undefined;
+      urlParams.get('clearCodeContentOnExecute') === '0' ? false : undefined;
     const hideCodeInput = urlParams.get('hideCodeInput') === '1' || undefined;
     const showBanner = urlParams.get('showBanner') === '0' ? false : undefined;
 
