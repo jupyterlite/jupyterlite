@@ -4,18 +4,16 @@
 import {
   ILabStatus,
   IRouter,
-  JupyterFrontEndPlugin,
   JupyterFrontEnd,
+  JupyterFrontEndPlugin,
   Router,
 } from '@jupyterlab/application';
 
-import { CommandToolbarButton, IThemeManager, Toolbar } from '@jupyterlab/apputils';
+import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 
-import { IConsoleTracker } from '@jupyterlab/console';
+import { ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
-
-import { clearIcon, refreshIcon, runIcon } from '@jupyterlab/ui-components';
 
 import { SingleWidgetApp } from '@jupyterlite/application';
 
@@ -32,91 +30,38 @@ const I18N_BUNDLE = 'jupyterlite';
  * A plugin to add buttons to the console toolbar.
  */
 const buttons: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/console-application:buttons',
+  id: '@jupyterlite/repl-extension:buttons',
   autoStart: true,
   requires: [ITranslator],
-  optional: [IConsoleTracker],
+  optional: [IToolbarWidgetRegistry],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
-    tracker: IConsoleTracker | null,
+    toolbarRegistry: IToolbarWidgetRegistry | null,
   ) => {
-    if (!tracker) {
-      return;
-    }
-
-    const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
 
-    // wrapper commands to be able to override the icon
-    const runCommand = 'repl:run';
-    commands.addCommand(runCommand, {
-      caption: trans.__('Run'),
-      icon: runIcon,
-      execute: () => {
-        return commands.execute('console:run-forced');
-      },
-    });
+    if (toolbarRegistry) {
+      const factory = 'ConsolePanel';
+      toolbarRegistry.addFactory<ConsolePanel>(factory, 'liteIcon', (panel) => {
+        const node = document.createElement('a');
+        node.title = trans.__('Powered by JupyterLite');
+        node.href = 'https://github.com/jupyterlite/jupyterlite';
+        node.target = '_blank';
+        node.rel = 'noopener noreferrer';
+        const poweredBy = new Widget({ node });
+        liteIcon.element({
+          container: node,
+          elementPosition: 'center',
+          margin: '2px',
+          height: 'auto',
+          width: '16px',
+        });
 
-    const runButton = new CommandToolbarButton({
-      commands,
-      id: runCommand,
-    });
-
-    const restartCommand = 'repl:restart';
-    commands.addCommand(restartCommand, {
-      caption: trans.__('Restart'),
-      icon: refreshIcon,
-      execute: () => {
-        return commands.execute('console:restart-kernel');
-      },
-    });
-
-    const restartButton = new CommandToolbarButton({
-      commands,
-      id: restartCommand,
-    });
-
-    const clearCommand = 'repl:clear';
-    commands.addCommand(clearCommand, {
-      caption: trans.__('Clear'),
-      icon: clearIcon,
-      execute: () => {
-        return commands.execute('console:clear');
-      },
-    });
-
-    const clearButton = new CommandToolbarButton({
-      commands,
-      id: clearCommand,
-    });
-
-    tracker.widgetAdded.connect((_, console) => {
-      const { toolbar } = console;
-
-      console.toolbar.addItem('run', runButton);
-      console.toolbar.addItem('restart', restartButton);
-      console.toolbar.addItem('clear', clearButton);
-
-      toolbar.addItem('spacer', Toolbar.createSpacerItem());
-
-      const node = document.createElement('a');
-      node.title = trans.__('Powered by JupyterLite');
-      node.href = 'https://github.com/jupyterlite/jupyterlite';
-      node.target = '_blank';
-      node.rel = 'noopener noreferrer';
-      const poweredBy = new Widget({ node });
-      liteIcon.element({
-        container: node,
-        elementPosition: 'center',
-        margin: '2px 2px 2px 8px',
-        height: 'auto',
-        width: '16px',
+        poweredBy.addClass('jp-PoweredBy');
+        return poweredBy;
       });
-
-      poweredBy.addClass('jp-PoweredBy');
-      toolbar.insertAfter('spacer', 'powered-by', poweredBy);
-    });
+    }
   },
 };
 
