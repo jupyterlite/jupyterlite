@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/licenses",
-  "version": "0.6.0-alpha.0",
+  "version": "0.6.0-alpha.1",
   "description": "JupyterLite - Licenses",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -34,7 +34,7 @@
     "@jupyterlab/coreutils": "~6.4.0-alpha.3"
   },
   "devDependencies": {
-    "@jupyterlite/types": "^0.6.0-alpha.0",
+    "@jupyterlite/types": "^0.6.0-alpha.1",
     "rimraf": "~5.0.1",
     "typescript": "~5.1.6"
   },
