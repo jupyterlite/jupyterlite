@@ -11,7 +11,7 @@ import {
 
 import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 
-import { ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
+import { CodeConsole, ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
 
@@ -91,6 +91,20 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const theme = urlParams.get('theme')?.trim();
     const toolbar = urlParams.get('toolbar');
 
+    // normalize config options
+    const clearCellsOnExecute =
+      urlParams.get('clearCellsOnExecute') === '1' || undefined;
+    const clearCodeContentOnExecute =
+      urlParams.get('clearCodeContentOnExecute') === '1' || undefined;
+    const hideCodeInput = urlParams.get('hideCodeInput') === '1' || undefined;
+    const showBanner = urlParams.get('showBanner') === '0' ? false : undefined;
+
+    const position = urlParams.get('promptCellPosition') ?? '';
+    const validPositions = ['top', 'bottom', 'left', 'right'];
+    const promptCellPosition = validPositions.includes(position)
+      ? (position as CodeConsole.PromptCellPosition)
+      : undefined;
+
     Promise.all([started, serviceManager.ready]).then(async () => {
       commands.execute('console:create', { kernelPreference: { name: kernel } });
     });
@@ -117,6 +131,14 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
           code.forEach((line) => console.inject(line));
         }
       }
+
+      console.setConfig({
+        clearCellsOnExecute,
+        clearCodeContentOnExecute,
+        hideCodeInput,
+        promptCellPosition,
+        showBanner,
+      });
     });
   },
 };
