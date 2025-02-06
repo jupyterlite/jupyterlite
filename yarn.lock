@@ -2142,12 +2142,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/application-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/application-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/application-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/application-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
-    "@jupyter-notebook/ui-components": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
+    "@jupyter-notebook/ui-components": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/apputils": ~4.5.0-alpha.3
     "@jupyterlab/codeeditor": ~4.4.0-alpha.3
@@ -2162,13 +2162,13 @@ __metadata:
     "@lumino/coreutils": ^2.2.0
     "@lumino/disposable": ^2.1.3
     "@lumino/widgets": ^2.5.0
-  checksum: fa35009e86afeea85c5e180e40346f1c6be54712816c9be98617348d86661eab98576781268131d16d9d0281cb22fff477e9dcc901777e955e10eb4d9a7ae93d
+  checksum: 5eab654db6f8ce86b38af90b2fe6a4ffa657656ad1497634d222d41b72409471c0c39ff34c2da65e8cc3d412ab15b1559305e4f2c4e9d6f297fd05ee0eb2d01d
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/application@npm:^7.4.0-alpha.2, @jupyter-notebook/application@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/application@npm:7.4.0-alpha.2"
+"@jupyter-notebook/application@npm:^7.4.0-alpha.3, @jupyter-notebook/application@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/application@npm:7.4.0-alpha.3"
   dependencies:
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
@@ -2181,28 +2181,28 @@ __metadata:
     "@lumino/polling": ^2.1.3
     "@lumino/signaling": ^2.1.3
     "@lumino/widgets": ^2.5.0
-  checksum: be57699aa9711c641c32978db05039f31386bcac80a9b1c65e73589b0d8436da4d5036a7e92b16e1d98fe163409caa2c5c7afac29fbd6307adcabf0893a11b0f
+  checksum: 1370009b11ad3486771005bd5d38dd1066a8d614f49ca65bb3c1627f9dbf9eb18bd8279b0dafb8ca38b2dbfac86e488da30310ba4469af76e0f6b144a7f354eb
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/console-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/console-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/console-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/console-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/console": ~4.4.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
     "@lumino/algorithm": ^2.0.2
-  checksum: 0b9c5e216d7ca2949855720aa621a17319e646bee1669826360f26d24cea5ecd6cd24d07c20b423b68fd5d3b7224179c6052229cd3fbc9fd327850a1e73dcb89
+  checksum: dea9a4b238913e4dcc4b7615f57257bfb97e110c566ac453de0a8c7c3a8a3210f9c0f564083cab4adcbf834103323355714ab5d5f43f1c3edd27f7ebb46a2b4d
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/docmanager-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/docmanager-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/docmanager-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/docmanager-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
     "@jupyterlab/docmanager": ~4.4.0-alpha.3
@@ -2210,30 +2210,30 @@ __metadata:
     "@jupyterlab/services": ~7.4.0-alpha.3
     "@lumino/algorithm": ^2.0.2
     "@lumino/signaling": ^2.1.3
-  checksum: a6cff712e6e3ca111fe30aeed99d7c5575e953126aedd9782c092f6486b0ce593f4bdb97f39480431eb3e526c643c8b15db78f074e4e2a322e49ca554d72cb35
+  checksum: cb573c9471dfc68ecf954fd8426e82b07bd341764ccecb6793454149cf62f4b93d59f60dca81650c36ac71be5598cb5a6341cd89fa7307c9948af8f19cbc45ce
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/help-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/help-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/help-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/help-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/ui-components": ^7.4.0-alpha.2
+    "@jupyter-notebook/ui-components": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/apputils": ~4.5.0-alpha.3
     "@jupyterlab/mainmenu": ~4.4.0-alpha.3
     "@jupyterlab/translation": ~4.4.0-alpha.3
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: a451392aa578d41b613d9a34e6181efb121faaee94826c96e14f030b214e37f929e4b0201c076ac214dd18535037adc29c16f549ff2e591fe59f07a33bc4ac13
+  checksum: 4d597b81b1849c48660a7c471b6c9defd8cc65e1a13d7530e33b594bc57142b40e1593ac7e476bacbd55c0a21606e73e95eebe4e1d0162dc800b22c189099bed
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/notebook-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/notebook-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/notebook-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/notebook-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/apputils": ~4.5.0-alpha.3
     "@jupyterlab/cells": ~4.4.0-alpha.3
@@ -2245,16 +2245,16 @@ __metadata:
     "@lumino/widgets": ^2.5.0
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: 4607968df4b3bfcf7f4fc6fa532b5296f11e22f4c5bd6ca3fab54053f47f7cc42b95ee808ee69d48b3d1b02febd96a2c167715f1959269deacfabc5bb4af3447
+  checksum: 9a79a0b94b774d897f6ea084213efd9a39e28eb7e73fab0dfb74d592a5b0d0bb58540b16b2b6ff9b1973d971951e08efcbbbc86cb0921633ddbb4f1fa82e2c53
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/tree-extension@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/tree-extension@npm:7.4.0-alpha.2"
+"@jupyter-notebook/tree-extension@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/tree-extension@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
-    "@jupyter-notebook/tree": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
+    "@jupyter-notebook/tree": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/apputils": ~4.5.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
@@ -2270,15 +2270,15 @@ __metadata:
     "@lumino/algorithm": ^2.0.2
     "@lumino/commands": ^2.3.1
     "@lumino/widgets": ^2.5.0
-  checksum: e91a0bd6e254609aeb68e15037eccbc99e03a006518a2c02f9540eb3761ec10f371e74519fa24bf221a30b31311f4752918d6d6aa42d89aec707cda4430438aa
+  checksum: 73538942ac6162e16d37bc0546e9f916fc32d90ff920550cc408231c00ae69ead1f345853925ba25a402c9399d741c937be3fe38934ad731de37bf703222e807
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/tree@npm:^7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/tree@npm:7.4.0-alpha.2"
+"@jupyter-notebook/tree@npm:^7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/tree@npm:7.4.0-alpha.3"
   dependencies:
-    "@jupyter-notebook/application": ^7.4.0-alpha.2
+    "@jupyter-notebook/application": ^7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/apputils": ~4.5.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
@@ -2294,18 +2294,18 @@ __metadata:
     "@lumino/commands": ^2.3.1
     "@lumino/coreutils": ^2.2.0
     "@lumino/widgets": ^2.5.0
-  checksum: aeb4007f49858bed53861eba095398518562a6a8989aa39207428a4d46916ca25eb8e7046176a7448076c7cd730081807563dc569ddf157332edb644ba350dea
+  checksum: 5c2f94a0b206c5f9087508ba22179d9867c0e191b648249b2538f2f5d6ed1f3ece81b48188f9f8962c23adfc65d62397b89b2549221d6f6d323aa27c4ebb9a8e
   languageName: node
   linkType: hard
 
-"@jupyter-notebook/ui-components@npm:^7.4.0-alpha.2, @jupyter-notebook/ui-components@npm:~7.4.0-alpha.2":
-  version: 7.4.0-alpha.2
-  resolution: "@jupyter-notebook/ui-components@npm:7.4.0-alpha.2"
+"@jupyter-notebook/ui-components@npm:^7.4.0-alpha.3, @jupyter-notebook/ui-components@npm:~7.4.0-alpha.3":
+  version: 7.4.0-alpha.3
+  resolution: "@jupyter-notebook/ui-components@npm:7.4.0-alpha.3"
   dependencies:
     "@jupyterlab/ui-components": ~4.4.0-alpha.3
     react: ^18.2.0
     react-dom: ^18.2.0
-  checksum: b515728035c506dfc7e48e87d105782bffc57c6e04a64e9497397af8aa78649e4d81569ecbd52a0c13dbee5d199159615db303f123ab0b7595efffa41e93f0dd
+  checksum: e5a4542428fe4d3aec542afa8e75a72a1e48fab4a10464f73b84aac28d88cefb4e20e12a5c44bb2518078e5ed77c325017642c2062e4aa7f0080889b59ef0a24
   languageName: node
   linkType: hard
 
@@ -4284,12 +4284,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-edit@workspace:app/edit"
   dependencies:
-    "@jupyter-notebook/application": ~7.4.0-alpha.2
-    "@jupyter-notebook/application-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/console-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/help-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/notebook-extension": ~7.4.0-alpha.2
+    "@jupyter-notebook/application": ~7.4.0-alpha.3
+    "@jupyter-notebook/application-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/console-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/help-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/notebook-extension": ~7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/application-extension": ~4.4.0-alpha.3
     "@jupyterlab/apputils-extension": ~4.4.0-alpha.3
@@ -4416,12 +4416,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-notebooks@workspace:app/notebooks"
   dependencies:
-    "@jupyter-notebook/application": ~7.4.0-alpha.2
-    "@jupyter-notebook/application-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/console-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/help-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/notebook-extension": ~7.4.0-alpha.2
+    "@jupyter-notebook/application": ~7.4.0-alpha.3
+    "@jupyter-notebook/application-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/console-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/help-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/notebook-extension": ~7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/application-extension": ~4.4.0-alpha.3
     "@jupyterlab/apputils-extension": ~4.4.0-alpha.3
@@ -4528,13 +4528,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app-tree@workspace:app/tree"
   dependencies:
-    "@jupyter-notebook/application": ~7.4.0-alpha.2
-    "@jupyter-notebook/application-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/console-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/help-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/tree-extension": ~7.4.0-alpha.2
-    "@jupyter-notebook/ui-components": ~7.4.0-alpha.2
+    "@jupyter-notebook/application": ~7.4.0-alpha.3
+    "@jupyter-notebook/application-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/console-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/docmanager-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/help-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/tree-extension": ~7.4.0-alpha.3
+    "@jupyter-notebook/ui-components": ~7.4.0-alpha.3
     "@jupyterlab/application-extension": ~4.4.0-alpha.3
     "@jupyterlab/apputils-extension": ~4.4.0-alpha.3
     "@jupyterlab/attachments": ~4.4.0-alpha.3
@@ -4757,7 +4757,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.11.6
     "@babel/preset-env": ^7.12.1
-    "@jupyter-notebook/application": ~7.4.0-alpha.2
+    "@jupyter-notebook/application": ~7.4.0-alpha.3
     "@jupyterlab/application": ~4.4.0-alpha.3
     "@jupyterlab/coreutils": ~6.4.0-alpha.3
     "@jupyterlab/services": ~7.4.0-alpha.3
