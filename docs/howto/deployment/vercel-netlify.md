@@ -11,7 +11,7 @@ and make them widely available via their CDN.
 To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
 generating a new repository from the template.
 
-Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
+Then add a `runtime.txt` file with `3.9` as the content to specify Python 3.9 as
 dependency.
 
 Finally specify `jupyter lite build --contents content --output-dir dist` as the "Build
@@ -38,7 +38,7 @@ The build environments of hosted platforms like Netlify and Vercel generally all
 limited control on the Python version installed on the build machine.
 
 This was the case for a while when their build image only included Python 3.6 while
-JupyterLite requires Python 3.7+. This can be limiting in some cases, especially when
+JupyterLite requires Python 3.9+. This can be limiting in some cases, especially when
 you want to have more control on the build.
 
 Fortunately it is possible to run arbitrary bash scripts, which provides a convenient
