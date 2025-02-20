@@ -32,7 +32,7 @@ dependencies:
   - docutils >=0.18
   - myst-nb >=1
   - pydata-sphinx-theme
-  - sphinx >=5.1,<9
+  - sphinx >=5.1,<8.2
   - sphinx-autodoc-typehints
   - sphinx-jsonschema
   - sphinxcontrib-mermaid
