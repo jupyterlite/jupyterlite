@@ -38,20 +38,20 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.4.0-alpha.3",
-    "@jupyterlab/apputils": "~4.5.0-alpha.3",
-    "@jupyterlab/docmanager": "~4.4.0-alpha.3",
-    "@jupyterlab/filebrowser": "~4.4.0-alpha.3",
-    "@jupyterlab/help-extension": "~4.4.0-alpha.3",
-    "@jupyterlab/mainmenu": "~4.4.0-alpha.3",
-    "@jupyterlab/services": "~7.4.0-alpha.3",
-    "@jupyterlab/settingregistry": "~4.4.0-alpha.3",
-    "@jupyterlab/translation": "~4.4.0-alpha.3",
-    "@jupyterlab/ui-components": "~4.4.0-alpha.3",
+    "@jupyterlab/application": "~4.4.0-beta.0",
+    "@jupyterlab/apputils": "~4.5.0-beta.0",
+    "@jupyterlab/docmanager": "~4.4.0-beta.0",
+    "@jupyterlab/filebrowser": "~4.4.0-beta.0",
+    "@jupyterlab/help-extension": "~4.4.0-beta.0",
+    "@jupyterlab/mainmenu": "~4.4.0-beta.0",
+    "@jupyterlab/services": "~7.4.0-beta.0",
+    "@jupyterlab/settingregistry": "~4.4.0-beta.0",
+    "@jupyterlab/translation": "~4.4.0-beta.0",
+    "@jupyterlab/ui-components": "~4.4.0-beta.0",
     "@jupyterlite/ui-components": "^0.6.0-alpha.1",
     "@lumino/algorithm": "^2.0.2",
     "@lumino/coreutils": "^2.2.0",
-    "@lumino/widgets": "^2.5.0"
+    "@lumino/widgets": "^2.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

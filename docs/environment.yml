@@ -3,8 +3,8 @@ name: jupyterlite-docs
 
 channels:
   - conda-forge
-  - conda-forge/label/jupyterlab_alpha
-  - conda-forge/label/notebook_alpha
+  - conda-forge/label/jupyterlab_beta
+  - conda-forge/label/notebook_beta
   - nodefaults
 
 dependencies:
@@ -18,8 +18,8 @@ dependencies:
   - hatch >=1.6.3,<2
   - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.4.0a3,<4.5
-  - notebook >=7.4.0a3,<7.5
+  - jupyterlab >=4.4.0b0,<4.5
+  - notebook >=7.4.0b0,<7.5
   - pip
   - pkginfo
   - python-libarchive-c
