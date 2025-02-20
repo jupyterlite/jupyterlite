@@ -4,7 +4,7 @@ name: jupyterlite-docs
 channels:
   - conda-forge
   - conda-forge/label/jupyterlab_beta
-  - conda-forge/label/notebook_alpha
+  - conda-forge/label/notebook_beta
   - nodefaults
 
 dependencies:
