@@ -11,7 +11,7 @@ import {
 
 import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 
-import { ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
+import { CodeConsole, ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
 
@@ -81,7 +81,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     if (!tracker) {
       return;
     }
-    const { commands, serviceManager, started } = app;
+    const { commands, started } = app;
 
     const search = window.location.search;
     const urlParams = new URLSearchParams(search);
@@ -91,33 +91,62 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     const theme = urlParams.get('theme')?.trim();
     const toolbar = urlParams.get('toolbar');
 
-    Promise.all([started, serviceManager.ready]).then(async () => {
-      commands.execute('console:create', { kernelPreference: { name: kernel } });
+    // normalize config options
+    const clearCellsOnExecute =
+      urlParams.get('clearCellsOnExecute') === '1' || undefined;
+    const clearCodeContentOnExecute =
+      urlParams.get('clearCodeContentOnExecute') === '0' ? false : undefined;
+    const hideCodeInput = urlParams.get('hideCodeInput') === '1' || undefined;
+    const showBanner = urlParams.get('showBanner') === '0' ? false : undefined;
+
+    const position = urlParams.get('promptCellPosition') ?? '';
+    const validPositions = ['top', 'bottom', 'left', 'right'];
+    const promptCellPosition = validPositions.includes(position)
+      ? (position as CodeConsole.PromptCellPosition)
+      : undefined;
+
+    started.then(async () => {
+      // create a new console at application startup
+      void commands.execute('console:create', {
+        kernelPreference: { name: kernel },
+      });
+    });
+
+    tracker.widgetAdded.connect(async (_, panel) => {
+      if (!toolbar) {
+        // hide the toolbar by default if not specified
+        panel.toolbar.dispose();
+      }
+
+      const { console: widget } = panel;
+      const { sessionContext } = widget;
+
+      await sessionContext.ready;
+      if (code.length > 0) {
+        if (execute === '0') {
+          const codeContent = code.join('\n');
+          widget.replaceSelection(codeContent);
+        } else {
+          code.forEach((line) => widget.inject(line));
+        }
+      }
+
+      widget.setConfig({
+        clearCellsOnExecute,
+        clearCodeContentOnExecute,
+        hideCodeInput,
+        promptCellPosition,
+        // TODO: handling of the showBanner may not work as expected for now
+        // due to the assumption there should be a banner upstream:
+        // https://github.com/jupyterlab/jupyterlab/pull/17322
+        showBanner,
+      });
     });
 
     if (theme && themeManager) {
       const themeName = decodeURIComponent(theme);
       themeManager.setTheme(themeName);
     }
-
-    tracker.widgetAdded.connect(async (_, widget) => {
-      const { console } = widget;
-
-      if (!toolbar) {
-        // hide the toolbar by default if not specified
-        widget.toolbar.dispose();
-      }
-
-      if (code) {
-        await console.sessionContext.ready;
-        if (execute === '0') {
-          const codeContent = code.join('\n');
-          console.replaceSelection(codeContent);
-        } else {
-          code.forEach((line) => console.inject(line));
-        }
-      }
-    });
   },
 };
 

@@ -98,3 +98,68 @@ pip install jupyterlab-gt-coar-theme
 
 See the [how-to guides](../howto/index.md) for more details on how to customize the
 environment and add more themes and extensions.
+
+### Clear cells on execute
+
+To automatically clear the previously executed cells on execute, set the
+`clearCellsOnExecute` parameter to `1`:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?clearCellsOnExecute=1"
+  width="100%"
+  height="100%"
+></iframe>
+```
+
+### Clear code content on execute
+
+To automatically clear the code content in the prompt cell on execute, set the
+`clearCodeContentOnExecute` parameter to `1`:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?clearCodeContentOnExecute=1"
+  width="100%"
+  height="100%"
+></iframe>
+```
+
+### Hide code input
+
+To hide the input cell of the executed cells, set the `hideCodeInput` parameter to `1`:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?hideCodeInput=1"
+  width="100%"
+  height="100%"
+></iframe>
+```
+
+### Prompt cell position
+
+To change where the prompt cell is placed, set the `promptCellPosition` parameter to
+`top`, `bottom`, `left`, or `right`:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?promptCellPosition=left"
+  width="100%"
+  height="100%"
+></iframe>
+```
+
+### Show or hide the kernel banner
+
+By default the REPL shows the kernel banner.
+
+To hide the banner, set the `showBanner` parameter to `0`:
+
+```html
+<iframe
+  src="https://jupyterlite.github.io/demo/repl/index.html?showBanner=0"
+  width="100%"
+  height="100%"
+></iframe>
+```
