@@ -81,7 +81,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     if (!tracker) {
       return;
     }
-    const { commands, serviceManager, started } = app;
+    const { commands, started } = app;
 
     const search = window.location.search;
     const urlParams = new URLSearchParams(search);
@@ -105,41 +105,48 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
       ? (position as CodeConsole.PromptCellPosition)
       : undefined;
 
-    Promise.all([started, serviceManager.ready]).then(async () => {
-      commands.execute('console:create', { kernelPreference: { name: kernel } });
+    started.then(async () => {
+      // create a new console at application startup
+      void commands.execute('console:create', {
+        kernelPreference: { name: kernel },
+      });
+    });
+
+    tracker.widgetAdded.connect(async (_, panel) => {
+      if (!toolbar) {
+        // hide the toolbar by default if not specified
+        panel.toolbar.dispose();
+      }
+
+      const { console: widget } = panel;
+      const { sessionContext } = widget;
+
+      await sessionContext.ready;
+      if (code.length > 0) {
+        if (execute === '0') {
+          const codeContent = code.join('\n');
+          widget.replaceSelection(codeContent);
+        } else {
+          code.forEach((line) => widget.inject(line));
+        }
+      }
+
+      widget.setConfig({
+        clearCellsOnExecute,
+        clearCodeContentOnExecute,
+        hideCodeInput,
+        promptCellPosition,
+        // TODO: handling of the showBanner may not work as expected for now
+        // due to the assumption there should be a banner upstream:
+        // https://github.com/jupyterlab/jupyterlab/pull/17322
+        showBanner,
+      });
     });
 
     if (theme && themeManager) {
       const themeName = decodeURIComponent(theme);
       themeManager.setTheme(themeName);
     }
-
-    tracker.widgetAdded.connect(async (_, widget) => {
-      const { console } = widget;
-
-      if (!toolbar) {
-        // hide the toolbar by default if not specified
-        widget.toolbar.dispose();
-      }
-
-      if (code) {
-        await console.sessionContext.ready;
-        if (execute === '0') {
-          const codeContent = code.join('\n');
-          console.replaceSelection(codeContent);
-        } else {
-          code.forEach((line) => console.inject(line));
-        }
-      }
-
-      console.setConfig({
-        clearCellsOnExecute,
-        clearCodeContentOnExecute,
-        hideCodeInput,
-        promptCellPosition,
-        showBanner,
-      });
-    });
   },
 };
 
