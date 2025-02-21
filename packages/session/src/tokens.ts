@@ -5,12 +5,14 @@ import { Token } from '@lumino/coreutils';
 /**
  * The token for the sessions service.
  */
-export const ISessions = new Token<ISessions>('@jupyterlite/session:ISessions');
+export const ISessionStore = new Token<ISessionStore>(
+  '@jupyterlite/session:ISessionStore',
+);
 
 /**
  * The interface for the sessions services.
  */
-export interface ISessions {
+export interface ISessionStore {
   /**
    * Get a session by id.
    *
@@ -29,14 +31,14 @@ export interface ISessions {
    *
    * @param options The options to patch the session.
    */
-  patch: (options: Session.IModel) => Promise<Session.IModel>;
+  patch: (options: Partial<Session.IModel>) => Promise<Session.IModel>;
 
   /**
    * Start a new session.
    *
    * @param options The options to start a new session.
    */
-  startNew: (options: Session.IModel) => Promise<Session.IModel>;
+  startNew: (options: Session.ISessionOptions) => Promise<Session.IModel>;
 
   /**
    * Shut down a session.
@@ -44,4 +46,9 @@ export interface ISessions {
    * @param id The id of the session to shut down.
    */
   shutdown: (id: string) => Promise<void>;
+
+  /**
+   * Shut down all sessions.
+   */
+  shutdownAll: () => Promise<void>;
 }

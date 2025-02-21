@@ -13,14 +13,9 @@ import { IObservableDisposable } from '@lumino/disposable';
 
 import { ISignal } from '@lumino/signaling';
 
-import { Kernels } from './kernels';
-
 import { KernelSpecs } from './kernelspecs';
 
-/**
- * The token for the kernels service.
- */
-export const IKernels = new Token<IKernels>('@jupyterlite/kernel:IKernels');
+import { KernelStore } from './store';
 
 /**
  * The kernel name of last resort.
@@ -28,20 +23,25 @@ export const IKernels = new Token<IKernels>('@jupyterlite/kernel:IKernels');
 export const FALLBACK_KERNEL = 'javascript';
 
 /**
+ * The token for the kernels service.
+ */
+export const IKernelStore = new Token<IKernelStore>('@jupyterlite/kernel:IKernelStore');
+
+/**
  * An interface for the Kernels service.
  */
-export interface IKernels {
+export interface IKernelStore {
   /**
    * Signal emitted when the kernels map changes
    */
-  readonly changed: ISignal<IKernels, IObservableMap.IChangedArgs<IKernel>>;
+  readonly changed: ISignal<IKernelStore, IObservableMap.IChangedArgs<IKernel>>;
 
   /**
    * Start a new kernel.
    *
    * @param options The kernel startup options.
    */
-  startNew: (options: Kernels.IKernelOptions) => Promise<Kernel.IModel>;
+  startNew: (options: KernelStore.IKernelOptions) => Promise<Kernel.IModel>;
 
   /**
    * Restart a kernel.
@@ -61,6 +61,11 @@ export interface IKernels {
    * @param id The kernel id.
    */
   shutdown: (id: string) => Promise<void>;
+
+  /**
+   * Shut down all kernels.
+   */
+  shutdownAll: () => Promise<void>;
 
   /**
    * Get a kernel by id

@@ -8,7 +8,7 @@ import '@jupyterlite/licenses';
 import '@jupyterlite/localforage';
 import '@jupyterlite/notebook-application-extension';
 import '@jupyterlite/server';
-import '@jupyterlite/server-extension';
+import '@jupyterlite/services-extension';
 import '@jupyterlite/session';
 import '@jupyterlite/settings';
 import '@jupyterlite/types';

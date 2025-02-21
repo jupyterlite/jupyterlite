@@ -41,7 +41,7 @@ can disable the [`ServiceWorker`](./service-worker.md) plugin with the following
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": ["@jupyterlite/server-extension:service-worker"]
+    "disabledExtensions": ["@jupyterlite/application-extension:service-worker"]
   }
 }
 ```

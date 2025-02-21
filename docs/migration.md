@@ -3,7 +3,97 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `0.5.0` to `0.6.0`
+
+### Extensions
+
+JupyterLite 0.5.0 is based on the JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
+
+Although no breaking changes are expected, this may affect the extensions you are using
+as they may rely on features added to JupyterLab 4.4 and Notebook 7.4.
+
+### API Changes
+
+Prior to version 0.6.0, JupyterLite was splitting extensions in two categories:
+
+- regular JupyterLab extensions, loaded the same way as in JupyterLab
+- "serverlite" extensions, loaded on a separate Lumino application, such as custom
+  kernels
+
+To replace some of the default serverlite plugins or add extra "server"
+functionalities,, extension authors had to provide a `JupyterLiteServerPlugin`.
+
+Starting with JupyerLite 0.6.0, all plugins are registered with the same plugin
+registry, including kernels and other "server" plugins such as the kernel and session
+managers. These plugins are now regular `JupyterFrontEndPlugin` instances.
+
+Below are the changes in the different packages that result from that change.
+
+#### How to migrate your kernel
+
+If you have authored a custom kernel, it should normally still be loading correctly in
+JupyterLite 0.6.0.
+
+However you might want to make the following changes to your kernel extension:
+
+- Update the plugin definition to use `JupyterFrontEndPlugin` instead of
+  `JupyterLiteServerPlugin`:
+
+```diff
+ /**
+  * A plugin to register the custom kernel.
+  */
+-const kernel: JupyterLiteServerPlugin<void> = {
++const kernel: JupyterFrontEndPlugin<void> = {
+   id: 'my-custom-kernel:plugin',
+   autoStart: true,
+   requires: [IKernelSpecs],
+-  activate: (app: JupyterLiteServer, kernelspecs: IKernelSpecs) => {
++  activate: (app: JupyterFrontEnd, kernelspecs: IKernelSpecs) => {
+     kernelspecs.register({
+       spec: {
+         name: 'custom',
+```
+
+#### Service Worker
+
+The service worker plugin, used for syncing content between the JupyterLite file browser
+and the kernel, has been moved to the `@jupyterlite/application-extension` extension.
+
+If you were disabling the Service Worker in a custom `jupyter-lite.json` file, you will
+need to update the name of the plugin to disable as follows:
+
+```diff
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+-   "disabledExtensions": ["@jupyterlite/server-extension:service-worker"]
++   "disabledExtensions": ["@jupyterlite/application-extension:service-worker"]
+  }
+}
+```
+
+#### `@jupyterlite/server`
+
+The following classes and interfaces have been removed:
+
+- `JupyterLiteServer`
+- `JupyterLiteServerPlugin`
+- `Router`
+
+#### `@jupyterlite/kernel`
+
+The previous `Kernels` class (and its `IKernels` interface) have been renamed to
+`KernelStore` and `IKernelStore` respectively.
+
+#### `@jupyterlite/session`
+
+The previous `Sessions` class (and its `ISessions` interface) have been renamed to
+`SessionStore` and `ISessionStore` respectively.
+
 ## `0.4.0` to `0.5.0`
+
+### Extensions
 
 JupyterLite 0.5.0 is based on the JupyterLab 4.3 and Jupyter Notebook 7.3 packages.
 

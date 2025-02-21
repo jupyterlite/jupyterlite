@@ -1,6 +1,9 @@
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
-import { JSONObject } from '@lumino/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { DataConnector } from '@jupyterlab/statedb';
+import { ITranslatorConnector, Language } from '@jupyterlab/translation';
 
 /**
  * A fake locale to retrieve all the language packs.
@@ -8,15 +11,18 @@ import { JSONObject } from '@lumino/coreutils';
 const ALL = 'all';
 
 /**
- * A class to handle requests to /api/translations
+ * A class to fetch translation bundles.
  */
-export class Translation {
-  /**
-   * Get the translation data for the given locale
-   * @param locale The locale
-   * @returns
-   */
-  async get(locale: string): Promise<JSONObject> {
+export class LiteTranslatorConnector
+  extends DataConnector<Language, Language, { language: string }>
+  implements ITranslatorConnector
+{
+  async fetch(opts: { language: string }): Promise<Language> {
+    const { language } = opts;
+
+    // normalize the default locale
+    const locale = language === 'default' ? 'en' : language;
+
     const apiURL = URLExt.join(
       PageConfig.getBaseUrl(),
       `api/translations/${locale}.json`,
@@ -39,19 +45,20 @@ export class Translation {
       return json;
     } catch (e) {
       if (locale) {
+        // TODO: fix type upstream: https://github.com/jupyterlab/jupyterlab/issues/17333
         return {
           data: {},
           message: `Language pack '${locale}' not installed!`,
-        };
+        } as any;
       }
       return {
+        // TODO: fix type upstream: https://github.com/jupyterlab/jupyterlab/issues/17333
         data: {
           en: { displayName: 'English', nativeName: 'English' },
         },
         message: '',
-      };
+      } as any;
     }
   }
-
   private _prevLocale = '';
 }

@@ -1,22 +1,30 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents as ServerContents } from '@jupyterlab/services';
+import { Contents, Drive, ServerConnection } from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import type localforage from 'localforage';
-
-import { IContents, MIME, FILE } from './tokens';
 import { PromiseDelegate } from '@lumino/coreutils';
 
-export type IModel = ServerContents.IModel;
+import { ISignal, Signal } from '@lumino/signaling';
+
+import { FILE, MIME } from './tokens';
+
+import type localforage from 'localforage';
+
+type IModel = Contents.IModel;
 
 /**
  * The name of the local storage.
  */
 const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
+
+/**
+ * The name of the drive.
+ */
+export const DRIVE_NAME = 'BrowserStorage';
 
 /**
  * The number of checkpoints to save.
@@ -27,21 +35,71 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
 /**
- * A class to handle requests to /api/contents
+ * A custom drive to store files in the browser storage.
  */
-export class Contents implements IContents {
+export class BrowserStorageDrive implements Contents.IDrive {
   /**
    * Construct a new localForage-powered contents provider
    */
-  constructor(options: Contents.IOptions) {
+  constructor(options: BrowserStorageDrive.IOptions) {
     this._localforage = options.localforage;
     this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
     this._storageDrivers = options.storageDrivers || null;
+    this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     this._ready = new PromiseDelegate();
+    this.initialize().catch(console.warn);
+  }
+
+  /**
+   * Dispose the drive.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+    this._isDisposed = true;
+    Signal.clearData(this);
+  }
+
+  /**
+   * Whether the drive is disposed.
+   */
+  get isDisposed(): boolean {
+    return this._isDisposed;
+  }
+
+  /**
+   * The name of the drive.
+   */
+  get name(): string {
+    return DRIVE_NAME;
+  }
+
+  /**
+   * The server settings of the drive.
+   */
+  get serverSettings(): ServerConnection.ISettings {
+    return this._serverSettings;
+  }
+
+  /**
+   * Signal emitted when a file operation takes place.
+   */
+  get fileChanged(): ISignal<Contents.IDrive, Contents.IChangedArgs> {
+    return this._fileChanged;
+  }
+
+  /**
+   * Get the download URL
+   */
+  async getDownloadUrl(path: string): Promise<string> {
+    throw new Error('Method not implemented.');
   }
 
   /**
    * Finish any initialization after server has started and all extensions are applied.
+   *
+   * TODO: keep private?
    */
   async initialize() {
     await this.initStorage();
@@ -138,7 +196,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the created file content when the file is created.
    */
-  async newUntitled(options?: ServerContents.ICreateOptions): Promise<IModel | null> {
+  async newUntitled(options?: Contents.ICreateOptions): Promise<IModel> {
     const path = options?.path ?? '';
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
@@ -202,11 +260,14 @@ export class Contents implements IContents {
         break;
       }
       default: {
-        const ext = options?.ext ?? '.txt';
+        let ext = options?.ext ?? '.txt';
+        if (!ext.startsWith('.')) {
+          ext = `.${ext}`;
+        }
         const counter = await this._incrementCounter('file');
         const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
 
-        let format: ServerContents.FileFormat;
+        let format: Contents.FileFormat;
         if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
@@ -234,6 +295,11 @@ export class Contents implements IContents {
 
     const key = file.path;
     await (await this.storage).setItem(key, file);
+    this._fileChanged.emit({
+      type: 'new',
+      oldValue: null,
+      newValue: file,
+    });
     return file;
   }
 
@@ -269,6 +335,13 @@ export class Contents implements IContents {
       path: toPath,
     };
     await (await this.storage).setItem(toPath, item);
+
+    this._fileChanged.emit({
+      type: 'new',
+      oldValue: null,
+      newValue: item,
+    });
+
     return item;
   }
 
@@ -280,15 +353,16 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the file content.
    */
-  async get(
-    path: string,
-    options?: ServerContents.IFetchOptions,
-  ): Promise<IModel | null> {
+  async get(path: string, options?: Contents.IFetchOptions): Promise<IModel> {
     // remove leading slash
     path = decodeURIComponent(path.replace(/^\//, ''));
 
     if (path === '') {
-      return await this._getFolder(path);
+      const folder = await this._getFolder(path);
+      if (folder === null) {
+        throw Error(`Could not find file with path ${path}`);
+      }
+      return folder;
     }
 
     const storage = await this.storage;
@@ -298,7 +372,7 @@ export class Contents implements IContents {
     const model = (item || serverItem) as IModel | null;
 
     if (!model) {
-      return null;
+      throw Error(`Could not find content with path ${path}`);
     }
 
     if (!options?.content) {
@@ -385,6 +459,12 @@ export class Contents implements IContents {
       }
     }
 
+    this._fileChanged.emit({
+      type: 'rename',
+      oldValue: { path: oldLocalPath },
+      newValue: newFile,
+    });
+
     return newFile;
   }
 
@@ -396,7 +476,7 @@ export class Contents implements IContents {
    *
    * @returns A promise which resolves with the file content model when the file is saved.
    */
-  async save(path: string, options: Partial<IModel> = {}): Promise<IModel | null> {
+  async save(path: string, options: Partial<IModel> = {}): Promise<IModel> {
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
@@ -413,7 +493,7 @@ export class Contents implements IContents {
     }
 
     if (!item) {
-      return null;
+      throw Error(`Could not find file with path ${path}`);
     }
 
     // keep a reference to the original content
@@ -506,6 +586,13 @@ export class Contents implements IContents {
     }
 
     await (await this.storage).setItem(path, item);
+
+    this._fileChanged.emit({
+      type: 'save',
+      oldValue: null,
+      newValue: item,
+    });
+
     return item;
   }
 
@@ -524,6 +611,11 @@ export class Contents implements IContents {
       (key) => key === path || key.startsWith(slashed),
     );
     await Promise.all(toDelete.map(this.forgetPath, this));
+    this._fileChanged.emit({
+      type: 'delete',
+      oldValue: { path },
+      newValue: null,
+    });
   }
 
   /**
@@ -546,7 +638,7 @@ export class Contents implements IContents {
    * @returns A promise which resolves with the new checkpoint model when the
    *   checkpoint is created.
    */
-  async createCheckpoint(path: string): Promise<ServerContents.ICheckpointModel> {
+  async createCheckpoint(path: string): Promise<Contents.ICheckpointModel> {
     const checkpoints = await this.checkpoints;
     path = decodeURIComponent(path);
     const item = await this.get(path, { content: true });
@@ -574,15 +666,12 @@ export class Contents implements IContents {
    * @returns A promise which resolves with a list of checkpoint models for
    *    the file.
    */
-  async listCheckpoints(path: string): Promise<ServerContents.ICheckpointModel[]> {
+  async listCheckpoints(path: string): Promise<Contents.ICheckpointModel[]> {
     const copies: IModel[] = (await (await this.checkpoints).getItem(path)) || [];
     return copies.filter(Boolean).map(this.normalizeCheckpoint, this);
   }
 
-  protected normalizeCheckpoint(
-    model: IModel,
-    id: number,
-  ): ServerContents.ICheckpointModel {
+  protected normalizeCheckpoint(model: IModel, id: number): Contents.ICheckpointModel {
     return { id: id.toString(), last_modified: model.last_modified };
   }
 
@@ -705,7 +794,7 @@ export class Contents implements IContents {
    */
   private async _getServerContents(
     path: string,
-    options?: ServerContents.IFetchOptions,
+    options?: Contents.IFetchOptions,
   ): Promise<IModel | null> {
     const name = PathExt.basename(path);
     const parentContents = await this._getServerDirectory(URLExt.join(path, '..'));
@@ -829,7 +918,7 @@ export class Contents implements IContents {
    *
    * @param type The file type to increment the counter for.
    */
-  private async _incrementCounter(type: ServerContents.ContentType): Promise<number> {
+  private async _incrementCounter(type: Contents.ContentType): Promise<number> {
     const counters = await this.counters;
     const current = ((await counters.getItem(type)) as number) ?? -1;
     const counter = current + 1;
@@ -838,6 +927,8 @@ export class Contents implements IContents {
   }
 
   private _serverContents = new Map<string, Map<string, IModel>>();
+  private _isDisposed = false;
+  private _fileChanged = new Signal<Contents.IDrive, Contents.IChangedArgs>(this);
   private _storageName: string = DEFAULT_STORAGE_NAME;
   private _storageDrivers: string[] | null = null;
   private _ready: PromiseDelegate<void>;
@@ -845,18 +936,30 @@ export class Contents implements IContents {
   private _counters: LocalForage | undefined;
   private _checkpoints: LocalForage | undefined;
   private _localforage: typeof localforage;
+  private _serverSettings: ServerConnection.ISettings;
 }
 
 /**
  * A namespace for contents information.
  */
-export namespace Contents {
-  export interface IOptions {
+export namespace BrowserStorageDrive {
+  /**
+   * The options used to create a BrowserStorageDrive.
+   */
+  export interface IOptions extends Drive.IOptions {
     /**
      * The name of the storage instance on e.g. IndexedDB, localStorage
      */
     storageName?: string | null;
+
+    /**
+     * The drivers to use for storage.
+     */
     storageDrivers?: string[] | null;
+
+    /**
+     * The localForage instance to use.
+     */
     localforage: typeof localforage;
   }
 }

@@ -2,27 +2,27 @@ import { Session } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { IKernels } from '@jupyterlite/kernel';
+import { IKernelStore } from '@jupyterlite/kernel';
 
 import { ArrayExt } from '@lumino/algorithm';
 
 import { UUID } from '@lumino/coreutils';
 
-import { ISessions } from './tokens';
+import { ISessionStore } from './tokens';
 
 /**
  * A class to handle requests to /api/sessions
  */
-export class Sessions implements ISessions {
+export class SessionStore implements ISessionStore {
   /**
-   * Construct a new Sessions.
+   * Construct a new SessionStore.
    *
    * @param options The instantiation options for a Sessions.
    */
-  constructor(options: Sessions.IOptions) {
-    this._kernels = options.kernels;
+  constructor(options: SessionStore.IOptions) {
+    this._kernelStore = options.kernelStore;
     // Listen for kernel removals
-    this._kernels.changed.connect((_, args) => {
+    this._kernelStore.changed.connect((_, args) => {
       switch (args.type) {
         case 'remove': {
           const kernelId = args.oldValue?.id;
@@ -87,7 +87,7 @@ export class Sessions implements ISessions {
    *
    * @param options The options to patch the session.
    */
-  async patch(options: Session.IModel): Promise<Session.IModel> {
+  async patch(options: Partial<Session.IModel>): Promise<Session.IModel> {
     const { id, path, name, kernel } = options;
     const index = this._sessions.findIndex((s) => s.id === id);
     const session = this._sessions[index];
@@ -110,7 +110,7 @@ export class Sessions implements ISessions {
           patched.kernel = session.kernel;
         }
       } else if (kernel.name) {
-        const newKernel = await this._kernels.startNew({
+        const newKernel = await this._kernelStore.startNew({
           id: UUID.uuid4(),
           name: kernel.name,
           location: PathExt.dirname(patched.path),
@@ -138,21 +138,21 @@ export class Sessions implements ISessions {
    *
    * @param options The options to start a new session.
    */
-  async startNew(options: Session.IModel): Promise<Session.IModel> {
+  async startNew(options: Session.ISessionOptions): Promise<Session.IModel> {
     const { path, name } = options;
     const running = this._sessions.find((s) => s.name === name);
     if (running) {
       return running;
     }
     const kernelName = options.kernel?.name ?? '';
-    const id = options.id ?? UUID.uuid4();
+    const id = UUID.uuid4();
     const nameOrPath = options.name ?? options.path;
     const dirname = PathExt.dirname(options.name) || PathExt.dirname(options.path);
     const hasDrive = nameOrPath.includes(':');
     const driveName = hasDrive ? nameOrPath.split(':')[0] : '';
     // add drive name if missing (top level directory)
     const location = dirname.includes(driveName) ? dirname : `${driveName}:${dirname}`;
-    const kernel = await this._kernels.startNew({
+    const kernel = await this._kernelStore.startNew({
       id,
       name: kernelName,
       location,
@@ -187,9 +187,16 @@ export class Sessions implements ISessions {
     }
     const kernelId = session.kernel?.id;
     if (kernelId) {
-      await this._kernels.shutdown(kernelId);
+      await this._kernelStore.shutdown(kernelId);
     }
     ArrayExt.removeFirstOf(this._sessions, session);
+  }
+
+  /**
+   * Shut down all sessions.
+   */
+  async shutdownAll(): Promise<void> {
+    await Promise.all(this._sessions.map((s) => this.shutdown(s.id)));
   }
 
   /**
@@ -205,22 +212,22 @@ export class Sessions implements ISessions {
     // No need to handle kernel shutdown here anymore since we're using the changed signal
   }
 
-  private _kernels: IKernels;
+  private _kernelStore: IKernelStore;
   private _sessions: Session.IModel[] = [];
   private _pendingRestarts = new Set<string>();
 }
 
 /**
- * A namespace for sessions statics.
+ * A namespace for SessionStore statics.
  */
-export namespace Sessions {
+export namespace SessionStore {
   /**
-   * The instantiation options for the sessions.
+   * The instantiation options for the session store.
    */
   export interface IOptions {
     /**
      * A reference to the kernels service.
      */
-    kernels: IKernels;
+    kernelStore: IKernelStore;
   }
 }
