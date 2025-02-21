@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.1...d4816b2f894d67ab5ff0b2ecf5207dc84d2ec7bc))
+
+### Enhancements made
+
+- Update to JupyterLab `4.4.0b0` and Notebook `7.4.0b0` [#1578](https://github.com/jupyterlite/jupyterlite/pull/1578) ([@jtpio](https://github.com/jtpio))
+- Update to Notebook 7.4.0a3 [#1574](https://github.com/jupyterlite/jupyterlite/pull/1574) ([@jtpio](https://github.com/jtpio))
+- Expose more REPL options via query string parameters [#1573](https://github.com/jupyterlite/jupyterlite/pull/1573) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Pin on `sphinx<8.2` to the fix docs build [#1580](https://github.com/jupyterlite/jupyterlite/pull/1580) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- [DOC] Update Python version in vercel/netlify docs [#1577](https://github.com/jupyterlite/jupyterlite/pull/1577) ([@yogabonito](https://github.com/yogabonito))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-02-04&to=2025-02-21&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-02-04..2025-02-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-02-04..2025-02-21&type=Issues) | [@yogabonito](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ayogabonito+updated%3A2025-02-04..2025-02-21&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.0...a299d3188e3b5eaae965a7ff9d4efdf8412b4c08))
@@ -19,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-17&to=2025-02-04&type=c))
 
 [@anutosh491](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aanutosh491+updated%3A2025-01-17..2025-02-04&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-01-17..2025-02-04&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-17..2025-02-04&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-01-17..2025-02-04&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a0
 
