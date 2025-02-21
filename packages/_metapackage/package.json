@@ -30,6 +30,7 @@
     "@jupyterlite/notebook-application-extension": "^0.6.0-alpha.2",
     "@jupyterlite/repl-extension": "^0.6.0-alpha.2",
     "@jupyterlite/server": "^0.6.0-alpha.2",
+    "@jupyterlite/services-extension": "^0.6.0-alpha.2",
     "@jupyterlite/session": "^0.6.0-alpha.2",
     "@jupyterlite/settings": "^0.6.0-alpha.2",
     "@jupyterlite/translation": "^0.6.0-alpha.2",

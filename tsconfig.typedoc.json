@@ -40,7 +40,7 @@
       "path": "./packages/server"
     },
     {
-      "path": "./packages/server-extension"
+      "path": "./packages/services-extension"
     },
     {
       "path": "./packages/session"
