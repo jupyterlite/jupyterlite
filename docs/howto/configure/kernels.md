@@ -22,7 +22,7 @@ available.
 
 ### Adding a Python kernel
 
-In the case of Python there are currently two options:
+There are currently two JupyterLite kernels for Python:
 
 - `jupyterlite-pyodide-kernel`: a Python kernel based on
   [Pyodide](https://pyodide.org/en/stable/), a Python distribution running in the
