@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 
 import { test } from '@jupyterlab/galata';
+import { Dialog } from '@jupyterlab/apputils';
 
 import { expect } from '@playwright/test';
 
@@ -113,7 +114,28 @@ test.describe('Contents Tests', () => {
     expect(output2![0]).toBe('4');
   });
 
-  test('Create a new notebook and delete it', async ({ page }) => {
+  // These tests rely on JupyterLab's behavior of using a 404's response body as the file contents.  In this
+  // case the 404 is from the test server.
+  // We can't mock a response with page.route() because Playwright doesn't support intercepting the network
+  // for a service worker
+  const names = ['test file.txt', 'test%20file.txt'];
+  for (const name of names) {
+    const url = '/' + name;
+    test(`Open a URL from ${url}`, async ({ page }) => {
+      await page.menu.clickMenuItem('File>Open from URL…');
+
+      await page.locator('#jp-dialog-input-id').fill(url);
+      await page.locator('.jp-mod-accept').click();
+      await page.filebrowser.refresh();
+      expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+
+      await page.filebrowser.open(name);
+
+      // TODO: assert contents somehow?
+    });
+  }
+
+  test('Create a new notebook from a URL', async ({ page }) => {
     const name = await page.notebook.createNew();
     if (!name) {
       throw new Error('Notebook name is undefined');

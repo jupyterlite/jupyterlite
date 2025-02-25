@@ -120,7 +120,19 @@ export class JupyterLiteServer extends Application<never> {
     if (!(req instanceof Request)) {
       throw Error('Request info is not a Request');
     }
-    return this._router.route(req);
+    const debug = new URL(req.url).pathname.startsWith('/api/contents');
+    if (debug) {
+      const req2 = req.clone();
+      const json = await req2.text();
+      console.debug('>!! fetch', req2, json);
+    }
+    const res = await this._router.route(req);
+    if (debug) {
+      const res2 = res.clone();
+      const json = await res2.json();
+      console.debug('>!! >!!', res2, json);
+    }
+    return res;
   }
 
   /**
