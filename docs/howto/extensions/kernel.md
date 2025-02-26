@@ -1,12 +1,10 @@
 # Create a custom kernel
 
 ```{hint}
-We recommend checking out how to create a server extension first: [](./server.md)
+We recommend checking out how to create a JupyterLab extension first: [](./frontend.md)
 ```
 
 ## Bootstrap the server extension
-
-Creating a new kernel is very similar to creating a [server extension](./server.md).
 
 Once you have your server extension set up, add the following plugin to register the
 kernel:
