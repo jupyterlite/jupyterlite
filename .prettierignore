@@ -27,3 +27,6 @@ CHANGELOG.md
 
 # UI tests
 ui-tests/ui-tests-app
+
+# Virtual environments
+.venv
