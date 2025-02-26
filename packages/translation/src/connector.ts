@@ -18,7 +18,10 @@ export class LiteTranslatorConnector
   implements ITranslatorConnector
 {
   async fetch(opts: { language: string }): Promise<Language> {
-    const { language: locale } = opts;
+    const { language } = opts;
+
+    // normalize the default locale
+    const locale = language === 'default' ? 'en' : language;
 
     const apiURL = URLExt.join(
       PageConfig.getBaseUrl(),
