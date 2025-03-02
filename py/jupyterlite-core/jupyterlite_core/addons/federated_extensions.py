@@ -29,7 +29,9 @@ class FederatedExtensionAddon(BaseAddon):
     __all__ = ["pre_build", "post_build", "post_init"]
 
     # build self.labextensions_paths
-    __prefixes = site.PREFIXES.copy() # Copy to be able to modify array without possibility for side effects
+    __prefixes = (
+        site.PREFIXES.copy()
+    ) # Copy to be able to modify array without possibility for side effects
     if site.ENABLE_USER_SITE:
         __prefixes.append(site.USER_BASE)
     labextensions_paths = [Path(prefix) / SHARE_LABEXTENSIONS for prefix in __prefixes]
