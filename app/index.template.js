@@ -35,6 +35,7 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 export async function main() {
+  const allPlugins = [];
   const pluginsToRegister = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
@@ -91,6 +92,7 @@ export async function main() {
       ) {
         continue;
       }
+      allPlugins.push(plugin);
       yield plugin;
     }
   }
@@ -185,7 +187,8 @@ export async function main() {
   // create a full-blown JupyterLab frontend
   const app = new {{ appClassName }}({
     mimeExtensions,
-    serviceManager
+    serviceManager,
+    availablePlugins: allPlugins
   });
   app.name = PageConfig.getOption('appName') || 'JupyterLite';
 

@@ -3674,7 +3674,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/pluginmanager@npm:^4.4.0-beta.0":
+"@jupyterlab/pluginmanager@npm:^4.4.0-beta.0, @jupyterlab/pluginmanager@npm:~4.4.0-beta.0":
   version: 4.4.0-beta.0
   resolution: "@jupyterlab/pluginmanager@npm:4.4.0-beta.0"
   dependencies:
@@ -4608,6 +4608,7 @@ __metadata:
     "@jupyterlab/filebrowser": ~4.4.0-beta.0
     "@jupyterlab/help-extension": ~4.4.0-beta.0
     "@jupyterlab/mainmenu": ~4.4.0-beta.0
+    "@jupyterlab/pluginmanager": ~4.4.0-beta.0
     "@jupyterlab/services": ~7.4.0-beta.0
     "@jupyterlab/settingregistry": ~4.4.0-beta.0
     "@jupyterlab/translation": ~4.4.0-beta.0
