@@ -36,9 +36,11 @@ export class LitePluginListModel extends PluginListModel {
       }
       return {
         ...plugin,
+        tokenLabel,
+        // keep all plugins locked and enabled for now until there is
+        // a way to enable/disable plugins in JupyterLite
         locked: true,
         enabled: true,
-        tokenLabel,
       };
     });
   }
