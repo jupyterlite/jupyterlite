@@ -30,10 +30,15 @@ export class LitePluginListModel extends PluginListModel {
   constructor(options: PluginListModel.IOptions) {
     super(options);
     this._availablePlugins = options.pluginData.availablePlugins.map((plugin) => {
+      let tokenLabel = plugin.provides ? plugin.provides.name.split(':')[1] : undefined;
+      if (plugin.provides && !tokenLabel) {
+        tokenLabel = plugin.provides.name;
+      }
       return {
         ...plugin,
         locked: true,
         enabled: true,
+        tokenLabel,
       };
     });
   }
