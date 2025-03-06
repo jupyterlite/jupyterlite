@@ -71,7 +71,7 @@ export class LitePluginListModel extends PluginListModel {
  * A plugin for managing status of other plugins.
  */
 export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
-  id: '@jupyterlite/application-extension:pluginmanager',
+  id: '@jupyterlite/application-extension:plugin-manager',
   description: 'Plugin manager viewer',
   autoStart: true,
   optional: [ITranslator, ICommandPalette],
@@ -83,6 +83,8 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
   ): IPluginManager => {
     if (!(app instanceof JupyterLab)) {
       // only activate in JupyterLab
+      // TODO: require JupyterLab.IInfo instead when the upstream PR is merged and released?
+      // https://github.com/jupyterlab/jupyterlab/pull/17367
       return {
         open: async () => {
           // eslint-disable-next-line no-console
@@ -91,11 +93,11 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
       };
     }
 
-    const { commands, shell } = app;
+    const { commands, serviceManager, shell } = app;
+
     translator = translator ?? nullTranslator;
     const trans = translator.load('jupyterlab');
 
-    // Translation strings.
     const category = trans.__('Plugin Manager');
     const widgetLabel = trans.__('Advanced Plugin Manager');
 
@@ -106,16 +108,13 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
 
     const availablePlugins = app.info.availablePlugins;
 
-    /**
-     * Create a MainAreaWidget for Plugin Manager.
-     */
     function createWidget(args?: PluginListModel.IConfigurableState) {
       const model = new LitePluginListModel({
         ...args,
         pluginData: {
           availablePlugins,
         },
-        serverSettings: app.serviceManager.serverSettings,
+        serverSettings: serviceManager.serverSettings,
         extraLockedPlugins: [pluginManagerPlugin.id],
         translator: translator ?? nullTranslator,
       });
@@ -130,7 +129,6 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
       return main;
     }
 
-    // Register commands.
     commands.addCommand(CommandIDs.open, {
       label: widgetLabel,
       execute: (args) => {
