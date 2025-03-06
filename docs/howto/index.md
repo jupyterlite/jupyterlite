@@ -78,7 +78,6 @@ more features and plugins, such as frontend extensions and new kernels.
 :maxdepth: 1
 
 extensions/frontend
-extensions/server
 extensions/kernel
 extensions/cli-addons
 ```

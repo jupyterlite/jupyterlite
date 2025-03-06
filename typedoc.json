@@ -12,7 +12,7 @@
     "packages/repl-extension",
     "packages/notebook-application-extension",
     "packages/server",
-    "packages/server-extension",
+    "packages/services-extension",
     "packages/session",
     "packages/settings",
     "packages/translation",

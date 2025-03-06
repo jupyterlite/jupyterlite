@@ -16,7 +16,7 @@ import { Mutex } from 'async-mutex';
 
 import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
 
-import { IKernel, IKernels, IKernelSpecs } from './tokens';
+import { FALLBACK_KERNEL, IKernel, IKernelStore, IKernelSpecs } from './tokens';
 
 /**
  * Use the default kernel wire protocol.
@@ -27,15 +27,15 @@ const KERNEL_WEBSOCKET_PROTOCOL =
 /**
  * A class to handle requests to /api/kernels
  */
-export class Kernels implements IKernels {
+export class KernelStore implements IKernelStore {
   /**
    * Construct a new Kernels
    *
    * @param options The instantiation options
    */
-  constructor(options: Kernels.IOptions) {
-    const { kernelspecs } = options;
-    this._kernelspecs = kernelspecs;
+  constructor(options: KernelStore.IOptions) {
+    const { kernelSpecs } = options;
+    this._kernelspecs = kernelSpecs;
     // Forward the changed signal from _kernels
     this._kernels.changed.connect((_, args) => {
       this._changed.emit(args);
@@ -54,13 +54,14 @@ export class Kernels implements IKernels {
    *
    * @param options The kernel start options.
    */
-  async startNew(options: Kernels.IKernelOptions): Promise<Kernel.IModel> {
+  async startNew(options: KernelStore.IKernelOptions): Promise<Kernel.IModel> {
     const { id, name, location } = options;
 
-    const factory = this._kernelspecs.factories.get(name);
+    const kernelName = name ?? FALLBACK_KERNEL;
+    const factory = this._kernelspecs.factories.get(kernelName);
     // bail if there is no factory associated with the requested kernel
     if (!factory) {
-      return { id, name };
+      throw Error(`No factory for kernel ${kernelName}`);
     }
 
     // create a synchronization mechanism to allow only one message
@@ -128,7 +129,7 @@ export class Kernels implements IKernels {
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = URLExt.join(
-      Kernels.WS_BASE_URL,
+      KernelStore.WS_BASE_URL,
       KernelAPI.KERNEL_SERVICE_URL,
       encodeURIComponent(kernelId),
       'channels',
@@ -165,8 +166,8 @@ export class Kernels implements IKernels {
     const kernel = await factory({
       id: kernelId,
       sendMessage,
-      name,
-      location,
+      name: kernelName,
+      location: location ?? '',
     });
 
     this._kernels.set(kernelId, kernel);
@@ -242,6 +243,15 @@ export class Kernels implements IKernels {
   }
 
   /**
+   * Shut down all kernels.
+   */
+  async shutdownAll(): Promise<void> {
+    this._kernels.keys().forEach((id) => {
+      this.shutdown(id);
+    });
+  }
+
+  /**
    * Get a kernel by id
    */
   async get(id: string): Promise<IKernel | undefined> {
@@ -258,7 +268,7 @@ export class Kernels implements IKernels {
 /**
  * A namespace for Kernels statics.
  */
-export namespace Kernels {
+export namespace KernelStore {
   /**
    * Options to create a new Kernels.
    */
@@ -266,7 +276,7 @@ export namespace Kernels {
     /**
      * The kernel specs service.
      */
-    kernelspecs: IKernelSpecs;
+    kernelSpecs: IKernelSpecs;
   }
 
   /**
@@ -276,17 +286,17 @@ export namespace Kernels {
     /**
      * The kernel id.
      */
-    id: string;
+    id?: string;
 
     /**
      * The kernel name.
      */
-    name: string;
+    name?: string;
 
     /**
      * The location in the virtual filesystem from which the kernel was started.
      */
-    location: string;
+    location?: string;
   }
 
   /**
