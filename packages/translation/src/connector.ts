@@ -20,8 +20,13 @@ export class LiteTranslatorConnector
   async fetch(opts: { language: string }): Promise<Language> {
     const { language } = opts;
 
-    // normalize the default locale
-    const locale = language === 'default' ? 'en' : language;
+    // normalize the requested locale
+    let locale = language;
+    if (language === 'default') {
+      locale = 'en';
+    } else if (language === '') {
+      locale = ALL;
+    }
 
     const apiURL = URLExt.join(
       PageConfig.getBaseUrl(),

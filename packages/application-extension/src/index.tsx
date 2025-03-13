@@ -35,10 +35,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
 
-import {
-  LiteTranslationManager,
-  LiteTranslatorConnector,
-} from '@jupyterlite/translation';
+import { LiteTranslatorConnector } from '@jupyterlite/translation';
 
 import {
   BroadcastChannelWrapper,
@@ -669,53 +666,6 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
   },
 };
 
-/**
- * The main translator plugin.
- *
- * TODO: remove when the upstream PR is merged and released:
- * https://github.com/jupyterlab/jupyterlab/pull/17325
- */
-const translator: JupyterFrontEndPlugin<ITranslator> = {
-  id: '@jupyterlite/application-extension:translator',
-  description: 'Provides the application translation object.',
-  autoStart: true,
-  requires: [JupyterFrontEnd.IPaths, ISettingRegistry],
-  optional: [ILabShell, ITranslatorConnector],
-  provides: ITranslator,
-  activate: async (
-    app: JupyterFrontEnd,
-    paths: JupyterFrontEnd.IPaths,
-    settings: ISettingRegistry,
-    labShell: ILabShell | null,
-    connector: ITranslatorConnector | null,
-  ) => {
-    const pluginId = '@jupyterlab/translation-extension:plugin';
-    const setting = await settings.load(pluginId);
-    const currentLocale: string = setting.get('locale').composite as string;
-    let stringsPrefix: string = setting.get('stringsPrefix').composite as string;
-    const displayStringsPrefix: boolean = setting.get('displayStringsPrefix')
-      .composite as boolean;
-    stringsPrefix = displayStringsPrefix ? stringsPrefix : '';
-    const serverSettings = app.serviceManager.serverSettings;
-    const translationManager = new LiteTranslationManager(
-      paths.urls.translations,
-      stringsPrefix,
-      serverSettings,
-      connector ?? undefined,
-    );
-    await translationManager.fetch(currentLocale);
-
-    // Set translator to UI
-    if (labShell) {
-      labShell.translator = translationManager;
-    }
-
-    Dialog.translator = translationManager;
-
-    return translationManager;
-  },
-};
-
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
@@ -729,7 +679,6 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   sessionContextPatch,
   shareFile,
   translatorConnector,
-  translator,
 ];
 
 export default plugins;
