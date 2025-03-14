@@ -2,18 +2,19 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  IRouter,
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd,
   ILabShell,
+  IRouter,
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 
 import {
   Clipboard,
-  ICommandPalette,
   Dialog,
-  showDialog,
+  ICommandPalette,
+  ILicensesClient,
   SessionContext,
+  showDialog,
 } from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
@@ -35,16 +36,18 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
 
-import { LiteTranslatorConnector } from '@jupyterlite/translation';
+import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import {
   BroadcastChannelWrapper,
   IBroadcastChannelWrapper,
 } from '@jupyterlite/contents';
 
+import { LiteLicensesClient } from '@jupyterlite/licenses';
+
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
 
-import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { LiteTranslatorConnector } from '@jupyterlite/translation';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -351,6 +354,18 @@ const emscriptenFileSystemPlugin: JupyterFrontEndPlugin<IBroadcastChannelWrapper
     }
 
     return broadcaster;
+  },
+};
+
+/**
+ * The client for fetching licenses data.
+ */
+const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
+  id: '@jupyterlite/application-extension:licenses-client',
+  autoStart: true,
+  provides: ILicensesClient,
+  activate: (app: JupyterFrontEnd): ILicensesClient => {
+    return new LiteLicensesClient();
   },
 };
 
@@ -670,6 +685,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
   emscriptenFileSystemPlugin,
+  licensesClient,
   liteLogo,
   lspConnectionManager,
   notifyCommands,

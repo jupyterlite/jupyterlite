@@ -4655,6 +4655,7 @@ __metadata:
     "@jupyterlab/translation": ~4.4.0-beta.1
     "@jupyterlab/ui-components": ~4.4.0-beta.1
     "@jupyterlite/contents": ^0.6.0-alpha.2
+    "@jupyterlite/licenses": ^0.6.0-alpha.2
     "@jupyterlite/server": ^0.6.0-alpha.2
     "@jupyterlite/translation": ^0.6.0-alpha.2
     "@jupyterlite/ui-components": ^0.6.0-alpha.2
@@ -4665,7 +4666,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4689,7 +4690,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4712,7 +4713,7 @@ __metadata:
     mime: ^3.0.0
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4724,7 +4725,7 @@ __metadata:
     "@lumino/coreutils": ^2.2.0
     "@lumino/widgets": ^2.6.0
     rimraf: ~5.0.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4748,7 +4749,7 @@ __metadata:
     mock-socket: ^9.3.1
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4756,10 +4757,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/licenses@workspace:packages/licenses"
   dependencies:
+    "@jupyterlab/apputils": ~4.5.0-beta.1
     "@jupyterlab/coreutils": ~6.4.0-beta.1
     "@jupyterlite/types": ^0.6.0-alpha.2
     rimraf: ~5.0.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4772,7 +4774,7 @@ __metadata:
     localforage: ^1.9.0
     localforage-memoryStorageDriver: ^0.9.2
     rimraf: ~5.0.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4795,7 +4797,7 @@ __metadata:
     "@jupyterlite/settings": ^0.6.0-alpha.2
     "@jupyterlite/translation": ^0.6.0-alpha.2
     "@jupyterlite/ui-components": ^0.6.0-alpha.2
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4814,7 +4816,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4835,7 +4837,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4863,7 +4865,7 @@ __metadata:
     svgo: ^3.0.1
     typedoc: ~0.23.21
     typedoc-plugin-markdown: ~3.14.0
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4894,7 +4896,7 @@ __metadata:
     mock-socket: ^9.3.1
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4909,7 +4911,7 @@ __metadata:
     "@jupyterlite/localforage": ^0.6.0-alpha.2
     "@jupyterlite/session": ^0.6.0-alpha.2
     rimraf: ~5.0.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4929,7 +4931,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4950,7 +4952,7 @@ __metadata:
     localforage: ^1.9.0
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4968,7 +4970,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4978,7 +4980,7 @@ __metadata:
   dependencies:
     "@lumino/coreutils": ^2.2.0
     rimraf: ~5.0.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 
@@ -4995,7 +4997,7 @@ __metadata:
     jest: ^29.6.2
     rimraf: ~5.0.1
     ts-jest: ^29.1.1
-    typescript: ~5.1.6
+    typescript: ~5.5.4
   languageName: unknown
   linkType: soft
 

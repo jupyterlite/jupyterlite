@@ -314,6 +314,7 @@
       "@jupyterlab/application-extension:logo",
       "@jupyterlab/application-extension:main",
       "@jupyterlab/application-extension:tree-resolver",
+      "@jupyterlab/apputils-extension:licenses-client",
       "@jupyterlab/apputils-extension:announcements",
       "@jupyterlab/apputils-extension:resolver",
       "@jupyterlab/docmanager-extension:download",

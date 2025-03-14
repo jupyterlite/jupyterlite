@@ -31,12 +31,14 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.4.0-beta.1"
+    "@jupyterlab/apputils": "~4.5.0-beta.1",
+    "@jupyterlab/coreutils": "~6.4.0-beta.1",
+    "@jupyterlab/services": "~7.4.0-beta.1"
   },
   "devDependencies": {
     "@jupyterlite/types": "^0.6.0-alpha.2",
     "rimraf": "~5.0.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.5.4"
   },
   "publishConfig": {
     "access": "public"
