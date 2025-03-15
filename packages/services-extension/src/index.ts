@@ -22,6 +22,7 @@ import {
   ServerConnection,
   ServiceManagerPlugin,
   Session,
+  SessionManager,
   Setting,
   User,
   UserManager,
@@ -48,7 +49,7 @@ import { WebSocket } from 'mock-socket';
 
 import { LocalEventManager } from './event';
 
-import { ISessionStore, LiteSessionManager, SessionStore } from '@jupyterlite/session';
+import { LiteSessionClient } from '@jupyterlite/session';
 
 /**
  * The default drive plugin.
@@ -244,33 +245,22 @@ const sessionManagerPlugin: ServiceManagerPlugin<Session.IManager> = {
   description: 'The session manager plugin.',
   autoStart: true,
   provides: ISessionManager,
-  requires: [IKernelManager, ISessionStore],
+  requires: [IKernelManager, IKernelStore],
   optional: [IServerSettings],
   activate: (
     _: null,
     kernelManager: Kernel.IManager,
-    sessionStore: ISessionStore,
+    kernelStore: IKernelStore,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Session.IManager => {
-    return new LiteSessionManager({
+    const sessionAPIClient = new LiteSessionClient({
+      kernelStore,
+    });
+    return new SessionManager({
       kernelManager,
       serverSettings,
-      sessionStore,
+      sessionAPIClient,
     });
-  },
-};
-
-/**
- * The session store plugin.
- */
-const sessionStorePlugin: ServiceManagerPlugin<ISessionStore> = {
-  id: '@jupyterlite/services-extension:session-store',
-  description: 'The session store plugin.',
-  autoStart: true,
-  provides: ISessionStore,
-  requires: [IKernelStore],
-  activate: (_: null, kernelStore: IKernelStore): ISessionStore => {
-    return new SessionStore({ kernelStore });
   },
 };
 
@@ -336,7 +326,6 @@ export default [
   nbConvertManagerPlugin,
   serverSettingsPlugin,
   sessionManagerPlugin,
-  sessionStorePlugin,
   settingsPlugin,
   userManagerPlugin,
 ];

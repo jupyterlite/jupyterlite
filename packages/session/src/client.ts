@@ -1,4 +1,4 @@
-import { Session } from '@jupyterlab/services';
+import { ServerConnection, Session } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
@@ -8,18 +8,22 @@ import { ArrayExt } from '@lumino/algorithm';
 
 import { UUID } from '@lumino/coreutils';
 
-import { ISessionStore } from './tokens';
+import { ISessionAPIClient } from '@jupyterlab/services/lib/session/session';
+
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
 
 /**
  * A class to handle requests to /api/sessions
  */
-export class SessionStore implements ISessionStore {
+export class LiteSessionClient implements ISessionAPIClient {
   /**
    * Construct a new SessionStore.
    *
    * @param options The instantiation options for a Sessions.
    */
-  constructor(options: SessionStore.IOptions) {
+  constructor(options: LiteSessionClient.IOptions) {
     this._kernelStore = options.kernelStore;
     // Listen for kernel removals
     this._kernelStore.changed.connect((_, args) => {
@@ -59,11 +63,18 @@ export class SessionStore implements ISessionStore {
   }
 
   /**
+   * The server settings for the session store.
+   */
+  get serverSettings(): ServerConnection.ISettings {
+    return ServerConnection.makeSettings();
+  }
+
+  /**
    * Get a session by id.
    *
    * @param id The id of the session.
    */
-  async get(id: string): Promise<Session.IModel> {
+  async getModel(id: string): Promise<Session.IModel> {
     const session = this._sessions.find((s) => s.id === id);
     if (!session) {
       throw Error(`Session ${id} not found`);
@@ -74,7 +85,7 @@ export class SessionStore implements ISessionStore {
   /**
    * List the running sessions
    */
-  async list(): Promise<Session.IModel[]> {
+  async listRunning(): Promise<Session.IModel[]> {
     return this._sessions;
   }
 
@@ -87,7 +98,7 @@ export class SessionStore implements ISessionStore {
    *
    * @param options The options to patch the session.
    */
-  async patch(options: Partial<Session.IModel>): Promise<Session.IModel> {
+  async update(options: DeepPartial<Session.IModel>): Promise<Session.IModel> {
     const { id, path, name, kernel } = options;
     const index = this._sessions.findIndex((s) => s.id === id);
     const session = this._sessions[index];
@@ -218,11 +229,11 @@ export class SessionStore implements ISessionStore {
 }
 
 /**
- * A namespace for SessionStore statics.
+ * A namespace for LiteSessionClient statics.
  */
-export namespace SessionStore {
+export namespace LiteSessionClient {
   /**
-   * The instantiation options for the session store.
+   * The instantiation options for the session client.
    */
   export interface IOptions {
     /**
