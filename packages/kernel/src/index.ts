@@ -5,5 +5,5 @@ export * from './base';
 export * from './manager';
 export * from './kernelspecs';
 export * from './kernelspecsmanager';
-export * from './store';
+export * from './client';
 export * from './tokens';

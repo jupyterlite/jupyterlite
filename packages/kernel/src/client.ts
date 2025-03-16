@@ -2,7 +2,12 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IObservableMap, ObservableMap } from '@jupyterlab/observables';
 
-import { KernelAPI, Kernel, KernelMessage } from '@jupyterlab/services';
+import {
+  KernelAPI,
+  Kernel,
+  KernelMessage,
+  ServerConnection,
+} from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
@@ -16,7 +21,7 @@ import { Mutex } from 'async-mutex';
 
 import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
 
-import { FALLBACK_KERNEL, IKernel, IKernelStore, IKernelSpecs } from './tokens';
+import { FALLBACK_KERNEL, IKernel, IKernelSpecs } from './tokens';
 
 /**
  * Use the default kernel wire protocol.
@@ -27,19 +32,23 @@ const KERNEL_WEBSOCKET_PROTOCOL =
 /**
  * A class to handle requests to /api/kernels
  */
-export class KernelStore implements IKernelStore {
+export class LiteKernelClient implements Kernel.IKernelAPIClient {
   /**
    * Construct a new Kernels
    *
    * @param options The instantiation options
    */
-  constructor(options: KernelStore.IOptions) {
+  constructor(options: KernelClient.IOptions) {
     const { kernelSpecs } = options;
     this._kernelspecs = kernelSpecs;
     // Forward the changed signal from _kernels
     this._kernels.changed.connect((_, args) => {
       this._changed.emit(args);
     });
+  }
+
+  get serverSettings() {
+    return ServerConnection.makeSettings();
   }
 
   /**
@@ -54,7 +63,7 @@ export class KernelStore implements IKernelStore {
    *
    * @param options The kernel start options.
    */
-  async startNew(options: KernelStore.IKernelOptions): Promise<Kernel.IModel> {
+  async startNew(options: KernelClient.IKernelOptions): Promise<Kernel.IModel> {
     const { id, name, location } = options;
 
     const kernelName = name ?? FALLBACK_KERNEL;
@@ -129,7 +138,7 @@ export class KernelStore implements IKernelStore {
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = URLExt.join(
-      KernelStore.WS_BASE_URL,
+      KernelClient.WS_BASE_URL,
       KernelAPI.KERNEL_SERVICE_URL,
       encodeURIComponent(kernelId),
       'channels',
@@ -213,20 +222,27 @@ export class KernelStore implements IKernelStore {
    *
    * @param kernelId The kernel id.
    */
-  async restart(kernelId: string): Promise<Kernel.IModel> {
+  async restart(kernelId: string): Promise<void> {
     const kernel = this._kernels.get(kernelId);
     if (!kernel) {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
     const { id, name, location } = kernel;
     kernel.dispose();
-    return this.startNew({ id, name, location });
+    await this.startNew({ id, name, location });
+  }
+
+  /**
+   * Interrupt a kernel.
+   */
+  async interrupt(kernelId: string): Promise<void> {
+    // no-op
   }
 
   /**
    * List the running kernels.
    */
-  async list(): Promise<Kernel.IModel[]> {
+  async listRunning(): Promise<Kernel.IModel[]> {
     return [...this._kernels.values()].map((kernel) => ({
       id: kernel.id,
       name: kernel.name,
@@ -254,7 +270,7 @@ export class KernelStore implements IKernelStore {
   /**
    * Get a kernel by id
    */
-  async get(id: string): Promise<IKernel | undefined> {
+  async getModel(id: string): Promise<IKernel | undefined> {
     return this._kernels.get(id);
   }
 
@@ -268,7 +284,7 @@ export class KernelStore implements IKernelStore {
 /**
  * A namespace for Kernels statics.
  */
-export namespace KernelStore {
+export namespace KernelClient {
   /**
    * Options to create a new Kernels.
    */

@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import { Kernel, KernelConnection, KernelSpec } from '@jupyterlab/services';
-import { IKernelSpecs, IKernelStore } from './tokens';
+import { IKernelSpecs } from './tokens';
 
 /**
  * Custom KernelConnection class for use in JupyterLite.
@@ -18,7 +18,6 @@ export class LiteKernelConnection
   constructor(options: LiteKernelConnection.IOptions) {
     super(options);
     this._kernelSpecs = options.kernelSpecs;
-    this._kernelStore = options.kernelStore;
   }
 
   /**
@@ -47,50 +46,12 @@ export class LiteKernelConnection
       // handleComms defaults to false since that is safer
       handleComms: false,
       kernelSpecs: this._kernelSpecs,
-      kernelStore: this._kernelStore,
+      kernelAPIClient: this['_kernelAPIClient'],
       ...options,
     });
   }
 
-  /**
-   * Interrupt a kernel.
-   */
-  async interrupt(): Promise<void> {
-    this.hasPendingInput = false;
-    if (this.status === 'dead') {
-      throw new Error('Kernel is dead');
-    }
-    // TODO: support interrupts
-  }
-
-  /**
-   * Request a kernel restart.
-   */
-  async restart(): Promise<void> {
-    if (this.status === 'dead') {
-      throw new Error('Kernel is dead');
-    }
-    // TODO: how to avoid accessing private methods and properties?
-    this['_updateStatus']('restarting');
-    this['_clearKernelState']();
-    this['_kernelSession'] = '_RESTARTING_';
-    await this._kernelStore.restart(this.id);
-    await this.reconnect();
-    this.hasPendingInput = false;
-  }
-
-  /**
-   * Shutdown a kernel.
-   */
-  async shutdown(): Promise<void> {
-    if (this.status !== 'dead') {
-      await this._kernelStore.shutdown(this.id);
-    }
-    this.handleShutdown();
-  }
-
   private _kernelSpecs: IKernelSpecs;
-  private _kernelStore: IKernelStore;
 }
 
 /**
@@ -105,10 +66,5 @@ export namespace LiteKernelConnection {
      * The kernel specs.
      */
     kernelSpecs: IKernelSpecs;
-
-    /**
-     * The kernel store.
-     */
-    kernelStore: IKernelStore;
   }
 }

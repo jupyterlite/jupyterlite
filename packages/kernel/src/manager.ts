@@ -5,11 +5,13 @@ import { BaseManager, Kernel, KernelManager } from '@jupyterlab/services';
 
 import { LiteKernelConnection } from './connection';
 
-import { IKernelSpecs, IKernelStore } from './tokens';
+import { IKernelSpecs, IKernelClient } from './tokens';
 
 /**
  * A custom kernel manager for JupyterLite, to be able to override the default
  * `KernelConnection` and use of the Jupyter Server Kernel API.
+ *
+ * TODO: remove the entire the file after https://github.com/jupyterlab/jupyterlab/pull/17395.
  */
 export class LiteKernelManager extends KernelManager implements Kernel.IManager {
   /**
@@ -18,10 +20,13 @@ export class LiteKernelManager extends KernelManager implements Kernel.IManager 
    * @param options The instantiation options
    */
   constructor(options: LiteKernelManager.IOptions) {
-    super(options);
-    const { kernelSpecs, kernelStore } = options;
-    this._kernelspecs = kernelSpecs;
-    this._kernelStore = kernelStore;
+    super({
+      ...options,
+      kernelAPIClient: options.kernelClient,
+    });
+    const { kernelSpecs, kernelClient } = options;
+    this._kernelSpecs = kernelSpecs;
+    this._kernelClient = kernelClient;
   }
 
   /**
@@ -46,8 +51,8 @@ export class LiteKernelManager extends KernelManager implements Kernel.IManager 
       handleComms,
       ...options,
       serverSettings: this.serverSettings,
-      kernelSpecs: this._kernelspecs,
-      kernelStore: this._kernelStore,
+      kernelSpecs: this._kernelSpecs,
+      kernelAPIClient: this._kernelClient,
     });
     this['_onStarted'](kernelConnection);
     void this.refreshRunning().catch(() => {
@@ -56,99 +61,8 @@ export class LiteKernelManager extends KernelManager implements Kernel.IManager 
     return kernelConnection;
   }
 
-  /**
-   * Start a new kernel.
-   *
-   * @param createOptions - The kernel creation options
-   *
-   * @param connectOptions - The kernel connection options
-   *
-   * @returns A promise that resolves with the kernel connection.
-   *
-   * #### Notes
-   * The manager `serverSettings` will be always be used.
-   */
-  async startNew(
-    createOptions: Kernel.IKernelOptions = {},
-    connectOptions: Omit<
-      Kernel.IKernelConnection.IOptions,
-      'model' | 'serverSettings'
-    > = {},
-  ): Promise<Kernel.IKernelConnection> {
-    const model = await this._kernelStore.startNew(createOptions);
-    return this.connectTo({
-      ...connectOptions,
-      model,
-    });
-  }
-
-  /**
-   * Shut down a kernel by id.
-   */
-  async shutdown(id: string): Promise<void> {
-    await this._kernelStore.shutdown(id);
-    await this.refreshRunning();
-  }
-
-  /**
-   * Shut down all kernels.
-   */
-  async shutdownAll(): Promise<void> {
-    await this._kernelStore.shutdownAll();
-    await this.refreshRunning();
-  }
-
-  /**
-   * Execute a request to the server to poll running kernels and update state.
-   *
-   * TODO: how to avoid duplicating upstream logic?
-   */
-  protected async requestRunning(): Promise<void> {
-    if (this.isDisposed) {
-      return;
-    }
-
-    const models = await this._kernelStore.list();
-
-    const _models = this['_models'];
-
-    if (
-      _models.size === models.length &&
-      models.every((model) => {
-        const existing = _models.get(model.id);
-        if (!existing) {
-          return false;
-        }
-        return (
-          existing.connections === model.connections &&
-          existing.execution_state === model.execution_state &&
-          existing.last_activity === model.last_activity &&
-          existing.name === model.name &&
-          existing.reason === model.reason &&
-          existing.traceback === model.traceback
-        );
-      })
-    ) {
-      // Identical models list (presuming models does not contain duplicate
-      // ids), so just return
-      return;
-    }
-
-    this['_models'] = new Map(models.map((x) => [x.id, x]));
-
-    // For any kernel connection to a kernel that doesn't exist, notify it of
-    // the shutdown.
-    this['_kernelConnections'].forEach((kc: LiteKernelConnection) => {
-      if (!this['_models'].has(kc.id)) {
-        kc.handleShutdown();
-      }
-    });
-
-    this['_runningChanged'].emit(models);
-  }
-
-  private _kernelspecs: IKernelSpecs;
-  private _kernelStore: IKernelStore;
+  private _kernelSpecs: IKernelSpecs;
+  private _kernelClient: IKernelClient;
 }
 
 /**
@@ -165,8 +79,8 @@ export namespace LiteKernelManager {
     kernelSpecs: IKernelSpecs;
 
     /**
-     * The kernel store
+     * The kernel client.
      */
-    kernelStore: IKernelStore;
+    kernelClient: IKernelClient;
   }
 }

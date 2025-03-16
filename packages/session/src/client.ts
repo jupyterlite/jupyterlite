@@ -2,7 +2,7 @@ import { ServerConnection, Session } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { IKernelStore } from '@jupyterlite/kernel';
+import { LiteKernelClient } from '@jupyterlite/kernel';
 
 import { ArrayExt } from '@lumino/algorithm';
 
@@ -24,9 +24,9 @@ export class LiteSessionClient implements ISessionAPIClient {
    * @param options The instantiation options for a Sessions.
    */
   constructor(options: LiteSessionClient.IOptions) {
-    this._kernelStore = options.kernelStore;
+    this._kernelClient = options.kernelClient;
     // Listen for kernel removals
-    this._kernelStore.changed.connect((_, args) => {
+    this._kernelClient.changed.connect((_, args) => {
       switch (args.type) {
         case 'remove': {
           const kernelId = args.oldValue?.id;
@@ -121,7 +121,7 @@ export class LiteSessionClient implements ISessionAPIClient {
           patched.kernel = session.kernel;
         }
       } else if (kernel.name) {
-        const newKernel = await this._kernelStore.startNew({
+        const newKernel = await this._kernelClient.startNew({
           id: UUID.uuid4(),
           name: kernel.name,
           location: PathExt.dirname(patched.path),
@@ -163,7 +163,7 @@ export class LiteSessionClient implements ISessionAPIClient {
     const driveName = hasDrive ? nameOrPath.split(':')[0] : '';
     // add drive name if missing (top level directory)
     const location = dirname.includes(driveName) ? dirname : `${driveName}:${dirname}`;
-    const kernel = await this._kernelStore.startNew({
+    const kernel = await this._kernelClient.startNew({
       id,
       name: kernelName,
       location,
@@ -198,7 +198,7 @@ export class LiteSessionClient implements ISessionAPIClient {
     }
     const kernelId = session.kernel?.id;
     if (kernelId) {
-      await this._kernelStore.shutdown(kernelId);
+      await this._kernelClient.shutdown(kernelId);
     }
     ArrayExt.removeFirstOf(this._sessions, session);
   }
@@ -223,7 +223,7 @@ export class LiteSessionClient implements ISessionAPIClient {
     // No need to handle kernel shutdown here anymore since we're using the changed signal
   }
 
-  private _kernelStore: IKernelStore;
+  private _kernelClient: LiteKernelClient;
   private _sessions: Session.IModel[] = [];
   private _pendingRestarts = new Set<string>();
 }
@@ -239,6 +239,6 @@ export namespace LiteSessionClient {
     /**
      * A reference to the kernels service.
      */
-    kernelStore: IKernelStore;
+    kernelClient: LiteKernelClient;
   }
 }

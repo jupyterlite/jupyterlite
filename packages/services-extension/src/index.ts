@@ -31,15 +31,17 @@ import {
 import { BrowserStorageDrive } from '@jupyterlite/contents';
 
 import {
+  IKernelClient,
   IKernelSpecs,
-  IKernelStore,
   KernelSpecs,
-  KernelStore,
+  LiteKernelClient,
   LiteKernelManager,
   LiteKernelSpecs,
 } from '@jupyterlite/kernel';
 
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
+
+import { LiteSessionClient } from '@jupyterlite/session';
 
 import { Settings as JupyterLiteSettings } from '@jupyterlite/settings';
 
@@ -48,8 +50,6 @@ import localforage from 'localforage';
 import { WebSocket } from 'mock-socket';
 
 import { LocalEventManager } from './event';
-
-import { LiteSessionClient } from '@jupyterlite/session';
 
 /**
  * The default drive plugin.
@@ -100,15 +100,15 @@ const kernelManagerPlugin: ServiceManagerPlugin<Kernel.IManager> = {
   description: 'The kernel manager plugin.',
   autoStart: true,
   provides: IKernelManager,
-  requires: [IKernelSpecs, IKernelStore],
+  requires: [IKernelSpecs, IKernelClient],
   optional: [IServerSettings],
   activate: (
     _: null,
     kernelSpecs: IKernelSpecs,
-    kernelStore: IKernelStore,
+    kernelClient: IKernelClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Kernel.IManager => {
-    return new LiteKernelManager({ kernelSpecs, kernelStore, serverSettings });
+    return new LiteKernelManager({ kernelSpecs, kernelClient, serverSettings });
   },
 };
 
@@ -132,16 +132,16 @@ const kernelSpecManagerPlugin: ServiceManagerPlugin<KernelSpec.IManager> = {
 };
 
 /**
- * The store for managing in-browser kernels
+ * The client for managing in-browser kernels
  */
-const kernelStorePlugin: ServiceManagerPlugin<IKernelStore> = {
-  id: '@jupyterlite/services-extension:kernel-store',
-  description: 'The store for managing in-browser kernels',
+const kernelClientPlugin: ServiceManagerPlugin<Kernel.IKernelAPIClient> = {
+  id: '@jupyterlite/services-extension:kernel-client',
+  description: 'The client for managing in-browser kernels',
   autoStart: true,
   requires: [IKernelSpecs],
-  provides: IKernelStore,
-  activate: (_: null, kernelSpecs: IKernelSpecs): IKernelStore => {
-    return new KernelStore({ kernelSpecs });
+  provides: IKernelClient,
+  activate: (_: null, kernelSpecs: IKernelSpecs): IKernelClient => {
+    return new LiteKernelClient({ kernelSpecs });
   },
 };
 
@@ -245,16 +245,16 @@ const sessionManagerPlugin: ServiceManagerPlugin<Session.IManager> = {
   description: 'The session manager plugin.',
   autoStart: true,
   provides: ISessionManager,
-  requires: [IKernelManager, IKernelStore],
+  requires: [IKernelManager, IKernelClient],
   optional: [IServerSettings],
   activate: (
     _: null,
     kernelManager: Kernel.IManager,
-    kernelStore: IKernelStore,
+    kernelClient: LiteKernelClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Session.IManager => {
     const sessionAPIClient = new LiteSessionClient({
-      kernelStore,
+      kernelClient,
     });
     return new SessionManager({
       kernelManager,
@@ -319,7 +319,7 @@ export default [
   eventManagerPlugin,
   kernelManagerPlugin,
   kernelSpecManagerPlugin,
-  kernelStorePlugin,
+  kernelClientPlugin,
   liteKernelSpecManagerPlugin,
   localforagePlugin,
   localforageMemoryPlugin,
