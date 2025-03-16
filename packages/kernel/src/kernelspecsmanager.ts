@@ -55,7 +55,7 @@ export class LiteKernelSpecs extends BaseManager implements KernelSpec.IManager 
   /**
    * Force a refresh of the specs from the server.
    */
-  refreshSpecs(): Promise<void> {
+  async refreshSpecs(): Promise<void> {
     // no-op
     return Promise.resolve(void 0);
   }
