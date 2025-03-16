@@ -7,23 +7,23 @@ follow to update JupyterLite from one version to another.
 
 ### Extensions
 
-JupyterLite 0.5.0 is based on the JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
+JupyterLite 0.6.0 is based on the JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
 
-Although no breaking changes are expected, this may affect the extensions you are using
-as they may rely on features added to JupyterLab 4.4 and Notebook 7.4.
+This may affect the extensions you are using as they may rely on features added to
+JupyterLab 4.4 and Notebook 7.4.
 
 ### API Changes
 
-Prior to version 0.6.0, JupyterLite was splitting extensions in two categories:
+Prior to version 0.6.0, JupyterLite was splitting extensions into two categories:
 
-- regular JupyterLab extensions, loaded the same way as in JupyterLab
+- Regular JupyterLab extensions, loaded the same way as in JupyterLab
 - "serverlite" extensions, loaded on a separate Lumino application, such as custom
   kernels
 
-To replace some of the default serverlite plugins or add extra "server"
-functionalities,, extension authors had to provide a `JupyterLiteServerPlugin`.
+To replace some of the default serverlite plugins or add extra "server" functionalities,
+extension authors had to provide a `JupyterLiteServerPlugin`.
 
-Starting with JupyerLite 0.6.0, all plugins are registered with the same plugin
+Starting with JupyterLite 0.6.0, all plugins are registered with the same plugin
 registry, including kernels and other "server" plugins such as the kernel and session
 managers. These plugins are now regular `JupyterFrontEndPlugin` instances.
 
@@ -34,7 +34,7 @@ Below are the changes in the different packages that result from that change.
 If you have authored a custom kernel, it should normally still be loading correctly in
 JupyterLite 0.6.0.
 
-However you might want to make the following changes to your kernel extension:
+However, you might want to make the following changes to your kernel extension:
 
 - Update the plugin definition to use `JupyterFrontEndPlugin` instead of
   `JupyterLiteServerPlugin`:
@@ -84,12 +84,12 @@ The following classes and interfaces have been removed:
 #### `@jupyterlite/kernel`
 
 The previous `Kernels` class (and its `IKernels` interface) have been renamed to
-`KernelStore` and `IKernelStore` respectively.
+`LiteKernelClient` and `IKernelClient` respectively.
 
 #### `@jupyterlite/session`
 
-The previous `Sessions` class (and its `ISessions` interface) have been renamed to
-`SessionStore` and `ISessionStore` respectively.
+The previous `Sessions` class has been renamed to `LiteSessionClient`, which now
+implements the `ISessionAPIClient` interface from `@jupyterlab/services`.
 
 ## `0.4.0` to `0.5.0`
 

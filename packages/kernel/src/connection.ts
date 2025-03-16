@@ -7,9 +7,7 @@ import { IKernelSpecs } from './tokens';
 /**
  * Custom KernelConnection class for use in JupyterLite.
  *
- * TODO: consider implementing a proper Kernel.IKernelConnection instead of extending KernelConnection
- * Or make upstream able to use a custom KernelAPI to perform actions on live kernels, since this is the
- * only reason we need to extend KernelConnection.
+ * TODO: remove the entire file after https://github.com/jupyterlab/jupyterlab/pull/17395
  */
 export class LiteKernelConnection
   extends KernelConnection

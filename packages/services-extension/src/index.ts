@@ -139,9 +139,14 @@ const kernelClientPlugin: ServiceManagerPlugin<Kernel.IKernelAPIClient> = {
   description: 'The client for managing in-browser kernels',
   autoStart: true,
   requires: [IKernelSpecs],
+  optional: [IServerSettings],
   provides: IKernelClient,
-  activate: (_: null, kernelSpecs: IKernelSpecs): IKernelClient => {
-    return new LiteKernelClient({ kernelSpecs });
+  activate: (
+    _: null,
+    kernelSpecs: IKernelSpecs,
+    serverSettings?: ServerConnection.ISettings,
+  ): IKernelClient => {
+    return new LiteKernelClient({ kernelSpecs, serverSettings });
   },
 };
 
@@ -255,6 +260,7 @@ const sessionManagerPlugin: ServiceManagerPlugin<Session.IManager> = {
   ): Session.IManager => {
     const sessionAPIClient = new LiteSessionClient({
       kernelClient,
+      serverSettings,
     });
     return new SessionManager({
       kernelManager,

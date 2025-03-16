@@ -19,12 +19,13 @@ type DeepPartial<T> = {
  */
 export class LiteSessionClient implements ISessionAPIClient {
   /**
-   * Construct a new SessionStore.
+   * Construct a new LiteSessionClient.
    *
-   * @param options The instantiation options for a Sessions.
+   * @param options The instantiation options for a LiteSessionClient.
    */
   constructor(options: LiteSessionClient.IOptions) {
     this._kernelClient = options.kernelClient;
+    this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     // Listen for kernel removals
     this._kernelClient.changed.connect((_, args) => {
       switch (args.type) {
@@ -63,10 +64,10 @@ export class LiteSessionClient implements ISessionAPIClient {
   }
 
   /**
-   * The server settings for the session store.
+   * The server settings for the session client.
    */
   get serverSettings(): ServerConnection.ISettings {
-    return ServerConnection.makeSettings();
+    return this._serverSettings;
   }
 
   /**
@@ -224,6 +225,7 @@ export class LiteSessionClient implements ISessionAPIClient {
   }
 
   private _kernelClient: LiteKernelClient;
+  private _serverSettings: ServerConnection.ISettings;
   private _sessions: Session.IModel[] = [];
   private _pendingRestarts = new Set<string>();
 }
@@ -240,5 +242,10 @@ export namespace LiteSessionClient {
      * A reference to the kernels service.
      */
     kernelClient: LiteKernelClient;
+
+    /**
+     * Server settings for the session client.
+     */
+    serverSettings?: ServerConnection.ISettings;
   }
 }

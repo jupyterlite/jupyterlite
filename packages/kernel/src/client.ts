@@ -38,17 +38,21 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
    *
    * @param options The instantiation options
    */
-  constructor(options: KernelClient.IOptions) {
+  constructor(options: LiteKernelClient.IOptions) {
     const { kernelSpecs } = options;
     this._kernelspecs = kernelSpecs;
+    this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     // Forward the changed signal from _kernels
     this._kernels.changed.connect((_, args) => {
       this._changed.emit(args);
     });
   }
 
+  /**
+   * The server settings for the kernel client.
+   */
   get serverSettings() {
-    return ServerConnection.makeSettings();
+    return this._serverSettings;
   }
 
   /**
@@ -63,7 +67,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
    *
    * @param options The kernel start options.
    */
-  async startNew(options: KernelClient.IKernelOptions): Promise<Kernel.IModel> {
+  async startNew(options: LiteKernelClient.IKernelOptions): Promise<Kernel.IModel> {
     const { id, name, location } = options;
 
     const kernelName = name ?? FALLBACK_KERNEL;
@@ -138,7 +142,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = URLExt.join(
-      KernelClient.WS_BASE_URL,
+      LiteKernelClient.WS_BASE_URL,
       KernelAPI.KERNEL_SERVICE_URL,
       encodeURIComponent(kernelId),
       'channels',
@@ -278,13 +282,14 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
+  private _serverSettings: ServerConnection.ISettings;
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
 }
 
 /**
  * A namespace for Kernels statics.
  */
-export namespace KernelClient {
+export namespace LiteKernelClient {
   /**
    * Options to create a new Kernels.
    */
@@ -293,6 +298,11 @@ export namespace KernelClient {
      * The kernel specs service.
      */
     kernelSpecs: IKernelSpecs;
+
+    /**
+     * Server settings for the kernel client.
+     */
+    serverSettings?: ServerConnection.ISettings;
   }
 
   /**

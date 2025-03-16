@@ -41,6 +41,8 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
 
   /**
    * Get the download link for the requested format
+   *
+   * TODO: update to download after https://github.com/jupyterlab/jupyterlab/pull/17397 is released.
    */
   async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
     const bundles = await this.getBundles();
