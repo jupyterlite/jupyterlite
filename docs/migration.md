@@ -25,7 +25,12 @@ extension authors had to provide a `JupyterLiteServerPlugin`.
 
 Starting with JupyterLite 0.6.0, all plugins are registered with the same plugin
 registry, including kernels and other "server" plugins such as the kernel and session
-managers. These plugins are now regular `JupyterFrontEndPlugin` instances.
+managers. These plugins are now regular `JupyterFrontEndPlugin` instances, or
+`ServiceManagerPlugin` instances (introduced in JupyterLab 4.4).
+
+This also means that extensions don't need to use the `"liteExtensions": true` field in
+their `package.json` file anymore. This field was used to indicate that the extension
+was a "serverlite" extension.
 
 Below are the changes in the different packages that result from that change.
 
@@ -58,7 +63,7 @@ However, you might want to make the following changes to your kernel extension:
 #### Service Worker
 
 The service worker plugin, used for syncing content between the JupyterLite file browser
-and the kernel, has been moved to the `@jupyterlite/application-extension` extension.
+and the kernel, has been moved to the `@jupyterlite/application-extension` package.
 
 If you were disabling the Service Worker in a custom `jupyter-lite.json` file, you will
 need to update the name of the plugin to disable as follows:
@@ -83,13 +88,54 @@ The following classes and interfaces have been removed:
 
 #### `@jupyterlite/kernel`
 
-The previous `Kernels` class (and its `IKernels` interface) have been renamed to
-`LiteKernelClient` and `IKernelClient` respectively.
+The previous `Kernels` class (and its `IKernels` interface), used for managing kernels
+in the browser, have been renamed to `LiteKernelClient` and `IKernelClient`
+respectively. `IKernelClient` now extends `IKernelAPIClient` provided by
+`@jupyterlab/services`.
 
 #### `@jupyterlite/session`
 
-The previous `Sessions` class has been renamed to `LiteSessionClient`, which now
-implements the `ISessionAPIClient` interface from `@jupyterlab/services`.
+The previous `Sessions` class, used for managing sessions in the browser, has been
+renamed to `LiteSessionClient`, which now implements the `ISessionAPIClient` interface
+from `@jupyterlab/services`.
+
+#### `@jupyterlite/contents`
+
+The previous `Contents` class, used for managing contents in the browser, has been
+renamed to `BrowserStorageDrive`, and now implements the `IDrive` interface from
+`@jupyterlab/services`. This drive is now provided as the default drive via
+`IDefaultDrive`.
+
+#### `@jupyterlite/licenses`
+
+The `Licenses` class, used for managing licenses in the browser, has seen its API
+changed radically. It now implements the `ILicensesClient` interface from
+`@jupyterlab/apputils`.
+
+The `@jupyterlite/licenses` package does not export any tokens anymore.
+
+#### `@jupyterlite/server-extension`
+
+The `@jupyterlite/server-extension` package has been removed. The JupyterLite services
+plugins (kernel, session, contents, settings, etc.) are now provided by the
+`@jupyterlite/services-extension` package as `ServiceManagerPlugin` plugins.
+
+#### `@jupyterlite/settings`
+
+The previous `Settings` class, used for managing settings in the browser, has replaces
+the default `Setting.IManager` provided by JupyterLab. Its API has been changed
+accordingly, to fullfill the `Setting.IManager` interface.
+
+The `@jupyterlite/settings` package does not export any tokens anymore.
+
+#### `@jupyterlite/translation`
+
+Translations are now supported by implemented the `ITranslatorConnector` interface
+provided by JupyterLab, which is then exposed as a plugin.
+
+The previous `Translation` class has been removed.
+
+The `@jupyterlite/translation` package does not export any tokens anymore.
 
 ## `0.4.0` to `0.5.0`
 
