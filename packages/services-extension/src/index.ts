@@ -4,8 +4,10 @@
 import { PageConfig } from '@jupyterlab/coreutils';
 
 import {
+  ConfigSection,
   Contents,
   Event,
+  IConfigSectionManager,
   IDefaultDrive,
   IEventManager,
   IKernelManager,
@@ -49,7 +51,26 @@ import localforage from 'localforage';
 
 import { WebSocket } from 'mock-socket';
 
+import { LiteConfigSectionManager } from './configsection';
+
 import { LocalEventManager } from './event';
+
+/**
+ * Config section manager plugin.
+ */
+const configSectionManager: ServiceManagerPlugin<ConfigSection.IManager> = {
+  id: '@jupyterlite/services-extension:config-section-manager',
+  autoStart: true,
+  provides: IConfigSectionManager,
+  optional: [IServerSettings],
+  description: 'Provides the config section manager.',
+  activate: (_: null, serverSettings?: ServerConnection.ISettings) => {
+    const manager = new LiteConfigSectionManager({ serverSettings });
+    // Set the config section manager for the global ConfigSection.
+    ConfigSection._setConfigSectionManager(manager);
+    return manager;
+  },
+};
 
 /**
  * The default drive plugin.
@@ -321,6 +342,7 @@ const userManagerPlugin: ServiceManagerPlugin<User.IManager> = {
 };
 
 export default [
+  configSectionManager,
   defaultDrivePlugin,
   eventManagerPlugin,
   kernelManagerPlugin,

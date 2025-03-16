@@ -322,6 +322,7 @@
       "@jupyterlab/filebrowser-extension:share-file",
       "@jupyterlab/help-extension:about",
       "@jupyterlab/lsp-extension:plugin",
+      "@jupyterlab/services-extension:config-section-manager",
       "@jupyterlab/services-extension:connection-status",
       "@jupyterlab/services-extension:default-drive",
       "@jupyterlab/services-extension:event-manager",
