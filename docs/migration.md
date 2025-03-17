@@ -122,15 +122,15 @@ plugins (kernel, session, contents, settings, etc.) are now provided by the
 
 #### `@jupyterlite/settings`
 
-The previous `Settings` class, used for managing settings in the browser, has replaces
+The previous `Settings` class, used for managing settings in the browser, has replaced
 the default `Setting.IManager` provided by JupyterLab. Its API has been changed
-accordingly, to fullfill the `Setting.IManager` interface.
+accordingly, to fulfill the `Setting.IManager` interface.
 
 The `@jupyterlite/settings` package does not export any tokens anymore.
 
 #### `@jupyterlite/translation`
 
-Translations are now supported by implemented the `ITranslatorConnector` interface
+Translations are now supported by implementing the `ITranslatorConnector` interface
 provided by JupyterLab, which is then exposed as a plugin.
 
 The previous `Translation` class has been removed.
