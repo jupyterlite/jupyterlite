@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.2...489ccaa75f35ba15a5ebf955346729c9651e25fb))
+
+### Enhancements made
+
+- Add the plugin manager [#1593](https://github.com/jupyterlite/jupyterlite/pull/1593) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Register server plugins as `ServiceManagerPlugin`, drop `JupyterLiteServer` [#1590](https://github.com/jupyterlite/jupyterlite/pull/1590) ([@jtpio](https://github.com/jtpio))
+- Bump vega from 5.25.0 to 5.31.0 in /ui-tests [#1585](https://github.com/jupyterlite/jupyterlite/pull/1585) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Fix memoryStorageDriver in jupyterlite.schema.v0.json [#1591](https://github.com/jupyterlite/jupyterlite/pull/1591) ([@2xB](https://github.com/2xB))
+- DOC: kernels.md: wording [#1589](https://github.com/jupyterlite/jupyterlite/pull/1589) ([@westurner](https://github.com/westurner))
+
+### API and Breaking Changes
+
+- Register server plugins as `ServiceManagerPlugin`, drop `JupyterLiteServer` [#1590](https://github.com/jupyterlite/jupyterlite/pull/1590) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-02-21&to=2025-03-18&type=c))
+
+[@2xB](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3A2xB+updated%3A2025-02-21..2025-03-18&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-02-21..2025-03-18&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-02-21..2025-03-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-02-21..2025-03-18&type=Issues) | [@westurner](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awesturner+updated%3A2025-02-21..2025-03-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.1...d4816b2f894d67ab5ff0b2ecf5207dc84d2ec7bc))
@@ -25,8 +55,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-02-04&to=2025-02-21&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-02-04..2025-02-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-02-04..2025-02-21&type=Issues) | [@yogabonito](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ayogabonito+updated%3A2025-02-04..2025-02-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a1
 
