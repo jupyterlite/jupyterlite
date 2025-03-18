@@ -5,7 +5,7 @@ import { KernelSpec } from '@jupyterlab/services';
 import { IKernel, IKernelSpecs, FALLBACK_KERNEL } from './tokens';
 
 /**
- * A class to handle requests to /api/kernelspecs
+ * A class to register in-browser kernel specs.
  */
 export class KernelSpecs implements IKernelSpecs {
   /**

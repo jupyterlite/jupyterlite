@@ -2,18 +2,19 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  IRouter,
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd,
   ILabShell,
+  IRouter,
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin,
 } from '@jupyterlab/application';
 
 import {
   Clipboard,
-  ICommandPalette,
   Dialog,
-  showDialog,
+  ICommandPalette,
+  ILicensesClient,
   SessionContext,
+  showDialog,
 } from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
@@ -22,13 +23,31 @@ import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager'
 
 import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
+import {
+  DocumentConnectionManager,
+  ILSPDocumentConnectionManager,
+  IWidgetLSPAdapterTracker,
+  LanguageServerManager,
+} from '@jupyterlab/lsp';
+
 import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { ITranslator } from '@jupyterlab/translation';
+import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+
+import {
+  BroadcastChannelWrapper,
+  IBroadcastChannelWrapper,
+} from '@jupyterlite/contents';
+
+import { LiteLicensesClient } from '@jupyterlite/licenses';
+
+import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
+
+import { LiteTranslatorConnector } from '@jupyterlite/translation';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -291,6 +310,66 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin for handling communication with the Emscpriten file system.
+ */
+const emscriptenFileSystemPlugin: JupyterFrontEndPlugin<IBroadcastChannelWrapper> = {
+  id: '@jupyterlite/application-extension:emscripten-filesystem',
+  autoStart: true,
+  optional: [IServiceWorkerManager],
+  provides: IBroadcastChannelWrapper,
+  activate: (
+    app: JupyterFrontEnd,
+    serviceWorkerRegistrationWrapper?: IServiceWorkerManager,
+  ): IBroadcastChannelWrapper => {
+    const { contents } = app.serviceManager;
+    const broadcaster = new BroadcastChannelWrapper({ contents });
+    const what = 'Kernel filesystem and JupyterLite contents';
+
+    function logStatus(msg?: string, err?: any) {
+      if (err) {
+        console.warn(err);
+      }
+      if (msg) {
+        console.warn(msg);
+      }
+      if (err || msg) {
+        console.warn(`${what} will NOT be synced`);
+      } else {
+        // eslint-disable-next-line no-console
+        console.info(`${what} will be synced`);
+      }
+    }
+
+    if (!serviceWorkerRegistrationWrapper) {
+      logStatus('JupyterLite ServiceWorker not available');
+    } else {
+      serviceWorkerRegistrationWrapper.ready
+        .then(() => {
+          broadcaster.enable();
+          logStatus();
+        })
+        .catch((err: any) => {
+          logStatus('JupyterLite ServiceWorker failed to become available', err);
+        });
+    }
+
+    return broadcaster;
+  },
+};
+
+/**
+ * The client for fetching licenses data.
+ */
+const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
+  id: '@jupyterlite/application-extension:licenses-client',
+  autoStart: true,
+  provides: ILicensesClient,
+  activate: (app: JupyterFrontEnd): ILicensesClient => {
+    return new LiteLicensesClient();
+  },
+};
+
+/**
  * The main application icon.
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
@@ -312,6 +391,34 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
     });
     logo.id = 'jp-MainLogo';
     labShell.add(logo, 'top', { rank: 0 });
+  },
+};
+
+/**
+ * A plugin to provide the language server connection manager
+ *
+ * Currently does nothing until LSP is supported in JupyterLite
+ */
+const lspConnectionManager: JupyterFrontEndPlugin<ILSPDocumentConnectionManager> = {
+  id: '@jupyterlite/application-extension:lsp-connection-manager',
+  autoStart: true,
+  requires: [IWidgetLSPAdapterTracker],
+  provides: ILSPDocumentConnectionManager,
+  activate: (app: JupyterFrontEnd, tracker: IWidgetLSPAdapterTracker) => {
+    const languageServerManager = new (class extends LanguageServerManager {
+      async fetchSessions(): Promise<void> {
+        // no-op
+      }
+    })({
+      settings: app.serviceManager.serverSettings,
+    });
+
+    const connectionManager = new DocumentConnectionManager({
+      languageServerManager,
+      adapterTracker: tracker,
+    });
+
+    return connectionManager;
   },
 };
 
@@ -446,6 +553,18 @@ const opener: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin installing the service worker.
+ */
+const serviceWorkerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
+  id: '@jupyterlite/application-extension:service-worker',
+  autoStart: true,
+  provides: IServiceWorkerManager,
+  activate: (app: JupyterFrontEnd) => {
+    return new ServiceWorkerManager();
+  },
+};
+
+/**
  * A plugin to patch the session context path so it includes the drive name.
  * TODO: investigate a better way for the kernel to be aware of the drive it is
  * associated with.
@@ -549,15 +668,33 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   },
 };
 
+/**
+ * The main translator connector plugin.
+ */
+const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
+  id: '@jupyterlite/application-extension:translator-connector',
+  description: 'Provides the application translation connector.',
+  autoStart: true,
+  provides: ITranslatorConnector,
+  activate: (app: JupyterFrontEnd) => {
+    return new LiteTranslatorConnector();
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
+  emscriptenFileSystemPlugin,
+  licensesClient,
   liteLogo,
+  lspConnectionManager,
   notifyCommands,
   opener,
   pluginManagerPlugin,
+  serviceWorkerPlugin,
   sessionContextPatch,
   shareFile,
+  translatorConnector,
 ];
 
 export default plugins;

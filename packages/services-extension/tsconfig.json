@@ -13,16 +13,13 @@
       "path": "../kernel"
     },
     {
-      "path": "../server"
+      "path": "../localforage"
     },
     {
       "path": "../session"
     },
     {
       "path": "../settings"
-    },
-    {
-      "path": "../translation"
     }
   ]
 }

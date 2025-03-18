@@ -1,37 +1,59 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { Licenses } from '@jupyterlab/apputils';
+
 import { URLExt, PageConfig } from '@jupyterlab/coreutils';
 
 import { IFederatedExtension } from '@jupyterlite/types';
 
-import {
-  ILicenseBundle,
-  ILicenseBundles,
-  ILicenseResponse,
-  ILicenses,
-  THIRD_PARTY_LICENSES,
-} from './tokens';
+/**
+ * A license bundle is a collection of packages and their licenses.
+ */
+type ILicenseBundles = { [key: string]: Licenses.ILicenseBundle };
+
+/**
+ * The well-known name of the file. Can actually be configured by alternate
+ * implementations, but the default is probably good enough for "best-effort."
+ */
+export const THIRD_PARTY_LICENSES = 'third-party-licenses.json';
 
 /**
  * An empty bundle.
  */
-const EMPTY_BUNDLE: ILicenseBundle = Object.freeze({ packages: [] });
+const EMPTY_BUNDLE: Licenses.ILicenseBundle = Object.freeze({ packages: [] });
 
 /**
  * A JupyterLite implementation of the jupyterlab_server licenses route
  */
-export class Licenses implements ILicenses {
+export class LiteLicensesClient extends Licenses.LicensesClient {
   /**
    * A GET handler for the licenses
    */
-  async get(): Promise<ILicenseResponse> {
+  async getBundles(): Promise<Licenses.ILicenseResponse> {
     return {
       bundles: {
         ...(await this._getFederated()),
         [this.appName]: await this._getAppLicenses(),
       },
     };
+  }
+
+  /**
+   * Get the download link for the requested format
+   *
+   * TODO: update to download after https://github.com/jupyterlab/jupyterlab/pull/17397 is released.
+   */
+  async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
+    const bundles = await this.getBundles();
+    const data = JSON.stringify(bundles, null, 2);
+
+    // Create a blob with the appropriate MIME type
+    const mime = options.format === 'json' ? 'application/json' : 'text/plain';
+    const blob = new Blob([data], { type: mime });
+
+    // Generate a URL for the blob
+    return URL.createObjectURL(blob);
   }
 
   /**
@@ -58,7 +80,7 @@ export class Licenses implements ILicenses {
   /**
    * Resolve the licenses for the app distribution itself, or the empty bundle.
    */
-  async _getAppLicenses(): Promise<ILicenseBundle> {
+  async _getAppLicenses(): Promise<Licenses.ILicenseBundle> {
     let bundle = EMPTY_BUNDLE;
 
     try {

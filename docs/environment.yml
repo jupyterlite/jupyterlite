@@ -18,8 +18,8 @@ dependencies:
   - hatch >=1.6.3,<2
   - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.4.0b0,<4.5
-  - notebook >=7.4.0b0,<7.5
+  - jupyterlab >=4.4.0b1,<4.5
+  - notebook >=7.4.0b1,<7.5
   - pip
   - pkginfo
   - python-libarchive-c

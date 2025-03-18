@@ -2,4 +2,3 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from './settings';
-export * from './tokens';

@@ -2,7 +2,12 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IObservableMap, ObservableMap } from '@jupyterlab/observables';
 
-import { KernelAPI, Kernel, KernelMessage } from '@jupyterlab/services';
+import {
+  KernelAPI,
+  Kernel,
+  KernelMessage,
+  ServerConnection,
+} from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
@@ -16,7 +21,7 @@ import { Mutex } from 'async-mutex';
 
 import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
 
-import { IKernel, IKernels, IKernelSpecs } from './tokens';
+import { FALLBACK_KERNEL, IKernel, IKernelSpecs } from './tokens';
 
 /**
  * Use the default kernel wire protocol.
@@ -27,19 +32,27 @@ const KERNEL_WEBSOCKET_PROTOCOL =
 /**
  * A class to handle requests to /api/kernels
  */
-export class Kernels implements IKernels {
+export class LiteKernelClient implements Kernel.IKernelAPIClient {
   /**
    * Construct a new Kernels
    *
    * @param options The instantiation options
    */
-  constructor(options: Kernels.IOptions) {
-    const { kernelspecs } = options;
-    this._kernelspecs = kernelspecs;
+  constructor(options: LiteKernelClient.IOptions) {
+    const { kernelSpecs } = options;
+    this._kernelspecs = kernelSpecs;
+    this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     // Forward the changed signal from _kernels
     this._kernels.changed.connect((_, args) => {
       this._changed.emit(args);
     });
+  }
+
+  /**
+   * The server settings for the kernel client.
+   */
+  get serverSettings() {
+    return this._serverSettings;
   }
 
   /**
@@ -54,13 +67,14 @@ export class Kernels implements IKernels {
    *
    * @param options The kernel start options.
    */
-  async startNew(options: Kernels.IKernelOptions): Promise<Kernel.IModel> {
+  async startNew(options: LiteKernelClient.IKernelOptions): Promise<Kernel.IModel> {
     const { id, name, location } = options;
 
-    const factory = this._kernelspecs.factories.get(name);
+    const kernelName = name ?? FALLBACK_KERNEL;
+    const factory = this._kernelspecs.factories.get(kernelName);
     // bail if there is no factory associated with the requested kernel
     if (!factory) {
-      return { id, name };
+      throw Error(`No factory for kernel ${kernelName}`);
     }
 
     // create a synchronization mechanism to allow only one message
@@ -128,7 +142,7 @@ export class Kernels implements IKernels {
 
     // There is one server per kernel which handles multiple clients
     const kernelUrl = URLExt.join(
-      Kernels.WS_BASE_URL,
+      LiteKernelClient.WS_BASE_URL,
       KernelAPI.KERNEL_SERVICE_URL,
       encodeURIComponent(kernelId),
       'channels',
@@ -165,8 +179,8 @@ export class Kernels implements IKernels {
     const kernel = await factory({
       id: kernelId,
       sendMessage,
-      name,
-      location,
+      name: kernelName,
+      location: location ?? '',
     });
 
     this._kernels.set(kernelId, kernel);
@@ -212,20 +226,27 @@ export class Kernels implements IKernels {
    *
    * @param kernelId The kernel id.
    */
-  async restart(kernelId: string): Promise<Kernel.IModel> {
+  async restart(kernelId: string): Promise<void> {
     const kernel = this._kernels.get(kernelId);
     if (!kernel) {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
     const { id, name, location } = kernel;
     kernel.dispose();
-    return this.startNew({ id, name, location });
+    await this.startNew({ id, name, location });
+  }
+
+  /**
+   * Interrupt a kernel.
+   */
+  async interrupt(kernelId: string): Promise<void> {
+    // no-op
   }
 
   /**
    * List the running kernels.
    */
-  async list(): Promise<Kernel.IModel[]> {
+  async listRunning(): Promise<Kernel.IModel[]> {
     return [...this._kernels.values()].map((kernel) => ({
       id: kernel.id,
       name: kernel.name,
@@ -242,9 +263,18 @@ export class Kernels implements IKernels {
   }
 
   /**
+   * Shut down all kernels.
+   */
+  async shutdownAll(): Promise<void> {
+    this._kernels.keys().forEach((id) => {
+      this.shutdown(id);
+    });
+  }
+
+  /**
    * Get a kernel by id
    */
-  async get(id: string): Promise<IKernel | undefined> {
+  async getModel(id: string): Promise<IKernel | undefined> {
     return this._kernels.get(id);
   }
 
@@ -252,13 +282,14 @@ export class Kernels implements IKernels {
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
+  private _serverSettings: ServerConnection.ISettings;
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
 }
 
 /**
  * A namespace for Kernels statics.
  */
-export namespace Kernels {
+export namespace LiteKernelClient {
   /**
    * Options to create a new Kernels.
    */
@@ -266,7 +297,12 @@ export namespace Kernels {
     /**
      * The kernel specs service.
      */
-    kernelspecs: IKernelSpecs;
+    kernelSpecs: IKernelSpecs;
+
+    /**
+     * Server settings for the kernel client.
+     */
+    serverSettings?: ServerConnection.ISettings;
   }
 
   /**
@@ -276,17 +312,17 @@ export namespace Kernels {
     /**
      * The kernel id.
      */
-    id: string;
+    id?: string;
 
     /**
      * The kernel name.
      */
-    name: string;
+    name?: string;
 
     /**
      * The location in the virtual filesystem from which the kernel was started.
      */
-    location: string;
+    location?: string;
   }
 
   /**

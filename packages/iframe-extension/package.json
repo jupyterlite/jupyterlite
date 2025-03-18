@@ -38,13 +38,13 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/rendermime-interfaces": "~3.12.0-beta.0",
+    "@jupyterlab/rendermime-interfaces": "~3.12.0-beta.1",
     "@lumino/coreutils": "^2.2.0",
     "@lumino/widgets": "^2.6.0"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.5.4"
   },
   "publishConfig": {
     "access": "public"

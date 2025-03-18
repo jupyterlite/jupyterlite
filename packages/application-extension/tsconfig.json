@@ -7,6 +7,12 @@
   "include": ["src/**/*"],
   "references": [
     {
+      "path": "../licenses"
+    },
+    {
+      "path": "../translation"
+    },
+    {
       "path": "../ui-components"
     }
   ]
