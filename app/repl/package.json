@@ -257,6 +257,7 @@
       "@jupyterlab/lsp-extension:plugin",
       "@jupyterlab/tooltip-extension:files",
       "@jupyterlab/tooltip-extension:notebooks",
+      "@jupyterlab/services-extension:config-section-manager",
       "@jupyterlab/services-extension:connection-status",
       "@jupyterlab/services-extension:default-drive",
       "@jupyterlab/services-extension:event-manager",

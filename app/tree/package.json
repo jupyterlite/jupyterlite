@@ -304,6 +304,7 @@
       "@jupyterlab/notebook-extension:search",
       "@jupyterlab/notebook-extension:toc",
       "@jupyterlab/notebook-extension:update-raw-mimetype",
+      "@jupyterlab/services-extension:config-section-manager",
       "@jupyterlab/services-extension:connection-status",
       "@jupyterlab/services-extension:default-drive",
       "@jupyterlab/services-extension:event-manager",
