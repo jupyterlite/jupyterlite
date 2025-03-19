@@ -2,6 +2,22 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.3...e2de427f5394b0f3007c576a360e21c4d5d399e1))
+
+### Bugs fixed
+
+- Trigger signal for spec refresh [#1596](https://github.com/jupyterlite/jupyterlite/pull/1596) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-18&to=2025-03-19&type=c))
+
+[@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-03-18..2025-03-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.2...489ccaa75f35ba15a5ebf955346729c9651e25fb))
@@ -29,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-02-21&to=2025-03-18&type=c))
 
 [@2xB](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3A2xB+updated%3A2025-02-21..2025-03-18&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-02-21..2025-03-18&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-02-21..2025-03-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-02-21..2025-03-18&type=Issues) | [@westurner](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awesturner+updated%3A2025-02-21..2025-03-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a2
 
