@@ -20,7 +20,7 @@ export class LiteTranslatorConnector
   async fetch(): Promise<ILanguageList>;
   async fetch(opts: { language: string }): Promise<Language>;
   async fetch(opts?: { language: string }): Promise<Language | ILanguageList> {
-    const language = opts?.language ?? 'default';
+    const language = opts?.language ?? '';
 
     // normalize the requested locale
     let locale = language;
