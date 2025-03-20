@@ -13,16 +13,28 @@ const EMPTY_KERNELSPECS: KernelSpec.ISpecModels = {
   kernelspecs: {},
 };
 
+/**
+ * An in-browser client for the kernel spec API.
+ */
 export class LiteKernelSpecClient implements KernelSpec.IKernelSpecAPIClient {
+  /**
+   * Construct a new kernel spec client.
+   */
   constructor(options: LiteKernelSpecClient.IOptions) {
     this._kernelspecs = options.kernelSpecs;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
   }
 
+  /**
+   * The server settings used by the client.
+   */
   get serverSettings(): ServerConnection.ISettings {
     return this._serverSettings;
   }
 
+  /**
+   * Get the kernel specs.
+   */
   async get(): Promise<KernelSpec.ISpecModels> {
     return Promise.resolve(this._kernelspecs.specs ?? EMPTY_KERNELSPECS);
   }
@@ -31,9 +43,22 @@ export class LiteKernelSpecClient implements KernelSpec.IKernelSpecAPIClient {
   private _serverSettings: ServerConnection.ISettings;
 }
 
+/**
+ * A namespace for LiteKernelSpecClient statics.
+ */
 export namespace LiteKernelSpecClient {
+  /**
+   * The options used to create a kernel spec client.
+   */
   export interface IOptions {
+    /**
+     * The in-browser kernel specs.
+     */
     kernelSpecs: IKernelSpecs;
+
+    /**
+     * The server settings used by the client.
+     */
     serverSettings?: ServerConnection.ISettings;
   }
 }
