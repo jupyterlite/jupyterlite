@@ -43,6 +43,18 @@ export interface IKernelClient extends Kernel.IKernelAPIClient {
 }
 
 /**
+ * The token for the kernel spec client.
+ */
+export const IKernelSpecClient = new Token<IKernelSpecClient>(
+  '@jupyterlite/kernel:IKernelSpecClient',
+);
+
+/**
+ * An interface for the kernel spec client.
+ */
+export interface IKernelSpecClient extends KernelSpec.IKernelSpecAPIClient {}
+
+/**
  * An interface for a kernel running in the browser.
  */
 export interface IKernel extends IObservableDisposable {

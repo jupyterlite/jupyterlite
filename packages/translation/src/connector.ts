@@ -3,7 +3,7 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { DataConnector } from '@jupyterlab/statedb';
-import { ITranslatorConnector, Language } from '@jupyterlab/translation';
+import { ILanguageList, ITranslatorConnector, Language } from '@jupyterlab/translation';
 
 /**
  * A fake locale to retrieve all the language packs.
@@ -14,11 +14,13 @@ const ALL = 'all';
  * A class to fetch translation bundles.
  */
 export class LiteTranslatorConnector
-  extends DataConnector<Language, Language, { language: string }>
+  extends DataConnector<Language, Language, { language: string } | undefined>
   implements ITranslatorConnector
 {
-  async fetch(opts: { language: string }): Promise<Language> {
-    const { language } = opts;
+  async fetch(): Promise<ILanguageList>;
+  async fetch(opts: { language: string }): Promise<Language>;
+  async fetch(opts?: { language: string }): Promise<Language | ILanguageList> {
+    const language = opts?.language ?? 'default';
 
     // normalize the requested locale
     let locale = language;
