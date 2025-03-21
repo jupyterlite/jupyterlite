@@ -131,7 +131,15 @@ const kernelManagerPlugin: ServiceManagerPlugin<Kernel.IManager> = {
     kernelSpecAPIClient: IKernelSpecClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Kernel.IManager => {
-    return new KernelManager({ kernelAPIClient, kernelSpecAPIClient, serverSettings });
+    return new KernelManager({
+      kernelAPIClient,
+      kernelSpecAPIClient,
+      serverSettings: {
+        ...ServerConnection.makeSettings(),
+        ...serverSettings,
+        WebSocket,
+      },
+    });
   },
 };
 
@@ -188,7 +196,10 @@ const kernelClientPlugin: ServiceManagerPlugin<Kernel.IKernelAPIClient> = {
     kernelSpecs: IKernelSpecs,
     serverSettings?: ServerConnection.ISettings,
   ): IKernelClient => {
-    return new LiteKernelClient({ kernelSpecs, serverSettings });
+    return new LiteKernelClient({
+      kernelSpecs,
+      serverSettings,
+    });
   },
 };
 
@@ -245,31 +256,6 @@ const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
     })({ serverSettings });
 
     return nbConvertManager;
-  },
-};
-
-/**
- * The default server settings plugin.
- */
-const serverSettingsPlugin: ServiceManagerPlugin<ServerConnection.ISettings> = {
-  id: '@jupyterlite/services-extension:server-settings',
-  description: 'The default server settings plugin.',
-  autoStart: true,
-  provides: IServerSettings,
-  activate: (_: null): ServerConnection.ISettings => {
-    return {
-      ...ServerConnection.makeSettings(),
-      WebSocket,
-      fetch: async (
-        req: RequestInfo,
-        init?: RequestInit | null | undefined,
-      ): Promise<Response> => {
-        const request = new Request(req, init ?? undefined);
-        const url = new URL(request.url);
-        console.error(`Unhandled fetch request path: ${url.pathname}`);
-        return new Response(JSON.stringify({}));
-      },
-    };
   },
 };
 
@@ -362,7 +348,6 @@ export default [
   liteKernelSpecManagerPlugin,
   localforagePlugin,
   nbConvertManagerPlugin,
-  serverSettingsPlugin,
   sessionManagerPlugin,
   settingsPlugin,
   userManagerPlugin,

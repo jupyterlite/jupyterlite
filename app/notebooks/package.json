@@ -350,7 +350,6 @@
       "@jupyterlab/services-extension:kernel-manager",
       "@jupyterlab/services-extension:kernel-spec-manager",
       "@jupyterlab/services-extension:nbconvert-manager",
-      "@jupyterlab/services-extension:server-settings",
       "@jupyterlab/services-extension:session-manager",
       "@jupyterlab/services-extension:setting-manager",
       "@jupyterlab/services-extension:user-manager",
