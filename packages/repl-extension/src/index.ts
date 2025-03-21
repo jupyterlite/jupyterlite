@@ -136,11 +136,11 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
         clearCodeContentOnExecute,
         hideCodeInput,
         promptCellPosition,
-        // TODO: handling of the showBanner may not work as expected for now
-        // due to the assumption there should be a banner upstream:
-        // https://github.com/jupyterlab/jupyterlab/pull/17322
         showBanner,
       });
+
+      // TODO: find a better way to make sure the banner is removed if showBanner is false
+      widget['_onKernelChanged']();
     });
 
     if (theme && themeManager) {
