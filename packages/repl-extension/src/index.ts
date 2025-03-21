@@ -122,14 +122,6 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
       const { sessionContext } = widget;
 
       await sessionContext.ready;
-      if (code.length > 0) {
-        if (execute === '0') {
-          const codeContent = code.join('\n');
-          widget.replaceSelection(codeContent);
-        } else {
-          code.forEach((line) => widget.inject(line));
-        }
-      }
 
       widget.setConfig({
         clearCellsOnExecute,
@@ -141,6 +133,15 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
 
       // TODO: find a better way to make sure the banner is removed if showBanner is false
       widget['_onKernelChanged']();
+
+      if (code.length > 0) {
+        if (execute === '0') {
+          const codeContent = code.join('\n');
+          widget.replaceSelection(codeContent);
+        } else {
+          code.forEach((line) => widget.inject(line));
+        }
+      }
     });
 
     if (theme && themeManager) {
