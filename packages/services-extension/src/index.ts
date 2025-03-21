@@ -18,7 +18,9 @@ import {
   ISettingManager,
   IUserManager,
   Kernel,
+  KernelManager,
   KernelSpec,
+  KernelSpecManager,
   NbConvert,
   NbConvertManager,
   ServerConnection,
@@ -34,11 +36,11 @@ import { BrowserStorageDrive } from '@jupyterlite/contents';
 
 import {
   IKernelClient,
+  IKernelSpecClient,
   IKernelSpecs,
   KernelSpecs,
   LiteKernelClient,
-  LiteKernelManager,
-  LiteKernelSpecs,
+  LiteKernelSpecClient,
 } from '@jupyterlite/kernel';
 
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
@@ -121,15 +123,34 @@ const kernelManagerPlugin: ServiceManagerPlugin<Kernel.IManager> = {
   description: 'The kernel manager plugin.',
   autoStart: true,
   provides: IKernelManager,
-  requires: [IKernelSpecs, IKernelClient],
+  requires: [IKernelClient, IKernelSpecClient],
   optional: [IServerSettings],
   activate: (
     _: null,
-    kernelSpecs: IKernelSpecs,
-    kernelClient: IKernelClient,
+    kernelAPIClient: IKernelClient,
+    kernelSpecAPIClient: IKernelSpecClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Kernel.IManager => {
-    return new LiteKernelManager({ kernelSpecs, kernelClient, serverSettings });
+    return new KernelManager({ kernelAPIClient, kernelSpecAPIClient, serverSettings });
+  },
+};
+
+/**
+ * The client for managing in-browser kernel specs
+ */
+const kernelSpecClientPlugin: ServiceManagerPlugin<KernelSpec.IKernelSpecAPIClient> = {
+  id: '@jupyterlite/services-extension:kernel-spec-client',
+  description: 'The client for managing in-browser kernel specs',
+  autoStart: true,
+  requires: [IKernelSpecs],
+  optional: [IServerSettings],
+  provides: IKernelSpecClient,
+  activate: (
+    _: null,
+    kernelSpecs: IKernelSpecs,
+    serverSettings?: ServerConnection.ISettings,
+  ): IKernelSpecClient => {
+    return new LiteKernelSpecClient({ kernelSpecs, serverSettings });
   },
 };
 
@@ -141,14 +162,14 @@ const kernelSpecManagerPlugin: ServiceManagerPlugin<KernelSpec.IManager> = {
   description: 'The kernel spec manager plugin.',
   autoStart: true,
   provides: IKernelSpecManager,
-  requires: [IKernelSpecs],
+  requires: [IKernelSpecClient],
   optional: [IServerSettings],
   activate: (
     _: null,
-    kernelSpecs: IKernelSpecs,
+    kernelSpecAPIClient: IKernelSpecClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): KernelSpec.IManager => {
-    return new LiteKernelSpecs({ kernelSpecs, serverSettings });
+    return new KernelSpecManager({ kernelSpecAPIClient, serverSettings });
   },
 };
 
@@ -335,8 +356,9 @@ export default [
   defaultDrivePlugin,
   eventManagerPlugin,
   kernelManagerPlugin,
-  kernelSpecManagerPlugin,
   kernelClientPlugin,
+  kernelSpecClientPlugin,
+  kernelSpecManagerPlugin,
   liteKernelSpecManagerPlugin,
   localforagePlugin,
   nbConvertManagerPlugin,
