@@ -122,6 +122,18 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
       const { sessionContext } = widget;
 
       await sessionContext.ready;
+
+      widget.setConfig({
+        clearCellsOnExecute,
+        clearCodeContentOnExecute,
+        hideCodeInput,
+        promptCellPosition,
+        showBanner,
+      });
+
+      // TODO: find a better way to make sure the banner is removed if showBanner is false
+      widget['_onKernelChanged']();
+
       if (code.length > 0) {
         if (execute === '0') {
           const codeContent = code.join('\n');
@@ -130,17 +142,6 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
           code.forEach((line) => widget.inject(line));
         }
       }
-
-      widget.setConfig({
-        clearCellsOnExecute,
-        clearCodeContentOnExecute,
-        hideCodeInput,
-        promptCellPosition,
-        // TODO: handling of the showBanner may not work as expected for now
-        // due to the assumption there should be a banner upstream:
-        // https://github.com/jupyterlab/jupyterlab/pull/17322
-        showBanner,
-      });
     });
 
     if (theme && themeManager) {
