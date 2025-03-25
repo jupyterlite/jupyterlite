@@ -171,13 +171,24 @@ const kernelSpecManagerPlugin: ServiceManagerPlugin<KernelSpec.IManager> = {
   autoStart: true,
   provides: IKernelSpecManager,
   requires: [IKernelSpecClient],
-  optional: [IServerSettings],
+  optional: [IKernelSpecs, IServerSettings],
   activate: (
     _: null,
     kernelSpecAPIClient: IKernelSpecClient,
+    kernelSpecs: IKernelSpecs | null,
     serverSettings: ServerConnection.ISettings | undefined,
   ): KernelSpec.IManager => {
-    return new KernelSpecManager({ kernelSpecAPIClient, serverSettings });
+    const kernelSpecManager = new KernelSpecManager({
+      kernelSpecAPIClient,
+      serverSettings,
+    });
+    if (kernelSpecs) {
+      // refresh the kernel spec manager when new lite specs are added
+      kernelSpecs.changed.connect(() => {
+        void kernelSpecManager.refreshSpecs();
+      });
+    }
+    return kernelSpecManager;
   },
 };
 

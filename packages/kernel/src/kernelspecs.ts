@@ -2,7 +2,9 @@ import { PageConfig } from '@jupyterlab/coreutils';
 
 import { KernelSpec } from '@jupyterlab/services';
 
-import { IKernel, IKernelSpecs, FALLBACK_KERNEL } from './tokens';
+import { ISignal, Signal } from '@lumino/signaling';
+
+import { FALLBACK_KERNEL, IKernel, IKernelSpecs } from './tokens';
 
 /**
  * A class to register in-browser kernel specs.
@@ -45,6 +47,13 @@ export class KernelSpecs implements IKernelSpecs {
   }
 
   /**
+   * Signal emitted when the specs change.
+   */
+  get changed(): ISignal<IKernelSpecs, KernelSpec.ISpecModels | null> {
+    return this._changed;
+  }
+
+  /**
    * Register a new kernel.
    *
    * @param options The options to register a new kernel.
@@ -53,10 +62,14 @@ export class KernelSpecs implements IKernelSpecs {
     const { spec, create } = options;
     this._specs.set(spec.name, spec);
     this._factories.set(spec.name, create);
+
+    // notify a new spec has been added
+    this._changed.emit(this.specs);
   }
 
   private _specs = new Map<string, KernelSpec.ISpecModel>();
   private _factories = new Map<string, KernelSpecs.KernelFactory>();
+  private _changed = new Signal<this, KernelSpec.ISpecModels | null>(this);
 }
 
 /**
