@@ -146,6 +146,11 @@ export interface IKernelSpecs {
   readonly factories: KernelSpecs.KernelFactories;
 
   /**
+   * Signal emitted when the specs change.
+   */
+  readonly changed: ISignal<IKernelSpecs, KernelSpec.ISpecModels | null>;
+
+  /**
    * Register a new kernel spec
    *
    * @param options The kernel spec options.
