@@ -3,7 +3,7 @@ name: jupyterlite-dev
 
 channels:
   - conda-forge
-  - conda-forge/label/jupyterlab_beta
+  - conda-forge/label/jupyterlab_rc
   - conda-forge/label/notebook_beta
 
 dependencies:
@@ -55,8 +55,8 @@ dependencies:
   - hatch >=1.6.3,<2
   - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.4.0b2,<4.5
-  - notebook >=7.4.0b2,<7.5
+  - jupyterlab >=4.4.0rc0,<4.5
+  - notebook >=7.4.0b3,<7.5
   - pip
   - pkginfo
   - python-libarchive-c
