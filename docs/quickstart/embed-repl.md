@@ -163,3 +163,16 @@ To hide the banner, set the `showBanner` parameter to `0`:
   height="100%"
 ></iframe>
 ```
+
+## Single Executable Cell
+
+By configuring the REPL with the options mentioned above, the REPL becomes a single
+executable cell:
+
+```html
+<iframe
+  src="https://jupyterlite.goithub.io/demo/repl/index.html?toolbar=1&kernel=python&promptCellPosition=left&clearCellsOnExecute=1&hideCodeInput=1&clearCodeContentOnExecute=0&showBanner=0&code=import%20nump%20as%20np&execute=0"
+  width="100%"
+  height="100%"
+></iframe>
+```
