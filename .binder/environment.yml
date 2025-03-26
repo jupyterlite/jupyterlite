@@ -3,7 +3,7 @@ name: jupyterlite-dev
 
 channels:
   - conda-forge
-  - conda-forge/label/jupyterlab_beta
+  - conda-forge/label/jupyterlab_rc
   - conda-forge/label/notebook_beta
 
 dependencies:
