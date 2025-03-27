@@ -5,16 +5,30 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
+/**
+ * The version of the app.
+ */
 const VERSION = PageConfig.getOption('appVersion');
+
+/**
+ * Used to keep the Service Worker alive.
+ */
 const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
+
+/**
+ * A class that manages the Service Worker.
+ */
 export class ServiceWorkerManager implements IServiceWorkerManager {
+  /**
+   * Construct a new ServiceWorkerManager.
+   */
   constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
       options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     const fullWorkerUrl = new URL(workerUrl, window.location.href);
     const enableCache = PageConfig.getOption('enableServiceWorkerCache') || 'false';
     fullWorkerUrl.searchParams.set('enableCache', enableCache);
-    void this.initialize(fullWorkerUrl.href).catch(console.warn);
+    void this._initialize(fullWorkerUrl.href).catch(console.warn);
   }
 
   /**
@@ -38,27 +52,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._ready.promise;
   }
 
-  private unregisterOldServiceWorkers = async (scriptURL: string) => {
-    const versionKey = `${scriptURL}-version`;
-    // Check if we have an installed version. If we do, compare it to the current version
-    // and unregister all service workers if they are different.
-    const installedVersion = localStorage.getItem(versionKey);
-
-    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
-      // eslint-disable-next-line no-console
-      console.info('New version, unregistering existing service workers.');
-      const registrations = await navigator.serviceWorker.getRegistrations();
-
-      await Promise.all(registrations.map((registration) => registration.unregister()));
-
-      // eslint-disable-next-line no-console
-      console.info('All existing service workers have been unregistered.');
-    }
-
-    localStorage.setItem(versionKey, VERSION);
-  };
-
-  private async initialize(workerUrl: string): Promise<void> {
+  /**
+   * Initialize the Service Worker
+   */
+  private async _initialize(workerUrl: string): Promise<void> {
     const { serviceWorker } = navigator;
 
     let registration: ServiceWorkerRegistration | null = null;
@@ -67,7 +64,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       console.warn('ServiceWorkers not supported in this browser');
     } else if (serviceWorker.controller) {
       const scriptURL = serviceWorker.controller.scriptURL;
-      await this.unregisterOldServiceWorkers(scriptURL);
+      await this._unregisterOldServiceWorkers(scriptURL);
 
       registration = (await serviceWorker.getRegistration(scriptURL)) || null;
       // eslint-disable-next-line no-console
@@ -98,6 +95,33 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       setTimeout(this._pingServiceWorker, 20000);
     }
   }
+
+  /**
+   * Unregister previous service workers if the version has changed.
+   */
+  private _unregisterOldServiceWorkers = async (scriptURL: string) => {
+    const versionKey = `${scriptURL}-version`;
+    // Check if we have an installed version. If we do, compare it to the current version
+    // and unregister all service workers if they are different.
+    const installedVersion = localStorage.getItem(versionKey);
+
+    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
+      // eslint-disable-next-line no-console
+      console.info('New version, unregistering existing service workers.');
+      const registrations = await navigator.serviceWorker.getRegistrations();
+
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+
+      // eslint-disable-next-line no-console
+      console.info('All existing service workers have been unregistered.');
+    }
+
+    localStorage.setItem(versionKey, VERSION);
+  };
+
+  /**
+   * Ping the Service Worker to keep it alive.
+   */
   private _pingServiceWorker = async (): Promise<void> => {
     const response = await fetch(SW_PING_ENDPOINT);
     const text = await response.text();
@@ -105,6 +129,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       setTimeout(this._pingServiceWorker, 20000);
     }
   };
+
+  /**
+   * Set the Service Worker registration.
+   */
   private _setRegistration(registration: ServiceWorkerRegistration | null) {
     this._registration = registration;
     this._registrationChanged.emit(this._registration);
