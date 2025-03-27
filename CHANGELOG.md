@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a6
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.5...d5bc48fa1f1af1567adaeda3054ef1bd04456cc4))
+
+### Bugs fixed
+
+- Handle Drive.get exceptions for missing content [#1606](https://github.com/jupyterlite/jupyterlite/pull/1606) ([@juntyr](https://github.com/juntyr))
+- Refresh specs when new JupyterLite kernels are added [#1602](https://github.com/jupyterlite/jupyterlite/pull/1602) ([@jtpio](https://github.com/jtpio))
+- Fix handling of the showBanner REPL parameter [#1600](https://github.com/jupyterlite/jupyterlite/pull/1600) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.4.0rc0 and Notebook 7.4.0b3 [#1603](https://github.com/jupyterlite/jupyterlite/pull/1603) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add Single Executable Cell use case to the docs [#1604](https://github.com/jupyterlite/jupyterlite/pull/1604) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-21&to=2025-03-27&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-03-21..2025-03-27&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-03-21..2025-03-27&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2025-03-21..2025-03-27&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a5
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.4...1d8f110558f355e4e0e778caee0e54dbede05210))
@@ -19,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-19&to=2025-03-21&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-03-19..2025-03-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-03-19..2025-03-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a4
 
