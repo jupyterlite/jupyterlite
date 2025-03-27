@@ -204,7 +204,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let dirname = PathExt.dirname(path);
     const basename = PathExt.basename(path);
     const extname = PathExt.extname(path);
-    const item = await this.get(dirname);
+    const item = await this.get(dirname).catch(() => null);
 
     // handle the case of "Save As", where the path points to the new file
     // to create, e.g. subfolder/example-copy.ipynb
@@ -319,13 +319,17 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let name = PathExt.basename(path);
     toDir = toDir === '' ? '' : `${PathExt.removeSlash(toDir)}/`;
     // TODO: better handle naming collisions with existing files
-    while (await this.get(`${toDir}${name}`, { content: true })) {
+    while (
+      await this.get(`${toDir}${name}`, { content: true })
+        .then(() => true)
+        .catch(() => false)
+    ) {
       const ext = PathExt.extname(name);
       const base = name.replace(ext, '');
       name = `${base} (copy)${ext}`;
     }
     const toPath = `${toDir}${name}`;
-    let item = await this.get(path, { content: true });
+    let item = await this.get(path, { content: true }).catch(() => null);
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
     }
@@ -430,7 +434,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
    */
   async rename(oldLocalPath: string, newLocalPath: string): Promise<IModel> {
     const path = decodeURIComponent(oldLocalPath);
-    const file = await this.get(path, { content: true });
+    const file = await this.get(path, { content: true }).catch(() => null);
     if (!file) {
       throw Error(`Could not find file with path ${path}`);
     }
@@ -486,7 +490,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     // retrieve the content if it is a later chunk or the last one
     // the new content will then be appended to the existing one
     const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
-    let item: IModel | null = await this.get(path, { content: appendChunk });
+    let item: IModel | null = await this.get(path, { content: appendChunk }).catch(
+      () => null,
+    );
 
     if (!item) {
       item = await this.newUntitled({ path, ext, type: 'file' });
@@ -641,7 +647,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
   async createCheckpoint(path: string): Promise<Contents.ICheckpointModel> {
     const checkpoints = await this.checkpoints;
     path = decodeURIComponent(path);
-    const item = await this.get(path, { content: true });
+    const item = await this.get(path, { content: true }).catch(() => null);
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
     }
