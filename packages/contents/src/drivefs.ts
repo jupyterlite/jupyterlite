@@ -81,11 +81,6 @@ export type TDriveRequest<T extends TDriveMethod> = {
   method: T;
 
   /**
-   * The expected receiver of the request
-   */
-  receiver?: 'broadcast.ts';
-
-  /**
    * The path to the file/directory for which the request was sent
    */
   path: string;

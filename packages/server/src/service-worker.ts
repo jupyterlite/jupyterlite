@@ -9,7 +9,16 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-const broadcast = new BroadcastChannel('/api/drive.v1');
+let messagePort: MessagePort;
+
+const ready: Promise<void> = new Promise((resolve) => {
+  self.addEventListener('message', (event: ExtendableMessageEvent) => {
+    if (event.data && event.data.type === 'INIT_PORT') {
+      messagePort = event.ports[0];
+      resolve();
+    }
+  });
+});
 
 /**
  * Whether to enable the cache
@@ -135,18 +144,16 @@ function shouldDrop(request: Request, url: URL): boolean {
  * Forward request to main using the broadcast channel
  */
 async function broadcastOne(request: Request): Promise<Response> {
+  await ready;
+
   const promise = new Promise<Response>((resolve) => {
-    broadcast.onmessage = (event) => {
+    messagePort.onmessage = (event) => {
       resolve(new Response(JSON.stringify(event.data)));
     };
   });
 
   const message = await request.json();
-  // Mark message as being for broadcast.ts
-  // This makes sure we won't get problems with messages
-  // across tabs with multiple notebook tabs open
-  message.receiver = 'broadcast.ts';
-  broadcast.postMessage(message);
+  messagePort.postMessage(message);
 
   return await promise;
 }
