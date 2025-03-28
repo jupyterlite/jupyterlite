@@ -1,9 +1,10 @@
+import { Contents } from '@jupyterlab/services';
+
 import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
 import SW_URL from './service-worker?text';
-import { Contents } from '@jupyterlab/services';
 
 /**
  * The token for the ServiceWorker.

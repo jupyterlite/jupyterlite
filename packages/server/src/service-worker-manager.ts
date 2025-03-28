@@ -187,5 +187,5 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this,
   );
   private _ready = new PromiseDelegate<void>();
-  protected _driveContentsProcessor: IDriveContentsProcessor;
+  private _driveContentsProcessor: IDriveContentsProcessor;
 }
