@@ -107,7 +107,7 @@ class BaseAddon(LoggingConfigurable):
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            print('URL', url)
+            print("URL", url)
             req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
             with urllib.request.urlopen(req) as response:  # noqa: S310
                 tmp_dest = tdp / dest.name
