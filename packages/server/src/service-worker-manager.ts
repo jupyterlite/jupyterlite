@@ -80,12 +80,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     event: MessageEvent<TDriveRequest<T>>,
   ): Promise<void> => {
     const request = event.data;
-    const receiver = request?.receiver;
-    if (receiver !== 'broadcast.ts') {
-      // Message is not meant for us
-      return;
-    }
-
     const response = await this._driveContentsProcessor.processDriveRequest(request);
 
     this._messageChannel.port1.postMessage(response);

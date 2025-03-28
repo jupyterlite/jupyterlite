@@ -152,10 +152,6 @@ async function broadcastOne(request: Request): Promise<Response> {
   });
 
   const message = await request.json();
-  // Mark message as being for broadcast.ts
-  // This makes sure we won't get problems with messages
-  // across tabs with multiple notebook tabs open
-  message.receiver = 'broadcast.ts';
   messagePort.postMessage(message);
 
   return await promise;
