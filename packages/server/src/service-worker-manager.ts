@@ -1,7 +1,15 @@
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+
 import { PromiseDelegate } from '@lumino/coreutils';
+
 import { ISignal, Signal } from '@lumino/signaling';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import {
+  DriveContentsProcessor,
+  IDriveContentsProcessor,
+  TDriveMethod,
+  TDriveRequest,
+} from '@jupyterlite/contents';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
@@ -22,7 +30,17 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   /**
    * Construct a new ServiceWorkerManager.
    */
-  constructor(options?: IServiceWorkerManager.IOptions) {
+  constructor(options: IServiceWorkerManager.IOptions) {
+    this._messageChannel = new MessageChannel();
+
+    // listen to messages from the Service Worker
+    this._messageChannel.port1.onmessage = this._onMessage;
+
+    const contents = options.contents;
+    this._driveContentsProcessor = new DriveContentsProcessor({
+      contentsManager: contents,
+    });
+
     const workerUrl =
       options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     const fullWorkerUrl = new URL(workerUrl, window.location.href);
@@ -48,9 +66,30 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._registration !== null;
   }
 
+  /**
+   * Whether the ServiceWorker is ready or not.
+   */
   get ready(): Promise<void> {
     return this._ready.promise;
   }
+
+  /**
+   * Handle a message received on the MessageChannel
+   */
+  protected _onMessage = async <T extends TDriveMethod>(
+    event: MessageEvent<TDriveRequest<T>>,
+  ): Promise<void> => {
+    const request = event.data;
+    const receiver = request?.receiver;
+    if (receiver !== 'broadcast.ts') {
+      // Message is not meant for us
+      return;
+    }
+
+    const response = await this._driveContentsProcessor.processDriveRequest(request);
+
+    this._messageChannel.port1.postMessage(response);
+  };
 
   /**
    * Initialize the Service Worker
@@ -62,6 +101,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
+      this._ready.reject(void 0);
+      return;
     } else if (serviceWorker.controller) {
       const scriptURL = serviceWorker.controller.scriptURL;
       await this._unregisterOldServiceWorkers(scriptURL);
@@ -87,6 +128,14 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     this._setRegistration(registration);
+
+    // transfer the port for communication with the Service Worker
+    void serviceWorker.controller?.postMessage(
+      {
+        type: 'INIT_PORT',
+      },
+      [this._messageChannel.port2],
+    );
 
     if (!registration) {
       this._ready.reject(void 0);
@@ -138,9 +187,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this._registrationChanged.emit(this._registration);
   }
 
+  private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
     this,
   );
   private _ready = new PromiseDelegate<void>();
+  protected _driveContentsProcessor: IDriveContentsProcessor;
 }

@@ -9,7 +9,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-const broadcast = new BroadcastChannel('/api/drive.v1');
+let messagePort: MessagePort;
 
 /**
  * Whether to enable the cache
@@ -22,8 +22,18 @@ let enableCache = false;
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
+self.addEventListener('message', onMessage);
 
 // Event handlers
+
+/**
+ * Handle messages from the main thread.
+ */
+async function onMessage(event: ExtendableMessageEvent): Promise<void> {
+  if (event.data && event.data.type === 'INIT_PORT') {
+    messagePort = event.ports[0];
+  }
+}
 
 /**
  * Handle installation with the cache
@@ -136,7 +146,7 @@ function shouldDrop(request: Request, url: URL): boolean {
  */
 async function broadcastOne(request: Request): Promise<Response> {
   const promise = new Promise<Response>((resolve) => {
-    broadcast.onmessage = (event) => {
+    messagePort.onmessage = (event) => {
       resolve(new Response(JSON.stringify(event.data)));
     };
   });
@@ -146,7 +156,7 @@ async function broadcastOne(request: Request): Promise<Response> {
   // This makes sure we won't get problems with messages
   // across tabs with multiple notebook tabs open
   message.receiver = 'broadcast.ts';
-  broadcast.postMessage(message);
+  messagePort.postMessage(message);
 
   return await promise;
 }
