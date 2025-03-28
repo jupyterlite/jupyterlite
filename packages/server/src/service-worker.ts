@@ -11,6 +11,15 @@ const CACHE = 'precache';
  */
 let messagePort: MessagePort;
 
+const ready: Promise<void> = new Promise((resolve) => {
+  self.addEventListener('message', (event: ExtendableMessageEvent) => {
+    if (event.data && event.data.type === 'INIT_PORT') {
+      messagePort = event.ports[0];
+      resolve();
+    }
+  });
+});
+
 /**
  * Whether to enable the cache
  */
@@ -22,18 +31,8 @@ let enableCache = false;
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
-self.addEventListener('message', onMessage);
 
 // Event handlers
-
-/**
- * Handle messages from the main thread.
- */
-async function onMessage(event: ExtendableMessageEvent): Promise<void> {
-  if (event.data && event.data.type === 'INIT_PORT') {
-    messagePort = event.ports[0];
-  }
-}
 
 /**
  * Handle installation with the cache
@@ -145,6 +144,8 @@ function shouldDrop(request: Request, url: URL): boolean {
  * Forward request to main using the broadcast channel
  */
 async function broadcastOne(request: Request): Promise<Response> {
+  await ready;
+
   const promise = new Promise<Response>((resolve) => {
     messagePort.onmessage = (event) => {
       resolve(new Response(JSON.stringify(event.data)));
