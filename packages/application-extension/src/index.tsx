@@ -38,8 +38,6 @@ import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
-import { IBroadcastChannelWrapper } from '@jupyterlite/contents';
-
 import { LiteLicensesClient } from '@jupyterlite/licenses';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
@@ -502,24 +500,6 @@ const opener: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * TODO: remove, kept it for easier testing for now
- */
-const emscriptenFileSystemPlugin: JupyterFrontEndPlugin<IBroadcastChannelWrapper> = {
-  id: '@jupyterlite/application-extension:emscripten-filesystem',
-  autoStart: true,
-  provides: IBroadcastChannelWrapper,
-  activate: (app: JupyterFrontEnd): IBroadcastChannelWrapper => {
-    return {
-      disable: () => {},
-      enable: () => {},
-      enabled: true,
-      isDisposed: false,
-      dispose: () => {},
-    };
-  },
-};
-
-/**
  * A plugin installing the service worker.
  */
 const serviceWorkerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
@@ -662,7 +642,6 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   sessionContextPatch,
   shareFile,
   translatorConnector,
-  emscriptenFileSystemPlugin,
 ];
 
 export default plugins;
