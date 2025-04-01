@@ -26,6 +26,10 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
   if (event.data && event.data.type === 'INIT_PORT') {
     messagePorts[event.data.tabId] = event.ports[0];
   }
+  if (event.data && event.data.type === 'DISCONNECT_PORT') {
+    messagePorts[event.data.tabId].close();
+    delete messagePorts[event.data.tabId];
+  }
 });
 
 // Event handlers

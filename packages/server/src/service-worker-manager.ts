@@ -146,13 +146,22 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     const controller = serviceWorker.controller;
 
     // transfer the port for communication with the Service Worker
-    void controller?.postMessage(
-      {
-        type: 'INIT_PORT',
-        tabId: this._tabId,
-      },
-      [this._messageChannel.port2],
-    );
+    if (controller) {
+      void controller.postMessage(
+        {
+          type: 'INIT_PORT',
+          tabId: this._tabId,
+        },
+        [this._messageChannel.port2],
+      );
+
+      window.addEventListener('beforeunload', () => {
+        controller.postMessage({
+          type: 'DISCONNECT_PORT',
+          tabId: this._tabId
+        });
+      });
+    }
 
     this._setRegistration(registration);
 
