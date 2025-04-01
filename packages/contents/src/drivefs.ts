@@ -552,6 +552,7 @@ export abstract class ContentsAPI {
 export class ServiceWorkerContentsAPI extends ContentsAPI {
   constructor(
     baseUrl: string,
+    tabId: string,
     driveName: string,
     mountpoint: string,
     FS: FS,
@@ -560,6 +561,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     super(driveName, mountpoint, FS, ERRNO_CODES);
 
     this._baseUrl = baseUrl;
+    this._tabId = tabId;
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
@@ -567,7 +569,10 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     xhr.open('POST', encodeURI(this.endpoint), false);
 
     try {
-      xhr.send(JSON.stringify(data));
+      xhr.send(JSON.stringify({
+        tabId: this._tabId,
+        messageData: data
+      }));
     } catch (e) {
       console.error(e);
     }
@@ -586,6 +591,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     return `${this._baseUrl}api/drive`;
   }
 
+  private _tabId: string;
   private _baseUrl: string;
 }
 
@@ -619,6 +625,7 @@ export class DriveFS {
   createAPI(options: DriveFS.IOptions): ContentsAPI {
     return new ServiceWorkerContentsAPI(
       options.baseUrl,
+      options.tabId,
       options.driveName,
       options.mountpoint,
       options.FS,
@@ -693,6 +700,7 @@ export namespace DriveFS {
     PATH: PATH;
     ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
+    tabId: string;
     driveName: string;
     mountpoint: string;
   }

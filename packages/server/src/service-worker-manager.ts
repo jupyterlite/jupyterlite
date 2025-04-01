@@ -1,6 +1,6 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { PromiseDelegate } from '@lumino/coreutils';
+import { PromiseDelegate, UUID } from '@lumino/coreutils';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
@@ -31,6 +31,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
    * Construct a new ServiceWorkerManager.
    */
   constructor(options: IServiceWorkerManager.IOptions) {
+    this._tabId = UUID.uuid4();
     this._messageChannel = new MessageChannel();
 
     // listen to messages from the Service Worker
@@ -57,6 +58,13 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     ServiceWorkerRegistration | null
   > {
     return this._registrationChanged;
+  }
+
+  /**
+   * The current tab id
+   */
+  get tabId(): string {
+    return this._tabId;
   }
 
   /**
@@ -127,6 +135,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     void serviceWorker.controller?.postMessage(
       {
         type: 'INIT_PORT',
+        tabId: this._tabId
       },
       [this._messageChannel.port2],
     );
@@ -181,6 +190,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this._registrationChanged.emit(this._registration);
   }
 
+  private _tabId: string;
   private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(

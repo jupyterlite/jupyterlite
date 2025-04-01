@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../node_modules/@types/serviceworker/index.d.ts" />
 
+import { PromiseDelegate } from "@lumino/coreutils";
+
 /**
  * The name of the cache
  */
@@ -9,16 +11,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-let messagePort: MessagePort;
-
-const ready: Promise<void> = new Promise((resolve) => {
-  self.addEventListener('message', (event: ExtendableMessageEvent) => {
-    if (event.data && event.data.type === 'INIT_PORT') {
-      messagePort = event.ports[0];
-      resolve();
-    }
-  });
-});
+const messagePorts: {[tabId: string]: PromiseDelegate<MessagePort>} = {};
 
 /**
  * Whether to enable the cache
@@ -31,6 +24,14 @@ let enableCache = false;
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
+self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  if (event.data && event.data.type === 'INIT_PORT') {
+    if (!messagePorts[event.data.tabId]) {
+      messagePorts[event.data.tabId] = new PromiseDelegate();
+    }
+    messagePorts[event.data.tabId].resolve(event.ports[0]);
+  }
+});
 
 // Event handlers
 
@@ -144,16 +145,19 @@ function shouldDrop(request: Request, url: URL): boolean {
  * Forward request to main using the broadcast channel
  */
 async function broadcastOne(request: Request): Promise<Response> {
-  await ready;
+  const message = await request.json();
+
+  const tabId = message.tabId;
+
+  const port = await messagePorts[tabId].promise;
 
   const promise = new Promise<Response>((resolve) => {
-    messagePort.onmessage = (event) => {
+    port.onmessage = (event) => {
       resolve(new Response(JSON.stringify(event.data)));
     };
   });
 
-  const message = await request.json();
-  messagePort.postMessage(message);
+  port.postMessage(message.messageData);
 
   return await promise;
 }

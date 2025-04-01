@@ -31,6 +31,11 @@ export interface IServiceWorkerManager {
   readonly enabled: boolean;
 
   /**
+   * The current tab UUID. This is used to communicate between the current tab and service-worker.
+   */
+  readonly tabId: string;
+
+  /**
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
    */
   ready: Promise<void>;
