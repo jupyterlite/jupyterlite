@@ -118,7 +118,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       try {
         // eslint-disable-next-line no-console
         console.info('Registering new JupyterLite ServiceWorker', workerUrl);
-        registration = await serviceWorker.register(workerUrl);
+        await serviceWorker.register(workerUrl);
 
         // Wait for service worker to be activated
         await new Promise<void>((resolve) => {
@@ -126,6 +126,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
             resolve();
           });
         });
+
+        registration = (await serviceWorker.getRegistration()) || null;
 
         // eslint-disable-next-line no-console
         console.info('JupyterLite ServiceWorker was sucessfully registered');
