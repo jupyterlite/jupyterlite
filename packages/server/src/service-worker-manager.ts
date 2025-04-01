@@ -138,14 +138,26 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     this._setRegistration(registration);
 
-    // transfer the port for communication with the Service Worker
-    void serviceWorker.controller?.postMessage(
-      {
-        type: 'INIT_PORT',
-        tabId: this._tabId,
-      },
-      [this._messageChannel.port2],
-    );
+    if (registration) {
+      let controller = serviceWorker.controller;
+      if (!controller) {
+        await new Promise<void>(resolve => {
+          serviceWorker.addEventListener('controllerchange', () => {
+            resolve();
+          });
+        });
+      }
+      controller = serviceWorker.controller;
+
+      // transfer the port for communication with the Service Worker
+      void controller?.postMessage(
+        {
+          type: 'INIT_PORT',
+          tabId: this._tabId,
+        },
+        [this._messageChannel.port2],
+      );
+    }
 
     if (!registration) {
       this._ready.reject(void 0);
