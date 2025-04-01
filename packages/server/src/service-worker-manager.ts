@@ -158,7 +158,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       window.addEventListener('beforeunload', () => {
         controller.postMessage({
           type: 'DISCONNECT_PORT',
-          tabId: this._tabId
+          tabId: this._tabId,
         });
       });
     }
