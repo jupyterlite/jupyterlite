@@ -124,7 +124,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
         await navigator.serviceWorker.ready;
 
-        registration = (await serviceWorker.getRegistration(workerUrl)) || null;
+        registration = (await serviceWorker.getRegistration()) || null;
 
         // eslint-disable-next-line no-console
         console.info('JupyterLite ServiceWorker was sucessfully registered');
@@ -135,8 +135,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         );
       }
     }
-
-    this._setRegistration(registration);
 
     if (registration) {
       let controller = serviceWorker.controller;
@@ -158,6 +156,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         [this._messageChannel.port2],
       );
     }
+
+    this._setRegistration(registration);
 
     if (!registration) {
       this._ready.reject(void 0);
