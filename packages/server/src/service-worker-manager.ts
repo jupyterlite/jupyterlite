@@ -88,8 +88,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     event: MessageEvent<TDriveRequest<T>>,
   ): Promise<void> => {
     const request = event.data;
+    console.log('received api/drive message', request);
     const response = await this._driveContentsProcessor.processDriveRequest(request);
 
+    console.log('respond api/drive message', response);
     this._messageChannel.port1.postMessage(response);
   };
 
