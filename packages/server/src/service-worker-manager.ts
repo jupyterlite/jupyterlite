@@ -182,7 +182,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       !installedVersion
     ) {
       // eslint-disable-next-line no-console
-      console.info('New version, unregistering existing service workers.');
+      console.info('Unregistering outdated service-workers.');
       const registrations = await navigator.serviceWorker.getRegistrations();
 
       await Promise.all(registrations.map((registration) => registration.unregister()));

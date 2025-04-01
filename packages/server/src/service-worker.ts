@@ -33,8 +33,8 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
 /**
  * Handle installation with the cache
  */
-function onInstall(event: ExtendableEvent): void {
-  void self.skipWaiting();
+async function onInstall(event: ExtendableEvent): Promise<void> {
+  await self.skipWaiting();
   event.waitUntil(cacheAll());
 }
 
