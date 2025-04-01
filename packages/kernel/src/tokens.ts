@@ -115,6 +115,11 @@ export namespace IKernel {
     location: string;
 
     /**
+     * The current tab ID.
+     */
+    tabId?: string;
+
+    /**
      * The method to send messages back to the server.
      */
     sendMessage: SendMessage;
