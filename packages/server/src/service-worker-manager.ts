@@ -120,12 +120,14 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         console.info('Registering new JupyterLite ServiceWorker', workerUrl);
         await serviceWorker.register(workerUrl);
 
-        // Wait for service worker to be activated
-        await new Promise<void>((resolve) => {
-          serviceWorker.addEventListener('controllerchange', () => {
-            resolve();
+        if (!navigator.serviceWorker.controller) {
+          // Wait for service worker to be activated
+          await new Promise<void>((resolve) => {
+            serviceWorker.addEventListener('controllerchange', () => {
+              resolve();
+            });
           });
-        });
+        }
 
         registration = (await serviceWorker.getRegistration(workerUrl)) || null;
 
