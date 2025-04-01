@@ -61,8 +61,8 @@ async function onFetch(event: FetchEvent): Promise<void> {
   }
 
   let responsePromise: Promise<Response> | null = null;
-  if (shouldBroadcast(url)) {
-    responsePromise = broadcastOne(request);
+  if (isDriveRequest(url)) {
+    responsePromise = requestMainThread(request);
   } else if (!shouldDrop(request, url)) {
     responsePromise = maybeFromCache(event);
   }
@@ -121,7 +121,7 @@ async function refetch(request: Request): Promise<Response> {
 /**
  * Whether a given URL should be broadcast
  */
-function shouldBroadcast(url: URL): boolean {
+function isDriveRequest(url: URL): boolean {
   return url.origin === location.origin && url.pathname.includes('/api/drive');
 }
 
@@ -137,9 +137,9 @@ function shouldDrop(request: Request, url: URL): boolean {
 }
 
 /**
- * Forward request to main using the broadcast channel
+ * Forward request to main using the MessageChannel
  */
-async function broadcastOne(request: Request): Promise<Response> {
+async function requestMainThread(request: Request): Promise<Response> {
   const message = await request.json();
 
   const tabId = message.tabId;
