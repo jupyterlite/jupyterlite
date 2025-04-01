@@ -207,6 +207,11 @@ export namespace IWorkerKernel {
      * The base URL of the kernel server.
      */
     baseUrl: string;
+
+    /**
+     * The current tab ID.
+     */
+    tabId?: string;
   }
 }
 
