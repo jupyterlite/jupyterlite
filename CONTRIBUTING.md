@@ -55,6 +55,14 @@ python -m pip install -r requirements-docs.txt -r requirements-lint.txt
 JavaScript to documentation building and link checking. It understands the dependencies
 between different nested _tasks_, usually as files that change on disk.
 
+#### Setup dev installation
+
+To setup the dev installation, just run:
+
+```bash
+doit dev
+```
+
 #### List Tasks
 
 To see all of the _tasks_ available, use the `list` action:
