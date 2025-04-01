@@ -625,6 +625,10 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
+    if (!options.tabId) {
+      throw new Error('Cannot create service-worker API without current tabId');
+    }
+
     return new ServiceWorkerContentsAPI(
       options.baseUrl,
       options.tabId,
@@ -702,7 +706,7 @@ export namespace DriveFS {
     PATH: PATH;
     ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
-    tabId: string;
+    tabId?: string;
     driveName: string;
     mountpoint: string;
   }
