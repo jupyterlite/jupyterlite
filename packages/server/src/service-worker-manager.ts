@@ -88,10 +88,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     event: MessageEvent<TDriveRequest<T>>,
   ): Promise<void> => {
     const request = event.data;
-    console.log('received api/drive message', request);
     const response = await this._driveContentsProcessor.processDriveRequest(request);
 
-    console.log('respond api/drive message', response);
     this._messageChannel.port1.postMessage(response);
   };
 
@@ -138,15 +136,14 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       }
     }
 
-    let controller = serviceWorker.controller;
-    if (!controller) {
+    if (!serviceWorker.controller) {
       await new Promise<void>((resolve) => {
         serviceWorker.addEventListener('controllerchange', () => {
           resolve();
         });
       });
     }
-    controller = serviceWorker.controller;
+    const controller = serviceWorker.controller;
 
     // transfer the port for communication with the Service Worker
     void controller?.postMessage(

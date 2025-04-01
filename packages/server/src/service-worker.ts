@@ -147,9 +147,7 @@ async function requestMainThread(request: Request): Promise<Response> {
   const port = messagePorts[tabId];
 
   if (!port) {
-    return new Response(
-      JSON.stringify({ error: 'Port not initialized.', message, messagePorts
-    }));
+    return new Response(JSON.stringify({ error: 'Port not initialized.' }));
   }
 
   const promise = new Promise<Response>((resolve) => {
