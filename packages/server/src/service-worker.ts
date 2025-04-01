@@ -1,8 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../node_modules/@types/serviceworker/index.d.ts" />
 
-import { PromiseDelegate } from '@lumino/coreutils';
-
 /**
  * The name of the cache
  */
@@ -11,7 +9,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-const messagePorts: { [tabId: string]: PromiseDelegate<MessagePort> } = {};
+const messagePorts: { [tabId: string]: MessagePort } = {};
 
 /**
  * Whether to enable the cache
@@ -26,10 +24,7 @@ self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
 self.addEventListener('message', (event: ExtendableMessageEvent) => {
   if (event.data && event.data.type === 'INIT_PORT') {
-    if (!messagePorts[event.data.tabId]) {
-      messagePorts[event.data.tabId] = new PromiseDelegate();
-    }
-    messagePorts[event.data.tabId].resolve(event.ports[0]);
+    messagePorts[event.data.tabId] = event.ports[0];
   }
 });
 
@@ -149,7 +144,11 @@ async function broadcastOne(request: Request): Promise<Response> {
 
   const tabId = message.tabId;
 
-  const port = await messagePorts[tabId].promise;
+  const port = messagePorts[tabId];
+
+  if (!port) {
+    return new Response(JSON.stringify({error: 'Port not initialized.'}))
+  }
 
   const promise = new Promise<Response>((resolve) => {
     port.onmessage = (event) => {
