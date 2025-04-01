@@ -127,7 +127,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
           });
         });
 
-        registration = (await serviceWorker.getRegistration()) || null;
+        registration = (await serviceWorker.getRegistration(workerUrl)) || null;
 
         // eslint-disable-next-line no-console
         console.info('JupyterLite ServiceWorker was sucessfully registered');
