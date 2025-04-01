@@ -176,7 +176,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     // and unregister all service workers if they are different.
     const installedVersion = localStorage.getItem(versionKey);
 
-    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
+    if (!navigator.serviceWorker.controller || (installedVersion && installedVersion !== VERSION) || !installedVersion) {
       // eslint-disable-next-line no-console
       console.info('New version, unregistering existing service workers.');
       const registrations = await navigator.serviceWorker.getRegistrations();
