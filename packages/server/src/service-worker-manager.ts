@@ -121,7 +121,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         registration = await serviceWorker.register(workerUrl);
 
         // Wait for service worker to be activated
-        await new Promise<void>(resolve => {
+        await new Promise<void>((resolve) => {
           serviceWorker.addEventListener('controllerchange', () => {
             resolve();
           });
@@ -143,7 +143,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     void serviceWorker.controller?.postMessage(
       {
         type: 'INIT_PORT',
-        tabId: this._tabId
+        tabId: this._tabId,
       },
       [this._messageChannel.port2],
     );

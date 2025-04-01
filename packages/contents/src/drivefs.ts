@@ -569,10 +569,12 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     xhr.open('POST', encodeURI(this.endpoint), false);
 
     try {
-      xhr.send(JSON.stringify({
-        tabId: this._tabId,
-        messageData: data
-      }));
+      xhr.send(
+        JSON.stringify({
+          tabId: this._tabId,
+          messageData: data,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }

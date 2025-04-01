@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../node_modules/@types/serviceworker/index.d.ts" />
 
-import { PromiseDelegate } from "@lumino/coreutils";
+import { PromiseDelegate } from '@lumino/coreutils';
 
 /**
  * The name of the cache
@@ -11,7 +11,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-const messagePorts: {[tabId: string]: PromiseDelegate<MessagePort>} = {};
+const messagePorts: { [tabId: string]: PromiseDelegate<MessagePort> } = {};
 
 /**
  * Whether to enable the cache
