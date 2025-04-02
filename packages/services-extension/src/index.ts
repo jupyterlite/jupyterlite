@@ -84,7 +84,10 @@ const defaultDrivePlugin: ServiceManagerPlugin<Contents.IDrive> = {
   provides: IDefaultDrive,
   requires: [ILocalForage],
   activate: async (_: null, forage: ILocalForage): Promise<Contents.IDrive> => {
-    const storageName = PageConfig.getOption('contentsStorageName');
+    const baseUrl = PageConfig.getOption('baseUrl');
+    const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
+    const storageName =
+      PageConfig.getOption('contentsStorageName') ?? defaultStorageName;
     const storageDrivers = JSON.parse(
       PageConfig.getOption('contentsStorageDrivers') || 'null',
     );
