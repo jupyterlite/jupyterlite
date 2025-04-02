@@ -554,7 +554,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     super(options);
 
     this._baseUrl = options.baseUrl;
-    this._tabId = options.tabId;
+    this._windowId = options.windowId;
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
@@ -564,7 +564,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     try {
       xhr.send(
         JSON.stringify({
-          tabId: this._tabId,
+          windowId: this._windowId,
           messageData: data,
         }),
       );
@@ -586,7 +586,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     return `${this._baseUrl}api/drive`;
   }
 
-  private _tabId: string;
+  private _windowId: string;
   private _baseUrl: string;
 }
 
@@ -618,8 +618,8 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
-    if (!options.tabId || !options.baseUrl) {
-      throw new Error('Cannot create service-worker API without current tabId');
+    if (!options.windowId || !options.baseUrl) {
+      throw new Error('Cannot create service-worker API without current windowId');
     }
 
     return new ServiceWorkerContentsAPI(options as ServiceWorkerContentsAPI.IOptions);
@@ -685,7 +685,7 @@ export namespace ContentsAPI {
 export namespace ServiceWorkerContentsAPI {
   export interface IOptions extends ContentsAPI.IOptions {
     baseUrl: string;
-    tabId: string;
+    windowId: string;
   }
 }
 
@@ -717,7 +717,7 @@ export namespace DriveFS {
     PATH: PATH;
     ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
-    tabId?: string;
+    windowId?: string;
     driveName: string;
     mountpoint: string;
   }

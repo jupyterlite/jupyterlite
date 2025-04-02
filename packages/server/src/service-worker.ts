@@ -9,7 +9,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-const messagePorts: { [tabId: string]: MessagePort } = {};
+const messagePorts: { [windowId: string]: MessagePort } = {};
 
 /**
  * Whether to enable the cache
@@ -24,11 +24,11 @@ self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
 self.addEventListener('message', (event: ExtendableMessageEvent) => {
   if (event.data && event.data.type === 'INIT_PORT') {
-    messagePorts[event.data.tabId] = event.ports[0];
+    messagePorts[event.data.windowId] = event.ports[0];
   }
   if (event.data && event.data.type === 'DISCONNECT_PORT') {
-    messagePorts[event.data.tabId].close();
-    delete messagePorts[event.data.tabId];
+    messagePorts[event.data.windowId].close();
+    delete messagePorts[event.data.windowId];
   }
 });
 
@@ -146,9 +146,9 @@ function shouldDrop(request: Request, url: URL): boolean {
 async function requestMainThread(request: Request): Promise<Response> {
   const message = await request.json();
 
-  const tabId = message.tabId;
+  const windowId = message.windowId;
 
-  const port = messagePorts[tabId];
+  const port = messagePorts[windowId];
 
   if (!port) {
     return new Response(JSON.stringify({ error: 'Port not initialized.' }));

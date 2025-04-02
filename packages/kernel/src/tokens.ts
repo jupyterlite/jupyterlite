@@ -117,7 +117,7 @@ export namespace IKernel {
     /**
      * The current tab ID.
      */
-    tabId?: string;
+    windowId?: string;
 
     /**
      * The method to send messages back to the server.
@@ -216,7 +216,7 @@ export namespace IWorkerKernel {
     /**
      * The current tab ID.
      */
-    tabId?: string;
+    windowId?: string;
   }
 }
 

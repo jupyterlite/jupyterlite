@@ -31,7 +31,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
    * Construct a new ServiceWorkerManager.
    */
   constructor(options: IServiceWorkerManager.IOptions) {
-    this._tabId = UUID.uuid4();
+    this._windowId = UUID.uuid4();
     this._messageChannel = new MessageChannel();
 
     // listen to messages from the Service Worker
@@ -63,8 +63,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   /**
    * The current tab id
    */
-  get tabId(): string {
-    return this._tabId;
+  get windowId(): string {
+    return this._windowId;
   }
 
   /**
@@ -150,7 +150,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       void controller.postMessage(
         {
           type: 'INIT_PORT',
-          tabId: this._tabId,
+          windowId: this._windowId,
         },
         [this._messageChannel.port2],
       );
@@ -158,7 +158,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       window.addEventListener('beforeunload', () => {
         controller.postMessage({
           type: 'DISCONNECT_PORT',
-          tabId: this._tabId,
+          windowId: this._windowId,
         });
       });
     }
@@ -219,7 +219,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this._registrationChanged.emit(this._registration);
   }
 
-  private _tabId: string;
+  private _windowId: string;
   private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(

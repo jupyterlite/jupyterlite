@@ -33,7 +33,7 @@ export interface IServiceWorkerManager {
   /**
    * The current tab UUID. This is used to communicate between the current tab and service-worker.
    */
-  readonly tabId: string;
+  readonly windowId: string;
 
   /**
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
