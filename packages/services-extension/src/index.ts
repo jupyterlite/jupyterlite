@@ -87,7 +87,7 @@ const defaultDrivePlugin: ServiceManagerPlugin<Contents.IDrive> = {
     const baseUrl = PageConfig.getOption('baseUrl');
     const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
     const storageName =
-      PageConfig.getOption('contentsStorageName') ?? defaultStorageName;
+      PageConfig.getOption('contentsStorageName') || defaultStorageName;
     const storageDrivers = JSON.parse(
       PageConfig.getOption('contentsStorageDrivers') || 'null',
     );
