@@ -5,12 +5,51 @@ follow to update JupyterLite from one version to another.
 
 ## `0.5.0` to `0.6.0`
 
+⚠️ JupyterLite 0.6.0 comes with a couple of major changes, that may be considered as
+breaking depending on your JupyterLite setup. Please read the following sections
+carefully to check if you are impacted by them ⚠️
+
 ### Extensions
 
 JupyterLite 0.6.0 is based on the JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
 
 This may affect the extensions you are using as they may rely on features added to
 JupyterLab 4.4 and Notebook 7.4.
+
+### Contents
+
+Previously, the default contents manager was storing files in the browser's local
+storage (IndexedDB by default), under the "JupyterLite Storage" key. This had the effect
+of "sharing" files across different deployments of JupyterLite under the same origin,
+leading to some confusions for the users.
+
+Starting with JupyterLite 0.6.0, the default contents manager now uses the base URL in
+the storage key. For example if you have the following two JupyterLite deployments under
+the same origin:
+
+- `https://example.com/lite1`
+- `https://example.com/lite2`
+
+The contents will be stored under the following keys:
+
+- `JupyterLite Storage - /lite1`
+- `JupyterLite Storage - /lite2`
+
+This means that if you or your users had previously created files in one of the
+deployments, they will not be available anymore.
+
+To use the same default name for the contents storage as before, you can set the
+`contentsStorageName` option in your `jupyter-lite.json` file to `JupyterLite Storage`.
+For example:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "contentsStorageName": "JupyterLite Storage"
+  }
+}
+```
 
 ### API Changes
 
