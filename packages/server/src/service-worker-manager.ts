@@ -97,60 +97,47 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
    * Initialize the Service Worker
    */
   private async _initialize(workerUrl: string): Promise<void> {
-    let registration: ServiceWorkerRegistration | null = null;
+    let registration: ServiceWorkerRegistration | undefined = undefined;
 
     if (!navigator.serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
       this._ready.reject(void 0);
       return;
-    } else if (navigator.serviceWorker.controller) {
-      const scriptURL = navigator.serviceWorker.controller.scriptURL;
-      await this._unregisterOldServiceWorkers(scriptURL);
-
-      registration = (await navigator.serviceWorker.getRegistration(scriptURL)) || null;
-      // eslint-disable-next-line no-console
-      console.info('JupyterLite ServiceWorker was already registered');
-    } else {
-      // If serviceWorker.controller is not defined, it's probably a hard refresh so we need to unregister SW
-      // const registrations = await navigator.serviceWorker.getRegistrations();
-      // await Promise.all(registrations.map((registration) => registration.unregister()));;
     }
 
-    if (!registration || (!registration.active && navigator.serviceWorker)) {
-      try {
-        // eslint-disable-next-line no-console
-        console.info('Registering new JupyterLite ServiceWorker', workerUrl);
+    if (await this._serviceWorkerIsOutdated(navigator.serviceWorker.controller?.scriptURL)) {
+      console.log('--- DEBUG SERVICE WORKER OUTDATED, UNREGISTER!');
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+    }
+
+    // Check if service worker is active, if not register and wait for active state
+    registration = await navigator.serviceWorker.getRegistration();
+
+    try {
+      if (!registration || !registration.active) {
         await navigator.serviceWorker.register(workerUrl);
+        if (!navigator.serviceWorker.controller) {
+          await new Promise<void>(resolve => {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+              resolve();
+            });
+          });
+        }
+        this._currentController = navigator.serviceWorker.controller;
 
-        await navigator.serviceWorker.ready;
-
-        registration = (await navigator.serviceWorker.getRegistration()) || null;
-
-        // eslint-disable-next-line no-console
-        console.info('JupyterLite ServiceWorker was sucessfully registered');
-      } catch (err: any) {
-        console.warn(err);
-        console.warn(
-          `JupyterLite ServiceWorker registration unexpectedly failed: ${err}`,
+        console.log(
+          '--- DEBUG Service worker newly registered',
+          await navigator.serviceWorker.getRegistration()
         );
+        localStorage.setItem(`${navigator.serviceWorker.controller?.scriptURL}-version`, VERSION);
+      } else {
+        console.log('--- DEBUG Service worker already registered', registration);
       }
-    }
-
-    if (registration && !navigator.serviceWorker.controller) {
-      console.log('--- DEBUG CONTROLLER NOT YET THERE!');
-      // If the controller is not yet available, wait for it to change
-      await new Promise<void>((resolve) => {
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          console.log('--- DEBUG CONTROLLER CHANGED!', navigator.serviceWorker.controller);
-          if (navigator.serviceWorker.controller) {
-            console.log('--- DEBUG CONTROLLER IS NOW AVAILABLE!');
-            this._currentController = navigator.serviceWorker.controller;
-            resolve();
-          }
-        });
-      });
-    } else {
-      this._currentController = navigator.serviceWorker.controller;
+    } catch (e) {
+      console.error('--- DEBUG Failed to register service worker', e);
+      this._ready.reject(void 0);
+      return;
     }
 
     await this._initPort();
@@ -172,7 +159,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       });
     });
 
-    this._setRegistration(registration);
+    this._setRegistration(registration || null);
 
     if (!registration) {
       this._ready.reject(void 0);
@@ -220,29 +207,17 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
-   * Unregister previous service workers if the version has changed.
+   * Check if current service-worker is outdated.
    */
-  private _unregisterOldServiceWorkers = async (scriptURL: string) => {
+  private _serviceWorkerIsOutdated = async (scriptURL?: string) => {
     const versionKey = `${scriptURL}-version`;
     // Check if we have an installed version. If we do, compare it to the current version
     // and unregister all service workers if they are different.
     const installedVersion = localStorage.getItem(versionKey);
 
-    if (
+    return  !navigator.serviceWorker.controller ||
       (installedVersion && installedVersion !== VERSION) ||
-      !installedVersion
-    ) {
-      // eslint-disable-next-line no-console
-      console.info('Unregistering outdated service-workers.');
-      const registrations = await navigator.serviceWorker.getRegistrations();
-
-      await Promise.all(registrations.map((registration) => registration.unregister()));
-
-      // eslint-disable-next-line no-console
-      console.info('All existing service workers have been unregistered.');
-    }
-
-    localStorage.setItem(versionKey, VERSION);
+      !installedVersion;
   };
 
   /**
