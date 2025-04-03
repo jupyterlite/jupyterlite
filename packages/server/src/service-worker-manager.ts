@@ -105,8 +105,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       return;
     }
 
-    if (await this._serviceWorkerIsOutdated(navigator.serviceWorker.controller?.scriptURL)) {
-      console.log('--- DEBUG SERVICE WORKER OUTDATED, UNREGISTER!');
+    if (
+      await this._serviceWorkerIsOutdated(navigator.serviceWorker.controller?.scriptURL)
+    ) {
       const registrations = await navigator.serviceWorker.getRegistrations();
       await Promise.all(registrations.map((registration) => registration.unregister()));
     }
@@ -124,29 +125,24 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         }
         this._currentController = navigator.serviceWorker.controller;
 
-        console.log(
-          '--- DEBUG Service worker newly registered',
-          await navigator.serviceWorker.getRegistration()
+        localStorage.setItem(
+          `${navigator.serviceWorker.controller?.scriptURL}-version`,
+          VERSION,
         );
-        localStorage.setItem(`${navigator.serviceWorker.controller?.scriptURL}-version`, VERSION);
       } else {
-        console.log('--- DEBUG Service worker already registered', registration);
         this._currentController = navigator.serviceWorker.controller;
       }
     } catch (e) {
-      console.error('--- DEBUG Failed to register service worker', e);
       this._ready.reject(void 0);
       return;
     }
 
     registration = await navigator.serviceWorker.getRegistration();
 
-    console.log('--- DEBUG CURRENT CONTROLER', this._currentController);
     await this._initPort();
 
     // Reconnect upon service-worker change
     navigator.serviceWorker.addEventListener('controllerchange', async () => {
-      console.log('--- DEBUG CONTROLLER CHANGED! INIT PORT AGAIN');
       if (navigator.serviceWorker.controller) {
         this._currentController = navigator.serviceWorker.controller;
         await this._initPort();
@@ -174,7 +170,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   private async _initPort() {
     if (this._currentController) {
       if (this._currentController.state === 'activated') {
-        console.log('--- DEBUG CONTROLLER ALREADY ACTIVATED! INIT PORT');
         void this._currentController.postMessage(
           {
             type: 'INIT_PORT',
@@ -184,7 +179,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         );
       } else {
         await new Promise<void>((resolve, reject) => {
-          console.log('--- DEBUG WAIT FOR CONTROLLER TO BE ACTIVATED');
           if (!this._currentController) {
             reject('Controller is undefined');
             return;
@@ -192,7 +186,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
           this._currentController.onstatechange = () => {
             if (this._currentController?.state === 'activated') {
-              console.log('--- DEBUG CONTROLLER NOW ACTIVATED! INIT PORT');
               void this._currentController.postMessage(
                 {
                   type: 'INIT_PORT',
@@ -217,9 +210,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     // and unregister all service workers if they are different.
     const installedVersion = localStorage.getItem(versionKey);
 
-    return  !navigator.serviceWorker.controller ||
+    return (
+      !navigator.serviceWorker.controller ||
       (installedVersion && installedVersion !== VERSION) ||
-      !installedVersion;
+      !installedVersion
+    );
   };
 
   /**
