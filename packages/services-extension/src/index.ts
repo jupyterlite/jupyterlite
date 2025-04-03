@@ -315,7 +315,10 @@ const settingsPlugin: ServiceManagerPlugin<Setting.IManager> = {
     forage: ILocalForage,
     serverSettings: ServerConnection.ISettings | null,
   ) => {
-    const storageName = PageConfig.getOption('settingsStorageName');
+    const baseUrl = PageConfig.getOption('baseUrl');
+    const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
+    const storageName =
+      PageConfig.getOption('settingsStorageName') || defaultStorageName;
     const storageDrivers = JSON.parse(
       PageConfig.getOption('settingsStorageDrivers') || 'null',
     );

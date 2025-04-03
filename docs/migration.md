@@ -63,6 +63,25 @@ For example:
 }
 ```
 
+### Settings
+
+Similar to the contents storage mentioned in the section above, the default settings
+storage is now using the base URL in the storage key. This means that if you or your
+users had previously changed a few settings in the interface, for example the theme,
+those settings will not be applied after the update to JupyterLite 0.6.0.
+
+To configure a custom settings storage name, you can set the `settingsStorageName`
+option in your `jupyter-lite.json` file. For example:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "settingsStorageName": "JupyterLite Storage"
+  }
+}
+```
+
 ### API Changes
 
 Prior to version 0.6.0, JupyterLite divided extensions into two categories:
