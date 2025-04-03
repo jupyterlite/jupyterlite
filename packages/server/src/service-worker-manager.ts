@@ -140,6 +140,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       return;
     }
 
+    registration = await navigator.serviceWorker.getRegistration();
+
+    console.log('--- DEBUG CURRENT CONTROLER', this._currentController);
     await this._initPort();
 
     // Reconnect upon service-worker change
