@@ -139,12 +139,23 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (!serviceWorker.controller) {
       await new Promise<void>((resolve) => {
         serviceWorker.addEventListener('controllerchange', () => {
-          resolve();
+          // If the service worker changed (another tab unregister the SW), we need to send the port again
+          if (serviceWorker.controller) {
+            void serviceWorker.controller.postMessage(
+              {
+                type: 'INIT_PORT',
+                windowId: this._windowId,
+              },
+              [this._messageChannel.port2],
+            );
+            resolve();
+          }
         });
       });
     }
     const controller = serviceWorker.controller;
 
+    console.log('--- DEBUG CONTROLLER', controller);
     // transfer the port for communication with the Service Worker
     if (controller) {
       void controller.postMessage(
