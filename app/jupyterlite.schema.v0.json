@@ -101,7 +101,7 @@
           "$ref": "#/definitions/localforage-driver-set"
         },
         "contentsStorageName": {
-          "description": "name used to store Jupyter contents in the browser",
+          "description": "Name used to store Jupyter contents in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
         },
@@ -110,7 +110,7 @@
           "$ref": "#/definitions/localforage-driver-set"
         },
         "settingsStorageName": {
-          "description": "name used to store Jupyter settings in the browser",
+          "description": "Name used to store Jupyter settings in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
         },
