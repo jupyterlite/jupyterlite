@@ -139,26 +139,44 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (!serviceWorker.controller) {
       await new Promise<void>((resolve) => {
         serviceWorker.addEventListener('controllerchange', () => {
-          // If the service worker changed (another tab unregister the SW), we need to send the port again
+          console.log('--- DEBUG CONTROLLER CHANGED!');
           if (serviceWorker.controller) {
-            void serviceWorker.controller.postMessage(
-              {
-                type: 'INIT_PORT',
-                windowId: this._windowId,
-              },
-              [this._messageChannel.port2],
-            );
-            resolve();
+            this._currentController = serviceWorker.controller;
+
+            if (this._currentController.state === 'activated') {
+              console.log('--- DEBUG INIT PORT');
+              void this._currentController.postMessage(
+                {
+                  type: 'INIT_PORT',
+                  windowId: this._windowId,
+                },
+                [this._messageChannel.port2],
+              );
+              resolve();
+            } else {
+              this._currentController.onstatechange = () => {
+                if (this._currentController?.state === 'activated') {
+                  console.log('--- DEBUG INIT PORT');
+                  void this._currentController.postMessage(
+                    {
+                      type: 'INIT_PORT',
+                      windowId: this._windowId,
+                    },
+                    [this._messageChannel.port2],
+                  );
+                  resolve();
+                }
+              };
+            }
           }
         });
       });
     }
-    const controller = serviceWorker.controller;
 
-    console.log('--- DEBUG CONTROLLER', controller);
+    console.log('--- DEBUG CONTROLLER', this._currentController);
     // transfer the port for communication with the Service Worker
-    if (controller) {
-      void controller.postMessage(
+    if (this._currentController) {
+      void this._currentController.postMessage(
         {
           type: 'INIT_PORT',
           windowId: this._windowId,
@@ -167,7 +185,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       );
 
       window.addEventListener('beforeunload', () => {
-        controller.postMessage({
+        this._currentController?.postMessage({
           type: 'DISCONNECT_PORT',
           windowId: this._windowId,
         });
@@ -230,6 +248,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this._registrationChanged.emit(this._registration);
   }
 
+  private _currentController: ServiceWorker | undefined = undefined;
   private _windowId: string;
   private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
