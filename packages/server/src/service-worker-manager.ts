@@ -136,61 +136,40 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       }
     }
 
-    if (!serviceWorker.controller) {
+    if (registration && !serviceWorker.controller) {
+      console.log('--- DEBUG CONTROLLER NOT YET THERE!');
+      // If the controller is not yet available, wait for it to change
       await new Promise<void>((resolve) => {
         serviceWorker.addEventListener('controllerchange', () => {
-          console.log('--- DEBUG CONTROLLER CHANGED!');
           if (serviceWorker.controller) {
+            console.log('--- DEBUG CONTROLLER IS NOW AVAILABLE!');
             this._currentController = serviceWorker.controller;
-
-            if (this._currentController.state === 'activated') {
-              console.log('--- DEBUG INIT PORT');
-              void this._currentController.postMessage(
-                {
-                  type: 'INIT_PORT',
-                  windowId: this._windowId,
-                },
-                [this._messageChannel.port2],
-              );
-              resolve();
-            } else {
-              this._currentController.onstatechange = () => {
-                if (this._currentController?.state === 'activated') {
-                  console.log('--- DEBUG INIT PORT');
-                  void this._currentController.postMessage(
-                    {
-                      type: 'INIT_PORT',
-                      windowId: this._windowId,
-                    },
-                    [this._messageChannel.port2],
-                  );
-                  resolve();
-                }
-              };
-            }
+            resolve();
           }
         });
       });
+    } else {
+      this._currentController = serviceWorker.controller;
     }
 
-    console.log('--- DEBUG CONTROLLER', this._currentController);
-    // transfer the port for communication with the Service Worker
-    if (this._currentController) {
-      void this._currentController.postMessage(
-        {
-          type: 'INIT_PORT',
-          windowId: this._windowId,
-        },
-        [this._messageChannel.port2],
-      );
+    await this._initPort();
 
-      window.addEventListener('beforeunload', () => {
-        this._currentController?.postMessage({
-          type: 'DISCONNECT_PORT',
-          windowId: this._windowId,
-        });
+    // Reconnect upon service-worker change
+    serviceWorker.addEventListener('controllerchange', async () => {
+      console.log('--- DEBUG CONTROLLER CHANGED! INIT PORT AGAIN');
+      if (serviceWorker.controller) {
+        this._currentController = serviceWorker.controller;
+        await this._initPort();
+      }
+    });
+
+    // Disconnect port upon tab closing
+    window.addEventListener('beforeunload', () => {
+      this._currentController?.postMessage({
+        type: 'DISCONNECT_PORT',
+        windowId: this._windowId,
       });
-    }
+    });
 
     this._setRegistration(registration);
 
@@ -199,6 +178,43 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     } else {
       this._ready.resolve(void 0);
       setTimeout(this._pingServiceWorker, 20000);
+    }
+  }
+
+  private async _initPort() {
+    if (this._currentController) {
+      if (this._currentController.state === 'activated') {
+        console.log('--- DEBUG CONTROLLER ALREADY ACTIVATED! INIT PORT');
+        void this._currentController.postMessage(
+          {
+            type: 'INIT_PORT',
+            windowId: this._windowId,
+          },
+          [this._messageChannel.port2],
+        );
+      } else {
+        await new Promise<void>((resolve, reject) => {
+          console.log('--- DEBUG WAIT FOR CONTROLLER TO BE ACTIVATED');
+          if (!this._currentController) {
+            reject('Controller is undefined');
+            return;
+          }
+
+          this._currentController.onstatechange = () => {
+            if (this._currentController?.state === 'activated') {
+              console.log('--- DEBUG CONTROLLER NOW ACTIVATED! INIT PORT');
+              void this._currentController.postMessage(
+                {
+                  type: 'INIT_PORT',
+                  windowId: this._windowId,
+                },
+                [this._messageChannel.port2],
+              );
+              resolve();
+            }
+          };
+        });
+      }
     }
   }
 
@@ -248,7 +264,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     this._registrationChanged.emit(this._registration);
   }
 
-  private _currentController: ServiceWorker | undefined = undefined;
+  private _currentController: ServiceWorker | null = null;
   private _windowId: string;
   private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
