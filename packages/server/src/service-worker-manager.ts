@@ -133,6 +133,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         localStorage.setItem(`${navigator.serviceWorker.controller?.scriptURL}-version`, VERSION);
       } else {
         console.log('--- DEBUG Service worker already registered', registration);
+        this._currentController = navigator.serviceWorker.controller;
       }
     } catch (e) {
       console.error('--- DEBUG Failed to register service worker', e);
