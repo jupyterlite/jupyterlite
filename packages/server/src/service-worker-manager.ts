@@ -112,8 +112,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       console.info('JupyterLite ServiceWorker was already registered');
     } else {
       // If serviceWorker.controller is not defined, it's probably a hard refresh so we need to unregister SW
-      const registrations = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(registrations.map((registration) => registration.unregister()));;
+      // const registrations = await navigator.serviceWorker.getRegistrations();
+      // await Promise.all(registrations.map((registration) => registration.unregister()));;
     }
 
     if (!registration || (!registration.active && navigator.serviceWorker)) {
