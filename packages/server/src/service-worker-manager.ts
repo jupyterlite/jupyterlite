@@ -117,12 +117,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     try {
       if (!registration || !registration.active) {
         await navigator.serviceWorker.register(workerUrl);
+        await navigator.serviceWorker.ready;
         if (!navigator.serviceWorker.controller) {
-          await new Promise<void>(resolve => {
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-              resolve();
-            });
-          });
+          // This happens upon hard refresh if other tabs are open, we need to reload the page
+          window.location.reload();
         }
         this._currentController = navigator.serviceWorker.controller;
 

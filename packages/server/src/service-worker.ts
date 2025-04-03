@@ -39,7 +39,7 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
  */
 async function onInstall(event: ExtendableEvent): Promise<void> {
   event.waitUntil(cacheAll());
-  // await self.skipWaiting();
+  await self.skipWaiting();
 }
 
 /**
