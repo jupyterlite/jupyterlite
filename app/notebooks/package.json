@@ -209,6 +209,7 @@
       "@jupyterlab/help-extension",
       "@jupyterlab/javascript-extension",
       "@jupyterlab/json-extension",
+      "@jupyterlab/logconsole-extension",
       "@jupyterlab/lsp-extension",
       "@jupyterlab/mainmenu-extension",
       "@jupyterlab/markedparser-extension",
