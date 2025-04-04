@@ -1,5 +1,7 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
+import { showDialog } from '@jupyterlab/apputils';
+
 import { PromiseDelegate, UUID } from '@lumino/coreutils';
 
 import { ISignal, Signal } from '@lumino/signaling';
@@ -120,7 +122,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         await navigator.serviceWorker.register(workerUrl);
         await navigator.serviceWorker.ready;
         if (!navigator.serviceWorker.controller) {
-          // This happens upon hard refresh if other tabs are open, we need to reload the page
+          // This happens upon hard refresh, the service worker doesn't take over the page, we need to reload the page
           window.location.reload();
         }
         this._currentController = navigator.serviceWorker.controller;
@@ -178,6 +180,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   private async _initPort() {
     if (this._currentController) {
       if (this._currentController.state === 'activated') {
+        // In Chrome, this works well when the _currentController changed, it activates right away
         console.log('--- DEBUG CONTROLLER ALREADY ACTIVATED! INIT PORT');
         void this._currentController.postMessage(
           {
@@ -187,27 +190,15 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
           [this._messageChannel.port2],
         );
       } else {
-        await new Promise<void>((resolve, reject) => {
-          console.log('--- DEBUG WAIT FOR CONTROLLER TO BE ACTIVATED');
-          if (!this._currentController) {
-            reject('Controller is undefined');
-            return;
-          }
-
-          this._currentController.onstatechange = () => {
-            if (this._currentController?.state === 'activated') {
-              console.log('--- DEBUG CONTROLLER NOW ACTIVATED! INIT PORT');
-              void this._currentController.postMessage(
-                {
-                  type: 'INIT_PORT',
-                  windowId: this._windowId,
-                },
-                [this._messageChannel.port2],
-              );
-              resolve();
-            }
-          };
+        // In Firefox, this doesn't work well when the _currentController changed, it never activates, we need to refresh
+        const refresh = await showDialog({
+          title: 'The page needs to be refreshed',
+          body: 'The current page is outdated. It needs to be refreshed in order for kernels to work. Refresh now?',
         });
+        if (!refresh.button.accept) {
+          return;
+        }
+        window.location.reload();
       }
     }
   }
