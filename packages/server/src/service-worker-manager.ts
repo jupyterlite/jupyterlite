@@ -127,32 +127,24 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         }
         this._currentController = navigator.serviceWorker.controller;
 
-        console.log(
-          '--- DEBUG Service worker newly registered',
-          await navigator.serviceWorker.getRegistration(),
-        );
         localStorage.setItem(
           `${navigator.serviceWorker.controller?.scriptURL}-version`,
           VERSION,
         );
       } else {
-        console.log('--- DEBUG Service worker already registered', registration);
         this._currentController = navigator.serviceWorker.controller;
       }
     } catch (e) {
-      console.error('--- DEBUG Failed to register service worker', e);
       this._ready.reject(void 0);
       return;
     }
 
     registration = await navigator.serviceWorker.getRegistration();
 
-    console.log('--- DEBUG CURRENT CONTROLER', this._currentController);
     await this._initPort();
 
     // Reconnect upon service-worker change
     navigator.serviceWorker.addEventListener('controllerchange', async () => {
-      console.log('--- DEBUG CONTROLLER CHANGED! INIT PORT AGAIN');
       if (navigator.serviceWorker.controller) {
         this._currentController = navigator.serviceWorker.controller;
         await this._initPort();
@@ -181,7 +173,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (this._currentController) {
       if (this._currentController.state === 'activated') {
         // In Chrome, this works well when the _currentController changed, it activates right away
-        console.log('--- DEBUG CONTROLLER ALREADY ACTIVATED! INIT PORT');
         void this._currentController.postMessage(
           {
             type: 'INIT_PORT',
