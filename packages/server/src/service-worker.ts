@@ -9,16 +9,7 @@ const CACHE = 'precache';
 /**
  * Communication channel for drive access
  */
-let messagePort: MessagePort;
-
-const ready: Promise<void> = new Promise((resolve) => {
-  self.addEventListener('message', (event: ExtendableMessageEvent) => {
-    if (event.data && event.data.type === 'INIT_PORT') {
-      messagePort = event.ports[0];
-      resolve();
-    }
-  });
-});
+const messagePorts: { [windowId: string]: MessagePort } = {};
 
 /**
  * Whether to enable the cache
@@ -31,15 +22,28 @@ let enableCache = false;
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
+self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  if (event.data && event.data.type === 'INIT_PORT') {
+    messagePorts[event.data.windowId] = event.ports[0];
+  }
+  if (
+    event.data &&
+    event.data.type === 'DISCONNECT_PORT' &&
+    messagePorts[event.data.windowId]
+  ) {
+    messagePorts[event.data.windowId].close();
+    delete messagePorts[event.data.windowId];
+  }
+});
 
 // Event handlers
 
 /**
  * Handle installation with the cache
  */
-function onInstall(event: ExtendableEvent): void {
-  void self.skipWaiting();
+async function onInstall(event: ExtendableEvent): Promise<void> {
   event.waitUntil(cacheAll());
+  await self.skipWaiting();
 }
 
 /**
@@ -65,8 +69,8 @@ async function onFetch(event: FetchEvent): Promise<void> {
   }
 
   let responsePromise: Promise<Response> | null = null;
-  if (shouldBroadcast(url)) {
-    responsePromise = broadcastOne(request);
+  if (isDriveRequest(url)) {
+    responsePromise = requestMainThread(request);
   } else if (!shouldDrop(request, url)) {
     responsePromise = maybeFromCache(event);
   }
@@ -125,7 +129,7 @@ async function refetch(request: Request): Promise<Response> {
 /**
  * Whether a given URL should be broadcast
  */
-function shouldBroadcast(url: URL): boolean {
+function isDriveRequest(url: URL): boolean {
   return url.origin === location.origin && url.pathname.includes('/api/drive');
 }
 
@@ -141,19 +145,26 @@ function shouldDrop(request: Request, url: URL): boolean {
 }
 
 /**
- * Forward request to main using the broadcast channel
+ * Forward request to main using the MessageChannel
  */
-async function broadcastOne(request: Request): Promise<Response> {
-  await ready;
+async function requestMainThread(request: Request): Promise<Response> {
+  const message = await request.json();
+
+  const windowId = message.windowId;
+
+  const port = messagePorts[windowId];
+
+  if (!port) {
+    return new Response(JSON.stringify({ error: 'Port not initialized.' }));
+  }
 
   const promise = new Promise<Response>((resolve) => {
-    messagePort.onmessage = (event) => {
+    port.onmessage = (event) => {
       resolve(new Response(JSON.stringify(event.data)));
     };
   });
 
-  const message = await request.json();
-  messagePort.postMessage(message);
+  port.postMessage(message.messageData);
 
   return await promise;
 }

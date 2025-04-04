@@ -386,12 +386,12 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * ContentsAPI base class
  */
 export abstract class ContentsAPI {
-  constructor(driveName: string, mountpoint: string, FS: FS, ERRNO_CODES: ERRNO_CODES) {
-    this._driveName = driveName;
-    this._mountpoint = mountpoint;
+  constructor(options: ContentsAPI.IOptions) {
+    this._driveName = options.driveName;
+    this._mountpoint = options.mountpoint;
 
-    this.FS = FS;
-    this.ERRNO_CODES = ERRNO_CODES;
+    this.FS = options.FS;
+    this.ERRNO_CODES = options.ERRNO_CODES;
   }
 
   lookup(path: string): DriveFS.ILookup {
@@ -550,16 +550,11 @@ export abstract class ContentsAPI {
  * An Emscripten-compatible synchronous Contents API using the service worker.
  */
 export class ServiceWorkerContentsAPI extends ContentsAPI {
-  constructor(
-    baseUrl: string,
-    driveName: string,
-    mountpoint: string,
-    FS: FS,
-    ERRNO_CODES: ERRNO_CODES,
-  ) {
-    super(driveName, mountpoint, FS, ERRNO_CODES);
+  constructor(options: ServiceWorkerContentsAPI.IOptions) {
+    super(options);
 
-    this._baseUrl = baseUrl;
+    this._baseUrl = options.baseUrl;
+    this._windowId = options.windowId;
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
@@ -567,7 +562,12 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     xhr.open('POST', encodeURI(this.endpoint), false);
 
     try {
-      xhr.send(JSON.stringify(data));
+      xhr.send(
+        JSON.stringify({
+          windowId: this._windowId,
+          messageData: data,
+        }),
+      );
     } catch (e) {
       console.error(e);
     }
@@ -586,6 +586,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     return `${this._baseUrl}api/drive`;
   }
 
+  private _windowId: string;
   private _baseUrl: string;
 }
 
@@ -617,13 +618,11 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
-    return new ServiceWorkerContentsAPI(
-      options.baseUrl,
-      options.driveName,
-      options.mountpoint,
-      options.FS,
-      options.ERRNO_CODES,
-    );
+    if (!options.windowId || !options.baseUrl) {
+      throw new Error('Cannot create service-worker API without current windowId');
+    }
+
+    return new ServiceWorkerContentsAPI(options as ServiceWorkerContentsAPI.IOptions);
   }
 
   mount(mount: any): IEmscriptenFSNode {
@@ -666,6 +665,31 @@ export class DriveFS {
 }
 
 /**
+ * A namespace for ContentsAPI configurations, etc.
+ */
+export namespace ContentsAPI {
+  /**
+   * Initialization options for a contents API;
+   */
+  export interface IOptions {
+    driveName: string;
+    mountpoint: string;
+    FS: FS;
+    ERRNO_CODES: ERRNO_CODES;
+  }
+}
+
+/**
+ * A namespace for ServiceWorkerContentsAPI configurations, etc.
+ */
+export namespace ServiceWorkerContentsAPI {
+  export interface IOptions extends ContentsAPI.IOptions {
+    baseUrl: string;
+    windowId: string;
+  }
+}
+
+/**
  * A namespace for DriveFS configurations, etc.
  */
 export namespace DriveFS {
@@ -693,6 +717,7 @@ export namespace DriveFS {
     PATH: PATH;
     ERRNO_CODES: ERRNO_CODES;
     baseUrl: string;
+    windowId?: string;
     driveName: string;
     mountpoint: string;
   }

@@ -115,6 +115,11 @@ export namespace IKernel {
     location: string;
 
     /**
+     * The current tab ID.
+     */
+    windowId?: string;
+
+    /**
      * The method to send messages back to the server.
      */
     sendMessage: SendMessage;
@@ -207,6 +212,11 @@ export namespace IWorkerKernel {
      * The base URL of the kernel server.
      */
     baseUrl: string;
+
+    /**
+     * The current tab ID.
+     */
+    windowId?: string;
   }
 }
 
