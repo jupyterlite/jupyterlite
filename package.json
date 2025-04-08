@@ -82,7 +82,7 @@
     "rimraf": "^5.0.1",
     "shell-quote": "^1.8.1",
     "svgo": "^3.0.1",
-    "typedoc": "~0.23.21",
+    "typedoc": "~0.28.2",
     "typedoc-plugin-markdown": "~4.6.1",
     "typescript": "~5.5.4"
   },
