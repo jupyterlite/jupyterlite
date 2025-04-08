@@ -24,5 +24,8 @@
   "name": "@jupyterlite",
   "out": "build/typedoc",
   "readme": "none",
-  "tsconfig": "tsconfig.typedoc.json"
+  "tsconfig": "tsconfig.typedoc.json",
+  "plugin": [
+    "typedoc-plugin-markdown"
+  ]
 }
