@@ -25,7 +25,5 @@
   "out": "build/typedoc",
   "readme": "none",
   "tsconfig": "tsconfig.typedoc.json",
-  "plugin": [
-    "typedoc-plugin-markdown"
-  ]
+  "plugin": ["typedoc-plugin-markdown"]
 }
