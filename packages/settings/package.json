@@ -46,7 +46,7 @@
     "@jupyterlab/coreutils": "~6.4.0",
     "@jupyterlab/settingregistry": "~4.4.0",
     "@jupyterlite/localforage": "^0.6.0-alpha.7",
-    "@lumino/coreutils": "^2.2.0",
+    "@lumino/coreutils": "^2.2.1",
     "json5": "^2.2.0",
     "localforage": "^1.9.0"
   },

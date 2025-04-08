@@ -38,7 +38,7 @@
     "@jupyterlite/localforage": "^0.6.0-alpha.7",
     "@jupyterlite/session": "^0.6.0-alpha.7",
     "@jupyterlite/settings": "^0.6.0-alpha.7",
-    "@lumino/coreutils": "^2.2.0"
+    "@lumino/coreutils": "^2.2.1"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
