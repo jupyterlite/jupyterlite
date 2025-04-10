@@ -3,10 +3,13 @@
 
 import { Contents as ServerContents } from '@jupyterlab/services';
 
+import { UUID } from '@lumino/coreutils';
+
 import { TDriveRequest, DRIVE_API_PATH, TDriveMethod } from './drivefs';
 
-import { IBroadcastChannelWrapper } from './tokens';
 import { IDriveContentsProcessor, DriveContentsProcessor } from './drivecontents';
+
+import { IBroadcastChannelWrapper } from './tokens';
 
 /** A broadcaster for the ServiceWorker */
 export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
@@ -14,6 +17,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
   constructor(options: BroadcastChannelWrapper.IOptions) {
     this._contents = options.contents;
+    this._originId = UUID.uuid4();
     this._driveContentsProcessor = new DriveContentsProcessor({
       contentsManager: this._contents,
     });
@@ -78,7 +82,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
   protected _contents: ServerContents.IManager;
   protected _driveContentsProcessor: IDriveContentsProcessor;
   protected _enabled = false;
-  protected _originId = '';
+  protected _originId: string;
 }
 
 /** A namespace for  */
