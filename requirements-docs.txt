@@ -4,7 +4,7 @@
 
 # build
 docutils >=0.18
-jupyterlab >=4.4.0rc0,<4.5
+jupyterlab >=4.4.0,<4.5
 myst-nb >=1
 pydata-sphinx-theme
 sphinx >=5.1,<8.2

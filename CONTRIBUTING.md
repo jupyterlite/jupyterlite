@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=20,<21`
-- `jupyterlab >=4.4.0rc0,<4.5`
+- `jupyterlab >=4.4.0,<4.5`
 - `python >=3.12,<3.13`
 
 Various package managers on different operating systems provide these.
@@ -54,6 +54,14 @@ python -m pip install -r requirements-docs.txt -r requirements-lint.txt
 [`doit`](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
 JavaScript to documentation building and link checking. It understands the dependencies
 between different nested _tasks_, usually as files that change on disk.
+
+#### Setup dev installation
+
+To setup the dev installation, just run:
+
+```bash
+doit dev
+```
 
 #### List Tasks
 
