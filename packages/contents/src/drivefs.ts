@@ -86,6 +86,11 @@ export type TDriveRequest<T extends TDriveMethod> = {
   receiver?: 'broadcast.ts';
 
   /**
+   * A unique ID to identify the origin of this request
+   */
+  originId?: string;
+
+  /**
    * The path to the file/directory for which the request was sent
    */
   path: string;
@@ -561,18 +566,26 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     mountpoint: string,
     FS: FS,
     ERRNO_CODES: ERRNO_CODES,
+    originId?: string,
   ) {
     super(driveName, mountpoint, FS, ERRNO_CODES);
 
     this._baseUrl = baseUrl;
+    this._originId = originId || '';
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
 
+    // Add origin ID to the request
+    const requestWithOriginId = {
+      ...data,
+      originId: this._originId,
+    };
+
     try {
-      xhr.send(JSON.stringify(data));
+      xhr.send(JSON.stringify(requestWithOriginId));
     } catch (e) {
       console.error(e);
     }
@@ -592,6 +605,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
   }
 
   private _baseUrl: string;
+  private _originId: string;
 }
 
 export class DriveFS {
@@ -628,6 +642,7 @@ export class DriveFS {
       options.mountpoint,
       options.FS,
       options.ERRNO_CODES,
+      options.originId,
     );
   }
 
@@ -700,5 +715,6 @@ export namespace DriveFS {
     baseUrl: string;
     driveName: string;
     mountpoint: string;
+    originId?: string;
   }
 }
