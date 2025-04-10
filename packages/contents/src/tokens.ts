@@ -73,4 +73,5 @@ export interface IBroadcastChannelWrapper extends IDisposable {
   enable(): void;
   disable(): void;
   enabled: boolean;
+  originId?: string;
 }
