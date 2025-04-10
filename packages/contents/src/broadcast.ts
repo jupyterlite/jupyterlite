@@ -23,6 +23,10 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
     return this._enabled;
   }
 
+  get originId() {
+    return this._originId;
+  }
+
   enable() {
     if (this._channel) {
       console.warn('BroadcastChannel already created and enabled');
@@ -60,7 +64,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
 
     const request = event.data;
     const receiver = request?.receiver;
-    if (receiver !== 'broadcast.ts') {
+    if (receiver !== 'broadcast.ts' || request.originId !== this._originId) {
       // Message is not meant for us
       return;
     }
@@ -74,6 +78,7 @@ export class BroadcastChannelWrapper implements IBroadcastChannelWrapper {
   protected _contents: ServerContents.IManager;
   protected _driveContentsProcessor: IDriveContentsProcessor;
   protected _enabled = false;
+  protected _originId = '';
 }
 
 /** A namespace for  */

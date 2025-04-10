@@ -146,6 +146,7 @@ async function broadcastOne(request: Request): Promise<Response> {
   // This makes sure we won't get problems with messages
   // across tabs with multiple notebook tabs open
   message.receiver = 'broadcast.ts';
+
   broadcast.postMessage(message);
 
   return await promise;
