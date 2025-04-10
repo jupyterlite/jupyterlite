@@ -107,7 +107,9 @@ class BaseAddon(LoggingConfigurable):
 
         with tempfile.TemporaryDirectory() as td:
             tdp = Path(td)
-            with urllib.request.urlopen(url) as response:  # noqa: S310
+            # set a custom User-Agent to avoid 403 errors with ReadTheDocs
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})  # noqa: S310
+            with urllib.request.urlopen(req) as response:  # noqa: S310
                 tmp_dest = tdp / dest.name
                 with tmp_dest.open("wb") as fd:
                     shutil.copyfileobj(response, fd)
