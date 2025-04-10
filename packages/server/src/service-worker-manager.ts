@@ -1,52 +1,20 @@
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
-
 import { PromiseDelegate } from '@lumino/coreutils';
-
 import { ISignal, Signal } from '@lumino/signaling';
 
-import {
-  DriveContentsProcessor,
-  IDriveContentsProcessor,
-  TDriveMethod,
-  TDriveRequest,
-} from '@jupyterlite/contents';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
-/**
- * The version of the app.
- */
 const VERSION = PageConfig.getOption('appVersion');
-
-/**
- * Used to keep the Service Worker alive.
- */
 const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
-
-/**
- * A class that manages the Service Worker.
- */
 export class ServiceWorkerManager implements IServiceWorkerManager {
-  /**
-   * Construct a new ServiceWorkerManager.
-   */
-  constructor(options: IServiceWorkerManager.IOptions) {
-    this._messageChannel = new MessageChannel();
-
-    // listen to messages from the Service Worker
-    this._messageChannel.port1.onmessage = this._onMessage;
-
-    const contents = options.contents;
-    this._driveContentsProcessor = new DriveContentsProcessor({
-      contentsManager: contents,
-    });
-
+  constructor(options?: IServiceWorkerManager.IOptions) {
     const workerUrl =
       options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     const fullWorkerUrl = new URL(workerUrl, window.location.href);
     const enableCache = PageConfig.getOption('enableServiceWorkerCache') || 'false';
     fullWorkerUrl.searchParams.set('enableCache', enableCache);
-    void this._initialize(fullWorkerUrl.href).catch(console.warn);
+    void this.initialize(fullWorkerUrl.href).catch(console.warn);
   }
 
   /**
@@ -66,40 +34,40 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     return this._registration !== null;
   }
 
-  /**
-   * Whether the ServiceWorker is ready or not.
-   */
   get ready(): Promise<void> {
     return this._ready.promise;
   }
 
-  /**
-   * Handle a message received on the MessageChannel
-   */
-  protected _onMessage = async <T extends TDriveMethod>(
-    event: MessageEvent<TDriveRequest<T>>,
-  ): Promise<void> => {
-    const request = event.data;
-    const response = await this._driveContentsProcessor.processDriveRequest(request);
+  private unregisterOldServiceWorkers = async (scriptURL: string) => {
+    const versionKey = `${scriptURL}-version`;
+    // Check if we have an installed version. If we do, compare it to the current version
+    // and unregister all service workers if they are different.
+    const installedVersion = localStorage.getItem(versionKey);
 
-    this._messageChannel.port1.postMessage(response);
+    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
+      // eslint-disable-next-line no-console
+      console.info('New version, unregistering existing service workers.');
+      const registrations = await navigator.serviceWorker.getRegistrations();
+
+      await Promise.all(registrations.map((registration) => registration.unregister()));
+
+      // eslint-disable-next-line no-console
+      console.info('All existing service workers have been unregistered.');
+    }
+
+    localStorage.setItem(versionKey, VERSION);
   };
 
-  /**
-   * Initialize the Service Worker
-   */
-  private async _initialize(workerUrl: string): Promise<void> {
+  private async initialize(workerUrl: string): Promise<void> {
     const { serviceWorker } = navigator;
 
     let registration: ServiceWorkerRegistration | null = null;
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
-      this._ready.reject(void 0);
-      return;
     } else if (serviceWorker.controller) {
       const scriptURL = serviceWorker.controller.scriptURL;
-      await this._unregisterOldServiceWorkers(scriptURL);
+      await this.unregisterOldServiceWorkers(scriptURL);
 
       registration = (await serviceWorker.getRegistration(scriptURL)) || null;
       // eslint-disable-next-line no-console
@@ -123,14 +91,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     this._setRegistration(registration);
 
-    // transfer the port for communication with the Service Worker
-    void serviceWorker.controller?.postMessage(
-      {
-        type: 'INIT_PORT',
-      },
-      [this._messageChannel.port2],
-    );
-
     if (!registration) {
       this._ready.reject(void 0);
     } else {
@@ -138,33 +98,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       setTimeout(this._pingServiceWorker, 20000);
     }
   }
-
-  /**
-   * Unregister previous service workers if the version has changed.
-   */
-  private _unregisterOldServiceWorkers = async (scriptURL: string) => {
-    const versionKey = `${scriptURL}-version`;
-    // Check if we have an installed version. If we do, compare it to the current version
-    // and unregister all service workers if they are different.
-    const installedVersion = localStorage.getItem(versionKey);
-
-    if ((installedVersion && installedVersion !== VERSION) || !installedVersion) {
-      // eslint-disable-next-line no-console
-      console.info('New version, unregistering existing service workers.');
-      const registrations = await navigator.serviceWorker.getRegistrations();
-
-      await Promise.all(registrations.map((registration) => registration.unregister()));
-
-      // eslint-disable-next-line no-console
-      console.info('All existing service workers have been unregistered.');
-    }
-
-    localStorage.setItem(versionKey, VERSION);
-  };
-
-  /**
-   * Ping the Service Worker to keep it alive.
-   */
   private _pingServiceWorker = async (): Promise<void> => {
     const response = await fetch(SW_PING_ENDPOINT);
     const text = await response.text();
@@ -172,20 +105,14 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       setTimeout(this._pingServiceWorker, 20000);
     }
   };
-
-  /**
-   * Set the Service Worker registration.
-   */
   private _setRegistration(registration: ServiceWorkerRegistration | null) {
     this._registration = registration;
     this._registrationChanged.emit(this._registration);
   }
 
-  private _messageChannel: MessageChannel;
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
     this,
   );
   private _ready = new PromiseDelegate<void>();
-  private _driveContentsProcessor: IDriveContentsProcessor;
 }

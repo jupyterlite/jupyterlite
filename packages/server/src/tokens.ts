@@ -1,5 +1,3 @@
-import { Contents } from '@jupyterlab/services';
-
 import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
@@ -44,11 +42,6 @@ export namespace IServiceWorkerManager {
    * An options object for initializing a worker manager.
    */
   export interface IOptions {
-    /**
-     * The JupyterLab contents manager
-     */
-    contents: Contents.IManager;
-
     /**
      * URL to load the worker file. Default to "{baseURL}/service-worker.js"
      */
