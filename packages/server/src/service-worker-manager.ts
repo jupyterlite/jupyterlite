@@ -123,6 +123,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         await navigator.serviceWorker.ready;
         if (!navigator.serviceWorker.controller) {
           // This happens upon hard refresh, the service worker doesn't take over the page, we need to reload the page
+          console.log('Force a page reload');
           window.location.reload();
         }
         this._currentController = navigator.serviceWorker.controller;
