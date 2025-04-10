@@ -62,11 +62,8 @@ However, you might want to make the following changes to your kernel extension:
 
 #### Service Worker
 
-##### Plugin name
-
 The service worker plugin, used for syncing content between the JupyterLite file browser
-and the kernel when `SharedArrayBuffer` is not available, has been moved to the
-`@jupyterlite/application-extension` package.
+and the kernel, has been moved to the `@jupyterlite/application-extension` package.
 
 If you were disabling the Service Worker in a custom `jupyter-lite.json` file, you will
 need to update the name of the plugin to disable as follows:
@@ -80,32 +77,6 @@ need to update the name of the plugin to disable as follows:
   }
 }
 ```
-
-##### Service Worker communication
-
-In previous versions, the Service Worker was communicating with the main thread using a
-`BroadcastChannel`. That broascast channel was made available to kernels via
-`IBroadcastChannelWrapper` and was provided by the
-`@jupyterlite/server-extension:emscripten-filesystem` plugin.
-
-Starting with JupyterLite 0.6.0, the Service Worker is communicating with the main
-thread with a `MessageChannel` instead. This should help fix some issues with the
-Service Worker when multiple tabs are open.
-
-As a consequence:
-
-- `IBroadcastChannelWrapper` has been removed from the `@jupyterlite/server` package.
-- the `@jupyterlite/server-extension:emscripten-filesystem` plugin has been removed from
-  the `@jupyterlite/server-extension` package.
-
-`IBroadcastChannelWrapper` and the `@jupyterlite/server-extension:emscripten-filesystem`
-plugin were mostly used to provide a way for kernels to access the JupyterLab file
-system. This is now all handled by the
-`@jupyterlite/application-extension:service-worker` plugin and its
-`IServiceWorkerManager` service.
-
-If you have a custom kernel and would like to enable file system access, check out the
-implementation in the [Pyodide kernel](https://github.com/jupyterlite/pyodide-kernel).
 
 #### `@jupyterlite/server`
 
