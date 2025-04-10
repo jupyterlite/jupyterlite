@@ -7,10 +7,10 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../licenses"
+      "path": "../contents"
     },
     {
-      "path": "../server"
+      "path": "../licenses"
     },
     {
       "path": "../translation"
