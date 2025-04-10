@@ -31,14 +31,14 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.4.0-rc.1",
-    "@jupyterlab/services": "~7.4.0-rc.1",
+    "@jupyterlab/coreutils": "~6.4.0",
+    "@jupyterlab/services": "~7.4.0",
     "@jupyterlite/contents": "^0.6.0-alpha.7",
     "@jupyterlite/kernel": "^0.6.0-alpha.7",
     "@jupyterlite/localforage": "^0.6.0-alpha.7",
     "@jupyterlite/session": "^0.6.0-alpha.7",
     "@jupyterlite/settings": "^0.6.0-alpha.7",
-    "@lumino/coreutils": "^2.2.0"
+    "@lumino/coreutils": "^2.2.1"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
