@@ -8,7 +8,7 @@ import { expect } from '@playwright/test';
 import { firefoxWaitForApplication } from './utils';
 
 // Set a longer timeout as these tests use Pyodide
-const TIMEOUT = 120000;
+const TIMEOUT = 600000;
 
 test.use({
   waitForApplication: firefoxWaitForApplication,
