@@ -391,12 +391,12 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * ContentsAPI base class
  */
 export abstract class ContentsAPI {
-  constructor(driveName: string, mountpoint: string, FS: FS, ERRNO_CODES: ERRNO_CODES) {
-    this._driveName = driveName;
-    this._mountpoint = mountpoint;
+  constructor(options: ContentsAPI.IOptions) {
+    this._driveName = options.driveName;
+    this._mountpoint = options.mountpoint;
 
-    this.FS = FS;
-    this.ERRNO_CODES = ERRNO_CODES;
+    this.FS = options.FS;
+    this.ERRNO_CODES = options.ERRNO_CODES;
   }
 
   lookup(path: string): DriveFS.ILookup {
@@ -555,18 +555,11 @@ export abstract class ContentsAPI {
  * An Emscripten-compatible synchronous Contents API using the service worker.
  */
 export class ServiceWorkerContentsAPI extends ContentsAPI {
-  constructor(
-    baseUrl: string,
-    driveName: string,
-    mountpoint: string,
-    FS: FS,
-    ERRNO_CODES: ERRNO_CODES,
-    originId?: string,
-  ) {
-    super(driveName, mountpoint, FS, ERRNO_CODES);
+  constructor(options: ServiceWorkerContentsAPI.IOptions) {
+    super(options);
 
-    this._baseUrl = baseUrl;
-    this._originId = originId || '';
+    this._baseUrl = options.baseUrl;
+    this._originId = options.originId || '';
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
@@ -631,14 +624,11 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
-    return new ServiceWorkerContentsAPI(
-      options.baseUrl,
-      options.driveName,
-      options.mountpoint,
-      options.FS,
-      options.ERRNO_CODES,
-      options.originId,
-    );
+    if (!options.originId || !options.baseUrl) {
+      throw new Error('Cannot create service-worker API without current originId');
+    }
+
+    return new ServiceWorkerContentsAPI(options as ServiceWorkerContentsAPI.IOptions);
   }
 
   mount(mount: any): IEmscriptenFSNode {
@@ -677,6 +667,41 @@ export class DriveFS {
     parts.reverse();
 
     return this.PATH.join.apply(null, parts);
+  }
+}
+
+/**
+ * A namespace for ContentsAPI configurations, etc.
+ */
+export namespace ContentsAPI {
+  /**
+   * Initialization options for a contents API;
+   */
+  export interface IOptions {
+    driveName: string;
+    mountpoint: string;
+    FS: FS;
+    ERRNO_CODES: ERRNO_CODES;
+  }
+}
+
+/**
+ * A namespace for ServiceWorkerContentsAPI configurations, etc.
+ */
+export namespace ServiceWorkerContentsAPI {
+  /**
+   * Initialization options for a service worker contents API
+   */
+  export interface IOptions extends ContentsAPI.IOptions {
+    /**
+     * The base URL;
+     */
+    baseUrl: string;
+
+    /**
+     * The origin ID;
+     */
+    originId: string;
   }
 }
 
