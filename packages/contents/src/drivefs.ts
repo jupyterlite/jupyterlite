@@ -81,11 +81,6 @@ export type TDriveRequest<T extends TDriveMethod> = {
   method: T;
 
   /**
-   * The expected receiver of the request
-   */
-  receiver?: 'broadcast.ts';
-
-  /**
    * A unique ID to identify the origin of this request
    */
   originId?: string;

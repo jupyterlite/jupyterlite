@@ -182,9 +182,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     const request = event.data;
-    const receiver = request?.receiver;
+    const originId = request?.originId;
 
-    if (receiver !== 'broadcast.ts' || request.originId !== this._originId) {
+    if (originId !== this._originId) {
       // Message is not meant for us
       return;
     }
