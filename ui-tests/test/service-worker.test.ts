@@ -40,13 +40,13 @@ test.describe('Service Worker Tests', () => {
     // close the notebook on the first tab
     await page.notebook.close(true);
 
-    // execute all cells in the new tab
-    // TODO: check if Galata can support multiple tabs
+    // Execute all cells in the new tab
+    // TODO: check if Galata can support multiple tabs: https://github.com/jupyterlab/jupyterlab/issues/17471
     await newTab.getByRole('menuitem', { name: 'Run', exact: true }).click();
     await newTab.getByRole('menuitem', { name: 'Run All Cells', exact: true }).click();
 
-    const expectedOutput = 'test_dir/data_99.npy';
     // wait for the execution to finish
+    const expectedOutput = 'test_dir/data_99.npy';
     await expect(newTab.getByText(expectedOutput)).toBeVisible({ timeout: TIMEOUT });
 
     // re-run all the cells in the first tab
@@ -55,6 +55,7 @@ test.describe('Service Worker Tests', () => {
 
     const nCells = await page.notebook.getCellCount();
     const output = await page.notebook.getCellTextOutput(nCells - 1);
+
     expect(output).toBeTruthy();
     expect(output![0]).toContain(expectedOutput);
   });
