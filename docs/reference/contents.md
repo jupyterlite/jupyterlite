@@ -106,11 +106,11 @@ This virtual filesystem allows classical code (like the Python snippet in this e
 to run with little or no changes. Moreover, the virtual filesystem enables developers to
 provide their own mechanisms for handling filesystem I/O through a
 [filesystem API](https://emscripten.org/docs/api_reference/Filesystem-API.html#filesystem-api).
-In the sequence diagram, we simplify the API interaction to a single `put` operation (in reality, multiple
-calls happen when writing a file). As we've plugged in a custom drive implementation
-`DriveFS`, the put resolution becomes the responsibility of that code. The
-implemented logic initiates a POST HTTP request to the `/api/drive` endpoint with a body
-describing the filesystem operation to be performed. In this case, it looks like:
+In the sequence diagram, we simplify the API interaction to a single `put` operation (in
+reality, multiple calls happen when writing a file). As we've plugged in a custom drive
+implementation `DriveFS`, the put resolution becomes the responsibility of that code.
+The implemented logic initiates a POST HTTP request to the `/api/drive` endpoint with a
+body describing the filesystem operation to be performed. In this case, it looks like:
 
 ```json
 {
@@ -120,24 +120,24 @@ describing the filesystem operation to be performed. In this case, it looks like
 }
 ```
 
-This request is captured by the service worker (defined in the
-`@jupyterlite/server` package). The service worker forwards the HTTP request to the
-main thread via a message in a `BroadcastChannel` named `/api/drive.v1`. This message
-is received by the `ServiceWorkerManager` that is instantiated in the plugin
+This request is captured by the service worker (defined in the `@jupyterlite/server`
+package). The service worker forwards the HTTP request to the main thread via a message
+in a `BroadcastChannel` named `/api/drive.v1`. This message is received by the
+`ServiceWorkerManager` that is instantiated in the plugin
 `@jupyterlite/application-extension:service-worker-manager`. The wrapper has access to
 the Jupyter contents manager to handle the request. For example, in the case of a `put`
 operation, the `save` method of the contents manager will be called. The reply is then
-propagated back (through the `BroadcastChannel`, then the network request, and so on) to the
-Emscripten filesystem.
+propagated back (through the `BroadcastChannel`, then the network request, and so on) to
+the Emscripten filesystem.
 
 Since all open tabs for the same origin may listen to messages on the
 `BroadcastChannel`, the request includes a unique identifier (`browsingContextId`) as
 part of its payload to identify the browsing context (i.e., browser tab) where the
-message originates. When the message comes back to the `ServiceWorkerManager`, it
-checks this identifier to ensure the message is for the correct tab.
+message originates. When the message comes back to the `ServiceWorkerManager`, it checks
+this identifier to ensure the message is for the correct tab.
 
-The need to use an HTTP request arises from the constraint of interfacing a synchronous API
-(the Emscripten filesystem) with an asynchronous API (the Jupyter contents manager).
+The need to use an HTTP request arises from the constraint of interfacing a synchronous
+API (the Emscripten filesystem) with an asynchronous API (the Jupyter contents manager).
 
 This architecture makes it possible for lite kernels to access contents from a custom
 [JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html)
