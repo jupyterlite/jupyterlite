@@ -555,6 +555,9 @@ export abstract class ContentsAPI {
  * An Emscripten-compatible synchronous Contents API using the service worker.
  */
 export class ServiceWorkerContentsAPI extends ContentsAPI {
+  /**
+   * Construct a new ServiceWorkerContentsAPI.
+   */
   constructor(options: ServiceWorkerContentsAPI.IOptions) {
     super(options);
 
@@ -678,9 +681,24 @@ export namespace ContentsAPI {
    * Initialization options for a contents API;
    */
   export interface IOptions {
+    /**
+     * The name of the drive to use for the contents API request.
+     */
     driveName: string;
+
+    /**
+     * Where to mount files in the kernel.
+     */
     mountpoint: string;
+
+    /**
+     * The filesystem module API.
+     */
     FS: FS;
+
+    /**
+     * The filesystem error codes.
+     */
     ERRNO_CODES: ERRNO_CODES;
   }
 }

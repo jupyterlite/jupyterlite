@@ -135,6 +135,9 @@ renamed to `BrowserStorageDrive`, and now implements the `IDrive` interface from
 `@jupyterlab/services`. This drive is now provided as the default drive via
 `IDefaultDrive`.
 
+The `ContentsAPI` and `ServiceWorkerContentsAPI` classes now take an `options` object as
+the arguments.
+
 #### `@jupyterlite/licenses`
 
 The `Licenses` class, used for managing licenses in the browser, has seen its API
