@@ -7,13 +7,15 @@ import { expect } from '@playwright/test';
 
 import { firefoxWaitForApplication } from './utils';
 
+// Set a longer timeout as these tests use Pyodide
+const TIMEOUT = 120000;
+
 test.use({
   waitForApplication: firefoxWaitForApplication,
 });
 
 test.describe('Service Worker Tests', () => {
-  // set a longe timeout as these tests use Pyodide
-  test.setTimeout(120000);
+  test.setTimeout(TIMEOUT);
 
   test.beforeEach(async ({ page }) => {
     await page.goto('lab/index.html');
@@ -45,7 +47,7 @@ test.describe('Service Worker Tests', () => {
 
     const expectedOutput = 'test_dir/data_99.npy';
     // wait for the execution to finish
-    await expect(newTab.getByText(expectedOutput)).toBeVisible();
+    await expect(newTab.getByText(expectedOutput)).toBeVisible({ timeout: TIMEOUT });
 
     // re-run all the cells in the first tab
     await page.notebook.open(notebook);
