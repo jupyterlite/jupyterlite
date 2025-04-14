@@ -9,7 +9,8 @@ follow to update JupyterLite from one version to another.
 
 JupyterLite 0.6.0 is based on JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
 
-This update may affect the extensions you are using, as they may rely on features introduced in JupyterLab 4.4 and Notebook 7.4.
+This update may affect the extensions you are using, as they may rely on features
+introduced in JupyterLab 4.4 and Notebook 7.4.
 
 ### API Changes
 
@@ -19,8 +20,8 @@ Prior to version 0.6.0, JupyterLite divided extensions into two categories:
 - "serverlite" extensions, loaded on a separate Lumino application, such as custom
   kernels
 
-To replace default serverlite plugins or add extra "server" functionalities,
-extension authors had to provide a `JupyterLiteServerPlugin`.
+To replace default serverlite plugins or add extra "server" functionalities, extension
+authors had to provide a `JupyterLiteServerPlugin`.
 
 Starting with JupyterLite 0.6.0, all plugins are registered with the same plugin
 registry, including kernels and other "server" plugins such as the kernel and session
@@ -31,7 +32,8 @@ As a result, extensions no longer need to use the `"liteExtensions": true` field
 their `package.json` file. This field was previously used to indicate that an extension
 was a "serverlite" extension.
 
-Below are the changes in the different packages resulting from this architectural change.
+Below are the changes in the different packages resulting from this architectural
+change.
 
 #### How to migrate your kernel
 
@@ -63,8 +65,8 @@ However, you may want to make the following changes to your kernel extension:
 
 ##### Plugin Name
 
-The service worker plugin, which synchronizes content between the JupyterLite file browser
-and the kernel when `SharedArrayBuffer` is not available, has been moved to the
+The service worker plugin, which synchronizes content between the JupyterLite file
+browser and the kernel when `SharedArrayBuffer` is not available, has been moved to the
 `@jupyterlite/application-extension` package.
 
 If you were disabling the Service Worker in a custom `jupyter-lite.json` file, you will
@@ -98,8 +100,8 @@ As a consequence:
   the `@jupyterlite/server-extension` package.
 
 `IBroadcastChannelWrapper` and the `@jupyterlite/server-extension:emscripten-filesystem`
-plugin were primarily used to provide a convenience wrapper around the `BroadcastChannel`
-used for file system access. This functionality is now handled by the
+plugin were primarily used to provide a convenience wrapper around the
+`BroadcastChannel` used for file system access. This functionality is now handled by the
 `@jupyterlite/application-extension:service-worker-manager` plugin and its
 `IServiceWorkerManager` service.
 
@@ -139,8 +141,8 @@ an argument for their `constructor`.
 
 #### `@jupyterlite/licenses`
 
-The `Licenses` class, used for managing licenses in the browser, has undergone significant
-API changes. It now implements the `ILicensesClient` interface from
+The `Licenses` class, used for managing licenses in the browser, has undergone
+significant API changes. It now implements the `ILicensesClient` interface from
 `@jupyterlab/apputils`.
 
 The `@jupyterlite/licenses` package no longer exports any tokens.
