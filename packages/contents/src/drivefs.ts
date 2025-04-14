@@ -83,7 +83,7 @@ export type TDriveRequest<T extends TDriveMethod> = {
   /**
    * A unique ID to identify the origin of this request
    */
-  originId?: string;
+  browsingContextId?: string;
 
   /**
    * The path to the file/directory for which the request was sent
@@ -562,21 +562,21 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     super(options);
 
     this._baseUrl = options.baseUrl;
-    this._originId = options.originId || '';
+    this._browsingContextId = options.browsingContextId || '';
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
 
-    // Add origin ID to the request
-    const requestWithOriginId = {
+    // Add the origin browsing context ID to the request
+    const requestWithBrowsingContextId = {
       ...data,
-      originId: this._originId,
+      browsingContextId: this._browsingContextId,
     };
 
     try {
-      xhr.send(JSON.stringify(requestWithOriginId));
+      xhr.send(JSON.stringify(requestWithBrowsingContextId));
     } catch (e) {
       console.error(e);
     }
@@ -596,7 +596,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
   }
 
   private _baseUrl: string;
-  private _originId: string;
+  private _browsingContextId: string;
 }
 
 export class DriveFS {
@@ -627,8 +627,10 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
-    if (!options.originId || !options.baseUrl) {
-      throw new Error('Cannot create service-worker API without current originId');
+    if (!options.browsingContextId || !options.baseUrl) {
+      throw new Error(
+        'Cannot create service-worker API without current browsingContextId',
+      );
     }
 
     return new ServiceWorkerContentsAPI(options as ServiceWorkerContentsAPI.IOptions);
@@ -712,14 +714,14 @@ export namespace ServiceWorkerContentsAPI {
    */
   export interface IOptions extends ContentsAPI.IOptions {
     /**
-     * The base URL;
+     * The base URL.
      */
     baseUrl: string;
 
     /**
-     * The origin ID;
+     * The ID of the browsing context where the request originated.
      */
-    originId: string;
+    browsingContextId: string;
   }
 }
 
@@ -753,6 +755,6 @@ export namespace DriveFS {
     baseUrl: string;
     driveName: string;
     mountpoint: string;
-    originId?: string;
+    browsingContextId?: string;
   }
 }

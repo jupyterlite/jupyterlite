@@ -41,7 +41,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     fullWorkerUrl.searchParams.set('enableCache', enableCache);
 
     // Initialize broadcast channel related properties
-    this._originId = UUID.uuid4();
+    this._browsingContextId = UUID.uuid4();
     this._contents = options.contents;
     this._broadcastChannel = new BroadcastChannel(DRIVE_API_PATH);
     this._broadcastChannel.addEventListener('message', this._onBroadcastMessage);
@@ -71,10 +71,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
-   * The origin ID used for the broadcast channel communication.
+   * A unique id to identify the browsing context where the ServiceWorkerManager was instantiated.
    */
-  get originId(): string {
-    return this._originId;
+  get browsingContextId(): string {
+    return this._browsingContextId;
   }
 
   /**
@@ -182,9 +182,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     const request = event.data;
-    const originId = request?.originId;
+    const browsingContextId = request?.browsingContextId;
 
-    if (originId !== this._originId) {
+    if (browsingContextId !== this._browsingContextId) {
       // Message is not meant for us
       return;
     }
@@ -199,7 +199,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   );
   private _ready = new PromiseDelegate<void>();
   private _broadcastChannel: BroadcastChannel;
-  private _originId: string;
+  private _browsingContextId: string;
   private _contents: Contents.IManager | undefined;
   private _driveContentsProcessor: DriveContentsProcessor | undefined;
 }

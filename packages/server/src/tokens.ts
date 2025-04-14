@@ -31,9 +31,9 @@ export interface IServiceWorkerManager {
   readonly enabled: boolean;
 
   /**
-   * The unique ID that identifies this broadcast channel instance.
+   * A unique id to identify the browsing context where the ServiceWorkerManager was instantiated.
    */
-  readonly originId: string;
+  readonly browsingContextId: string;
 
   /**
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
