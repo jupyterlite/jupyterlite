@@ -2,6 +2,8 @@ import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
 
+import { Contents } from '@jupyterlab/services';
+
 import SW_URL from './service-worker?text';
 
 /**
@@ -29,6 +31,11 @@ export interface IServiceWorkerManager {
   readonly enabled: boolean;
 
   /**
+   * The unique ID that identifies this broadcast channel instance.
+   */
+  readonly originId: string;
+
+  /**
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
    */
   ready: Promise<void>;
@@ -42,6 +49,11 @@ export namespace IServiceWorkerManager {
    * An options object for initializing a worker manager.
    */
   export interface IOptions {
+    /**
+     * The contents manager to use for handling drive contents requests
+     */
+    contents: Contents.IManager;
+
     /**
      * URL to load the worker file. Default to "{baseURL}/service-worker.js"
      */

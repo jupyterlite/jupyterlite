@@ -123,11 +123,11 @@ describing the filesystem operation to be performed. In this case, it looks like
 That request is meant to be captured by the service worker (defined in the
 `@jupyterlite/server` package). The service worker will forward the HTTP request to the
 main thread via a message in a `BroadcastChannel` named `/api/drive.v1`. That message
-will be captured by the `BroadcastChannelWrapper` that is instantiated in the plugin
-`@jupyterlite/application-extension:emscripten-filesystem`. That wrapper is aware of the
-Jupyter contents manager to answer the request. For example, in the case of a `put`
+will be received by the `ServiceWorkerManager` that is instantiated in the plugin
+`@jupyterlite/application-extension:service-worker-manager`. That wrapper is aware of
+the Jupyter contents manager to answer the request. For example, in the case of a `put`
 operation, the `save` method of contents manager will be called. Then the reply is
-propagated back (through the broadcast channel, then the network request,...) to the
+propagated back (through the `BroadcastChannel`, then the network request,...) to the
 Emscripten filesystem.
 
 The need to use a HTTP request raises to the constrain of answering a synchronous API

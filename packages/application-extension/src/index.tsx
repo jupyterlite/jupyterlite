@@ -38,11 +38,6 @@ import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
-import {
-  BroadcastChannelWrapper,
-  IBroadcastChannelWrapper,
-} from '@jupyterlite/contents';
-
 import { LiteLicensesClient } from '@jupyterlite/licenses';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
@@ -310,54 +305,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 /**
- * A plugin for handling communication with the Emscpriten file system.
- */
-const emscriptenFileSystemPlugin: JupyterFrontEndPlugin<IBroadcastChannelWrapper> = {
-  id: '@jupyterlite/application-extension:emscripten-filesystem',
-  autoStart: true,
-  optional: [IServiceWorkerManager],
-  provides: IBroadcastChannelWrapper,
-  activate: (
-    app: JupyterFrontEnd,
-    serviceWorkerRegistrationWrapper?: IServiceWorkerManager,
-  ): IBroadcastChannelWrapper => {
-    const { contents } = app.serviceManager;
-    const broadcaster = new BroadcastChannelWrapper({ contents });
-    const what = 'Kernel filesystem and JupyterLite contents';
-
-    function logStatus(msg?: string, err?: any) {
-      if (err) {
-        console.warn(err);
-      }
-      if (msg) {
-        console.warn(msg);
-      }
-      if (err || msg) {
-        console.warn(`${what} will NOT be synced`);
-      } else {
-        // eslint-disable-next-line no-console
-        console.info(`${what} will be synced`);
-      }
-    }
-
-    if (!serviceWorkerRegistrationWrapper) {
-      logStatus('JupyterLite ServiceWorker not available');
-    } else {
-      serviceWorkerRegistrationWrapper.ready
-        .then(() => {
-          broadcaster.enable();
-          logStatus();
-        })
-        .catch((err: any) => {
-          logStatus('JupyterLite ServiceWorker failed to become available', err);
-        });
-    }
-
-    return broadcaster;
-  },
-};
-
-/**
  * The client for fetching licenses data.
  */
 const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
@@ -555,12 +502,13 @@ const opener: JupyterFrontEndPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
-  id: '@jupyterlite/application-extension:service-worker',
+const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
+  id: '@jupyterlite/application-extension:service-worker-manager',
   autoStart: true,
   provides: IServiceWorkerManager,
   activate: (app: JupyterFrontEnd) => {
-    return new ServiceWorkerManager();
+    const { contents } = app.serviceManager;
+    return new ServiceWorkerManager({ contents });
   },
 };
 
@@ -684,14 +632,13 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
-  emscriptenFileSystemPlugin,
   licensesClient,
   liteLogo,
   lspConnectionManager,
   notifyCommands,
   opener,
   pluginManagerPlugin,
-  serviceWorkerPlugin,
+  serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
   translatorConnector,
