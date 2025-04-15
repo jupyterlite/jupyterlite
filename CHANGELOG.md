@@ -2,6 +2,36 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a8
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.7...722f097588e47c442b355c8e4ba65f91a975adf9))
+
+### Enhancements made
+
+- Update to JupyterLab `4.4.0rc1` and Notebook `7.4.0rc0` [#1613](https://github.com/jupyterlite/jupyterlite/pull/1613) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- `BroadcastChannel` with identifier to properly send responses from the Service Worker [#1621](https://github.com/jupyterlite/jupyterlite/pull/1621) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Fix typo in notebook requirement [#1623](https://github.com/jupyterlite/jupyterlite/pull/1623) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4 and Jupyter Notebook 7.4 [#1619](https://github.com/jupyterlite/jupyterlite/pull/1619) ([@jtpio](https://github.com/jtpio))
+- Bump vega from 5.31.0 to 5.33.0 in /ui-tests [#1614](https://github.com/jupyterlite/jupyterlite/pull/1614) ([@dependabot](https://github.com/dependabot))
+
+### Documentation improvements
+
+- Add `doit dev` command to CONTRIBUTING docs [#1611](https://github.com/jupyterlite/jupyterlite/pull/1611) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-31&to=2025-04-15&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-03-31..2025-04-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-03-31..2025-04-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-03-31..2025-04-15&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-03-31..2025-04-15&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-03-31..2025-04-15&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a7
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.6...d87faf75238e7fa8c1bffdb08b04009485941c7e))
@@ -15,8 +45,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-27&to=2025-03-31&type=c))
 
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-03-27..2025-03-31&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a6
 
