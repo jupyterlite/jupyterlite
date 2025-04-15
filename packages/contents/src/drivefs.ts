@@ -571,7 +571,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
 
     // Add the origin browsing context ID to the request
     const requestWithBrowsingContextId = {
-      ...data,
+      data,
       browsingContextId: this._browsingContextId,
     };
 

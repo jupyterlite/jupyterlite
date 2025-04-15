@@ -175,21 +175,23 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
    * Handle a message received on the BroadcastChannel
    */
   private _onBroadcastMessage = async <T extends TDriveMethod>(
-    event: MessageEvent<TDriveRequest<T>>,
+    event: MessageEvent<{
+      data: TDriveRequest<T>;
+      browsingContextId: string;
+    }>,
   ): Promise<void> => {
     if (!this._broadcastChannel || !this._driveContentsProcessor) {
       return;
     }
 
-    const request = event.data;
-    const browsingContextId = request?.browsingContextId;
+    const { data, browsingContextId } = event.data;
 
     if (browsingContextId !== this._browsingContextId) {
       // Message is not meant for us
       return;
     }
 
-    const response = await this._driveContentsProcessor.processDriveRequest(request);
+    const response = await this._driveContentsProcessor.processDriveRequest(data);
     this._broadcastChannel.postMessage(response);
   };
 
