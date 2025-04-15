@@ -81,6 +81,11 @@ export type TDriveRequest<T extends TDriveMethod> = {
   method: T;
 
   /**
+   * A unique ID to identify the origin of this request
+   */
+  browsingContextId?: string;
+
+  /**
    * The path to the file/directory for which the request was sent
    */
   path: string;
@@ -386,12 +391,12 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
  * ContentsAPI base class
  */
 export abstract class ContentsAPI {
-  constructor(driveName: string, mountpoint: string, FS: FS, ERRNO_CODES: ERRNO_CODES) {
-    this._driveName = driveName;
-    this._mountpoint = mountpoint;
+  constructor(options: ContentsAPI.IOptions) {
+    this._driveName = options.driveName;
+    this._mountpoint = options.mountpoint;
 
-    this.FS = FS;
-    this.ERRNO_CODES = ERRNO_CODES;
+    this.FS = options.FS;
+    this.ERRNO_CODES = options.ERRNO_CODES;
   }
 
   lookup(path: string): DriveFS.ILookup {
@@ -550,24 +555,28 @@ export abstract class ContentsAPI {
  * An Emscripten-compatible synchronous Contents API using the service worker.
  */
 export class ServiceWorkerContentsAPI extends ContentsAPI {
-  constructor(
-    baseUrl: string,
-    driveName: string,
-    mountpoint: string,
-    FS: FS,
-    ERRNO_CODES: ERRNO_CODES,
-  ) {
-    super(driveName, mountpoint, FS, ERRNO_CODES);
+  /**
+   * Construct a new ServiceWorkerContentsAPI.
+   */
+  constructor(options: ServiceWorkerContentsAPI.IOptions) {
+    super(options);
 
-    this._baseUrl = baseUrl;
+    this._baseUrl = options.baseUrl;
+    this._browsingContextId = options.browsingContextId || '';
   }
 
   request<T extends TDriveMethod>(data: TDriveRequest<T>): TDriveResponse<T> {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
 
+    // Add the origin browsing context ID to the request
+    const requestWithBrowsingContextId = {
+      data,
+      browsingContextId: this._browsingContextId,
+    };
+
     try {
-      xhr.send(JSON.stringify(data));
+      xhr.send(JSON.stringify(requestWithBrowsingContextId));
     } catch (e) {
       console.error(e);
     }
@@ -587,6 +596,7 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
   }
 
   private _baseUrl: string;
+  private _browsingContextId: string;
 }
 
 export class DriveFS {
@@ -617,13 +627,13 @@ export class DriveFS {
    * This is supposed to be overwritten if needed.
    */
   createAPI(options: DriveFS.IOptions): ContentsAPI {
-    return new ServiceWorkerContentsAPI(
-      options.baseUrl,
-      options.driveName,
-      options.mountpoint,
-      options.FS,
-      options.ERRNO_CODES,
-    );
+    if (!options.browsingContextId || !options.baseUrl) {
+      throw new Error(
+        'Cannot create service-worker API without current browsingContextId',
+      );
+    }
+
+    return new ServiceWorkerContentsAPI(options as ServiceWorkerContentsAPI.IOptions);
   }
 
   mount(mount: any): IEmscriptenFSNode {
@@ -666,6 +676,56 @@ export class DriveFS {
 }
 
 /**
+ * A namespace for ContentsAPI configurations, etc.
+ */
+export namespace ContentsAPI {
+  /**
+   * Initialization options for a contents API;
+   */
+  export interface IOptions {
+    /**
+     * The name of the drive to use for the contents API request.
+     */
+    driveName: string;
+
+    /**
+     * Where to mount files in the kernel.
+     */
+    mountpoint: string;
+
+    /**
+     * The filesystem module API.
+     */
+    FS: FS;
+
+    /**
+     * The filesystem error codes.
+     */
+    ERRNO_CODES: ERRNO_CODES;
+  }
+}
+
+/**
+ * A namespace for ServiceWorkerContentsAPI configurations, etc.
+ */
+export namespace ServiceWorkerContentsAPI {
+  /**
+   * Initialization options for a service worker contents API
+   */
+  export interface IOptions extends ContentsAPI.IOptions {
+    /**
+     * The base URL.
+     */
+    baseUrl: string;
+
+    /**
+     * The ID of the browsing context where the request originated.
+     */
+    browsingContextId: string;
+  }
+}
+
+/**
  * A namespace for DriveFS configurations, etc.
  */
 export namespace DriveFS {
@@ -695,5 +755,6 @@ export namespace DriveFS {
     baseUrl: string;
     driveName: string;
     mountpoint: string;
+    browsingContextId?: string;
   }
 }

@@ -1,51 +1,55 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { PromiseDelegate } from '@lumino/coreutils';
-
-import { ISignal, Signal } from '@lumino/signaling';
+import { Contents } from '@jupyterlab/services';
 
 import {
+  DRIVE_API_PATH,
   DriveContentsProcessor,
-  IDriveContentsProcessor,
   TDriveMethod,
   TDriveRequest,
 } from '@jupyterlite/contents';
 
+import { PromiseDelegate, UUID } from '@lumino/coreutils';
+
+import { ISignal, Signal } from '@lumino/signaling';
+
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
 
 /**
- * The version of the app.
+ * The version of the app
  */
 const VERSION = PageConfig.getOption('appVersion');
 
 /**
- * Used to keep the Service Worker alive.
+ * Used to keep the service worker alive
  */
 const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
 
 /**
- * A class that manages the Service Worker.
+ * A class that manages the ServiceWorker registration and communication,
+ * used for accessing the file system.
  */
 export class ServiceWorkerManager implements IServiceWorkerManager {
   /**
    * Construct a new ServiceWorkerManager.
    */
   constructor(options: IServiceWorkerManager.IOptions) {
-    this._messageChannel = new MessageChannel();
-
-    // listen to messages from the Service Worker
-    this._messageChannel.port1.onmessage = this._onMessage;
-
-    const contents = options.contents;
-    this._driveContentsProcessor = new DriveContentsProcessor({
-      contentsManager: contents,
-    });
-
     const workerUrl =
-      options?.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
+      options.workerUrl ?? URLExt.join(PageConfig.getBaseUrl(), WORKER_NAME);
     const fullWorkerUrl = new URL(workerUrl, window.location.href);
     const enableCache = PageConfig.getOption('enableServiceWorkerCache') || 'false';
     fullWorkerUrl.searchParams.set('enableCache', enableCache);
+
+    // Initialize broadcast channel related properties
+    this._browsingContextId = UUID.uuid4();
+    this._contents = options.contents;
+    this._broadcastChannel = new BroadcastChannel(DRIVE_API_PATH);
+    this._broadcastChannel.addEventListener('message', this._onBroadcastMessage);
+
+    this._driveContentsProcessor = new DriveContentsProcessor({
+      contentsManager: this._contents,
+    });
+
     void this._initialize(fullWorkerUrl.href).catch(console.warn);
   }
 
@@ -67,6 +71,13 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
+   * A unique id to identify the browsing context where the ServiceWorkerManager was instantiated.
+   */
+  get browsingContextId(): string {
+    return this._browsingContextId;
+  }
+
+  /**
    * Whether the ServiceWorker is ready or not.
    */
   get ready(): Promise<void> {
@@ -74,19 +85,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
-   * Handle a message received on the MessageChannel
-   */
-  protected _onMessage = async <T extends TDriveMethod>(
-    event: MessageEvent<TDriveRequest<T>>,
-  ): Promise<void> => {
-    const request = event.data;
-    const response = await this._driveContentsProcessor.processDriveRequest(request);
-
-    this._messageChannel.port1.postMessage(response);
-  };
-
-  /**
-   * Initialize the Service Worker
+   * Initialize the ServiceWorkerManager.
    */
   private async _initialize(workerUrl: string): Promise<void> {
     const { serviceWorker } = navigator;
@@ -95,7 +94,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     if (!serviceWorker) {
       console.warn('ServiceWorkers not supported in this browser');
-      this._ready.reject(void 0);
       return;
     } else if (serviceWorker.controller) {
       const scriptURL = serviceWorker.controller.scriptURL;
@@ -123,14 +121,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
     this._setRegistration(registration);
 
-    // transfer the port for communication with the Service Worker
-    void serviceWorker.controller?.postMessage(
-      {
-        type: 'INIT_PORT',
-      },
-      [this._messageChannel.port2],
-    );
-
     if (!registration) {
       this._ready.reject(void 0);
     } else {
@@ -140,9 +130,9 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
-   * Unregister previous service workers if the version has changed.
+   * Unregister old service workers if the version has changed.
    */
-  private _unregisterOldServiceWorkers = async (scriptURL: string) => {
+  private async _unregisterOldServiceWorkers(scriptURL: string): Promise<void> {
     const versionKey = `${scriptURL}-version`;
     // Check if we have an installed version. If we do, compare it to the current version
     // and unregister all service workers if they are different.
@@ -160,32 +150,58 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     localStorage.setItem(versionKey, VERSION);
-  };
+  }
 
   /**
-   * Ping the Service Worker to keep it alive.
+   * Ping the service worker to keep it alive.
    */
-  private _pingServiceWorker = async (): Promise<void> => {
+  private async _pingServiceWorker(): Promise<void> {
     const response = await fetch(SW_PING_ENDPOINT);
     const text = await response.text();
     if (text === 'ok') {
       setTimeout(this._pingServiceWorker, 20000);
     }
-  };
+  }
 
   /**
-   * Set the Service Worker registration.
+   * Set the registration and emit a signal.
    */
   private _setRegistration(registration: ServiceWorkerRegistration | null) {
     this._registration = registration;
     this._registrationChanged.emit(this._registration);
   }
 
-  private _messageChannel: MessageChannel;
+  /**
+   * Handle a message received on the BroadcastChannel
+   */
+  private _onBroadcastMessage = async <T extends TDriveMethod>(
+    event: MessageEvent<{
+      data: TDriveRequest<T>;
+      browsingContextId: string;
+    }>,
+  ): Promise<void> => {
+    if (!this._broadcastChannel || !this._driveContentsProcessor) {
+      return;
+    }
+
+    const { data, browsingContextId } = event.data;
+
+    if (browsingContextId !== this._browsingContextId) {
+      // Message is not meant for us
+      return;
+    }
+
+    const response = await this._driveContentsProcessor.processDriveRequest(data);
+    this._broadcastChannel.postMessage(response);
+  };
+
   private _registration: ServiceWorkerRegistration | null = null;
   private _registrationChanged = new Signal<this, ServiceWorkerRegistration | null>(
     this,
   );
   private _ready = new PromiseDelegate<void>();
-  private _driveContentsProcessor: IDriveContentsProcessor;
+  private _broadcastChannel: BroadcastChannel;
+  private _browsingContextId: string;
+  private _contents: Contents.IManager | undefined;
+  private _driveContentsProcessor: DriveContentsProcessor | undefined;
 }

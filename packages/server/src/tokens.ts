@@ -1,8 +1,8 @@
-import { Contents } from '@jupyterlab/services';
-
 import { Token } from '@lumino/coreutils';
 
 import { ISignal } from '@lumino/signaling';
+
+import { Contents } from '@jupyterlab/services';
 
 import SW_URL from './service-worker?text';
 
@@ -31,6 +31,11 @@ export interface IServiceWorkerManager {
   readonly enabled: boolean;
 
   /**
+   * A unique id to identify the browsing context where the ServiceWorkerManager was instantiated.
+   */
+  readonly browsingContextId: string;
+
+  /**
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
    */
   ready: Promise<void>;
@@ -45,7 +50,7 @@ export namespace IServiceWorkerManager {
    */
   export interface IOptions {
     /**
-     * The JupyterLab contents manager
+     * The contents manager to use for handling drive contents requests
      */
     contents: Contents.IManager;
 

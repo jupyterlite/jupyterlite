@@ -502,8 +502,8 @@ const opener: JupyterFrontEndPlugin<void> = {
 /**
  * A plugin installing the service worker.
  */
-const serviceWorkerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
-  id: '@jupyterlite/application-extension:service-worker',
+const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
+  id: '@jupyterlite/application-extension:service-worker-manager',
   autoStart: true,
   provides: IServiceWorkerManager,
   activate: (app: JupyterFrontEnd) => {
@@ -638,7 +638,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   notifyCommands,
   opener,
   pluginManagerPlugin,
-  serviceWorkerPlugin,
+  serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
   translatorConnector,
