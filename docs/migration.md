@@ -170,6 +170,18 @@ The previous `Translation` class has been removed.
 
 The `@jupyterlite/translation` package no longer exports any tokens.
 
+### Other changes
+
+#### `jupyterlite-core`
+
+Previously, running a build with the contents option specified (for example with
+`jupyter lite build --contents contents`) would simply log a warning in the build logs
+if the `jupyter-server` dependency (used for indexing the files) was missing. Making it
+difficult to debug issues with missing content and files.
+
+In JupyterLite 0.6.0, the build now fails if the `contents` option is provided when the
+`jupyter-server` is not installed.
+
 ## `0.4.0` to `0.5.0`
 
 ### Extensions
@@ -264,18 +276,6 @@ using the jupyterlite contents manager. It can be used by Emscripten kernel auth
 combination to extending the abstract `ContentsAPI` class in order to provide a custom
 way to implement file access from the kernel (e.g. bypassing the service worker
 approach).
-
-### Other changes
-
-#### `jupyterlite-core`
-
-Previously, running a build with the contents option specified (for example with
-`jupyter lite build --contents contents`) would simply log a warning in the build logs
-if the `jupyter-server` dependency (used for indexing the files) was missing. Making it
-difficult to debug issues with missing content and files.
-
-In JupyterLite 0.4.0, the build now fails if the `contents` option is provided when the
-`jupyter-server` is not installed.
 
 ## `0.2.0` to `0.3.0`
 

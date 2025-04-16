@@ -146,15 +146,17 @@ class ContentsAddon(BaseAddon):
             Ideally we'd have a fallback, schema-verified generator, which we could
             later port to e.g. JS
         """
-        if not has_optional_dependency(
+        has_jupyter_server = has_optional_dependency(
             "jupyter_server",
             "[lite] [contents] install `jupyter_server` to index contents: {error}",
-        ):
+        )
+        if self.manager.contents and not has_jupyter_server:
             raise RuntimeError(
                 """jupyter-server is not installed. You cannot add custom content to jupyterlite.
                 Please install jupyter-server and try again.
                 """
             )
+        elif not has_jupyter_server:
             return
 
         if not self.output_files_dir.exists():
