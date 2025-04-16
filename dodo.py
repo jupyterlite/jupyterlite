@@ -1135,6 +1135,9 @@ class U:
             out_doc.write_text(out_text, **C.ENC)
 
         index_text = B.DOCS_TS_MYST_INDEX.read_text(**C.ENC)
+        all_docs_text = "\n".join(
+            str(d.relative_to(B.DOCS_RAW_TYPEDOC)) for d in all_docs if d != B.DOCS_TS_MYST_INDEX
+        )
         B.DOCS_TS_MYST_INDEX.write_text(
             index_text
             + "\n\n"
@@ -1144,7 +1147,7 @@ class U:
                     "```{toctree}",
                     ":maxdepth: 1",
                     ":glob:",
-                    f"{'\n'.join(str(d.relative_to(B.DOCS_RAW_TYPEDOC)) for d in all_docs)}",
+                    f"{all_docs_text}",
                     "```",
                 ]
             )
