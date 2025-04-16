@@ -1,7 +1,6 @@
 """tests for more kinds of contents"""
 
 import json
-from unittest.mock import patch
 
 import pytest
 
@@ -98,25 +97,30 @@ def test_contents_with_space(
 def test_contents_missing_jupyter_server(
     an_empty_lite_dir,
     script_runner,
+    monkeypatch,
 ):
+    """
+    Test that a RuntimeError is raised when contents are provided but jupyter_server is not installed
+    """
     # Create a test file to be used as contents
     test_contents = an_empty_lite_dir / "test_contents"
     test_contents.mkdir()
     (test_contents / "test_file.txt").write_text("Test content")
 
-    # Mock has_optional_dependency to simulate jupyter_server not being installed
-    with patch("jupyterlite_core.addons.contents.has_optional_dependency", return_value=False):
-        # Run the build command with contents
-        result = script_runner.run(
-            ["jupyter", "lite", "build", "--contents", "test_contents"],
-            cwd=str(an_empty_lite_dir),
-        )
+    # Set environment variable to simulate jupyter_server not being installed
+    monkeypatch.setenv("JUPYTERLITE_NO_JUPYTER_SERVER", "true")
 
-        # The build should fail
-        assert not result.success
+    # Run the build command with contents
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--contents", "test_contents"],
+        cwd=str(an_empty_lite_dir),
+    )
 
-        # Check if the expected error message is in the output
-        expected_error = (
-            "jupyter-server is not installed. You cannot add custom content to jupyterlite."
-        )
-        assert expected_error in result.stdout or expected_error in result.stderr
+    # The build should fail
+    assert not result.success
+
+    # Check if the expected error message is in the output
+    expected_error = (
+        "jupyter-server is not installed. You cannot add custom content to jupyterlite."
+    )
+    assert expected_error in result.stdout or expected_error in result.stderr
