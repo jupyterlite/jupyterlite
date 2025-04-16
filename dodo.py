@@ -464,7 +464,7 @@ def task_docs():
             *P.DOCS_MD,
             *P.DOCS_PY,
             *P.DOCS_IPYNB,
-            # B.DOCS_APP_ARCHIVE,
+            B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
@@ -1100,18 +1100,20 @@ class U:
             unescaped = matchobj.group(1).replace("\\_", "_")
             return f"""**`{unescaped}`**"""
 
-        for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
-            doc_text = doc.read_text(**C.ENC)
+        all_docs = sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md"))
+        for doc in all_docs:
+            out_text = doc.read_text(**C.ENC)
 
             # rewrite doc and write back out
             out_doc = B.DOCS_TS / doc.relative_to(B.DOCS_RAW_TYPEDOC)
+
             if not out_doc.parent.exists():
                 out_doc.parent.mkdir(parents=True)
 
             out_text = re.sub(
                 r"## Table of contents(.*?)\n## ",
                 "\n## ",
-                doc_text,
+                out_text,
                 flags=re.M | re.S,
             )
             out_text = re.sub("^# Module: (.*)$", r"# `\1`", out_text, flags=re.M)
@@ -1131,6 +1133,22 @@ class U:
             )
 
             out_doc.write_text(out_text, **C.ENC)
+
+        index_text = B.DOCS_TS_MYST_INDEX.read_text(**C.ENC)
+        B.DOCS_TS_MYST_INDEX.write_text(
+            index_text
+            + "\n\n"
+            + "\n".join(
+                [
+                    "### Index",
+                    "```{toctree}",
+                    ":maxdepth: 1",
+                    ":glob:",
+                    f"{'\n'.join(str(d.relative_to(B.DOCS_RAW_TYPEDOC)) for d in all_docs)}",
+                    "```",
+                ]
+            )
+        )
 
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
         import jsonschema
