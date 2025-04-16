@@ -1107,18 +1107,16 @@ class U:
             if doc.parent == B.DOCS_RAW_TYPEDOC:
                 continue
             doc_text = doc.read_text(**C.ENC)
-            doc_lines = doc_text.splitlines()
 
             # rewrite doc and write back out
             out_doc = B.DOCS_TS / doc.relative_to(B.DOCS_RAW_TYPEDOC)
             if not out_doc.parent.exists():
                 out_doc.parent.mkdir(parents=True)
 
-            out_text = "\n".join([*doc_lines[1:], ""])
             out_text = re.sub(
                 r"## Table of contents(.*?)\n## ",
                 "\n## ",
-                out_text,
+                doc_text,
                 flags=re.M | re.S,
             )
             out_text = re.sub("^# Module: (.*)$", r"# `\1`", out_text, flags=re.M)
