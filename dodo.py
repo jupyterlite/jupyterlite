@@ -464,7 +464,7 @@ def task_docs():
             *P.DOCS_MD,
             *P.DOCS_PY,
             *P.DOCS_IPYNB,
-            B.DOCS_APP_ARCHIVE,
+            # B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
@@ -919,12 +919,9 @@ class B:
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
     DOCS_RAW_TYPEDOC_README = DOCS_RAW_TYPEDOC / "README.md"
     DOCS_TS = P.DOCS / "reference/api/ts"
-    DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
-    DOCS_TS_MYST_MODULES = DOCS_TS / "modules.md"
-    DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
-    DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
+    DOCS_TS_MYST_INDEX = DOCS_TS / "README.md"
     DOCS_TS_MODULES = [
-        P.ROOT / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
+        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/README.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
@@ -947,7 +944,7 @@ class BB:
     # not exhaustive, because of per-class API pages
     ALL_DOCS_HTML = [
         (B.DOCS / src.parent.relative_to(P.DOCS) / (src.name.rsplit(".", 1)[0] + ".html"))
-        for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
+        for src in [*P.DOCS_MD, *P.DOCS_IPYNB]
         if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
 
@@ -1103,20 +1100,16 @@ class U:
             unescaped = matchobj.group(1).replace("\\_", "_")
             return f"""**`{unescaped}`**"""
 
-        for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
-            if doc.parent == B.DOCS_RAW_TYPEDOC:
-                continue
-            if doc.name == "README.md":
-                continue
-            doc_text = doc.read_text(**C.ENC)
-            doc_lines = doc_text.splitlines()
+        all_docs = sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md"))
+        for doc in all_docs:
+            out_text = doc.read_text(**C.ENC)
 
             # rewrite doc and write back out
             out_doc = B.DOCS_TS / doc.relative_to(B.DOCS_RAW_TYPEDOC)
+
             if not out_doc.parent.exists():
                 out_doc.parent.mkdir(parents=True)
 
-            out_text = "\n".join([*doc_lines[1:], ""]).replace("README.md", "index.md")
             out_text = re.sub(
                 r"## Table of contents(.*?)\n## ",
                 "\n## ",
@@ -1138,48 +1131,28 @@ class U:
                 out_text,
                 flags=re.M | re.S,
             )
-            out_text = re.sub(
-                r"^Defined in: ([^\n]+)$",
-                "_Defined in:_ `\\1`",
-                out_text,
-                flags=re.M | re.S,
-            )
 
             out_doc.write_text(out_text, **C.ENC)
 
-        for index in [
-            B.DOCS_TS_MYST_INTERFACES,
-            B.DOCS_TS_MYST_MODULES,
-            B.DOCS_TS_MYST_CLASSES,
-        ]:
-            name = index.name[:-3]
-            index.write_text(
-                "\n".join(
-                    [
-                        f"# {name.title()}",
-                        "\n",
-                        "```{toctree}",
-                        ":maxdepth: 1",
-                        ":glob:",
-                        f"{name}/*",
-                        "```",
-                    ]
-                )
-            )
-
+        index_text = B.DOCS_TS_MYST_INDEX.read_text(**C.ENC)
+        all_docs_text = "\n".join(
+            str(d.relative_to(B.DOCS_RAW_TYPEDOC))
+            for d in all_docs
+            if str(d.relative_to(B.DOCS_RAW_TYPEDOC)) != "README.md"
+        )
         B.DOCS_TS_MYST_INDEX.write_text(
-            "\n".join(
+            index_text
+            + "\n\n"
+            + "\n".join(
                 [
-                    "# `@jupyterlite`\n",
+                    "### Index",
                     "```{toctree}",
                     ":maxdepth: 1",
-                    "modules",
-                    "interfaces",
-                    "classes",
+                    ":glob:",
+                    f"{all_docs_text}",
                     "```",
                 ]
-            ),
-            **C.ENC,
+            )
         )
 
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
