@@ -464,7 +464,7 @@ def task_docs():
             *P.DOCS_MD,
             *P.DOCS_PY,
             *P.DOCS_IPYNB,
-            B.DOCS_APP_ARCHIVE,
+            # B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
@@ -1126,12 +1126,6 @@ class U:
             out_text = re.sub(
                 r"^((Implementation of|Overrides|Inherited from):)",
                 "_\\1_",
-                out_text,
-                flags=re.M | re.S,
-            )
-            out_text = re.sub(
-                r"^Defined in: ([^\n]+)$",
-                "_Defined in:_ `\\1`",
                 out_text,
                 flags=re.M | re.S,
             )
