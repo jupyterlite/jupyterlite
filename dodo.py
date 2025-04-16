@@ -464,7 +464,7 @@ def task_docs():
             *P.DOCS_MD,
             *P.DOCS_PY,
             *P.DOCS_IPYNB,
-            B.DOCS_APP_ARCHIVE,
+            # B.DOCS_APP_ARCHIVE,
             B.DOCS_TS_MYST_INDEX,
         ],
         actions=[U.do("sphinx-build", *C.SPHINX_ARGS, "-b", "html", P.DOCS, B.DOCS)],
@@ -944,7 +944,7 @@ class BB:
     # not exhaustive, because of per-class API pages
     ALL_DOCS_HTML = [
         (B.DOCS / src.parent.relative_to(P.DOCS) / (src.name.rsplit(".", 1)[0] + ".html"))
-        for src in [*P.DOCS_MD, *P.DOCS_IPYNB, *B.DOCS_TS_MODULES]
+        for src in [*P.DOCS_MD, *P.DOCS_IPYNB]
         if P.DOCS in src.parents and C.NOT_SKIP_LINT(src)
     ]
 
@@ -1136,7 +1136,9 @@ class U:
 
         index_text = B.DOCS_TS_MYST_INDEX.read_text(**C.ENC)
         all_docs_text = "\n".join(
-            str(d.relative_to(B.DOCS_RAW_TYPEDOC)) for d in all_docs if d != B.DOCS_TS_MYST_INDEX
+            str(d.relative_to(B.DOCS_RAW_TYPEDOC))
+            for d in all_docs
+            if str(d.relative_to(B.DOCS_RAW_TYPEDOC)) != "README.md"
         )
         B.DOCS_TS_MYST_INDEX.write_text(
             index_text
