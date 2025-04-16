@@ -92,3 +92,35 @@ def test_contents_with_space(
     content = contents["content"][0]
     assert content["name"] == file_name
     assert content["path"] == f"{dir_name}/{file_name}"
+
+
+def test_contents_missing_jupyter_server(
+    an_empty_lite_dir,
+    script_runner,
+    monkeypatch,
+):
+    """
+    Test that an error is raised when contents are provided but jupyter_server is not installed
+    """
+    # Create a test file to be used as contents
+    test_contents = an_empty_lite_dir / "test_contents"
+    test_contents.mkdir()
+    (test_contents / "test_file.txt").write_text("Test content")
+
+    # Set environment variable to simulate jupyter_server not being installed
+    monkeypatch.setenv("JUPYTERLITE_NO_JUPYTER_SERVER", "true")
+
+    # Run the build command with contents
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--contents", "test_contents"],
+        cwd=str(an_empty_lite_dir),
+    )
+
+    # The build should fail
+    assert not result.success
+
+    # Check if the expected error message is in the output
+    expected_error = (
+        "jupyter-server is not installed. You cannot add custom content to jupyterlite."
+    )
+    assert expected_error in result.stdout or expected_error in result.stderr
