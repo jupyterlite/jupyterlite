@@ -924,7 +924,7 @@ class B:
     DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
     DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
     DOCS_TS_MODULES = [
-        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/README.md"
+        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/index.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
@@ -1106,8 +1106,6 @@ class U:
         for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
             if doc.parent == B.DOCS_RAW_TYPEDOC:
                 continue
-            if doc.name == "README.md":
-                continue
             doc_text = doc.read_text(**C.ENC)
             doc_lines = doc_text.splitlines()
 
@@ -1116,7 +1114,7 @@ class U:
             if not out_doc.parent.exists():
                 out_doc.parent.mkdir(parents=True)
 
-            out_text = "\n".join([*doc_lines[1:], ""]).replace("README.md", "index.md")
+            out_text = "\n".join([*doc_lines[1:], ""])
             out_text = re.sub(
                 r"## Table of contents(.*?)\n## ",
                 "\n## ",
