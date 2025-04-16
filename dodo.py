@@ -924,7 +924,7 @@ class B:
     DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
     DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
     DOCS_TS_MODULES = [
-        P.ROOT / f"docs/reference/api/ts/modules/jupyterlite_{parent.replace('-', '_')}.md"
+        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/README.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]

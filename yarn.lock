@@ -4871,7 +4871,7 @@ __metadata:
     shell-quote: ^1.8.1
     svgo: ^3.0.1
     typedoc: ~0.28.2
-    typedoc-plugin-markdown: ~4.6.1
+    typedoc-plugin-markdown: ~4.6.2
     typescript: ~5.5.4
   languageName: unknown
   linkType: soft
@@ -19542,12 +19542,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-plugin-markdown@npm:~4.6.1":
-  version: 4.6.1
-  resolution: "typedoc-plugin-markdown@npm:4.6.1"
+"typedoc-plugin-markdown@npm:~4.6.2":
+  version: 4.6.2
+  resolution: "typedoc-plugin-markdown@npm:4.6.2"
   peerDependencies:
     typedoc: 0.28.x
-  checksum: 6fc9c0c5d4f6ed7fccb81a48f13469444e09a52312b98ab19a3c2831395bcb20519705e89292ca2ee4c4b0523127e19cf72a5f1821dff3d439bcbd45494b8a97
+  checksum: bbe2dba5890f35377e422127fe8fadaff27cfa46d322fa66595bc7e5179227ea1dc927ebc24fa4f42a2692b2f8ed1c8a6482c4227dea18fe70a0da183177229b
   languageName: node
   linkType: hard
 
