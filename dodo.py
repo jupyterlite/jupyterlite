@@ -919,12 +919,9 @@ class B:
     DOCS_RAW_TYPEDOC = BUILD / "typedoc"
     DOCS_RAW_TYPEDOC_README = DOCS_RAW_TYPEDOC / "README.md"
     DOCS_TS = P.DOCS / "reference/api/ts"
-    DOCS_TS_MYST_INDEX = DOCS_TS / "index.md"
-    DOCS_TS_MYST_MODULES = DOCS_TS / "modules.md"
-    DOCS_TS_MYST_INTERFACES = DOCS_TS / "interfaces.md"
-    DOCS_TS_MYST_CLASSES = DOCS_TS / "classes.md"
+    DOCS_TS_MYST_INDEX = DOCS_TS / "README.md"
     DOCS_TS_MODULES = [
-        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/index.md"
+        P.ROOT / f"docs/reference/api/ts/modules/@jupyterlite/{parent}/README.md"
         for parent in P.PACKAGE_JSONS
         if parent not in C.NO_TYPEDOC
     ]
@@ -1104,8 +1101,6 @@ class U:
             return f"""**`{unescaped}`**"""
 
         for doc in sorted(B.DOCS_RAW_TYPEDOC.rglob("*.md")):
-            if doc.parent == B.DOCS_RAW_TYPEDOC:
-                continue
             doc_text = doc.read_text(**C.ENC)
 
             # rewrite doc and write back out
@@ -1143,40 +1138,6 @@ class U:
 
             out_doc.write_text(out_text, **C.ENC)
 
-        for index in [
-            B.DOCS_TS_MYST_INTERFACES,
-            B.DOCS_TS_MYST_MODULES,
-            B.DOCS_TS_MYST_CLASSES,
-        ]:
-            name = index.name[:-3]
-            index.write_text(
-                "\n".join(
-                    [
-                        f"# {name.title()}",
-                        "\n",
-                        "```{toctree}",
-                        ":maxdepth: 1",
-                        ":glob:",
-                        f"{name}/*",
-                        "```",
-                    ]
-                )
-            )
-
-        B.DOCS_TS_MYST_INDEX.write_text(
-            "\n".join(
-                [
-                    "# `@jupyterlite`\n",
-                    "```{toctree}",
-                    ":maxdepth: 1",
-                    "modules",
-                    "interfaces",
-                    "classes",
-                    "```",
-                ]
-            ),
-            **C.ENC,
-        )
 
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
         import jsonschema
