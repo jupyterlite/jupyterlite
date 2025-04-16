@@ -100,7 +100,7 @@ def test_contents_missing_jupyter_server(
     monkeypatch,
 ):
     """
-    Test that a RuntimeError is raised when contents are provided but jupyter_server is not installed
+    Test that an error is raised when contents are provided but jupyter_server is not installed
     """
     # Create a test file to be used as contents
     test_contents = an_empty_lite_dir / "test_contents"
