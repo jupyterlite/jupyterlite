@@ -18,7 +18,7 @@ introduced in JupyterLab 4.4 and Notebook 7.4.
 
 ### Contents
 
-#### Handling of the `jupyter-server` dependency
+#### File indexing with `jupyter-server`
 
 Previously, running a build with the contents option specified (for example with
 `jupyter lite build --contents contents`) would simply log a warning in the build logs
@@ -28,7 +28,7 @@ difficult to debug issues with missing content and files.
 In JupyterLite 0.6.0, the build now fails if the `contents` option is provided when the
 `jupyter-server` is not installed.
 
-### Contents
+#### Browser Storage
 
 Previously, the default contents manager was storing files in the browser's local
 storage (IndexedDB by default), under the "JupyterLite Storage" key. This had the effect
