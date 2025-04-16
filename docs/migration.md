@@ -5,9 +5,9 @@ follow to update JupyterLite from one version to another.
 
 ## `0.5.0` to `0.6.0`
 
-⚠️ JupyterLite 0.6.0 comes with a couple of major changes, that may be considered as
-breaking depending on your JupyterLite setup. Please read the following sections
-carefully to check if you are impacted by them ⚠️
+⚠️ JupyterLite 0.6.0 comes with a couple of major changes that may be considered
+breaking, depending on your JupyterLite setup. Please read the following sections
+carefully to check if you are impacted by these changes ⚠️
 
 ### Extensions
 
