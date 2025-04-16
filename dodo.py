@@ -1138,7 +1138,6 @@ class U:
 
             out_doc.write_text(out_text, **C.ENC)
 
-
     def validate(schema_path, instance_path=None, instance_obj=None, ref=None):
         import jsonschema
 
