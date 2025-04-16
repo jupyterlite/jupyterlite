@@ -117,7 +117,7 @@
     "@microsoft/fast-foundation": "^2.49.5",
     "es6-promise": "^4.2.8",
     "react": "^18.3.1",
-    "react-dom": "^18.2.0",
+    "react-dom": "^18.3.1",
     "yjs": "^13.6.7"
   },
   "dependencies": {
@@ -179,8 +179,8 @@
     "@jupyterlite/types": "^0.6.0-alpha.8",
     "@jupyterlite/ui-components": "^0.6.0-alpha.8",
     "es6-promise": "~4.2.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "yjs": "^13.5.40"
   },
   "jupyterlab": {
