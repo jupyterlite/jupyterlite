@@ -12,6 +12,18 @@ JupyterLite 0.6.0 is based on JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
 This update may affect the extensions you are using, as they may rely on features
 introduced in JupyterLab 4.4 and Notebook 7.4.
 
+### Contents
+
+#### Handling of the `jupyter-server` dependency
+
+Previously, running a build with the contents option specified (for example with
+`jupyter lite build --contents contents`) would simply log a warning in the build logs
+if the `jupyter-server` dependency (used for indexing the files) was missing, making it
+difficult to debug issues with missing content and files.
+
+In JupyterLite 0.6.0, the build now fails if the `contents` option is provided when the
+`jupyter-server` is not installed.
+
 ### API Changes
 
 Prior to version 0.6.0, JupyterLite divided extensions into two categories:
@@ -169,18 +181,6 @@ provided by JupyterLab, which is then exposed as a plugin.
 The previous `Translation` class has been removed.
 
 The `@jupyterlite/translation` package no longer exports any tokens.
-
-### Other changes
-
-#### `jupyterlite-core`
-
-Previously, running a build with the contents option specified (for example with
-`jupyter lite build --contents contents`) would simply log a warning in the build logs
-if the `jupyter-server` dependency (used for indexing the files) was missing. Making it
-difficult to debug issues with missing content and files.
-
-In JupyterLite 0.6.0, the build now fails if the `contents` option is provided when the
-`jupyter-server` is not installed.
 
 ## `0.4.0` to `0.5.0`
 
