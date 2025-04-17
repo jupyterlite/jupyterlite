@@ -12,6 +12,7 @@ import {
   Clipboard,
   Dialog,
   ICommandPalette,
+  ILicensesClient,
   SessionContext,
   showDialog,
 } from '@jupyterlab/apputils';
@@ -47,7 +48,7 @@ import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
-import { LiteWorkspaceManager } from '@jupyterlite/apputils';
+import { LiteLicensesClient, LiteWorkspaceManager } from '@jupyterlite/apputils';
 
 import { IKernelClient } from '@jupyterlite/kernel';
 
@@ -361,6 +362,40 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         label: trans.__('Download'),
       });
     }
+  },
+};
+
+/**
+ * Workaround plugin to provide a way to export notebook as plain text.
+ */
+const exportPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:export',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd): void => {
+    const { commands } = app;
+    app.restored.then(() => {
+      // TODO: improve
+      commands['_commands'].get('notebook:export-to-format').execute = async (
+        args: any,
+      ) => {
+        const format = args['format'] as string;
+        if (format === 'Notebook File') {
+          void commands.execute('docmanager:download');
+        }
+      };
+    });
+  },
+};
+
+/**
+ * The client for fetching licenses data.
+ */
+const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
+  id: '@jupyterlite/application-extension:licenses-client',
+  autoStart: true,
+  provides: ILicensesClient,
+  activate: (app: JupyterFrontEnd): ILicensesClient => {
+    return new LiteLicensesClient();
   },
 };
 
@@ -832,6 +867,8 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
   downloadPlugin,
+  exportPlugin,
+  licensesClient,
   liteRouter,
   liteLogo,
   lspConnectionManager,

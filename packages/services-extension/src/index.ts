@@ -269,7 +269,12 @@ const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
       async getExportFormats(
         force?: boolean,
       ): Promise<NbConvertManager.IExportFormats> {
-        return {};
+        return {
+          // default export format to download the notebook as .ipynb
+          ['Notebook File']: {
+            output_mimetype: 'application/json',
+          },
+        };
       }
     })({ serverSettings });
 
