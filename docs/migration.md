@@ -5,6 +5,10 @@ follow to update JupyterLite from one version to another.
 
 ## `0.5.0` to `0.6.0`
 
+⚠️ JupyterLite 0.6.0 comes with a couple of major changes that may be considered
+breaking, depending on your JupyterLite setup. Please read the following sections
+carefully to check if you are impacted by these changes ⚠️
+
 ### Extensions
 
 JupyterLite 0.6.0 is based on JupyterLab 4.4 and Jupyter Notebook 7.4 packages.
@@ -14,7 +18,7 @@ introduced in JupyterLab 4.4 and Notebook 7.4.
 
 ### Contents
 
-#### Handling of the `jupyter-server` dependency
+#### File indexing with `jupyter-server`
 
 Previously, running a build with the contents option specified (for example with
 `jupyter lite build --contents contents`) would simply log a warning in the build logs
@@ -23,6 +27,60 @@ difficult to debug issues with missing content and files.
 
 In JupyterLite 0.6.0, the build now fails if the `contents` option is provided when the
 `jupyter-server` is not installed.
+
+#### Browser Storage
+
+Previously, the default contents manager was storing files in the browser's local
+storage (IndexedDB by default), under the "JupyterLite Storage" key. This had the effect
+of "sharing" files across different deployments of JupyterLite under the same origin,
+leading to some confusions for the users.
+
+Starting with JupyterLite 0.6.0, the default contents manager now uses the base URL in
+the storage key. For example if you have the following two JupyterLite deployments under
+the same origin:
+
+- `https://example.com/lite1`
+- `https://example.com/lite2`
+
+The contents will be stored under the following keys:
+
+- `JupyterLite Storage - /lite1`
+- `JupyterLite Storage - /lite2`
+
+This means that if you or your users had previously created files in one of the
+deployments, they will not be available anymore.
+
+To use the same default name for the contents storage as before, you can set the
+`contentsStorageName` option in your `jupyter-lite.json` file to `JupyterLite Storage`.
+For example:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "contentsStorageName": "JupyterLite Storage"
+  }
+}
+```
+
+### Settings
+
+Similar to the contents storage mentioned in the section above, the default settings
+storage is now using the base URL in the storage key. This means that if you or your
+users had previously changed a few settings in the interface, for example the theme,
+those settings will not be applied after the update to JupyterLite 0.6.0.
+
+To configure a custom settings storage name, you can set the `settingsStorageName`
+option in your `jupyter-lite.json` file. For example:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "settingsStorageName": "JupyterLite Storage"
+  }
+}
+```
 
 ### API Changes
 

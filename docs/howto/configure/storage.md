@@ -8,7 +8,7 @@ preferences.
 By default, all of a user's settings on the same domain will be available to all
 JupyterLite instances hosted there. To create separate settings stores, change the
 `jupyter-lite.json#jupyter-config-data/settingsStorageName` from the default of
-`JupyterLite Storage`.
+`JupyterLite Storage - <baseUrl>`.
 
 By default, the best available, persistent storage driver will be used. One may force a
 particular set of drivers to try with
