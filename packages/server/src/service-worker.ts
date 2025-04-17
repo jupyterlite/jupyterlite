@@ -137,7 +137,7 @@ function shouldDrop(request: Request, url: URL): boolean {
 async function broadcastOne(request: Request): Promise<Response> {
   const message = await request.json();
   const promise = new Promise<Response>((resolve) => {
-    broadcast.onmessage = (event) => {
+    const messageHandler = (event: MessageEvent) => {
       const data = event.data;
       const browsingContextId = data.browsingContextId;
       if (browsingContextId !== message.browsingContextId) {
@@ -146,7 +146,10 @@ async function broadcastOne(request: Request): Promise<Response> {
       }
       const response = data.response;
       resolve(new Response(JSON.stringify(response)));
+      broadcast.removeEventListener('message', messageHandler);
     };
+
+    broadcast.addEventListener('message', messageHandler);
   });
 
   broadcast.postMessage(message);
