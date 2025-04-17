@@ -180,10 +180,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       browsingContextId: string;
     }>,
   ): Promise<void> => {
-    if (!this._broadcastChannel || !this._driveContentsProcessor) {
-      return;
-    }
-
     const { data, browsingContextId } = event.data;
 
     if (browsingContextId !== this._browsingContextId) {
@@ -192,7 +188,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     const response = await this._driveContentsProcessor.processDriveRequest(data);
-    this._broadcastChannel.postMessage(response);
+    // pass the browsingContextId along so the Service Worker can identify the request
+    this._broadcastChannel.postMessage({
+      response,
+      browsingContextId: this._browsingContextId,
+    });
   };
 
   private _registration: ServiceWorkerRegistration | null = null;
@@ -202,6 +202,6 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   private _ready = new PromiseDelegate<void>();
   private _broadcastChannel: BroadcastChannel;
   private _browsingContextId: string;
-  private _contents: Contents.IManager | undefined;
-  private _driveContentsProcessor: DriveContentsProcessor | undefined;
+  private _contents: Contents.IManager;
+  private _driveContentsProcessor: DriveContentsProcessor;
 }
