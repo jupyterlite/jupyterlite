@@ -17,7 +17,7 @@ import {
   showDialog,
 } from '@jupyterlab/apputils';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { PageConfig, PathExt, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
@@ -39,6 +39,8 @@ import {
   Setting,
   Workspace,
 } from '@jupyterlab/services';
+
+import { NotebookPanel } from '@jupyterlab/notebook';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
@@ -63,6 +65,8 @@ import { Settings } from '@jupyterlite/settings';
 import { filter } from '@lumino/algorithm';
 
 import { DockPanel, Widget } from '@lumino/widgets';
+
+import { jsPDF } from 'jspdf';
 
 import React from 'react';
 
@@ -381,6 +385,28 @@ const exportPlugin: JupyterFrontEndPlugin<void> = {
         const format = args['format'] as string;
         if (format === 'Notebook File') {
           void commands.execute('docmanager:download');
+        } else if (format === 'pdf') {
+          const current = app.shell.currentWidget;
+          if (!current) {
+            return;
+          }
+          const notebook = current as NotebookPanel;
+          const name = PathExt.basename(
+            notebook.context.path,
+            PathExt.extname(notebook.context.path),
+          );
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            format: 'a4',
+          });
+          doc.html(notebook.content.node, {
+            callback: () => {
+              doc.save(`${name}.pdf`);
+            },
+            html2canvas: {
+              scale: 0.25,
+            },
+          });
         }
       };
     });
