@@ -267,6 +267,9 @@ const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
           ['Notebook File']: {
             output_mimetype: 'application/json',
           },
+          pdf: {
+            output_mimetype: 'application/pdf',
+          },
         };
       }
     })({ serverSettings });
