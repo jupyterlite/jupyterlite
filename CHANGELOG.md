@@ -2,6 +2,32 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a9
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.8...efc9efe3b09c3a57bd019c3dd04be0dfc9e5a8f2))
+
+### Enhancements made
+
+- Fix handling of contents when multiple lite sites are shared under the same host [#1612](https://github.com/jupyterlite/jupyterlite/pull/1612) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix concurrent file system access from multiple tabs [#1627](https://github.com/jupyterlite/jupyterlite/pull/1627) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.6.0a5` [#1624](https://github.com/jupyterlite/jupyterlite/pull/1624) ([@jtpio](https://github.com/jtpio))
+- Remove top-level `resolutions` [#1620](https://github.com/jupyterlite/jupyterlite/pull/1620) ([@jtpio](https://github.com/jtpio))
+- Improve error message for when jupyter-server is not installed [#1401](https://github.com/jupyterlite/jupyterlite/pull/1401) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-04-15&to=2025-04-18&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-04-15..2025-04-18&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-04-15..2025-04-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-04-15..2025-04-18&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-04-15..2025-04-18&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a8
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.7...722f097588e47c442b355c8e4ba65f91a975adf9))
@@ -29,8 +55,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-03-31&to=2025-04-15&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-03-31..2025-04-15&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-03-31..2025-04-15&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-03-31..2025-04-15&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-03-31..2025-04-15&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-03-31..2025-04-15&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a7
 
