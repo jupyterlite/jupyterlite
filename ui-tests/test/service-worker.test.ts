@@ -59,4 +59,40 @@ test.describe('Service Worker Tests', () => {
     expect(output).toBeTruthy();
     expect(output![0]).toContain(expectedOutput);
   });
+
+  test('Concurrently create files in multiple tabs', async ({ page }) => {
+    const notebook1 = 'file-access-1.ipynb';
+    const notebook2 = 'file-access-2.ipynb';
+
+    await page.notebook.open(notebook1);
+
+    // open a new tab
+    const newTab = await page.context().newPage();
+    await newTab.goto(`notebooks/?path=${notebook2}`);
+    await newTab.waitForSelector('.jp-Notebook');
+
+    // Execute all cells in the new tab
+    // TODO: check if Galata can support multiple tabs: https://github.com/jupyterlab/jupyterlab/issues/17471
+    await newTab.getByRole('menuitem', { name: 'Run', exact: true }).click();
+    await newTab.getByRole('menuitem', { name: 'Run All Cells', exact: true }).click();
+
+    const expectedOutput = 'done';
+
+    // wait for the execution to finish in both tabs
+    await Promise.all([
+      // first tab
+      page.notebook.runCellByCell(),
+      // second tab
+      expect(newTab.getByText(expectedOutput)).toBeVisible({ timeout: TIMEOUT }),
+    ]);
+
+    // re-run all the cells in the first tab
+    await page.notebook.runCellByCell();
+
+    const nCells = await page.notebook.getCellCount();
+    const output = await page.notebook.getCellTextOutput(nCells - 1);
+
+    expect(output).toBeTruthy();
+    expect(output![0]).toContain(expectedOutput);
+  });
 });

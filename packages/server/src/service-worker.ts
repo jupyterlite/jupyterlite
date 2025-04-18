@@ -135,13 +135,22 @@ function shouldDrop(request: Request, url: URL): boolean {
  * Forward request to main using the broadcast channel
  */
 async function broadcastOne(request: Request): Promise<Response> {
+  const message = await request.json();
   const promise = new Promise<Response>((resolve) => {
-    broadcast.onmessage = (event) => {
-      resolve(new Response(JSON.stringify(event.data)));
+    const messageHandler = (event: MessageEvent) => {
+      const data = event.data;
+      if (data.browsingContextId !== message.browsingContextId) {
+        // bail if the message is not for us
+        return;
+      }
+      const response = data.response;
+      resolve(new Response(JSON.stringify(response)));
+      broadcast.removeEventListener('message', messageHandler);
     };
+
+    broadcast.addEventListener('message', messageHandler);
   });
 
-  const message = await request.json();
   broadcast.postMessage(message);
 
   return await promise;
