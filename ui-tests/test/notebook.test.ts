@@ -157,10 +157,10 @@ test.describe('Switch between Notebook and JupyterLab', () => {
   test.use({
     waitForApplication: async function ({ baseURL }, use, testInfo) {
       const waitIsReady = async (page): Promise<void> => {
-        const selector = page.url().includes('lab')
-          ? `text=${NOTEBOOK}`
-          : '.jp-NotebookPanel';
-        await page.waitForSelector(selector);
+        const locator = page.url().includes('lab')
+          ? page.getByText(NOTEBOOK).first()
+          : page.locator('.jp-NotebookPanel');
+        await locator.waitFor();
       };
       await use(waitIsReady);
     },
