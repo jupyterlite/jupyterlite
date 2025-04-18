@@ -17,7 +17,7 @@ import {
   showDialog,
 } from '@jupyterlab/apputils';
 
-import { PageConfig, URLExt } from '@jupyterlab/coreutils';
+import { PageConfig, PathExt, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
@@ -31,6 +31,8 @@ import {
 } from '@jupyterlab/lsp';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
+
+import { NotebookPanel } from '@jupyterlab/notebook';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
@@ -49,6 +51,8 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 import { filter } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
+
+import { jsPDF } from 'jspdf';
 
 import React from 'react';
 
@@ -301,6 +305,50 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         label: trans.__('Download'),
       });
     }
+  },
+};
+
+/**
+ * Workaround plugin to provide a way to export notebook as plain text.
+ */
+const exportPlugin: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:export',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd): void => {
+    const { commands } = app;
+    app.restored.then(() => {
+      // TODO: improve
+      commands['_commands'].get('notebook:export-to-format').execute = async (
+        args: any,
+      ) => {
+        const format = args['format'] as string;
+        if (format === 'Notebook File') {
+          void commands.execute('docmanager:download');
+        } else if (format === 'pdf') {
+          const current = app.shell.currentWidget;
+          if (!current) {
+            return;
+          }
+          const notebook = current as NotebookPanel;
+          const name = PathExt.basename(
+            notebook.context.path,
+            PathExt.extname(notebook.context.path),
+          );
+          const doc = new jsPDF({
+            orientation: 'portrait',
+            format: 'a4',
+          });
+          doc.html(notebook.content.node, {
+            callback: () => {
+              doc.save(`${name}.pdf`);
+            },
+            html2canvas: {
+              scale: 0.25,
+            },
+          });
+        }
+      };
+    });
   },
 };
 
@@ -632,6 +680,7 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
+  exportPlugin,
   licensesClient,
   liteLogo,
   lspConnectionManager,
