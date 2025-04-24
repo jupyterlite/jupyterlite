@@ -47,8 +47,6 @@ import { Widget } from '@lumino/widgets';
 
 import React from 'react';
 
-import { pluginManagerPlugin } from './pluginmanager';
-
 /**
  * A regular expression to match path to notebooks, documents and consoles
  */
@@ -606,7 +604,6 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   lspConnectionManager,
   notifyCommands,
   opener,
-  pluginManagerPlugin,
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,

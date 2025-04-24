@@ -2857,7 +2857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/coreutils@npm:^6.4.1, @jupyterlab/coreutils@npm:~6.4.0, @jupyterlab/coreutils@npm:~6.4.1":
+"@jupyterlab/coreutils@npm:^6.4.1, @jupyterlab/coreutils@npm:~6.4.1":
   version: 6.4.1
   resolution: "@jupyterlab/coreutils@npm:6.4.1"
   dependencies:
@@ -3942,7 +3942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/statedb@npm:^4.4.1, @jupyterlab/statedb@npm:~4.4.0, @jupyterlab/statedb@npm:~4.4.1":
+"@jupyterlab/statedb@npm:^4.4.1, @jupyterlab/statedb@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/statedb@npm:4.4.1"
   dependencies:
@@ -4177,7 +4177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/translation@npm:^4.4.1, @jupyterlab/translation@npm:~4.4.0, @jupyterlab/translation@npm:~4.4.1":
+"@jupyterlab/translation@npm:^4.4.1, @jupyterlab/translation@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/translation@npm:4.4.1"
   dependencies:
@@ -4655,14 +4655,12 @@ __metadata:
     "@jupyterlab/filebrowser": ~4.4.1
     "@jupyterlab/lsp": ~4.4.1
     "@jupyterlab/mainmenu": ~4.4.1
-    "@jupyterlab/pluginmanager": ~4.4.1
     "@jupyterlab/services": ~7.4.1
     "@jupyterlab/settingregistry": ~4.4.1
     "@jupyterlab/translation": ~4.4.1
     "@jupyterlab/ui-components": ~4.4.1
     "@jupyterlite/contents": ^0.6.0-alpha.9
     "@jupyterlite/server": ^0.6.0-alpha.9
-    "@jupyterlite/translation": ^0.6.0-alpha.9
     "@jupyterlite/ui-components": ^0.6.0-alpha.9
     "@lumino/algorithm": ^2.0.3
     "@lumino/coreutils": ^2.2.1
@@ -4978,17 +4976,6 @@ __metadata:
     typescript: ~5.5.4
   languageName: unknown
   linkType: soft
-
-"@jupyterlite/translation@npm:^0.6.0-alpha.9":
-  version: 0.6.0-alpha.9
-  resolution: "@jupyterlite/translation@npm:0.6.0-alpha.9"
-  dependencies:
-    "@jupyterlab/coreutils": ~6.4.0
-    "@jupyterlab/statedb": ~4.4.0
-    "@jupyterlab/translation": ~4.4.0
-  checksum: 2e8dbf9a39ab2fc900d588b2633b7690210f7099ec7033c192d2aeb6b7e08152f4667eb4b26274af0d929be3001a7f6bce1a8b2fe1769a799316bf34edc0843b
-  languageName: node
-  linkType: hard
 
 "@jupyterlite/types@^0.6.0-alpha.9, @jupyterlite/types@workspace:packages/types":
   version: 0.0.0-use.local
