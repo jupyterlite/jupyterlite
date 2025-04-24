@@ -1,7 +1,7 @@
 {
-  "name": "@jupyterlite/licenses",
+  "name": "@jupyterlite/apputils-extension",
   "version": "0.6.0-alpha.9",
-  "description": "JupyterLite - Licenses",
+  "description": "JupyterLite - Application Utilities Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
     "url": "https://github.com/jupyterlite/jupyterlite/issues"
@@ -12,8 +12,13 @@
   },
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "style": "style/index.css",
   "directories": {
     "lib": "lib/"
   },
@@ -21,6 +26,8 @@
     "lib/*.d.ts",
     "lib/*.js.map",
     "lib/*.js",
+    "style/*.css",
+    "style/index.js",
     "src/**/*.{ts,tsx}"
   ],
   "scripts": {
@@ -31,16 +38,22 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
+    "@jupyterlab/application": "~4.4.1",
     "@jupyterlab/apputils": "~4.5.1",
-    "@jupyterlab/coreutils": "~6.4.1",
-    "@jupyterlab/services": "~7.4.1"
+    "@jupyterlab/pluginmanager": "~4.4.1",
+    "@jupyterlab/translation": "~4.4.1",
+    "@jupyterlab/ui-components": "~4.4.1",
+    "@jupyterlite/apputils": "^0.6.0-alpha.9"
   },
   "devDependencies": {
-    "@jupyterlite/types": "^0.6.0-alpha.9",
     "rimraf": "~5.0.1",
     "typescript": "~5.5.4"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "jupyterlab": {
+    "extension": true
+  },
+  "styleModule": "style/index.js"
 }

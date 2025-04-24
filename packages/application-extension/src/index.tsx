@@ -12,7 +12,6 @@ import {
   Clipboard,
   Dialog,
   ICommandPalette,
-  ILicensesClient,
   SessionContext,
   showDialog,
 } from '@jupyterlab/apputils';
@@ -34,15 +33,11 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
-import { ITranslator, ITranslatorConnector } from '@jupyterlab/translation';
+import { ITranslator } from '@jupyterlab/translation';
 
 import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
-import { LiteLicensesClient } from '@jupyterlite/licenses';
-
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
-
-import { LiteTranslatorConnector } from '@jupyterlite/translation';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -301,18 +296,6 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         label: trans.__('Download'),
       });
     }
-  },
-};
-
-/**
- * The client for fetching licenses data.
- */
-const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
-  id: '@jupyterlite/application-extension:licenses-client',
-  autoStart: true,
-  provides: ILicensesClient,
-  activate: (app: JupyterFrontEnd): ILicensesClient => {
-    return new LiteLicensesClient();
   },
 };
 
@@ -616,23 +599,9 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   },
 };
 
-/**
- * The main translator connector plugin.
- */
-const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
-  id: '@jupyterlite/application-extension:translator-connector',
-  description: 'Provides the application translation connector.',
-  autoStart: true,
-  provides: ITranslatorConnector,
-  activate: (app: JupyterFrontEnd) => {
-    return new LiteTranslatorConnector();
-  },
-};
-
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   downloadPlugin,
-  licensesClient,
   liteLogo,
   lspConnectionManager,
   notifyCommands,
@@ -641,7 +610,6 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
-  translatorConnector,
 ];
 
 export default plugins;

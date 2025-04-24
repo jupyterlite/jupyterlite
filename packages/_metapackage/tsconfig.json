@@ -8,6 +8,8 @@
   "references": [
     { "path": "../application" },
     { "path": "../application-extension" },
+    { "path": "../apputils" },
+    { "path": "../apputils-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
     { "path": "../kernel" },

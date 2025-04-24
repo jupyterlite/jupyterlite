@@ -22,10 +22,11 @@
   "dependencies": {
     "@jupyterlite/application": "^0.6.0-alpha.9",
     "@jupyterlite/application-extension": "^0.6.0-alpha.9",
+    "@jupyterlite/apputils": "^0.6.0-alpha.9",
+    "@jupyterlite/apputils-extension": "^0.6.0-alpha.9",
     "@jupyterlite/contents": "^0.6.0-alpha.9",
     "@jupyterlite/iframe-extension": "^0.6.0-alpha.9",
     "@jupyterlite/kernel": "^0.6.0-alpha.9",
-    "@jupyterlite/licenses": "^0.6.0-alpha.9",
     "@jupyterlite/localforage": "^0.6.0-alpha.9",
     "@jupyterlite/notebook-application-extension": "^0.6.0-alpha.9",
     "@jupyterlite/repl-extension": "^0.6.0-alpha.9",
