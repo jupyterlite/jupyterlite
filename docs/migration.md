@@ -211,11 +211,14 @@ an argument for their `constructor`.
 
 #### `@jupyterlite/licenses`
 
+```{warning}
+The `@jupyterlite/licenses` package has been removed in JupyterLite 0.6.0.
+```
+
 The `Licenses` class, used for managing licenses in the browser, has undergone
 significant API changes. It now implements the `ILicensesClient` interface from
-`@jupyterlab/apputils`.
-
-The `@jupyterlite/licenses` package no longer exports any tokens.
+`@jupyterlab/apputils` and is provided as a plugin via the
+`@jupyterlite/apputils-extension:licenses` plugin.
 
 #### `@jupyterlite/server-extension`
 
@@ -233,12 +236,13 @@ The `@jupyterlite/settings` package no longer exports any tokens.
 
 #### `@jupyterlite/translation`
 
+```{warning}
+The `@jupyterlite/translation` package has been removed in JupyterLite 0.6.0.
+```
+
 Translations are now supported by implementing the `ITranslatorConnector` interface
-provided by JupyterLab, which is then exposed as a plugin.
-
-The previous `Translation` class has been removed.
-
-The `@jupyterlite/translation` package no longer exports any tokens.
+provided by JupyterLab, which is then exposed via the
+`@jupyterlite/apputils-extension:translator` plugin.
 
 ## `0.4.0` to `0.5.0`
 
