@@ -4,10 +4,11 @@
   "entryPoints": [
     "packages/application",
     "packages/application-extension",
+    "packages/apputils",
+    "packages/apputils-extension",
     "packages/contents",
     "packages/iframe-extension",
     "packages/kernel",
-    "packages/licenses",
     "packages/localforage",
     "packages/repl-extension",
     "packages/notebook-application-extension",
@@ -15,7 +16,6 @@
     "packages/services-extension",
     "packages/session",
     "packages/settings",
-    "packages/translation",
     "packages/types",
     "packages/ui-components"
   ],

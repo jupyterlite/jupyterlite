@@ -53,7 +53,6 @@
     "@jupyterlite/kernel": "^0.6.0-alpha.9",
     "@jupyterlite/session": "^0.6.0-alpha.9",
     "@jupyterlite/settings": "^0.6.0-alpha.9",
-    "@jupyterlite/translation": "^0.6.0-alpha.9",
     "@lumino/application": "^2.4.3",
     "@lumino/coreutils": "^2.2.1",
     "@lumino/signaling": "^2.1.4",

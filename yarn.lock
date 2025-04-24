@@ -2495,35 +2495,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/apputils@npm:~4.4.1":
-  version: 4.4.6
-  resolution: "@jupyterlab/apputils@npm:4.4.6"
-  dependencies:
-    "@jupyterlab/coreutils": ^6.3.6
-    "@jupyterlab/observables": ^5.3.6
-    "@jupyterlab/rendermime-interfaces": ^3.11.6
-    "@jupyterlab/services": ^7.3.6
-    "@jupyterlab/settingregistry": ^4.3.6
-    "@jupyterlab/statedb": ^4.3.6
-    "@jupyterlab/statusbar": ^4.3.6
-    "@jupyterlab/translation": ^4.3.6
-    "@jupyterlab/ui-components": ^4.3.6
-    "@lumino/algorithm": ^2.0.2
-    "@lumino/commands": ^2.3.1
-    "@lumino/coreutils": ^2.2.0
-    "@lumino/disposable": ^2.1.3
-    "@lumino/domutils": ^2.0.2
-    "@lumino/messaging": ^2.0.2
-    "@lumino/signaling": ^2.1.3
-    "@lumino/virtualdom": ^2.0.2
-    "@lumino/widgets": ^2.5.0
-    "@types/react": ^18.0.26
-    react: ^18.2.0
-    sanitize-html: ~2.12.1
-  checksum: 188a0346e2f8ff6326ebfb9551f1f405c34d48181b233fe67e48388aa047f378ddcd9c951b7fe1b003ce1934af33ce25f61f49bf888589554ed1de2c593106c2
-  languageName: node
-  linkType: hard
-
 "@jupyterlab/attachments@npm:^4.4.1, @jupyterlab/attachments@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/attachments@npm:4.4.1"
@@ -2886,7 +2857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/coreutils@npm:^6.3.6, @jupyterlab/coreutils@npm:^6.4.1, @jupyterlab/coreutils@npm:~6.4.0, @jupyterlab/coreutils@npm:~6.4.1":
+"@jupyterlab/coreutils@npm:^6.4.1, @jupyterlab/coreutils@npm:~6.4.0, @jupyterlab/coreutils@npm:~6.4.1":
   version: 6.4.1
   resolution: "@jupyterlab/coreutils@npm:6.4.1"
   dependencies:
@@ -3685,7 +3656,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/observables@npm:^5.3.6, @jupyterlab/observables@npm:^5.4.1, @jupyterlab/observables@npm:~5.4.1":
+"@jupyterlab/observables@npm:^5.4.1, @jupyterlab/observables@npm:~5.4.1":
   version: 5.4.1
   resolution: "@jupyterlab/observables@npm:5.4.1"
   dependencies:
@@ -3779,7 +3750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/rendermime-interfaces@npm:^3.11.6, @jupyterlab/rendermime-interfaces@npm:^3.12.1, @jupyterlab/rendermime-interfaces@npm:~3.12.1":
+"@jupyterlab/rendermime-interfaces@npm:^3.12.1, @jupyterlab/rendermime-interfaces@npm:~3.12.1":
   version: 3.12.1
   resolution: "@jupyterlab/rendermime-interfaces@npm:3.12.1"
   dependencies:
@@ -3863,7 +3834,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/services@npm:^7.3.6, @jupyterlab/services@npm:^7.4.1, @jupyterlab/services@npm:~7.4.1":
+"@jupyterlab/services@npm:^7.4.1, @jupyterlab/services@npm:~7.4.1":
   version: 7.4.1
   resolution: "@jupyterlab/services@npm:7.4.1"
   dependencies:
@@ -3932,7 +3903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/settingregistry@npm:^4.3.6, @jupyterlab/settingregistry@npm:^4.4.1, @jupyterlab/settingregistry@npm:~4.4.1":
+"@jupyterlab/settingregistry@npm:^4.4.1, @jupyterlab/settingregistry@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/settingregistry@npm:4.4.1"
   dependencies:
@@ -3971,7 +3942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/statedb@npm:^4.3.6, @jupyterlab/statedb@npm:^4.4.1, @jupyterlab/statedb@npm:~4.4.0, @jupyterlab/statedb@npm:~4.4.1":
+"@jupyterlab/statedb@npm:^4.4.1, @jupyterlab/statedb@npm:~4.4.0, @jupyterlab/statedb@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/statedb@npm:4.4.1"
   dependencies:
@@ -3997,7 +3968,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/statusbar@npm:^4.3.6, @jupyterlab/statusbar@npm:^4.4.1":
+"@jupyterlab/statusbar@npm:^4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/statusbar@npm:4.4.1"
   dependencies:
@@ -4206,7 +4177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/translation@npm:^4.3.6, @jupyterlab/translation@npm:^4.4.1, @jupyterlab/translation@npm:~4.4.0, @jupyterlab/translation@npm:~4.4.1":
+"@jupyterlab/translation@npm:^4.4.1, @jupyterlab/translation@npm:~4.4.0, @jupyterlab/translation@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/translation@npm:4.4.1"
   dependencies:
@@ -4229,7 +4200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/ui-components@npm:^4.3.6, @jupyterlab/ui-components@npm:^4.4.1, @jupyterlab/ui-components@npm:~4.4.1":
+"@jupyterlab/ui-components@npm:^4.4.1, @jupyterlab/ui-components@npm:~4.4.1":
   version: 4.4.1
   resolution: "@jupyterlab/ui-components@npm:4.4.1"
   dependencies:
@@ -4716,7 +4687,6 @@ __metadata:
     "@jupyterlab/rendermime-interfaces": ~3.12.1
     "@jupyterlab/testutils": ~4.4.1
     "@jupyterlite/server": ^0.6.0-alpha.9
-    "@jupyterlite/translation": ^0.6.0-alpha.9
     "@lumino/coreutils": ^2.2.1
     "@lumino/signaling": ^2.1.4
     "@lumino/widgets": ^2.7.0
@@ -4748,7 +4718,7 @@ __metadata:
   resolution: "@jupyterlite/apputils@workspace:packages/apputils"
   dependencies:
     "@jupyterlab/application": ~4.4.1
-    "@jupyterlab/apputils": ~4.4.1
+    "@jupyterlab/apputils": ~4.5.1
     "@jupyterlab/coreutils": ~6.4.1
     "@jupyterlab/statedb": ~4.4.1
     "@jupyterlab/translation": ~4.4.1
@@ -4848,7 +4818,6 @@ __metadata:
     "@jupyterlite/services-extension": ^0.6.0-alpha.9
     "@jupyterlite/session": ^0.6.0-alpha.9
     "@jupyterlite/settings": ^0.6.0-alpha.9
-    "@jupyterlite/translation": ^0.6.0-alpha.9
     "@jupyterlite/ui-components": ^0.6.0-alpha.9
     typescript: ~5.5.4
   languageName: unknown
@@ -4939,7 +4908,6 @@ __metadata:
     "@jupyterlite/kernel": ^0.6.0-alpha.9
     "@jupyterlite/session": ^0.6.0-alpha.9
     "@jupyterlite/settings": ^0.6.0-alpha.9
-    "@jupyterlite/translation": ^0.6.0-alpha.9
     "@lumino/application": ^2.4.3
     "@lumino/coreutils": ^2.2.1
     "@lumino/signaling": ^2.1.4
@@ -5384,7 +5352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lumino/domutils@npm:^2.0.2, @lumino/domutils@npm:^2.0.3":
+"@lumino/domutils@npm:^2.0.3":
   version: 2.0.3
   resolution: "@lumino/domutils@npm:2.0.3"
   checksum: 46cbcbd38f6abb53eab1b6de0a2ea8a9fa5e28b0f5aa4b058c35f2380cb8ec881fe7616c7468ba200b785f95357ac8cbac6b64512f9945f5973d1d425864b163
@@ -5446,7 +5414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lumino/virtualdom@npm:^2.0.2, @lumino/virtualdom@npm:^2.0.3":
+"@lumino/virtualdom@npm:^2.0.3":
   version: 2.0.3
   resolution: "@lumino/virtualdom@npm:2.0.3"
   dependencies:

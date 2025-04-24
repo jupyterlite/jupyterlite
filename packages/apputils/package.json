@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@jupyterlab/application": "~4.4.1",
-    "@jupyterlab/apputils": "~4.4.1",
+    "@jupyterlab/apputils": "~4.5.1",
     "@jupyterlab/coreutils": "~6.4.1",
     "@jupyterlab/statedb": "~4.4.1",
     "@jupyterlab/translation": "~4.4.1",

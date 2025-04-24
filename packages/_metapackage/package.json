@@ -34,7 +34,6 @@
     "@jupyterlite/services-extension": "^0.6.0-alpha.9",
     "@jupyterlite/session": "^0.6.0-alpha.9",
     "@jupyterlite/settings": "^0.6.0-alpha.9",
-    "@jupyterlite/translation": "^0.6.0-alpha.9",
     "@jupyterlite/ui-components": "^0.6.0-alpha.9"
   },
   "devDependencies": {

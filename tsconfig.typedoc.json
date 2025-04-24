@@ -16,6 +16,12 @@
       "path": "./packages/application-extension"
     },
     {
+      "path": "./packages/apputils"
+    },
+    {
+      "path": "./packages/apputils-extension"
+    },
+    {
       "path": "./packages/contents"
     },
     {
@@ -23,9 +29,6 @@
     },
     {
       "path": "./packages/kernel"
-    },
-    {
-      "path": "./packages/licenses"
     },
     {
       "path": "./packages/localforage"
@@ -47,9 +50,6 @@
     },
     {
       "path": "./packages/settings"
-    },
-    {
-      "path": "./packages/translation"
     },
     {
       "path": "./packages/types"
