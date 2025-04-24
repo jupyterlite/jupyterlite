@@ -218,7 +218,7 @@ The `@jupyterlite/licenses` package has been removed in JupyterLite 0.6.0.
 The `Licenses` class, used for managing licenses in the browser, has undergone
 significant API changes. It now implements the `ILicensesClient` interface from
 `@jupyterlab/apputils` and is provided as a plugin via the
-`@jupyterlite/apputils-extension:licenses` plugin.
+`@jupyterlite/apputils-extension:licenses-client` plugin.
 
 #### `@jupyterlite/server-extension`
 
@@ -242,7 +242,7 @@ The `@jupyterlite/translation` package has been removed in JupyterLite 0.6.0.
 
 Translations are now supported by implementing the `ITranslatorConnector` interface
 provided by JupyterLab, which is then exposed via the
-`@jupyterlite/apputils-extension:translator` plugin.
+`@jupyterlite/apputils-extension:translator-connector` plugin.
 
 ## `0.4.0` to `0.5.0`
 
