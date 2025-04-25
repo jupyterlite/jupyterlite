@@ -40,20 +40,16 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   }
 
   /**
-   * Get the download link for the requested format
-   *
-   * TODO: update to download after https://github.com/jupyterlab/jupyterlab/pull/17397 is released.
+   * Download the licenses in the requested format.
    */
-  async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
-    const bundles = await this.getBundles();
-    const data = JSON.stringify(bundles, null, 2);
-
-    // Create a blob with the appropriate MIME type
-    const mime = options.format === 'json' ? 'application/json' : 'text/plain';
-    const blob = new Blob([data], { type: mime });
-
-    // Generate a URL for the blob
-    return URL.createObjectURL(blob);
+  async download(options: Licenses.IDownloadOptions): Promise<void> {
+    const link = document.createElement('a');
+    link.href = await this._getDownloadLink(options);
+    const extension = options.format === 'markdown' ? 'md' : options.format;
+    link.download = `jupyterlite-licenses.${extension}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   /**
@@ -78,9 +74,107 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   }
 
   /**
+   * Get the download link for the requested format
+   */
+  private async _getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
+    const bundles = await this.getBundles();
+    let formattedData: string;
+    let mime: string;
+
+    // Format the data based on the requested format
+    switch (options.format) {
+      case 'json':
+        formattedData = JSON.stringify(bundles, null, 2);
+        mime = 'application/json';
+        break;
+      case 'markdown':
+        formattedData = this._formatAsMarkdown(bundles);
+        mime = 'text/markdown';
+        break;
+      case 'csv':
+        formattedData = this._formatAsCSV(bundles);
+        mime = 'text/csv';
+        break;
+      default:
+        // Fallback to JSON
+        formattedData = JSON.stringify(bundles, null, 2);
+        mime = 'application/json';
+    }
+
+    // Create a blob with the appropriate MIME type
+    const blob = new Blob([formattedData], { type: mime });
+
+    // Generate a URL for the blob
+    return URL.createObjectURL(blob);
+  }
+
+  /**
+   * Format license data as Markdown
+   */
+  private _formatAsMarkdown(data: Licenses.ILicenseResponse): string {
+    let md = '# Third-Party Licenses\n\n';
+
+    // Process each bundle
+    for (const [bundleName, bundle] of Object.entries(data.bundles)) {
+      md += `## ${bundleName}\n\n`;
+
+      // Process packages in the bundle
+      for (const pkg of bundle.packages) {
+        md += `### ${pkg.name}${pkg.versionInfo ? ` ${pkg.versionInfo}` : ''}\n\n`;
+
+        if (pkg.licenseId) {
+          md += `**License ID:** ${pkg.licenseId}\n\n`;
+        }
+
+        if (pkg.extractedText) {
+          md += `\`\`\`\n${pkg.extractedText}\n\`\`\`\n\n`;
+        }
+      }
+    }
+
+    return md;
+  }
+
+  /**
+   * Format license data as CSV
+   */
+  private _formatAsCSV(data: Licenses.ILicenseResponse): string {
+    // CSV header
+    const headers = ['Bundle', 'Package', 'Version', 'License ID', 'License Text'];
+    let csv = `${headers.join(',')}\n`;
+
+    // Process each bundle and package
+    for (const [bundleName, bundle] of Object.entries(data.bundles)) {
+      for (const pkg of bundle.packages) {
+        const row = [
+          this._escapeCSVField(bundleName),
+          this._escapeCSVField(pkg.name),
+          this._escapeCSVField(pkg.versionInfo || ''),
+          this._escapeCSVField(pkg.licenseId || ''),
+          this._escapeCSVField(pkg.extractedText || ''),
+        ];
+        csv += `${row.join(',')}\n`;
+      }
+    }
+
+    return csv;
+  }
+
+  /**
+   * Escape a field for CSV output
+   */
+  private _escapeCSVField(field: string): string {
+    // If the field contains commas, quotes, or newlines, wrap it in quotes and escape any quotes
+    if (field && (field.includes(',') || field.includes('"') || field.includes('\n'))) {
+      return `"${field.replace(/"/g, '""')}"`;
+    }
+    return field;
+  }
+
+  /**
    * Resolve the licenses for the app distribution itself, or the empty bundle.
    */
-  async _getAppLicenses(): Promise<Licenses.ILicenseBundle> {
+  private async _getAppLicenses(): Promise<Licenses.ILicenseBundle> {
     let bundle = EMPTY_BUNDLE;
 
     try {
@@ -96,7 +190,7 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   /**
    * Resolve the licenses for all federated extensions.
    */
-  async _getFederated(): Promise<ILicenseBundles> {
+  private async _getFederated(): Promise<ILicenseBundles> {
     const bundles: ILicenseBundles = {};
     let federated: IFederatedExtension[];
 
@@ -124,7 +218,7 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   /**
    * Update the bundles with the extension's licenses, or the empty bundle.
    */
-  async _getOneFederated(ext: IFederatedExtension, bundles: ILicenseBundles) {
+  private async _getOneFederated(ext: IFederatedExtension, bundles: ILicenseBundles) {
     try {
       const url = URLExt.join(
         this.labExtensionsUrl,
