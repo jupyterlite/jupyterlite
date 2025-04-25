@@ -44,7 +44,7 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
    */
   async download(options: Licenses.IDownloadOptions): Promise<void> {
     const link = document.createElement('a');
-    link.href = await this.getDownloadLink(options);
+    link.href = await this._getDownloadLink(options);
     link.download = `licenses.${options.format}`;
     document.body.appendChild(link);
     link.click();
@@ -75,7 +75,7 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   /**
    * Get the download link for the requested format
    */
-  async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
+  private async _getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
     const bundles = await this.getBundles();
     const data = JSON.stringify(bundles, null, 2);
 
