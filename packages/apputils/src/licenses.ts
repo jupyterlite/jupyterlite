@@ -45,7 +45,8 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   async download(options: Licenses.IDownloadOptions): Promise<void> {
     const link = document.createElement('a');
     link.href = await this._getDownloadLink(options);
-    link.download = `jupyterlite-licenses.${options.format}`;
+    const extension = options.format === 'markdown' ? 'md' : options.format;
+    link.download = `jupyterlite-licenses.${extension}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
