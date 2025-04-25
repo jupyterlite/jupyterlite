@@ -40,20 +40,15 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
   }
 
   /**
-   * Get the download link for the requested format
-   *
-   * TODO: update to download after https://github.com/jupyterlab/jupyterlab/pull/17397 is released.
+   * Download the licenses in the requested format.
    */
-  async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
-    const bundles = await this.getBundles();
-    const data = JSON.stringify(bundles, null, 2);
-
-    // Create a blob with the appropriate MIME type
-    const mime = options.format === 'json' ? 'application/json' : 'text/plain';
-    const blob = new Blob([data], { type: mime });
-
-    // Generate a URL for the blob
-    return URL.createObjectURL(blob);
+  async download(options: Licenses.IDownloadOptions): Promise<void> {
+    const link = document.createElement('a');
+    link.href = await this.getDownloadLink(options);
+    link.download = `licenses.${options.format}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   /**
@@ -75,6 +70,21 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
    */
   protected get labExtensionsUrl(): string {
     return PageConfig.getOption('fullLabextensionsUrl');
+  }
+
+  /**
+   * Get the download link for the requested format
+   */
+  async getDownloadLink(options: Licenses.IDownloadOptions): Promise<string> {
+    const bundles = await this.getBundles();
+    const data = JSON.stringify(bundles, null, 2);
+
+    // Create a blob with the appropriate MIME type
+    const mime = options.format === 'json' ? 'application/json' : 'text/plain';
+    const blob = new Blob([data], { type: mime });
+
+    // Generate a URL for the blob
+    return URL.createObjectURL(blob);
   }
 
   /**
