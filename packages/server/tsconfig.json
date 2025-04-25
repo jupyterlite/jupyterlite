@@ -13,9 +13,6 @@
       "path": "../kernel"
     },
     {
-      "path": "../licenses"
-    },
-    {
       "path": "../localforage"
     },
     {
@@ -23,9 +20,6 @@
     },
     {
       "path": "../settings"
-    },
-    {
-      "path": "../translation"
     }
   ]
 }

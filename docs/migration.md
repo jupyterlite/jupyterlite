@@ -5,9 +5,11 @@ follow to update JupyterLite from one version to another.
 
 ## `0.5.0` to `0.6.0`
 
-⚠️ JupyterLite 0.6.0 comes with a couple of major changes that may be considered
+```{warning}
+ JupyterLite 0.6.0 comes with a couple of major changes that may be considered
 breaking, depending on your JupyterLite setup. Please read the following sections
-carefully to check if you are impacted by these changes ⚠️
+carefully to check if you are impacted by these changes
+```
 
 ### Extensions
 
@@ -211,11 +213,14 @@ an argument for their `constructor`.
 
 #### `@jupyterlite/licenses`
 
+```{warning}
+The `@jupyterlite/licenses` package has been removed in JupyterLite 0.6.0.
+```
+
 The `Licenses` class, used for managing licenses in the browser, has undergone
 significant API changes. It now implements the `ILicensesClient` interface from
-`@jupyterlab/apputils`.
-
-The `@jupyterlite/licenses` package no longer exports any tokens.
+`@jupyterlab/apputils` and is provided as a plugin via the
+`@jupyterlite/apputils-extension:licenses-client` plugin.
 
 #### `@jupyterlite/server-extension`
 
@@ -233,12 +238,13 @@ The `@jupyterlite/settings` package no longer exports any tokens.
 
 #### `@jupyterlite/translation`
 
+```{warning}
+The `@jupyterlite/translation` package has been removed in JupyterLite 0.6.0.
+```
+
 Translations are now supported by implementing the `ITranslatorConnector` interface
-provided by JupyterLab, which is then exposed as a plugin.
-
-The previous `Translation` class has been removed.
-
-The `@jupyterlite/translation` package no longer exports any tokens.
+provided by JupyterLab, which is then exposed via the
+`@jupyterlite/apputils-extension:translator-connector` plugin.
 
 ## `0.4.0` to `0.5.0`
 

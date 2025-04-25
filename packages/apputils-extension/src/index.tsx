@@ -6,69 +6,54 @@ import {
   JupyterFrontEndPlugin,
   JupyterLab,
 } from '@jupyterlab/application';
-import { ICommandPalette, MainAreaWidget, WidgetTracker } from '@jupyterlab/apputils';
+
 import {
-  IEntry,
-  IPluginManager,
-  PluginListModel,
-  Plugins,
-} from '@jupyterlab/pluginmanager';
-import { ITranslator, nullTranslator } from '@jupyterlab/translation';
+  ILicensesClient,
+  ICommandPalette,
+  MainAreaWidget,
+  WidgetTracker,
+} from '@jupyterlab/apputils';
+
+import { IPluginManager, PluginListModel, Plugins } from '@jupyterlab/pluginmanager';
+
+import {
+  ITranslator,
+  ITranslatorConnector,
+  nullTranslator,
+} from '@jupyterlab/translation';
+
 import { extensionIcon } from '@jupyterlab/ui-components';
 
+import {
+  LiteLicensesClient,
+  LitePluginListModel,
+  LiteTranslatorConnector,
+} from '@jupyterlite/apputils';
+
 /**
- * The command IDs used by the plugin manager plugin.
+ * The command IDs used by the apputils extension.
  */
 namespace CommandIDs {
-  export const open = 'plugin-manager:open';
-}
-
-/**
- * Custom PluginModel for use in JupyterLite
- */
-export class LitePluginListModel extends PluginListModel {
   /**
-   * Create a new PluginListModel.
+   * The command ID for opening the plugin manager.
    */
-  constructor(options: PluginListModel.IOptions) {
-    super(options);
-    this._availablePlugins = options.pluginData.availablePlugins.map((plugin) => {
-      let tokenLabel = plugin.provides ? plugin.provides.name.split(':')[1] : undefined;
-      if (plugin.provides && !tokenLabel) {
-        tokenLabel = plugin.provides.name;
-      }
-      return {
-        ...plugin,
-        tokenLabel,
-        // keep all plugins locked and enabled for now until there is
-        // a way to enable/disable plugins in JupyterLite
-        locked: true,
-        enabled: true,
-      };
-    });
-  }
-
-  get available(): ReadonlyArray<IEntry> {
-    return this._availablePlugins;
-  }
-
-  async refresh(): Promise<void> {
-    // no-op
-  }
-
-  async enable(entry: IEntry): Promise<void> {
-    // no-op
-  }
-
-  async disable(entry: IEntry): Promise<void> {
-    // no-op
-  }
-
-  private _availablePlugins: IEntry[];
+  export const openPluginManager = 'apputils:open-plugin-manager';
 }
 
 /**
- * A plugin for managing status of other plugins.
+ * The client for fetching licenses data.
+ */
+const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
+  id: '@jupyterlite/application-extension:licenses-client',
+  autoStart: true,
+  provides: ILicensesClient,
+  activate: (app: JupyterFrontEnd): ILicensesClient => {
+    return new LiteLicensesClient();
+  },
+};
+
+/**
+ * A plugin for managing the status of other plugins.
  */
 export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
   id: '@jupyterlite/application-extension:plugin-manager',
@@ -129,7 +114,7 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
       return main;
     }
 
-    commands.addCommand(CommandIDs.open, {
+    commands.addCommand(CommandIDs.openPluginManager, {
       label: widgetLabel,
       execute: (args) => {
         const main = createWidget(args);
@@ -145,13 +130,34 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
     });
 
     if (palette) {
-      palette.addItem({ command: CommandIDs.open, category });
+      palette.addItem({ command: CommandIDs.openPluginManager, category });
     }
 
     return {
       open: () => {
-        return app.commands.execute(CommandIDs.open);
+        return app.commands.execute(CommandIDs.openPluginManager);
       },
     };
   },
 };
+
+/**
+ * The main translator connector plugin.
+ */
+const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
+  id: '@jupyterlite/application-extension:translator-connector',
+  description: 'Provides the application translation connector.',
+  autoStart: true,
+  provides: ITranslatorConnector,
+  activate: (app: JupyterFrontEnd) => {
+    return new LiteTranslatorConnector();
+  },
+};
+
+const plugins: JupyterFrontEndPlugin<any>[] = [
+  licensesClient,
+  pluginManagerPlugin,
+  translatorConnector,
+];
+
+export default plugins;

@@ -10,13 +10,7 @@
       "path": "../contents"
     },
     {
-      "path": "../licenses"
-    },
-    {
       "path": "../server"
-    },
-    {
-      "path": "../translation"
     },
     {
       "path": "../ui-components"

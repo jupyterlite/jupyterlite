@@ -63,6 +63,7 @@
     "@jupyterlab/vega5-extension": "~4.4.1",
     "@jupyterlite/application": "~0.6.0-alpha.9",
     "@jupyterlite/application-extension": "~0.6.0-alpha.9",
+    "@jupyterlite/apputils-extension": "~0.6.0-alpha.9",
     "@jupyterlite/contents": "~0.6.0-alpha.9",
     "@jupyterlite/iframe-extension": "~0.6.0-alpha.9",
     "@jupyterlite/kernel": "~0.6.0-alpha.9",
@@ -120,6 +121,7 @@
     "@jupyterlab/vega5-extension": "~4.4.1",
     "@jupyterlite/application": "^0.6.0-alpha.9",
     "@jupyterlite/application-extension": "^0.6.0-alpha.9",
+    "@jupyterlite/apputils-extension": "^0.6.0-alpha.9",
     "@jupyterlite/iframe-extension": "^0.6.0-alpha.9",
     "@jupyterlite/repl-extension": "^0.6.0-alpha.9",
     "@jupyterlite/server": "^0.6.0-alpha.9",
@@ -161,6 +163,7 @@
       "@jupyterlab/vega5-extension",
       "@jupyterlab/ui-components-extension",
       "@jupyterlite/application-extension",
+      "@jupyterlite/apputils-extension",
       "@jupyterlite/repl-extension",
       "@jupyterlite/iframe-extension",
       "@jupyterlite/services-extension"
