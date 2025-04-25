@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../node_modules/@types/serviceworker/index.d.ts" />
+/// <reference path="../../../node_modules/@types/serviceworker/index.d.ts" preserve="true" />
 
 /**
  * The name of the cache
