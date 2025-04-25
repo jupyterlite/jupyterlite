@@ -30,6 +30,22 @@ async function createModule(scope, module) {
 }
 
 /**
+ * Hide the loading indicator once the app is fully loaded
+ */
+function hideAppLoadingIndicator() {
+  const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (indicator) {
+    // Add hidden class to trigger fade-out animation
+    indicator.classList.add('hidden');
+
+    // Listen for the end of the animation before removing the element
+    indicator.addEventListener('animationend', () => {
+      indicator.remove();
+    }, { once: true });
+  }
+}
+
+/**
  * The main entry point for the application.
  */
 export async function main() {
@@ -181,5 +197,10 @@ export async function main() {
 
   // 4. Start the application, which will activate the other plugins
   await app.start();
+
+  // Hide loading indicator after the app has started
+  hideAppLoadingIndicator();
+
   await app.restored;
+
 }

@@ -32,14 +32,95 @@
         );
       }.call(this));
     </script>
+    <style>
+      /* Loading indicator styles */
+      body {
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Light theme (default) */
+      body {
+        background-color: #fff;
+        color: #000;
+      }
+
+      /* Dark theme */
+      body.jp-mod-dark {
+        background-color: #111;
+        color: #fff;
+      }
+
+      #jupyterlite-loading-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+      }
+
+      .jupyterlite-loading-indicator-spinner {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+        border: 6px solid rgba(0, 0, 0, 0.1);
+        border-top: 6px solid #FFDC00; /* Bright yellow color */
+        border-radius: 50%;
+        animation: jupyter-spin 1s linear infinite;
+      }
+
+      /* Dark theme indicator adjustments */
+      body.jp-mod-dark .jupyterlite-loading-indicator-spinner {
+        border: 6px solid rgba(255, 255, 255, 0.1);
+        border-top: 6px solid #FFDC00;
+      }
+
+      .jupyterlite-loading-indicator-text {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-size: 16px;
+      }
+
+      /* Adjust text color based on theme */
+      body.jp-mod-light .jupyterlite-loading-indicator-text {
+        color: #000000;
+      }
+
+      body.jp-mod-dark .jupyterlite-loading-indicator-text {
+        color: #ffffff;
+      }
+
+      @keyframes jupyter-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      #jupyterlite-loading-indicator.hidden {
+        animation: fadeOut 0.5s ease-out forwards;
+        pointer-events: none;
+      }
+    </style>
   </head>
   {{#unless (ispage name 'tree')}}
-  <body class="jp-ThemedContainer" data-notebook="{{ name }}"></body>
+  <body class="jp-ThemedContainer" data-notebook="{{ name }}">
+    <!-- Loading indicator -->
+    <div id="jupyterlite-loading-indicator">
+      <div class="jupyterlite-loading-indicator-spinner"></div>
+      <div class="jupyterlite-loading-indicator-text">Loading JupyterLite...</div>
+    </div>
     <noscript>
       <div style="text-align: center; padding: 20px;">
           JupyterLite requires JavaScript to be enabled in your browser.
       </div>
-  </noscript>
+    </noscript>
   </body>
   {{/unless}}
 </html>
