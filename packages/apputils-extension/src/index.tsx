@@ -59,21 +59,21 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
   id: '@jupyterlite/application-extension:plugin-manager',
   description: 'Plugin manager viewer',
   autoStart: true,
-  optional: [ITranslator, ICommandPalette],
+  optional: [JupyterLab.IInfo, ITranslator, ICommandPalette],
   provides: IPluginManager,
   activate: (
     app: JupyterFrontEnd,
+    info: JupyterLab.IInfo | null,
     translator: ITranslator | null,
     palette: ICommandPalette | null,
   ): IPluginManager => {
-    if (!(app instanceof JupyterLab)) {
-      // only activate in JupyterLab
-      // TODO: require JupyterLab.IInfo instead when the upstream PR is merged and released?
-      // https://github.com/jupyterlab/jupyterlab/pull/17367
+    const availablePlugins = info?.availablePlugins ?? [];
+
+    if (availablePlugins.length === 0) {
       return {
         open: async () => {
           // eslint-disable-next-line no-console
-          console.info('Plugin manager viewer is only available in JupyterLab');
+          console.info('The application does not contain information about plugins');
         },
       };
     }
@@ -90,8 +90,6 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
     const tracker = new WidgetTracker<MainAreaWidget<Plugins>>({
       namespace: namespace,
     });
-
-    const availablePlugins = app.info.availablePlugins;
 
     function createWidget(args?: PluginListModel.IConfigurableState) {
       const model = new LitePluginListModel({
