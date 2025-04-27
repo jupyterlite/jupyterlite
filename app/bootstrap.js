@@ -42,6 +42,11 @@ function getOption(name) {
  * Apply theme to loading indicator based on saved settings in IndexedDB
  */
 async function applyThemeToAppLoadingIndicator() {
+  const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (!indicator) {
+    return; // Not on lab page, no need to apply theme
+  }
+
   try {
     const baseUrl = getOption('baseUrl');
     const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
