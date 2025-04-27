@@ -33,20 +33,17 @@
       }.call(this));
     </script>
     <style>
-      /* Loading indicator styles */
       body {
         margin: 0;
         padding: 0;
         transition: background-color 0.3s ease;
       }
 
-      /* Light theme (default) */
       body {
         background-color: #fff;
         color: #000;
       }
 
-      /* Dark theme */
       body.jp-mod-dark {
         background-color: #111;
         color: #fff;
@@ -73,7 +70,6 @@
         animation: jupyter-spin 1s linear infinite;
       }
 
-      /* Dark theme indicator adjustments */
       body.jp-mod-dark .jupyterlite-loading-indicator-spinner {
         border: 6px solid rgba(255, 255, 255, 0.1);
         border-top: 6px solid #FFDC00;
