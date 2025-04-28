@@ -181,7 +181,5 @@ export async function main() {
 
   // 4. Start the application, which will activate the other plugins
   await app.start();
-
   await app.restored;
-
 }
