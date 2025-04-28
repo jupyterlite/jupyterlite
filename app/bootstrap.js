@@ -39,6 +39,21 @@ function getOption(name) {
 }
 
 /**
+ * Hide the loading indicator once the app is fully loaded
+ */
+function hideAppLoadingIndicator() {
+  const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (indicator) {
+    indicator.classList.add('hidden');
+    indicator.addEventListener('animationend', () => {
+      indicator.remove();
+      // Remove theme classes after the loading indicator is removed
+      document.body.classList.remove('jp-mod-dark', 'jp-mod-light');
+    }, { once: true });
+  }
+}
+
+/**
  * Apply theme to loading indicator based on saved settings in IndexedDB
  */
 async function applyThemeToAppLoadingIndicator() {
@@ -148,5 +163,7 @@ void (async function bootstrap() {
   // Now that all federated containers are initialized with the main
   // container, we can import the main function.
   let main = (await import('./index.js')).main;
-  void main();
+  await main();
+
+  hideAppLoadingIndicator();
 })();
