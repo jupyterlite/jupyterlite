@@ -21,8 +21,7 @@ test.describe('Page Tests', () => {
     const loadingIndicator = page.locator('#jupyterlite-loading-indicator');
     await loadingIndicator.waitFor({ state: 'visible' });
 
-    expect(loadingIndicator.getByText('Loading JupyterLite...')).toBeTruthy();
-
+    await expect(loadingIndicator.getByText('Loading JupyterLite...')).toBeVisible();
     await loadingIndicator.waitFor({ state: 'hidden' });
 
     expect(await loadingIndicator.isVisible()).toBeFalsy();
