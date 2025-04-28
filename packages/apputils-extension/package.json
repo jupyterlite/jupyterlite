@@ -40,6 +40,7 @@
   "dependencies": {
     "@jupyterlab/application": "~4.4.2",
     "@jupyterlab/apputils": "~4.5.2",
+    "@jupyterlab/logconsole": "~4.4.2",
     "@jupyterlab/pluginmanager": "~4.4.2",
     "@jupyterlab/translation": "~4.4.2",
     "@jupyterlab/ui-components": "~4.4.2",
@@ -53,7 +54,8 @@
     "access": "public"
   },
   "jupyterlab": {
-    "extension": true
+    "extension": true,
+    "schemaDir": "schema"
   },
   "styleModule": "style/index.js"
 }

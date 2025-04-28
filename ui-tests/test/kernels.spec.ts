@@ -5,7 +5,7 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { firefoxWaitForApplication } from './utils';
+import { firefoxWaitForApplication, notebooksWaitForApplication } from './utils';
 
 test.use({
   waitForApplication: firefoxWaitForApplication,
@@ -141,5 +141,75 @@ test.describe('Kernels', () => {
     output = await page.notebook.getCellTextOutput(4);
     expect(output).toBeTruthy();
     expect(output![0].trim()).toBe('Final check');
+  });
+});
+
+test.describe('Kernel status and logs', () => {
+  test.use({
+    waitForApplication: notebooksWaitForApplication,
+  });
+
+  test.setTimeout(120000);
+
+  test('Clicking on kernel status indicator opens the log console', async ({
+    page,
+  }) => {
+    await page.goto('notebooks/index.html?path=empty.ipynb');
+
+    await page.waitForSelector('.jp-NotebookPanel');
+
+    const logConsoleInitially = await page.locator('.jp-LogConsole').isVisible();
+    expect(logConsoleInitially).toBe(false);
+
+    await page.locator('.jp-KernelStatus').click();
+
+    await page.waitForSelector('.jp-LogConsole');
+    const logConsoleVisible = await page.locator('.jp-LogConsole').isVisible();
+    expect(logConsoleVisible).toBe(true);
+  });
+
+  test('Kernel logs show expected messages after restart', async ({ page }) => {
+    await page.goto('notebooks/index.html?path=empty.ipynb');
+    await page.waitForSelector('.jp-NotebookPanel');
+
+    await page.locator('.jp-KernelStatus').click();
+    await page.waitForSelector('.jp-LogConsole');
+
+    // Resize the log console to take half of the vertical space
+    const handle = page.locator('.lm-SplitPanel-handle:visible');
+    await handle.waitFor({ state: 'visible' });
+
+    const viewportSize = page.viewportSize();
+    if (!viewportSize) {
+      throw new Error('Viewport size is null');
+    }
+
+    const handleBox = await handle.boundingBox();
+    if (!handleBox) {
+      throw new Error('Could not get handle bounding box');
+    }
+    const targetY = viewportSize.height / 2;
+
+    await page.mouse.move(
+      handleBox.x + handleBox.width / 2,
+      handleBox.y + handleBox.height / 2,
+    );
+    await page.mouse.down();
+    await page.mouse.move(handleBox.x + handleBox.width / 2, targetY);
+    await page.mouse.up();
+
+    // Switch the log level to info to see the kernel logs
+    await page.locator('[aria-label="Log level"]').selectOption('info');
+
+    // Restart the kernel
+    await page.menu.clickMenuItem('Kernel>Restart Kernel and Run All Cells…');
+    await page.getByRole('button', { name: 'Confirm Kernel Restart' }).click();
+
+    // Wait for the indicator to show the green checkmark
+    await page.waitForSelector('.jp-KernelStatus-success');
+
+    // Check the Pyodide kernel logs are visible
+    expect(page.getByText('Loaded micropip, packaging')).toBeVisible();
+    expect(page.getByText('Loaded openssl, ssl')).toBeVisible();
   });
 });

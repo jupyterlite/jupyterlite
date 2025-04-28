@@ -3335,7 +3335,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/logconsole@npm:^4.4.2":
+"@jupyterlab/logconsole@npm:^4.4.2, @jupyterlab/logconsole@npm:~4.4.2":
   version: 4.4.2
   resolution: "@jupyterlab/logconsole@npm:4.4.2"
   dependencies:
@@ -4702,6 +4702,7 @@ __metadata:
   dependencies:
     "@jupyterlab/application": ~4.4.2
     "@jupyterlab/apputils": ~4.5.2
+    "@jupyterlab/logconsole": ~4.4.2
     "@jupyterlab/pluginmanager": ~4.4.2
     "@jupyterlab/translation": ~4.4.2
     "@jupyterlab/ui-components": ~4.4.2

@@ -30,6 +30,8 @@ import {
   LiteTranslatorConnector,
 } from '@jupyterlite/apputils';
 
+import { kernelStatusPlugin } from './kernelstatus';
+
 /**
  * The command IDs used by the apputils extension.
  */
@@ -156,6 +158,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
+  kernelStatusPlugin,
 ];
 
 export default plugins;
