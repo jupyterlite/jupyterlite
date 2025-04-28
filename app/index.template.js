@@ -35,10 +35,7 @@ async function createModule(scope, module) {
 function hideAppLoadingIndicator() {
   const indicator = document.getElementById('jupyterlite-loading-indicator');
   if (indicator) {
-    // Add hidden class to trigger fade-out animation
     indicator.classList.add('hidden');
-
-    // Listen for the end of the animation before removing the element
     indicator.addEventListener('animationend', () => {
       indicator.remove();
     }, { once: true });
