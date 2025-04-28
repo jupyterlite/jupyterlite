@@ -4,7 +4,9 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Page Tests', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, browserName }) => {
+    test.skip(browserName !== 'chromium', 'This test only runs on Chromium');
+
     const context = page.context();
     const cdpSession = await context.newCDPSession(page);
     // simulate a slow CPU to the loading of the page takes longer
