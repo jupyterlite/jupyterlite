@@ -1,0 +1,9 @@
+{
+  "title": "Kernel Status",
+  "description": "Settings for the kernel status widget",
+  "jupyter.lab.toolbars": {
+    "Notebook": [{ "name": "kernelStatus", "rank": 995 }]
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

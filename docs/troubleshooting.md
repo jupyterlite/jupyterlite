@@ -49,3 +49,20 @@ command via the following options:
 Clearing browser data will permanently remove data stored in your browser.
 This operation cannot be undone.
 ```
+
+## Access kernel logs
+
+If the kernel you are using reports logs to the log console, you may be able to see
+these logs by opening the log console via the following options:
+
+- Open the command palette (Ctrl + Shift + C or Cmd + Shift + C) and search for
+  `Show Log Console`.
+- Click on the menu item: `View > Show Log Console`.
+- Click on the toolbar item in the notebook toolbar.
+
+The kernel status item in the notebook toolbar will also show the status of the kernel.
+If the kernel is busy, it will show a spinner. If the kernel is idle, it will show a
+check mark. If the kernel reports a `critical` error, it will show a red cross. Clicking
+on the kernel status item will open the log console.
+
+![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./images/jupyterlite-kernel-status.png)
