@@ -29,4 +29,19 @@ test.describe('Page Tests', () => {
     await page.locator('#jupyterlab-splash').waitFor({ state: 'detached' });
     await page.locator('.jp-Launcher').waitFor({ state: 'visible' });
   });
+
+  test('Dark theme', async ({ page }) => {
+    await page.goto('lab/index.html');
+    await page.locator('.jp-Launcher').waitFor({ state: 'visible' });
+
+    await page.getByRole('menuitem', { name: 'Settings' }).click();
+    await page.locator('li[data-type=submenu]', { hasText: /^Theme$/ }).click();
+    await page.getByRole('menuitem', { name: 'JupyterLab Dark', exact: true }).click();
+
+    await page.reload();
+
+    // Check if the dark theme class is applied to the body
+    await expect(page.locator('body')).toHaveClass(/jp-mod-dark/, { timeout: 30000 });
+    await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(17, 17, 17)');
+  });
 });
