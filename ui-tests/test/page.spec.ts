@@ -9,7 +9,7 @@ test.describe('Page Tests', () => {
 
     const context = page.context();
     const cdpSession = await context.newCDPSession(page);
-    // simulate a slow CPU to the loading of the page takes longer
+    // simulate a slow CPU so the loading of the page takes longer
     await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 6 });
   });
 
