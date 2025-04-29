@@ -58,8 +58,13 @@ function hideAppLoadingIndicator() {
  */
 async function applyThemeToAppLoadingIndicator() {
   const indicator = document.getElementById('jupyterlite-loading-indicator');
-  if (!indicator) {
-    return; // Not on lab page, no need to apply theme
+
+  const showLoadingIndicator = getOption('showLoadingIndicator');
+  if (showLoadingIndicator !== true) {
+    if (indicator) {
+      indicator.remove();
+    }
+    return;
   }
 
   try {

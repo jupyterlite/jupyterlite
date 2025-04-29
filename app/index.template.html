@@ -107,13 +107,10 @@
   </head>
   {{#unless (ispage name 'tree')}}
   <body class="jp-ThemedContainer" data-notebook="{{ name }}">
-    {{#if (ispage name 'lab')}}
-    <!-- Loading indicator - only shown on lab page -->
     <div id="jupyterlite-loading-indicator">
       <div class="jupyterlite-loading-indicator-spinner"></div>
       <div class="jupyterlite-loading-indicator-text">Loading JupyterLite...</div>
     </div>
-    {{/if}}
     <noscript>
       <div style="text-align: center; padding: 20px;">
           JupyterLite requires JavaScript to be enabled in your browser.
