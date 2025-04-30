@@ -264,3 +264,43 @@ test.describe('Copy shareable link', () => {
     });
   });
 });
+
+test.describe('Clear Browser Data', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('lab/index.html');
+  });
+
+  test('Clear browser data should remove files', async ({ page }) => {
+    // Create a new notebook first
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+    await page.notebook.close();
+
+    // Verify the notebook exists in the file browser
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+
+    // Open the Clear Browser Data dialog from the Help menu
+    await page.menu.clickMenuItem('Help>Clear Browser Data');
+
+    // Verify the dialog is shown
+    await page.waitForSelector('.jp-Dialog');
+    await expect(page.locator('.jp-Dialog-header').first()).toContainText(
+      'Clear Browser Data',
+    );
+
+    // Check both options (files and settings) and click Clear
+    await page.locator('input#jp-ClearData-contents').check();
+    await page.locator('input#jp-ClearData-settings').check();
+
+    await page.getByRole('button', { name: 'Clear' }).click();
+
+    // The page should reload, wait for it to be ready again
+    await page.waitForLoadState('networkidle');
+
+    // Check that the notebook is gone after reload
+    await refreshFilebrowser({ page });
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
+  });
+});
