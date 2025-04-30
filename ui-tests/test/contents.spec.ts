@@ -286,6 +286,7 @@ test.describe('Clear Browser Data', () => {
 
     // The page should reload, wait for it to be ready again
     await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
 
     // Check that the notebook is gone after reload
     await refreshFilebrowser({ page });
@@ -312,6 +313,7 @@ test.describe('Clear Browser Data', () => {
 
     // The page should reload, wait for it to be ready again
     await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
 
     // Check that the notebook still exists after reload
     await refreshFilebrowser({ page });
@@ -333,6 +335,7 @@ test.describe('Clear Browser Data', () => {
 
     // The page should reload, wait for it to be ready again
     await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
 
     // Verify theme is reset to light theme (default)
     expect(await page.theme.getTheme()).toBe('JupyterLab Light');
