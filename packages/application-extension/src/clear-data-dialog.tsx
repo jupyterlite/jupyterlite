@@ -16,11 +16,90 @@ export interface IClearOptions {
 }
 
 /**
- * Interface for availability of clear options
+ * A widget for displaying a dialog to clear browser data
  */
-export interface IClearAvailability {
-  canClearSettings: boolean;
-  canClearContents: boolean;
+export class ClearDataDialog extends ReactWidget {
+  /**
+   * Create a new clear data dialog
+   *
+   * @param options - The options for creating the dialog
+   */
+  constructor(options: ClearDataDialog.IClearDataDialogOptions) {
+    super();
+    this._translator = options.translator;
+    this._availability = options.availability || {
+      canClearSettings: true,
+      canClearContents: true,
+    };
+    this._settingsChecked = this._availability.canClearSettings;
+    this._contentsChecked = this._availability.canClearContents;
+    this.addClass('jp-ClearData-dialog');
+  }
+
+  /**
+   * Get the current options selected by the user
+   */
+  getValue(): IClearOptions {
+    return {
+      clearSettings: this._settingsChecked && this._availability.canClearSettings,
+      clearContents: this._contentsChecked && this._availability.canClearContents,
+    };
+  }
+
+  /**
+   * Render the dialog content
+   */
+  protected render(): JSX.Element {
+    return (
+      <ClearDataDialogComponent
+        translator={this._translator}
+        settingsChecked={this._settingsChecked}
+        contentsChecked={this._contentsChecked}
+        availability={this._availability}
+        setSettingsChecked={(checked: boolean) => {
+          this._settingsChecked = checked;
+          this.update();
+        }}
+        setContentsChecked={(checked: boolean) => {
+          this._contentsChecked = checked;
+          this.update();
+        }}
+      />
+    );
+  }
+
+  private _translator: ITranslator;
+  private _settingsChecked: boolean;
+  private _contentsChecked: boolean;
+  private _availability: ClearDataDialog.IClearAvailability;
+}
+
+/**
+ * A namespace for ClearDataDialog statics
+ */
+export namespace ClearDataDialog {
+  /**
+   * Interface for availability of clear options
+   */
+  export interface IClearAvailability {
+    canClearSettings: boolean;
+    canClearContents: boolean;
+  }
+
+  /**
+   * Interface for ClearDataDialog constructor options
+   */
+  export interface IClearDataDialogOptions {
+    /**
+     * The translator instance
+     */
+    translator: ITranslator;
+
+    /**
+     * The availability of clear options
+     */
+    availability?: IClearAvailability;
+  }
 }
 
 /**
@@ -30,7 +109,7 @@ interface IClearDataDialogProps {
   translator: ITranslator;
   settingsChecked: boolean;
   contentsChecked: boolean;
-  availability: IClearAvailability;
+  availability: ClearDataDialog.IClearAvailability;
   setSettingsChecked: (checked: boolean) => void;
   setContentsChecked: (checked: boolean) => void;
 }
@@ -129,67 +208,4 @@ function ClearDataDialogComponent(props: IClearDataDialogProps): JSX.Element {
       </div>
     </div>
   );
-}
-
-/**
- * A widget for displaying a dialog to clear browser data
- */
-export class ClearDataDialog extends ReactWidget {
-  /**
-   * Create a new clear data dialog
-   *
-   * @param translator - The translator instance
-   * @param availability - The availability of clear options
-   */
-  constructor(
-    translator: ITranslator,
-    availability: IClearAvailability = {
-      canClearSettings: true,
-      canClearContents: true,
-    },
-  ) {
-    super();
-    this._translator = translator;
-    this._settingsChecked = availability.canClearSettings;
-    this._contentsChecked = availability.canClearContents;
-    this._availability = availability;
-    this.addClass('jp-ClearData-dialog');
-  }
-
-  /**
-   * Get the current options selected by the user
-   */
-  getValue(): IClearOptions {
-    return {
-      clearSettings: this._settingsChecked && this._availability.canClearSettings,
-      clearContents: this._contentsChecked && this._availability.canClearContents,
-    };
-  }
-
-  /**
-   * Render the dialog content
-   */
-  protected render(): JSX.Element {
-    return (
-      <ClearDataDialogComponent
-        translator={this._translator}
-        settingsChecked={this._settingsChecked}
-        contentsChecked={this._contentsChecked}
-        availability={this._availability}
-        setSettingsChecked={(checked: boolean) => {
-          this._settingsChecked = checked;
-          this.update();
-        }}
-        setContentsChecked={(checked: boolean) => {
-          this._contentsChecked = checked;
-          this.update();
-        }}
-      />
-    );
-  }
-
-  private _translator: ITranslator;
-  private _settingsChecked: boolean;
-  private _contentsChecked: boolean;
-  private _availability: IClearAvailability;
 }

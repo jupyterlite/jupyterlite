@@ -667,7 +667,10 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
           canClearContents: isBrowserStorageDrive && !!defaultDrive,
         };
 
-        const body = new ClearDataDialog(translator, availability);
+        const body = new ClearDataDialog({
+          translator,
+          availability,
+        });
 
         const result = await showDialog({
           title: trans.__('Clear Browser Data'),
