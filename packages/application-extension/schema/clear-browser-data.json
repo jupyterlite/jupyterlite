@@ -1,0 +1,20 @@
+{
+  "title": "Clear Browser Data",
+  "description": "Clear Browser Data settings.",
+  "jupyter.lab.menus": {
+    "main": [
+      {
+        "id": "jp-mainmenu-help",
+        "items": [
+          {
+            "command": "application:clear-browser-data",
+            "rank": 10
+          }
+        ]
+      }
+    ]
+  },
+  "properties": {},
+  "additionalProperties": false,
+  "type": "object"
+}

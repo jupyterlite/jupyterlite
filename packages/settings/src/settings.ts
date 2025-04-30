@@ -168,6 +168,15 @@ export class Settings extends SettingManager implements Setting.IManager {
   }
 
   /**
+   * Clear all stored settings
+   *
+   * @returns A promise which resolves when the settings are cleared
+   */
+  async clear(): Promise<void> {
+    await (await this.storage).clear();
+  }
+
+  /**
    * Get all the settings for core or federated plugins
    */
   private async _getAll(file: SettingsFile): Promise<ISettingRegistry.IPlugin[]> {
