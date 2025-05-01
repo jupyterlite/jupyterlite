@@ -37,6 +37,13 @@ export interface IKernelClient extends Kernel.IKernelAPIClient {
   readonly changed: ISignal<IKernelClient, IObservableMap.IChangedArgs<IKernel>>;
 
   /**
+   * Handle stdin request received from Service Worker.
+   */
+  handleStdin(
+    inputRequest: KernelMessage.IInputRequestMsg,
+  ): Promise<KernelMessage.IInputReplyMsg>;
+
+  /**
    * Shut down all kernels.
    */
   shutdownAll: () => Promise<void>;

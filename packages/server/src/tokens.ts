@@ -39,6 +39,16 @@ export interface IServiceWorkerManager {
    * A Promise that resolves when the ServiceWorker is registered, or rejects if it cannot
    */
   ready: Promise<void>;
+
+  /**
+   * Register a handler for stdin requests received via ServiceWorker.
+   * @param pathnameSuffix URL pathname suffix to match such as "kernel" or "terminal".
+   * @param stdinHandler
+   */
+  registerStdinHandler(
+    pathnameSuffix: string,
+    stdinHandler: IServiceWorkerManager.IStdinHandler,
+  ): void;
 }
 
 /**
@@ -58,6 +68,13 @@ export namespace IServiceWorkerManager {
      * URL to load the worker file. Default to "{baseURL}/service-worker.js"
      */
     workerUrl?: string;
+  }
+
+  /**
+   * Interface for handler of stdin requests received via Service Worker.
+   */
+  export interface IStdinHandler {
+    (message: any): Promise<any>;
   }
 }
 
