@@ -8,14 +8,6 @@ import { ITranslator } from '@jupyterlab/translation';
 import React from 'react';
 
 /**
- * Interface for the clear options
- */
-export interface IClearOptions {
-  clearSettings: boolean;
-  clearContents: boolean;
-}
-
-/**
  * A widget for displaying a dialog to clear browser data
  */
 export class ClearDataDialog extends ReactWidget {
@@ -39,7 +31,7 @@ export class ClearDataDialog extends ReactWidget {
   /**
    * Get the current options selected by the user
    */
-  getValue(): IClearOptions {
+  getValue(): ClearDataDialog.IClearOptions {
     return {
       clearSettings: this._settingsChecked && this._availability.canClearSettings,
       clearContents: this._contentsChecked && this._availability.canClearContents,
@@ -78,6 +70,20 @@ export class ClearDataDialog extends ReactWidget {
  * A namespace for ClearDataDialog statics
  */
 export namespace ClearDataDialog {
+  /**
+   * Interface for the clear options
+   */
+  export interface IClearOptions {
+    /**
+     * Whether to clear settings
+     */
+    clearSettings: boolean;
+    /**
+     * Whether to clear contents
+     */
+    clearContents: boolean;
+  }
+
   /**
    * Interface for availability of clear options
    */

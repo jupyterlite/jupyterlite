@@ -57,7 +57,7 @@ import { Widget } from '@lumino/widgets';
 
 import React from 'react';
 
-import { ClearDataDialog, IClearOptions } from './clear-data-dialog';
+import { ClearDataDialog } from './clear-data-dialog';
 
 /**
  * A regular expression to match path to notebooks, documents and consoles
@@ -645,7 +645,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
       defaultFileBrowser.addClass('jp-BrowserStorageDrive');
     }
 
-    const clearData = async (options: IClearOptions): Promise<void> => {
+    const clearData = async (options: ClearDataDialog.IClearOptions): Promise<void> => {
       const { clearSettings, clearContents } = options;
       const promises: Promise<void>[] = [];
 
