@@ -58,12 +58,18 @@ function hideAppLoadingIndicator() {
  */
 async function applyThemeToAppLoadingIndicator() {
   const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (!indicator) {
+    return;
+  }
+
+  // Hide the indicator by default
+  indicator.classList.add('hidden');
 
   const showLoadingIndicator = getOption('showLoadingIndicator');
-  if (showLoadingIndicator !== true) {
-    if (indicator) {
-      indicator.remove();
-    }
+  // Only show the indicator if explicitly set to true
+  if (showLoadingIndicator === true) {
+    indicator.classList.remove('hidden');
+  } else {
     return;
   }
 

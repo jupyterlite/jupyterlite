@@ -56,8 +56,20 @@
         transform: translate(-50%, -50%);
         text-align: center;
         z-index: 1000;
-        opacity: 1;
+        opacity: 0; /* Hidden by default */
         transition: opacity 0.5s ease-out;
+        display: none; /* Hidden by default */
+      }
+
+      #jupyterlite-loading-indicator.hidden {
+        animation: fadeOut 0.5s ease-out forwards;
+        pointer-events: none;
+      }
+
+      /* Show the indicator when needed */
+      #jupyterlite-loading-indicator:not(.hidden) {
+        opacity: 1;
+        display: block;
       }
 
       .jupyterlite-loading-indicator-spinner {
@@ -98,16 +110,11 @@
         0% { opacity: 1; }
         100% { opacity: 0; }
       }
-
-      #jupyterlite-loading-indicator.hidden {
-        animation: fadeOut 0.5s ease-out forwards;
-        pointer-events: none;
-      }
     </style>
   </head>
   {{#unless (ispage name 'tree')}}
   <body class="jp-ThemedContainer" data-notebook="{{ name }}">
-    <div id="jupyterlite-loading-indicator">
+    <div id="jupyterlite-loading-indicator" class="hidden">
       <div class="jupyterlite-loading-indicator-spinner"></div>
       <div class="jupyterlite-loading-indicator-text">Loading JupyterLite...</div>
     </div>
