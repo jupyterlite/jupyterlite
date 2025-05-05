@@ -12,6 +12,13 @@
           }
         ]
       }
+    ],
+    "context": [
+      {
+        "command": "application:clear-browser-data",
+        "selector": ".jp-BrowserStorageDrive",
+        "rank": 1000
+      }
     ]
   },
   "properties": {},

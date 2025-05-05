@@ -20,7 +20,7 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser, IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import {
   DocumentConnectionManager,
@@ -41,7 +41,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
 
@@ -618,13 +618,14 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:clear-browser-data',
   autoStart: true,
   requires: [ITranslator],
-  optional: [ICommandPalette, ISettingManager, IDefaultDrive],
+  optional: [ICommandPalette, ISettingManager, IDefaultDrive, IDefaultFileBrowser],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
     palette: ICommandPalette | null,
     settingManager: Setting.IManager | null,
     defaultDrive: Contents.IDrive | null,
+    defaultFileBrowser: IDefaultFileBrowser | null,
   ): void => {
     const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
@@ -637,6 +638,11 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
       // not available if neither the default drive or the settings manager
       // are the ones provided by JupyterLite by default
       return;
+    }
+
+    // Add a CSS class to the drive if it is a BrowserStorageDrive for the context menu entry
+    if (isBrowserStorageDrive && defaultFileBrowser) {
+      defaultFileBrowser.addClass('jp-BrowserStorageDrive');
     }
 
     const clearData = async (options: IClearOptions): Promise<void> => {
@@ -660,6 +666,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(CommandIDs.clearBrowserData, {
       label: trans.__('Clear Browser Data'),
+      icon: (args) => (args['isPalette'] ? undefined : clearIcon),
       execute: async () => {
         // Pass the availability information to the dialog
         const availability = {
