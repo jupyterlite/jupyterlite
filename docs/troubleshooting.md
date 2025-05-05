@@ -38,11 +38,12 @@ By default JupyterLite stores the contents of the file browser and user settings
 browser's local storage.
 
 If you want to clear all files and settings, you can use the `Clear Browser Data`
-command:
+command via the following options:
 
 - Open the command palette (Ctrl + Shift + C or Cmd + Shift + C) and search for
   `Clear Browser Data`.
 - Click on the menu item: `Help > Clear Browser Data`.
+- Right click on the file browser and select `Clear Browser Data`.
 
 ```{warning}
 Clearing browser data will permanently remove data stored in your browser.
