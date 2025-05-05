@@ -31,6 +31,17 @@ test.describe('Page Tests', () => {
     await page.locator('.jp-Launcher').waitFor({ state: 'visible' });
   });
 
+  test('No Loading Indicator on REPL Page', async ({ page }) => {
+    await page.goto('repl/index.html');
+
+    const loadingIndicator = page.locator('#jupyterlite-loading-indicator');
+
+    const isIndicatorVisible = await loadingIndicator.isVisible().catch(() => false);
+    expect(isIndicatorVisible).toBeFalsy();
+
+    await expect(page.locator('.jp-CodeConsole')).toBeVisible({ timeout: 30000 });
+  });
+
   test('Dark theme', async ({ page }) => {
     await page.goto('lab/index.html');
     await page.locator('.jp-Launcher').waitFor({ state: 'visible' });
