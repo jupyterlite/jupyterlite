@@ -105,6 +105,11 @@
           "type": "string",
           "default": "JupyterLite Storage"
         },
+        "showLoadingIndicator": {
+          "description": "Whether to show the loading indicator during app initialization",
+          "type": "boolean",
+          "default": false
+        },
         "settingsStorageDrivers": {
           "description": "names of the localforage driver for settings, or `null` for the best available",
           "$ref": "#/definitions/localforage-driver-set"
