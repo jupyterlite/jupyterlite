@@ -2,3 +2,71 @@
 | Copyright (c) Jupyter Development Team.
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
+
+.jp-ClearData-dialog {
+  min-width: 400px;
+}
+
+.jp-ClearData-container {
+  padding: 10px 0;
+}
+
+.jp-ClearData-option {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.jp-ClearData-option label {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+/* Enhanced warning styles */
+.jp-ClearData-warning-box {
+  display: flex;
+  background-color: var(--jp-warn-color1);
+  border: 1px solid var(--jp-warn-color1);
+  border-radius: 4px;
+  padding: 12px;
+  margin: 0 0 16px 0;
+  align-items: flex-start;
+}
+
+.jp-ClearData-warning-icon {
+  font-size: 24px;
+  margin-right: 12px;
+  flex-shrink: 0;
+  color: var(--jp-warn-color0);
+}
+
+.jp-ClearData-warning-text {
+  flex: 1;
+  color: var(--md-grey-900);
+}
+
+.jp-ClearData-warning-title {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.jp-ClearData-warning-text ul {
+  margin: 8px 0 4px 0;
+  padding-left: 24px;
+}
+
+.jp-ClearData-warning-text p {
+  margin: 4px 0;
+}
+
+.jp-ClearData-reload-notice {
+  margin-top: 16px;
+  color: var(--jp-ui-font-color2);
+  font-size: 0.9em;
+}
+
+.jp-ClearData-unavailable {
+  color: var(--jp-ui-font-color2);
+  font-style: italic;
+}

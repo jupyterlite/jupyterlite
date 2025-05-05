@@ -190,6 +190,19 @@ export class BrowserStorageDrive implements Contents.IDrive {
   }
 
   /**
+   * Clear all storage (files, counters, and checkpoints).
+   *
+   * @returns A promise which resolves when all storage is cleared.
+   */
+  async clearStorage(): Promise<void> {
+    await Promise.all([
+      (await this.storage).clear(),
+      (await this.counters).clear(),
+      (await this.checkpoints).clear(),
+    ]);
+  }
+
+  /**
    * Create a new untitled file or directory in the specified directory path.
    *
    * @param options: The options used to create the file.

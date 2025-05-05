@@ -20,7 +20,7 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser, IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import {
   DocumentConnectionManager,
@@ -30,22 +30,34 @@ import {
 } from '@jupyterlab/lsp';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
+import {
+  Contents,
+  IDefaultDrive,
+  ISettingManager,
+  Setting,
+} from '@jupyterlab/services';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
+
+import { BrowserStorageDrive } from '@jupyterlite/contents';
+
+import { Settings } from '@jupyterlite/settings';
 
 import { filter } from '@lumino/algorithm';
 
 import { Widget } from '@lumino/widgets';
 
 import React from 'react';
+
+import { ClearDataDialog } from './clear-data-dialog';
 
 /**
  * A regular expression to match path to notebooks, documents and consoles
@@ -68,6 +80,8 @@ namespace CommandIDs {
   export const filebrowserDownload = 'filebrowser:download';
 
   export const copyShareableLink = 'filebrowser:share-main';
+
+  export const clearBrowserData = 'application:clear-browser-data';
 }
 
 /**
@@ -597,8 +611,98 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   },
 };
 
+/**
+ * A plugin to add a command for clearing browser data.
+ */
+const clearBrowserData: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:clear-browser-data',
+  autoStart: true,
+  requires: [ITranslator],
+  optional: [ICommandPalette, ISettingManager, IDefaultDrive, IDefaultFileBrowser],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    palette: ICommandPalette | null,
+    settingManager: Setting.IManager | null,
+    defaultDrive: Contents.IDrive | null,
+    defaultFileBrowser: IDefaultFileBrowser | null,
+  ): void => {
+    const { commands } = app;
+    const trans = translator.load(I18N_BUNDLE);
+    const category = trans.__('Help');
+
+    const isBrowserStorageDrive = defaultDrive instanceof BrowserStorageDrive;
+    const isLiteSettingsManager = settingManager instanceof Settings;
+
+    if (!isBrowserStorageDrive && !isLiteSettingsManager) {
+      // not available if neither the default drive or the settings manager
+      // are the ones provided by JupyterLite by default
+      return;
+    }
+
+    // Add a CSS class to the drive if it is a BrowserStorageDrive for the context menu entry
+    if (isBrowserStorageDrive && defaultFileBrowser) {
+      defaultFileBrowser.addClass('jp-BrowserStorageDrive');
+    }
+
+    const clearData = async (options: ClearDataDialog.IClearOptions): Promise<void> => {
+      const { clearSettings, clearContents } = options;
+      const promises: Promise<void>[] = [];
+
+      if (clearContents && isBrowserStorageDrive) {
+        const browserStorageDrive = defaultDrive as BrowserStorageDrive;
+        promises.push(browserStorageDrive.clearStorage());
+      }
+
+      if (clearSettings && isLiteSettingsManager) {
+        const settings = settingManager as Settings;
+        promises.push(settings.clear());
+      }
+
+      await Promise.all(promises);
+
+      window.location.reload();
+    };
+
+    commands.addCommand(CommandIDs.clearBrowserData, {
+      label: trans.__('Clear Browser Data'),
+      icon: (args) => (args['isPalette'] ? undefined : clearIcon),
+      execute: async () => {
+        // Pass the availability information to the dialog
+        const availability = {
+          canClearSettings: isLiteSettingsManager && !!settingManager,
+          canClearContents: isBrowserStorageDrive && !!defaultDrive,
+        };
+
+        const body = new ClearDataDialog({
+          translator,
+          availability,
+        });
+
+        const result = await showDialog({
+          title: trans.__('Clear Browser Data'),
+          body,
+          buttons: [
+            Dialog.cancelButton({ label: trans.__('Cancel') }),
+            Dialog.warnButton({ label: trans.__('Clear') }),
+          ],
+        });
+        if (result.button.accept) {
+          return clearData(body.getValue());
+        }
+        return await Promise.resolve();
+      },
+    });
+
+    if (palette) {
+      palette.addItem({ command: CommandIDs.clearBrowserData, category });
+    }
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
+  clearBrowserData,
   downloadPlugin,
   liteLogo,
   lspConnectionManager,

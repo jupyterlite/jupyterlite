@@ -31,3 +31,21 @@ To fix this issue, you can try the following:
   might still be registered, for example after a JupyterLite version update.
 
 See the [Contents](./reference/contents.md) documentation for more information.
+
+## Clear the browser data
+
+By default JupyterLite stores the contents of the file browser and user settings in the
+browser's local storage.
+
+If you want to clear all files and settings, you can use the `Clear Browser Data`
+command via the following options:
+
+- Open the command palette (Ctrl + Shift + C or Cmd + Shift + C) and search for
+  `Clear Browser Data`.
+- Click on the menu item: `Help > Clear Browser Data`.
+- Right click on the file browser and select `Clear Browser Data`.
+
+```{warning}
+Clearing browser data will permanently remove data stored in your browser.
+This operation cannot be undone.
+```

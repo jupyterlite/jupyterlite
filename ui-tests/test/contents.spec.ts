@@ -264,3 +264,80 @@ test.describe('Copy shareable link', () => {
     });
   });
 });
+
+test.describe('Clear Browser Data', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('lab/index.html');
+  });
+
+  test('Clear browser data should remove files', async ({ page }) => {
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+    await page.notebook.close();
+
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+
+    await page.menu.clickMenuItem('Help>Clear Browser Data');
+
+    // Checkboxes are checked by default
+    await page.getByRole('button', { name: 'Clear' }).click();
+
+    // The page should reload, wait for it to be ready again
+    await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
+
+    // Check that the notebook is gone after reload
+    await refreshFilebrowser({ page });
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeFalsy();
+  });
+
+  test('Clear only settings should preserve files', async ({ page }) => {
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+    await page.notebook.close();
+
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+
+    // Open the Clear Browser Data dialog from the Help menu
+    await page.menu.clickMenuItem('Help>Clear Browser Data');
+
+    // Only check settings, leave contents unchecked
+    await page.locator('input#jp-ClearData-settings').check();
+    await page.locator('input#jp-ClearData-contents').uncheck();
+
+    await page.getByRole('button', { name: 'Clear' }).click();
+
+    // The page should reload, wait for it to be ready again
+    await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
+
+    // Check that the notebook still exists after reload
+    await refreshFilebrowser({ page });
+    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+  });
+
+  test('Clear settings should reset theme to light theme', async ({ page }) => {
+    // First switch to the dark theme
+    await page.theme.setDarkTheme();
+
+    // Open the Clear Browser Data dialog from the Help menu
+    await page.menu.clickMenuItem('Help>Clear Browser Data');
+
+    // Only check settings
+    await page.locator('input#jp-ClearData-settings').check();
+    await page.locator('input#jp-ClearData-contents').uncheck();
+
+    await page.getByRole('button', { name: 'Clear' }).click();
+
+    // The page should reload, wait for it to be ready again
+    await page.waitForLoadState('networkidle');
+    await page.locator('.jp-Launcher').waitFor();
+
+    // Verify theme is reset to light theme (default)
+    expect(await page.theme.getTheme()).toBe('JupyterLab Light');
+  });
+});
