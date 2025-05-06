@@ -142,4 +142,60 @@ test.describe('Kernels', () => {
     expect(output).toBeTruthy();
     expect(output![0].trim()).toBe('Final check');
   });
+
+  test('Stdin using pyodide kernel', async ({ page }) => {
+    const notebook = 'stdin.ipynb';
+
+    await page.goto('lab/index.html');
+    await page.notebook.open(notebook);
+
+    // Run a simple cell to check pyodide packages download and run.
+    await page.notebook.runCell(0);
+    let output = await page.notebook.getCellTextOutput(0);
+    expect(output![0]).toEqual('3');
+
+    // Run cell containing `input`.
+    const cell1 = page.notebook.runCell(1); // Do not await yet.
+    await page.locator('.jp-Stdin >> text=Prompt:').waitFor();
+    await page.keyboard.insertText('My Name');
+    await page.keyboard.press('Enter');
+    await cell1; // await end of cell.
+
+    output = await page.notebook.getCellTextOutput(1);
+    expect(output![0]).toEqual('Prompt: My Name\n');
+
+    // Check `input` value stored correctly.
+    await page.notebook.runCell(2);
+    output = await page.notebook.getCellTextOutput(2);
+    expect(output![0]).toEqual("'My Name'");
+
+    // Run cell containing `getpass`
+    const cell3 = page.notebook.runCell(3); // Do not await yet.
+    await page.locator('.jp-Stdin >> text=Password:').waitFor();
+    await page.keyboard.insertText('hidden123');
+    await page.keyboard.press('Enter');
+    await cell3; // await end of cell.
+
+    output = await page.notebook.getCellTextOutput(3);
+    expect(output![0]).toEqual('Password: ········\n');
+
+    // Check `getpass` value stored correctly.
+    await page.notebook.runCell(4);
+    output = await page.notebook.getCellTextOutput(4);
+    expect(output![0]).toEqual("'hidden123'");
+
+    // Check multiple `input` in the same cell.
+    const cell5 = page.notebook.runCell(5); // Do not await yet.
+    await page.locator('.jp-Stdin >> text=n0:').waitFor();
+    await page.keyboard.insertText('abc');
+    await page.keyboard.press('Enter');
+    await page.locator('.jp-Stdin >> text=n1:').waitFor();
+    await page.keyboard.insertText('xyz');
+    await page.keyboard.press('Enter');
+    await cell5; // await end of cell.
+
+    await page.notebook.runCell(6);
+    output = await page.notebook.getCellTextOutput(6);
+    expect(output![0]).toEqual("('abc', 'xyz')");
+  });
 });

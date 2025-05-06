@@ -1,3 +1,4 @@
+https://jupyterlite-pyodide-kernel--183.org.readthedocs.build/en/183/_static/jupyterlite_pyodide_kernel-0.6.0a5-py3-none-any.whl
 jupyterlab-language-pack-fr-FR
 jupyterlite-javascript-kernel==0.4.0a0
 jupyterlite-p5-kernel==0.1.1
