@@ -119,7 +119,7 @@ async function refetch(request: Request): Promise<Response> {
 function shouldBroadcast(url: URL): boolean {
   return (
     url.origin === location.origin &&
-    (url.pathname.includes('/api/drive') || url.pathname.includes('/stdin/'))
+    (url.pathname.includes('/api/drive') || url.pathname.includes('/api/stdin/'))
   );
 }
 

@@ -200,7 +200,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       return;
     }
 
-    if (pathname.includes('/stdin/')) {
+    if (pathname.includes('/api/stdin/')) {
       this._onStdinMessage(pathname, data);
     } else {
       this._onDriveMessage(data);
@@ -219,7 +219,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   };
 
   private _onStdinMessage = async (pathname: string, data: any): Promise<void> => {
-    // Expecting pathname of the form '<optional something>/stdin/<suffix>' from which
+    // Expecting pathname of the form '<optional something>/api/stdin/<suffix>' from which
     // suffix is used to identify which stdinHandler to call.
     const suffix = pathname.slice(pathname.lastIndexOf('/') + 1);
     const stdinHandler = this._stdinHandlers.get(suffix);
