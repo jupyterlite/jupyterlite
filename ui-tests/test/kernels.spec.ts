@@ -143,7 +143,12 @@ test.describe('Kernels', () => {
     expect(output![0].trim()).toBe('Final check');
   });
 
-  test('Stdin using pyodide kernel', async ({ page }) => {
+  test('Stdin using pyodide kernel', async ({ browserName, page }) => {
+    test.skip(
+      browserName === 'firefox',
+      'Needs firefox >= 138 for correct ServiceWorker behaviour',
+    );
+
     const notebook = 'stdin.ipynb';
 
     await page.goto('lab/index.html');
