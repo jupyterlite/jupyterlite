@@ -238,9 +238,9 @@ export const kernelStatusPlugin: JupyterFrontEndPlugin<void> = {
             const path = panel.context.path;
             const logger = loggerRegistry.getLogger(path);
             logger?.contentChanged.connect((_, args) => {
-              if (args === 'append') {
+              const length = logger.outputAreaModel.length;
+              if (args === 'append' && length > 0) {
                 // get the latest message
-                const length = logger.outputAreaModel.length;
                 const latestMessage = logger.outputAreaModel.get(
                   length - 1,
                 ) as ILogOutputModel;
