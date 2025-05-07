@@ -2,3 +2,117 @@
 | Copyright (c) Jupyter Development Team.
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
+
+.jp-KernelStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-KernelStatus-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-KernelStatus-spinner,
+.jp-KernelStatus-success,
+.jp-KernelStatus-error,
+.jp-KernelStatus svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Loading state */
+.jp-KernelStatus-spinner {
+  transform-origin: center;
+  animation: spin 1s linear infinite;
+  color: var(--jp-brand-color1);
+}
+
+.jp-KernelStatus-spinner-track {
+  opacity: 0.25;
+}
+
+.jp-KernelStatus-spinner-path {
+  opacity: 0.75;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success state */
+.jp-KernelStatus-success {
+  color: var(--jp-success-color1);
+}
+
+/* Error state */
+.jp-KernelStatus-error {
+  color: var(--jp-error-color1);
+}
+
+/* Busy state */
+.jp-KernelStatus-busy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.jp-KernelStatus-busy-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--jp-brand-color1);
+  animation: pulse 1.4s infinite ease-in-out;
+}
+
+.jp-KernelStatus-busy-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.jp-KernelStatus-busy-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.jp-KernelStatus .jp-KernelStatus-busy-dot {
+  width: 4px;
+  height: 4px;
+}
+
+@keyframes pulse {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.jp-KernelStatus-idle .jp-KernelStatus-text {
+  color: var(--jp-success-color1);
+}
+
+.jp-KernelStatus-busy .jp-KernelStatus-text {
+  color: var(--jp-brand-color1);
+}
+
+.jp-KernelStatus-error .jp-KernelStatus-text {
+  color: var(--jp-error-color1);
+}
+
+.jp-KernelStatus-widget {
+  padding: 2px 8px;
+  height: 24px;
+}

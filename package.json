@@ -86,5 +86,8 @@
     "typedoc-plugin-markdown": "~4.6.2",
     "typescript": "~5.5.4"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "resolutions": {
+    "@jupyterlab/fileeditor-extension@~4.4.2": "patch:@jupyterlab/fileeditor-extension@npm%3A4.4.2#./.yarn/patches/@jupyterlab-fileeditor-extension-npm-4.4.2-8e26958be6.patch"
+  }
 }
