@@ -144,6 +144,9 @@ test.describe('Kernels', () => {
   });
 
   test('Stdin using pyodide kernel', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
     const notebook = 'stdin.ipynb';
 
     await page.goto('lab/index.html');
