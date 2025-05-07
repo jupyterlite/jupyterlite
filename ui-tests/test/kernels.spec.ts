@@ -212,4 +212,37 @@ test.describe('Kernel status and logs', () => {
     expect(page.getByText('Loaded micropip, packaging')).toBeVisible();
     expect(page.getByText('Loaded openssl, ssl')).toBeVisible();
   });
+
+  test('Kernel shows error state with invalid package configuration', async ({
+    page,
+  }) => {
+    // Mock jupyter-lite.json with invalid package configuration to put the kernel in error state
+    await page.route('jupyter-lite.json', async (route, request) => {
+      const response = await page.request.fetch(route.request());
+      const body = await response.json();
+      body['jupyter-config-data'].litePluginSettings = {
+        '@jupyterlite/pyodide-kernel-extension:kernel': {
+          loadPyodideOptions: {
+            packages: ['unknownpackagetoload'],
+          },
+        },
+      };
+      return route.fulfill({
+        response,
+        body: JSON.stringify(body),
+        headers: {
+          ...response.headers(),
+        },
+      });
+    });
+
+    await page.goto('notebooks/index.html?path=empty.ipynb');
+    await page.waitForSelector('.jp-NotebookPanel');
+
+    await page.locator('.jp-KernelStatus').click();
+    await page.waitForSelector('.jp-LogConsole');
+    await page.waitForSelector('.jp-KernelStatus-error');
+
+    expect(page.getByText('unknownpackagetoload')).toBeVisible();
+  });
 });
