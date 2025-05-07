@@ -72,6 +72,10 @@ export namespace IServiceWorkerManager {
 
   /**
    * Interface for handler of stdin requests received via Service Worker.
+   *
+   * Types are `any` because they are defined by whatever calls `registerStdinHandler`
+   * and the ServiceWorkerManager does not need to understand them, it just passes them
+   * through without altering them.
    */
   export interface IStdinHandler {
     (message: any): Promise<any>;

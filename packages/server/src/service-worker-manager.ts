@@ -185,6 +185,10 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
   /**
    * Handle a message received on the BroadcastChannel
+   *
+   * Message data is `any` because it can either be a drive message of type `TDriveReqiest<T>`
+   * or a stdin message of type `any` as ServiceWorkerManager passes it through to the
+   * stdinHandler without understanding or altering it.
    */
   private _onBroadcastMessage = async (
     event: MessageEvent<{
@@ -221,6 +225,8 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   private _onStdinMessage = async (pathname: string, data: any): Promise<void> => {
     // Expecting pathname of the form '<optional something>/api/stdin/<suffix>' from which
     // suffix is used to identify which stdinHandler to call.
+    // `data: any` because ServiceWorkerManager accepts any data and passes it through
+    // to the stdinHandler without understanding or altering it.
     const suffix = pathname.slice(pathname.lastIndexOf('/') + 1);
     const stdinHandler = this._stdinHandlers.get(suffix);
     if (stdinHandler !== undefined) {
