@@ -2,6 +2,35 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0a10
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.9...2008f3bb75c412ade6548ff3e4ededc7fa5bfaf0))
+
+### Enhancements made
+
+- Support kernel `stdin` request via ServiceWorker and SharedArrayBuffer [#1640](https://github.com/jupyterlite/jupyterlite/pull/1640) ([@ianthomas23](https://github.com/ianthomas23))
+- Add a plugin to clear browser data (settings and files) [#1638](https://github.com/jupyterlite/jupyterlite/pull/1638) ([@jtpio](https://github.com/jtpio))
+- Add a loading indicator [#1636](https://github.com/jupyterlite/jupyterlite/pull/1636) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.4.2 and Notebook 7.4.2 [#1643](https://github.com/jupyterlite/jupyterlite/pull/1643) ([@jtpio](https://github.com/jtpio))
+- Bump actions/create-github-app-token from 1 to 2 in the actions group [#1639](https://github.com/jupyterlite/jupyterlite/pull/1639) ([@dependabot](https://github.com/dependabot))
+- Fix a couple of `TODO` items [#1634](https://github.com/jupyterlite/jupyterlite/pull/1634) ([@jtpio](https://github.com/jtpio))
+- Add `preserve="true"` to `<reference>` [#1633](https://github.com/jupyterlite/jupyterlite/pull/1633) ([@jtpio](https://github.com/jtpio))
+- Add `apputils` and `apputils-extension` packages [#1632](https://github.com/jupyterlite/jupyterlite/pull/1632) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4.1 and Notebook 7.4.1 [#1631](https://github.com/jupyterlite/jupyterlite/pull/1631) ([@jtpio](https://github.com/jtpio))
+- Use consistent filenames for UI test [#1630](https://github.com/jupyterlite/jupyterlite/pull/1630) ([@jtpio](https://github.com/jtpio))
+- Stabilize UI tests [#1628](https://github.com/jupyterlite/jupyterlite/pull/1628) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-04-18&to=2025-05-08&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-04-18..2025-05-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-04-18..2025-05-08&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-04-18..2025-05-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-04-18..2025-05-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0a9
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.8...efc9efe3b09c3a57bd019c3dd04be0dfc9e5a8f2))
@@ -25,8 +54,6 @@
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-04-15&to=2025-04-18&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-04-15..2025-04-18&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-04-15..2025-04-18&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-04-15..2025-04-18&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-04-15..2025-04-18&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a8
 
