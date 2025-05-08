@@ -57,7 +57,7 @@ async function onFetch(event: FetchEvent): Promise<void> {
 
   let responsePromise: Promise<Response> | null = null;
   if (shouldBroadcast(url)) {
-    responsePromise = broadcastOne(request);
+    responsePromise = broadcastOne(request, url);
   } else if (!shouldDrop(request, url)) {
     responsePromise = maybeFromCache(event);
   }
@@ -117,7 +117,10 @@ async function refetch(request: Request): Promise<Response> {
  * Whether a given URL should be broadcast
  */
 function shouldBroadcast(url: URL): boolean {
-  return url.origin === location.origin && url.pathname.includes('/api/drive');
+  return (
+    url.origin === location.origin &&
+    (url.pathname.includes('/api/drive') || url.pathname.includes('/api/stdin/'))
+  );
 }
 
 /**
@@ -134,7 +137,7 @@ function shouldDrop(request: Request, url: URL): boolean {
 /**
  * Forward request to main using the broadcast channel
  */
-async function broadcastOne(request: Request): Promise<Response> {
+async function broadcastOne(request: Request, url: URL): Promise<Response> {
   const message = await request.json();
   const promise = new Promise<Response>((resolve) => {
     const messageHandler = (event: MessageEvent) => {
@@ -151,6 +154,8 @@ async function broadcastOne(request: Request): Promise<Response> {
     broadcast.addEventListener('message', messageHandler);
   });
 
+  // Add URL pathname to message
+  message.pathname = url.pathname;
   broadcast.postMessage(message);
 
   return await promise;

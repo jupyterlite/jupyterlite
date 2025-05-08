@@ -13,7 +13,7 @@ import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serializ
 
 import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kernel/messages';
 
-import { UUID } from '@lumino/coreutils';
+import { PromiseDelegate, UUID } from '@lumino/coreutils';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
@@ -118,10 +118,16 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             return;
           }
 
-          // TODO Find a better solution for this?
-          // input-reply is asynchronous, must not be processed like other messages
           if (msg.header.msg_type === 'input_reply') {
-            kernel.handleMessage(msg);
+            if (this._stdinPromise !== undefined) {
+              // Stdin handled by Service Worker.
+              this._stdinPromise.resolve(msg as KernelMessage.IInputReplyMsg);
+            } else {
+              // Stdin handled by SharedArrayBuffer which is like conventional message
+              // passing to kernel except we cannot use processMsg as the mutex is
+              // already held.
+              void kernel.handleMessage(msg);
+            }
           } else {
             void processMsg(msg);
           }
@@ -157,7 +163,8 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
     // start the kernel
     const sendMessage = (msg: KernelMessage.IMessage): void => {
-      const clientId = msg.header.session;
+      const clientId =
+        msg.channel === 'stdin' ? msg.parent_header.session : msg.header.session;
       const socket = this._clients.get(clientId);
       if (!socket) {
         console.warn(`Trying to send message on removed socket for kernel ${kernelId}`);
@@ -185,6 +192,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
     this._kernels.set(kernelId, kernel);
     this._kernelClients.set(kernelId, new Set<string>());
+    this._kernelSends.set(kernelId, sendMessage);
 
     // create the websocket server for the kernel
     const wsServer = new WebSocketServer(kernelUrl, {
@@ -213,6 +221,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       wsServer.close();
       this._kernels.delete(kernelId);
       this._kernelClients.delete(kernelId);
+      this._kernelSends.delete(kernelId);
     });
 
     return {
@@ -260,6 +269,8 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
    */
   async shutdown(id: string): Promise<void> {
     this._kernels.delete(id)?.dispose();
+    this._kernelClients.delete(id);
+    this._kernelSends.delete(id);
   }
 
   /**
@@ -278,12 +289,45 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
     return this._kernels.get(id);
   }
 
+  /**
+   * Handle stdin request received from Service Worker.
+   */
+  async handleStdin(
+    inputRequest: KernelMessage.IInputRequestMsg,
+  ): Promise<KernelMessage.IInputReplyMsg> {
+    this._stdinPromise = new PromiseDelegate<KernelMessage.IInputReplyMsg>();
+
+    const clientId = inputRequest.parent_header.session;
+    const kernelId = this._getClientKernel(clientId);
+    if (kernelId !== undefined) {
+      const sendMessage = this._kernelSends.get(kernelId);
+      if (sendMessage !== undefined) {
+        sendMessage(inputRequest);
+      }
+    }
+
+    // Promise is resolved by input reply message.
+    return this._stdinPromise.promise;
+  }
+
+  /**
+   * Get a kernel id corresponding to a client id.
+   */
+  private _getClientKernel(clientId: string): string | undefined {
+    // Walk the _kernelClients to find a match.
+    return this._kernelClients
+      .keys()
+      .find((kernelId) => this._kernelClients.get(kernelId)!.has(clientId));
+  }
+
   private _kernels = new ObservableMap<IKernel>();
   private _clients = new ObservableMap<WebSocketClient>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
   private _serverSettings: ServerConnection.ISettings;
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
+  private _stdinPromise?: PromiseDelegate<KernelMessage.IInputReplyMsg>;
+  private _kernelSends = new ObservableMap<(msg: KernelMessage.IMessage) => void>();
 }
 
 /**

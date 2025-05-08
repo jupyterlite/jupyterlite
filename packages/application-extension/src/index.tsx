@@ -43,6 +43,8 @@ import { ITranslator } from '@jupyterlab/translation';
 
 import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
+import { IKernelClient } from '@jupyterlite/kernel';
+
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
@@ -501,9 +503,17 @@ const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> =
   id: '@jupyterlite/application-extension:service-worker-manager',
   autoStart: true,
   provides: IServiceWorkerManager,
-  activate: (app: JupyterFrontEnd) => {
+  optional: [IKernelClient],
+  activate: (app: JupyterFrontEnd, kernelClient?: IKernelClient) => {
     const { contents } = app.serviceManager;
-    return new ServiceWorkerManager({ contents });
+    const serviceWorkerManager = new ServiceWorkerManager({ contents });
+    if (kernelClient !== undefined) {
+      serviceWorkerManager.registerStdinHandler(
+        'kernel',
+        kernelClient.handleStdin.bind(kernelClient),
+      );
+    }
+    return serviceWorkerManager;
   },
 };
 

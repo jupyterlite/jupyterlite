@@ -85,6 +85,18 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   }
 
   /**
+   * Register a handler for stdin requests received via ServiceWorker.
+   * @param pathnameSuffix URL pathname suffix to match such as "kernel" or "terminal".
+   * @param stdinHandler
+   */
+  registerStdinHandler(
+    pathnameSuffix: string,
+    stdinHandler: IServiceWorkerManager.IStdinHandler,
+  ): void {
+    this._stdinHandlers.set(pathnameSuffix, stdinHandler);
+  }
+
+  /**
    * Initialize the ServiceWorkerManager.
    */
   private async _initialize(workerUrl: string): Promise<void> {
@@ -173,26 +185,59 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
 
   /**
    * Handle a message received on the BroadcastChannel
+   *
+   * Message data is `any` because it can either be a drive message of type `TDriveReqiest<T>`
+   * or a stdin message of type `any` as ServiceWorkerManager passes it through to the
+   * stdinHandler without understanding or altering it.
    */
-  private _onBroadcastMessage = async <T extends TDriveMethod>(
+  private _onBroadcastMessage = async (
     event: MessageEvent<{
-      data: TDriveRequest<T>;
+      data: any;
       browsingContextId: string;
+      pathname: string;
     }>,
   ): Promise<void> => {
-    const { data, browsingContextId } = event.data;
+    const { data, browsingContextId, pathname } = event.data;
 
     if (browsingContextId !== this._browsingContextId) {
       // Message is not meant for us
       return;
     }
 
+    if (pathname.includes('/api/stdin/')) {
+      this._onStdinMessage(pathname, data);
+    } else {
+      this._onDriveMessage(data);
+    }
+  };
+
+  private _onDriveMessage = async <T extends TDriveMethod>(
+    data: TDriveRequest<T>,
+  ): Promise<void> => {
     const response = await this._driveContentsProcessor.processDriveRequest(data);
     // pass the browsingContextId along so the Service Worker can identify the request
     this._broadcastChannel.postMessage({
       response,
       browsingContextId: this._browsingContextId,
     });
+  };
+
+  private _onStdinMessage = async (pathname: string, data: any): Promise<void> => {
+    // Expecting pathname of the form '<optional something>/api/stdin/<suffix>' from which
+    // suffix is used to identify which stdinHandler to call.
+    // `data: any` because ServiceWorkerManager accepts any data and passes it through
+    // to the stdinHandler without understanding or altering it.
+    const suffix = pathname.slice(pathname.lastIndexOf('/') + 1);
+    const stdinHandler = this._stdinHandlers.get(suffix);
+    if (stdinHandler !== undefined) {
+      const response = await stdinHandler(data);
+      this._broadcastChannel.postMessage({
+        response,
+        browsingContextId: this._browsingContextId,
+      });
+    } else {
+      console.warn(`No stdin handler registered for '${pathname}'`);
+    }
   };
 
   private _registration: ServiceWorkerRegistration | null = null;
@@ -204,4 +249,5 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
   private _browsingContextId: string;
   private _contents: Contents.IManager;
   private _driveContentsProcessor: DriveContentsProcessor;
+  private _stdinHandlers = new Map<string, IServiceWorkerManager.IStdinHandler>();
 }
