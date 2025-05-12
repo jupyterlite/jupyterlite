@@ -13,8 +13,6 @@
  * Ideally, much more of these would be taken from `@types/emscripten`.
  */
 
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../node_modules/@types/emscripten/index.d.ts" preserve="true" />
 type EmscriptenFS = typeof FS;
 
 export const DIR_MODE = 16895; // 040777
