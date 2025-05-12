@@ -3,4 +3,6 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
+@import url('~@jupyterlite/apputils/style/index.css');
+
 @import url('./base.css');

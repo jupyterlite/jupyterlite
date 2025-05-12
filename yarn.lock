@@ -3070,7 +3070,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/fileeditor-extension@npm:~4.4.2":
+"@jupyterlab/fileeditor-extension@npm:4.4.2":
   version: 4.4.2
   resolution: "@jupyterlab/fileeditor-extension@npm:4.4.2"
   dependencies:
@@ -3103,6 +3103,42 @@ __metadata:
     "@lumino/coreutils": ^2.2.1
     "@lumino/widgets": ^2.7.1
   checksum: a46fbbec8eeb765935f3e2ef5dfad9f9987e109351cad0ec818542f2f1db144d41c5880e90331d52ccfb2b1456172558f75d630912b27b13afc331065c389898
+  languageName: node
+  linkType: hard
+
+"@jupyterlab/fileeditor-extension@patch:@jupyterlab/fileeditor-extension@npm%3A4.4.2#./.yarn/patches/@jupyterlab-fileeditor-extension-npm-4.4.2-8e26958be6.patch::locator=%40jupyterlite%2Froot%40workspace%3A.":
+  version: 4.4.2
+  resolution: "@jupyterlab/fileeditor-extension@patch:@jupyterlab/fileeditor-extension@npm%3A4.4.2#./.yarn/patches/@jupyterlab-fileeditor-extension-npm-4.4.2-8e26958be6.patch::version=4.4.2&hash=5cfffb&locator=%40jupyterlite%2Froot%40workspace%3A."
+  dependencies:
+    "@codemirror/commands": ^6.8.1
+    "@codemirror/search": ^6.5.10
+    "@jupyterlab/application": ^4.4.2
+    "@jupyterlab/apputils": ^4.5.2
+    "@jupyterlab/codeeditor": ^4.4.2
+    "@jupyterlab/codemirror": ^4.4.2
+    "@jupyterlab/completer": ^4.4.2
+    "@jupyterlab/console": ^4.4.2
+    "@jupyterlab/coreutils": ^6.4.2
+    "@jupyterlab/docregistry": ^4.4.2
+    "@jupyterlab/documentsearch": ^4.4.2
+    "@jupyterlab/filebrowser": ^4.4.2
+    "@jupyterlab/fileeditor": ^4.4.2
+    "@jupyterlab/launcher": ^4.4.2
+    "@jupyterlab/lsp": ^4.4.2
+    "@jupyterlab/mainmenu": ^4.4.2
+    "@jupyterlab/observables": ^5.4.2
+    "@jupyterlab/rendermime-interfaces": ^3.12.2
+    "@jupyterlab/services": ^7.4.2
+    "@jupyterlab/settingregistry": ^4.4.2
+    "@jupyterlab/statusbar": ^4.4.2
+    "@jupyterlab/toc": ^6.4.2
+    "@jupyterlab/translation": ^4.4.2
+    "@jupyterlab/ui-components": ^4.4.2
+    "@lumino/algorithm": ^2.0.3
+    "@lumino/commands": ^2.3.2
+    "@lumino/coreutils": ^2.2.1
+    "@lumino/widgets": ^2.7.1
+  checksum: 7d59c2e9fb0c225a6abba8b7b6dd57b6d35ccff712c269be73feba49cd76a777856d06a53b77ad6f892433e6b2cf5891e96e61f17d86aebe3c8b2fe0b05fff39
   languageName: node
   linkType: hard
 
@@ -3335,7 +3371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/logconsole@npm:^4.4.2":
+"@jupyterlab/logconsole@npm:^4.4.2, @jupyterlab/logconsole@npm:~4.4.2":
   version: 4.4.2
   resolution: "@jupyterlab/logconsole@npm:4.4.2"
   dependencies:
@@ -4702,6 +4738,7 @@ __metadata:
   dependencies:
     "@jupyterlab/application": ~4.4.2
     "@jupyterlab/apputils": ~4.5.2
+    "@jupyterlab/logconsole": ~4.4.2
     "@jupyterlab/pluginmanager": ~4.4.2
     "@jupyterlab/translation": ~4.4.2
     "@jupyterlab/ui-components": ~4.4.2
