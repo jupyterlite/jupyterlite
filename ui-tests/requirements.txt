@@ -1,6 +1,6 @@
 jupyterlab-language-pack-fr-FR
 jupyterlite-javascript-kernel==0.4.0a0
 jupyterlite-p5-kernel==0.1.1
-https://jupyterlite-pyodide-kernel--177.org.readthedocs.build/en/177/_static/jupyterlite_pyodide_kernel-0.6.0a5-py3-none-any.whl
+https://jupyterlite-pyodide-kernel--177.org.readthedocs.build/en/177/_static/jupyterlite_pyodide_kernel-0.6.0a6-py3-none-any.whl
 notebook==7.4.2
 theme-darcula==4.0.0
