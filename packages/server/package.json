@@ -56,6 +56,7 @@
     "@lumino/application": "^2.4.4",
     "@lumino/coreutils": "^2.2.1",
     "@lumino/signaling": "^2.1.4",
+    "@types/emscripten": "^1.39.6",
     "mock-socket": "^9.3.1"
   },
   "devDependencies": {

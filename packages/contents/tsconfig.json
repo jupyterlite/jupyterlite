@@ -2,7 +2,8 @@
   "extends": "../../tsconfigbase",
   "compilerOptions": {
     "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["@types/emscripten"]
   },
   "include": ["src/**/*"],
   "references": [{ "path": "../localforage" }]
