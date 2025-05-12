@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/server",
-  "version": "0.6.0-alpha.10",
+  "version": "0.6.0-beta.0",
   "description": "JupyterLite - Server",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -49,10 +49,10 @@
     "@jupyterlab/services": "~7.4.2",
     "@jupyterlab/settingregistry": "~4.4.2",
     "@jupyterlab/statedb": "~4.4.2",
-    "@jupyterlite/contents": "^0.6.0-alpha.10",
-    "@jupyterlite/kernel": "^0.6.0-alpha.10",
-    "@jupyterlite/session": "^0.6.0-alpha.10",
-    "@jupyterlite/settings": "^0.6.0-alpha.10",
+    "@jupyterlite/contents": "^0.6.0-beta.0",
+    "@jupyterlite/kernel": "^0.6.0-beta.0",
+    "@jupyterlite/session": "^0.6.0-beta.0",
+    "@jupyterlite/settings": "^0.6.0-beta.0",
     "@lumino/application": "^2.4.4",
     "@lumino/coreutils": "^2.2.1",
     "@lumino/signaling": "^2.1.4",
