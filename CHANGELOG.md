@@ -73,9 +73,6 @@ Settings can now be exported to overrides.json from the Settings Editor, making 
 JupyterLite now includes JupyterLab 4.4 and Notebook 7.4, bringing all their improvements to the browser-based environment. Key features include:
 
 
-([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.5.3...c3782d0188f43b78fa06f43878afd288eae0bc4f))
-
-
 <!-- <START NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0b0
