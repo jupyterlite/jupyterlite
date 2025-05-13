@@ -18,6 +18,14 @@ The interface now includes a new toolbar item for viewing kernel logs directly i
 - Troubleshoot issues and monitor kernel activity more effectively
 - Experience improved visual feedback with a new loading indicator when starting kernels
 
+![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./docs/changelog_assets/0.6-jupyterlite-kernel-status.png)
+
+### Loading Indicator
+
+TODO
+
+
+
 ### Browser Data Management
 
 Added functionality to clear browser data from the UI, giving users better control over their environment. This includes:
