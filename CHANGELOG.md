@@ -1,5 +1,73 @@
 # CHANGELOG
 
+## 0.6.0
+
+JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience.
+
+### Kernel and execution improvements
+
+### Interactive Input Support (stdin)
+
+Added support for kernel `stdin` requests via ServiceWorker and SharedArrayBuffer, enabling interactive input functions like Python's `input()` in notebooks. This feature allows for more interactive workflows and educational examples that require user input during execution.
+
+### Kernel Logs Toolbar
+
+The interface now includes a new toolbar item for viewing kernel logs directly in the UI, providing improved debugging capabilities for Python and JavaScript kernels. Users can:
+
+- View real-time kernel logs (if the kernel supports it) by clicking the log icon
+- Troubleshoot issues and monitor kernel activity more effectively
+- Experience improved visual feedback with a new loading indicator when starting kernels
+
+### Browser Data Management
+
+Added functionality to clear browser data from the UI, giving users better control over their environment. This includes:
+
+- Options to clear settings data
+- Options to clear stored files
+- A user interface for managing browser storage
+
+This feature is especially useful for testing configurations or resolving persistent issues by resetting to a clean environment.
+
+### Improved Multi-Site Support
+
+Enhanced the handling of contents when multiple JupyterLite sites are deployed under the same host domain. Organizations can now:
+
+- Host multiple independent JupyterLite instances on the same domain
+- Avoid file system interference between instances
+- Configure each instance with different settings and content
+
+### Multi-Tab File System Access
+
+Fixed issues with concurrent file system access from multiple browser tabs, reducing conflicts when working with the same JupyterLite instance across different tabs.
+
+### Enhanced REPL Options
+
+Expanded the REPL customization capabilities with additional query string parameters, making it easier to embed and configure JupyterLite with various settings controlled by URL parameters. The new parameters include:
+
+TODO
+
+### Plugin Manager
+
+Introduced a plugin manager to provide transparency and control over extensions. This tool allows users to:
+
+- View active extensions in the JupyterLite environment
+- Understand dependency relationships between extensions
+- Gain better visibility into the configuration of their environment
+
+### Settings import and export
+
+Settings can now be exported to overrides.json from the Settings Editor, making it easier to:
+- Pre-configure defaults in deployments
+- Backup and restore user configurations
+
+### Updated to JupyterLab 4.4 and Notebook 7.4
+
+JupyterLite now includes JupyterLab 4.4 and Notebook 7.4, bringing all their improvements to the browser-based environment. Key features include:
+
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.5.3...c3782d0188f43b78fa06f43878afd288eae0bc4f))
+
+
 <!-- <START NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0b0
