@@ -95,7 +95,7 @@ you can control various aspects of the JupyterLite instance, such as:
 For more information, refer to the
 [jupyter-iframe-commands repository](https://github.com/TileDB-Inc/jupyter-iframe-commands).
 
-## Custom extensions
+## Exposing additional functionality
 
 If you need additional functionality beyond what the `jupyter-iframe-commands` extension
 provides, you can develop your own custom JupyterLab extension. Custom extensions can
