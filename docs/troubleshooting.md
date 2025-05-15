@@ -72,8 +72,12 @@ If you would like to only keep the kernel status item (the one showing the spinn
 
 ```json
 {
-  "disabledExtensions": [
-    "@jupyterlab/notebook-extension:execution-indicator"
-  ]
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "appName": "My JupyterLite App",
+    "disabledExtensions": [
+      "@jupyterlab/notebook-extension:execution-indicator"
+    ]
+  }
 }
 ````
