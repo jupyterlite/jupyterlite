@@ -66,3 +66,17 @@ check mark. If the kernel reports a `critical` error, it will show a red cross. 
 on the kernel status item will open the log console.
 
 ![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./images/jupyterlite-kernel-status.png)
+
+````{note}
+If you would like to only keep the kernel status item (the one showing the spinner and the ✅), and disable the default kernel execution indicator provided by default, put the following in your `jupyter-lite.json` file:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "disabledExtensions": [
+      "@jupyterlab/notebook-extension:execution-indicator"
+    ]
+  }
+}
+````
