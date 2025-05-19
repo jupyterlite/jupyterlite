@@ -13,7 +13,7 @@ name = input("What is your name? ")
 print(f"Hello {name}!")
 ```
 
-TODO: screenshot of stdin
+![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
 
 ### Kernel Indicator and Logs
 
@@ -35,7 +35,7 @@ In previous versions users had to manually clear the data using the browser deve
 
 This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
 
-[a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
+![a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
 
 ### Loading indicator
 
