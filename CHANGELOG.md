@@ -1,3 +1,3 @@
 # CHANGELOG
 
-See [CHANGELOG](docs/changelog.md).
+See [docs/changelog.md](docs/changelog.md).

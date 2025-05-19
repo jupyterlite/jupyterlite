@@ -2,76 +2,91 @@
 
 ## 0.6.0
 
-JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience.
-
-### Kernel and execution improvements
+JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience and new customization options for JupyterLite deployments.
 
 ### Interactive Input Support (stdin)
 
-Added support for kernel `stdin` requests via ServiceWorker and SharedArrayBuffer, enabling interactive input functions like Python's `input()` in notebooks. This feature allows for more interactive workflows and educational examples that require user input during execution.
+Support for kernel `stdin` requests is now available, enabling interactive input functions like Python's `input()` in notebooks. This fixes a long standing limitation of JupyterLite when executing the following code:
 
-### Kernel Logs Toolbar
+```python
+name = input("What is your name? ")
+print(f"Hello {name}!")
+```
 
-The interface now includes a new toolbar item for viewing kernel logs directly in the UI, providing improved debugging capabilities for Python and JavaScript kernels. Users can:
+TODO: screenshot of stdin
 
-- View real-time kernel logs (if the kernel supports it) by clicking the log icon
-- Troubleshoot issues and monitor kernel activity more effectively
-- Experience improved visual feedback with a new loading indicator when starting kernels
+### Loading Indicator and Kernel Logs
+
+A new notebook toolbar item has been added to show the kernel status with three different states:
+
+- Loading: the kernel is starting or performing some actions
+- Success: the kernel is running and ready to execute code (idle)
+- Failure: an error occurred while starting the kernel or during execution, and likely require a restart
+
+This new toolbar item gives users better visibility into the kernel's status and allows them to view the kernel logs (if the kernel reports them) by clicking on the toolbar item to open the log console.
 
 ![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./changelog_assets/0.6-jupyterlite-kernel-status.png)
 
-### Loading Indicator
+### Clear Browser Data
 
-TODO
+By default JupyterLite stores user created notebook and settings in the browser.
 
+In previous versions users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
 
+This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
 
-### Browser Data Management
+### Loading indicator
 
-Added functionality to clear browser data from the UI, giving users better control over their environment. This includes:
+JupyterLite can sometimes take some time to load, especially on slow connections.
 
-- Options to clear settings data
-- Options to clear stored files
-- A user interface for managing browser storage
+A new indicator has been added to let users know JupyterLite is currently loading.
 
-This feature is especially useful for testing configurations or resolving persistent issues by resetting to a clean environment.
+By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
 
-### Improved Multi-Site Support
-
-Enhanced the handling of contents when multiple JupyterLite sites are deployed under the same host domain. Organizations can now:
-
-- Host multiple independent JupyterLite instances on the same domain
-- Avoid file system interference between instances
-- Configure each instance with different settings and content
-
-### Multi-Tab File System Access
-
-Fixed issues with concurrent file system access from multiple browser tabs, reducing conflicts when working with the same JupyterLite instance across different tabs.
+TODO: screenshot of the loading indicator
 
 ### Enhanced REPL Options
 
 Expanded the REPL customization capabilities with additional query string parameters, making it easier to embed and configure JupyterLite with various settings controlled by URL parameters. The new parameters include:
 
-TODO
+TODO: screenshot showing an embedded single cell REPL with the new options
 
-### Plugin Manager
+### Improved Multi-Site Support
 
-Introduced a plugin manager to provide transparency and control over extensions. This tool allows users to:
+The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keep user created files isolated from each other. In practice this fixes the issue where usersw would create new files in one site, and they would show up in another site hosted under the same domain.
 
-- View active extensions in the JupyterLite environment
-- Understand dependency relationships between extensions
-- Gain better visibility into the configuration of their environment
+TODO: screenshot showing to sites hosted under the same domain, but with different notebooks
 
 ### Settings import and export
 
-Settings can now be exported to overrides.json from the Settings Editor, making it easier to:
-- Pre-configure defaults in deployments
-- Backup and restore user configurations
+Settings can now be exported to an `overrides.json` from the Settings Editor, which can be used to pre-configure defaults in deployments or to restore settings.
+
+This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` to be included in a JupyterLite deployment.
+
+### Plugin Manager
+
+Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager, which can be used to:
+
+- View active extensions in the running JupyterLite environment
+- Understand dependency relationships between extensions
+- Gain better visibility into the configuration of their environment
+
+### Multi-Tab File System Access
+
+Using JupyterLite in multiple browser tabs should now result in less issues, in particular when interacting with the file system.
+
+### Extension system
+
+In previous versions, JupyterLite was creating a separate application for registering "server" extensions, such as the different managers (sessions, kernels, settings, contents) and the actual kernels. This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
+
+Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
 
 ### Updated to JupyterLab 4.4 and Notebook 7.4
 
-JupyterLite now includes JupyterLab 4.4 and Notebook 7.4, bringing all their improvements to the browser-based environment. Key features include:
+JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
 
+- https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0
+- https://github.com/jupyter/notebook/releases/tag/v7.4.0
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
