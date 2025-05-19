@@ -15,7 +15,7 @@ print(f"Hello {name}!")
 
 TODO: screenshot of stdin
 
-### Loading Indicator and Kernel Logs
+### Kernel Indicator and Logs
 
 A new notebook toolbar item has been added to show the kernel status with three different states:
 
@@ -45,7 +45,7 @@ A new indicator has been added to let users know JupyterLite is currently loadin
 
 By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
 
-TODO: screenshot of the loading indicator
+[a screenshot of the page loading indicator](../../changelog_assets/0.6-jupyterlite-loading-indicator.png)
 
 ### Enhanced REPL Options
 
