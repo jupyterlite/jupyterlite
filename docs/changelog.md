@@ -20,7 +20,7 @@ print(f"Hello {name}!")
 A new notebook toolbar item has been added to show the kernel status with three different states:
 
 - Loading: the kernel is starting or performing some actions
-- Success: the kernel is running and ready to execute code (idle)
+- Success: the kernel is ready to execute code
 - Failure: an error occurred while starting the kernel or during execution, and likely requires a restart
 
 This new toolbar item gives users better visibility into the kernel's status and allows them to view the kernel logs (if the kernel reports them) by clicking on the toolbar item to open the log console.
@@ -33,13 +33,11 @@ By default JupyterLite stores user created notebooks and settings in the browser
 
 In previous versions, users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
 
-This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
-
 ![a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
 
 ### Loading indicator
 
-JupyterLite can sometimes take some time to load, especially on slow connections.
+With some deployments JupyterLite can take some time to load, especially on slow connections.
 
 A new indicator has been added to let users know JupyterLite is currently loading.
 
@@ -57,25 +55,30 @@ Check out the [REPL documentation](./quickstart/embed-repl.md) for more details 
 
 ### Settings import and export
 
-Settings can now be exported to an `overrides.json` from the Settings Editor, which can be used to pre-configure defaults in deployments or to restore settings.
+Settings can now be exported to an `overrides.json` file from the Settings Editor, which can be used to pre-configure defaults in deployments or to restore settings.
 
-This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` to be included in a JupyterLite deployment.
+This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` that can be included in a JupyterLite deployment.
 
 ![a screenshot of the settings editor with the new import and export buttons](./changelog_assets/0.6-jupyterlite-settings-import-export.png)
 
 ### Plugin Manager
 
-Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager, which can be used to:
+Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager. With the plugin manager users can:
 
-- View active extensions in the running JupyterLite environment
-- Understand dependency relationships between extensions
+- View active plugins in the running JupyterLite environment
+- Understand dependency relationships between plugins
 - Gain better visibility into the configuration of their environment
 
 ![a screenshot of the plugin manager](./changelog_assets/0.6-jupyterlite-plugin-manager.png)
 
-### Improved Multi-site Contents management
+### Improved Multi-site Contents Management
 
-The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other. In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
+The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other, for example:
+
+- `https://username.github.io/jupyterlite-foo
+- `https://username.github.io/jupyterlite-bar
+
+In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
 
 ### Multi-Tab File System Access
 
@@ -83,7 +86,7 @@ Using JupyterLite in multiple browser tabs should now result in less issues, in 
 
 ### Extension system
 
-In previous versions, JupyterLite was creating a separate application for registering "server" extensions, such as the different managers (sessions, kernels, settings, contents) and the actual kernels. This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
+In previous versions, JupyterLite was creating a separate application for registering "server" extensions. Examples of such extensions are the different managers (sessions, kernels, settings, contents) but also the actual kernels (Pyodide, Xeus Python). This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
 
 Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
 
