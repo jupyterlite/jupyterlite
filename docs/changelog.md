@@ -35,7 +35,7 @@ In previous versions users had to manually clear the data using the browser deve
 
 This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
 
-TODO: screenshot
+[a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
 
 ### Loading indicator
 
