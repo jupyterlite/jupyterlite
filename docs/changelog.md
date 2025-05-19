@@ -51,13 +51,9 @@ By default, the loading indicator is only visible in the JupyterLab application 
 
 Expanded the REPL customization capabilities with additional query string parameters, making it easier to embed and configure JupyterLite with various settings controlled by URL parameters. The new parameters include:
 
-TODO: screenshot showing an embedded single cell REPL with the new options
+![a screenshot showing an embedded single cell REPL with the new options](./changelog_assets/0.6-jupyterlite-single-cell.png)
 
-### Improved Multi-Site Support
-
-The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keep user created files isolated from each other. In practice this fixes the issue where usersw would create new files in one site, and they would show up in another site hosted under the same domain.
-
-TODO: screenshot showing to sites hosted under the same domain, but with different notebooks
+Check out the [REPL documentation](./quickstart/embed-repl.md) for more details on how to use these parameters.
 
 ### Settings import and export
 
@@ -65,7 +61,7 @@ Settings can now be exported to an `overrides.json` from the Settings Editor, wh
 
 This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` to be included in a JupyterLite deployment.
 
-TODO: screenshot
+![a screenshot of the settings editor with the new import and export buttons](./changelog_assets/0.6-jupyterlite-settings-import-export.png)
 
 ### Plugin Manager
 
@@ -75,7 +71,11 @@ Open the command palette and search for `Advanced Plugin Manager` to open the pl
 - Understand dependency relationships between extensions
 - Gain better visibility into the configuration of their environment
 
-TODO: screenshot of the plugin manager
+![a screenshot of the plugin manager](./changelog_assets/0.6-jupyterlite-plugin-manager.png)
+
+### Improved Multi-site Contents management
+
+The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keep user created files isolated from each other. In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
 
 ### Multi-Tab File System Access
 
@@ -87,7 +87,7 @@ In previous versions, JupyterLite was creating a separate application for regist
 
 Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
 
-### Updated to JupyterLab 4.4 and Notebook 7.4
+### JupyterLab 4.4 and Notebook 7.4
 
 JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
 
