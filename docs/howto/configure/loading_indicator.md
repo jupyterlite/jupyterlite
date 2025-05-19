@@ -1,6 +1,8 @@
 # Loading Indicator
 
-JupyterLite includes a loading indicator that appears during the initial loading of the application. This loading indicator helps users understand that the application is still loading, especially on slower connections.
+JupyterLite includes a loading indicator that appears during the initial loading of the
+application. This loading indicator helps users understand that the application is still
+loading, especially on slower connections.
 
 ## Default Behavior
 
@@ -11,11 +13,13 @@ By default, the loading indicator is:
 
 ## Enable or Disable the Loading Indicator
 
-You can configure whether the loading indicator appears by setting the `showLoadingIndicator` option in your JupyterLite configuration.
+You can configure whether the loading indicator appears by setting the
+`showLoadingIndicator` option in your JupyterLite configuration.
 
 ### Using jupyter-lite.json
 
-To configure the loading indicator for all applications, create or edit a `jupyter-lite.json` file in the root of your JupyterLite deployment:
+To configure the loading indicator for all applications, create or edit a
+`jupyter-lite.json` file in the root of your JupyterLite deployment:
 
 ```json
 {
@@ -26,17 +30,20 @@ To configure the loading indicator for all applications, create or edit a `jupyt
 }
 ```
 
-Setting `"showLoadingIndicator": false` will hide the loading indicator for all applications.
+Setting `"showLoadingIndicator": false` will hide the loading indicator for all
+applications.
 
 ### App-Specific Configuration
 
-You can also configure the loading indicator for specific applications by placing the configuration file in the respective application directory:
+You can also configure the loading indicator for specific applications by placing the
+configuration file in the respective application directory:
 
 - For JupyterLab: `lab/jupyter-lite.json` or `lab/jupyter-lite.ipynb`
 - For Jupyter Notebook: `tree/jupyter-lite.json` or `tree/jupyter-lite.ipynb`
 - For REPL: `repl/jupyter-lite.json` or `repl/jupyter-lite.ipynb`
 
-For example, to enable the loading indicator for the REPL interface only, create a file at `repl/jupyter-lite.json` with:
+For example, to enable the loading indicator for the REPL interface only, create a file
+at `repl/jupyter-lite.json` with:
 
 ```json
 {
