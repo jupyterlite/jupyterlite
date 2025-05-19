@@ -35,6 +35,8 @@ In previous versions users had to manually clear the data using the browser deve
 
 This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
 
+TODO: screenshot
+
 ### Loading indicator
 
 JupyterLite can sometimes take some time to load, especially on slow connections.
@@ -63,6 +65,8 @@ Settings can now be exported to an `overrides.json` from the Settings Editor, wh
 
 This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` to be included in a JupyterLite deployment.
 
+TODO: screenshot
+
 ### Plugin Manager
 
 Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager, which can be used to:
@@ -70,6 +74,8 @@ Open the command palette and search for `Advanced Plugin Manager` to open the pl
 - View active extensions in the running JupyterLite environment
 - Understand dependency relationships between extensions
 - Gain better visibility into the configuration of their environment
+
+TODO: screenshot of the plugin manager
 
 ### Multi-Tab File System Access
 
