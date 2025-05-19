@@ -21,7 +21,7 @@ A new notebook toolbar item has been added to show the kernel status with three 
 
 - Loading: the kernel is starting or performing some actions
 - Success: the kernel is running and ready to execute code (idle)
-- Failure: an error occurred while starting the kernel or during execution, and likely require a restart
+- Failure: an error occurred while starting the kernel or during execution, and likely requires a restart
 
 This new toolbar item gives users better visibility into the kernel's status and allows them to view the kernel logs (if the kernel reports them) by clicking on the toolbar item to open the log console.
 
@@ -29,9 +29,9 @@ This new toolbar item gives users better visibility into the kernel's status and
 
 ### Clear Browser Data
 
-By default JupyterLite stores user created notebook and settings in the browser.
+By default JupyterLite stores user created notebooks and settings in the browser.
 
-In previous versions users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
+In previous versions, users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
 
 This allows fixing configurations or resolving persistent issues by resetting to a clean environment.
 
@@ -45,7 +45,7 @@ A new indicator has been added to let users know JupyterLite is currently loadin
 
 By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
 
-[a screenshot of the page loading indicator](./changelog_assets/0.6-jupyterlite-loading-indicator.png)
+![a screenshot of the page loading indicator](./changelog_assets/0.6-jupyterlite-loading-indicator.png)
 
 ### Enhanced REPL Options
 
@@ -75,7 +75,7 @@ Open the command palette and search for `Advanced Plugin Manager` to open the pl
 
 ### Improved Multi-site Contents management
 
-The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keep user created files isolated from each other. In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
+The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other. In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
 
 ### Multi-Tab File System Access
 
