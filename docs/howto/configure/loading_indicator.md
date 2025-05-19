@@ -40,9 +40,13 @@ applications.
 You can also configure the loading indicator for specific applications by placing the
 configuration file in the respective application directory:
 
-- For JupyterLab: `lab/jupyter-lite.json` or `lab/jupyter-lite.ipynb`
-- For Jupyter Notebook: `tree/jupyter-lite.json` or `tree/jupyter-lite.ipynb`
-- For REPL: `repl/jupyter-lite.json` or `repl/jupyter-lite.ipynb`
+- For JupyterLab: `lab/jupyter-lite.json`
+- For Jupyter Notebook:
+  - `tree/jupyter-lite.json`
+  - `notebooks/jupyter-lite.json`
+  - `edit/jupyter-lite.json`
+  - `consoles/jupyter-lite.json`
+- For REPL: `repl/jupyter-lite.json`
 
 For example, to enable the loading indicator for the REPL interface only, create a file
 at `repl/jupyter-lite.json` with:
