@@ -15,6 +15,29 @@ print(f"Hello {name}!")
 
 ![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
 
+### Enhanced REPL Options
+
+The REPL now exposes new options as URL parameters:
+
+- `promptCellPosition` - place the prompt cell to the top, left, right or bottom
+- `clearCodeContentOnExecute` - when disabled, the code submitted for execution remains in the code editor, allowing for further edits.
+- `hideCodeInput` - when enabled, only the execution output is shown in the console.
+- `clearCellsOnExecute` - when enabled, only the last cell is displayed.
+- `showBanner` - when disabled, hide the banner for the kernel
+
+Toggling all the new options transforms the console into an interactive editor resembling an ephemeral notebook with a single cell.
+
+![a screenshot showing an embedded single cell REPL with the new options](./changelog_assets/0.6-jupyterlite-single-cell.png)
+
+In addition to these URL parameters, the toolbar includes new items to:
+
+- Execute code
+- Restart the kernel
+- Clear the cells
+- Switch the kernel
+
+Check out the [REPL documentation](./quickstart/embed-repl.md) for more details on how to use these parameters.
+
 ### Kernel Indicator and Logs
 
 A new notebook toolbar item has been added to show the kernel status with three different states:
@@ -44,14 +67,6 @@ A new indicator has been added to let users know JupyterLite is currently loadin
 By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
 
 ![a screenshot of the page loading indicator](./changelog_assets/0.6-jupyterlite-loading-indicator.png)
-
-### Enhanced REPL Options
-
-Expanded the REPL customization capabilities with additional query string parameters, making it easier to embed and configure JupyterLite with various settings controlled by URL parameters. The new parameters include:
-
-![a screenshot showing an embedded single cell REPL with the new options](./changelog_assets/0.6-jupyterlite-single-cell.png)
-
-Check out the [REPL documentation](./quickstart/embed-repl.md) for more details on how to use these parameters.
 
 ### Settings import and export
 
