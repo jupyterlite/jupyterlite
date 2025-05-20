@@ -4,7 +4,7 @@
 
 JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience and new customization options for JupyterLite deployments.
 
-### Interactive Input Support (stdin)
+### Interactive Input Support
 
 Support for kernel `stdin` requests is now available, enabling interactive input functions like Python's `input()` in notebooks. This fixes a long standing limitation of JupyterLite when executing the following code:
 
@@ -14,6 +14,8 @@ print(f"Hello {name}!")
 ```
 
 ![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
+
+Since `input()` is used quite extensively in introductory Python courses, we hope this new feature will help make teaching with JupyterLite easier!
 
 ### New REPL Options
 
@@ -60,9 +62,7 @@ In previous versions, users had to manually clear the data using the browser dev
 
 ### Loading indicator
 
-With some deployments JupyterLite can take some time to load, especially on slow connections.
-
-A new indicator has been added to let users know JupyterLite is currently loading.
+A new indicator has been added to let users know JupyterLite is currently loading, which is useful for deployments that take some time to load, especially on slow connections.
 
 By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
 
@@ -101,7 +101,7 @@ Using JupyterLite in multiple browser tabs should now result in less issues, in 
 
 ### Extension system
 
-In previous versions, JupyterLite was creating a separate application for registering "server" extensions. Examples of such extensions are the different managers (sessions, kernels, settings, contents) but also the actual kernels (Pyodide, Xeus Python). This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
+In previous versions, JupyterLite was creating a separate application to register "server" extensions. Examples of such extensions are the different managers (sessions, kernels, settings, contents) but also the actual kernels (Pyodide, Xeus Python). This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
 
 Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
 
