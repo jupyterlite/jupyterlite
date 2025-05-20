@@ -171,7 +171,7 @@ executable cell:
 
 ```html
 <iframe
-  src="https://jupyterlite.goithub.io/demo/repl/index.html?toolbar=1&kernel=python&promptCellPosition=left&clearCellsOnExecute=1&hideCodeInput=1&clearCodeContentOnExecute=0&showBanner=0&code=import%20nump%20as%20np&execute=0"
+  src="https://jupyterlite.github.io/demo/repl/index.html?toolbar=1&kernel=python&promptCellPosition=left&clearCellsOnExecute=1&hideCodeInput=1&clearCodeContentOnExecute=0&showBanner=0&code=import%20numpy%20as%20np&execute=0"
   width="100%"
   height="100%"
 ></iframe>

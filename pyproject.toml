@@ -13,6 +13,7 @@ after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
 
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
+changelog-path = "docs/changelog.md"
 
 [tool.check-wheel-contents]
 ignore = ["W002"]
