@@ -1,5 +1,3 @@
-import { SERVICE_WORKER_BROADCAST_CHANNEL_ID } from './constants';
-
 /**
  * The name of the cache
  */
@@ -8,7 +6,7 @@ const CACHE = 'precache';
 /**
  * Communication channel with the main thread
  */
-const broadcast = new BroadcastChannel(SERVICE_WORKER_BROADCAST_CHANNEL_ID);
+const broadcast = new BroadcastChannel('/sw-api.v1');
 
 /**
  * Whether to enable the cache
