@@ -75,8 +75,8 @@ Open the command palette and search for `Advanced Plugin Manager` to open the pl
 
 The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other, for example:
 
-- `https://username.github.io/jupyterlite-foo
-- `https://username.github.io/jupyterlite-bar
+- `https://username.github.io/jupyterlite-foo`
+- `https://username.github.io/jupyterlite-bar`
 
 In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
 
@@ -94,8 +94,8 @@ Starting with JupyterLite 0.6.0, all extensions are now registered at the same l
 
 JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
 
-- https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0
-- https://github.com/jupyter/notebook/releases/tag/v7.4.0
+- [https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0)
+- [https://github.com/jupyter/notebook/releases/tag/v7.4.0](https://github.com/jupyter/notebook/releases/tag/v7.4.0)
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
