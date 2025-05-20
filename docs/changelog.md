@@ -15,7 +15,7 @@ print(f"Hello {name}!")
 
 ![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
 
-### Enhanced REPL Options
+### New REPL Options
 
 The REPL now exposes new options as URL parameters:
 
