@@ -63,7 +63,7 @@ This allows users to interact with a JupyterLite deployment, make a couple of ch
 
 ### Plugin Manager
 
-Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager. With the plugin manager users can:
+Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager. With the plugin manager, users can:
 
 - View active plugins in the running JupyterLite environment
 - Understand dependency relationships between plugins
