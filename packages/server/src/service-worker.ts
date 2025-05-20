@@ -1,4 +1,4 @@
-import { SERVICE_WORKER_BROADCAST_CHANNEL_ID } from "./constants";
+import { SERVICE_WORKER_BROADCAST_CHANNEL_ID } from './constants';
 
 /**
  * The name of the cache
