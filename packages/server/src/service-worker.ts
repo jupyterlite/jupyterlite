@@ -4,7 +4,7 @@
 const CACHE = 'precache';
 
 /**
- * Communication channel for drive access
+ * Communication channel with the main thread
  */
 const broadcast = new BroadcastChannel('/sw-api.v1');
 
