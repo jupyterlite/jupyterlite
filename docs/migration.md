@@ -165,6 +165,8 @@ Starting with JupyterLite 0.6.0, the Service Worker Manager plugin manages the
 `BroadcastChannel` directly through the
 `@jupyterlite/application-extension:service-worker-manager` plugin.
 
+The `BroadcastChannel` id was renamed from '/api/drive.v1' to '/sw-api.v1', as it now handles stdin requests as well as drive requests.
+
 As a consequence:
 
 - `IBroadcastChannelWrapper` has been removed from the `@jupyterlite/server` package.

@@ -13,7 +13,11 @@ import { PromiseDelegate, UUID } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
-import { SERVICE_WORKER_BROADCAST_CHANNEL_ID } from './constants';
+
+/**
+ * The service-worker broadcast channel id
+ */
+export const SERVICE_WORKER_BROADCAST_CHANNEL_ID = '/sw-api.v1';
 
 /**
  * The version of the app
