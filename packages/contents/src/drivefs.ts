@@ -24,7 +24,6 @@ import {
 } from './emscripten';
 
 export const DRIVE_SEPARATOR = ':';
-export const SERVICE_WORKER_API_PATH = '/sw-api.v1';
 
 export const BLOCK_SIZE = 4096;
 

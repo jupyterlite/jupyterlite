@@ -3,7 +3,6 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { Contents } from '@jupyterlab/services';
 
 import {
-  SERVICE_WORKER_API_PATH,
   DriveContentsProcessor,
   TDriveMethod,
   TDriveRequest,
@@ -14,6 +13,7 @@ import { PromiseDelegate, UUID } from '@lumino/coreutils';
 import { ISignal, Signal } from '@lumino/signaling';
 
 import { IServiceWorkerManager, WORKER_NAME } from './tokens';
+import { SERVICE_WORKER_BROADCAST_CHANNEL_ID } from './constants';
 
 /**
  * The version of the app
@@ -43,7 +43,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     // Initialize broadcast channel related properties
     this._browsingContextId = UUID.uuid4();
     this._contents = options.contents;
-    this._broadcastChannel = new BroadcastChannel(SERVICE_WORKER_API_PATH);
+    this._broadcastChannel = new BroadcastChannel(SERVICE_WORKER_BROADCAST_CHANNEL_ID);
     this._broadcastChannel.addEventListener('message', this._onBroadcastMessage);
 
     this._driveContentsProcessor = new DriveContentsProcessor({

@@ -2,4 +2,5 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from './tokens';
+export * from './constants';
 export * from './service-worker-manager';
