@@ -122,7 +122,7 @@ body describing the filesystem operation to be performed. In this case, it looks
 
 This request is captured by the service worker (defined in the `@jupyterlite/server`
 package). The service worker forwards the HTTP request to the main thread via a message
-in a `BroadcastChannel` named `/api/drive.v1`. This message is received by the
+in a `BroadcastChannel` named `/sw-api.v1`. This message is received by the
 `ServiceWorkerManager` that is instantiated in the plugin
 `@jupyterlite/application-extension:service-worker-manager`. The wrapper has access to
 the Jupyter contents manager to handle the request. For example, in the case of a `put`

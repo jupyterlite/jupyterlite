@@ -4,9 +4,9 @@
 const CACHE = 'precache';
 
 /**
- * Communication channel for drive access
+ * Communication channel with the main thread
  */
-const broadcast = new BroadcastChannel('/api/drive.v1');
+const broadcast = new BroadcastChannel('/sw-api.v1');
 
 /**
  * Whether to enable the cache

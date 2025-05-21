@@ -165,11 +165,14 @@ Starting with JupyterLite 0.6.0, the Service Worker Manager plugin manages the
 `BroadcastChannel` directly through the
 `@jupyterlite/application-extension:service-worker-manager` plugin.
 
+The `BroadcastChannel` now also handles stdin requests, in addition to drive requests.
+
 As a consequence:
 
 - `IBroadcastChannelWrapper` has been removed from the `@jupyterlite/server` package.
 - The `@jupyterlite/server-extension:emscripten-filesystem` plugin has been removed from
   the `@jupyterlite/server-extension` package.
+- The `BroadcastChannel` id was renamed from `'/api/drive.v1'` to `'/sw-api.v1'`.
 
 `IBroadcastChannelWrapper` and the `@jupyterlite/server-extension:emscripten-filesystem`
 plugin were primarily used to provide a convenience wrapper around the
