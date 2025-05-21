@@ -114,6 +114,37 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-beta.0...77daefdd20eb8b83d1aa6a11bb5e495b130e401e))
+
+### Enhancements made
+
+- Rename service-worker broadcast channel to something more general [#1654](https://github.com/jupyterlite/jupyterlite/pull/1654) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Bump to `jupyterlite-pyodide-kernel==0.6.0b1` [#1650](https://github.com/jupyterlite/jupyterlite/pull/1650) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix user facing changelog [#1655](https://github.com/jupyterlite/jupyterlite/pull/1655) ([@jtpio](https://github.com/jtpio))
+- Improve kernel logs docs [#1649](https://github.com/jupyterlite/jupyterlite/pull/1649) ([@jtpio](https://github.com/jtpio))
+- Update docs for interacting with JupyterLite in an IFrame [#1648](https://github.com/jupyterlite/jupyterlite/pull/1648) ([@jtpio](https://github.com/jtpio))
+- User facing changelog for 0.6.0 [#1647](https://github.com/jupyterlite/jupyterlite/pull/1647) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Rename service-worker broadcast channel to something more general [#1654](https://github.com/jupyterlite/jupyterlite/pull/1654) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-05-12&to=2025-05-21&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-05-12..2025-05-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-05-12..2025-05-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-05-12..2025-05-21&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-alpha.10...c3782d0188f43b78fa06f43878afd288eae0bc4f))
@@ -131,8 +162,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-05-08&to=2025-05-12&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-05-08..2025-05-12&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-05-08..2025-05-12&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2025-05-08..2025-05-12&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-05-08..2025-05-12&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0a10
 
