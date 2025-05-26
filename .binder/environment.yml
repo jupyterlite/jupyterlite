@@ -53,8 +53,8 @@ dependencies:
   - hatch >=1.6.3,<2
   - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.4.2,<4.5
-  - notebook >=7.4.2,<7.5
+  - jupyterlab >=4.4.3,<4.5
+  - notebook >=7.4.3,<7.5
   - pip
   - pkginfo
   - python-libarchive-c
