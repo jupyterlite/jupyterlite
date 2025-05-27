@@ -191,6 +191,20 @@ The following classes and interfaces have been removed:
 - `JupyterLiteServerPlugin`
 - `Router`
 
+#### `@jupyterlite/application`
+
+The `registerPluginModule` and `registerPluginModules` methods have been removed from
+the `SingleWidgetApp` class.
+
+If you were creating your own `SingleWidgetApp` instance and using these methods to
+register plugins, you should now use a `PluginRegistry` instead. The `PluginRegistry` is
+now the central mechanism for managing and resolving plugins in JupyterLab 4.4 and
+JupyterLite 0.6.0.
+
+The `PluginRegistry` provides a more centralized approach to plugin management, allowing
+you to register plugins before creating the application instance and resolve services
+through the registry.
+
 #### `@jupyterlite/kernel`
 
 The previous `Kernels` class (and its `IKernels` interface), used for managing kernels

@@ -85,40 +85,6 @@ export class SingleWidgetApp extends JupyterFrontEnd<ISingleWidgetShell> {
       },
     };
   }
-
-  /**
-   * Register plugins from a plugin module.
-   *
-   * @param mod - The plugin module to register.
-   */
-  registerPluginModule(mod: SingleWidgetApp.IPluginModule): void {
-    let data = mod.default;
-    // Handle commonjs exports.
-    if (!Object.prototype.hasOwnProperty.call(mod, '__esModule')) {
-      data = mod as any;
-    }
-    if (!Array.isArray(data)) {
-      data = [data];
-    }
-    data.forEach((item) => {
-      try {
-        this.registerPlugin(item);
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  }
-
-  /**
-   * Register the plugins from multiple plugin modules.
-   *
-   * @param mods - The plugin modules to register.
-   */
-  registerPluginModules(mods: SingleWidgetApp.IPluginModule[]): void {
-    mods.forEach((mod) => {
-      this.registerPluginModule(mod);
-    });
-  }
 }
 
 /**
