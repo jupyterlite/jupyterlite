@@ -114,6 +114,27 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-beta.1...755819207491eebfcd4831800a3fa4adafc879d5))
+
+### Maintenance and upkeep improvements
+
+- Remove `registerPluginModule` methods from `SingleWidgetApp` [#1659](https://github.com/jupyterlite/jupyterlite/pull/1659) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4.3 and Notebook 7.4.3 [#1658](https://github.com/jupyterlite/jupyterlite/pull/1658) ([@jtpio](https://github.com/jtpio))
+
+### API and Breaking Changes
+
+- Remove `registerPluginModule` methods from `SingleWidgetApp` [#1659](https://github.com/jupyterlite/jupyterlite/pull/1659) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-05-21&to=2025-05-27&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-05-21..2025-05-27&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-05-21..2025-05-27&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0b1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-beta.0...77daefdd20eb8b83d1aa6a11bb5e495b130e401e))
@@ -142,8 +163,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-05-12&to=2025-05-21&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-05-12..2025-05-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-05-12..2025-05-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-05-12..2025-05-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0b0
 
