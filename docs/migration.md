@@ -194,8 +194,7 @@ The following classes and interfaces have been removed:
 #### `@jupyterlite/application`
 
 The `registerPluginModule` and `registerPluginModules` methods have been removed from
-the `SingleWidgetApp` class. These methods were used to register plugins by importing
-modules dynamically.
+the `SingleWidgetApp` class.
 
 If you were creating your own `SingleWidgetApp` instance and using these methods to
 register plugins, you should now use a `PluginRegistry` instead. The `PluginRegistry` is
