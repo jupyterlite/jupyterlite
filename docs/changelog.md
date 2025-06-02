@@ -114,6 +114,95 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0...9b3bd5bce12b15466c2e518d7b23aae40b8f42c7))
+
+### Enhancements made
+
+- Rename service-worker broadcast channel to something more general [#1654](https://github.com/jupyterlite/jupyterlite/pull/1654) ([@martinRenou](https://github.com/martinRenou))
+- Toolbar item to show the kernel logs [#1642](https://github.com/jupyterlite/jupyterlite/pull/1642) ([@jtpio](https://github.com/jtpio))
+- Support kernel `stdin` request via ServiceWorker and SharedArrayBuffer [#1640](https://github.com/jupyterlite/jupyterlite/pull/1640) ([@ianthomas23](https://github.com/ianthomas23))
+- Add a plugin to clear browser data (settings and files) [#1638](https://github.com/jupyterlite/jupyterlite/pull/1638) ([@jtpio](https://github.com/jtpio))
+- Add a loading indicator [#1636](https://github.com/jupyterlite/jupyterlite/pull/1636) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab `4.4.0rc1` and Notebook `7.4.0rc0` [#1613](https://github.com/jupyterlite/jupyterlite/pull/1613) ([@jtpio](https://github.com/jtpio))
+- Fix handling of contents when multiple lite sites are shared under the same host [#1612](https://github.com/jupyterlite/jupyterlite/pull/1612) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4.0b2 and Notebook 7.4.0b2 [#1597](https://github.com/jupyterlite/jupyterlite/pull/1597) ([@jtpio](https://github.com/jtpio))
+- Add the plugin manager [#1593](https://github.com/jupyterlite/jupyterlite/pull/1593) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab `4.4.0b0` and Notebook `7.4.0b0` [#1578](https://github.com/jupyterlite/jupyterlite/pull/1578) ([@jtpio](https://github.com/jtpio))
+- Update to Notebook 7.4.0a3 [#1574](https://github.com/jupyterlite/jupyterlite/pull/1574) ([@jtpio](https://github.com/jtpio))
+- Expose more REPL options via query string parameters [#1573](https://github.com/jupyterlite/jupyterlite/pull/1573) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab `4.4.0a3` and Notebook `7.4.0a2` [#1570](https://github.com/jupyterlite/jupyterlite/pull/1570) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix concurrent file system access from multiple tabs [#1627](https://github.com/jupyterlite/jupyterlite/pull/1627) ([@jtpio](https://github.com/jtpio))
+- `BroadcastChannel` with identifier to properly send responses from the Service Worker [#1621](https://github.com/jupyterlite/jupyterlite/pull/1621) ([@jtpio](https://github.com/jtpio))
+- Use a `MessageChannel` instead of `BroadcastChannel` to communicate with the Service Worker [#1608](https://github.com/jupyterlite/jupyterlite/pull/1608) ([@jtpio](https://github.com/jtpio))
+- Handle Drive.get exceptions for missing content [#1606](https://github.com/jupyterlite/jupyterlite/pull/1606) ([@juntyr](https://github.com/juntyr))
+- Refresh specs when new JupyterLite kernels are added [#1602](https://github.com/jupyterlite/jupyterlite/pull/1602) ([@jtpio](https://github.com/jtpio))
+- Fix handling of the showBanner REPL parameter [#1600](https://github.com/jupyterlite/jupyterlite/pull/1600) ([@jtpio](https://github.com/jtpio))
+- Trigger signal for spec refresh [#1596](https://github.com/jupyterlite/jupyterlite/pull/1596) ([@martinRenou](https://github.com/martinRenou))
+- Emscripten DriveFS: Use ErronoError instead of genericErrors in the lookup function [#1568](https://github.com/jupyterlite/jupyterlite/pull/1568) ([@anutosh491](https://github.com/anutosh491))
+
+### Maintenance and upkeep improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.6.0rc0` [#1661](https://github.com/jupyterlite/jupyterlite/pull/1661) ([@jtpio](https://github.com/jtpio))
+- Remove `registerPluginModule` methods from `SingleWidgetApp` [#1659](https://github.com/jupyterlite/jupyterlite/pull/1659) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4.3 and Notebook 7.4.3 [#1658](https://github.com/jupyterlite/jupyterlite/pull/1658) ([@jtpio](https://github.com/jtpio))
+- Bump to `jupyterlite-pyodide-kernel==0.6.0b1` [#1650](https://github.com/jupyterlite/jupyterlite/pull/1650) ([@jtpio](https://github.com/jtpio))
+- Remove triple slash references [#1645](https://github.com/jupyterlite/jupyterlite/pull/1645) ([@martinRenou](https://github.com/martinRenou))
+- Update to JupyterLab 4.4.2 and Notebook 7.4.2 [#1643](https://github.com/jupyterlite/jupyterlite/pull/1643) ([@jtpio](https://github.com/jtpio))
+- Bump actions/create-github-app-token from 1 to 2 in the actions group [#1639](https://github.com/jupyterlite/jupyterlite/pull/1639) ([@dependabot](https://github.com/dependabot))
+- Fix a couple of `TODO` items [#1634](https://github.com/jupyterlite/jupyterlite/pull/1634) ([@jtpio](https://github.com/jtpio))
+- Add `preserve="true"` to `<reference>` [#1633](https://github.com/jupyterlite/jupyterlite/pull/1633) ([@jtpio](https://github.com/jtpio))
+- Add `apputils` and `apputils-extension` packages [#1632](https://github.com/jupyterlite/jupyterlite/pull/1632) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4.1 and Notebook 7.4.1 [#1631](https://github.com/jupyterlite/jupyterlite/pull/1631) ([@jtpio](https://github.com/jtpio))
+- Use consistent filenames for UI test [#1630](https://github.com/jupyterlite/jupyterlite/pull/1630) ([@jtpio](https://github.com/jtpio))
+- Stabilize UI tests [#1628](https://github.com/jupyterlite/jupyterlite/pull/1628) ([@jtpio](https://github.com/jtpio))
+- Update to `jupyterlite-pyodide-kernel==0.6.0a5` [#1624](https://github.com/jupyterlite/jupyterlite/pull/1624) ([@jtpio](https://github.com/jtpio))
+- Fix typo in notebook requirement [#1623](https://github.com/jupyterlite/jupyterlite/pull/1623) ([@jtpio](https://github.com/jtpio))
+- Remove top-level `resolutions` [#1620](https://github.com/jupyterlite/jupyterlite/pull/1620) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4 and Jupyter Notebook 7.4 [#1619](https://github.com/jupyterlite/jupyterlite/pull/1619) ([@jtpio](https://github.com/jtpio))
+- Bump vega from 5.31.0 to 5.33.0 in /ui-tests [#1614](https://github.com/jupyterlite/jupyterlite/pull/1614) ([@dependabot](https://github.com/dependabot))
+- Update to JupyterLab 4.4.0rc0 and Notebook 7.4.0b3 [#1603](https://github.com/jupyterlite/jupyterlite/pull/1603) ([@jtpio](https://github.com/jtpio))
+- Remove custom `IServerSettings` plugin [#1598](https://github.com/jupyterlite/jupyterlite/pull/1598) ([@jtpio](https://github.com/jtpio))
+- Register server plugins as `ServiceManagerPlugin`, drop `JupyterLiteServer` [#1590](https://github.com/jupyterlite/jupyterlite/pull/1590) ([@jtpio](https://github.com/jtpio))
+- Bump vega from 5.25.0 to 5.31.0 in /ui-tests [#1585](https://github.com/jupyterlite/jupyterlite/pull/1585) ([@dependabot](https://github.com/dependabot))
+- Pin on `sphinx<8.2` to the fix docs build [#1580](https://github.com/jupyterlite/jupyterlite/pull/1580) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.4 and Notebook 7.4 [#1561](https://github.com/jupyterlite/jupyterlite/pull/1561) ([@jtpio](https://github.com/jtpio))
+- Troubleshoot UI tests [#1560](https://github.com/jupyterlite/jupyterlite/pull/1560) ([@jtpio](https://github.com/jtpio))
+- Bump `jupyterlite-pyodide-kernel` [#1559](https://github.com/jupyterlite/jupyterlite/pull/1559) ([@jtpio](https://github.com/jtpio))
+- Improve error message for when jupyter-server is not installed [#1401](https://github.com/jupyterlite/jupyterlite/pull/1401) ([@martinRenou](https://github.com/martinRenou))
+
+### Documentation improvements
+
+- Fix user facing changelog [#1655](https://github.com/jupyterlite/jupyterlite/pull/1655) ([@jtpio](https://github.com/jtpio))
+- Improve kernel logs docs [#1649](https://github.com/jupyterlite/jupyterlite/pull/1649) ([@jtpio](https://github.com/jtpio))
+- Update docs for interacting with JupyterLite in an IFrame [#1648](https://github.com/jupyterlite/jupyterlite/pull/1648) ([@jtpio](https://github.com/jtpio))
+- User facing changelog for 0.6.0 [#1647](https://github.com/jupyterlite/jupyterlite/pull/1647) ([@jtpio](https://github.com/jtpio))
+- Add `doit dev` command to CONTRIBUTING docs [#1611](https://github.com/jupyterlite/jupyterlite/pull/1611) ([@martinRenou](https://github.com/martinRenou))
+- Add Single Executable Cell use case to the docs [#1604](https://github.com/jupyterlite/jupyterlite/pull/1604) ([@jtpio](https://github.com/jtpio))
+- Fix memoryStorageDriver in jupyterlite.schema.v0.json [#1591](https://github.com/jupyterlite/jupyterlite/pull/1591) ([@2xB](https://github.com/2xB))
+- DOC: kernels.md: wording [#1589](https://github.com/jupyterlite/jupyterlite/pull/1589) ([@westurner](https://github.com/westurner))
+- [DOC] Update Python version in vercel/netlify docs [#1577](https://github.com/jupyterlite/jupyterlite/pull/1577) ([@yogabonito](https://github.com/yogabonito))
+- Fix typo in CLI addons doc [#1558](https://github.com/jupyterlite/jupyterlite/pull/1558) ([@lesteve](https://github.com/lesteve))
+- Fix typo [#1555](https://github.com/jupyterlite/jupyterlite/pull/1555) ([@davidbrochart](https://github.com/davidbrochart))
+
+### API and Breaking Changes
+
+- Remove `registerPluginModule` methods from `SingleWidgetApp` [#1659](https://github.com/jupyterlite/jupyterlite/pull/1659) ([@jtpio](https://github.com/jtpio))
+- Rename service-worker broadcast channel to something more general [#1654](https://github.com/jupyterlite/jupyterlite/pull/1654) ([@martinRenou](https://github.com/martinRenou))
+- Register server plugins as `ServiceManagerPlugin`, drop `JupyterLiteServer` [#1590](https://github.com/jupyterlite/jupyterlite/pull/1590) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-09&to=2025-06-02&type=c))
+
+[@2xB](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3A2xB+updated%3A2025-01-09..2025-06-02&type=Issues) | [@anutosh491](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aanutosh491+updated%3A2025-01-09..2025-06-02&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-01-09..2025-06-02&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adavidbrochart+updated%3A2025-01-09..2025-06-02&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-01-09..2025-06-02&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-01-09..2025-06-02&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-01-09..2025-06-02&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-09..2025-06-02&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2025-01-09..2025-06-02&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2025-01-09..2025-06-02&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-01-09..2025-06-02&type=Issues) | [@RMattB1](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ARMattB1+updated%3A2025-01-09..2025-06-02&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-01-09..2025-06-02&type=Issues) | [@westurner](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awesturner+updated%3A2025-01-09..2025-06-02&type=Issues) | [@yogabonito](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ayogabonito+updated%3A2025-01-09..2025-06-02&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0-beta.1...755819207491eebfcd4831800a3fa4adafc879d5))
@@ -132,8 +221,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-05-21&to=2025-05-27&type=c))
 
 [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-05-21..2025-05-27&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-05-21..2025-05-27&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0b1
 
