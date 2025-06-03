@@ -64,6 +64,7 @@ xeus-python/preinstalled_packages
 
 ../quickstart/deploy
 deployment/github-pages
+../quickstart/embed-repl.md
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
