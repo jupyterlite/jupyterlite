@@ -80,6 +80,18 @@ browser:
   [Xeus Python REPL](https://jupyterlite-xeus.readthedocs.io/en/latest/lite/repl/?toolbar=1&kernel=xpython&promptCellPosition=left)
 - Install packages using: `%mamba install mypackage` or `%pip install mypackage`
 
+**Testing the installation:**
+
+Once you've installed a package, test that it works by trying to import it:
+
+```python
+import mypackage
+# Try using some basic functionality to ensure it works correctly
+```
+
+If the import succeeds without errors, the package is likely compatible with the
+WebAssembly environment.
+
 ### Common limitations
 
 When using WebAssembly-based kernels, you may encounter limitations with packages that:
