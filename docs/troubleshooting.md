@@ -70,14 +70,16 @@ browser:
 
 **For the Pyodide kernel:**
 
-- Try the Pyodide REPL :
-  https://jupyterlite-pyodide-kernel.readthedocs.io/en/latest/_static/repl/?toolbar=1&kernel=python&promptCellPosition=left
+- Try the
+  <a href="https://jupyterlite-pyodide-kernel.readthedocs.io/en/latest/_static/repl/?toolbar=1&kernel=python&promptCellPosition=left">Pyodide
+  REPL</a>
 - Install packages using: `%pip install mypackage`
 
 **For the Xeus Python kernel:**
 
-- Try the Xeus Python REPL :
-  https://jupyterlite-xeus.readthedocs.io/en/latest/lite/repl/?toolbar=1&kernel=xpython&promptCellPosition=left
+- Try the
+  <a href="https://jupyterlite-xeus.readthedocs.io/en/latest/lite/repl/?toolbar=1&kernel=xpython&promptCellPosition=left">Xeus
+  Python REPL</a>
 - Install packages using: `%mamba install mypackage` or `%pip install mypackage`
 
 **Testing the installation:**
