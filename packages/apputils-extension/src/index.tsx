@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
@@ -12,7 +14,14 @@ import {
   ICommandPalette,
   MainAreaWidget,
   WidgetTracker,
+  IWindowResolver,
 } from '@jupyterlab/apputils';
+
+import {
+  IWorkspaceManager,
+  ServiceManagerPlugin,
+  Workspace,
+} from '@jupyterlab/services';
 
 import { IPluginManager, PluginListModel, Plugins } from '@jupyterlab/pluginmanager';
 
@@ -25,10 +34,13 @@ import {
 import { extensionIcon } from '@jupyterlab/ui-components';
 
 import {
+  WorkspaceManager,
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
 } from '@jupyterlite/apputils';
+
+import { ILocalForage } from '@jupyterlite/localforage';
 
 import { kernelStatusPlugin } from './kernelstatus';
 
@@ -154,11 +166,54 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
   },
 };
 
-const plugins: JupyterFrontEndPlugin<any>[] = [
+/**
+ * The workspace manager plugin.
+ */
+const workspaceManagerPlugin: ServiceManagerPlugin<Workspace.IManager> = {
+  id: '@jupyterlite/apputils-extension:workspace-manager',
+  description: 'The workspace manager plugin.',
+  autoStart: true,
+  provides: IWorkspaceManager,
+  requires: [ILocalForage],
+  optional: [],
+  activate: (_: null, forage: ILocalForage): Workspace.IManager => {
+    const defaultStorageName = 'JupyterLite Storage - Workspaces';
+    const storageName =
+      PageConfig.getOption('contentsStorageName') || defaultStorageName;
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('contentsStorageDrivers') || 'null',
+    );
+    const { localforage } = forage;
+
+    return new WorkspaceManager({
+      storageName,
+      storageDrivers,
+      localforage,
+    });
+  },
+};
+
+/**
+ * The default window name resolver provider.
+ */
+const resolverPlugin: JupyterFrontEndPlugin<IWindowResolver> = {
+  id: '@jupyterlite/apputils-extension:resolver',
+  description: 'Provides the window name resolver.',
+  autoStart: true,
+  provides: IWindowResolver,
+  requires: [],
+  activate: async (app: JupyterFrontEnd) => {
+    return { name: PageConfig.getBaseUrl() };
+  },
+};
+
+const plugins: (JupyterFrontEndPlugin<any> | ServiceManagerPlugin<any>)[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
   kernelStatusPlugin,
+  workspaceManagerPlugin,
+  resolverPlugin,
 ];
 
 export default plugins;
