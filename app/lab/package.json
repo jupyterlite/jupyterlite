@@ -321,6 +321,7 @@
       "@jupyterlab/apputils-extension:licenses-client",
       "@jupyterlab/apputils-extension:announcements",
       "@jupyterlab/apputils-extension:resolver",
+      "@jupyterlab/apputils-extension:state",
       "@jupyterlab/docmanager-extension:download",
       "@jupyterlab/filebrowser-extension:download",
       "@jupyterlab/filebrowser-extension:share-file",

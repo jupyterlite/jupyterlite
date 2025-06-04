@@ -4,3 +4,4 @@
 export * from './licenses';
 export * from './pluginmanager';
 export * from './translation';
+export * from './statedb';
