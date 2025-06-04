@@ -50,6 +50,68 @@ Clearing browser data will permanently remove data stored in your browser.
 This operation cannot be undone.
 ```
 
+## Package compatibility with WebAssembly kernels
+
+JupyterLite runs Python kernels in the browser using WebAssembly, which is different
+from a regular JupyterLab setup that runs on the server. This means that not all Python
+packages that work in a standard Python environment will work in JupyterLite.
+
+The two main Python kernels available in JupyterLite are:
+
+- **Pyodide**: A Python distribution for the browser that includes a large number of
+  packages compiled to WebAssembly.
+- **Xeus Python**: A Python kernel leveraging emscripten-forge for packages, a conda
+  package distribution tailored for WebAssembly.
+
+### Testing package compatibility
+
+To check if a package works with these kernels, you can test them directly in the
+browser:
+
+**For the Pyodide kernel:**
+
+- Try the
+  <a href="https://jupyterlite-pyodide-kernel.readthedocs.io/en/latest/_static/repl/?toolbar=1&kernel=python&promptCellPosition=left">Pyodide
+  REPL</a>
+- Install packages using: `%pip install mypackage`
+
+**For the Xeus Python kernel:**
+
+- Try the
+  <a href="https://jupyterlite-xeus.readthedocs.io/en/latest/lite/repl/?toolbar=1&kernel=xpython&promptCellPosition=left">Xeus
+  Python REPL</a>
+- Install packages using: `%mamba install mypackage` or `%pip install mypackage`
+
+**Testing the installation:**
+
+Once you've installed a package, test that it works by trying to import it:
+
+```python
+import mypackage
+# Try using some basic functionality to ensure it works correctly
+```
+
+If the import succeeds without errors, the package is likely compatible with the
+WebAssembly environment.
+
+### Common limitations
+
+When using WebAssembly-based kernels, you may encounter limitations with packages that:
+
+- Require native C extensions that are not compiled for WebAssembly
+- Depend on system libraries not available in the browser environment
+- Use threading or multiprocessing features not supported in WebAssembly
+- Access the file system in ways not compatible with the browser sandbox
+
+If a package doesn't work, consider looking for pure Python alternatives or packages
+specifically compiled for WebAssembly environments. Otherwise contact the maintainers of
+the respective projects:
+
+- For Pyodide:
+  [Pyodide GitHub Discussions](https://github.com/pyodide/pyodide/discussions)
+- For Xeus Python:
+  [Emscripten Forge GitHub](https://github.com/emscripten-forge/recipes)
+
 ## Access kernel logs
 
 If the kernel you are using reports logs to the log console, you may be able to see
