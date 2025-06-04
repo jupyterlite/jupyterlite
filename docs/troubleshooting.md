@@ -96,7 +96,7 @@ the respective projects:
 - For Pyodide:
   [Pyodide GitHub Discussions](https://github.com/pyodide/pyodide/discussions)
 - For Xeus Python:
-  [Emscripten Forge GitHub](https://github.com/emscripten-core/emscripten)
+  [Emscripten Forge GitHub](https://github.com/emscripten-forge/recipes)
 
 ## Access kernel logs
 
