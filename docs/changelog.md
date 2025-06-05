@@ -114,6 +114,32 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0...754a459bf1fe7cfc4892cd9758790f8670febca0))
+
+### Bugs fixed
+
+- Stop execution when an error occurs on "Restart Kernel and Run All Cells" [#1671](https://github.com/jupyterlite/jupyterlite/pull/1671) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump to `jupyterlite-pyodide-kernel==0.6.0` [#1666](https://github.com/jupyterlite/jupyterlite/pull/1666) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Document how to test package compatibility [#1669](https://github.com/jupyterlite/jupyterlite/pull/1669) ([@jtpio](https://github.com/jtpio))
+- remove top copyright years [#1668](https://github.com/jupyterlite/jupyterlite/pull/1668) ([@bollwyvl](https://github.com/bollwyvl))
+- docs: include REPL guide on the howto page [#1665](https://github.com/jupyterlite/jupyterlite/pull/1665) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-02&to=2025-06-05&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-06-02..2025-06-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-02..2025-06-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-02..2025-06-05&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0...9b3bd5bce12b15466c2e518d7b23aae40b8f42c7))
@@ -200,8 +226,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-01-09&to=2025-06-02&type=c))
 
 [@2xB](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3A2xB+updated%3A2025-01-09..2025-06-02&type=Issues) | [@anutosh491](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aanutosh491+updated%3A2025-01-09..2025-06-02&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-01-09..2025-06-02&type=Issues) | [@davidbrochart](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adavidbrochart+updated%3A2025-01-09..2025-06-02&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-01-09..2025-06-02&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-01-09..2025-06-02&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-01-09..2025-06-02&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-01-09..2025-06-02&type=Issues) | [@juntyr](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2025-01-09..2025-06-02&type=Issues) | [@lesteve](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Alesteve+updated%3A2025-01-09..2025-06-02&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-01-09..2025-06-02&type=Issues) | [@RMattB1](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ARMattB1+updated%3A2025-01-09..2025-06-02&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-01-09..2025-06-02&type=Issues) | [@westurner](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awesturner+updated%3A2025-01-09..2025-06-02&type=Issues) | [@yogabonito](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ayogabonito+updated%3A2025-01-09..2025-06-02&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0rc0
 
