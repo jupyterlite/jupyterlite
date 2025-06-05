@@ -141,4 +141,30 @@ If you would like to only keep the kernel status item (the one showing the spinn
     ]
   }
 }
+```
 ````
+
+By default, the Log Console displays messages at the `warning` level and above. If you
+want to see more detailed logs (such as `info` or `debug` messages), go to
+`Settings > Settings Editor` and search for "Log Console".
+
+You can also configure the default log level in your `jupyter-lite.json` file:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "@jupyterlab/logconsole-extension:plugin": {
+      "defaultLogLevel": "info"
+    }
+  }
+}
+```
+
+Available log levels are:
+
+- `critical`: Only critical errors
+- `error`: Errors and critical messages
+- `warning`: Warnings, errors, and critical messages (default)
+- `info`: Informational messages and above
+- `debug`: All messages including debug information
