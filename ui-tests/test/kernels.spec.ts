@@ -205,6 +205,9 @@ test.describe('Kernels', () => {
   test('Restart Kernel and Run All Cells with error stops execution', async ({
     page,
   }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
     const notebook = 'runall-error.ipynb';
 
     await page.goto('lab/index.html');
@@ -298,6 +301,9 @@ test.describe('Kernels', () => {
   });
 
   test('Manual run after error works correctly', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
     const notebook = 'runall-error.ipynb';
 
     await page.goto('lab/index.html');
