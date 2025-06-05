@@ -103,7 +103,14 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             await kernel.handleMessage(msg);
           });
         } catch (error) {
-          // expected to throw when mutex.cancel() is called below
+          if (
+            error instanceof Error &&
+            error.message.includes('request for lock canceled')
+          ) {
+            // expected to throw when mutex.cancel() is called below
+          } else {
+            throw error;
+          }
         }
       };
 
