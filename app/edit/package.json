@@ -314,6 +314,7 @@
       "@jupyterlab/apputils-extension:palette-restorer",
       "@jupyterlab/apputils-extension:print",
       "@jupyterlab/apputils-extension:resolver",
+      "@jupyterlab/apputils-extension:state",
       "@jupyterlab/apputils-extension:running-sessions-status",
       "@jupyterlab/apputils-extension:splash",
       "@jupyterlab/apputils-extension:workspaces",

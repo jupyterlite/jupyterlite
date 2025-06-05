@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
@@ -22,13 +24,18 @@ import {
   nullTranslator,
 } from '@jupyterlab/translation';
 
+import { IStateDB } from '@jupyterlab/statedb';
+
 import { extensionIcon } from '@jupyterlab/ui-components';
 
 import {
+  IndexedDBDataConnector,
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
 } from '@jupyterlite/apputils';
+
+import { ILocalForage } from '@jupyterlite/localforage';
 
 import { kernelStatusPlugin } from './kernelstatus';
 
@@ -154,11 +161,40 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
   },
 };
 
+/**
+ * The state database for storing application state.
+ */
+const statePlugin: JupyterFrontEndPlugin<IndexedDBDataConnector> = {
+  id: '@jupyterlite/apputils-extension:state',
+  description: 'Provides the application state. It is stored per workspaces.',
+  autoStart: true,
+  provides: IStateDB,
+  requires: [ILocalForage],
+  optional: [],
+  activate: (_: JupyterFrontEnd, forage: ILocalForage) => {
+    const baseUrl = PageConfig.getOption('baseUrl');
+    const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
+    const storageName =
+      PageConfig.getOption('contentsStorageName') || defaultStorageName;
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('contentsStorageDrivers') || 'null',
+    );
+    const { localforage } = forage;
+
+    return new IndexedDBDataConnector({
+      storageName,
+      storageDrivers,
+      localforage,
+    });
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
   kernelStatusPlugin,
+  statePlugin,
 ];
 
 export default plugins;
