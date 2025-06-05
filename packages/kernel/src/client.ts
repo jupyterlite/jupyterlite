@@ -97,10 +97,14 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       this._kernelClients.get(kernelId)?.add(clientId);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
-        await mutex.runExclusive(async () => {
-          await kernel.ready;
-          await kernel.handleMessage(msg);
-        });
+        try {
+          await mutex.runExclusive(async () => {
+            await kernel.ready;
+            await kernel.handleMessage(msg);
+          });
+        } catch (error) {
+          // expected to throw when mutex.cancel() is called below
+        }
       };
 
       socket.on(
@@ -179,6 +183,14 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
           this._clients.get(id)?.send(message);
         });
         return;
+      }
+      // cancel the execution of other cells if there is an execute error
+      // to match the JupyterLab behavior
+      if (msg.header.msg_type === 'execute_reply') {
+        const executeReplyMsg = msg as KernelMessage.IExecuteReplyMsg;
+        if (executeReplyMsg.content.status === 'error') {
+          mutex.cancel();
+        }
       }
       socket.send(message);
     };
