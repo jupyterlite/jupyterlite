@@ -201,6 +201,127 @@ test.describe('Kernels', () => {
     output = await page.notebook.getCellTextOutput(6);
     expect(output![0]).toEqual("('abc', 'xyz')");
   });
+
+  test('Restart Kernel and Run All Cells with error stops execution', async ({
+    page,
+  }) => {
+    const notebook = 'runall-error.ipynb';
+
+    await page.goto('lab/index.html');
+    await page.notebook.open(notebook);
+
+    // Wait for the notebook to be ready
+    await page.waitForSelector('.jp-Notebook.jp-mod-commandMode');
+
+    // Execute "Restart Kernel and Run All Cells..."
+    await page.menu.clickMenuItem('Kernel>Restart Kernel and Run All Cells…');
+    await page.getByRole('button', { name: 'Confirm Kernel Restart' }).click();
+
+    // Wait for the notebook to be in command mode after restart
+    await page.waitForSelector('.jp-Notebook.jp-mod-commandMode');
+
+    // Wait for the first few cells to execute successfully
+    // Cell 0: foo = 1; foo - should have execution count [1] and output 1
+    await page.locator('.jp-InputArea-prompt >> text="[1]:"').first().waitFor();
+    let output = await page.notebook.getCellTextOutput(0);
+    expect(output).toBeTruthy();
+    expect(output![0]).toBe('1');
+
+    // Cell 1: foo = 2; foo - should have execution count [2] and output 2
+    await page.locator('.jp-InputArea-prompt >> text="[2]:"').first().waitFor();
+    output = await page.notebook.getCellTextOutput(1);
+    expect(output).toBeTruthy();
+    expect(output![0]).toBe('2');
+
+    // Cell 2: foo = 3; foo - should have execution count [3] and output 3
+    await page.locator('.jp-InputArea-prompt >> text="[3]:"').first().waitFor();
+    output = await page.notebook.getCellTextOutput(2);
+    expect(output).toBeTruthy();
+    expect(output![0]).toBe('3');
+
+    // Cell 3: err - should have execution count [4] and error output
+    await page.locator('.jp-InputArea-prompt >> text="[4]:"').first().waitFor();
+
+    // Wait for the error to appear in the output
+    await page
+      .locator('.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]')
+      .first()
+      .waitFor();
+
+    // Check that the error cell has an error output
+    const errorOutput = await page
+      .locator('.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]')
+      .first()
+      .textContent();
+    expect(errorOutput).toContain('NameError');
+    expect(errorOutput).toContain('err');
+
+    // Verify that cells after the error (cells 4, 5, 6) do NOT have execution counts
+    // They should still show empty execution count prompts [ ]:
+
+    // Cell 4: foo = 4; foo - should NOT be executed (no execution count)
+    const cell4Prompt = await page
+      .locator('.jp-Cell')
+      .nth(4)
+      .locator('.jp-InputArea-prompt')
+      .textContent();
+    expect(cell4Prompt?.trim()).toBe('[ ]:');
+
+    // Cell 5: foo = 5; foo - should NOT be executed (no execution count)
+    const cell5Prompt = await page
+      .locator('.jp-Cell')
+      .nth(5)
+      .locator('.jp-InputArea-prompt')
+      .textContent();
+    expect(cell5Prompt?.trim()).toBe('[ ]:');
+
+    // Cell 6: foo - should NOT be executed (no execution count)
+    const cell6Prompt = await page
+      .locator('.jp-Cell')
+      .nth(6)
+      .locator('.jp-InputArea-prompt')
+      .textContent();
+    expect(cell6Prompt?.trim()).toBe('[ ]:');
+
+    // Verify that cells 4, 5, 6 have no output
+    const cell4Output = await page.notebook.getCellTextOutput(4);
+    expect(cell4Output).toEqual(null);
+
+    const cell5Output = await page.notebook.getCellTextOutput(5);
+    expect(cell5Output).toEqual(null);
+
+    const cell6Output = await page.notebook.getCellTextOutput(6);
+    expect(cell6Output).toEqual(null);
+
+    // Verify the kernel status shows it's idle (not busy) after the error
+    await page.locator('.jp-KernelStatus-success').waitFor();
+  });
+
+  test('Manual run after error works correctly', async ({ page }) => {
+    const notebook = 'runall-error.ipynb';
+
+    await page.goto('lab/index.html');
+    await page.notebook.open(notebook);
+
+    // Execute "Restart Kernel and Run All Cells..." to trigger the error
+    await page.menu.clickMenuItem('Kernel>Restart Kernel and Run All Cells…');
+    await page.getByRole('button', { name: 'Confirm Kernel Restart' }).click();
+
+    // Wait for the error to occur
+    await page
+      .locator('.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]')
+      .first()
+      .waitFor();
+
+    // Now manually run cell 4 (foo = 4; foo) which should work since foo was set to 3 earlier
+    await page.notebook.runCell(4);
+
+    // Verify cell 4 now has execution count [5] and outputs 4
+    await page.locator('.jp-InputArea-prompt >> text="[5]:"').first().waitFor();
+    const output = await page.notebook.getCellTextOutput(4);
+    expect(output).toBeTruthy();
+    expect(output![0]).toBe('4');
+  });
 });
 
 test.describe('Kernel status and logs', () => {
