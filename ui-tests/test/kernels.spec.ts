@@ -288,13 +288,13 @@ test.describe('Kernels', () => {
 
     // Verify that cells 4, 5, 6 have no output
     const cell4Output = await page.notebook.getCellTextOutput(4);
-    expect(cell4Output).toEqual(null);
+    expect(cell4Output).toBeNull();
 
     const cell5Output = await page.notebook.getCellTextOutput(5);
-    expect(cell5Output).toEqual(null);
+    expect(cell5Output).toBeNull();
 
     const cell6Output = await page.notebook.getCellTextOutput(6);
-    expect(cell6Output).toEqual(null);
+    expect(cell6Output).toBeNull();
 
     // Verify the kernel status shows it's idle (not busy) after the error
     await page.locator('.jp-KernelStatus-success').waitFor();
