@@ -270,6 +270,7 @@
       "@jupyterlab/services-extension:session-manager",
       "@jupyterlab/services-extension:setting-manager",
       "@jupyterlab/services-extension:user-manager",
+      "@jupyterlab/services-extension:workspace-manager",
       "@jupyterlite/application-extension:share-file"
     ],
     "mimeExtensions": {
