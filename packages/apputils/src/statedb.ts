@@ -7,7 +7,7 @@ import type localforage from 'localforage';
 /**
  * The name of the local storage.
  */
-const DEFAULT_STORAGE_NAME = 'JupyterLite StateDB Storage';
+const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 
 /**
  * A StateDB data connector backed by IndexedDB
