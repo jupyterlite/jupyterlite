@@ -4,7 +4,7 @@ import { IndexedDBDataConnector } from './statedb';
 
 export class WorkspaceManager extends IndexedDBDataConnector<Workspace.IWorkspace> {
   constructor(options: IndexedDBDataConnector.IOptions) {
-    super({ ...options, storageName: 'JupyterLite StateDB Workspaces' });
+    super({ ...options, storageName: 'JupyterLite Workspaces' });
 
     this.serverSettings = ServerConnection.makeSettings();
   }

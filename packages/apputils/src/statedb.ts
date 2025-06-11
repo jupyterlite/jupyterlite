@@ -61,7 +61,7 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
   protected createStorage(): LocalForage {
     return this._localforage.createInstance({
       description: 'Offline Storage for StateDB',
-      storeName: 'files',
+      storeName: 'statedb',
       ...this.defaultStorageOptions,
     });
   }
