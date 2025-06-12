@@ -6,7 +6,7 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
   constructor(options: LiteWorkspaceManager.IOptions) {
     super({ ...options, storageName: 'JupyterLite Workspaces' });
 
-    this.serverSettings = options.settings;
+    this.serverSettings = options.settings || ServerConnection.makeSettings();
   }
 
   /**
@@ -23,6 +23,6 @@ export namespace LiteWorkspaceManager {
    * The options for creating LiteWorkspaceManager.
    */
   export interface IOptions extends IndexedDBDataConnector.IOptions {
-    settings: ServerConnection.ISettings;
+    settings?: ServerConnection.ISettings;
   }
 }
