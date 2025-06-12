@@ -34,7 +34,7 @@ import {
 import { extensionIcon } from '@jupyterlab/ui-components';
 
 import {
-  WorkspaceManager,
+  LiteWorkspaceManager,
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
@@ -179,13 +179,13 @@ const workspaceManagerPlugin: ServiceManagerPlugin<Workspace.IManager> = {
   activate: (_: null, forage: ILocalForage): Workspace.IManager => {
     const defaultStorageName = 'JupyterLite Storage - Workspaces';
     const storageName =
-      PageConfig.getOption('contentsStorageName') || defaultStorageName;
+      PageConfig.getOption('workspacesStorageName') || defaultStorageName;
     const storageDrivers = JSON.parse(
-      PageConfig.getOption('contentsStorageDrivers') || 'null',
+      PageConfig.getOption('workspacesStorageDrivers') || 'null',
     );
     const { localforage } = forage;
 
-    return new WorkspaceManager({
+    return new LiteWorkspaceManager({
       storageName,
       storageDrivers,
       localforage,
