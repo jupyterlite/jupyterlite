@@ -9,9 +9,6 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
     this.serverSettings = options.settings || ServerConnection.makeSettings();
   }
 
-  /**
-   * TODO Remove this from upstream implementation of WorkspaceManager?
-   */
   readonly serverSettings: ServerConnection.ISettings;
 }
 
