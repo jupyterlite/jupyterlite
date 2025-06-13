@@ -83,7 +83,7 @@ test.describe('Contents Tests', () => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
     test.setTimeout(120000);
 
-    const name = await page.notebook.createNew();
+    const name = await page.notebook.createNew(undefined, { kernel: 'python' });
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
@@ -367,10 +367,12 @@ test.describe('Clear Browser Data', () => {
   });
 
   test('Clear only settings should preserve files', async ({ page }) => {
-    const name = await page.notebook.createNew();
+    const name = await page.notebook.createNew(undefined, { kernel: 'python' });
+
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+    await page.notebook.save();
     await page.notebook.close();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
