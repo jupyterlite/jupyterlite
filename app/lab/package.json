@@ -336,6 +336,7 @@
       "@jupyterlab/services-extension:session-manager",
       "@jupyterlab/services-extension:setting-manager",
       "@jupyterlab/services-extension:user-manager",
+      "@jupyterlab/services-extension:workspace-manager",
       "@jupyterlab/translation:translator",
       "@jupyterlite/notebook-application-extension:logo",
       "@jupyterlite/notebook-application-extension:notify-commands"
