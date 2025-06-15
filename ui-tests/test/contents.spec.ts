@@ -214,6 +214,50 @@ test.describe('Contents Tests', () => {
 
     await newTab.close();
   });
+
+  test('Open in New Browser Tab should work with newly created text file', async ({
+    page,
+  }) => {
+    await page.menu.clickMenuItem('File>New>Text File');
+
+    await page.waitForSelector('.jp-FileEditor');
+
+    const testContent =
+      'This is a test text file created during testing.\nSecond line of content.';
+    await page.locator('.jp-FileEditor .cm-content').fill(testContent);
+
+    await page.menu.clickMenuItem('File>Save Text');
+
+    await page.waitForSelector('.jp-Dialog');
+    await page.getByRole('button', { name: 'Rename and Save' }).click();
+
+    await refreshFilebrowser({ page });
+
+    const fileName = 'untitled.txt';
+    expect(await page.filebrowser.isFileListedInBrowser(fileName)).toBeTruthy();
+
+    const clickMenuItem = async (command): Promise<void> => {
+      await page.menu.openContextMenuLocator(
+        `.jp-DirListing-content >> text="${fileName}"`,
+      );
+      await page.getByText(command).click();
+    };
+
+    const [newTab] = await Promise.all([
+      page.waitForEvent('popup'),
+      clickMenuItem('Open in New Browser Tab'),
+    ]);
+
+    expect(newTab).toBeTruthy();
+
+    await newTab.waitForLoadState('networkidle');
+
+    const content = await newTab.textContent('body');
+    expect(content).toContain('This is a test text file created during testing.');
+    expect(content).toContain('Second line of content.');
+
+    await newTab.close();
+  });
 });
 
 test.describe('Copy shareable link', () => {
