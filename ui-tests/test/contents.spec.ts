@@ -3,7 +3,7 @@
 
 import * as path from 'path';
 
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
 
 import { test } from '@jupyterlab/galata';
 
@@ -181,6 +181,38 @@ test.describe('Contents Tests', () => {
     const parsed = JSON.parse(content);
 
     expect(parsed.hello).toEqual('coucou');
+  });
+
+  test('Open in New Browser Tab should trigger download', async ({ page }) => {
+    const testFile = 'README.md';
+    await refreshFilebrowser({ page });
+
+    expect(await page.filebrowser.isFileListedInBrowser(testFile)).toBeTruthy();
+
+    const clickMenuItem = async (command): Promise<void> => {
+      await page.menu.openContextMenuLocator(
+        `.jp-DirListing-content >> text="${testFile}"`,
+      );
+      await page.getByText(command).click();
+    };
+
+    const [newTab] = await Promise.all([
+      page.waitForEvent('popup'),
+      clickMenuItem('Open in New Browser Tab'),
+    ]);
+
+    expect(newTab).toBeTruthy();
+    expect(newTab.url()).toContain(testFile);
+
+    // Wait for the new tab to load completely
+    await newTab.waitForLoadState('networkidle');
+
+    // Check that the content includes known strings from README.md
+    const content = await newTab.textContent('body');
+    const text = 'This folder contains example notebooks and files';
+    expect(content).toContain(text);
+
+    await newTab.close();
   });
 });
 
