@@ -93,7 +93,21 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * Get the download URL
    */
   async getDownloadUrl(path: string): Promise<string> {
-    throw new Error('Method not implemented.');
+    const baseUrl = this.serverSettings.baseUrl;
+    let url = URLExt.join(baseUrl, 'files', URLExt.encodeParts(path));
+    let cookie = '';
+    try {
+      cookie = document.cookie;
+    } catch (e) {
+      // e.g. SecurityError in case of CSP Sandbox
+    }
+    const xsrfTokenMatch = cookie.match('\\b_xsrf=([^;]*)\\b');
+    if (xsrfTokenMatch) {
+      const fullUrl = new URL(url);
+      fullUrl.searchParams.append('_xsrf', xsrfTokenMatch[1]);
+      url = fullUrl.toString();
+    }
+    return Promise.resolve(url);
   }
 
   /**
