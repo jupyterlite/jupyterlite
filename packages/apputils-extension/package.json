@@ -38,12 +38,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.4.3",
-    "@jupyterlab/apputils": "~4.5.3",
-    "@jupyterlab/logconsole": "~4.4.3",
-    "@jupyterlab/pluginmanager": "~4.4.3",
-    "@jupyterlab/translation": "~4.4.3",
-    "@jupyterlab/ui-components": "~4.4.3",
+    "@jupyterlab/application": "~4.5.0-alpha.1",
+    "@jupyterlab/apputils": "~4.6.0-alpha.1",
+    "@jupyterlab/logconsole": "~4.5.0-alpha.1",
+    "@jupyterlab/pluginmanager": "~4.5.0-alpha.1",
+    "@jupyterlab/translation": "~4.5.0-alpha.1",
+    "@jupyterlab/ui-components": "~4.5.0-alpha.1",
     "@jupyterlite/apputils": "^0.6.1"
   },
   "devDependencies": {
