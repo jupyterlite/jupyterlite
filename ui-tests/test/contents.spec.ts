@@ -183,7 +183,7 @@ test.describe('Contents Tests', () => {
     expect(parsed.hello).toEqual('coucou');
   });
 
-  test('Open in New Browser Tab should trigger download', async ({ page }) => {
+  test('Open in New Browser Tab with server files', async ({ page }) => {
     const testFile = 'README.md';
     await refreshFilebrowser({ page });
 
@@ -201,13 +201,10 @@ test.describe('Contents Tests', () => {
       clickMenuItem('Open in New Browser Tab'),
     ]);
 
-    expect(newTab).toBeTruthy();
-    expect(newTab.url()).toContain(testFile);
-
-    // Wait for the new tab to load completely
     await newTab.waitForLoadState('networkidle');
 
-    // Check that the content includes known strings from README.md
+    expect(newTab.url()).toContain(testFile);
+
     const content = await newTab.textContent('body');
     const text = 'This folder contains example notebooks and files';
     expect(content).toContain(text);
