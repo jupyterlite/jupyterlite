@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/session",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "JupyterLite - Session",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -45,7 +45,7 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.4.3",
     "@jupyterlab/services": "~7.4.3",
-    "@jupyterlite/kernel": "^0.6.1",
+    "@jupyterlite/kernel": "^0.6.2",
     "@lumino/algorithm": "^2.0.3",
     "@lumino/coreutils": "^2.2.1"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/services-extension",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "JupyterLite - Services Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -33,11 +33,11 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.4.3",
     "@jupyterlab/services": "~7.4.3",
-    "@jupyterlite/contents": "^0.6.1",
-    "@jupyterlite/kernel": "^0.6.1",
-    "@jupyterlite/localforage": "^0.6.1",
-    "@jupyterlite/session": "^0.6.1",
-    "@jupyterlite/settings": "^0.6.1",
+    "@jupyterlite/contents": "^0.6.2",
+    "@jupyterlite/kernel": "^0.6.2",
+    "@jupyterlite/localforage": "^0.6.2",
+    "@jupyterlite/session": "^0.6.2",
+    "@jupyterlite/settings": "^0.6.2",
     "@lumino/coreutils": "^2.2.1"
   },
   "devDependencies": {

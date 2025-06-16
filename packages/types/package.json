@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/types",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "JupyterLite - Types",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
