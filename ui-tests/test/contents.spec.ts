@@ -118,6 +118,7 @@ test.describe('Contents Tests', () => {
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+    await page.notebook.save();
     await page.notebook.close();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
@@ -135,6 +136,7 @@ test.describe('Contents Tests', () => {
 
     await openDirectory({ page, directory: name });
     await page.notebook.createNew();
+    await page.notebook.save();
     await page.notebook.close();
     await page.filebrowser.openHomeDirectory();
     await deleteItem({ page, name });
@@ -272,6 +274,7 @@ test.describe('Copy shareable link', () => {
       await page.goto('lab/index.html');
 
       const name = await page.notebook.createNew();
+      await page.notebook.save();
 
       await page.sidebar.openTab('filebrowser');
       const contextmenu = await page.menu.openContextMenu(
@@ -348,6 +351,7 @@ test.describe('Clear Browser Data', () => {
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+    await page.notebook.save();
     await page.notebook.close();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
@@ -368,9 +372,11 @@ test.describe('Clear Browser Data', () => {
 
   test('Clear only settings should preserve files', async ({ page }) => {
     const name = await page.notebook.createNew();
+
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+    await page.notebook.save();
     await page.notebook.close();
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();

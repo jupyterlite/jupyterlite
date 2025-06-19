@@ -345,6 +345,7 @@
       "@jupyterlab/services-extension:session-manager",
       "@jupyterlab/services-extension:setting-manager",
       "@jupyterlab/services-extension:user-manager",
+      "@jupyterlab/services-extension:workspace-manager",
       "@jupyter-notebook/application-extension:logo",
       "@jupyter-notebook/application-extension:opener",
       "@jupyter-notebook/application-extension:path-opener",

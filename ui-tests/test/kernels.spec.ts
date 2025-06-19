@@ -94,6 +94,7 @@ test.describe('Kernels', () => {
     if (!name) {
       throw new Error('Notebook name is undefined');
     }
+    await page.notebook.save();
 
     // Run initial cell to verify kernel works
     await page.notebook.setCell(0, 'code', 'console.log("Initial run")');
