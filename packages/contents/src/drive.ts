@@ -93,7 +93,36 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * Get the download URL
    */
   async getDownloadUrl(path: string): Promise<string> {
-    throw new Error('Method not implemented.');
+    path = decodeURIComponent(path.replace(/^\//, ''));
+
+    const storage = await this.storage;
+    const localItem = (await storage.getItem(path)) as IModel | null;
+
+    if (localItem && localItem.content !== null) {
+      let blob: Blob;
+
+      if (localItem.format === 'base64') {
+        const binaryString = atob(localItem.content);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        blob = new Blob([bytes], { type: localItem.mimetype });
+      } else if (localItem.format === 'json') {
+        const content = JSON.stringify(localItem.content);
+        blob = new Blob([content], { type: localItem.mimetype });
+      } else {
+        // text format
+        blob = new Blob([localItem.content], { type: localItem.mimetype });
+      }
+
+      return URL.createObjectURL(blob);
+    }
+
+    // Fall back to server URL for server files
+    const baseUrl = this.serverSettings.baseUrl;
+    const url = URLExt.join(baseUrl, 'files', URLExt.encodeParts(path));
+    return url;
   }
 
   /**
