@@ -31,8 +31,8 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.4.3",
-    "@jupyterlab/services": "~7.4.3",
+    "@jupyterlab/coreutils": "~6.4.4",
+    "@jupyterlab/services": "~7.4.4",
     "@jupyterlite/contents": "^0.6.2",
     "@jupyterlite/kernel": "^0.6.2",
     "@jupyterlite/localforage": "^0.6.2",
