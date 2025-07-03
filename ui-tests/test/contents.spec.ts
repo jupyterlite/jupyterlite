@@ -94,15 +94,15 @@ test.describe('Contents Tests', () => {
 
     await page.notebook.run();
     await page.notebook.save();
-    await page.notebook.close();
-
-    // wait for the state to be saved
-    await page.waitForTimeout(1000);
 
     const output = await page.notebook.getCellTextOutput(2);
 
     expect(output).toBeTruthy();
     expect(output![0]).toBe('4');
+
+    await page.notebook.close();
+    // wait for the state to be saved
+    await page.waitForTimeout(1000);
 
     await page.reload();
     expect(
