@@ -17,6 +17,7 @@ import {
   ISessionManager,
   ISettingManager,
   IUserManager,
+  IWorkspaceManager,
   Kernel,
   KernelManager,
   KernelSpec,
@@ -30,7 +31,10 @@ import {
   Setting,
   User,
   UserManager,
+  Workspace,
 } from '@jupyterlab/services';
+
+import { LiteWorkspaceManager } from '@jupyterlite/apputils';
 
 import { BrowserStorageDrive } from '@jupyterlite/contents';
 
@@ -354,6 +358,32 @@ const userManagerPlugin: ServiceManagerPlugin<User.IManager> = {
   },
 };
 
+/**
+ * The workspace manager plugin.
+ */
+const workspaceManagerPlugin: ServiceManagerPlugin<Workspace.IManager> = {
+  id: '@jupyterlite/services-extension:workspace-manager',
+  description: 'The workspace manager plugin.',
+  autoStart: true,
+  provides: IWorkspaceManager,
+  requires: [ILocalForage],
+  activate: (_: null, forage: ILocalForage): Workspace.IManager => {
+    const defaultStorageName = 'JupyterLite Storage - Workspaces';
+    const storageName =
+      PageConfig.getOption('workspacesStorageName') || defaultStorageName;
+    const storageDrivers = JSON.parse(
+      PageConfig.getOption('workspacesStorageDrivers') || 'null',
+    );
+    const { localforage } = forage;
+
+    return new LiteWorkspaceManager({
+      storageName,
+      storageDrivers,
+      localforage,
+    });
+  },
+};
+
 export default [
   configSectionManager,
   defaultDrivePlugin,
@@ -368,4 +398,5 @@ export default [
   sessionManagerPlugin,
   settingsPlugin,
   userManagerPlugin,
+  workspaceManagerPlugin,
 ];

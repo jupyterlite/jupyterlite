@@ -13,6 +13,11 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
  * A StateDB data connector backed by IndexedDB
  */
 export class IndexedDBDataConnector<T> implements IDataConnector<T> {
+  /**
+   * Construct a new IndexedDBDataConnector.
+   *
+   * @param options - The options for the data connector.
+   */
   constructor(options: IndexedDBDataConnector.IOptions) {
     this._localforage = options.localforage;
     this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
@@ -22,6 +27,9 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
     this.initialize().catch(console.warn);
   }
 
+  /**
+   * Initialize the data connector.
+   */
   async initialize() {
     await this.initStorage();
     this._ready.resolve(void 0);
@@ -66,6 +74,13 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
     });
   }
 
+  /**
+   * Fetch a value from the data connector.
+   *
+   * @param id - The identifier of the value to fetch.
+   *
+   * @returns A promise that resolves with the fetched value.
+   */
   async fetch(id: string): Promise<T> {
     const result = (await (await this.storage).getItem(id)) as T;
 
@@ -76,6 +91,13 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
     return result;
   }
 
+  /**
+   * List all values in a namespace.
+   *
+   * @param namespace - The namespace to list values from. Defaults to ''.
+   *
+   * @returns A promise that resolves with the list of IDs and values.
+   */
   async list(namespace = ''): Promise<{ ids: string[]; values: T[] }> {
     const storage = await this.storage;
 
@@ -101,10 +123,25 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
     return result;
   }
 
+  /**
+   * Remove a value from the data connector.
+   *
+   * @param id - The identifier of the value to remove.
+   *
+   * @returns A promise that resolves when the value is removed.
+   */
   async remove(id: string): Promise<void> {
     await (await this.storage).removeItem(id);
   }
 
+  /**
+   * Save a value to the data connector.
+   *
+   * @param id - The identifier of the value to save.
+   * @param value - The value to save.
+   *
+   * @returns A promise that resolves when the value is saved.
+   */
   async save(id: string, value: T): Promise<void> {
     await (await this.storage).setItem(id, value);
   }

@@ -17,12 +17,6 @@ import {
   IWindowResolver,
 } from '@jupyterlab/apputils';
 
-import {
-  IWorkspaceManager,
-  ServiceManagerPlugin,
-  Workspace,
-} from '@jupyterlab/services';
-
 import { IPluginManager, PluginListModel, Plugins } from '@jupyterlab/pluginmanager';
 
 import {
@@ -34,13 +28,10 @@ import {
 import { extensionIcon } from '@jupyterlab/ui-components';
 
 import {
-  LiteWorkspaceManager,
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
 } from '@jupyterlite/apputils';
-
-import { ILocalForage } from '@jupyterlite/localforage';
 
 import { kernelStatusPlugin } from './kernelstatus';
 
@@ -167,33 +158,6 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
 };
 
 /**
- * The workspace manager plugin.
- */
-const workspaceManagerPlugin: ServiceManagerPlugin<Workspace.IManager> = {
-  id: '@jupyterlite/apputils-extension:workspace-manager',
-  description: 'The workspace manager plugin.',
-  autoStart: true,
-  provides: IWorkspaceManager,
-  requires: [ILocalForage],
-  optional: [],
-  activate: (_: null, forage: ILocalForage): Workspace.IManager => {
-    const defaultStorageName = 'JupyterLite Storage - Workspaces';
-    const storageName =
-      PageConfig.getOption('workspacesStorageName') || defaultStorageName;
-    const storageDrivers = JSON.parse(
-      PageConfig.getOption('workspacesStorageDrivers') || 'null',
-    );
-    const { localforage } = forage;
-
-    return new LiteWorkspaceManager({
-      storageName,
-      storageDrivers,
-      localforage,
-    });
-  },
-};
-
-/**
  * The default window name resolver provider.
  */
 const resolverPlugin: JupyterFrontEndPlugin<IWindowResolver> = {
@@ -207,12 +171,11 @@ const resolverPlugin: JupyterFrontEndPlugin<IWindowResolver> = {
   },
 };
 
-const plugins: (JupyterFrontEndPlugin<any> | ServiceManagerPlugin<any>)[] = [
+const plugins: JupyterFrontEndPlugin<any>[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
   kernelStatusPlugin,
-  workspaceManagerPlugin,
   resolverPlugin,
 ];
 
