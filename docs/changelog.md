@@ -114,6 +114,32 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0a0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.1...498c9e4500196d49507455a6b87711d53d7a1c71))
+
+### Bugs fixed
+
+- Implement `BrowserStorageDrive.getDownloadUrl()` [#1674](https://github.com/jupyterlite/jupyterlite/pull/1674) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Bump brace-expansion from 1.1.11 to 1.1.12 in /ui-tests [#1676](https://github.com/jupyterlite/jupyterlite/pull/1676) ([@dependabot](https://github.com/dependabot))
+- Fix the failing `win-dev` CI check [#1675](https://github.com/jupyterlite/jupyterlite/pull/1675) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab 4.5.0a1 and Notebook 7.5.0a0 [#1667](https://github.com/jupyterlite/jupyterlite/pull/1667) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- docs: Update deployment instructions for Vercel and Netlify [#1672](https://github.com/jupyterlite/jupyterlite/pull/1672) ([@diegofcornejo](https://github.com/diegofcornejo))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-05&to=2025-07-03&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-06-05..2025-07-03&type=Issues) | [@diegofcornejo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adiegofcornejo+updated%3A2025-06-05..2025-07-03&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-05..2025-07-03&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-05..2025-07-03&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.0...754a459bf1fe7cfc4892cd9758790f8670febca0))
@@ -137,8 +163,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-02&to=2025-06-05&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-06-02..2025-06-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-02..2025-06-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-02..2025-06-05&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.0
 
