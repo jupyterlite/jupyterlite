@@ -94,6 +94,10 @@ test.describe('Contents Tests', () => {
 
     await page.notebook.run();
     await page.notebook.save();
+    await page.notebook.close();
+
+    // wait for the state to be saved
+    await page.waitForTimeout(1000);
 
     const output = await page.notebook.getCellTextOutput(2);
 
@@ -378,6 +382,9 @@ test.describe('Clear Browser Data', () => {
     }
     await page.notebook.save();
     await page.notebook.close();
+
+    // wait for the state to be saved
+    await page.waitForTimeout(1000);
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
 
