@@ -22,9 +22,9 @@ available in the user's browser.
 
 [localforage]: https://github.com/localForage/localForage
 
-To force choosing from a particular set of technologies, `settingsStorageDrivers` and
-`contentsStorageDrivers` can be specified, with the first browser-compatible driver
-being chosen.
+To force choosing from a particular set of technologies, `settingsStorageDrivers`,
+`contentsStorageDrivers` and `workspacesStorageDrivers` can be specified, with the first
+browser-compatible driver being chosen.
 
 | configuration value   | technology   | persistent? | note                                   |
 | --------------------- | ------------ | ----------- | -------------------------------------- |

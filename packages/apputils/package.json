@@ -43,6 +43,7 @@
     "@jupyterlab/coreutils": "~6.5.0-alpha.1",
     "@jupyterlab/statedb": "~4.5.0-alpha.1",
     "@jupyterlab/translation": "~4.5.0-alpha.1",
+    "@jupyterlite/application": "^0.7.0-alpha.0",
     "@jupyterlite/types": "^0.7.0-alpha.0"
   },
   "devDependencies": {

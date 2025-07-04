@@ -62,6 +62,8 @@ lite_aliases = dict(
         # server-specific things
         "port": "LiteBuildConfig.port",
         "base-url": "LiteBuildConfig.base_url",
+        # workspaces
+        "workspaces": "LiteBuildConfig.workspaces",
     },
 )
 
@@ -198,6 +200,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["federated_extensions"] = self.federated_extensions
         if self.ignore_sys_prefix is not None:
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
+        if self.workspaces is not None:
+            kwargs["workspaces"] = [Path(p) for p in self.workspaces]
 
         return LiteManager(**kwargs)
 

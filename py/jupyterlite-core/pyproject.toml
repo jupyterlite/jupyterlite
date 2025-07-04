@@ -103,6 +103,7 @@ serve = "jupyterlite_core.addons.serve:ServeAddon"
 settings = "jupyterlite_core.addons.settings:SettingsAddon"
 static = "jupyterlite_core.addons.static:StaticAddon"
 translation = "jupyterlite_core.addons.translation:TranslationAddon"
+workspaces = "jupyterlite_core.addons.workspaces:WorkspacesAddon"
 
 [tool.hatch.version]
 path = "jupyterlite_core/__init__.py"
