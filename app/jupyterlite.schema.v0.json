@@ -105,6 +105,15 @@
           "type": "string",
           "default": "JupyterLite Storage"
         },
+        "workspacesStorageDrivers": {
+          "description": "names of the localforage driver for workspaces, or `null` for the best available",
+          "$ref": "#/definitions/localforage-driver-set"
+        },
+        "workspacesStorageName": {
+          "description": "Name used to store Jupyter workspaces in the browser. The baseUrl is appended to the default value",
+          "type": "string",
+          "default": "JupyterLite Storage"
+        },
         "showLoadingIndicator": {
           "description": "Whether to show the loading indicator during app initialization",
           "type": "boolean",

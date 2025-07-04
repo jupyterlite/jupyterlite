@@ -22,9 +22,11 @@ export class ClearDataDialog extends ReactWidget {
     this._availability = options.availability || {
       canClearSettings: true,
       canClearContents: true,
+      canClearWorkspaces: true,
     };
     this._settingsChecked = this._availability.canClearSettings;
     this._contentsChecked = this._availability.canClearContents;
+    this._workspacesChecked = this._availability.canClearWorkspaces;
     this.addClass('jp-ClearData-dialog');
   }
 
@@ -35,6 +37,7 @@ export class ClearDataDialog extends ReactWidget {
     return {
       clearSettings: this._settingsChecked && this._availability.canClearSettings,
       clearContents: this._contentsChecked && this._availability.canClearContents,
+      clearWorkspaces: this._workspacesChecked && this._availability.canClearWorkspaces,
     };
   }
 
@@ -47,6 +50,7 @@ export class ClearDataDialog extends ReactWidget {
         translator={this._translator}
         settingsChecked={this._settingsChecked}
         contentsChecked={this._contentsChecked}
+        workspacesChecked={this._workspacesChecked}
         availability={this._availability}
         setSettingsChecked={(checked: boolean) => {
           this._settingsChecked = checked;
@@ -56,6 +60,10 @@ export class ClearDataDialog extends ReactWidget {
           this._contentsChecked = checked;
           this.update();
         }}
+        setWorkspacesChecked={(checked: boolean) => {
+          this._workspacesChecked = checked;
+          this.update();
+        }}
       />
     );
   }
@@ -63,6 +71,7 @@ export class ClearDataDialog extends ReactWidget {
   private _translator: ITranslator;
   private _settingsChecked: boolean;
   private _contentsChecked: boolean;
+  private _workspacesChecked: boolean;
   private _availability: ClearDataDialog.IClearAvailability;
 }
 
@@ -82,6 +91,10 @@ export namespace ClearDataDialog {
      * Whether to clear contents
      */
     clearContents: boolean;
+    /**
+     * Whether to clear workspaces
+     */
+    clearWorkspaces: boolean;
   }
 
   /**
@@ -90,6 +103,7 @@ export namespace ClearDataDialog {
   export interface IClearAvailability {
     canClearSettings: boolean;
     canClearContents: boolean;
+    canClearWorkspaces: boolean;
   }
 
   /**
@@ -115,9 +129,11 @@ interface IClearDataDialogProps {
   translator: ITranslator;
   settingsChecked: boolean;
   contentsChecked: boolean;
+  workspacesChecked: boolean;
   availability: ClearDataDialog.IClearAvailability;
   setSettingsChecked: (checked: boolean) => void;
   setContentsChecked: (checked: boolean) => void;
+  setWorkspacesChecked: (checked: boolean) => void;
 }
 
 /**
@@ -128,9 +144,11 @@ function ClearDataDialogComponent(props: IClearDataDialogProps): JSX.Element {
     translator,
     settingsChecked,
     contentsChecked,
+    workspacesChecked,
     availability,
     setSettingsChecked,
     setContentsChecked,
+    setWorkspacesChecked,
   } = props;
 
   const trans = translator.load('@jupyterlite');
@@ -152,6 +170,7 @@ function ClearDataDialogComponent(props: IClearDataDialogProps): JSX.Element {
           <ul>
             <li>{trans.__('User settings and preferences')}</li>
             <li>{trans.__('Notebooks and files stored in the browser')}</li>
+            <li>{trans.__('Workspace layouts and panel arrangements')}</li>
             <li>{trans.__('Unsaved work and changes')}</li>
           </ul>
         </div>
@@ -201,6 +220,32 @@ function ClearDataDialogComponent(props: IClearDataDialogProps): JSX.Element {
         >
           {trans.__('Files and notebooks')}
           {!availability.canClearContents && (
+            <span className="jp-ClearData-unavailable">
+              {' '}
+              {trans.__('(unavailable)')}
+            </span>
+          )}
+        </label>
+      </div>
+
+      <div
+        className={`jp-ClearData-option ${
+          !availability.canClearWorkspaces ? 'jp-mod-disabled' : ''
+        }`}
+      >
+        <input
+          id="jp-ClearData-workspaces"
+          type="checkbox"
+          checked={workspacesChecked}
+          onChange={(e) => setWorkspacesChecked(e.target.checked)}
+          disabled={!availability.canClearWorkspaces}
+        />
+        <label
+          htmlFor="jp-ClearData-workspaces"
+          className={!availability.canClearWorkspaces ? 'jp-mod-disabled' : ''}
+        >
+          {trans.__('Workspace layouts')}
+          {!availability.canClearWorkspaces && (
             <span className="jp-ClearData-unavailable">
               {' '}
               {trans.__('(unavailable)')}

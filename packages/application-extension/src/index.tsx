@@ -35,6 +35,8 @@ import {
   IDefaultDrive,
   ISettingManager,
   Setting,
+  IWorkspaceManager,
+  Workspace,
 } from '@jupyterlab/services';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
@@ -50,6 +52,8 @@ import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { BrowserStorageDrive } from '@jupyterlite/contents';
+
+import { LiteWorkspaceManager } from '@jupyterlite/apputils';
 
 import { Settings } from '@jupyterlite/settings';
 
@@ -628,7 +632,13 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:clear-browser-data',
   autoStart: true,
   requires: [ITranslator],
-  optional: [ICommandPalette, ISettingManager, IDefaultDrive, IDefaultFileBrowser],
+  optional: [
+    ICommandPalette,
+    ISettingManager,
+    IDefaultDrive,
+    IDefaultFileBrowser,
+    IWorkspaceManager,
+  ],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
@@ -636,6 +646,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
     settingManager: Setting.IManager | null,
     defaultDrive: Contents.IDrive | null,
     defaultFileBrowser: IDefaultFileBrowser | null,
+    workspaceManager: Workspace.IManager | null,
   ): void => {
     const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
@@ -643,9 +654,10 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
 
     const isBrowserStorageDrive = defaultDrive instanceof BrowserStorageDrive;
     const isLiteSettingsManager = settingManager instanceof Settings;
+    const isLiteWorkspaceManager = workspaceManager instanceof LiteWorkspaceManager;
 
-    if (!isBrowserStorageDrive && !isLiteSettingsManager) {
-      // not available if neither the default drive or the settings manager
+    if (!isBrowserStorageDrive && !isLiteSettingsManager && !isLiteWorkspaceManager) {
+      // not available if none of the default managers
       // are the ones provided by JupyterLite by default
       return;
     }
@@ -656,7 +668,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
     }
 
     const clearData = async (options: ClearDataDialog.IClearOptions): Promise<void> => {
-      const { clearSettings, clearContents } = options;
+      const { clearSettings, clearContents, clearWorkspaces } = options;
       const promises: Promise<void>[] = [];
 
       if (clearContents && isBrowserStorageDrive) {
@@ -667,6 +679,11 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
       if (clearSettings && isLiteSettingsManager) {
         const settings = settingManager as Settings;
         promises.push(settings.clear());
+      }
+
+      if (clearWorkspaces && isLiteWorkspaceManager) {
+        const workspace = workspaceManager as any;
+        promises.push(workspace.clear());
       }
 
       await Promise.all(promises);
@@ -682,6 +699,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
         const availability = {
           canClearSettings: isLiteSettingsManager && !!settingManager,
           canClearContents: isBrowserStorageDrive && !!defaultDrive,
+          canClearWorkspaces: isLiteWorkspaceManager && !!workspaceManager,
         };
 
         const body = new ClearDataDialog({

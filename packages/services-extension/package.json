@@ -33,6 +33,7 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.5.0-alpha.1",
     "@jupyterlab/services": "~7.5.0-alpha.1",
+    "@jupyterlite/apputils": "^0.7.0-alpha.0",
     "@jupyterlite/contents": "^0.7.0-alpha.0",
     "@jupyterlite/kernel": "^0.7.0-alpha.0",
     "@jupyterlite/localforage": "^0.7.0-alpha.0",

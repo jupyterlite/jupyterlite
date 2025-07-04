@@ -49,6 +49,7 @@
     "@jupyterlab/settingregistry": "~4.5.0-alpha.1",
     "@jupyterlab/translation": "~4.5.0-alpha.1",
     "@jupyterlab/ui-components": "~4.5.0-alpha.1",
+    "@jupyterlite/apputils": "^0.7.0-alpha.0",
     "@jupyterlite/contents": "^0.7.0-alpha.0",
     "@jupyterlite/server": "^0.7.0-alpha.0",
     "@jupyterlite/ui-components": "^0.7.0-alpha.0",

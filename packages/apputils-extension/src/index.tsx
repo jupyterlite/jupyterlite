@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { PageConfig } from '@jupyterlab/coreutils';
+
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
@@ -12,6 +14,7 @@ import {
   ICommandPalette,
   MainAreaWidget,
   WidgetTracker,
+  IWindowResolver,
 } from '@jupyterlab/apputils';
 
 import { IPluginManager, PluginListModel, Plugins } from '@jupyterlab/pluginmanager';
@@ -154,11 +157,26 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
   },
 };
 
+/**
+ * The default window name resolver provider.
+ */
+const resolverPlugin: JupyterFrontEndPlugin<IWindowResolver> = {
+  id: '@jupyterlite/apputils-extension:resolver',
+  description: 'Provides the window name resolver.',
+  autoStart: true,
+  provides: IWindowResolver,
+  requires: [],
+  activate: async (app: JupyterFrontEnd) => {
+    return { name: PageConfig.getBaseUrl() };
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
   kernelStatusPlugin,
+  resolverPlugin,
 ];
 
 export default plugins;
