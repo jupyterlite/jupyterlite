@@ -34,8 +34,8 @@ import {
   Contents,
   IDefaultDrive,
   ISettingManager,
-  Setting,
   IWorkspaceManager,
+  Setting,
   Workspace,
 } from '@jupyterlab/services';
 
@@ -45,6 +45,10 @@ import { ITranslator } from '@jupyterlab/translation';
 
 import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
+import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
+
+import { LiteWorkspaceManager } from '@jupyterlite/apputils';
+
 import { IKernelClient } from '@jupyterlite/kernel';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
@@ -52,8 +56,6 @@ import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { BrowserStorageDrive } from '@jupyterlite/contents';
-
-import { LiteWorkspaceManager } from '@jupyterlite/apputils';
 
 import { Settings } from '@jupyterlite/settings';
 
@@ -95,6 +97,48 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * The custom URL router provider.
+ *
+ * Provides IRouter, plus the additional methods to transform `/path/`-based routes
+ */
+const liteRouter: JupyterFrontEndPlugin<ILiteRouter> = {
+  id: '@jupyterlite/application-extension:lite-router',
+  autoStart: true,
+  provides: ILiteRouter,
+  requires: [JupyterFrontEnd.IPaths],
+  activate: (app: JupyterFrontEnd, paths: JupyterFrontEnd.IPaths) => {
+    const { commands } = app;
+    const { base } = paths.urls;
+    const router = new LiteRouter({ base, commands });
+
+    void app.started.then(() => {
+      // Route the very first request on load.
+      void router.route();
+
+      // Route all pop state events.
+      window.addEventListener('popstate', () => {
+        void router.route();
+      });
+    });
+
+    return router;
+  },
+};
+
+/**
+ * The default URL router provider.
+ */
+const router: JupyterFrontEndPlugin<IRouter> = {
+  id: '@jupyterlite/application-extension:router',
+  autoStart: true,
+  provides: IRouter,
+  requires: [ILiteRouter],
+  activate: (app: JupyterFrontEnd, router: ILiteRouter) => {
+    return router;
+  },
+};
 
 /**
  * Add a command to show an About dialog.
@@ -732,10 +776,12 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
   downloadPlugin,
+  liteRouter,
   liteLogo,
   lspConnectionManager,
   notifyCommands,
   opener,
+  router,
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,

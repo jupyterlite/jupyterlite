@@ -44,6 +44,7 @@
     "@jupyterlab/pluginmanager": "~4.5.0-alpha.2",
     "@jupyterlab/translation": "~4.5.0-alpha.2",
     "@jupyterlab/ui-components": "~4.5.0-alpha.2",
+    "@jupyterlite/application": "^0.7.0-alpha.2",
     "@jupyterlite/apputils": "^0.7.0-alpha.2"
   },
   "devDependencies": {
