@@ -10,6 +10,15 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
   }
 
   readonly serverSettings: ServerConnection.ISettings;
+
+  /**
+   * Clear all workspace data
+   *
+   * @returns A promise which resolves when the workspace data is cleared
+   */
+  async clear(): Promise<void> {
+    await (await this.storage).clear();
+  }
 }
 
 /**
