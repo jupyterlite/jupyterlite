@@ -368,7 +368,8 @@ const workspaceManagerPlugin: ServiceManagerPlugin<Workspace.IManager> = {
   provides: IWorkspaceManager,
   requires: [ILocalForage],
   activate: (_: null, forage: ILocalForage): Workspace.IManager => {
-    const defaultStorageName = 'JupyterLite Storage - Workspaces';
+    const baseUrl = PageConfig.getOption('baseUrl');
+    const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
     const storageName =
       PageConfig.getOption('workspacesStorageName') || defaultStorageName;
     const storageDrivers = JSON.parse(

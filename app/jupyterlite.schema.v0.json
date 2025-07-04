@@ -112,7 +112,7 @@
         "workspacesStorageName": {
           "description": "Name used to store Jupyter workspaces in the browser. The baseUrl is appended to the default value",
           "type": "string",
-          "default": "JupyterLite Workspaces Storage"
+          "default": "JupyterLite Storage"
         },
         "showLoadingIndicator": {
           "description": "Whether to show the loading indicator during app initialization",
