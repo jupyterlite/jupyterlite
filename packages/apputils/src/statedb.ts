@@ -101,7 +101,6 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
   async list(namespace = ''): Promise<{ ids: string[]; values: T[] }> {
     const storage = await this.storage;
 
-    // const items = (await storage.keys()).map(async key => await storage.getItem(key)) as any[];
     const items: { [key: string]: T } = {};
     for (const key of await storage.keys()) {
       // Casting to string here, we know for sure the item is there

@@ -102,6 +102,7 @@ test.describe('Contents Tests', () => {
 
     await page.notebook.close();
     // wait for the state to be saved
+    // TODO: find a better way than waiting?
     await page.waitForTimeout(1000);
 
     await page.reload();
@@ -384,6 +385,7 @@ test.describe('Clear Browser Data', () => {
     await page.notebook.close();
 
     // wait for the state to be saved
+    // TODO: find a better way than waiting?
     await page.waitForTimeout(1000);
 
     expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
