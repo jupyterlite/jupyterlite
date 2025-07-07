@@ -124,6 +124,12 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                 traceback: [],
               };
               for (const clientId of clients) {
+                const headerBase = {
+                  date,
+                  session: clientId,
+                  username: msg.header.username,
+                  version: msg.header.version,
+                };
                 const sendMessage = this._kernelSends.get(kernelId);
                 if (sendMessage !== undefined) {
                   sendMessage({
@@ -131,12 +137,9 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     content,
                     parent_header: msg.header,
                     header: {
-                      date,
                       msg_id: UUID.uuid4(),
                       msg_type: 'error',
-                      session: clientId,
-                      username: msg.header.username,
-                      version: msg.header.version,
+                      ...headerBase,
                     },
                     metadata: {},
                   });
@@ -145,12 +148,22 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     content,
                     parent_header: msg.header,
                     header: {
-                      date,
                       msg_id: UUID.uuid4(),
                       msg_type: 'execute_reply',
-                      session: clientId,
-                      username: msg.header.username,
-                      version: msg.header.version,
+                      ...headerBase,
+                    },
+                    metadata: {},
+                  });
+                  sendMessage({
+                    channel: 'iopub',
+                    content: {
+                      execution_state: 'idle',
+                    },
+                    parent_header: msg.header,
+                    header: {
+                      msg_id: UUID.uuid4(),
+                      msg_type: 'status',
+                      ...headerBase,
                     },
                     metadata: {},
                   });
