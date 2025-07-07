@@ -144,7 +144,6 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                   }),
                 );
               }
-              /*
               sendMessage(
                 KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
                   channel: 'shell',
@@ -155,9 +154,11 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     ...content,
                     execution_count: 0,
                   },
+                  metadata: {
+                    casuse: 'interrupt',
+                  },
                 }),
               );
-              */
               sendMessage(
                 KernelMessage.createMessage<KernelMessage.IStatusMsg>({
                   channel: 'iopub',
@@ -257,7 +258,10 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       // to match the JupyterLab behavior
       if (msg.header.msg_type === 'execute_reply') {
         const executeReplyMsg = msg as KernelMessage.IExecuteReplyMsg;
-        if (executeReplyMsg.content.status === 'error') {
+        if (
+          executeReplyMsg.content.status === 'error' &&
+          executeReplyMsg.metadata.casuse !== 'interrupt'
+        ) {
           this._cancelReason.set(mutex, 'error');
           mutex.cancel();
         }
