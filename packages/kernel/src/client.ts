@@ -94,6 +94,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       }
 
       this._clients.set(clientId, socket);
+      this._mutexMap.set(kernelId, mutex);
       this._kernelClients.get(kernelId)?.add(clientId);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
@@ -240,6 +241,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       wsServer.close();
       this._kernels.delete(kernelId);
       this._kernelClients.delete(kernelId);
+      this._mutexMap.delete(kernelId);
       this._kernelSends.delete(kernelId);
     });
 
@@ -268,7 +270,14 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
    * Interrupt a kernel.
    */
   async interrupt(kernelId: string): Promise<void> {
-    // no-op
+    const kernel = this._kernels.get(kernelId);
+    if (!kernel) {
+      throw Error(`Kernel ${kernelId} does not exist`);
+    }
+    const mutex = this._mutexMap.get(kernelId);
+    if (mutex) {
+      mutex.cancel();
+    }
   }
 
   /**
@@ -341,6 +350,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
   private _kernels = new ObservableMap<IKernel>();
   private _clients = new ObservableMap<WebSocketClient>();
+  private _mutexMap = new Map<string, Mutex>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
   private _serverSettings: ServerConnection.ISettings;
