@@ -113,6 +113,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             if (cancelReason === 'interrupt') {
               // Clear cancel reason so that only one cell includes error.
               this._cancelReason.delete(mutex);
+              await mutex.waitForUnlock();
               // Send interrupt error to all clients
               const clients = this._kernelClients.get(kernelId) ?? new Set();
               const date = new Date().toISOString();
