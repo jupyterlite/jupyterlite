@@ -131,11 +131,11 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     parent_header: msg.header,
                     header: {
                       date,
-                      msg_id: '-',
-                      msg_type: 'error',
+                      msg_id: UUID.uuid4(),
+                      msg_type: 'execute_reply',
                       session: clientId,
-                      username: 'jupyterlite',
-                      version: '5.3',
+                      username: msg.header.username,
+                      version: msg.header.version,
                     },
                     metadata: {},
                   });
