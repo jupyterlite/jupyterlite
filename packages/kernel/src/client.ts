@@ -163,7 +163,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                 KernelMessage.createMessage<KernelMessage.IStatusMsg>({
                   channel: 'iopub',
                   session: clientId,
-                  parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                  parentHeader: msg.header,
                   msgType: 'status',
                   content: {
                     execution_state: 'idle',
