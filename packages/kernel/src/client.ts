@@ -110,13 +110,15 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
           ) {
             // expected to throw when mutex.cancel() is called below on cell execution error or on interrupt
             const cancelReason = this._cancelReason.get(mutex);
-            if (cancelReason === 'interrupt') {
+            if (
+              cancelReason === 'interrupt' &&
+              msg.header.msg_type === 'execute_request'
+            ) {
               // Clear cancel reason so that only one cell includes error.
               this._cancelReason.delete(mutex);
               await mutex.waitForUnlock();
               // Send interrupt error to all clients
               const clients = this._kernelClients.get(kernelId) ?? new Set();
-              const date = new Date().toISOString();
               const content: KernelMessage.IReplyErrorContent = {
                 status: 'error',
                 ename: 'Kernel Interrupt',
@@ -124,49 +126,40 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                 traceback: [],
               };
               for (const clientId of clients) {
-                const headerBase = {
-                  date,
-                  session: clientId,
-                  username: msg.header.username,
-                  version: msg.header.version,
-                };
                 const sendMessage = this._kernelSends.get(kernelId);
                 if (sendMessage !== undefined) {
-                  sendMessage({
-                    channel: 'iopub',
-                    content,
-                    parent_header: msg.header,
-                    header: {
-                      msg_id: UUID.uuid4(),
-                      msg_type: 'error',
-                      ...headerBase,
-                    },
-                    metadata: {},
-                  });
-                  sendMessage({
-                    channel: msg.channel,
-                    content,
-                    parent_header: msg.header,
-                    header: {
-                      msg_id: UUID.uuid4(),
-                      msg_type: 'execute_reply',
-                      ...headerBase,
-                    },
-                    metadata: {},
-                  });
-                  sendMessage({
-                    channel: 'iopub',
-                    content: {
-                      execution_state: 'idle',
-                    },
-                    parent_header: msg.header,
-                    header: {
-                      msg_id: UUID.uuid4(),
-                      msg_type: 'status',
-                      ...headerBase,
-                    },
-                    metadata: {},
-                  });
+                  sendMessage(
+                    KernelMessage.createMessage<KernelMessage.IErrorMsg>({
+                      channel: 'iopub',
+                      session: clientId,
+                      parentHeader: msg.header,
+                      msgType: 'error',
+                      content,
+                    }),
+                  );
+                  sendMessage(
+                    KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
+                      channel: 'shell',
+                      session: clientId,
+                      parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                      msgType: 'execute_reply',
+                      content: {
+                        ...content,
+                        execution_count: 0,
+                      },
+                    }),
+                  );
+                  sendMessage(
+                    KernelMessage.createMessage<KernelMessage.IStatusMsg>({
+                      channel: 'iopub',
+                      session: clientId,
+                      parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                      msgType: 'status',
+                      content: {
+                        execution_state: 'idle',
+                      },
+                    }),
+                  );
                 }
               }
             }
