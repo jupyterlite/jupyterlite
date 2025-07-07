@@ -111,57 +111,61 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             // expected to throw when mutex.cancel() is called below on cell execution error or on interrupt
             const cancelReason = this._cancelReason.get(mutex);
             if (
-              cancelReason === 'interrupt' &&
+              (cancelReason === 'interrupt' ||
+                cancelReason === 'interrupt-subsequent') &&
               msg.header.msg_type === 'execute_request'
             ) {
-              // Clear cancel reason so that only one cell includes error.
-              this._cancelReason.delete(mutex);
               await mutex.waitForUnlock();
               // Send interrupt error to all clients
-              const clients = this._kernelClients.get(kernelId) ?? new Set();
               const content: KernelMessage.IReplyErrorContent = {
                 status: 'error',
                 ename: 'Kernel Interrupt',
                 evalue: 'Interrupted',
                 traceback: [],
               };
-              for (const clientId of clients) {
-                const sendMessage = this._kernelSends.get(kernelId);
-                if (sendMessage !== undefined) {
-                  sendMessage(
-                    KernelMessage.createMessage<KernelMessage.IErrorMsg>({
-                      channel: 'iopub',
-                      session: clientId,
-                      parentHeader: msg.header,
-                      msgType: 'error',
-                      content,
-                    }),
-                  );
-                  sendMessage(
-                    KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
-                      channel: 'shell',
-                      session: clientId,
-                      parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
-                      msgType: 'execute_reply',
-                      content: {
-                        ...content,
-                        execution_count: 0,
-                      },
-                    }),
-                  );
-                  sendMessage(
-                    KernelMessage.createMessage<KernelMessage.IStatusMsg>({
-                      channel: 'iopub',
-                      session: clientId,
-                      parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
-                      msgType: 'status',
-                      content: {
-                        execution_state: 'idle',
-                      },
-                    }),
-                  );
-                }
+              const sendMessage = this._kernelSends.get(kernelId);
+              if (sendMessage === undefined) {
+                console.warn('Did not find kernel send method');
+                return;
               }
+              if (cancelReason === 'interrupt') {
+                sendMessage(
+                  KernelMessage.createMessage<KernelMessage.IErrorMsg>({
+                    channel: 'iopub',
+                    session: clientId,
+                    parentHeader: msg.header,
+                    msgType: 'error',
+                    content,
+                  }),
+                );
+                // Change cancel reason so that only one cell includes the error.
+                this._cancelReason.set(mutex, 'interrupt-subsequent');
+              }
+              /*
+              sendMessage(
+                KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
+                  channel: 'shell',
+                  session: clientId,
+                  parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                  msgType: 'execute_reply',
+                  content: {
+                    ...content,
+                    execution_count: 0,
+                  },
+                }),
+              );
+              */
+              sendMessage(
+                KernelMessage.createMessage<KernelMessage.IStatusMsg>({
+                  channel: 'iopub',
+                  session: clientId,
+                  parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                  msgType: 'status',
+                  content: {
+                    execution_state: 'idle',
+                  },
+                }),
+              );
             }
           } else {
             throw error;
@@ -417,7 +421,10 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
   private _stdinPromise?: PromiseDelegate<KernelMessage.IInputReplyMsg>;
   private _kernelSends = new ObservableMap<(msg: KernelMessage.IMessage) => void>();
-  private _cancelReason = new WeakMap<Mutex, 'interrupt' | 'error'>();
+  private _cancelReason = new WeakMap<
+    Mutex,
+    'interrupt' | 'interrupt-subsequent' | 'error'
+  >();
 }
 
 /**
