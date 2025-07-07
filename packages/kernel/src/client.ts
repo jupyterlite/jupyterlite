@@ -108,7 +108,40 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             error instanceof Error &&
             error.message.includes('request for lock canceled')
           ) {
-            // expected to throw when mutex.cancel() is called below
+            // expected to throw when mutex.cancel() is called below on cell execution error or on interrupt
+            const cancelReason = this._cancelReason.get(mutex);
+            if (cancelReason === 'interrupt') {
+              // Clear cancel reason so that only one cell includes error.
+              this._cancelReason.delete(mutex);
+              // Send interrupt error to all clients
+              const clients = this._kernelClients.get(kernelId) ?? new Set();
+              const date = new Date().toISOString();
+              const content: KernelMessage.IReplyErrorContent = {
+                status: 'error',
+                ename: 'Kernel Interrupt',
+                evalue: 'Interrupted',
+                traceback: [],
+              };
+              for (const clientId of clients) {
+                const sendMessage = this._kernelSends.get(kernelId);
+                if (sendMessage !== undefined) {
+                  sendMessage({
+                    channel: msg.channel,
+                    content,
+                    parent_header: msg.header,
+                    header: {
+                      date,
+                      msg_id: '-',
+                      msg_type: 'error',
+                      session: clientId,
+                      username: 'jupyterlite',
+                      version: '5.3',
+                    },
+                    metadata: {},
+                  });
+                }
+              }
+            }
           } else {
             throw error;
           }
@@ -197,6 +230,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       if (msg.header.msg_type === 'execute_reply') {
         const executeReplyMsg = msg as KernelMessage.IExecuteReplyMsg;
         if (executeReplyMsg.content.status === 'error') {
+          this._cancelReason.set(mutex, 'error');
           mutex.cancel();
         }
       }
@@ -274,10 +308,15 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
     if (!kernel) {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
+
+    // Cancel execution of following cells
     const mutex = this._mutexMap.get(kernelId);
-    if (mutex) {
-      mutex.cancel();
+    if (!mutex) {
+      console.warn('No mutex to cancel');
+      return;
     }
+    this._cancelReason.set(mutex, 'interrupt');
+    mutex.cancel();
   }
 
   /**
@@ -357,6 +396,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
   private _stdinPromise?: PromiseDelegate<KernelMessage.IInputReplyMsg>;
   private _kernelSends = new ObservableMap<(msg: KernelMessage.IMessage) => void>();
+  private _cancelReason = new WeakMap<Mutex, 'interrupt' | 'error'>();
 }
 
 /**
