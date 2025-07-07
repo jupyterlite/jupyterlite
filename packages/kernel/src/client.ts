@@ -127,6 +127,20 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                 const sendMessage = this._kernelSends.get(kernelId);
                 if (sendMessage !== undefined) {
                   sendMessage({
+                    channel: 'iopub',
+                    content,
+                    parent_header: msg.header,
+                    header: {
+                      date,
+                      msg_id: UUID.uuid4(),
+                      msg_type: 'error',
+                      session: clientId,
+                      username: msg.header.username,
+                      version: msg.header.version,
+                    },
+                    metadata: {},
+                  });
+                  sendMessage({
                     channel: msg.channel,
                     content,
                     parent_header: msg.header,
