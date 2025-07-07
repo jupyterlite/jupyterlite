@@ -115,6 +115,11 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                 cancelReason === 'interrupt-subsequent') &&
               msg.header.msg_type === 'execute_request'
             ) {
+              if (cancelReason === 'interrupt') {
+                // Change cancel reason so that only one cell includes the error.
+                // Needs to go before await for mutex.
+                this._cancelReason.set(mutex, 'interrupt-subsequent');
+              }
               await mutex.waitForUnlock();
               // Send interrupt error to all clients
               const content: KernelMessage.IReplyErrorContent = {
@@ -138,8 +143,6 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     content,
                   }),
                 );
-                // Change cancel reason so that only one cell includes the error.
-                this._cancelReason.set(mutex, 'interrupt-subsequent');
               }
               /*
               sendMessage(
