@@ -61,7 +61,15 @@
   "prettier": {
     "printWidth": 88,
     "proseWrap": "always",
-    "singleQuote": true
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.jupyterlab-workspace",
+        "options": {
+          "parser": "json"
+        }
+      }
+    ]
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "~4.5.0-alpha.2",
