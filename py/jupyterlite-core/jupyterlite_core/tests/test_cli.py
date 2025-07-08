@@ -45,6 +45,12 @@ AN_OVERRIDES = """{
 }
 """
 
+# a simple workspace
+AN_WORKSPACE = """{
+    "data": {},
+    "metadata": {"id": "default"}
+}"""
+
 # a simple jupyter-lite.json describing a remote entry
 A_SIMPLE_JUPYTERLITE_JSON = """{ "jupyter-config-data": {
     "federated_extensions": [
@@ -152,6 +158,10 @@ def test_cli_any_hook(  # noqa: PLR0915
     app_overrides.parent.mkdir()
     app_overrides.write_text(AN_OVERRIDES, encoding="utf-8")
 
+    # ... and workspaces
+    workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
+    workspace.write_text(AN_WORKSPACE, encoding="utf-8")
+
     forced_status = script_runner.run(
         [
             "jupyter",
@@ -162,6 +172,8 @@ def test_cli_any_hook(  # noqa: PLR0915
             str(readme),
             "--contents",
             str(more),
+            "--workspaces",
+            str(workspace),
         ],
         cwd=str(an_empty_lite_dir),
     )
@@ -194,6 +206,10 @@ def test_cli_any_hook(  # noqa: PLR0915
 
         en_pack_file = out / "api/translations/en.json"
         assert en_pack_file.exists()
+
+        # workspace
+        workspace_all = out / "api/workspaces/all.json"
+        assert workspace_all.exists()
 
     assert forced_status.success
 
@@ -251,3 +267,21 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert status.success
 
     assert len(norm_files) == len(rebuild_files), "expected the same files"
+
+
+def test_check_bad_workspace(an_empty_lite_dir, script_runner):
+    workspace = an_empty_lite_dir / "bad/default.jupyterlab-workspace"
+    workspace.parent.mkdir()
+    workspace.write_text("{}", encoding="utf-8")
+    ws_args = "--workspaces", "bad"
+
+    args = "jupyter", "lite"
+    status = script_runner.run(*args, "build", *ws_args, cwd=str(an_empty_lite_dir))
+
+    assert status.success
+
+    status = script_runner.run(*args, "check", *ws_args, cwd=str(an_empty_lite_dir))
+
+    assert not status.success, "should have caught bad workspace"
+    assert "missing `data`" in status.stdout
+    assert "missing `metadata`" in status.stdout
