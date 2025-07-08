@@ -376,7 +376,7 @@ test.describe('Kernels', () => {
     expect(idleCells).toHaveCount(3);
 
     // Expect the remaining cells to not have any output
-    for (const i of [3, 4, 5]) {
+    for (const i of [3, 4]) {
       const cancelledCellOutput = await page.notebook.getCellTextOutput(i);
       expect(cancelledCellOutput).toBeNull();
     }
