@@ -155,7 +155,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
                     execution_count: 0,
                   },
                   metadata: {
-                    casuse: 'interrupt',
+                    cause: 'interrupt',
                   },
                 }),
               );
@@ -260,7 +260,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
         const executeReplyMsg = msg as KernelMessage.IExecuteReplyMsg;
         if (
           executeReplyMsg.content.status === 'error' &&
-          executeReplyMsg.metadata.casuse !== 'interrupt'
+          executeReplyMsg.metadata.cause !== 'interrupt'
         ) {
           this._cancelReason.set(mutex, 'error');
           mutex.cancel();
