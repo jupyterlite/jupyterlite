@@ -378,7 +378,7 @@ test.describe('Kernels', () => {
     // Expect the remaining cells to not have any output
     for (const i of [3, 4, 5]) {
       const cancelledCellOutput = await page.notebook.getCellTextOutput(i);
-      expect(cancelledCellOutput![0]).toBe('');
+      expect(cancelledCellOutput).toBeNull();
     }
   });
 });
