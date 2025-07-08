@@ -354,17 +354,22 @@ test.describe('Kernels', () => {
     await page.menu.clickMenuItem('Kernel>Interrupt Kernel');
 
     // Wait for the interruption error to show up
+    const errorMessage = 'Kernel Interrupt: Interrupted';
     const interruptionError = page.locator(
       '.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]',
     );
     await interruptionError.waitFor();
 
     // Expect text explaining the error
-    expect(interruptionError).toHaveText('Kernel Interrupt: Interrupted');
+    expect(interruptionError).toHaveText(errorMessage);
 
     // Expect the second cell to have produced an output
-    const output = await page.notebook.getCellTextOutput(2);
+    const output = await page.notebook.getCellTextOutput(1);
     expect(output![0]).toBe('2');
+
+    // Expect the error to show up on the third cell
+    const error = await page.notebook.getCellTextOutput(2);
+    expect(error![0]).toBe(errorMessage);
 
     // Expect all remaining cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
