@@ -86,6 +86,11 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "workspacesApiUrl": {
+          "description": "path to workspaces",
+          "default": "./api/workspaces",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
           "default": "./build",
