@@ -341,6 +341,9 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
 
+    // Wait for kernel to be ready
+    await kernel.ready;
+
     // Cancel execution of following cells
     const mutex = this._mutexMap.get(kernelId);
     if (!mutex) {
