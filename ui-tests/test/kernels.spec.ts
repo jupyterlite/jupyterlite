@@ -381,6 +381,40 @@ test.describe('Kernels', () => {
       expect(cancelledCellOutput).toBeNull();
     }
   });
+
+  test('Interrupt stops execution of restarted kernel', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    const notebook = 'runall-interrupt.ipynb';
+
+    await page.goto('lab/index.html');
+    await page.notebook.open(notebook);
+
+    // Execute "Restart Kernel and Run All Cells..."
+    await page.menu.clickMenuItem('Kernel>Restart Kernel and Run All Cells…');
+    await page.getByRole('button', { name: 'Confirm Kernel Restart' }).click();
+
+    // Interrupt the kernel before the first cell executed
+    await page.menu.clickMenuItem('Kernel>Interrupt Kernel');
+
+    // Wait for the execution of the first cell to complete
+    await page.locator('.jp-InputArea-prompt >> text="[1]:"').waitFor();
+
+    // Wait for the interruption error to show up
+    const errorMessage = 'Kernel Interrupt: Interrupted';
+    const interruptionError = page.locator(
+      '.jp-OutputArea-output[data-mime-type="application/vnd.jupyter.stderr"]',
+    );
+    await interruptionError.waitFor();
+
+    // Expect text explaining the error
+    expect(interruptionError).toHaveText(errorMessage);
+
+    // Expect all remaining cells to have cleared execution status
+    const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
+    expect(idleCells).toHaveCount(4);
+  });
 });
 
 test.describe('Kernel status and logs', () => {
