@@ -398,9 +398,6 @@ test.describe('Kernels', () => {
     // Interrupt the kernel before the first cell executed
     await page.menu.clickMenuItem('Kernel>Interrupt Kernel');
 
-    // Wait for the execution of the first cell to complete
-    await page.locator('.jp-InputArea-prompt >> text="[1]:"').waitFor();
-
     // Wait for the interruption error to show up
     const errorMessage = 'Kernel Interrupt: Interrupted';
     const interruptionError = page.locator(
@@ -411,9 +408,9 @@ test.describe('Kernels', () => {
     // Expect text explaining the error
     expect(interruptionError).toHaveText(errorMessage);
 
-    // Expect all remaining cells to have cleared execution status
+    // Expect all cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
-    expect(idleCells).toHaveCount(4);
+    expect(idleCells).toHaveCount(5);
   });
 });
 
