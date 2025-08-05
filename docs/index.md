@@ -6,7 +6,7 @@
     </label>
   </li>
   <li>
-    <a href="./_static/lab/index.html?path=intro.ipynb" target="_blank" title="try JupyterLab, a multi-document app">
+    <a href="./_static/lab/index.html" target="_blank" title="try JupyterLab, a multi-document app">
       <i class="fa-solid fa-flask"></i>
       JupyterLab
     </a>

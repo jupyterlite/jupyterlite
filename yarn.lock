@@ -4255,6 +4255,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/workspaces-extension@npm:~4.5.0-alpha.1":
+  version: 4.5.0-alpha.1
+  resolution: "@jupyterlab/workspaces-extension@npm:4.5.0-alpha.1"
+  dependencies:
+    "@jupyterlab/application": ^4.5.0-alpha.1
+    "@jupyterlab/apputils": ^4.6.0-alpha.1
+    "@jupyterlab/coreutils": ^6.5.0-alpha.1
+    "@jupyterlab/filebrowser": ^4.5.0-alpha.1
+    "@jupyterlab/running": ^4.5.0-alpha.1
+    "@jupyterlab/services": ^7.5.0-alpha.1
+    "@jupyterlab/settingregistry": ^4.5.0-alpha.1
+    "@jupyterlab/statedb": ^4.5.0-alpha.1
+    "@jupyterlab/translation": ^4.5.0-alpha.1
+    "@jupyterlab/ui-components": ^4.5.0-alpha.1
+    "@jupyterlab/workspaces": ^4.5.0-alpha.1
+    react: ^18.2.0
+  checksum: 2df7cf9eba620597ec7c85a13d8dc99f6316d5db0cb1233cd4da9a607263f593b2ddd8de53b00b52bf5a29bb0e038d30e859f38b12e57a383a446b03d3066927
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/workspaces@npm:^4.5.0-alpha.1":
   version: 4.5.0-alpha.1
   resolution: "@jupyterlab/workspaces@npm:4.5.0-alpha.1"
@@ -4448,6 +4468,7 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.5.0-alpha.1
     "@jupyterlab/ui-components-extension": ~4.5.0-alpha.1
     "@jupyterlab/vega5-extension": ~4.5.0-alpha.1
+    "@jupyterlab/workspaces-extension": ~4.5.0-alpha.1
     "@jupyterlite/application-extension": ^0.7.0-alpha.0
     "@jupyterlite/apputils-extension": ^0.7.0-alpha.0
     "@jupyterlite/iframe-extension": ^0.7.0-alpha.0
@@ -4717,6 +4738,7 @@ __metadata:
     "@jupyterlab/pluginmanager": ~4.5.0-alpha.1
     "@jupyterlab/translation": ~4.5.0-alpha.1
     "@jupyterlab/ui-components": ~4.5.0-alpha.1
+    "@jupyterlite/application": ^0.7.0-alpha.0
     "@jupyterlite/apputils": ^0.7.0-alpha.0
     rimraf: ~5.0.1
     typescript: ~5.5.4
@@ -4732,6 +4754,7 @@ __metadata:
     "@jupyterlab/coreutils": ~6.5.0-alpha.1
     "@jupyterlab/statedb": ~4.5.0-alpha.1
     "@jupyterlab/translation": ~4.5.0-alpha.1
+    "@jupyterlite/application": ^0.7.0-alpha.0
     "@jupyterlite/types": ^0.7.0-alpha.0
     rimraf: ~5.0.1
     typescript: ~5.5.4

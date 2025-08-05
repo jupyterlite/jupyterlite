@@ -25,6 +25,8 @@ configure/rtc
 configure/config_files
 configure/interface_switcher
 configure/loading_indicator
+configure/urls
+configure/workspaces
 ```
 
 ## Contents
