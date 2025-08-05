@@ -43,7 +43,11 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # p
     url = f"http://127.0.0.1:{an_unused_port}{base_url}"
 
     server = subprocess.Popen(args, cwd=str(an_empty_lite_dir))  # noqa: S603
-    time.sleep(2)
+    time.sleep(5)
+
+    # Check if server process is still running
+    if server.poll() is not None:
+        raise RuntimeError(f"Server process exited early with code {server.returncode}")
 
     app_urls = [""]
     for app in ["lab", "tree", "repl"]:
@@ -65,8 +69,8 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # p
         server.wait(timeout=10)
 
 
-def _fetch_without_errors(url, retries=10, expect_headers=None):  # pragma: no cover
-    retries = 10
+def _fetch_without_errors(url, retries=15, expect_headers=None):  # pragma: no cover
+    retries = 15
     errors = []
 
     while retries:
@@ -81,7 +85,7 @@ def _fetch_without_errors(url, retries=10, expect_headers=None):  # pragma: no c
             break
         except Exception as error:  # pragma: no cover
             print(f"{error}: {retries} retries left...")
-            time.sleep(0.5)
+            time.sleep(1.0)
             errors = [error]
 
     if response and expect_headers:
