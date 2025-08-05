@@ -94,6 +94,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       }
 
       this._clients.set(clientId, socket);
+      this._mutexMap.set(kernelId, mutex);
       this._kernelClients.get(kernelId)?.add(clientId);
 
       const processMsg = async (msg: KernelMessage.IMessage) => {
@@ -107,7 +108,69 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
             error instanceof Error &&
             error.message.includes('request for lock canceled')
           ) {
-            // expected to throw when mutex.cancel() is called below
+            // expected to throw when mutex.cancel() is called below on cell execution error or on interrupt
+            const cancelReason = this._cancelReason.get(mutex);
+            if (
+              (cancelReason === 'interrupt' ||
+                cancelReason === 'interrupt-subsequent') &&
+              msg.header.msg_type === 'execute_request'
+            ) {
+              if (cancelReason === 'interrupt') {
+                // Change cancel reason so that only one cell includes the error.
+                // Needs to go before await for mutex.
+                this._cancelReason.set(mutex, 'interrupt-subsequent');
+              }
+              await mutex.waitForUnlock();
+              // Send interrupt error to all clients
+              const content: KernelMessage.IReplyErrorContent = {
+                status: 'error',
+                ename: 'Kernel Interrupt',
+                evalue: 'Interrupted',
+                traceback: [],
+              };
+              const sendMessage = this._kernelSends.get(kernelId);
+              if (sendMessage === undefined) {
+                console.warn('Did not find kernel send method');
+                return;
+              }
+              if (cancelReason === 'interrupt') {
+                sendMessage(
+                  KernelMessage.createMessage<KernelMessage.IErrorMsg>({
+                    channel: 'iopub',
+                    session: clientId,
+                    parentHeader: msg.header,
+                    msgType: 'error',
+                    content,
+                  }),
+                );
+              }
+              sendMessage(
+                KernelMessage.createMessage<KernelMessage.IExecuteReplyMsg>({
+                  channel: 'shell',
+                  session: clientId,
+                  parentHeader: (msg as KernelMessage.IExecuteRequestMsg).header,
+                  msgType: 'execute_reply',
+                  content: {
+                    ...content,
+                    execution_count: 0,
+                  },
+                  metadata: {
+                    cause: 'interrupt',
+                  },
+                }),
+              );
+              sendMessage(
+                KernelMessage.createMessage<KernelMessage.IStatusMsg>({
+                  channel: 'iopub',
+                  session: clientId,
+                  parentHeader: msg.header,
+                  msgType: 'status',
+                  content: {
+                    execution_state: 'idle',
+                  },
+                }),
+              );
+            }
           } else {
             throw error;
           }
@@ -195,7 +258,11 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       // to match the JupyterLab behavior
       if (msg.header.msg_type === 'execute_reply') {
         const executeReplyMsg = msg as KernelMessage.IExecuteReplyMsg;
-        if (executeReplyMsg.content.status === 'error') {
+        if (
+          executeReplyMsg.content.status === 'error' &&
+          executeReplyMsg.metadata.cause !== 'interrupt'
+        ) {
+          this._cancelReason.set(mutex, 'error');
           mutex.cancel();
         }
       }
@@ -240,6 +307,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       wsServer.close();
       this._kernels.delete(kernelId);
       this._kernelClients.delete(kernelId);
+      this._mutexMap.delete(kernelId);
       this._kernelSends.delete(kernelId);
     });
 
@@ -268,7 +336,22 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
    * Interrupt a kernel.
    */
   async interrupt(kernelId: string): Promise<void> {
-    // no-op
+    const kernel = this._kernels.get(kernelId);
+    if (!kernel) {
+      throw Error(`Kernel ${kernelId} does not exist`);
+    }
+
+    // Wait for kernel to be ready
+    await kernel.ready;
+
+    // Cancel execution of following cells
+    const mutex = this._mutexMap.get(kernelId);
+    if (!mutex) {
+      console.warn('No mutex to cancel');
+      return;
+    }
+    this._cancelReason.set(mutex, 'interrupt');
+    mutex.cancel();
   }
 
   /**
@@ -341,12 +424,17 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
   private _kernels = new ObservableMap<IKernel>();
   private _clients = new ObservableMap<WebSocketClient>();
+  private _mutexMap = new Map<string, Mutex>();
   private _kernelClients = new ObservableMap<Set<string>>();
   private _kernelspecs: IKernelSpecs;
   private _serverSettings: ServerConnection.ISettings;
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
   private _stdinPromise?: PromiseDelegate<KernelMessage.IInputReplyMsg>;
   private _kernelSends = new ObservableMap<(msg: KernelMessage.IMessage) => void>();
+  private _cancelReason = new WeakMap<
+    Mutex,
+    'interrupt' | 'interrupt-subsequent' | 'error'
+  >();
 }
 
 /**
