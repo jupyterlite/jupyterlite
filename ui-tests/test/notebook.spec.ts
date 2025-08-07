@@ -116,7 +116,7 @@ test.describe('Notebook favicons', () => {
 
   // this test can sometimes take longer to run as it uses the Pyodide kernel
   // TODO: remove
-  test.setTimeout(120000);
+  test.setTimeout(180000);
 
   // TODO: rewrite with page.notebook when fixed upstream in Galata
   // and usable in Jupyter Notebook without active tabs
