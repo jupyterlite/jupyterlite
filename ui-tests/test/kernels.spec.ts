@@ -49,7 +49,7 @@ test.describe('Kernels', () => {
   test('Kernel shutdown', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
     // TODO: remove
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     await page.goto('lab/index.html');
     const name = await page.notebook.createNew();
@@ -146,7 +146,7 @@ test.describe('Kernels', () => {
 
   test('Stdin using pyodide kernel', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const notebook = 'stdin.ipynb';
 
@@ -207,7 +207,7 @@ test.describe('Kernels', () => {
     page,
   }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const notebook = 'runall-error.ipynb';
 
@@ -303,7 +303,7 @@ test.describe('Kernels', () => {
 
   test('Manual run after error works correctly', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const notebook = 'runall-error.ipynb';
 
@@ -332,7 +332,7 @@ test.describe('Kernels', () => {
 
   test('Interrupt stops execution of following cells', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const notebook = 'runall-interrupt.ipynb';
 
@@ -384,7 +384,7 @@ test.describe('Kernels', () => {
 
   test('Interrupt stops execution of restarted kernel', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     const notebook = 'runall-interrupt.ipynb';
 
@@ -419,7 +419,7 @@ test.describe('Kernel status and logs', () => {
     waitForApplication: notebooksWaitForApplication,
   });
 
-  test.setTimeout(120000);
+  test.setTimeout(180000);
 
   test('Clicking on kernel status indicator opens the log console', async ({
     page,
