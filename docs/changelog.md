@@ -114,6 +114,23 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.6.4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.3...01ea6be4407fbe21a1637f0cde6c64d77c54fd24))
+
+### Maintenance and upkeep improvements
+
+- [0.6.x] Update to JupyterLab 4.4.5 and Notebook 7.4.5 [#1693](https://github.com/jupyterlite/jupyterlite/pull/1693) ([@jtpio](https://github.com/jtpio))
+- Increase timeouts and retries in tests [#1691](https://github.com/jupyterlite/jupyterlite/pull/1691) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-30&to=2025-08-08&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-30..2025-08-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-30..2025-08-08&type=Issues) | [@meeseeksmachine](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ameeseeksmachine+updated%3A2025-06-30..2025-08-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.6.3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.2...1e6a03f3048e2cf329d55b7bf26812b3a73f7d02))
@@ -127,8 +144,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-16&to=2025-06-30&type=c))
 
 [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-16..2025-06-30&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.6.2
 
