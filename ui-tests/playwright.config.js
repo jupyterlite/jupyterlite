@@ -3,6 +3,7 @@ const baseConfig = require('@jupyterlab/galata/lib/playwright-config');
 module.exports = {
   ...baseConfig,
   retries: 1,
+  timeout: process.env.BROWSER === 'firefox' ? 120000 : 60000,
   use: {
     acceptDownloads: true,
     appPath: '',
