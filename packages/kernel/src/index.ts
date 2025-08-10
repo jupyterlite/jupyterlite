@@ -6,3 +6,5 @@ export * from './kernelspecs';
 export * from './kernelspecclient';
 export * from './client';
 export * from './tokens';
+export * from './bridge';
+export * from './console-api';
