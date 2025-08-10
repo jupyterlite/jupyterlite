@@ -83,28 +83,40 @@ class JupyterConsoleAPI implements IJupyterConsoleAPI {
       const results = await this.exec(code);
       console.log('Execution results:', results);
       
-      // Display results in a formatted way
-      results.forEach((result: any, index: number) => {
-        console.group(`Output ${index + 1}:`);
-        
-        if (result.output_type === 'stream') {
-          console.log(`[${result.name}]`, result.text);
-        } else if (result.output_type === 'execute_result' || result.output_type === 'display_data') {
-          if (result.data) {
-            if (result.data['text/plain']) {
-              console.log('Result:', result.data['text/plain']);
+      // Check if results has outputs array
+      const outputs = results.outputs || [];
+      
+      if (outputs.length > 0) {
+        // Display results in a formatted way
+        outputs.forEach((result: any, index: number) => {
+          console.group(`Output ${index + 1}:`);
+          
+          if (result.output_type === 'stream') {
+            console.log(`[${result.name}]`, result.text);
+          } else if (result.output_type === 'execute_result' || result.output_type === 'display_data') {
+            if (result.data) {
+              if (result.data['text/plain']) {
+                console.log('Result:', result.data['text/plain']);
+              }
+              if (result.data['text/html']) {
+                console.log('HTML:', result.data['text/html']);
+              }
+              if (result.data['image/png']) {
+                console.log('Image (base64):', result.data['image/png'].substring(0, 50) + '...');
+              }
             }
-            if (result.data['text/html']) {
-              console.log('HTML:', result.data['text/html']);
-            }
-            if (result.data['image/png']) {
-              console.log('Image (base64):', result.data['image/png'].substring(0, 50) + '...');
+          } else if (result.output_type === 'error') {
+            console.error('Error:', result.ename, result.evalue);
+            if (result.traceback) {
+              console.error('Traceback:', result.traceback.join('\n'));
             }
           }
-        }
-        
-        console.groupEnd();
-      });
+          
+          console.groupEnd();
+        });
+      } else {
+        console.log('Code executed successfully (no output)');
+      }
     } catch (error) {
       console.error('Execution failed:', error);
     }
