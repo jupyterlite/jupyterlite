@@ -34,21 +34,6 @@ export interface IJupyterConsoleAPI {
   run(code: string): Promise<void>;
   
   /**
-   * Import a library in the active kernel
-   */
-  importLib(library: string, alias?: string): Promise<any>;
-  
-  /**
-   * Get variables from kernel namespace
-   */
-  getVar(varName: string): Promise<any>;
-  
-  /**
-   * Set a variable in kernel namespace
-   */
-  setVar(varName: string, value: any): Promise<any>;
-  
-  /**
    * Install a package via micropip
    */
   install(packageName: string): Promise<any>;
@@ -125,29 +110,7 @@ class JupyterConsoleAPI implements IJupyterConsoleAPI {
     }
   }
 
-  async importLib(library: string, alias?: string): Promise<any> {
-    const importCode = alias 
-      ? `import ${library} as ${alias}` 
-      : `import ${library}`;
-    return this.exec(importCode);
-  }
 
-  async getVar(varName: string): Promise<any> {
-    const results = await this.exec(varName);
-    return results.length > 0 ? results[0] : null;
-  }
-
-  async setVar(varName: string, value: any): Promise<any> {
-    let code: string;
-    if (typeof value === 'string') {
-      code = `${varName} = "${value}"`;
-    } else if (typeof value === 'number' || typeof value === 'boolean') {
-      code = `${varName} = ${value}`;
-    } else {
-      code = `${varName} = ${JSON.stringify(value)}`;
-    }
-    return this.exec(code);
-  }
 
   async install(packageName: string): Promise<any> {
     const installCode = `
@@ -164,65 +127,6 @@ print(f"Successfully installed {packageName}")
  */
 class JupyterConsoleAPIExtended extends JupyterConsoleAPI {
   /**
-   * Get kernel memory usage and stats
-   */
-  async stats(): Promise<any> {
-    const code = `
-import sys
-import os
-import psutil
-
-stats = {
-    'python_version': sys.version,
-    'platform': sys.platform,
-    'memory_usage': sys.getsizeof(globals()),
-    'modules_loaded': len(sys.modules),
-    'current_directory': os.getcwd() if hasattr(os, 'getcwd') else 'N/A'
-}
-stats
-`;
-    return this.exec(code);
-  }
-
-  /**
-   * List all variables in the kernel namespace
-   */
-  async listVars(): Promise<any> {
-    const code = `
-import sys
-vars_info = {}
-for name, obj in globals().items():
-    if not name.startswith('_'):
-        vars_info[name] = {
-            'type': type(obj).__name__,
-            'size': sys.getsizeof(obj),
-            'value_preview': str(obj)[:100] + ('...' if len(str(obj)) > 100 else '')
-        }
-vars_info
-`;
-    return this.exec(code);
-  }
-
-  /**
-   * Clear all user-defined variables
-   */
-  async clearVars(): Promise<any> {
-    const code = `
-# Get list of user variables to clear
-user_vars = [name for name in globals() if not name.startswith('_') and name not in ['In', 'Out', 'get_ipython', 'quit', 'exit']]
-cleared_count = len(user_vars)
-
-# Clear them
-for var in user_vars:
-    del globals()[var]
-    
-print(f"Cleared {cleared_count} variables")
-cleared_count
-`;
-    return this.exec(code);
-  }
-
-  /**
    * Execute a file from the JupyterLite filesystem
    */
   async execFile(filePath: string): Promise<any> {
@@ -231,34 +135,6 @@ with open("${filePath}", "r") as f:
     exec(f.read())
 print(f"Executed file: ${filePath}")
 `;
-    return this.exec(code);
-  }
-
-  /**
-   * Create a simple plot and display it
-   */
-  async plot(data: number[], title = 'Plot'): Promise<any> {
-    const code = `
-import matplotlib.pyplot as plt
-import numpy as np
-
-data = ${JSON.stringify(data)}
-plt.figure(figsize=(8, 6))
-plt.plot(data)
-plt.title("${title}")
-plt.xlabel("Index")
-plt.ylabel("Value")
-plt.grid(True)
-plt.show()
-`;
-    return this.exec(code);
-  }
-
-  /**
-   * Get help information for a Python object
-   */
-  async help(objectName: string): Promise<any> {
-    const code = `help(${objectName})`;
     return this.exec(code);
   }
 
@@ -408,7 +284,6 @@ export function initializeConsoleAPI(): void {
   // Shorthand aliases for convenience
   (window as any).jexec = jupyter.exec.bind(jupyter);
   (window as any).jrun = jupyter.run.bind(jupyter);
-  (window as any).jkernels = jupyter.kernels.bind(jupyter);
   
   console.log('JupyterLite Console API initialized!');
   console.log('Available commands:');
@@ -418,13 +293,8 @@ export function initializeConsoleAPI(): void {
   console.log('  jupyter.runInFile("file.ipynb", code) - Execute in file with display');
   console.log('  jupyter.execInPython(code) - Execute in first Python kernel');
   console.log('  jupyter.listOpenFiles() - List all open files with kernels');
-  console.log('  jupyter.sessions() - List kernel sessions');
   console.log('  jupyter.install(pkg) - Install Python package');
-  console.log('  jupyter.setVar(name, value) - Set variable');
-  console.log('  jupyter.getVar(name) - Get variable');
-  console.log('  jupyter.listVars() - Show all variables');
-  console.log('  jupyter.clearVars(true) - Clear all variables');
-  console.log('  jupyter.plot([1,2,3,4]) - Create simple plots');
+  console.log('  jupyter.execFile(path) - Execute Python file');
   console.log('');
   console.log('Shortcuts: jexec(), jrun()');
 }

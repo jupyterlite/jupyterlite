@@ -79,22 +79,21 @@ jupyter.sessions()
 jupyter.info()
 ```
 
-## Variable Management
+## Data Transfer
+
+For data transfer between JavaScript and Python, use direct execution:
 
 ```javascript
-// Set variables from JavaScript
-await jupyter.setVar("js_data", [1, 2, 3, 4, 5])
-await jupyter.setVar("config", {name: "experiment", version: 1.2})
+// Set variables in Python from JavaScript
+const data = [1, 2, 3, 4, 5];
+await jupyter.exec(`js_data = ${JSON.stringify(data)}`);
 
-// Get variables to JavaScript
-const result = await jupyter.getVar("my_result")
-console.log(result)
+// Get variables from Python to JavaScript
+const result = await jupyter.exec("my_result");  // Returns the variable value
 
-// Inspect all variables
-await jupyter.listVars()
-
-// Clear all user variables (requires confirmation)
-await jupyter.clearVars(true)
+// Set complex objects
+const config = {name: "experiment", version: 1.2};
+await jupyter.exec(`config = ${JSON.stringify(config)}`);
 ```
 
 ## Package Management
@@ -104,9 +103,9 @@ await jupyter.clearVars(true)
 await jupyter.install("pandas")
 await jupyter.install("matplotlib")
 
-// Import with alias
-await jupyter.importLib("pandas", "pd")
-await jupyter.importLib("numpy", "np")
+// Import libraries (just use exec)
+await jupyter.exec("import pandas as pd")
+await jupyter.exec("import numpy as np")
 
 // Use installed packages
 await jupyter.run(`
@@ -351,15 +350,37 @@ streamer.startStreaming("LiveDashboard.ipynb");
 ## Utility Functions
 
 ```javascript
-// Quick plotting
-await jupyter.plot([1, 4, 2, 8, 5, 7], "Sample Data")
+// Quick plotting using exec
+await jupyter.run(`
+import matplotlib.pyplot as plt
+data = [1, 4, 2, 8, 5, 7]
+plt.figure(figsize=(10, 6))
+plt.plot(data, marker='o')
+plt.title("Sample Data")
+plt.xlabel("Index")
+plt.ylabel("Value")
+plt.grid(True)
+plt.show()
+`)
 
-// Get help
-await jupyter.help("pandas.DataFrame")
+// Get help using exec
+await jupyter.exec("help(pandas.DataFrame)")
+
+// List all variables in current namespace
+await jupyter.exec("list(globals().keys())")
+
+// Delete a variable
+await jupyter.exec("del my_variable")
+
+// Check system info
+await jupyter.exec("import sys; print(sys.version_info)")
 
 // Create shortcuts
 window.py = jupyter.execInFile.bind(jupyter);
 await py("MyNotebook.ipynb", "print('Hello World!')")
+
+// Quick variable inspection
+await jupyter.exec("print(f'Type: {type(my_var)}, Value: {my_var}')")
 ```
 
 ## Error Handling
@@ -388,7 +409,7 @@ async function safeExecute(fileName, code) {
 1. **File Discovery**: Always use `jupyter.listOpenFiles()` to see available notebooks
 2. **Error Handling**: Wrap executions in try-catch blocks
 3. **Async Operations**: Always use `await` with execution methods
-4. **Data Transfer**: Use `setVar()/getVar()` for large data objects
+4. **Data Transfer**: Use `jupyter.exec()` for data transfer between JavaScript and Python
 5. **Batch Operations**: Group related code in single execution calls for better performance
 
 ## Shortcuts
@@ -408,13 +429,16 @@ jrun("2 + 2")                     // Execute with display
 - `jupyter.runInFile(fileName, code)` - **NEW**: Execute in file with display
 - `jupyter.execInPython(code)` - Execute in first Python kernel
 - `jupyter.listOpenFiles()` - List available files and kernels
-- `jupyter.setVar(name, value)` / `jupyter.getVar(name)` - Variable management
 - `jupyter.install(package)` - Package installation
+- `jupyter.execFile(path)` - Execute Python file from filesystem
 
 ### **Removed Methods** (for simplicity)
-- Pattern matching execution (too complex)
-- Broadcast execution to all kernels (potentially dangerous)
-- Raw message sending (rarely needed)
+- `setVar()` / `getVar()` - Use `jupyter.exec()` for data transfer instead  
+- `listVars()` / `clearVars()` - Use `jupyter.exec("globals()")` or `jupyter.exec("del variable_name")`
+- `stats()` - Use `jupyter.exec("import sys; print(sys.version_info)")`
+- `plot()` - Use `jupyter.exec()` with matplotlib code directly
+- `help()` - Use `jupyter.exec("help(function_name)")`
+- `importLib()` - Use `jupyter.exec("import module_name")`
 
 ## How It Works
 
@@ -427,18 +451,45 @@ The kernel bridge bypasses Web Worker isolation by:
 
 ## Setup Instructions
 
+The kernel bridge is automatically initialized when JupyterLite loads. To build and run:
+
 ```bash
-# Build with your modifications
+# Build with your modifications  
 jlpm build
+
+# Serve the development version
 doit dev && doit serve:docs:app
 ```
 
-Once running, you'll see in the console:
+Once running, open the browser console (F12) and you'll see:
 ```
 JupyterLab application exposed globally
 Initializing JupyterLite Kernel Bridge...
+JupyterLite Console API initialized!
+Available commands:
+  jupyter.exec(code) - Execute Python code in active kernel
+  jupyter.run(code) - Execute and display results  
+  jupyter.execInFile("file.ipynb", code) - Execute in specific file
+  jupyter.runInFile("file.ipynb", code) - Execute in file with display
+  jupyter.execInPython(code) - Execute in first Python kernel
+  jupyter.listOpenFiles() - List all open files with kernels
+  jupyter.install(pkg) - Install Python package
+  jupyter.execFile(path) - Execute Python file
+
+Shortcuts: jexec(), jrun()
 ✓ Kernel Bridge and Console API ready
 ```
+
+## Getting Started
+
+1. **Open JupyterLite** in your browser
+2. **Create or open a notebook** (e.g., `Project.ipynb`)  
+3. **Open browser console** (F12 → Console tab)
+4. **Start executing**:
+   ```javascript
+   jupyter.listOpenFiles()  // See available files
+   await jupyter.execInFile("Project.ipynb", "print('Hello from console!')")
+   ```
 
 ## Key Benefits
 
@@ -447,6 +498,6 @@ Initializing JupyterLite Kernel Bridge...
 ✅ **External Control**: Browser console and JavaScript can control Pyodide kernels  
 ✅ **Safe Implementation**: Uses official JupyterLab APIs, won't break with updates  
 ✅ **Rich Output**: Supports all Jupyter output types (plots, HTML, errors)  
-✅ **Variable Sharing**: Transfer data between JavaScript and Python seamlessly  
+✅ **Simple & Focused**: Clean API with essential methods only  
 
 This creates a powerful bridge that enables external JavaScript control of JupyterLite kernels while maintaining the security benefits of Web Worker isolation!
