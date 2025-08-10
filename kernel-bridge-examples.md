@@ -1,310 +1,452 @@
-# JupyterLite Kernel Bridge - External Access Examples
+# JupyterLite Kernel Bridge - Complete Guide
 
-With the kernel bridge modifications, you can now access and control running Pyodide kernels from outside the Web Worker environment.
+The kernel bridge allows you to access and control running Pyodide kernels from the browser console or external JavaScript, bypassing Web Worker isolation while maintaining security.
 
-## Browser Console Access
+## Quick Start
 
-Once JupyterLite is running, open the browser developer console and try these commands:
-
-### Basic Code Execution
+Open JupyterLite, create/open a notebook, then open the browser developer console (F12):
 
 ```javascript
-// Execute Python code in the active kernel
+// Basic execution in active kernel
 await jupyter.exec("print('Hello from browser console!')")
+await jupyter.run("2 + 2")  // Shows formatted output
 
-// Execute and display results
-await jupyter.run("2 + 2")
+// Execute in specific notebook file
+await jupyter.runInFile("Project.ipynb", "print('Hello from Project notebook!')")
+```
 
-// Execute with variables
+## Core API Methods
+
+### 1. **Active Kernel Execution**
+
+```javascript
+// Execute code in the currently active notebook/console
 await jupyter.exec("x = 42; print(f'The answer is {x}')")
+
+// Execute with pretty-printed results
+await jupyter.run(`
+import numpy as np
+arr = np.array([1, 2, 3, 4, 5])
+print(f"Array: {arr}")
+print(f"Sum: {arr.sum()}")
+print(f"Mean: {arr.mean()}")
+`)
 ```
 
-### Kernel Management
+### 2. **File-Based Execution** (New Feature)
+
+The main enhancement - execute code in specific notebooks by filename:
 
 ```javascript
-// List all running kernels
-jupyter.kernels()
+// Execute in a specific notebook
+await jupyter.execInFile("DataAnalysis.ipynb", `
+import pandas as pd
+df = pd.read_csv('data.csv')
+print(df.head())
+`)
 
-// Get active kernel info
-jupyter.activeKernel()
+// Execute with formatted display
+await jupyter.runInFile("Visualization.ipynb", `
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+plt.plot([1, 2, 3, 4, 5], [2, 4, 1, 8, 3])
+plt.title('Sample Plot')
+plt.show()
+`)
 
-// Execute in a specific kernel by ID
-await jupyter.execIn("kernel-id-here", "print('Hello from specific kernel')")
+// Works with any file type that has a running kernel
+await jupyter.execInFile("script.py", "print('Hello from Python script!')")
 ```
 
-### Variable Management
+### 3. **Python Kernel Fallback**
 
 ```javascript
-// Set a variable from JavaScript
-await jupyter.setVar("my_data", [1, 2, 3, 4, 5])
+// Execute in first available Python kernel (when no specific file target)
+await jupyter.execInPython("import sys; print(sys.version)")
+```
 
-// Get a variable value
-await jupyter.getVar("my_data")
+### 4. **Discovery and Management**
 
-// List all variables in kernel
+```javascript
+// List all open files and their kernels
+jupyter.listOpenFiles()
+// Returns: [{ fileName: "Project.ipynb", fullPath: "/Project.ipynb", kernelId: "abc123", kernelName: "python3" }]
+
+// List kernel sessions
+jupyter.sessions()
+
+// Get kernel info
+jupyter.info()
+```
+
+## Variable Management
+
+```javascript
+// Set variables from JavaScript
+await jupyter.setVar("js_data", [1, 2, 3, 4, 5])
+await jupyter.setVar("config", {name: "experiment", version: 1.2})
+
+// Get variables to JavaScript
+const result = await jupyter.getVar("my_result")
+console.log(result)
+
+// Inspect all variables
 await jupyter.listVars()
 
-// Clear all variables
-await jupyter.clearVars()
+// Clear all user variables (requires confirmation)
+await jupyter.clearVars(true)
 ```
 
-### Package Management
+## Package Management
 
 ```javascript
-// Install a Python package
-await jupyter.install("numpy")
+// Install packages
+await jupyter.install("pandas")
+await jupyter.install("matplotlib")
 
-// Import a library
+// Import with alias
+await jupyter.importLib("pandas", "pd")
 await jupyter.importLib("numpy", "np")
 
-// Use the imported library
-await jupyter.exec("arr = np.array([1, 2, 3, 4]); print(arr.sum())")
+// Use installed packages
+await jupyter.run(`
+df = pd.DataFrame({'A': [1,2,3], 'B': [4,5,6]})
+print(df.describe())
+`)
 ```
 
-### Visualization
+## Multi-Notebook Workflows
+
+### **Cross-Notebook Data Sharing**
 
 ```javascript
-// Create a simple plot
-await jupyter.plot([1, 4, 2, 8, 5, 7], "My Data Plot")
+// Step 1: Load and process data in DataLoader.ipynb
+await jupyter.runInFile("DataLoader.ipynb", `
+import pandas as pd
+raw_data = pd.read_csv('sales_data.csv')
+print(f"Loaded {len(raw_data)} records")
 
-// More complex visualization
-await jupyter.exec(`
+# Clean and prepare data
+cleaned_data = raw_data.dropna()
+monthly_sales = cleaned_data.groupby('month').sum()
+print("Data processing complete")
+`)
+
+// Step 2: Analyze in Analysis.ipynb (can access variables from DataLoader)
+await jupyter.runInFile("Analysis.ipynb", `
+# Access data processed in DataLoader notebook
+correlation = cleaned_data.corr()
+print("Correlation analysis:")
+print(correlation)
+
+# Create summary stats
+summary = {
+    'total_records': len(cleaned_data),
+    'avg_sales': cleaned_data['sales'].mean(),
+    'max_month': monthly_sales.idxmax()
+}
+print(f"Summary: {summary}")
+`)
+
+// Step 3: Visualize in Plotting.ipynb
+await jupyter.runInFile("Plotting.ipynb", `
 import matplotlib.pyplot as plt
-import numpy as np
 
-x = np.linspace(0, 10, 100)
-y = np.sin(x)
+plt.figure(figsize=(12, 8))
+plt.subplot(2, 1, 1)
+monthly_sales.plot(kind='bar')
+plt.title('Monthly Sales')
 
-plt.figure(figsize=(10, 6))
-plt.plot(x, y, label='sin(x)')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title('Sine Wave')
-plt.legend()
-plt.grid(True)
+plt.subplot(2, 1, 2)
+correlation.plot(kind='heatmap')
+plt.title('Correlation Matrix')
+
+plt.tight_layout()
 plt.show()
 `)
 ```
 
-### Utility Functions
+### **Automated Workflow Example**
 
 ```javascript
-// Get kernel statistics
-await jupyter.stats()
+// Automated data science pipeline
+async function runDataPipeline() {
+    console.log("🚀 Starting data pipeline...");
+    
+    // 1. Data Loading
+    console.log("📊 Loading data...");
+    await jupyter.runInFile("01-DataLoader.ipynb", `
+        import pandas as pd
+        import numpy as np
+        
+        # Load data
+        data = pd.read_csv('experiment_data.csv')
+        print(f"✅ Loaded {len(data)} records")
+        
+        # Basic validation
+        if data.isnull().sum().sum() > 0:
+            print("⚠️ Found missing values")
+        else:
+            print("✅ Data quality check passed")
+    `);
+    
+    // 2. Feature Engineering
+    console.log("⚙️ Feature engineering...");
+    await jupyter.runInFile("02-Features.ipynb", `
+        # Create new features
+        data['feature_1'] = data['col_a'] * data['col_b']
+        data['feature_2'] = np.log(data['col_c'] + 1)
+        
+        # Scale features
+        from sklearn.preprocessing import StandardScaler
+        scaler = StandardScaler()
+        scaled_features = scaler.fit_transform(data[['feature_1', 'feature_2']])
+        
+        print("✅ Feature engineering complete")
+    `);
+    
+    // 3. Model Training
+    console.log("🤖 Training model...");
+    await jupyter.runInFile("03-Model.ipynb", `
+        from sklearn.ensemble import RandomForestClassifier
+        from sklearn.model_selection import train_test_split
+        
+        X = scaled_features
+        y = data['target']
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+        
+        model = RandomForestClassifier(n_estimators=100)
+        model.fit(X_train, y_train)
+        
+        score = model.score(X_test, y_test)
+        print(f"✅ Model trained. Accuracy: {score:.3f}")
+    `);
+    
+    // 4. Results
+    console.log("📈 Generating results...");
+    await jupyter.runInFile("04-Results.ipynb", `
+        import matplotlib.pyplot as plt
+        
+        # Plot results
+        plt.figure(figsize=(10, 6))
+        plt.bar(['Accuracy'], [score])
+        plt.title(f'Model Performance: {score:.1%}')
+        plt.show()
+        
+        print("🎉 Pipeline complete!")
+    `);
+    
+    console.log("✅ Data pipeline finished!");
+}
 
-// Get help for a Python object
-await jupyter.help("print")
-
-// Execute a notebook file
-await jupyter.execFile("my_script.py")
-```
-
-### Shortcuts
-
-```javascript
-// Quick execution shortcuts
-await jexec("print('Quick execution')")
-await jrun("3 * 7")
-jkernels() // No await needed for sync functions
-```
-
-## Programmatic Access
-
-You can also access the lower-level bridge API:
-
-```javascript
-// Access the bridge directly
-const bridge = window.jupyterKernelBridge;
-
-// Get all running kernels
-const kernels = bridge.getRunningKernels();
-console.log(kernels);
-
-// Execute with more control
-const results = await bridge.executeCode(kernelId, "import sys; sys.version");
-
-// Send raw Jupyter messages
-bridge.sendMessage(kernelId, customMessage);
-```
-
-## JupyterLab Application Access
-
-```javascript
-// Access the full JupyterLab application
-const app = window.jupyterapp;
-
-// Get current notebook widget
-const notebook = app.shell.currentWidget;
-
-// Access the session and kernel
-const session = notebook.sessionContext.session;
-const kernel = session.kernel;
+// Run the pipeline
+runDataPipeline();
 ```
 
 ## Integration Examples
 
-### 1. External Form Integration
+### **External Dashboard Integration**
 
-```html
-<button onclick="runPythonCode()">Run Analysis</button>
-
-<script>
-async function runPythonCode() {
-    const code = `
-    import pandas as pd
-    import numpy as np
+```javascript
+// HTML Dashboard that controls JupyterLite
+class DataDashboard {
+    constructor() {
+        this.initializeUI();
+        this.setupEventListeners();
+    }
     
-    # Create sample data
-    data = np.random.randn(100, 2)
-    df = pd.DataFrame(data, columns=['A', 'B'])
-    
-    # Perform analysis
-    result = df.describe()
-    print("Analysis complete!")
-    result
-    `;
-    
-    try {
-        const results = await jupyter.exec(code);
-        console.log("Analysis results:", results);
-    } catch (error) {
-        console.error("Analysis failed:", error);
+    async runAnalysis(analysisType) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = `Running ${analysisType} analysis...`;
+        
+        try {
+            switch(analysisType) {
+                case 'sales':
+                    await jupyter.runInFile("SalesAnalysis.ipynb", `
+                        sales_summary = analyze_sales_data()
+                        print(f"Total sales: ${sales_summary['total']}")
+                        create_sales_chart()
+                    `);
+                    break;
+                    
+                case 'inventory':
+                    await jupyter.runInFile("Inventory.ipynb", `
+                        inventory_status = check_inventory()
+                        print(f"Low stock items: {len(inventory_status['low_stock'])}")
+                        generate_reorder_report()
+                    `);
+                    break;
+            }
+            
+            statusDiv.textContent = `${analysisType} analysis complete!`;
+        } catch (error) {
+            statusDiv.textContent = `Error: ${error.message}`;
+        }
     }
 }
-</script>
+
+// Usage
+const dashboard = new DataDashboard();
 ```
 
-### 2. Real-time Data Injection
+### **Real-time Data Streaming**
 
 ```javascript
-// Inject real-time data into the kernel
-async function injectData(data) {
-    await jupyter.setVar("realtime_data", data);
-    await jupyter.exec(`
-        # Process the real-time data
-        import pandas as pd
-        df = pd.DataFrame(realtime_data)
-        latest_value = df.iloc[-1]['value']
-        print(f"Latest value: {latest_value}")
-        
-        # Update a plot if needed
-        plt.clf()
-        plt.plot(df['timestamp'], df['value'])
-        plt.show()
-    `);
-}
-
-// Example usage
-setInterval(async () => {
-    const data = {
-        'timestamp': Date.now(),
-        'value': Math.random() * 100
-    };
-    await injectData([data]);
-}, 5000);
-```
-
-### 3. Bi-directional Communication
-
-```javascript
-// Set up a communication channel
-await jupyter.exec(`
-# Python side - define a callback
-def send_to_js(message):
-    # This would need additional bridge setup
-    print(f"Python says: {message}")
+// Stream live data to specific notebooks
+class DataStreamer {
+    constructor() {
+        this.isStreaming = false;
+    }
     
-global_state = {"counter": 0}
-`);
-
-// JavaScript side - periodic sync
-async function syncState() {
-    const counter = await jupyter.getVar("global_state['counter']");
-    document.getElementById('counter').textContent = counter;
+    async startStreaming(targetNotebook) {
+        this.isStreaming = true;
+        
+        // Initialize streaming in target notebook
+        await jupyter.execInFile(targetNotebook, `
+            import matplotlib.pyplot as plt
+            from collections import deque
+            import numpy as np
+            
+            # Initialize data buffer
+            data_buffer = deque(maxlen=100)
+            
+            def update_plot(new_data):
+                data_buffer.extend(new_data)
+                
+                plt.clf()
+                plt.plot(list(data_buffer))
+                plt.title(f'Live Data Stream ({len(data_buffer)} points)')
+                plt.show()
+        `);
+        
+        // Start streaming data
+        while (this.isStreaming) {
+            const newData = this.generateData();
+            
+            await jupyter.execInFile(targetNotebook, `
+                new_data = ${JSON.stringify(newData)}
+                update_plot(new_data)
+                print(f"Updated with {len(new_data)} new points")
+            `);
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+    }
+    
+    generateData() {
+        return Array.from({length: 5}, () => Math.random() * 100);
+    }
+    
+    stopStreaming() {
+        this.isStreaming = false;
+    }
 }
 
-setInterval(syncState, 1000);
+// Usage
+const streamer = new DataStreamer();
+streamer.startStreaming("LiveDashboard.ipynb");
+```
+
+## Utility Functions
+
+```javascript
+// Quick plotting
+await jupyter.plot([1, 4, 2, 8, 5, 7], "Sample Data")
+
+// Get help
+await jupyter.help("pandas.DataFrame")
+
+// Create shortcuts
+window.py = jupyter.execInFile.bind(jupyter);
+await py("MyNotebook.ipynb", "print('Hello World!')")
 ```
 
 ## Error Handling
 
 ```javascript
-try {
-    await jupyter.exec("undefined_variable")
-} catch (error) {
-    console.error("Python execution error:", error);
-    // error object contains traceback and error details
+// Robust error handling
+async function safeExecute(fileName, code) {
+    try {
+        const result = await jupyter.runInFile(fileName, code);
+        console.log("✅ Execution successful");
+        return result;
+    } catch (error) {
+        if (error.message.includes("No running kernel found")) {
+            console.error("❌ File not found or no kernel running");
+            console.log("📋 Available files:", jupyter.listOpenFiles());
+        } else {
+            console.error("❌ Execution error:", error);
+        }
+        throw error;
+    }
 }
 ```
 
-## Performance Considerations
+## Best Practices
 
-- Each `jupyter.exec()` call creates a new execution request
-- Large data transfers between JS and Python may be slow
-- Use batch operations when possible
-- The Web Worker isolation still applies - shared memory is not available
+1. **File Discovery**: Always use `jupyter.listOpenFiles()` to see available notebooks
+2. **Error Handling**: Wrap executions in try-catch blocks
+3. **Async Operations**: Always use `await` with execution methods
+4. **Data Transfer**: Use `setVar()/getVar()` for large data objects
+5. **Batch Operations**: Group related code in single execution calls for better performance
 
-## Security Notes
+## Shortcuts
 
-- This bridge provides full access to the Python kernel
-- Be cautious when exposing this API in production environments
-- User input should be sanitized before execution
-- Consider implementing access controls if needed
+```javascript
+// Quick shortcuts after setup
+jexec("print('hello')")           // Execute in active kernel
+jrun("2 + 2")                     // Execute with display
+```
+
+## Streamlined API Summary
+
+### **Essential Methods**
+- `jupyter.exec(code)` - Execute in active kernel
+- `jupyter.run(code)` - Execute with pretty display  
+- `jupyter.execInFile(fileName, code)` - **NEW**: Execute in specific file
+- `jupyter.runInFile(fileName, code)` - **NEW**: Execute in file with display
+- `jupyter.execInPython(code)` - Execute in first Python kernel
+- `jupyter.listOpenFiles()` - List available files and kernels
+- `jupyter.setVar(name, value)` / `jupyter.getVar(name)` - Variable management
+- `jupyter.install(package)` - Package installation
+
+### **Removed Methods** (for simplicity)
+- Pattern matching execution (too complex)
+- Broadcast execution to all kernels (potentially dangerous)
+- Raw message sending (rarely needed)
 
 ## How It Works
 
-The kernel bridge works by:
+The kernel bridge bypasses Web Worker isolation by:
 
-1. **Application Exposure**: JupyterLab app is exposed globally as `window.jupyterapp`
-2. **Kernel Access**: Uses JupyterLab's public APIs to access running kernels
-3. **Message Passing**: Leverages the existing WebSocket-like communication infrastructure
-4. **Safe Execution**: Uses JupyterLab's `requestExecute()` API for code execution
+1. **JupyterLab Integration**: Uses JupyterLab's public APIs instead of direct Worker access
+2. **Session Discovery**: Finds kernels by matching file names to running sessions
+3. **Safe Execution**: Uses `kernel.requestExecute()` which properly handles async execution
+4. **Result Processing**: Captures all output types (text, HTML, images, errors)
 
-## Implementation Details
-
-The modifications include:
-
-### Files Modified:
-- `packages/kernel/src/bridge.ts` - Main kernel bridge implementation
-- `packages/kernel/src/console-api.ts` - User-friendly console API
-- `packages/kernel/src/index.ts` - Export new modules
-- `packages/services-extension/src/index.ts` - Initialize bridge on startup
-- `packages/application-extension/src/index.tsx` - Expose JupyterLab app globally
-
-### Key Components:
-1. **KernelBridge** - Core bridge for kernel access and code execution
-2. **JupyterConsoleAPI** - Enhanced user-friendly API for browser console
-3. **App Exposer Plugin** - Makes JupyterLab app accessible globally
-4. **Auto-initialization** - Bridge starts automatically when JupyterLite loads
-
-## Building the Modified JupyterLite
-
-After making these changes, rebuild JupyterLite:
+## Setup Instructions
 
 ```bash
-# Install dependencies
-jlpm install
-python -m pip install -r requirements-editable.txt
-
-# Build the packages
+# Build with your modifications
 jlpm build
-
-# Build and serve the docs app
-doit dev
-doit serve:docs:app
+doit dev && doit serve:docs:app
 ```
 
-Once running, the kernel bridge initializes automatically and you'll see:
+Once running, you'll see in the console:
 ```
 JupyterLab application exposed globally
 Initializing JupyterLite Kernel Bridge...
 ✓ Kernel Bridge and Console API ready
-Try: jupyter.exec("print('Hello from browser console!')")
 ```
 
-## Security Considerations
+## Key Benefits
 
-- This bridge provides full Python code execution access from the browser console
-- Only use in trusted environments or development setups
-- Consider implementing authentication/authorization for production use
-- The Pyodide kernel still runs in a sandboxed Web Worker environment
+✅ **File-Based Targeting**: Execute code in specific notebooks by name  
+✅ **Multi-Notebook Workflows**: Coordinate across multiple open notebooks  
+✅ **External Control**: Browser console and JavaScript can control Pyodide kernels  
+✅ **Safe Implementation**: Uses official JupyterLab APIs, won't break with updates  
+✅ **Rich Output**: Supports all Jupyter output types (plots, HTML, errors)  
+✅ **Variable Sharing**: Transfer data between JavaScript and Python seamlessly  
+
+This creates a powerful bridge that enables external JavaScript control of JupyterLite kernels while maintaining the security benefits of Web Worker isolation!

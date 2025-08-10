@@ -58,7 +58,7 @@ export interface IJupyterConsoleAPI {
  * Implementation of the console API
  */
 class JupyterConsoleAPI implements IJupyterConsoleAPI {
-  private get bridge() {
+  protected get bridge() {
     const bridge = getKernelBridge();
     if (!bridge) {
       throw new Error('Kernel bridge not initialized. Make sure JupyterLite is running.');
@@ -261,6 +261,138 @@ plt.show()
     const code = `help(${objectName})`;
     return this.exec(code);
   }
+
+  /**
+   * Execute code in a specific notebook/file by name
+   */
+  async execInFile(fileName: string, code: string): Promise<any> {
+    const kernelId = this.findKernelByFileName(fileName);
+    if (!kernelId) {
+      throw new Error(`No running kernel found for file: ${fileName}`);
+    }
+    return this.bridge.executeCode(kernelId, code);
+  }
+
+  /**
+   * Execute code in a specific file and display results
+   */
+  async runInFile(fileName: string, code: string): Promise<void> {
+    try {
+      const result = await this.execInFile(fileName, code);
+      console.group(`🐍 Python Execution Results in ${fileName}:`);
+      
+      if (result.outputs && result.outputs.length > 0) {
+        result.outputs.forEach((output: any, index: number) => {
+          console.group(`Output ${index + 1} (${output.output_type}):`);
+          
+          switch (output.output_type) {
+            case 'stream':
+              console.log(`[${output.name}]`, output.text);
+              break;
+            case 'execute_result':
+            case 'display_data':
+              if (output.data?.['text/plain']) {
+                console.log('Result:', output.data['text/plain']);
+              }
+              if (output.data?.['text/html']) {
+                console.log('HTML output available');
+              }
+              if (output.data?.['image/png']) {
+                console.log('Image output available (base64)');
+              }
+              break;
+            case 'error':
+              console.error('Error:', output.ename, output.evalue);
+              console.error('Traceback:', output.traceback?.join('\n'));
+              break;
+          }
+          
+          console.groupEnd();
+        });
+      } else {
+        console.log('Code executed successfully (no output)');
+      }
+      
+      console.groupEnd();
+    } catch (error) {
+      console.error(`🚫 Python Execution Failed in ${fileName}:`, error);
+    }
+  }
+
+  /**
+   * Find kernel ID by file name
+   */
+  private findKernelByFileName(fileName: string): string | null {
+    const app = (window as any).jupyterapp;
+    if (!app?.serviceManager?.sessions?.running) {
+      return null;
+    }
+
+    // Normalize file name (remove leading path separators)
+    const normalizedFileName = fileName.replace(/^[\/\\]+/, '');
+    
+    for (const session of app.serviceManager.sessions.running()) {
+      if (session.kernel && session.path) {
+        // Extract just the filename from the session path
+        const sessionFileName = session.path.split('/').pop() || session.path;
+        
+        // Check for exact match or partial match
+        if (sessionFileName === normalizedFileName || 
+            sessionFileName === fileName ||
+            session.path.endsWith(fileName) ||
+            session.path.endsWith(normalizedFileName)) {
+          return session.kernel.id;
+        }
+      }
+    }
+    
+    return null;
+  }
+
+  /**
+   * List all open files with their kernels
+   */
+  listOpenFiles(): { fileName: string; fullPath: string; kernelId: string; kernelName: string }[] {
+    const app = (window as any).jupyterapp;
+    const files: { fileName: string; fullPath: string; kernelId: string; kernelName: string }[] = [];
+    
+    if (app?.serviceManager?.sessions?.running) {
+      for (const session of app.serviceManager.sessions.running()) {
+        if (session.kernel && session.path) {
+          const fileName = session.path.split('/').pop() || session.path;
+          files.push({
+            fileName: fileName,
+            fullPath: session.path,
+            kernelId: session.kernel.id,
+            kernelName: session.kernel.name
+          });
+        }
+      }
+    }
+    
+    return files;
+  }
+
+  /**
+   * Execute code in the first available Python kernel
+   */
+  async execInPython(code: string): Promise<any> {
+    const app = (window as any).jupyterapp;
+    if (!app?.serviceManager?.sessions?.running) {
+      throw new Error('No running sessions found');
+    }
+
+    for (const session of app.serviceManager.sessions.running()) {
+      if (session.kernel && (
+          session.kernel.name.toLowerCase().includes('python') || 
+          session.kernel.name.toLowerCase().includes('pyodide')
+      )) {
+        return this.bridge.executeCode(session.kernel.id, code);
+      }
+    }
+    
+    throw new Error('No Python kernel found');
+  }
 }
 
 // Create and expose the global console API
@@ -280,16 +412,21 @@ export function initializeConsoleAPI(): void {
   
   console.log('JupyterLite Console API initialized!');
   console.log('Available commands:');
-  console.log('  jupyter.exec(code) - Execute Python code');
+  console.log('  jupyter.exec(code) - Execute Python code in active kernel');
   console.log('  jupyter.run(code) - Execute and display results');
-  console.log('  jupyter.kernels() - List all running kernels');
+  console.log('  jupyter.execInFile("file.ipynb", code) - Execute in specific file');
+  console.log('  jupyter.runInFile("file.ipynb", code) - Execute in file with display');
+  console.log('  jupyter.execInPython(code) - Execute in first Python kernel');
+  console.log('  jupyter.listOpenFiles() - List all open files with kernels');
+  console.log('  jupyter.sessions() - List kernel sessions');
   console.log('  jupyter.install(pkg) - Install Python package');
+  console.log('  jupyter.setVar(name, value) - Set variable');
+  console.log('  jupyter.getVar(name) - Get variable');
   console.log('  jupyter.listVars() - Show all variables');
-  console.log('  jupyter.clearVars() - Clear all variables');
-  console.log('  jupyter.stats() - Show kernel statistics');
+  console.log('  jupyter.clearVars(true) - Clear all variables');
   console.log('  jupyter.plot([1,2,3,4]) - Create simple plots');
   console.log('');
-  console.log('Shortcuts: jexec(), jrun(), jkernels()');
+  console.log('Shortcuts: jexec(), jrun()');
 }
 
 export { jupyter };
