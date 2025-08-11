@@ -2510,6 +2510,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/audio-extension@npm:~4.5.0-alpha.2":
+  version: 4.5.0-alpha.2
+  resolution: "@jupyterlab/audio-extension@npm:4.5.0-alpha.2"
+  dependencies:
+    "@jupyterlab/application": ^4.5.0-alpha.2
+    "@jupyterlab/apputils": ^4.6.0-alpha.2
+    "@jupyterlab/docregistry": ^4.5.0-alpha.2
+    "@jupyterlab/services": ^7.5.0-alpha.2
+    "@jupyterlab/translation": ^4.5.0-alpha.2
+    "@lumino/widgets": ^2.7.1
+  checksum: 4f61da41fc9a27e575b8d97e65c184c06cfca0929697014421f5adf84a4e9c96c72b1577e94e12e6da71444e3a971132d28a268f2cd394476fbd3e0a492930f9
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/builder@npm:~4.5.0-alpha.2":
   version: 4.5.0-alpha.2
   resolution: "@jupyterlab/builder@npm:4.5.0-alpha.2"
@@ -4264,6 +4278,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/video-extension@npm:~4.5.0-alpha.2":
+  version: 4.5.0-alpha.2
+  resolution: "@jupyterlab/video-extension@npm:4.5.0-alpha.2"
+  dependencies:
+    "@jupyterlab/application": ^4.5.0-alpha.2
+    "@jupyterlab/apputils": ^4.6.0-alpha.2
+    "@jupyterlab/docregistry": ^4.5.0-alpha.2
+    "@jupyterlab/services": ^7.5.0-alpha.2
+    "@jupyterlab/translation": ^4.5.0-alpha.2
+    "@lumino/widgets": ^2.7.1
+  checksum: 45714216e6e3affb3f916f0e37da6942a2f6b7f59e8de58c09ed1aa4fb5f94924dfc30bf132b7f70a6003c0ded4e06b73d07fc4787e90c9011a67797e2bea4dd
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/workspaces@npm:^4.5.0-alpha.2":
   version: 4.5.0-alpha.2
   resolution: "@jupyterlab/workspaces@npm:4.5.0-alpha.2"
@@ -4285,6 +4313,7 @@ __metadata:
     "@jupyterlab/application-extension": ~4.5.0-alpha.2
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/cell-toolbar-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
     "@jupyterlab/completer-extension": ~4.5.0-alpha.2
@@ -4353,6 +4382,7 @@ __metadata:
     "@jupyterlab/application-extension": ~4.5.0-alpha.2
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/cell-toolbar-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
     "@jupyterlab/completer-extension": ~4.5.0-alpha.2
@@ -4415,6 +4445,7 @@ __metadata:
     "@jupyterlab/application-extension": ~4.5.0-alpha.2
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/cell-toolbar-extension": ~4.5.0-alpha.2
     "@jupyterlab/celltags-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
@@ -4457,6 +4488,7 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.5.0-alpha.2
     "@jupyterlab/ui-components-extension": ~4.5.0-alpha.2
     "@jupyterlab/vega5-extension": ~4.5.0-alpha.2
+    "@jupyterlab/video-extension": ~4.5.0-alpha.2
     "@jupyterlite/application-extension": ^0.7.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.7.0-alpha.1
     "@jupyterlite/iframe-extension": ^0.7.0-alpha.1
@@ -4487,6 +4519,7 @@ __metadata:
     "@jupyterlab/application-extension": ~4.5.0-alpha.2
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/cell-toolbar-extension": ~4.5.0-alpha.2
     "@jupyterlab/celltags-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
@@ -4550,6 +4583,7 @@ __metadata:
   dependencies:
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
     "@jupyterlab/completer-extension": ~4.5.0-alpha.2
     "@jupyterlab/console-extension": ~4.5.0-alpha.2
@@ -4573,6 +4607,7 @@ __metadata:
     "@jupyterlab/translation-extension": ~4.5.0-alpha.2
     "@jupyterlab/ui-components-extension": ~4.5.0-alpha.2
     "@jupyterlab/vega5-extension": ~4.5.0-alpha.2
+    "@jupyterlab/video-extension": ~4.5.0-alpha.2
     "@jupyterlite/application": ^0.7.0-alpha.1
     "@jupyterlite/application-extension": ^0.7.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.7.0-alpha.1
@@ -4603,6 +4638,7 @@ __metadata:
     "@jupyterlab/application-extension": ~4.5.0-alpha.2
     "@jupyterlab/apputils-extension": ~4.5.0-alpha.2
     "@jupyterlab/attachments": ~4.5.0-alpha.2
+    "@jupyterlab/audio-extension": ~4.5.0-alpha.2
     "@jupyterlab/cell-toolbar-extension": ~4.5.0-alpha.2
     "@jupyterlab/codemirror-extension": ~4.5.0-alpha.2
     "@jupyterlab/completer-extension": ~4.5.0-alpha.2
