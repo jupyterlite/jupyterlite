@@ -19,7 +19,7 @@ dependencies:
   - importlib_metadata
   - jsonschema >=3
   - jupyterlab >=4.5.0a2,<4.6
-  - notebook >=7.5.0a0,<7.6
+  - notebook >=7.5.0a1,<7.6
   - pip
   - pkginfo
   - python-libarchive-c
