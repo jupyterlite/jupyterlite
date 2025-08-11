@@ -73,7 +73,6 @@ jobs:
           jlpm playwright install
 
       - name: Test
-        timeout-minutes: 15
         run: |
           cd ui-tests
           jlpm run test --browser ${{ matrix.browser }}
