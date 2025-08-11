@@ -310,6 +310,10 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
           }
           break;
         }
+        case 'ctime':
+        case 'dontFollow':
+          // Ignore for now
+          break;
         default:
           console.warn('setattr', key, 'of', value, 'on', node, 'not yet implemented');
           break;
