@@ -165,5 +165,16 @@ DEFAULT_FILE_TYPES = dict(
         png=[[".png"], ["image/png"]],
         wasm=[[".wasm"], ["application/wasm"]],
         wheel=[[".whl"], ["octet/stream", "application/x-wheel+zip"]],
+        # Video formats
+        mp4=[[".mp4"], ["video/mp4"]],
+        webm=[[".webm"], ["video/webm"]],
+        avi=[[".avi"], ["video/x-msvideo"]],
+        mov=[[".mov"], ["video/quicktime"]],
+        mkv=[[".mkv"], ["video/x-matroska"]],
+        # Audio formats
+        mp3=[[".mp3"], ["audio/mpeg"]],
+        wav=[[".wav"], ["audio/wav"]],
+        ogg=[[".ogg"], ["audio/ogg"]],
+        flac=[[".flac"], ["audio/flac"]],
     ),
 )
