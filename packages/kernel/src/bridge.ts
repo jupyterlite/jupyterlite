@@ -65,20 +65,28 @@ export class KernelBridge implements IKernelBridge {
     if (current?.sessionContext?.session?.kernel?.id === kernelId) {
       kernel = current.sessionContext.session.kernel;
     } else {
-      // Search through all sessions to find the kernel
+      // Use kernel manager to find the proper kernel connection
       const serviceManager = app.serviceManager;
-      if (serviceManager?.sessions?.running) {
-        for (const session of serviceManager.sessions.running()) {
-          if (session.kernel?.id === kernelId) {
-            kernel = session.kernel;
-            break;
-          }
+      if (serviceManager?.kernels) {
+        // First find if kernel exists in running kernels
+        const runningKernel = Array.from(serviceManager.kernels.running()).find((k: any) => k.id === kernelId);
+        if (runningKernel) {
+          // Get the actual kernel connection object
+          kernel = serviceManager.kernels.findById(kernelId);
         }
       }
     }
 
     if (!kernel) {
       throw new Error(`Kernel ${kernelId} not found or not accessible`);
+    }
+
+    // Verify kernel has requestExecute method
+    if (!kernel.requestExecute || typeof kernel.requestExecute !== 'function') {
+      console.error('Kernel object:', kernel);
+      console.error('Kernel type:', typeof kernel);
+      console.error('Kernel methods:', Object.getOwnPropertyNames(kernel));
+      throw new Error(`Kernel ${kernelId} does not have requestExecute method. Got: ${typeof kernel.requestExecute}`);
     }
 
     return new Promise((resolve, reject) => {
