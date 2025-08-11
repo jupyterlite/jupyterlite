@@ -81,7 +81,7 @@ test.describe('Contents Tests', () => {
 
   test('Create a new notebook, edit and reload', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(180000);
+    test.setTimeout(120000);
 
     const name = await page.notebook.createNew();
     if (!name) {

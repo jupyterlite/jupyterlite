@@ -14,7 +14,7 @@ test.use({
 test.describe('Renderers', () => {
   // this test can sometimes take longer to run as it uses the Pyodide kernel
   // TODO: remove
-  test.setTimeout(180000);
+  test.setTimeout(120000);
 
   test('MathJax', async ({ page }) => {
     await page.goto('lab/index.html');
