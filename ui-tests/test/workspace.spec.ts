@@ -61,6 +61,8 @@ test.describe('Workspace Tests', () => {
     await page.fill('.jp-Dialog input[type="text"]', workspaceName);
     await page.click('.jp-Dialog .jp-mod-accept');
 
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
+    // (upstream debouncer delays persistence)
     await page.waitForTimeout(1000);
 
     await refreshFilebrowser({ page });
@@ -76,6 +78,7 @@ test.describe('Workspace Tests', () => {
     const notebook1 = 'javascript.ipynb';
     await page.notebook.open(notebook1);
     await page.waitForSelector('.jp-NotebookPanel');
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
     await page.waitForTimeout(1000);
 
     const customWorkspace = 'test-workspace';
@@ -113,6 +116,7 @@ test.describe('Workspace Tests', () => {
     const notebook1 = 'javascript.ipynb';
     await page.notebook.open(notebook1);
     await page.waitForSelector('.jp-NotebookPanel');
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
     await page.waitForTimeout(1000);
 
     // Save first workspace to make it persistent
@@ -131,6 +135,7 @@ test.describe('Workspace Tests', () => {
     const notebook2 = 'intro.ipynb';
     await page.notebook.open(notebook2);
     await page.waitForSelector('.jp-NotebookPanel');
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
     await page.waitForTimeout(1000);
 
     // Save second workspace
@@ -138,6 +143,7 @@ test.describe('Workspace Tests', () => {
     await page.waitForSelector('.jp-Dialog');
     await page.fill('.jp-Dialog input[type="text"]', workspace2);
     await page.click('.jp-Dialog .jp-mod-accept');
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
     await page.waitForTimeout(1000);
 
     await page.menu.clickMenuItem('View>Appearance>Show Workspace Indicator');
