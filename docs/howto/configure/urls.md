@@ -11,7 +11,7 @@ and have full control on the environment and extensions installed.
 The snippets below use the public facing [jupyterlite.github.io/demo](https://jupyterlite.github.io/demo) as an example.
 ```
 
-## Lab-only Features
+## JupyterLab-only Features
 
 ### `path`
 
@@ -72,23 +72,6 @@ Accept no parameters.
 | multiple | examples                                                  |
 | -------- | --------------------------------------------------------- |
 | no       | `https://jupyterlite.github.io/demo/lab/index.html?reset` |
-
-## Lab and Retro Features
-
-## `room`
-
-> `room={:room-id}`
-
-Collaborate with others in a named room. Requires a properly-configured RTC backend.
-
-| app     | multiple |
-| ------- | -------- |
-| `lab`   | no       |
-| `retro` | no       |
-
-```{hint}
-Learn more about [collaborative editing](./rtc.md).
-```
 
 ## REPL Features
 

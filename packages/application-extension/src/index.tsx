@@ -61,7 +61,7 @@ import { Settings } from '@jupyterlite/settings';
 
 import { filter } from '@lumino/algorithm';
 
-import { Widget } from '@lumino/widgets';
+import { DockPanel, Widget } from '@lumino/widgets';
 
 import React from 'react';
 
@@ -772,6 +772,59 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
   },
 };
 
+/**
+ * A plugin to configure the application mode (single-document vs multiple-document)
+ */
+const modeSupport: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:mode-support',
+  autoStart: true,
+  optional: [ILabShell, IRouter],
+  activate: (
+    app: JupyterFrontEnd,
+    labShell: ILabShell | null,
+    router: IRouter | null,
+  ) => {
+    // only effective in JupyterLab
+    if (!labShell) {
+      return;
+    }
+
+    // Query string parameter has higher priority
+    const url = new URL(window.location.href);
+    const urlMode = url.searchParams.get('mode');
+    const mode = urlMode || PageConfig.getOption('mode') || 'multiple-document';
+
+    // Wait for the app to be restored before setting the mode
+    // so the switch button has time to set the signal
+    app.restored.then(() => {
+      // Only set the mode if it's valid
+      if (mode === 'single-document' || mode === 'multiple-document') {
+        labShell.mode = mode;
+
+        // Update PageConfig to match the effective mode
+        PageConfig.setOption('mode', mode);
+      }
+    });
+
+    // Watch the mode and update the URL to reflect the change
+    labShell.modeChanged.connect((_, newMode: DockPanel.Mode) => {
+      const currentUrl = new URL(window.location.href);
+      const currentUrlMode = currentUrl.searchParams.get('mode');
+
+      // Update the URL parameter if it differs from the new mode
+      if (currentUrlMode !== newMode) {
+        currentUrl.searchParams.set('mode', newMode as string);
+        if (router) {
+          const { pathname, search } = currentUrl;
+          router.navigate(`${pathname}${search}`, { skipRouting: true });
+        }
+      }
+
+      PageConfig.setOption('mode', newMode);
+    });
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
@@ -779,6 +832,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   liteRouter,
   liteLogo,
   lspConnectionManager,
+  modeSupport,
   notifyCommands,
   opener,
   router,
