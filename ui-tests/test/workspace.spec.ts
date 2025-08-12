@@ -166,7 +166,9 @@ test.describe('Workspace Tests', () => {
     await page.locator(`.jp-WorkspaceSelector-item:has-text("${workspace1}")`).click();
 
     // Wait for the expected notebook tab to appear
-    await expect(page.getByRole('main').getByRole('tab', { name: notebook1 })).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.getByRole('main').getByRole('tab', { name: notebook1 }),
+    ).toBeVisible({ timeout: 10000 });
 
     // Verify workspace switch occurred
     expect(page.url()).toContain(`workspace=${workspace1}`);
@@ -184,7 +186,9 @@ test.describe('Workspace Tests', () => {
     await page.waitForTimeout(2000);
 
     // Wait for the expected notebook tab to appear
-    await expect(page.getByRole('main').getByRole('tab', { name: notebook2 })).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.getByRole('main').getByRole('tab', { name: notebook2 }),
+    ).toBeVisible({ timeout: 10000 });
 
     // Verify switch back
     expect(page.url()).toContain(`workspace=${workspace2}`);
