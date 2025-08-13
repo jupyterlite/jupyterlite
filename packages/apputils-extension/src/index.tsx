@@ -37,8 +37,6 @@ import {
   IWorkspaceRouter,
 } from '@jupyterlite/apputils';
 
-import { liteIcon } from '@jupyterlite/ui-components';
-
 import { kernelStatusPlugin } from './kernelstatus';
 
 /**
@@ -50,11 +48,6 @@ namespace CommandIDs {
    */
   export const openPluginManager = 'apputils:open-plugin-manager';
 }
-
-/**
- * The name of the translation bundle for internationalized strings.
- */
-const I18N_BUNDLE = 'jupyterlite';
 
 /**
  * The client for fetching licenses data.
@@ -219,19 +212,10 @@ const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
  */
 const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
   id: '@jupyterlite/application-extension:workspaces',
-  requires: [ITranslator, ILiteRouter],
-  optional: [ICommandPalette],
+  requires: [ILiteRouter],
   autoStart: true,
   provides: IWorkspaceRouter,
-  activate: (
-    app: JupyterFrontEnd,
-    translator: ITranslator,
-    liteRouter: ILiteRouter,
-    palette?: ICommandPalette,
-  ): IWorkspaceRouter => {
-    const { started, docRegistry } = app;
-    const trans = translator.load(I18N_BUNDLE);
-    const category = trans.__('Workspaces');
+  activate: (app: JupyterFrontEnd, liteRouter: ILiteRouter): IWorkspaceRouter => {
     const appUrl = PageConfig.getOption('appUrl');
     const baseUrl = PageConfig.getOption('baseUrl');
     if (appUrl) {
@@ -253,21 +237,6 @@ const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
         },
       });
     }
-
-    /**
-     * The upstream @jupyterlab/apputils-extension:workspaces does not export a token,
-     * so we defer everything until the app has started.
-     */
-    started.then(() => {
-      const fileType = docRegistry.getFileType('jupyterlab-workspace');
-      // load the upstream
-      if (palette && fileType) {
-        (fileType as any).icon = liteIcon;
-        for (const command of ['workspace-ui:save', 'workspace-ui:save-as']) {
-          palette.addItem({ command, category });
-        }
-      }
-    });
 
     return {};
   },
