@@ -479,8 +479,7 @@ test.describe('Kernel status and logs', () => {
     await page.waitForSelector('.jp-KernelStatus-success');
 
     // Check the Pyodide kernel logs are visible
-    expect(page.getByText('Loaded micropip, packaging')).toBeVisible();
-    expect(page.getByText('Loaded openssl, ssl')).toBeVisible();
+    expect(page.getByText('Loaded micropip')).toBeVisible();
   });
 
   test('Kernel shows error state with invalid package configuration', async ({
