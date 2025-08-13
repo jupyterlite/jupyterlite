@@ -1,12 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { PageConfig } from '@jupyterlab/coreutils';
+import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin,
   JupyterLab,
+  IRouter,
 } from '@jupyterlab/application';
 
 import {
@@ -27,10 +28,13 @@ import {
 
 import { extensionIcon } from '@jupyterlab/ui-components';
 
+import { ILiteRouter } from '@jupyterlite/application';
+
 import {
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
+  IWorkspaceRouter,
 } from '@jupyterlite/apputils';
 
 import { kernelStatusPlugin } from './kernelstatus';
@@ -159,15 +163,82 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
 
 /**
  * The default window name resolver provider.
+ *
+ * This adds a dependency on `IWorkspaceRouter`
  */
-const resolverPlugin: JupyterFrontEndPlugin<IWindowResolver> = {
-  id: '@jupyterlite/apputils-extension:resolver',
-  description: 'Provides the window name resolver.',
+const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
+  id: '@jupyterlite/application-extension:resolver',
   autoStart: true,
   provides: IWindowResolver,
-  requires: [],
-  activate: async (app: JupyterFrontEnd) => {
-    return { name: PageConfig.getBaseUrl() };
+  requires: [JupyterFrontEnd.IPaths, IRouter, IWorkspaceRouter],
+  activate: async (
+    app: JupyterFrontEnd,
+    paths: JupyterFrontEnd.IPaths,
+    router: IRouter,
+    workspaceRouter: IWorkspaceRouter,
+  ) => {
+    const url = new URL(window.location.href);
+    const workspace =
+      url.searchParams.get('workspace') ||
+      url.searchParams.get('clone') ||
+      PageConfig.getOption('workspace') ||
+      'default';
+    const candidate = workspace ? workspace : PageConfig.defaultWorkspace;
+
+    const solver: IWindowResolver = {
+      name: candidate,
+    };
+
+    try {
+      return solver;
+    } catch (error) {
+      const { workspaces } = app.serviceManager;
+      const oldWorkspace = await workspaces.fetch(workspace);
+      const newWorkspaceId = `${workspace.split('-')[0]}-${+new Date()}`;
+      await workspaces.save(newWorkspaceId, oldWorkspace);
+      const appUrl = PageConfig.getOption('appUrl');
+      url.pathname = appUrl;
+      url.searchParams.set('clone', newWorkspaceId);
+      url.searchParams.delete('workspace');
+      const newUrl = URLExt.join(appUrl, url.toString().split(appUrl)[1]);
+      router.navigate(newUrl);
+      return solver;
+    }
+  },
+};
+
+/**
+ * A custom plugin for workspace files and commands
+ */
+const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
+  id: '@jupyterlite/application-extension:workspaces',
+  requires: [ILiteRouter],
+  autoStart: true,
+  provides: IWorkspaceRouter,
+  activate: (app: JupyterFrontEnd, liteRouter: ILiteRouter): IWorkspaceRouter => {
+    const appUrl = PageConfig.getOption('appUrl');
+    const baseUrl = PageConfig.getOption('baseUrl');
+    if (appUrl) {
+      const workspaceUrl = URLExt.join(appUrl, 'workspaces') + '/';
+      const autoUrl = URLExt.join(baseUrl, 'doc/workspaces/auto-');
+      liteRouter.addTransformer({
+        id: workspaces.id,
+        transform: ({ options, url }) => {
+          if (options.hard && url.pathname.startsWith(workspaceUrl)) {
+            const workspace = url.pathname.replace(workspaceUrl, '');
+            url.pathname = appUrl;
+            url.searchParams.set('workspace', workspace);
+          }
+          if (options.hard && url.pathname.startsWith(autoUrl)) {
+            url.pathname = appUrl;
+            url.searchParams.delete('reset');
+          }
+          return { url, options };
+        },
+      });
+    }
+
+    return {};
   },
 };
 
@@ -175,8 +246,9 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
+  workspaces,
   kernelStatusPlugin,
-  resolverPlugin,
+  resolver,
 ];
 
 export default plugins;

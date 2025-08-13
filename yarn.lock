@@ -4292,6 +4292,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/workspaces-extension@npm:~4.5.0-alpha.2":
+  version: 4.5.0-alpha.2
+  resolution: "@jupyterlab/workspaces-extension@npm:4.5.0-alpha.2"
+  dependencies:
+    "@jupyterlab/application": ^4.5.0-alpha.2
+    "@jupyterlab/apputils": ^4.6.0-alpha.2
+    "@jupyterlab/coreutils": ^6.5.0-alpha.2
+    "@jupyterlab/filebrowser": ^4.5.0-alpha.2
+    "@jupyterlab/running": ^4.5.0-alpha.2
+    "@jupyterlab/services": ^7.5.0-alpha.2
+    "@jupyterlab/settingregistry": ^4.5.0-alpha.2
+    "@jupyterlab/statedb": ^4.5.0-alpha.2
+    "@jupyterlab/translation": ^4.5.0-alpha.2
+    "@jupyterlab/ui-components": ^4.5.0-alpha.2
+    "@jupyterlab/workspaces": ^4.5.0-alpha.2
+    react: ^18.2.0
+  checksum: 7733974083f2992c1899f86f493efc65965ce9a22754f85dd6574b1ed0f8b1f55f4f978024d38ad1a16d76f93c900edbff7d900ed533d1350ce059e990505cd6
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/workspaces@npm:^4.5.0-alpha.2":
   version: 4.5.0-alpha.2
   resolution: "@jupyterlab/workspaces@npm:4.5.0-alpha.2"
@@ -4489,6 +4509,7 @@ __metadata:
     "@jupyterlab/ui-components-extension": ~4.5.0-alpha.2
     "@jupyterlab/vega5-extension": ~4.5.0-alpha.2
     "@jupyterlab/video-extension": ~4.5.0-alpha.2
+    "@jupyterlab/workspaces-extension": ~4.5.0-alpha.2
     "@jupyterlite/application-extension": ^0.7.0-alpha.2
     "@jupyterlite/apputils-extension": ^0.7.0-alpha.2
     "@jupyterlite/iframe-extension": ^0.7.0-alpha.2
@@ -4729,7 +4750,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/application@^0.7.0-alpha.2, @jupyterlite/application@workspace:packages/application":
+"@jupyterlite/application@^0.7.0-alpha.1, @jupyterlite/application@^0.7.0-alpha.2, @jupyterlite/application@workspace:packages/application":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/application@workspace:packages/application"
   dependencies:
@@ -4762,6 +4783,7 @@ __metadata:
     "@jupyterlab/pluginmanager": ~4.5.0-alpha.2
     "@jupyterlab/translation": ~4.5.0-alpha.2
     "@jupyterlab/ui-components": ~4.5.0-alpha.2
+    "@jupyterlite/application": ^0.7.0-alpha.2
     "@jupyterlite/apputils": ^0.7.0-alpha.2
     rimraf: ~5.0.1
     typescript: ~5.5.4
@@ -4777,6 +4799,7 @@ __metadata:
     "@jupyterlab/coreutils": ~6.5.0-alpha.2
     "@jupyterlab/statedb": ~4.5.0-alpha.2
     "@jupyterlab/translation": ~4.5.0-alpha.2
+    "@jupyterlite/application": ^0.7.0-alpha.1
     "@jupyterlite/types": ^0.7.0-alpha.2
     rimraf: ~5.0.1
     typescript: ~5.5.4

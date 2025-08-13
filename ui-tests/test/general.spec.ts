@@ -53,4 +53,36 @@ test.describe('General Tests', () => {
 
     expect(await page.theme.getTheme()).toEqual('Darcula');
   });
+
+  test('Multiple Document Mode (default)', async ({ page }) => {
+    const mainDockPanel = page.locator('#jp-main-dock-panel');
+    await expect(mainDockPanel).toHaveAttribute('data-mode', 'multiple-document');
+  });
+
+  test('Single Document Mode via URL parameter', async ({ page }) => {
+    await page.goto('lab/index.html?mode=single-document');
+
+    const mainDockPanel = page.locator('#jp-main-dock-panel');
+    await expect(mainDockPanel).toHaveAttribute('data-mode', 'single-document');
+
+    const tabBar = page.locator('.lm-DockPanel-tabBar').first();
+    await expect(tabBar).toBeHidden();
+  });
+
+  test('Switch between Multiple and Single Document Modes', async ({ page }) => {
+    const mainDockPanel = page.locator('#jp-main-dock-panel');
+    await expect(mainDockPanel).toHaveAttribute('data-mode', 'multiple-document');
+
+    const menuItem = 'View>Appearance>Simple Interface';
+    await page.menu.clickMenuItem(menuItem);
+    await expect(mainDockPanel).toHaveAttribute('data-mode', 'single-document');
+
+    const tabBar = page.locator('.lm-DockPanel-tabBar').first();
+    await expect(tabBar).toBeHidden();
+
+    await page.menu.clickMenuItem(menuItem);
+    await expect(mainDockPanel).toHaveAttribute('data-mode', 'multiple-document');
+
+    await expect(tabBar).toBeVisible();
+  });
 });

@@ -34,8 +34,8 @@ import {
   Contents,
   IDefaultDrive,
   ISettingManager,
-  Setting,
   IWorkspaceManager,
+  Setting,
   Workspace,
 } from '@jupyterlab/services';
 
@@ -45,6 +45,10 @@ import { ITranslator } from '@jupyterlab/translation';
 
 import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
+import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
+
+import { LiteWorkspaceManager } from '@jupyterlite/apputils';
+
 import { IKernelClient } from '@jupyterlite/kernel';
 
 import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
@@ -53,13 +57,11 @@ import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 import { BrowserStorageDrive } from '@jupyterlite/contents';
 
-import { LiteWorkspaceManager } from '@jupyterlite/apputils';
-
 import { Settings } from '@jupyterlite/settings';
 
 import { filter } from '@lumino/algorithm';
 
-import { Widget } from '@lumino/widgets';
+import { DockPanel, Widget } from '@lumino/widgets';
 
 import React from 'react';
 
@@ -95,6 +97,48 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * The custom URL router provider.
+ *
+ * Provides IRouter, plus the additional methods to transform `/path/`-based routes
+ */
+const liteRouter: JupyterFrontEndPlugin<ILiteRouter> = {
+  id: '@jupyterlite/application-extension:lite-router',
+  autoStart: true,
+  provides: ILiteRouter,
+  requires: [JupyterFrontEnd.IPaths],
+  activate: (app: JupyterFrontEnd, paths: JupyterFrontEnd.IPaths) => {
+    const { commands } = app;
+    const { base } = paths.urls;
+    const router = new LiteRouter({ base, commands });
+
+    void app.started.then(() => {
+      // Route the very first request on load.
+      void router.route();
+
+      // Route all pop state events.
+      window.addEventListener('popstate', () => {
+        void router.route();
+      });
+    });
+
+    return router;
+  },
+};
+
+/**
+ * The default URL router provider.
+ */
+const router: JupyterFrontEndPlugin<IRouter> = {
+  id: '@jupyterlite/application-extension:router',
+  autoStart: true,
+  provides: IRouter,
+  requires: [ILiteRouter],
+  activate: (app: JupyterFrontEnd, router: ILiteRouter) => {
+    return router;
+  },
+};
 
 /**
  * Add a command to show an About dialog.
@@ -728,14 +772,70 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
   },
 };
 
+/**
+ * A plugin to configure the application mode (single-document vs multiple-document)
+ */
+const modeSupport: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:mode-support',
+  autoStart: true,
+  optional: [ILabShell, IRouter],
+  activate: (
+    app: JupyterFrontEnd,
+    labShell: ILabShell | null,
+    router: IRouter | null,
+  ) => {
+    // only effective in JupyterLab
+    if (!labShell) {
+      return;
+    }
+
+    // Query string parameter has higher priority
+    const url = new URL(window.location.href);
+    const urlMode = url.searchParams.get('mode');
+    const mode = urlMode || PageConfig.getOption('mode') || 'multiple-document';
+
+    // Wait for the app to be restored before setting the mode
+    // so the switch button has time to set the signal
+    app.restored.then(() => {
+      // Only set the mode if it's valid
+      if (mode === 'single-document' || mode === 'multiple-document') {
+        labShell.mode = mode;
+
+        // Update PageConfig to match the effective mode
+        PageConfig.setOption('mode', mode);
+      }
+    });
+
+    // Watch the mode and update the URL to reflect the change
+    labShell.modeChanged.connect((_, newMode: DockPanel.Mode) => {
+      const currentUrl = new URL(window.location.href);
+      const currentUrlMode = currentUrl.searchParams.get('mode');
+
+      // Update the URL parameter if it differs from the new mode
+      if (currentUrlMode !== newMode) {
+        currentUrl.searchParams.set('mode', newMode as string);
+        if (router) {
+          const { pathname, search } = currentUrl;
+          router.navigate(`${pathname}${search}`, { skipRouting: true });
+        }
+      }
+
+      PageConfig.setOption('mode', newMode);
+    });
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
   downloadPlugin,
+  liteRouter,
   liteLogo,
   lspConnectionManager,
+  modeSupport,
   notifyCommands,
   opener,
+  router,
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
