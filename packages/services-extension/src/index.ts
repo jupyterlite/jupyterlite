@@ -45,6 +45,8 @@ import {
   KernelSpecs,
   LiteKernelClient,
   LiteKernelSpecClient,
+  initializeKernelBridge,
+  initializeConsoleAPI,
 } from '@jupyterlite/kernel';
 
 import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
@@ -214,10 +216,22 @@ const kernelClientPlugin: ServiceManagerPlugin<Kernel.IKernelAPIClient> = {
     kernelSpecs: IKernelSpecs,
     serverSettings?: ServerConnection.ISettings,
   ): IKernelClient => {
-    return new LiteKernelClient({
+    const kernelClient = new LiteKernelClient({
       kernelSpecs,
       serverSettings,
     });
+
+    // Initialize kernel bridge and console API after a short delay
+    // to ensure JupyterLab app is fully initialized
+    setTimeout(() => {
+      console.log('Initializing JupyterLite Kernel Bridge...');
+      initializeKernelBridge(kernelClient);
+      initializeConsoleAPI();
+      console.log('✓ Kernel Bridge and Console API ready');
+      console.log('Try: jupyter.exec("print(\'Hello from browser console!\')")');
+    }, 1000);
+
+    return kernelClient;
   },
 };
 

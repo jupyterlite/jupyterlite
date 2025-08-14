@@ -362,6 +362,19 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * Plugin to expose JupyterLab application globally for external access
+ */
+const appExposer: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:app-exposer',
+  autoStart: true,
+  activate: (app: JupyterFrontEnd) => {
+    // Expose JupyterLab app globally for kernel bridge access
+    (window as any).jupyterapp = app;
+    console.log('JupyterLab application exposed globally');
+  },
+};
+
+/**
  * The main application icon.
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
@@ -827,6 +840,7 @@ const modeSupport: JupyterFrontEndPlugin<void> = {
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
+  appExposer,
   clearBrowserData,
   downloadPlugin,
   liteRouter,
