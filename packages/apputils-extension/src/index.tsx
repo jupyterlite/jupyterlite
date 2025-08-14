@@ -39,6 +39,8 @@ import {
 
 import { kernelStatusPlugin } from './kernelstatus';
 
+import { urlResolverPlugin } from './urlresolver';
+
 /**
  * The command IDs used by the apputils extension.
  */
@@ -249,6 +251,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   workspaces,
   kernelStatusPlugin,
   resolver,
+  urlResolverPlugin,
 ];
 
 export default plugins;
