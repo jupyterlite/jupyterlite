@@ -310,6 +310,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
           }
           break;
         }
+        case 'atime':
         case 'ctime':
         case 'dontFollow':
           // Ignore for now
