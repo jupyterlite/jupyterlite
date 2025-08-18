@@ -11,6 +11,8 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
     this._manager = options.contents;
   }
   private readonly _mimeTypes: Record<string, string> = {
+    apng: 'image/apng',
+    avif: 'image/avif',
     svg: 'image/svg+xml',
     png: 'image/png',
     jpg: 'image/jpeg',
