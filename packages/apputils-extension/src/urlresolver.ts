@@ -30,7 +30,10 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
       const extension = url.split('.').pop()?.toLowerCase();
       if (extension && this._mimeTypes[extension]) {
         const reply = await this._manager.get(url, { content: true });
-        const encoded = window.btoa(reply.content);
+        // Binary images (png/jpg etc.) will be returned in the base64 format already,
+        // but svg images will be returned as text which needs base64 encoding.
+        const encoded =
+          reply.format === 'base64' ? reply.content : window.btoa(reply.content);
         return `data:${this._mimeTypes[extension]};base64,${encoded}`;
       }
     }
