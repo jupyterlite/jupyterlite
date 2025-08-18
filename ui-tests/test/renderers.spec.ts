@@ -69,7 +69,7 @@ $$
 
     // create a new svg image
     const content =
-      '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50" fill="red" /></svg>';
+      '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" height="30px"><circle cx="50" cy="50" r="50" fill="red" /></svg>';
     await page.menu.clickMenuItem('File>New>Text File');
     await page.waitForSelector('.jp-FileEditor');
     await page.locator('.jp-FileEditor .cm-content').fill(content);
