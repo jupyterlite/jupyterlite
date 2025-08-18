@@ -51,7 +51,6 @@ export const urlResolverPlugin: JupyterFrontEndPlugin<IUrlResolverFactory> = {
     'A URL resolver which converts supported image URLs into base64 encoded data strings.',
   provides: IUrlResolverFactory,
   activate: (app: JupyterFrontEnd): IUrlResolverFactory => {
-    app.serviceManager.contents;
     return {
       createResolver: (options) => new UrlResolver(options),
     };
