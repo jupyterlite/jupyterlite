@@ -10,7 +10,7 @@
     "@jupyter/web-components": "~0.16.7",
     "@jupyter/ydoc": "~3.1.0",
     "@jupyterlab/application": "~4.5.0-alpha.3",
-    "@jupyterlab/apputils": "~4.5.6",
+    "@jupyterlab/apputils": "~4.6.0-alpha.3",
     "@jupyterlab/apputils-extension": "~4.5.0-alpha.3",
     "@jupyterlab/attachments": "~4.5.0-alpha.3",
     "@jupyterlab/audio-extension": "~4.5.0-alpha.3",
