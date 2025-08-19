@@ -98,14 +98,14 @@ the page reloads, as these rely on stable kernel ids on the server.
 
 ## Disabling Workspaces
 
-Workspaces can be disabled by adding `@jupyterlab/apputils-extension:workspaces` to
+Workspaces can be disabled by adding `@jupyterlab/workspaces-extension` to
 `jupyter-lite.json#jupyter-config-data/disabledExtensions`.
 
 ```json
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": ["@jupyterlab/apputils-extension:workspaces"]
+    "disabledExtensions": ["@jupyterlab/workspaces-extension"]
   }
 }
 ```
@@ -114,10 +114,10 @@ Workspaces can be disabled by adding `@jupyterlab/apputils-extension:workspaces`
 
 By default, all of a user's workspaces on the same domain will be available to all
 JupyterLite instances hosted there. To create separate content stores, change the
-`jupyter-lite.json#jupyter-config-data/workspaceStorageName` from the default of
+`jupyter-lite.json#jupyter-config-data/workspacesStorageName` from the default of
 `JupyterLite Storage`.
 
 By default, the best available, persistent storage driver will be used. One may force a
 particular set of drivers to try with
-`jupyter-lite.json#jupyter-config-data/workspaceStorageDrivers`. See more about
+`jupyter-lite.json#jupyter-config-data/workspacesStorageDrivers`. See more about
 [local storage drivers](../configure/storage.md#local-storage-drivers).
