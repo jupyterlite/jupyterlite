@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/ui-components",
-  "version": "0.7.0-alpha.3",
+  "version": "0.7.0-alpha.4",
   "description": "JupyterLite - UI components",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {

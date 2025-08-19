@@ -114,6 +114,31 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0a4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.3...59fad82cb2e5cb7a2454bc37b1e939e0b0b02348))
+
+### Enhancements made
+
+- Update to JupyterLab 4.5.0a3 and Notebook 7.5.0a2 [#1710](https://github.com/jupyterlite/jupyterlite/pull/1710) ([@krassowski](https://github.com/krassowski))
+- Show images from local storage in Markdown (`base64`-encoded) [#1707](https://github.com/jupyterlite/jupyterlite/pull/1707) ([@krassowski](https://github.com/krassowski))
+
+### Maintenance and upkeep improvements
+
+- Update to `jupyterlite-pyodide-kernel==0.7.0a1` [#1694](https://github.com/jupyterlite/jupyterlite/pull/1694) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix workspaces docs [#1711](https://github.com/jupyterlite/jupyterlite/pull/1711) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-08-13&to=2025-08-19&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-08-13..2025-08-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-08-13..2025-08-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-08-13..2025-08-19&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-08-13..2025-08-19&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0a3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.2...416184863c3a98cc6eb54c52ec29d50795702648))
@@ -132,8 +157,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-08-11&to=2025-08-13&type=c))
 
 [@brichet](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abrichet+updated%3A2025-08-11..2025-08-13&type=Issues) | [@DerThorsten](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADerThorsten+updated%3A2025-08-11..2025-08-13&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-08-11..2025-08-13&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-08-11..2025-08-13&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-08-11..2025-08-13&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0a2
 

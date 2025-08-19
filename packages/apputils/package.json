@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/apputils",
-  "version": "0.7.0-alpha.3",
+  "version": "0.7.0-alpha.4",
   "description": "JupyterLite - Application Utilities",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -43,8 +43,8 @@
     "@jupyterlab/coreutils": "~6.5.0-alpha.3",
     "@jupyterlab/statedb": "~4.5.0-alpha.3",
     "@jupyterlab/translation": "~4.5.0-alpha.3",
-    "@jupyterlite/application": "^0.7.0-alpha.3",
-    "@jupyterlite/types": "^0.7.0-alpha.3"
+    "@jupyterlite/application": "^0.7.0-alpha.4",
+    "@jupyterlite/types": "^0.7.0-alpha.4"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
