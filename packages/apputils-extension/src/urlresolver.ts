@@ -11,17 +11,17 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
     this._manager = options.contents;
   }
   private readonly _mimeTypes: Record<string, string> = {
-    apng: 'image/apng',
-    avif: 'image/avif',
-    svg: 'image/svg+xml',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    jpeg: 'image/jpeg',
-    gif: 'image/gif',
-    webp: 'image/webp',
-    bmp: 'image/bmp',
-    ico: 'image/x-icon',
-    tiff: 'image/tiff',
+    '.apng': 'image/apng',
+    '.avif': 'image/avif',
+    '.svg': 'image/svg+xml',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.webp': 'image/webp',
+    '.bmp': 'image/bmp',
+    '.ico': 'image/x-icon',
+    '.tiff': 'image/tiff',
   };
 
   async resolveUrl(url: string) {
@@ -29,7 +29,7 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
       const cwd = encodeURI(PathExt.dirname(this.path));
       url = PathExt.resolve(cwd, url);
 
-      const extension = url.split('.').pop()?.toLowerCase();
+      const extension = PathExt.extname(url).toLowerCase();
       if (extension && this._mimeTypes[extension]) {
         const reply = await this._manager.get(url, { content: true });
         // Binary images (png/jpg etc.) will be returned in the base64 format already,
