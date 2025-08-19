@@ -61,4 +61,33 @@ $$
     // there should not be any MathJax related 404
     expect(errorLogs).toEqual(0);
   });
+
+  test('Images in Markdown', async ({ page }) => {
+    await page.goto('lab/index.html');
+
+    const imageName = 'image.svg';
+
+    // create a new svg image
+    const content =
+      '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" height="30px"><circle cx="50" cy="50" r="50" fill="red" /></svg>';
+    await page.menu.clickMenuItem('File>New>Text File');
+    await page.waitForSelector('.jp-FileEditor');
+    await page.locator('.jp-FileEditor .cm-content').fill(content);
+
+    // save as image.svg
+    await page.menu.clickMenuItem('File>Save Text');
+    await page.waitForSelector('.jp-Dialog');
+    await page.locator('#jp-dialog-input-id').fill(imageName);
+    await page.getByRole('button', { name: 'Rename and Save' }).click();
+
+    // create a new notebook
+    await page.notebook.createNew();
+
+    const markdown = `![alt text](./${imageName})`;
+    await page.notebook.setCell(0, 'markdown', markdown);
+    await page.notebook.run();
+
+    const cell = await page.notebook.getCell(0);
+    expect(await cell!.screenshot()).toMatchSnapshot('image-in-markdown.png');
+  });
 });
