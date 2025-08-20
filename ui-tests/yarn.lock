@@ -4571,8 +4571,8 @@ __metadata:
   linkType: hard
 
 "mermaid@npm:^11.7.0":
-  version: 11.9.0
-  resolution: "mermaid@npm:11.9.0"
+  version: 11.10.0
+  resolution: "mermaid@npm:11.10.0"
   dependencies:
     "@braintree/sanitize-url": ^7.0.4
     "@iconify/utils": ^2.1.33
@@ -4594,7 +4594,7 @@ __metadata:
     stylis: ^4.3.6
     ts-dedent: ^2.2.0
     uuid: ^11.1.0
-  checksum: 9edd02a0b9816316c96a8c490c999fc2968333aa9dcc1db1ea7c834184e326c5d9ecf2d108734e413ec6f937b562f48c0615ab20de60a962fab12b2cd93e7d09
+  checksum: 1af6acfb6aed4efc494d26fda6f3e4a5fe4c07a2885ad50be127d6f0408bb9b68ab96e383bf870a93a6ae4d7e7d98470ce87eb7aa71269cf0efa854e398cc97c
   languageName: node
   linkType: hard
 
