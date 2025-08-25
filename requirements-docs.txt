@@ -4,14 +4,14 @@
 
 # build
 docutils >=0.18
-jupyterlab >=4.5.0a2,<4.6
+jupyterlab >=4.5.0a3,<4.6
 myst-nb >=1
 pydata-sphinx-theme
-sphinx >=5.1,<8.2
-sphinx-autodoc-typehints
-sphinx-jsonschema
-sphinxext-rediraffe
-sphinxcontrib-mermaid
 
 # check
 pytest-check-links
+sphinx >=5.1,<8.2
+sphinx-autodoc-typehints
+sphinx-jsonschema
+sphinxcontrib-mermaid
+sphinxext-rediraffe
