@@ -51,8 +51,12 @@ export interface IEmscriptenFSNode {
 export interface IEmscriptenStream {
   node: IEmscriptenFSNode;
   nfd: any;
-  flags: string;
-  position: number;
+  flags?: number;
+  position?: number;
+  shared: {
+    flags: number;
+    position: number;
+  };
 }
 
 export function instanceOfStream(

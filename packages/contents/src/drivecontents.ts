@@ -207,9 +207,14 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   }
 
   async get(request: TDriveRequest<'get'>): Promise<TDriveResponse<'get'>> {
-    const model = await this.contentsManager.get(request.path, { content: true });
+    let model: Contents.IModel;
+    try {
+      model = await this.contentsManager.get(request.path, { content: true });
+    } catch (e) {
+      return null;
+    }
 
-    let response;
+    let response = null;
 
     if (model.type !== 'directory') {
       response = {
