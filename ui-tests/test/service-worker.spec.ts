@@ -95,4 +95,13 @@ test.describe('Service Worker Tests', () => {
     expect(output).toBeTruthy();
     expect(output![0]).toContain(expectedOutput);
   });
+
+  test('Create a JSON file twice does not crash the kernel', async ({ page }) => {
+    const notebook = 'file-access-3.ipynb';
+
+    await page.menu.clickMenuItem('Settings>Autosave Documents');
+
+    await page.notebook.open(notebook);
+    await page.notebook.runCellByCell();
+  });
 });
