@@ -225,7 +225,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   async put(request: TDriveRequest<'put'>): Promise<TDriveResponse<'put'>> {
     await this.contentsManager.save(request.path, {
       content:
-        request.data.format === 'json'
+        request.data.format === 'json' && request.data.data
           ? JSON.parse(request.data.data)
           : request.data.data,
       type: 'file',
