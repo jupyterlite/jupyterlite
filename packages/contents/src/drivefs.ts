@@ -171,14 +171,14 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
         // if writing
         const flags = stream.flags ?? stream.shared.flags;
-        const accmode = flags & 3; // mask with O_ACCMODE
-        if (
-          accmode === 1 || // O_WRONLY (write only)
-          accmode === 2 || // O_RDWR (read/write)
-          flags & 0x200 || // O_TRUNC
-          flags & 0x400 || // O_APPEND
-          flags & 0x40 // O_CREAT
-        ) {
+        let parsedFlags = typeof flags === 'string' ? parseInt(flags, 10) : flags;
+        parsedFlags &= 0x1fff;
+
+        let needsWrite = true;
+        if (parsedFlags in flagNeedsWrite) {
+          needsWrite = flagNeedsWrite[parsedFlags];
+        }
+        if (needsWrite) {
           stream.node = this.fs.node_ops.mknod(
             stream.node.parent,
             stream.node.name,
