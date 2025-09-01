@@ -2,7 +2,7 @@
   "LiteBuildConfig": {
     "contents": ["."],
     "federated_extensions": [
-      "https://jupyterlite-pyodide-kernel--209.org.readthedocs.build/en/209/_static/jupyterlite_pyodide_kernel-0.7.0a1-py3-none-any.whl",
+      "https://jupyterlite-pyodide-kernel--210.org.readthedocs.build/en/210/_static/jupyterlite_pyodide_kernel-0.7.0a1-py3-none-any.whl",
       "https://conda.anaconda.org/conda-forge/noarch/bqplot-0.12.43-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/ipycanvas-0.13.2-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/ipycytoscape-1.3.3-pyhd8ed1ab_1.tar.bz2",
