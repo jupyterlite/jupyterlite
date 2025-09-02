@@ -98,19 +98,17 @@ type TDriveResponses = {
   lookup: DriveFS.ILookup;
   mknod: null;
   getattr: IStats;
-  get:
-    | {
-        /**
-         * The returned file content
-         */
-        content: any;
+  get: {
+    /**
+     * The returned file content
+     */
+    content: any;
 
-        /**
-         * The content format
-         */
-        format: Contents.FileFormat;
-      }
-    | undefined;
+    /**
+     * The content format
+     */
+    format: Contents.FileFormat;
+  } | null;
   put: null;
 };
 
@@ -161,8 +159,38 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
   open(stream: IDriveStream): void {
     const path = this.fs.realPath(stream.node);
+
     if (this.fs.FS.isFile(stream.node.mode)) {
-      stream.file = this.fs.API.get(path);
+      try {
+        const file = this.fs.API.get(path);
+        stream.file = file;
+      } catch (e) {
+        // If we're opening a file for writing and the file does not exist, create it! Otherwise, throw the proper error
+        // We need to do this because the current thread is thinking a file exist (isFile returns true)
+        // whilst it was actually deleted in the main thread
+
+        // if writing
+        const flags = stream.flags ?? stream.shared.flags;
+        let parsedFlags = typeof flags === 'string' ? parseInt(flags, 10) : flags;
+        parsedFlags &= 0x1fff;
+
+        let needsWrite = true;
+        if (parsedFlags in flagNeedsWrite) {
+          needsWrite = flagNeedsWrite[parsedFlags];
+        }
+        if (needsWrite) {
+          stream.node = this.fs.node_ops.mknod(
+            stream.node.parent,
+            stream.node.name,
+            stream.node.mode,
+            0, // dev should be 0 for regular files
+          );
+          const file = this.fs.API.get(path);
+          stream.file = file;
+        } else {
+          throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['ENOENT']);
+        }
+      }
     }
   }
 
@@ -173,7 +201,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
 
     const path = this.fs.realPath(stream.node);
 
-    const flags = stream.flags;
+    const flags = stream.flags ?? stream.shared.flags;
     let parsedFlags = typeof flags === 'string' ? parseInt(flags, 10) : flags;
     parsedFlags &= 0x1fff;
 
@@ -236,7 +264,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
   llseek(stream: IDriveStream, offset: number, whence: number): number {
     let position = offset;
     if (whence === SEEK_CUR) {
-      position += stream.position;
+      position += stream.position ?? stream.shared.position;
     } else if (whence === SEEK_END) {
       if (this.fs.FS.isFile(stream.node.mode)) {
         if (stream.file !== undefined) {
@@ -294,7 +322,14 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
           const size = value;
           const path = this.fs.realPath(node);
           if (this.fs.FS.isFile(node.mode) && size >= 0) {
-            const file = this.fs.API.get(path);
+            let file;
+            try {
+              file = this.fs.API.get(path);
+            } catch (e) {
+              // TODO: Should do anything here? Should we create the file?
+              break;
+            }
+
             const oldData = file.data ? file.data : new Uint8Array();
             if (size !== oldData.length) {
               if (size < oldData.length) {

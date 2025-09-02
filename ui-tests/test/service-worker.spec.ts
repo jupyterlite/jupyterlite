@@ -104,4 +104,20 @@ test.describe('Service Worker Tests', () => {
     await page.notebook.open(notebook);
     await page.notebook.runCellByCell();
   });
+
+  test('Recreate a file that was deleted from the UI', async ({ page }) => {
+    const notebook = 'file-access-4.ipynb';
+
+    await page.menu.clickMenuItem('Settings>Autosave Documents');
+
+    // Create the file once
+    await page.notebook.open(notebook);
+    await page.notebook.runCellByCell();
+
+    // Delete it from the UI
+    await page.filebrowser.contents.deleteFile('data.json');
+
+    // Recreate it
+    await page.notebook.runCellByCell();
+  });
 });
