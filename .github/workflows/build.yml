@@ -18,7 +18,7 @@ jobs:
       BUILDING_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build dist
         uses: ./.github/actions/build-dist
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
         uses: actions/cache@v4
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install dependencies
         run: |
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install dependencies
         run: |
@@ -120,14 +120,14 @@ jobs:
             python-version: pypy-3.9
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Setup pip (base)
         run: ${{ matrix.python-command }} -m pip install --user -U pip setuptools wheel
       - name: Download (dist)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -192,14 +192,14 @@ jobs:
       DOCS_IN_CI: 1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Download (dist)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Download (typedoc)
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
