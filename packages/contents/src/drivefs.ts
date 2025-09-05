@@ -287,8 +287,9 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         case 'mode':
           node.mode = value;
           break;
+        case 'mtime':
         case 'timestamp':
-          node.timestamp = value;
+          node.timestamp = +value;
           break;
         case 'size': {
           const size = value;
@@ -310,6 +311,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
           }
           break;
         }
+        case 'atime':
         case 'ctime':
         case 'dontFollow':
           // Ignore for now
