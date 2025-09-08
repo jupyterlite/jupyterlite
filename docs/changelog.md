@@ -114,6 +114,27 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0a5
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.4...ccf925887b247db7ea02190f1660beb3394694f6))
+
+### Bugs fixed
+
+- Fix: Drive issue when writing a previously created + deleted file [#1715](https://github.com/jupyterlite/jupyterlite/pull/1715) ([@martinRenou](https://github.com/martinRenou))
+- Fix: Drive issue on rewritting JSON file [#1714](https://github.com/jupyterlite/jupyterlite/pull/1714) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Bump the actions group with 2 updates [#1717](https://github.com/jupyterlite/jupyterlite/pull/1717) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-08-19&to=2025-09-08&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-08-19..2025-09-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-08-19..2025-09-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-08-19..2025-09-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-08-19..2025-09-08&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0a4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.3...59fad82cb2e5cb7a2454bc37b1e939e0b0b02348))
@@ -136,8 +157,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-08-13&to=2025-08-19&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-08-13..2025-08-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-08-13..2025-08-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-08-13..2025-08-19&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-08-13..2025-08-19&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0a3
 
