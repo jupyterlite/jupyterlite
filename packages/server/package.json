@@ -45,7 +45,7 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.5.0-alpha.3",
     "@jupyterlab/nbformat": "~4.5.0-alpha.3",
-    "@jupyterlab/observables": "~4.5.0-alpha.3",
+    "@jupyterlab/observables": "~5.5.0-alpha.3",
     "@jupyterlab/services": "~7.5.0-alpha.3",
     "@jupyterlab/settingregistry": "~4.5.0-alpha.3",
     "@jupyterlab/statedb": "~4.5.0-alpha.3",
