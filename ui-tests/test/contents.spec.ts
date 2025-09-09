@@ -262,6 +262,26 @@ test.describe('Contents Tests', () => {
 
     await newTab.close();
   });
+
+  test('DriveFS readlink raises error 28 (EINVAR)', async ({ page }) => {
+    const notebook = 'empty.ipynb';
+    await page.notebook.open(notebook);
+
+    // readlink call on directory in DriveFS.
+    await page.notebook.setCell(0, 'code', 'import os; os.readlink("/")');
+
+    // readlink call on directory not in DriveFS.
+    await page.notebook.addCell('code', 'os.readlink("/drive")');
+
+    await page.notebook.runCellByCell();
+
+    const output0 = await page.notebook.getCellTextOutput(0);
+    expect(output0).toBeTruthy();
+    expect(output0![0]).toMatch("OSError: [Errno 28] Invalid argument: '/'");
+
+    const output1 = await page.notebook.getCellTextOutput(1);
+    expect(output1![0]).toMatch("OSError: [Errno 28] Invalid argument: '/drive'");
+  });
 });
 
 test.describe('Copy shareable link', () => {
