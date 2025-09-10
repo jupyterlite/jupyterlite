@@ -77,6 +77,7 @@ The JupyterLite contributors develop and maintain the following kernels:
 - a Python kernel based on [Pyodide][pyodide]:
   [https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
 - a Python kernel based on [Xeus Python][xeus-python]
+- a R kernel based on [Xeus R][xeus-r]
 
 There are a few more third-party in-browser kernels also compatible with JupyterLite.
 See this [GitHub discussion][github-discussion-kernels] for more information.
@@ -90,6 +91,7 @@ use and configure kernels.
 [github-discussion-kernels]: https://github.com/jupyterlite/jupyterlite/discussions/968
 [pyodide]: https://pyodide.org
 [xeus-python]: https://github.com/jupyter-xeus/xeus-python
+[xeus-r]: https://github.com/jupyter-xeus/xeus-r
 
 ## Working with files
 
