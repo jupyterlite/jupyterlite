@@ -693,7 +693,7 @@ def task_test():
                 setup_py.parent / "pyproject.toml",
             ],
             targets=pkg_targets,
-            actions=[U.do(*pytest_args, *pkg_args, env=env, cwd=cwd)],
+            actions=[U.do(*pytest_args, *pkg_args, env=env)],
         )
 
 
