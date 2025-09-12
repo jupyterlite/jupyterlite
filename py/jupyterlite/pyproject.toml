@@ -90,3 +90,6 @@ include = [
 include = [
     "/jupyterlite",
 ]
+
+[tool.coverage.run]
+patch = ["subprocess"]

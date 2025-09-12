@@ -4,12 +4,12 @@
 
 ansi2html
 diffoscope; sys_platform == 'linux'
-libarchive-c; sys_platform == 'linux'
-pytest-console-scripts >=1.4.0
-pytest-cov
-pytest-html
-pytest-xdist
 
 # extras
 jupyter_server >=1.11,<3
 jupyterlab_server
+libarchive-c; sys_platform == 'linux'
+pytest-console-scripts >=1.4.0
+pytest-cov >=7
+pytest-html
+pytest-xdist

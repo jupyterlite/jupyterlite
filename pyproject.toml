@@ -18,9 +18,6 @@ changelog-path = "docs/changelog.md"
 [tool.check-wheel-contents]
 ignore = ["W002"]
 
-[tool.coverage.run]
-patch = ["subprocess"]
-
 [tool.ruff]
 target-version = "py39"
 line-length = 100
