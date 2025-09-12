@@ -671,7 +671,7 @@ def task_test():
 
         if C.CI:
             cwd = B.DIST
-            pkg_args += ["--pyargs", py_mod, "-c", f"{setup_py.parent.relative_to(cwd)}"]
+            pkg_args += ["--pyargs", py_mod, "-c", "../"]
 
         print("---DEBUG2--- CWD", cwd, setup_py, pkg_args)
 
