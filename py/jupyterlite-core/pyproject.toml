@@ -57,7 +57,7 @@ test = [
     "ansi2html",
     "diffoscope; sys_platform == 'linux'",
     "pytest-console-scripts",
-    "pytest-cov",
+    "pytest-cov >=7",
     "pytest-html",
     "pytest-xdist",
 ]
@@ -124,3 +124,6 @@ artifacts = [
 include = [
     "/jupyterlite_core",
 ]
+
+[tool.coverage.run]
+patch = ["subprocess"]
