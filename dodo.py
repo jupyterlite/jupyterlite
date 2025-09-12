@@ -667,11 +667,13 @@ def task_test():
         ]
         cwd = setup_py.parent
 
+        print("---DEBUG1--- CWD", cwd)
+
         if C.CI:
-            # cwd = B.DIST
+            cwd = B.DIST
             pkg_args += ["--pyargs", py_mod]
 
-        print("---DEBUG--- CWD", cwd)
+        print("---DEBUG2--- CWD", cwd)
 
         if not C.PYPY:
             # coverage is very slow/finicky on pypy
