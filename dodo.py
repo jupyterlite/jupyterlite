@@ -671,6 +671,8 @@ def task_test():
             cwd = B.DIST
             pkg_args += ["--pyargs", py_mod]
 
+        print("---DEBUG--- CWD", cwd)
+
         if not C.PYPY:
             # coverage is very slow/finicky on pypy
             cov_path = B.BUILD / f"htmlcov/{py_name}"
@@ -693,7 +695,7 @@ def task_test():
                 setup_py.parent / "pyproject.toml",
             ],
             targets=pkg_targets,
-            actions=[U.do(*pytest_args, *pkg_args, env=env)],
+            actions=[U.do(*pytest_args, *pkg_args, env=env, cwd=cwd)],
         )
 
 
