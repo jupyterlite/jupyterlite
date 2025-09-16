@@ -42,7 +42,7 @@ dependencies:
   # test
   - ansi2html
   - pytest-console-scripts >=1.4.0
-  - pytest-cov
+  - pytest-cov< 7
   - pytest-html
   - pytest-xdist
   # language packs and contents
