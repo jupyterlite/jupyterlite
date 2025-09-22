@@ -1,8 +1,7 @@
 # Pre-install additional packages with emscripten-forge
 
-Using the [xeus-r](https://github.com/jupyter-xeus/xeus-r) kernel, you can
-pre-install packages from either
-[conda-forge](https://conda-forge.org/feedstock-outputs/) or
+Using the [xeus-r](https://github.com/jupyter-xeus/xeus-r) kernel, you can pre-install
+packages from either [conda-forge](https://conda-forge.org/feedstock-outputs/) or
 [emscripten-forge](https://github.com/emscripten-forge/recipes) by specifying them in
 the `environment.yml` file in the JupyterLite build directory.
 
