@@ -57,6 +57,14 @@ pyodide/pyodide
 xeus-python/preinstalled_packages
 ```
 
+## Configuring the Xeus R kernel
+
+```{toctree}
+:maxdepth: 1
+
+xeus-r/preinstalled_packages
+```
+
 ## Deploying
 
 ```{toctree}
