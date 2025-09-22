@@ -202,16 +202,19 @@ jlpm test
 
 By default this repository only includes the JavaScript kernel.
 
-If you would like to setup a local environment with an additional kernel,
-you must explicitely install the kernel before running the `jupyter lite build` command.
-For example:
+If you would like to setup a local environment with an additional kernel, you must
+explicitely install the kernel before running the `jupyter lite build` command. For
+example:
 
--   To install the Pyodide kernel, run
+- To install the Pyodide kernel, run
 
-    ```bash
-    pip install jupyterlite-pyodide-kernel
-    ```
--   To install one of the many kernels provided by the [`jupyterlite-xeus`](https://jupyterlite-xeus.readthedocs.io/) extension, follow ["xeus kernels in JupyterLite: Usage"](https://jupyterlite-xeus.readthedocs.io/en/latest/index.html#usage).
+  ```bash
+  pip install jupyterlite-pyodide-kernel
+  ```
+
+- To install one of the many kernels provided by the
+  [`jupyterlite-xeus`](https://jupyterlite-xeus.readthedocs.io/) extension, follow
+  ["xeus kernels in JupyterLite: Usage"](https://jupyterlite-xeus.readthedocs.io/en/latest/index.html#usage).
 
 ### UI Tests
 
