@@ -2,5 +2,5 @@ https://jupyterlite-pyodide-kernel--221.org.readthedocs.build/en/221/_static/jup
 jupyterlab-language-pack-fr-FR
 jupyterlite-javascript-kernel==0.4.0a0
 jupyterlite-p5-kernel==0.1.1
-notebook==7.5.0a2
+notebook==7.5.0a3
 theme-darcula==4.0.0
