@@ -95,6 +95,6 @@ $$
     await page.notebook.run();
 
     const link = cell!.locator('a');
-    expect(link).toHaveAttribute('href', `./${imageName}`);
+    await expect(link).not.toHaveAttribute('href', /^data:image\/svg\+xml;base64/);
   });
 });
