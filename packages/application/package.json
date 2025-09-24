@@ -41,7 +41,7 @@
     "@jupyterlab/application": "~4.5.0-alpha.4",
     "@jupyterlab/coreutils": "~6.5.0-alpha.4",
     "@jupyterlab/docregistry": "~4.5.0-alpha.4",
-    "@jupyterlab/rendermime-interfaces": "~4.0.0-alpha.9",
+    "@jupyterlab/rendermime-interfaces": "~3.13.0-alpha.4",
     "@jupyterlite/server": "^0.7.0-alpha.5",
     "@lumino/coreutils": "^2.2.1",
     "@lumino/signaling": "^2.1.4",
