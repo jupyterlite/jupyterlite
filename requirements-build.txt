@@ -6,7 +6,7 @@ hatch >=1.6.3,<2
 # https://github.com/pypa/twine/pull/1126
 importlib_metadata
 jupyter_core >=4.7
-jupyterlab >=4.5.0a3,<4.6
+jupyterlab >=4.5.0a4,<4.6
 # bootstrap packages
 pkginfo
 requests_cache
