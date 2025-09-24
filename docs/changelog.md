@@ -114,6 +114,37 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0a6
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.5...9c584016ed90c33151664ea7cd85d8090924e237))
+
+### Enhancements made
+
+- Update to JupyterLab 4.5.0a4 and Notebook 7.5.0a3 [#1738](https://github.com/jupyterlite/jupyterlite/pull/1738) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Throw EINVAL (28) in `DriveFSEmscriptenNodeOps.readlink` [#1723](https://github.com/jupyterlite/jupyterlite/pull/1723) ([@ianthomas23](https://github.com/ianthomas23))
+
+### Maintenance and upkeep improvements
+
+- Pin pytest-cov \<7 [#1730](https://github.com/jupyterlite/jupyterlite/pull/1730) ([@ianthomas23](https://github.com/ianthomas23))
+- Fix dependency on `@jupyterlab/observables` [#1721](https://github.com/jupyterlite/jupyterlite/pull/1721) ([@jtpio](https://github.com/jtpio))
+- Update to `jupyterlite-pyodide-kernel==0.7.0a2` [#1720](https://github.com/jupyterlite/jupyterlite/pull/1720) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Improve Installing other kernels section from documentation [#1734](https://github.com/jupyterlite/jupyterlite/pull/1734) ([@rgaiacs](https://github.com/rgaiacs))
+- Add xeus-r kernel to the documentation [#1725](https://github.com/jupyterlite/jupyterlite/pull/1725) ([@rgaiacs](https://github.com/rgaiacs))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-09-08&to=2025-09-24&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-09-08..2025-09-24&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-09-08..2025-09-24&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-09-08..2025-09-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-09-08..2025-09-24&type=Issues) | [@rgaiacs](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Argaiacs+updated%3A2025-09-08..2025-09-24&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0a5
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.4...ccf925887b247db7ea02190f1660beb3394694f6))
@@ -132,8 +163,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-08-19&to=2025-09-08&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-08-19..2025-09-08&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-08-19..2025-09-08&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-08-19..2025-09-08&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-08-19..2025-09-08&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0a4
 
