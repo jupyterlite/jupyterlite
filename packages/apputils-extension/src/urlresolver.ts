@@ -30,7 +30,7 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
       context &&
       (context.attribute === 'src' ||
         (context.attribute === 'href' && context.tag !== 'a'));
-    if (this.isLocal(url) && !acceptsBase64) {
+    if (this.isLocal(url) && acceptsBase64) {
       const cwd = encodeURI(PathExt.dirname(this.path));
       url = PathExt.resolve(cwd, url);
 
