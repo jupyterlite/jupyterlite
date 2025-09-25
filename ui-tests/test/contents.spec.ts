@@ -263,7 +263,7 @@ test.describe('Contents Tests', () => {
     await newTab.close();
   });
 
-  test('DriveFS readlink raises error 28 (EINVAR)', async ({ page }) => {
+  test('DriveFS readlink raises error 28 (EINVAL)', async ({ page }) => {
     const notebook = 'empty.ipynb';
     await page.notebook.open(notebook);
 
