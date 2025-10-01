@@ -263,7 +263,10 @@ test.describe('Contents Tests', () => {
     await newTab.close();
   });
 
-  test('DriveFS readlink raises error 28 (EINVAR)', async ({ page }) => {
+  test('DriveFS readlink raises error 28 (EINVAL)', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
     const notebook = 'empty.ipynb';
     await page.notebook.open(notebook);
 

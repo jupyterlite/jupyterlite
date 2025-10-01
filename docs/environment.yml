@@ -2,8 +2,8 @@ name: jupyterlite-docs
 # this is a conda/mamba environment for building the JupyterLite documentation
 
 channels:
-  - conda-forge/label/jupyterlab_alpha
-  - conda-forge/label/notebook_alpha
+  - conda-forge/label/jupyterlab_beta
+  - conda-forge/label/notebook_beta
   - conda-forge
   - nodefaults
 
@@ -19,7 +19,7 @@ dependencies:
   - importlib_metadata
   - jsonschema >=3
   - jupyterlab >=4.5.0a4,<4.6
-  - notebook >=7.5.0a3,<7.6
+  - notebook >=7.5.0b0,<7.6
   - pip
   - pkginfo
   - python-libarchive-c

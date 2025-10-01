@@ -43,12 +43,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.5.0-alpha.4",
-    "@jupyterlab/nbformat": "~4.5.0-alpha.4",
-    "@jupyterlab/observables": "~5.5.0-alpha.4",
-    "@jupyterlab/services": "~7.5.0-alpha.4",
-    "@jupyterlab/settingregistry": "~4.5.0-alpha.4",
-    "@jupyterlab/statedb": "~4.5.0-alpha.4",
+    "@jupyterlab/coreutils": "~6.5.0-beta.0",
+    "@jupyterlab/nbformat": "~4.5.0-beta.0",
+    "@jupyterlab/observables": "~5.5.0-beta.0",
+    "@jupyterlab/services": "~7.5.0-beta.0",
+    "@jupyterlab/settingregistry": "~4.5.0-beta.0",
+    "@jupyterlab/statedb": "~4.5.0-beta.0",
     "@jupyterlite/contents": "^0.7.0-alpha.6",
     "@jupyterlite/kernel": "^0.7.0-alpha.6",
     "@jupyterlite/session": "^0.7.0-alpha.6",
@@ -62,7 +62,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~4.5.0-alpha.4",
+    "@jupyterlab/testutils": "~4.5.0-beta.0",
     "@types/jest": "^29.5.3",
     "@types/serviceworker": "^0.0.56",
     "jest": "^29.6.2",
