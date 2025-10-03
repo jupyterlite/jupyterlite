@@ -26,6 +26,7 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
   };
 
   async resolveUrl(url: string, context?: IRenderMime.IResolveUrlContext) {
+    console.log(url, context)
     const acceptsBase64 =
       context &&
       (context.attribute === 'src' ||
