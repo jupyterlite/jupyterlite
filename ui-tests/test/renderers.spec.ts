@@ -66,6 +66,16 @@ $$
 
   test('Images in Markdown', async ({ page }) => {
     await page.goto('lab/index.html');
+    const logMessages: any[] = [];
+    const handleMessage = async (msg: ConsoleMessage) => {
+      logMessages.push({
+        text: msg.text(),
+        type: msg.type(),
+        location: msg.location(),
+      })
+    };
+
+    page.on('console', handleMessage);
 
     const imageName = 'image.svg';
 
@@ -89,7 +99,16 @@ $$
     await page.notebook.setCell(0, 'markdown', markdown);
     await page.notebook.run();
 
-    const cell = await page.notebook.getCell(0);
+    const cell = await page.notebook.getCellLocator(0);
     expect(await cell!.screenshot()).toMatchSnapshot('image-in-markdown.png');
+
+    const markdownLink = `[link](./${imageName})`;
+    await page.notebook.setCell(0, 'markdown', markdownLink);
+    await page.notebook.run();
+
+    const link = cell!.locator('a');
+    await expect.soft(link).not.toHaveAttribute('href', /^data:image\/svg\+xml;base64/);
+    console.log(logMessages);
+    await expect(logMessages).toBe([]);
   });
 });
