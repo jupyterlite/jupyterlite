@@ -180,6 +180,11 @@ function stripSlash(url) {
 async function serve(request, response) {
   let { url, method } = request;
   let code = 500;
+  if (url.includes('..')) {
+    response.writeHead(403);
+    response.end();
+    return;
+  }
   let mime = 'application/octet-stream';
   let content = '<h1><pre>500 Really Unexpected Error</pre></h1>';
 
