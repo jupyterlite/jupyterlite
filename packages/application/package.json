@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/application",
-  "version": "0.7.0-alpha.6",
+  "version": "0.7.0-alpha.7",
   "description": "JupyterLite - Application",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -42,7 +42,7 @@
     "@jupyterlab/coreutils": "~6.5.0-beta.0",
     "@jupyterlab/docregistry": "~4.5.0-beta.0",
     "@jupyterlab/rendermime-interfaces": "~3.13.0-beta.0",
-    "@jupyterlite/server": "^0.7.0-alpha.6",
+    "@jupyterlite/server": "^0.7.0-alpha.7",
     "@lumino/coreutils": "^2.2.1",
     "@lumino/signaling": "^2.1.4",
     "@lumino/widgets": "^2.7.1"

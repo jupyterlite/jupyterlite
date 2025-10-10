@@ -114,6 +114,30 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0a7
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.6...b513095376f9c39d2826d4f2ae4cb66757ed9e61))
+
+### Enhancements made
+
+- Update to JupyterLab `4.5.0b0` and Notebook `7.5.0b0` [#1744](https://github.com/jupyterlite/jupyterlite/pull/1744) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Correct use of EINVAL [#1742](https://github.com/jupyterlite/jupyterlite/pull/1742) ([@ianthomas23](https://github.com/ianthomas23))
+
+### Maintenance and upkeep improvements
+
+- Bump the actions group with 2 updates [#1748](https://github.com/jupyterlite/jupyterlite/pull/1748) ([@dependabot](https://github.com/dependabot))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-09-24&to=2025-10-10&type=c))
+
+[@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-09-24..2025-10-10&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-09-24..2025-10-10&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-09-24..2025-10-10&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-09-24..2025-10-10&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-09-24..2025-10-10&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0a6
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.5...9c584016ed90c33151664ea7cd85d8090924e237))
@@ -142,8 +166,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-09-08&to=2025-09-24&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-09-08..2025-09-24&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-09-08..2025-09-24&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-09-08..2025-09-24&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-09-08..2025-09-24&type=Issues) | [@rgaiacs](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Argaiacs+updated%3A2025-09-08..2025-09-24&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0a5
 
