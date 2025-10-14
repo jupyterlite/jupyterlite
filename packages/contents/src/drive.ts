@@ -1,6 +1,13 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents, Drive, ServerConnection } from '@jupyterlab/services';
+import {
+  Contents,
+  Drive,
+  IContentProvider,
+  ContentProviderRegistry,
+  ServerConnection,
+  IContentProviderRegistry,
+} from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
 
@@ -37,7 +44,7 @@ const decoder = new TextDecoder('utf-8');
 /**
  * A custom drive to store files in the browser storage.
  */
-export class BrowserStorageDrive implements Contents.IDrive {
+export class BrowserStorageDrive implements IContentProvider {
   /**
    * Construct a new localForage-powered contents provider
    */
@@ -47,8 +54,17 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this._storageDrivers = options.storageDrivers || null;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     this._ready = new PromiseDelegate();
+    this.contentProviderRegistry = new ContentProviderRegistry({
+      defaultProvider: this,
+    });
     this.initialize().catch(console.warn);
   }
+
+  /**
+   * Content provider registry.
+   * @experimental
+   */
+  readonly contentProviderRegistry: IContentProviderRegistry;
 
   /**
    * Dispose the drive.
