@@ -17,8 +17,6 @@ test.describe('Renderers', () => {
   test.setTimeout(120000);
 
   test('MathJax', async ({ page, browserName }) => {
-    // TODO: re-enable after https://github.com/jupyterlab/jupyterlab/issues/17941
-    test.skip(browserName === 'firefox', 'Skipping MathJax test on Firefox');
     await page.goto('lab/index.html');
 
     let errorLogs = 0;
