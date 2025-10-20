@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/metapackage",
-  "version": "0.7.0-alpha.6",
+  "version": "0.7.0-alpha.7",
   "private": true,
   "description": "JupyterLite - Metapackage",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
@@ -20,21 +20,21 @@
     "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
-    "@jupyterlite/application": "^0.7.0-alpha.6",
-    "@jupyterlite/application-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/apputils": "^0.7.0-alpha.6",
-    "@jupyterlite/apputils-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/contents": "^0.7.0-alpha.6",
-    "@jupyterlite/iframe-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/kernel": "^0.7.0-alpha.6",
-    "@jupyterlite/localforage": "^0.7.0-alpha.6",
-    "@jupyterlite/notebook-application-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/repl-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/server": "^0.7.0-alpha.6",
-    "@jupyterlite/services-extension": "^0.7.0-alpha.6",
-    "@jupyterlite/session": "^0.7.0-alpha.6",
-    "@jupyterlite/settings": "^0.7.0-alpha.6",
-    "@jupyterlite/ui-components": "^0.7.0-alpha.6"
+    "@jupyterlite/application": "^0.7.0-alpha.7",
+    "@jupyterlite/application-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/apputils": "^0.7.0-alpha.7",
+    "@jupyterlite/apputils-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/contents": "^0.7.0-alpha.7",
+    "@jupyterlite/iframe-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/kernel": "^0.7.0-alpha.7",
+    "@jupyterlite/localforage": "^0.7.0-alpha.7",
+    "@jupyterlite/notebook-application-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/repl-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/server": "^0.7.0-alpha.7",
+    "@jupyterlite/services-extension": "^0.7.0-alpha.7",
+    "@jupyterlite/session": "^0.7.0-alpha.7",
+    "@jupyterlite/settings": "^0.7.0-alpha.7",
+    "@jupyterlite/ui-components": "^0.7.0-alpha.7"
   },
   "devDependencies": {
     "typescript": "~5.5.4"

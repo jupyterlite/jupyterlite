@@ -425,7 +425,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   };
 
   readlink = (node: IEmscriptenFSNode | IEmscriptenStream): string => {
-    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EINVAR']);
+    throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['EINVAL']);
   };
 }
 

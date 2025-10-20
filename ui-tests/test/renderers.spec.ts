@@ -16,7 +16,7 @@ test.describe('Renderers', () => {
   // TODO: remove
   test.setTimeout(120000);
 
-  test('MathJax', async ({ page }) => {
+  test('MathJax', async ({ page, browserName }) => {
     await page.goto('lab/index.html');
 
     let errorLogs = 0;

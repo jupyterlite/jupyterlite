@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/services-extension",
-  "version": "0.7.0-alpha.6",
+  "version": "0.7.0-alpha.7",
   "description": "JupyterLite - Services Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -31,14 +31,14 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.5.0-alpha.4",
-    "@jupyterlab/services": "~7.5.0-alpha.4",
-    "@jupyterlite/apputils": "^0.7.0-alpha.6",
-    "@jupyterlite/contents": "^0.7.0-alpha.6",
-    "@jupyterlite/kernel": "^0.7.0-alpha.6",
-    "@jupyterlite/localforage": "^0.7.0-alpha.6",
-    "@jupyterlite/session": "^0.7.0-alpha.6",
-    "@jupyterlite/settings": "^0.7.0-alpha.6",
+    "@jupyterlab/coreutils": "~6.5.0-beta.1",
+    "@jupyterlab/services": "~7.5.0-beta.1",
+    "@jupyterlite/apputils": "^0.7.0-alpha.7",
+    "@jupyterlite/contents": "^0.7.0-alpha.7",
+    "@jupyterlite/kernel": "^0.7.0-alpha.7",
+    "@jupyterlite/localforage": "^0.7.0-alpha.7",
+    "@jupyterlite/session": "^0.7.0-alpha.7",
+    "@jupyterlite/settings": "^0.7.0-alpha.7",
     "@lumino/coreutils": "^2.2.1"
   },
   "devDependencies": {
