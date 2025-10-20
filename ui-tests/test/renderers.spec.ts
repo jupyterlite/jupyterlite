@@ -87,7 +87,14 @@ $$
     await page.notebook.setCell(0, 'markdown', markdown);
     await page.notebook.run();
 
-    const cell = await page.notebook.getCell(0);
+    const cell = await page.notebook.getCellLocator(0);
     expect(await cell!.screenshot()).toMatchSnapshot('image-in-markdown.png');
+
+    const markdownLink = `[link](./${imageName})`;
+    await page.notebook.setCell(0, 'markdown', markdownLink);
+    await page.notebook.run();
+
+    const link = cell!.locator('a');
+    await expect(link).not.toHaveAttribute('href', /^data:image\/svg\+xml;base64/);
   });
 });

@@ -3,6 +3,7 @@
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { PathExt } from '@jupyterlab/coreutils';
 import { RenderMimeRegistry, IUrlResolverFactory } from '@jupyterlab/rendermime';
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { Contents } from '@jupyterlab/services';
 
 class UrlResolver extends RenderMimeRegistry.UrlResolver {
@@ -24,8 +25,12 @@ class UrlResolver extends RenderMimeRegistry.UrlResolver {
     '.tiff': 'image/tiff',
   };
 
-  async resolveUrl(url: string) {
-    if (this.isLocal(url)) {
+  async resolveUrl(url: string, context?: IRenderMime.IResolveUrlContext) {
+    const acceptsBase64 =
+      context &&
+      (context.attribute === 'src' ||
+        (context.attribute === 'href' && context.tag !== 'a'));
+    if (this.isLocal(url) && acceptsBase64) {
       const cwd = encodeURI(PathExt.dirname(this.path));
       url = PathExt.resolve(cwd, url);
 
