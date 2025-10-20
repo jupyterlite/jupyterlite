@@ -3,7 +3,7 @@
 -r requirements-build.txt
 jsonschema >=3
 
-jupyterlab >=4.5.0b0,<4.6
+jupyterlab >=4.5.0b1,<4.6
 nbconvert
 nbstripout
 ruff==0.8.3
