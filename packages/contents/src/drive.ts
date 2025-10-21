@@ -3,7 +3,6 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import {
   Contents,
   Drive,
-  IContentProvider,
   ContentProviderRegistry,
   ServerConnection,
   IContentProviderRegistry,
