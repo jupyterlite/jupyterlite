@@ -43,7 +43,7 @@ const decoder = new TextDecoder('utf-8');
 /**
  * A custom drive to store files in the browser storage.
  */
-export class BrowserStorageDrive implements IDrive {
+export class BrowserStorageDrive implements Contents.IDrive {
   /**
    * Construct a new localForage-powered contents provider
    */
