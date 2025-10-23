@@ -114,6 +114,28 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.7...c4f93686c0c3480a644b0c6f62ee598647a5cc14))
+
+### Bugs fixed
+
+- Fix links to local files in Markdown [#1740](https://github.com/jupyterlite/jupyterlite/pull/1740) ([@krassowski](https://github.com/krassowski))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.5.0b1 and Notebook 7.5.0b1 [#1760](https://github.com/jupyterlite/jupyterlite/pull/1760) ([@jtpio](https://github.com/jtpio))
+- Use Node.js 24 / npm 11 to publish releases [#1759](https://github.com/jupyterlite/jupyterlite/pull/1759) ([@jtpio](https://github.com/jtpio))
+- Update to `jupyterlite-pyodide-kernel==0.7.0a5` [#1741](https://github.com/jupyterlite/jupyterlite/pull/1741) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-10-10&to=2025-10-23&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-10-10..2025-10-23&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-10-10..2025-10-23&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-10-10..2025-10-23&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0a7
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-alpha.6...b513095376f9c39d2826d4f2ae4cb66757ed9e61))
@@ -135,8 +157,6 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-09-24&to=2025-10-10&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-09-24..2025-10-10&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-09-24..2025-10-10&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-09-24..2025-10-10&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-09-24..2025-10-10&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-09-24..2025-10-10&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0a6
 
