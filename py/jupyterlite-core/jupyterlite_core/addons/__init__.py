@@ -1,6 +1,5 @@
 """Handle efficient discovery of"""
 
-import sys
 import warnings
 from copy import deepcopy
 from functools import lru_cache
