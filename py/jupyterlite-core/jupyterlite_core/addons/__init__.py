@@ -1,12 +1,11 @@
-"""Handle efficient discovery of"""
+"""Handle efficient discovery of entry points."""
 
 import warnings
 from copy import deepcopy
 from functools import lru_cache
+from importlib.metadata import entry_points
 
 from ..constants import ADDON_ENTRYPOINT
-
-from importlib.metadata import entry_points
 
 
 def merge_addon_aliases(base_aliases, force=None):
