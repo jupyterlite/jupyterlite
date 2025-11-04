@@ -10,7 +10,7 @@ authors = [
 dependencies = [
     "doit >=0.34,<1",
     "jupyter_core >=4.7",
-    "pycparser ; platform_python_implementation != 'CPython'"
+    "pycparser ; platform_python_implementation == 'PyPy'"
 ]
 keywords = [
     "browser",
