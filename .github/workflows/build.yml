@@ -167,7 +167,8 @@ jobs:
           jupyter lite list || exit 1
           jupyter lite status --debug || exit 1
       - name: Setup pip (test)
-        run: ${{ matrix.python-command }} -m pip install -r requirements-test.txt --prefer-binary
+        run: |
+          ${{ matrix.python-command }} -m pip install --prefer-binary -r requirements-test.txt
       - name: Pin pytest for pypy
         if: ${{ matrix.python-version == 'pypy-3.10' }}
         run: |
