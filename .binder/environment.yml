@@ -2,8 +2,8 @@ name: jupyterlite-dev
 # this is a conda/mamba environment for working on JupyterLite and upstreams
 
 channels:
-  - conda-forge/label/jupyterlab_beta
-  - conda-forge/label/notebook_beta
+  - conda-forge/label/jupyterlab_rc
+  - conda-forge/label/notebook_rc
   - conda-forge
 
 dependencies:
@@ -53,10 +53,9 @@ dependencies:
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
-  - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.5.0a4,<4.6
-  - notebook >=7.5.0b1,<7.6
+  - jupyterlab >=4.5.0rc0,<4.6
+  - notebook >=7.5.0rc0,<7.6
   - pip
   - pkginfo
   - python-libarchive-c

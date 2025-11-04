@@ -3,10 +3,30 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `0.6.0` to `0.7.0`
+
+```{warning}
+JupyterLite 0.7.0 comes with a couple of major changes that may be considered
+breaking, depending on your JupyterLite setup. Please read the following sections
+carefully to check if you are impacted by these changes
+```
+
+### Extensions
+
+JupyterLite 0.7.0 is based on JupyterLab 4.5 and Jupyter Notebook 7.5 packages.
+
+This update may affect the extensions you are using, as they may rely on features
+introduced in JupyterLab 4.5 and Notebook 7.5.
+
+### `jupyterlite-core`
+
+Support for Python 3.9 has been dropped. `jupyterlite-core` now requires Python 3.10 or
+higher.
+
 ## `0.5.0` to `0.6.0`
 
 ```{warning}
- JupyterLite 0.6.0 comes with a couple of major changes that may be considered
+JupyterLite 0.6.0 comes with a couple of major changes that may be considered
 breaking, depending on your JupyterLite setup. Please read the following sections
 carefully to check if you are impacted by these changes
 ```

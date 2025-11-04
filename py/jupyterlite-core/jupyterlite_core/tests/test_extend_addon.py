@@ -1,5 +1,4 @@
 import json
-import sys
 from unittest import mock
 
 import pytest
@@ -8,8 +7,6 @@ from traitlets import Bunch, Int
 from jupyterlite_core import addons
 from jupyterlite_core.addons.base import BaseAddon
 from jupyterlite_core.app import LiteStatusApp
-
-PY_LT_310 = sys.version_info < (3, 10)
 
 MOCK_ALIASES = {
     "some-other-feature": "MockAddon.some_other_feature",

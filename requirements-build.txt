@@ -2,12 +2,13 @@
 # see .binder/ and docs/ for full development/docs environments
 doit >=0.34,<1
 hatch >=1.6.3,<2
-# TODO: remove pin once working with twine
-# https://github.com/pypa/twine/pull/1126
-importlib_metadata
 jupyter_core >=4.7
-jupyterlab >=4.5.0b1,<4.6
+jupyterlab >=4.5.0rc0,<4.6
+
 # bootstrap packages
 pkginfo
 requests_cache
 twine
+
+# from twine
+nh3 < 0.3 ; platform_python_implementation == 'PyPy'

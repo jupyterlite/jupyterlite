@@ -94,7 +94,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu, windows, macos]
-        python-version: ['3.9', '3.13', 'pypy-3.9']
+        python-version: ['3.10', '3.14', 'pypy-3.10']
         include:
           # OS-specifics for running pip
           - os: ubuntu
@@ -107,17 +107,17 @@ jobs:
             pip-cache: ~\AppData\Local\pip\Cache
             python-command: python
           # python-specifics for tests
-          - python-version: '3.9'
+          - python-version: '3.10'
             pytest-args: '[]'
-          - python-version: '3.13'
+          - python-version: '3.14'
             pytest-args: '[]'
-          - python-version: 'pypy-3.9'
+          - python-version: 'pypy-3.10'
             # TODO: some instability with libarchive, might be better with pypy-3.8
             # after https://github.com/cloudpipe/cloudpickle/pull/461
             pytest-args: '["-k", "not _archive_is_"]'
         exclude:
           - os: windows
-            python-version: pypy-3.9
+            python-version: pypy-3.10
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -143,7 +143,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Install (py)
         run: |
-          ${{ matrix.python-command }} -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core
+          ${{ matrix.python-command }} -m pip install 'doit >=0.34,<1' jupyter_core pycparser
           ${{ matrix.python-command }} -m pip install --find-links dist --no-index jupyterlite_core
           ${{ matrix.python-command }} -m pip check
       - name: Prepare smoke test folder
@@ -167,11 +167,12 @@ jobs:
           jupyter lite list || exit 1
           jupyter lite status --debug || exit 1
       - name: Setup pip (test)
-        run: ${{ matrix.python-command }} -m pip install -r requirements-test.txt
-      - name: Pin pytest for pypy
-        if: ${{ matrix.python-version == 'pypy-3.9' }}
         run: |
-          ${{ matrix.python-command }} -m pip install "pytest<8"
+          ${{ matrix.python-command }} -m pip install --prefer-binary -r requirements-test.txt
+      - name: Pin pytest for pypy
+        if: ${{ matrix.python-version == 'pypy-3.10' }}
+        run: |
+          ${{ matrix.python-command }} -m pip install "pytest<8" --prefer-binary
           echo 'See https://github.com/jupyterlite/jupyterlite/issues/1308' >> $GITHUB_STEP_SUMMARY
       - name: Test (py)
         run: doit test:py:*
