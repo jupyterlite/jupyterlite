@@ -425,6 +425,6 @@ page, including:
 [new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
 [pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
 [repo]: https://github.com/jupyterlite/jupyterlite
-[coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
+[coc]: https://github.com/jupyter/governance/blob/main/docs/conduct/code_of_conduct.md
 [mambaforge]: https://github.com/conda-forge/miniforge
 [dodo]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
