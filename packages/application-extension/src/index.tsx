@@ -354,7 +354,10 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             }
           });
         },
-        icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
+        icon: (args) =>
+          args['isMenu']
+            ? undefined
+            : downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
       });
     }
