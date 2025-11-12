@@ -277,6 +277,9 @@ class LiteNbConvertManager extends NbConvertManager {
       ['Notebook (ipynb)']: {
         output_mimetype: 'application/x-ipynb+json',
       },
+      ['Executable Script']: {
+        output_mimetype: 'text/x-script',
+      },
     };
   }
 
@@ -286,19 +289,108 @@ class LiteNbConvertManager extends NbConvertManager {
   async exportAs(options: NbConvert.IExportOptions): Promise<void> {
     const { format, path } = options;
 
-    if (format !== 'Notebook (ipynb)') {
+    const model = await this._contentsManager.get(path, { content: true });
+    const element = document.createElement('a');
+
+    if (format === 'Notebook (ipynb)') {
+      const mime = model.mimetype ?? 'application/json';
+      const content = JSON.stringify(model.content, null, 2);
+      element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
+      element.download = path;
+    } else if (format === 'Executable Script') {
+      const { content, extension } = this._convertToScript(model.content);
+      element.href = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
+      element.download = path.replace(/\.ipynb$/, extension);
+    } else {
       return;
     }
 
-    const model = await this._contentsManager.get(path, { content: true });
-    const element = document.createElement('a');
-    const mime = model.mimetype ?? 'application/json';
-    const content = JSON.stringify(model.content, null, 2);
-    element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
-    element.download = path;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
+  }
+
+  /**
+   * Convert a notebook to a script file.
+   */
+  private _convertToScript(content: any): {
+    content: string;
+    extension: string;
+  } {
+    // Get the language from the notebook metadata
+    const languageInfo = content.metadata?.language_info;
+    const language = languageInfo?.name || 'python';
+    const fileExtension = languageInfo?.file_extension || '.py';
+
+    // Extract code cells and convert to script
+    const cells = content.cells || [];
+    const scriptLines: string[] = [];
+
+    for (const cell of cells) {
+      if (cell.cell_type === 'code') {
+        // Add code cell content
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        scriptLines.push(source);
+        // Add blank line between cells
+        scriptLines.push('');
+      } else if (cell.cell_type === 'markdown' || cell.cell_type === 'raw') {
+        // Add markdown and raw cells as comments
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        const commentedSource = this._commentLines(source, language);
+        scriptLines.push(commentedSource);
+        // Add blank line between cells
+        scriptLines.push('');
+      }
+    }
+
+    return {
+      content: scriptLines.join('\n') + '\n',
+      extension: fileExtension,
+    };
+  }
+
+  /**
+   * Comment out lines based on the language.
+   */
+  private _commentLines(text: string, language: string): string {
+    const lines = text.split('\n');
+    const commentChar = this._getCommentChar(language);
+
+    return lines.map((line) => `${commentChar} ${line}`).join('\n');
+  }
+
+  /**
+   * Get the comment character for a given language.
+   */
+  private _getCommentChar(language: string): string {
+    // Map of languages to their comment characters
+    const commentMap: { [key: string]: string } = {
+      python: '#',
+      r: '#',
+      julia: '#',
+      ruby: '#',
+      bash: '#',
+      shell: '#',
+      perl: '#',
+      javascript: '//',
+      typescript: '//',
+      java: '//',
+      c: '//',
+      cpp: '//',
+      'c++': '//',
+      scala: '//',
+      go: '//',
+      rust: '//',
+      swift: '//',
+      kotlin: '//',
+      matlab: '%',
+      octave: '%',
+      lua: '--',
+      sql: '--',
+      haskell: '--',
+    };
+
+    return commentMap[language.toLowerCase()] || '#';
   }
 
   private _contentsManager: Contents.IManager;
