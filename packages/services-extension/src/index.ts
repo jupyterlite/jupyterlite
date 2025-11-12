@@ -272,7 +272,9 @@ class LiteNbConvertManager extends NbConvertManager {
    */
   async getExportFormats(): Promise<NbConvert.IExportFormats> {
     return {
-      notebook: {
+      // use a different name than just 'notebook' since 'notebook' is filtered by the upstream
+      // JupyterLab plugin: https://github.com/jupyterlab/jupyterlab/blob/c832df73b105c9f3fc215b8aec1180c8805e9c12/packages/notebook-extension/src/index.ts#L700
+      ['Notebook (ipynb)']: {
         output_mimetype: 'application/x-ipynb+json',
       },
     };
@@ -284,7 +286,7 @@ class LiteNbConvertManager extends NbConvertManager {
   async exportAs(options: NbConvert.IExportOptions): Promise<void> {
     const { format, path } = options;
 
-    if (format !== 'notebook') {
+    if (format !== 'Notebook (ipynb)') {
       return;
     }
 
