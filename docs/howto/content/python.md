@@ -133,3 +133,15 @@ pyodide_http.patch_all()
 data = pd.read_csv("https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/data/iris.csv")
 data
 ```
+
+````{tip}
+If you are using the [xeus-python kernel](../xeus-python/preinstalled_packages.md), you can install `pyodide-http` using:
+
+```py
+%pip install pyodide_http
+```
+
+Or add it to the `environment.yml` file with the other dependencies.
+
+Then use it the same way as shown in the example above.
+````
