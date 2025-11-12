@@ -8,6 +8,7 @@ import {
   Contents,
   Event,
   IConfigSectionManager,
+  IContentsManager,
   IDefaultDrive,
   IEventManager,
   IKernelManager,
@@ -253,6 +254,55 @@ const localforagePlugin: ServiceManagerPlugin<ILocalForage> = {
 };
 
 /**
+ * Custom NbConvert manager for JupyterLite with client-side export.
+ */
+class LiteNbConvertManager extends NbConvertManager {
+  /**
+   * Construct a new LiteNbConvertManager.
+   */
+  constructor(
+    options: NbConvertManager.IOptions & { contentsManager: Contents.IManager },
+  ) {
+    super(options);
+    this._contentsManager = options.contentsManager;
+  }
+
+  /**
+   * Get the list of export formats available.
+   */
+  async getExportFormats(): Promise<NbConvert.IExportFormats> {
+    return {
+      notebook: {
+        output_mimetype: 'application/x-ipynb+json',
+      },
+    };
+  }
+
+  /**
+   * Export a notebook to a given format.
+   */
+  async exportAs(options: NbConvert.IExportOptions): Promise<void> {
+    const { format, path } = options;
+
+    if (format !== 'notebook') {
+      return;
+    }
+
+    const model = await this._contentsManager.get(path, { content: true });
+    const element = document.createElement('a');
+    const mime = model.mimetype ?? 'application/json';
+    const content = JSON.stringify(model.content, null, 2);
+    element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
+    element.download = path;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  private _contentsManager: Contents.IManager;
+}
+
+/**
  * The nbconvert manager plugin.
  */
 const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
@@ -260,28 +310,14 @@ const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
   description: 'The nbconvert manager plugin.',
   autoStart: true,
   provides: INbConvertManager,
+  requires: [IContentsManager],
   optional: [IServerSettings],
   activate: (
     _: null,
+    contentsManager: Contents.IManager,
     serverSettings: ServerConnection.ISettings | undefined,
   ): NbConvert.IManager => {
-    const nbConvertManager = new (class extends NbConvertManager {
-      async getExportFormats(
-        force?: boolean,
-      ): Promise<NbConvertManager.IExportFormats> {
-        return {
-          // default export format to download the notebook as .ipynb
-          ['Notebook File']: {
-            output_mimetype: 'application/json',
-          },
-          pdf: {
-            output_mimetype: 'application/pdf',
-          },
-        };
-      }
-    })({ serverSettings });
-
-    return nbConvertManager;
+    return new LiteNbConvertManager({ contentsManager, serverSettings });
   },
 };
 
