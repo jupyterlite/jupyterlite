@@ -182,6 +182,7 @@ class LiteBuildConfig(LoggingConfigurable):
             r"/\.env",
             r"/\.git",
             r"/\.ipynb_checkpoints",
+            r"/\.pixi",
             r"/build/",
             r"/dist/",
             r"/envs/",
