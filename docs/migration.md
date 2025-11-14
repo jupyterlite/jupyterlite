@@ -45,50 +45,67 @@ worker management functionality moved to the `@jupyterlite/apputils` package.
 These changes were made to more closely follow the package structure used by JupyterLab
 and to better organize utility functions within the codebase.
 
-If your extension or application was importing from these individual packages, you should
-update your imports accordingly.
+If your extension or application was importing from these individual packages, you
+should update your imports accordingly. See the sections below for concrete migration
+examples.
 
-#### Migration from `@jupyterlite/services`
+#### Migration to `@jupyterlite/services`
 
-For example:
+The `@jupyterlite/services` package consolidates all service-related functionality and
+provides all the same exports as the individual packages.
+
+##### Example 1: Kernel Extension
+
+If you have a custom kernel extension (see [](../howto/extensions/kernel.md)), update
+your imports:
 
 ```diff
 -import { IKernelSpecs } from '@jupyterlite/kernel';
 +import { IKernelSpecs } from '@jupyterlite/services';
 ```
 
+##### Example 2: Storage Management
+
+If you're working with the browser storage drive or settings:
+
 ```diff
 -import { BrowserStorageDrive } from '@jupyterlite/contents';
-+import { BrowserStorageDrive } from '@jupyterlite/services';
+-import { Settings } from '@jupyterlite/settings';
++import { BrowserStorageDrive, Settings } from '@jupyterlite/services';
 ```
+
+##### Example 3: Session Management
+
+For session management:
 
 ```diff
 -import { LiteSessionClient } from '@jupyterlite/session';
 +import { LiteSessionClient } from '@jupyterlite/services';
 ```
 
-The `@jupyterlite/services` package provides all the same exports as the individual
-packages, making it a drop-in replacement in most cases.
+#### Migration to `@jupyterlite/apputils`
 
-#### Migration from `@jupyterlite/server`
+The `@jupyterlite/server` package has been deprecated in favor of
+`@jupyterlite/apputils`, which now provides the service worker management functionality.
 
-If you were importing from `@jupyterlite/server`, update your imports to use
-`@jupyterlite/apputils` instead:
+##### Import Updates
+
+Update your imports to use `@jupyterlite/apputils` instead:
 
 ```diff
 -import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
 +import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/apputils';
 ```
 
+The token identifier changed from:
+
+- `'@jupyterlite/server:IServiceWorkerManager'` to `IServiceWorkerManager` (imported
+  from `@jupyterlite/apputils`)
+
+```{note}
 The `@jupyterlite/server` package will continue to work as a re-export from
 `@jupyterlite/apputils` for backward compatibility, but it is recommended to update your
 imports to use `@jupyterlite/apputils` directly.
-
-Note that the service worker manager token has also been updated:
-
-```diff
--'@jupyterlite/server:IServiceWorkerManager'
-+'@jupyterlite/apputils:IServiceWorkerManager'
 ```
 
 ## `0.5.0` to `0.6.0`
