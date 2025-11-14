@@ -43,10 +43,10 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/nbformat": "~4.5.0-rc.0",
-    "@jupyterlab/services": "~7.5.0-rc.0",
+    "@jupyterlab/nbformat": "~4.5.0-rc.1",
+    "@jupyterlab/services": "~7.5.0-rc.1",
     "@jupyterlite/localforage": "^0.7.0-beta.1",
-    "@lumino/coreutils": "^2.2.1",
+    "@lumino/coreutils": "^2.2.2",
     "@types/emscripten": "^1.39.6",
     "localforage": "^1.9.0",
     "mime": "^3.0.0"
@@ -54,7 +54,7 @@
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.12.1",
-    "@jupyterlab/testutils": "~4.5.0-rc.0",
+    "@jupyterlab/testutils": "~4.5.0-rc.1",
     "@types/jest": "^29.5.3",
     "@types/mime": "^2.0.3",
     "jest": "^29.6.2",
