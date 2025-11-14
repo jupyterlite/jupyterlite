@@ -57,6 +57,11 @@ import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/servi
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
+// Import deprecated packages for backward compatibility with federated extensions
+import '@jupyterlite/contents';
+import '@jupyterlite/kernel';
+import '@jupyterlite/server';
+
 import { filter } from '@lumino/algorithm';
 
 import { DockPanel, Widget } from '@lumino/widgets';
