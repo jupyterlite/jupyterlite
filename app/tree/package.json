@@ -303,6 +303,7 @@
       "@jupyterlab/help-extension:about",
       "@jupyterlab/help-extension:open",
       "@jupyterlab/lsp-extension:plugin",
+      "@jupyterlab/notebook-extension:export",
       "@jupyterlab/notebook-extension:execution-indicator",
       "@jupyterlab/notebook-extension:kernel-status",
       "@jupyterlab/notebook-extension:language-server",

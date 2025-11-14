@@ -8,6 +8,7 @@ import {
   Contents,
   Event,
   IConfigSectionManager,
+  IContentsManager,
   IDefaultDrive,
   IEventManager,
   IKernelManager,
@@ -253,6 +254,149 @@ const localforagePlugin: ServiceManagerPlugin<ILocalForage> = {
 };
 
 /**
+ * Custom NbConvert manager for JupyterLite with client-side export.
+ */
+class LiteNbConvertManager extends NbConvertManager {
+  /**
+   * Construct a new LiteNbConvertManager.
+   */
+  constructor(
+    options: NbConvertManager.IOptions & { contentsManager: Contents.IManager },
+  ) {
+    super(options);
+    this._contentsManager = options.contentsManager;
+  }
+
+  /**
+   * Get the list of export formats available.
+   */
+  async getExportFormats(): Promise<NbConvert.IExportFormats> {
+    return {
+      // use a different name than just 'notebook' since 'notebook' is filtered by the upstream
+      // JupyterLab plugin: https://github.com/jupyterlab/jupyterlab/blob/c832df73b105c9f3fc215b8aec1180c8805e9c12/packages/notebook-extension/src/index.ts#L700
+      ['Notebook (ipynb)']: {
+        output_mimetype: 'application/x-ipynb+json',
+      },
+      ['Executable Script']: {
+        output_mimetype: 'text/x-script',
+      },
+    };
+  }
+
+  /**
+   * Export a notebook to a given format.
+   */
+  async exportAs(options: NbConvert.IExportOptions): Promise<void> {
+    const { format, path } = options;
+
+    const model = await this._contentsManager.get(path, { content: true });
+    const element = document.createElement('a');
+
+    if (format === 'Notebook (ipynb)') {
+      const mime = model.mimetype ?? 'application/json';
+      const content = JSON.stringify(model.content, null, 2);
+      element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
+      element.download = path;
+    } else if (format === 'Executable Script') {
+      const { content, extension } = this._convertToScript(model.content);
+      element.href = `data:text/plain;charset=utf-8,${encodeURIComponent(content)}`;
+      element.download = path.replace(/\.ipynb$/, extension);
+    } else {
+      return;
+    }
+
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  /**
+   * Convert a notebook to a script file.
+   */
+  private _convertToScript(content: any): {
+    content: string;
+    extension: string;
+  } {
+    // Get the language from the notebook metadata
+    const languageInfo = content.metadata?.language_info;
+    const language = languageInfo?.name || 'python';
+    const fileExtension = languageInfo?.file_extension || '.py';
+
+    // Extract code cells and convert to script
+    const cells = content.cells || [];
+    const scriptLines: string[] = [];
+
+    for (const cell of cells) {
+      if (cell.cell_type === 'code') {
+        // Add code cell content
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        scriptLines.push(source);
+        // Add blank line between cells
+        scriptLines.push('');
+      } else if (cell.cell_type === 'markdown' || cell.cell_type === 'raw') {
+        // Add markdown and raw cells as comments
+        const source = Array.isArray(cell.source) ? cell.source.join('') : cell.source;
+        const commentedSource = this._commentLines(source, language);
+        scriptLines.push(commentedSource);
+        // Add blank line between cells
+        scriptLines.push('');
+      }
+    }
+
+    return {
+      content: scriptLines.join('\n') + '\n',
+      extension: fileExtension,
+    };
+  }
+
+  /**
+   * Comment out lines based on the language.
+   */
+  private _commentLines(text: string, language: string): string {
+    const lines = text.split('\n');
+    const commentChar = this._getCommentChar(language);
+
+    return lines.map((line) => `${commentChar} ${line}`).join('\n');
+  }
+
+  /**
+   * Get the comment character for a given language.
+   */
+  private _getCommentChar(language: string): string {
+    // Map of languages to their comment characters
+    const commentMap: { [key: string]: string } = {
+      python: '#',
+      r: '#',
+      julia: '#',
+      ruby: '#',
+      bash: '#',
+      shell: '#',
+      perl: '#',
+      javascript: '//',
+      typescript: '//',
+      java: '//',
+      c: '//',
+      cpp: '//',
+      'c++': '//',
+      scala: '//',
+      go: '//',
+      rust: '//',
+      swift: '//',
+      kotlin: '//',
+      matlab: '%',
+      octave: '%',
+      lua: '--',
+      sql: '--',
+      haskell: '--',
+    };
+
+    return commentMap[language.toLowerCase()] || '#';
+  }
+
+  private _contentsManager: Contents.IManager;
+}
+
+/**
  * The nbconvert manager plugin.
  */
 const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
@@ -260,20 +404,14 @@ const nbConvertManagerPlugin: ServiceManagerPlugin<NbConvert.IManager> = {
   description: 'The nbconvert manager plugin.',
   autoStart: true,
   provides: INbConvertManager,
+  requires: [IContentsManager],
   optional: [IServerSettings],
   activate: (
     _: null,
+    contentsManager: Contents.IManager,
     serverSettings: ServerConnection.ISettings | undefined,
   ): NbConvert.IManager => {
-    const nbConvertManager = new (class extends NbConvertManager {
-      async getExportFormats(
-        force?: boolean,
-      ): Promise<NbConvertManager.IExportFormats> {
-        return {};
-      }
-    })({ serverSettings });
-
-    return nbConvertManager;
+    return new LiteNbConvertManager({ contentsManager, serverSettings });
   },
 };
 
