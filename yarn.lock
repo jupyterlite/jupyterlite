@@ -4824,7 +4824,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/contents@workspace:packages/contents":
+"@jupyterlite/contents@^0.7.0-beta.1, @jupyterlite/contents@workspace:packages/contents":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/contents@workspace:packages/contents"
   dependencies:
@@ -4853,7 +4853,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/kernel@workspace:packages/kernel":
+"@jupyterlite/kernel@^0.7.0-beta.1, @jupyterlite/kernel@workspace:packages/kernel":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/kernel@workspace:packages/kernel"
   dependencies:
@@ -4890,13 +4890,17 @@ __metadata:
     "@jupyterlite/application-extension": ^0.7.0-beta.1
     "@jupyterlite/apputils": ^0.7.0-beta.1
     "@jupyterlite/apputils-extension": ^0.7.0-beta.1
+    "@jupyterlite/contents": ^0.7.0-beta.1
     "@jupyterlite/iframe-extension": ^0.7.0-beta.1
+    "@jupyterlite/kernel": ^0.7.0-beta.1
     "@jupyterlite/localforage": ^0.7.0-beta.1
     "@jupyterlite/notebook-application-extension": ^0.7.0-beta.1
     "@jupyterlite/repl-extension": ^0.7.0-beta.1
     "@jupyterlite/server": ^0.7.0-beta.1
     "@jupyterlite/services": ^0.7.0-beta.1
     "@jupyterlite/services-extension": ^0.7.0-beta.1
+    "@jupyterlite/session": ^0.7.0-beta.1
+    "@jupyterlite/settings": ^0.7.0-beta.1
     "@jupyterlite/ui-components": ^0.7.0-beta.1
     typescript: ~5.5.4
   languageName: unknown
@@ -5035,7 +5039,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/session@workspace:packages/session":
+"@jupyterlite/session@^0.7.0-beta.1, @jupyterlite/session@workspace:packages/session":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/session@workspace:packages/session"
   dependencies:
@@ -5051,7 +5055,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/settings@workspace:packages/settings":
+"@jupyterlite/settings@^0.7.0-beta.1, @jupyterlite/settings@workspace:packages/settings":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/settings@workspace:packages/settings"
   dependencies:

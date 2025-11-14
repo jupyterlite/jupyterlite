@@ -53,11 +53,7 @@ import {
   ServiceWorkerManager,
 } from '@jupyterlite/apputils';
 
-import {
-  BrowserStorageDrive,
-  IKernelClient,
-  Settings,
-} from '@jupyterlite/services';
+import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
