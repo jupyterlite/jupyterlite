@@ -1,6 +1,12 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents, Drive, ServerConnection } from '@jupyterlab/services';
+import {
+  Contents,
+  Drive,
+  ContentProviderRegistry,
+  ServerConnection,
+  IContentProviderRegistry,
+} from '@jupyterlab/services';
 
 import { INotebookContent } from '@jupyterlab/nbformat';
 
@@ -47,8 +53,17 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this._storageDrivers = options.storageDrivers || null;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     this._ready = new PromiseDelegate();
+    this.contentProviderRegistry = new ContentProviderRegistry({
+      defaultProvider: this,
+    });
     this.initialize().catch(console.warn);
   }
+
+  /**
+   * Content provider registry.
+   * @experimental
+   */
+  readonly contentProviderRegistry: IContentProviderRegistry;
 
   /**
    * Dispose the drive.
