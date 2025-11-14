@@ -5,5 +5,7 @@ export * from './licenses';
 export * from './pluginmanager';
 export * from './translation';
 export * from './statedb';
+export * from './tokens';
 export * from './workspaces';
 export * from './workspace-router';
+export * from './service-worker-manager';

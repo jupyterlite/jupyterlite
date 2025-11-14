@@ -31,6 +31,7 @@
     "@jupyterlite/notebook-application-extension": "^0.7.0-beta.1",
     "@jupyterlite/repl-extension": "^0.7.0-beta.1",
     "@jupyterlite/server": "^0.7.0-beta.1",
+    "@jupyterlite/services": "^0.7.0-beta.1",
     "@jupyterlite/services-extension": "^0.7.0-beta.1",
     "@jupyterlite/session": "^0.7.0-beta.1",
     "@jupyterlite/settings": "^0.7.0-beta.1",

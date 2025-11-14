@@ -10,7 +10,8 @@ import SW_URL from './service-worker?text';
  * The token for the ServiceWorker.
  */
 export const IServiceWorkerManager = new Token<IServiceWorkerManager>(
-  '@jupyterlite/server:IServiceWorkerManager',
+  '@jupyterlite/apputils:IServiceWorkerManager',
+  'The service worker manager',
 );
 
 /**

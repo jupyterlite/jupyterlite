@@ -2,15 +2,16 @@
   "extends": "../../tsconfigbase",
   "compilerOptions": {
     "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["@types/serviceworker"]
   },
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../application"
+      "path": "../types"
     },
     {
-      "path": "../types"
+      "path": "../services"
     }
   ]
 }

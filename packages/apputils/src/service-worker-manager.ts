@@ -6,7 +6,7 @@ import {
   DriveContentsProcessor,
   TDriveMethod,
   TDriveRequest,
-} from '@jupyterlite/contents';
+} from '@jupyterlite/services';
 
 import { PromiseDelegate, UUID } from '@lumino/coreutils';
 

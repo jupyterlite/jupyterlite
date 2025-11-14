@@ -23,6 +23,90 @@ introduced in JupyterLab 4.5 and Notebook 7.5.
 Support for Python 3.9 has been dropped. `jupyterlite-core` now requires Python 3.10 or
 higher.
 
+### Package Consolidation
+
+```{warning}
+The individual service packages have been deprecated in favor of the unified
+`@jupyterlite/services` package, and the `@jupyterlite/server` package has been
+deprecated in favor of `@jupyterlite/apputils`.
+```
+
+Starting with JupyterLite 0.7.0, the following packages have been deprecated and their
+functionality has been consolidated into the `@jupyterlite/services` package:
+
+- `@jupyterlite/kernel`
+- `@jupyterlite/contents`
+- `@jupyterlite/session`
+- `@jupyterlite/settings`
+
+Additionally, the `@jupyterlite/server` package has been deprecated, with its service
+worker management functionality moved to the `@jupyterlite/apputils` package.
+
+These changes were made to more closely follow the package structure used by JupyterLab
+and to better organize utility functions within the codebase.
+
+If your extension or application was importing from these individual packages, you
+should update your imports accordingly. See the sections below for concrete migration
+examples.
+
+#### Migration to `@jupyterlite/services`
+
+The `@jupyterlite/services` package consolidates all service-related functionality and
+provides all the same exports as the individual packages.
+
+##### Example 1: Kernel Extension
+
+If you have a custom kernel extension, update your imports:
+
+```diff
+-import { IKernelSpecs } from '@jupyterlite/kernel';
++import { IKernelSpecs } from '@jupyterlite/services';
+```
+
+##### Example 2: Storage Management
+
+If you're working with the browser storage drive or settings:
+
+```diff
+-import { BrowserStorageDrive } from '@jupyterlite/contents';
+-import { Settings } from '@jupyterlite/settings';
++import { BrowserStorageDrive, Settings } from '@jupyterlite/services';
+```
+
+##### Example 3: Session Management
+
+For session management:
+
+```diff
+-import { LiteSessionClient } from '@jupyterlite/session';
++import { LiteSessionClient } from '@jupyterlite/services';
+```
+
+#### Migration to `@jupyterlite/apputils`
+
+The `@jupyterlite/server` package has been deprecated in favor of
+`@jupyterlite/apputils`, which now provides the service worker management functionality.
+
+##### Import Updates
+
+Update your imports to use `@jupyterlite/apputils` instead:
+
+```diff
+-import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
++import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/apputils';
+```
+
+The token identifier changed from:
+
+- `'@jupyterlite/server:IServiceWorkerManager'` to `IServiceWorkerManager` (imported
+  from `@jupyterlite/apputils`)
+
+```{note}
+The `@jupyterlite/server` package will continue to work as a re-export from
+`@jupyterlite/apputils` for backward compatibility, but it is recommended to update your
+imports to use `@jupyterlite/apputils` directly.
+```
+
 ## `0.5.0` to `0.6.0`
 
 ```{warning}

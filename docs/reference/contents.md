@@ -14,15 +14,15 @@ may depend on how kernels are implemented.
 Kernels using Emscripten (like [pyodide](https://github.com/jupyterlite/pyodide-kernel/)
 or [xeus kernels](https://github.com/jupyterlite/xeus/)) relies on the
 [Emscripten filesystem](https://emscripten.org/docs/api_reference/Filesystem-API.html)
-to access their contents. For such case, `@jupyterlite/contents` provides a
-[`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/classes/jupyterlite_contents.DriveFS-1.html)
+to access their contents. For such case, `@jupyterlite/services` provides a
+[`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/classes/jupyterlite_services.DriveFS-1.html)
 helper class which can be used to mount files in the Emscripten filesystem:
 
 ```ts
   const mountpoint = '/drive';
   const { FS, PATH, ERRNO_CODES } = /* provided by the emscripten module */;
   const { baseUrl } = options;
-  const { DriveFS } = await import('@jupyterlite/contents');
+  const { DriveFS } = await import('@jupyterlite/services');
 
   const driveFS = new DriveFS({
     FS,
@@ -120,7 +120,7 @@ body describing the filesystem operation to be performed. In this case, it looks
 }
 ```
 
-This request is captured by the service worker (defined in the `@jupyterlite/server`
+This request is captured by the service worker (defined in the `@jupyterlite/apputils`
 package). The service worker forwards the HTTP request to the main thread via a message
 in a `BroadcastChannel` named `/sw-api.v1`. This message is received by the
 `ServiceWorkerManager` that is instantiated in the plugin
