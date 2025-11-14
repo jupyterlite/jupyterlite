@@ -56,8 +56,7 @@ provides all the same exports as the individual packages.
 
 ##### Example 1: Kernel Extension
 
-If you have a custom kernel extension (see [](../howto/extensions/kernel.md)), update
-your imports:
+If you have a custom kernel extension, update your imports:
 
 ```diff
 -import { IKernelSpecs } from '@jupyterlite/kernel';
