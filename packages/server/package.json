@@ -42,22 +42,9 @@
     "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
     "watch": "tsc -b --watch"
   },
+  "deprecated": "This package is deprecated. Please use @jupyterlite/apputils instead.",
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.5.0-rc.1",
-    "@jupyterlab/nbformat": "~4.5.0-rc.1",
-    "@jupyterlab/observables": "~5.5.0-rc.1",
-    "@jupyterlab/services": "~7.5.0-rc.1",
-    "@jupyterlab/settingregistry": "~4.5.0-rc.1",
-    "@jupyterlab/statedb": "~4.5.0-rc.1",
-    "@jupyterlite/contents": "^0.7.0-beta.1",
-    "@jupyterlite/kernel": "^0.7.0-beta.1",
-    "@jupyterlite/session": "^0.7.0-beta.1",
-    "@jupyterlite/settings": "^0.7.0-beta.1",
-    "@lumino/application": "^2.4.5",
-    "@lumino/coreutils": "^2.2.2",
-    "@lumino/signaling": "^2.1.5",
-    "@types/emscripten": "^1.39.6",
-    "mock-socket": "^9.3.1"
+    "@jupyterlite/apputils": "^0.7.0-beta.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

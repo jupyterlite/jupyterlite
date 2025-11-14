@@ -47,17 +47,19 @@ import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
-import { LiteWorkspaceManager } from '@jupyterlite/apputils';
+import {
+  IServiceWorkerManager,
+  LiteWorkspaceManager,
+  ServiceWorkerManager,
+} from '@jupyterlite/apputils';
 
-import { IKernelClient } from '@jupyterlite/kernel';
-
-import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
+import {
+  BrowserStorageDrive,
+  IKernelClient,
+  Settings,
+} from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
-
-import { BrowserStorageDrive } from '@jupyterlite/contents';
-
-import { Settings } from '@jupyterlite/settings';
 
 import { filter } from '@lumino/algorithm';
 

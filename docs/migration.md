@@ -23,6 +23,74 @@ introduced in JupyterLab 4.5 and Notebook 7.5.
 Support for Python 3.9 has been dropped. `jupyterlite-core` now requires Python 3.10 or
 higher.
 
+### Package Consolidation
+
+```{warning}
+The individual service packages have been deprecated in favor of the unified
+`@jupyterlite/services` package, and the `@jupyterlite/server` package has been
+deprecated in favor of `@jupyterlite/apputils`.
+```
+
+Starting with JupyterLite 0.7.0, the following packages have been deprecated and their
+functionality has been consolidated into the `@jupyterlite/services` package:
+
+- `@jupyterlite/kernel`
+- `@jupyterlite/contents`
+- `@jupyterlite/session`
+- `@jupyterlite/settings`
+
+Additionally, the `@jupyterlite/server` package has been deprecated, with its service
+worker management functionality moved to the `@jupyterlite/apputils` package.
+
+These changes were made to more closely follow the package structure used by JupyterLab
+and to better organize utility functions within the codebase.
+
+If your extension or application was importing from these individual packages, you should
+update your imports accordingly.
+
+#### Migration from `@jupyterlite/services`
+
+For example:
+
+```diff
+-import { IKernelSpecs } from '@jupyterlite/kernel';
++import { IKernelSpecs } from '@jupyterlite/services';
+```
+
+```diff
+-import { BrowserStorageDrive } from '@jupyterlite/contents';
++import { BrowserStorageDrive } from '@jupyterlite/services';
+```
+
+```diff
+-import { LiteSessionClient } from '@jupyterlite/session';
++import { LiteSessionClient } from '@jupyterlite/services';
+```
+
+The `@jupyterlite/services` package provides all the same exports as the individual
+packages, making it a drop-in replacement in most cases.
+
+#### Migration from `@jupyterlite/server`
+
+If you were importing from `@jupyterlite/server`, update your imports to use
+`@jupyterlite/apputils` instead:
+
+```diff
+-import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/server';
++import { IServiceWorkerManager, ServiceWorkerManager } from '@jupyterlite/apputils';
+```
+
+The `@jupyterlite/server` package will continue to work as a re-export from
+`@jupyterlite/apputils` for backward compatibility, but it is recommended to update your
+imports to use `@jupyterlite/apputils` directly.
+
+Note that the service worker manager token has also been updated:
+
+```diff
+-'@jupyterlite/server:IServiceWorkerManager'
++'@jupyterlite/apputils:IServiceWorkerManager'
+```
+
 ## `0.5.0` to `0.6.0`
 
 ```{warning}
