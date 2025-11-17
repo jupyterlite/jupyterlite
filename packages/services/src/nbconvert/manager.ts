@@ -51,7 +51,7 @@ export class LiteNbConvertManager extends NbConvertManager {
     const { format, path } = options;
 
     const model = await this._contentsManager.get(path, { content: true });
-    const exporter = this._exporters.getExporter(format);
+    const exporter = this._exporters.get(format);
     if (!exporter) {
       throw new Error(`Unknown export format: ${format}`);
     }
@@ -72,7 +72,7 @@ export class Exporters implements INbConvertExporters {
    * @param format The export format name
    * @param exporter The exporter instance
    */
-  registerExporter(format: string, exporter: IExporter): void {
+  register(format: string, exporter: IExporter): void {
     this._exporters.set(format, exporter);
   }
 
@@ -82,7 +82,7 @@ export class Exporters implements INbConvertExporters {
    * @param format The export format name
    * @returns The exporter or undefined if not found
    */
-  getExporter(format: string): IExporter | undefined {
+  get(format: string): IExporter | undefined {
     return this._exporters.get(format);
   }
 

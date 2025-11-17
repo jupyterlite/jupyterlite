@@ -23,7 +23,7 @@ export interface INbConvertExporters {
    * @param format The export format name
    * @param exporter The exporter instance
    */
-  registerExporter(format: string, exporter: IExporter): void;
+  register(format: string, exporter: IExporter): void;
 
   /**
    * Get an exporter by format.
@@ -31,7 +31,7 @@ export interface INbConvertExporters {
    * @param format The export format name
    * @returns The exporter or undefined if not found
    */
-  getExporter(format: string): IExporter | undefined;
+  get(format: string): IExporter | undefined;
 
   /**
    * Get all registered export formats.

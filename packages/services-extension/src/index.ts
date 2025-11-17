@@ -268,8 +268,8 @@ const exportersPlugin: ServiceManagerPlugin<INbConvertExporters> = {
     // Register built-in exporters
     // use a different name than just 'notebook' since 'notebook' is filtered by the upstream
     // JupyterLab plugin: https://github.com/jupyterlab/jupyterlab/blob/c832df73b105c9f3fc215b8aec1180c8805e9c12/packages/notebook-extension/src/index.ts#L700
-    exporters.registerExporter('Notebook (ipynb)', new NotebookExporter());
-    exporters.registerExporter('Executable Script', new ScriptExporter());
+    exporters.register('Notebook (ipynb)', new NotebookExporter());
+    exporters.register('Executable Script', new ScriptExporter());
 
     return exporters;
   },
