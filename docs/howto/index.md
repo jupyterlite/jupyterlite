@@ -91,6 +91,7 @@ more features and plugins, such as frontend extensions and new kernels.
 
 extensions/frontend
 extensions/kernel
+extensions/custom-exporters
 extensions/cli-addons
 ```
 
