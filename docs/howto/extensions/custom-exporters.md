@@ -124,4 +124,3 @@ export default exporterPlugin;
 
 - [Create a frontend extension](frontend.md)
 - [JupyterLab Extension Tutorial](https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html)
-- [@jupyterlite/services API Documentation](https://jupyterlite.readthedocs.io/en/latest/api/index.html)
