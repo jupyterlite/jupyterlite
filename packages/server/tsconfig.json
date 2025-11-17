@@ -2,25 +2,12 @@
   "extends": "../../tsconfigbase",
   "compilerOptions": {
     "outDir": "lib",
-    "rootDir": "src",
-    "types": ["@types/emscripten", "@types/serviceworker"]
+    "rootDir": "src"
   },
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../contents"
-    },
-    {
-      "path": "../kernel"
-    },
-    {
-      "path": "../localforage"
-    },
-    {
-      "path": "../session"
-    },
-    {
-      "path": "../settings"
+      "path": "../apputils"
     }
   ]
 }

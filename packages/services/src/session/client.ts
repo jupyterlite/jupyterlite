@@ -2,7 +2,7 @@ import { ServerConnection, Session } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { LiteKernelClient } from '@jupyterlite/kernel';
+import { LiteKernelClient } from '../kernel';
 
 import { ArrayExt } from '@lumino/algorithm';
 

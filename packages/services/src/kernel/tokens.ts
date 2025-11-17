@@ -24,7 +24,7 @@ export const FALLBACK_KERNEL = 'javascript';
  * The token for the kernel client.
  */
 export const IKernelClient = new Token<IKernelClient>(
-  '@jupyterlite/kernel:IKernelClient',
+  '@jupyterlite/services:IKernelClient',
 );
 
 /**
@@ -53,7 +53,7 @@ export interface IKernelClient extends Kernel.IKernelAPIClient {
  * The token for the kernel spec client.
  */
 export const IKernelSpecClient = new Token<IKernelSpecClient>(
-  '@jupyterlite/kernel:IKernelSpecClient',
+  '@jupyterlite/services:IKernelSpecClient',
 );
 
 /**
@@ -131,7 +131,9 @@ export namespace IKernel {
 /**
  * The token for the kernel spec service.
  */
-export const IKernelSpecs = new Token<IKernelSpecs>('@jupyterlite/kernel:IKernelSpecs');
+export const IKernelSpecs = new Token<IKernelSpecs>(
+  '@jupyterlite/services:IKernelSpecs',
+);
 
 /**
  * The interface for the kernel specs service.

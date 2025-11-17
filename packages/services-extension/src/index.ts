@@ -37,22 +37,19 @@ import {
 
 import { LiteWorkspaceManager } from '@jupyterlite/apputils';
 
-import { BrowserStorageDrive } from '@jupyterlite/contents';
+import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
 
 import {
+  BrowserStorageDrive,
   IKernelClient,
   IKernelSpecClient,
   IKernelSpecs,
   KernelSpecs,
   LiteKernelClient,
   LiteKernelSpecClient,
-} from '@jupyterlite/kernel';
-
-import { ILocalForage, ensureMemoryStorage } from '@jupyterlite/localforage';
-
-import { LiteSessionClient } from '@jupyterlite/session';
-
-import { Settings as JupyterLiteSettings } from '@jupyterlite/settings';
+  LiteSessionClient,
+  Settings as JupyterLiteSettings,
+} from '@jupyterlite/services';
 
 import localforage from 'localforage';
 
