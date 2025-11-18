@@ -573,8 +573,10 @@ export abstract class ContentsAPI {
     // Emscripten 4.0.9+ (used by Pyodide 0.28+) requires all three timestamps
     // to be valid Date objects with .getTime() method (see https://github.com/emscripten-core/emscripten/pull/22998).
     // Fallback to epoch if any timestamp is missing/null/undefined.
-    const date = new Date(stats.atime || stats.mtime || stats.ctime || 0);
-    stats.atime = stats.mtime = stats.ctime = date;
+    const defaultDate = new Date(0);
+    stats.atime = stats.atime ? new Date(stats.atime) : defaultDate;
+    stats.mtime = stats.mtime ? new Date(stats.mtime) : defaultDate;
+    stats.ctime = stats.ctime ? new Date(stats.ctime) : defaultDate;
 
     // ensure a non-undefined size (0 isn't great, though)
     stats.size = stats.size || 0;
