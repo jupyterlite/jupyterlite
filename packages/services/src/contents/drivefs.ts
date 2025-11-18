@@ -8,6 +8,8 @@
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
 import { Contents } from '@jupyterlab/services';
 
+import { UUID } from '@lumino/coreutils';
+
 import {
   FS,
   ERRNO_CODES,
@@ -83,6 +85,11 @@ export type TDriveRequest<T extends TDriveMethod> = {
    * A unique ID to identify the origin of this request
    */
   browsingContextId?: string;
+
+  /**
+   * A unique ID to correlate this specific request with its response
+   */
+  requestId?: string;
 
   /**
    * The path to the file/directory for which the request was sent
@@ -248,7 +255,11 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
       return 0;
     }
 
-    stream.node.timestamp = Date.now();
+    const now = Date.now();
+    stream.node.timestamp = now;
+    stream.node.atime = now;
+    stream.node.mtime = now;
+    stream.node.ctime = now;
 
     if (position + length > (stream.file?.data.length || 0)) {
       const oldData = stream.file.data ? stream.file.data : new Uint8Array();
@@ -318,6 +329,15 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         case 'timestamp':
           node.timestamp = value;
           break;
+        case 'atime':
+          node.atime = value;
+          break;
+        case 'mtime':
+          node.mtime = value;
+          break;
+        case 'ctime':
+          node.ctime = value;
+          break;
         case 'size': {
           const size = value;
           const path = this.fs.realPath(node);
@@ -345,7 +365,6 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
           }
           break;
         }
-        case 'ctime':
         case 'dontFollow':
           // Ignore for now
           break;
@@ -550,16 +569,13 @@ export abstract class ContentsAPI {
       method: 'getattr',
       path: this.normalizePath(path),
     });
-    // Turn datetimes into proper objects
-    if (stats.atime) {
-      stats.atime = new Date(stats.atime);
-    }
-    if (stats.mtime) {
-      stats.mtime = new Date(stats.mtime);
-    }
-    if (stats.ctime) {
-      stats.ctime = new Date(stats.ctime);
-    }
+
+    // Emscripten 4.0.9+ (used by Pyodide 0.28+) requires all three timestamps
+    // to be valid Date objects with .getTime() method (see https://github.com/emscripten-core/emscripten/pull/22998).
+    // Fallback to epoch if any timestamp is missing/null/undefined.
+    const date = new Date(stats.atime || stats.mtime || stats.ctime || 0);
+    stats.atime = stats.mtime = stats.ctime = date;
+
     // ensure a non-undefined size (0 isn't great, though)
     stats.size = stats.size || 0;
     return stats;
@@ -611,14 +627,18 @@ export class ServiceWorkerContentsAPI extends ContentsAPI {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', encodeURI(this.endpoint), false);
 
-    // Add the origin browsing context ID to the request
-    const requestWithBrowsingContextId = {
-      data,
+    // Generate unique request ID for correlation
+    const requestId = UUID.uuid4();
+
+    // Add the origin browsing context ID and request ID to the request
+    const requestWithMetadata = {
+      data: { ...data, requestId },
       browsingContextId: this._browsingContextId,
+      requestId,
     };
 
     try {
-      xhr.send(JSON.stringify(requestWithBrowsingContextId));
+      xhr.send(JSON.stringify(requestWithMetadata));
     } catch (e) {
       console.error(e);
     }
