@@ -46,6 +46,9 @@ export interface IEmscriptenFSNode {
   stream_ops: IEmscriptenStreamOps;
   node_ops: IEmscriptenNodeOps;
   timestamp: number;
+  atime: number;
+  mtime: number;
+  ctime: number;
 }
 
 export interface IEmscriptenStream {

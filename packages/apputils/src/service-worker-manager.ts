@@ -198,10 +198,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     event: MessageEvent<{
       data: any;
       browsingContextId: string;
+      requestId?: string;
       pathname: string;
     }>,
   ): Promise<void> => {
-    const { data, browsingContextId, pathname } = event.data;
+    const { data, browsingContextId, requestId, pathname } = event.data;
 
     if (browsingContextId !== this._browsingContextId) {
       // Message is not meant for us
@@ -211,18 +212,20 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     if (pathname.includes('/api/stdin/')) {
       this._onStdinMessage(pathname, data);
     } else {
-      this._onDriveMessage(data);
+      this._onDriveMessage(data, requestId);
     }
   };
 
   private _onDriveMessage = async <T extends TDriveMethod>(
     data: TDriveRequest<T>,
+    requestId?: string,
   ): Promise<void> => {
     const response = await this._driveContentsProcessor.processDriveRequest(data);
-    // pass the browsingContextId along so the Service Worker can identify the request
+    // pass the browsingContextId and requestId along so the Service Worker can identify the request
     this._broadcastChannel.postMessage({
       response,
       browsingContextId: this._browsingContextId,
+      requestId,
     });
   };
 

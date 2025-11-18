@@ -139,7 +139,11 @@ async function broadcastOne(request: Request, url: URL): Promise<Response> {
   const promise = new Promise<Response>((resolve) => {
     const messageHandler = (event: MessageEvent) => {
       const data = event.data;
-      if (data.browsingContextId !== message.browsingContextId) {
+      // Match both browsingContextId AND requestId to ensure correct correlation
+      if (
+        data.browsingContextId !== message.browsingContextId ||
+        data.requestId !== message.requestId
+      ) {
         // bail if the message is not for us
         return;
       }
