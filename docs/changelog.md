@@ -53,6 +53,8 @@ JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and br
 - [JupyterLab 4.5](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-5)
 - [Jupyter Notebook 7.5](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
 
+JupyterLab 4.5 notably includes significant [notebook performance improvements](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#performance-and-windowing), such as the new optimized cell rendering with the new `contentVisibility` windowing mode.
+
 ### Improved Pyodide Compatibility
 
 JupyterLite 0.7.0 includes compatibility fixes for the latest Pyodide releases that use Emscripten 4. These fixes ensure stable kernel startup and operation with modern Python environments running in the browser.
