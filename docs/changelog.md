@@ -8,7 +8,7 @@ JupyterLite 0.7.0 includes a number of new features (described below), bug fixes
 
 Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
 
-<img alt="Workspace support in JupyterLite" src="./changelog_assets/0.7-jupyterlite-workspaces.png">
+![Workspace support in JupyterLite](./changelog_assets/0.7-jupyterlite-workspaces.png)
 
 The UI layout is also now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
 
@@ -16,13 +16,13 @@ The UI layout is also now automatically persisted across sessions. When you retu
 
 JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
 
-<img alt="Video and audio files opened in JupyterLite" src="./changelog_assets/0.7-jupyterlite-audio-video.png">
+![Video and audio files opened in JupyterLite](./changelog_assets/0.7-jupyterlite-audio-video.png)
 
 ### Basic Interrupt Functionality
 
 The interrupt button now cancels the execution of cells that are scheduled to run after the currently executing cell. While this doesn't interrupt the currently running cell itself, it provides better control when executing multiple cells in sequence.
 
-<img alt="Basic interrupt functionality in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-basic-interrupt.png">
+![Basic interrupt functionality in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-interrupt.png)
 
 ### Basic Notebook Export
 
@@ -34,13 +34,13 @@ Additionally, JupyterLite provides extension points for third-party extensions t
 There is currently no built-in support for PDF export, but this may be added in the future via a third-party extension.
 ```
 
-<img alt="Basic notebook export options in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-basic-notebook-export.png">
+![Basic notebook export options in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-notebook-export.png)
 
 ### File Menu Download Option
 
 A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
 
-<img alt="File menu download option in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-filemenu-download.png">
+![File menu download option in JupyterLite](./changelog_assets/0.7-jupyterlite-filemenu-download.png)
 
 ### Enhanced Markdown Support
 
