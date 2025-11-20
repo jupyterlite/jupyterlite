@@ -43,6 +43,7 @@
     "@jupyterlab/coreutils": "~6.5.0",
     "@jupyterlab/nbformat": "~4.5.0",
     "@jupyterlab/observables": "~5.5.0",
+    "@jupyterlab/pluginmanager": "~4.5.0",
     "@jupyterlab/services": "~7.5.0",
     "@jupyterlab/settingregistry": "~4.5.0",
     "@jupyterlab/statedb": "~4.5.0",
