@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { IRouter, Router } from '@jupyterlab/application';
+import type { IRouter } from '@jupyterlab/application';
+import { Router } from '@jupyterlab/application';
 import { Token } from '@lumino/coreutils';
 
 /**

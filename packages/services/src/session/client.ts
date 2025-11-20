@@ -1,14 +1,15 @@
-import { ServerConnection, Session } from '@jupyterlab/services';
+import type { Session } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
-import { LiteKernelClient } from '../kernel';
+import type { LiteKernelClient } from '../kernel';
 
 import { ArrayExt } from '@lumino/algorithm';
 
 import { UUID } from '@lumino/coreutils';
 
-import { ISessionAPIClient } from '@jupyterlab/services/lib/session/session';
+import type { ISessionAPIClient } from '@jupyterlab/services/lib/session/session';
 
 type DeepPartial<T> = {
   [P in keyof T]?: DeepPartial<T[P]>;

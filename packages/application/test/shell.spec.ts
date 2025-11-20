@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { SingleWidgetShell, ISingleWidgetShell } from '@jupyterlite/application';
+import type { ISingleWidgetShell } from '@jupyterlite/application';
+import { SingleWidgetShell } from '@jupyterlite/application';
 
 import { Widget } from '@lumino/widgets';
 

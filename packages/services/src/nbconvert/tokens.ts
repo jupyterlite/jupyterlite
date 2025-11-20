@@ -3,7 +3,7 @@
 
 import { Token } from '@lumino/coreutils';
 
-import { Contents } from '@jupyterlab/services';
+import type { Contents } from '@jupyterlab/services';
 
 /**
  * The token for the exporter registry.

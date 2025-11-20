@@ -1,18 +1,17 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents } from '@jupyterlab/services';
+import type { Contents } from '@jupyterlab/services';
 
-import {
-  DriveContentsProcessor,
-  TDriveMethod,
-  TDriveRequest,
-} from '@jupyterlite/services';
+import type { TDriveMethod, TDriveRequest } from '@jupyterlite/services';
+import { DriveContentsProcessor } from '@jupyterlite/services';
 
 import { PromiseDelegate, UUID } from '@lumino/coreutils';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
-import { IServiceWorkerManager, WORKER_NAME } from './tokens';
+import type { IServiceWorkerManager } from './tokens';
+import { WORKER_NAME } from './tokens';
 
 /**
  * The service-worker broadcast channel id

@@ -3,17 +3,17 @@
 
 import type { Remote } from 'comlink';
 
-import { IObservableMap } from '@jupyterlab/observables';
+import type { IObservableMap } from '@jupyterlab/observables';
 
-import { Kernel, KernelMessage, KernelSpec } from '@jupyterlab/services';
+import type { Kernel, KernelMessage, KernelSpec } from '@jupyterlab/services';
 
 import { Token } from '@lumino/coreutils';
 
-import { IObservableDisposable } from '@lumino/disposable';
+import type { IObservableDisposable } from '@lumino/disposable';
 
-import { ISignal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
 
-import { KernelSpecs } from './kernelspecs';
+import type { KernelSpecs } from './kernelspecs';
 
 /**
  * The kernel name of last resort.

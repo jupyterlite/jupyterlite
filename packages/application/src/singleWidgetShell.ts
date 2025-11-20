@@ -1,17 +1,19 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEnd } from '@jupyterlab/application';
+import type { JupyterFrontEnd } from '@jupyterlab/application';
 
-import { DocumentRegistry } from '@jupyterlab/docregistry';
+import type { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { find } from '@lumino/algorithm';
 
 import { Token } from '@lumino/coreutils';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
-import { FocusTracker, Panel, Widget, PanelLayout } from '@lumino/widgets';
+import type { FocusTracker } from '@lumino/widgets';
+import { Panel, Widget, PanelLayout } from '@lumino/widgets';
 
 /**
  * The single widget application shell token.

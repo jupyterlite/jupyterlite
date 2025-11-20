@@ -1,8 +1,9 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { ServerConnection, Setting, SettingManager } from '@jupyterlab/services';
+import type { ServerConnection, Setting } from '@jupyterlab/services';
+import { SettingManager } from '@jupyterlab/services';
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import type { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 

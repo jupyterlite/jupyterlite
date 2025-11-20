@@ -1,13 +1,10 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { IObservableMap, ObservableMap } from '@jupyterlab/observables';
+import type { IObservableMap } from '@jupyterlab/observables';
+import { ObservableMap } from '@jupyterlab/observables';
 
-import {
-  KernelAPI,
-  Kernel,
-  KernelMessage,
-  ServerConnection,
-} from '@jupyterlab/services';
+import type { Kernel } from '@jupyterlab/services';
+import { KernelAPI, KernelMessage, ServerConnection } from '@jupyterlab/services';
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
@@ -15,13 +12,16 @@ import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kern
 
 import { PromiseDelegate, UUID } from '@lumino/coreutils';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
 import { Mutex } from 'async-mutex';
 
-import { Server as WebSocketServer, Client as WebSocketClient } from 'mock-socket';
+import type { Client as WebSocketClient } from 'mock-socket';
+import { Server as WebSocketServer } from 'mock-socket';
 
-import { FALLBACK_KERNEL, IKernel, IKernelSpecs } from './tokens';
+import type { IKernel, IKernelSpecs } from './tokens';
+import { FALLBACK_KERNEL } from './tokens';
 
 /**
  * Use the default kernel wire protocol.

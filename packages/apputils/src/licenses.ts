@@ -5,7 +5,7 @@ import { Licenses } from '@jupyterlab/apputils';
 
 import { URLExt, PageConfig } from '@jupyterlab/coreutils';
 
-import { IFederatedExtension } from '@jupyterlite/types';
+import type { IFederatedExtension } from '@jupyterlite/types';
 
 /**
  * A license bundle is a collection of packages and their licenses.

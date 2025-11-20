@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { JupyterFrontEnd } from '@jupyterlab/application';
 
 import { createRendermimePlugins } from '@jupyterlab/application/lib/mimerenderers';
 
@@ -9,9 +10,10 @@ import { LabStatus } from '@jupyterlab/application/lib/status';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import type { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
-import { ISingleWidgetShell, SingleWidgetShell } from './singleWidgetShell';
+import type { ISingleWidgetShell } from './singleWidgetShell';
+import { SingleWidgetShell } from './singleWidgetShell';
 
 /**
  * App is the main application class. It is instantiated once and shared.

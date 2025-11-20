@@ -3,10 +3,20 @@
 
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import {
-  ConfigSection,
+import type {
   Contents,
   Event,
+  Kernel,
+  KernelSpec,
+  NbConvert,
+  ServiceManagerPlugin,
+  Session,
+  Setting,
+  User,
+  Workspace,
+} from '@jupyterlab/services';
+import {
+  ConfigSection,
   IConfigSectionManager,
   IContentsManager,
   IDefaultDrive,
@@ -19,19 +29,11 @@ import {
   ISettingManager,
   IUserManager,
   IWorkspaceManager,
-  Kernel,
   KernelManager,
-  KernelSpec,
   KernelSpecManager,
-  NbConvert,
   ServerConnection,
-  ServiceManagerPlugin,
-  Session,
   SessionManager,
-  Setting,
-  User,
   UserManager,
-  Workspace,
 } from '@jupyterlab/services';
 
 import { LiteWorkspaceManager } from '@jupyterlite/apputils';

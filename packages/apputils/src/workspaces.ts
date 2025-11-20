@@ -1,4 +1,5 @@
-import { ServerConnection, Workspace } from '@jupyterlab/services';
+import type { Workspace } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IndexedDBDataConnector } from './statedb';
