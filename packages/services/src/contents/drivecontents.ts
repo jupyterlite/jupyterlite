@@ -1,6 +1,7 @@
 import { PathExt } from '@jupyterlab/coreutils';
-import { Contents } from '@jupyterlab/services';
-import { BLOCK_SIZE, TDriveMethod, TDriveRequest, TDriveResponse } from './drivefs';
+import type { Contents } from '@jupyterlab/services';
+import type { TDriveMethod, TDriveRequest, TDriveResponse } from './drivefs';
+import { BLOCK_SIZE } from './drivefs';
 import { DIR_MODE, FILE_MODE } from './emscripten';
 
 export interface IDriveContentsProcessor {

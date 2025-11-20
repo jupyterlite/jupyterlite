@@ -3,12 +3,8 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import {
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin,
-  JupyterLab,
-  IRouter,
-} from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { JupyterFrontEnd, JupyterLab, IRouter } from '@jupyterlab/application';
 
 import {
   ILicensesClient,
@@ -18,7 +14,8 @@ import {
   IWindowResolver,
 } from '@jupyterlab/apputils';
 
-import { IPluginManager, PluginListModel, Plugins } from '@jupyterlab/pluginmanager';
+import type { PluginListModel } from '@jupyterlab/pluginmanager';
+import { IPluginManager, Plugins } from '@jupyterlab/pluginmanager';
 
 import {
   ITranslator,

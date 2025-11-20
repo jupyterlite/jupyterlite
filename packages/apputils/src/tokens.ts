@@ -1,8 +1,8 @@
 import { Token } from '@lumino/coreutils';
 
-import { ISignal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
 
-import { Contents } from '@jupyterlab/services';
+import type { Contents } from '@jupyterlab/services';
 
 import SW_URL from './service-worker?text';
 

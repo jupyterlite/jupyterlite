@@ -3,7 +3,7 @@
 
 import { ReactWidget } from '@jupyterlab/apputils';
 
-import { ITranslator } from '@jupyterlab/translation';
+import type { ITranslator } from '@jupyterlab/translation';
 
 import React from 'react';
 

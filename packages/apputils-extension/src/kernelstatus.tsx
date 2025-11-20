@@ -1,17 +1,19 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import type { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
 import { IToolbarWidgetRegistry, ReactWidget } from '@jupyterlab/apputils';
 
-import { NotebookPanel } from '@jupyterlab/notebook';
+import type { NotebookPanel } from '@jupyterlab/notebook';
 
-import { ILoggerRegistry, ILogOutputModel } from '@jupyterlab/logconsole';
+import type { ILogOutputModel } from '@jupyterlab/logconsole';
+import { ILoggerRegistry } from '@jupyterlab/logconsole';
 
-import { Kernel } from '@jupyterlab/services';
+import type { Kernel } from '@jupyterlab/services';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
 import React, { useState, useEffect } from 'react';
 

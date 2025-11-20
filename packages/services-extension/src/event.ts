@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Event, ServerConnection } from '@jupyterlab/services';
+import type { Event } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 
 import { Signal, Stream } from '@lumino/signaling';
 

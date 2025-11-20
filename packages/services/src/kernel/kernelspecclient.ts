@@ -1,9 +1,10 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { KernelSpec, ServerConnection } from '@jupyterlab/services';
+import type { KernelSpec } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 
-import { IKernelSpecs } from './tokens';
+import type { IKernelSpecs } from './tokens';
 
 /**
  * Placeholder for the kernel specs.

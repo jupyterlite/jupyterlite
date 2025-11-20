@@ -3,7 +3,11 @@
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 import { DataConnector } from '@jupyterlab/statedb';
-import { ILanguageList, ITranslatorConnector, Language } from '@jupyterlab/translation';
+import type {
+  ILanguageList,
+  ITranslatorConnector,
+  Language,
+} from '@jupyterlab/translation';
 
 /**
  * A fake locale to retrieve all the language packs.

@@ -1,9 +1,10 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Contents, NbConvert, NbConvertManager } from '@jupyterlab/services';
+import type { Contents, NbConvert } from '@jupyterlab/services';
+import { NbConvertManager } from '@jupyterlab/services';
 
-import { IExporter, INbConvertExporters } from './tokens';
+import type { IExporter, INbConvertExporters } from './tokens';
 
 /**
  * Options for creating a LiteNbConvertManager.

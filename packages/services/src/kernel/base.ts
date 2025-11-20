@@ -1,8 +1,9 @@
 import { KernelMessage } from '@jupyterlab/services';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
-import { IKernel } from './tokens';
+import type { IKernel } from './tokens';
 
 /**
  * A base kernel class handling basic kernel messaging.

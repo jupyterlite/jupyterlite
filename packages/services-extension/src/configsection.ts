@@ -1,14 +1,14 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
+import type {
   ConfigSection,
   ConfigSectionManager,
   IConfigSection,
-  ServerConnection,
 } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 
-import { JSONObject } from '@lumino/coreutils';
+import type { JSONObject } from '@lumino/coreutils';
 
 /**
  * A class to manager config sections in the browser.

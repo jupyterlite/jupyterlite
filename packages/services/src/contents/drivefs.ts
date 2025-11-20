@@ -6,24 +6,21 @@
 // And from https://github.com/gzuidhof/starboard-notebook
 
 // LICENSE: https://github.com/gzuidhof/starboard-notebook/blob/cd8d3fc30af4bd29cdd8f6b8c207df8138f5d5dd/LICENSE
-import { Contents } from '@jupyterlab/services';
+import type { Contents } from '@jupyterlab/services';
 
 import { UUID } from '@lumino/coreutils';
 
-import {
+import type {
   FS,
   ERRNO_CODES,
   PATH,
-  DIR_MODE,
-  SEEK_CUR,
-  SEEK_END,
   IEmscriptenStream,
-  instanceOfStream,
   IEmscriptenStreamOps,
   IEmscriptenNodeOps,
   IEmscriptenFSNode,
   IStats,
 } from './emscripten';
+import { DIR_MODE, SEEK_CUR, SEEK_END, instanceOfStream } from './emscripten';
 
 export const DRIVE_SEPARATOR = ':';
 

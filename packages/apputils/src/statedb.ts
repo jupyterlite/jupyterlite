@@ -1,6 +1,6 @@
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { IDataConnector } from '@jupyterlab/statedb';
+import type { IDataConnector } from '@jupyterlab/statedb';
 
 import type localforage from 'localforage';
 

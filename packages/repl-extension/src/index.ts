@@ -1,17 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  ILabStatus,
-  IRouter,
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin,
-  Router,
-} from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { ILabStatus, IRouter, JupyterFrontEnd, Router } from '@jupyterlab/application';
 
 import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 
-import { CodeConsole, ConsolePanel, IConsoleTracker } from '@jupyterlab/console';
+import type { CodeConsole, ConsolePanel } from '@jupyterlab/console';
+import { IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
 

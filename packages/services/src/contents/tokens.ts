@@ -1,4 +1,4 @@
-import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import type { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { PageConfig } from '@jupyterlab/coreutils';
 import mime from 'mime';
 

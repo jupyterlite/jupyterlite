@@ -1,10 +1,12 @@
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import { KernelSpec } from '@jupyterlab/services';
+import type { KernelSpec } from '@jupyterlab/services';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
-import { FALLBACK_KERNEL, IKernel, IKernelSpecs } from './tokens';
+import type { IKernel, IKernelSpecs } from './tokens';
+import { FALLBACK_KERNEL } from './tokens';
 
 /**
  * A class to register in-browser kernel specs.

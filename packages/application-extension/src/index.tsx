@@ -1,20 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  ILabShell,
-  IRouter,
-  JupyterFrontEnd,
-  JupyterFrontEndPlugin,
-} from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { ILabShell, IRouter, JupyterFrontEnd } from '@jupyterlab/application';
 
-import {
-  Clipboard,
-  Dialog,
-  ICommandPalette,
-  SessionContext,
-  showDialog,
-} from '@jupyterlab/apputils';
+import type { SessionContext } from '@jupyterlab/apputils';
+import { Clipboard, Dialog, ICommandPalette, showDialog } from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
@@ -30,13 +21,11 @@ import {
 } from '@jupyterlab/lsp';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
+import type { Contents, Setting, Workspace } from '@jupyterlab/services';
 import {
-  Contents,
   IDefaultDrive,
   ISettingManager,
   IWorkspaceManager,
-  Setting,
-  Workspace,
 } from '@jupyterlab/services';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
@@ -64,7 +53,8 @@ import '@jupyterlite/server';
 
 import { filter } from '@lumino/algorithm';
 
-import { DockPanel, Widget } from '@lumino/widgets';
+import type { DockPanel } from '@lumino/widgets';
+import { Widget } from '@lumino/widgets';
 
 import React from 'react';
 

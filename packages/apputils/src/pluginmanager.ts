@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { IEntry, PluginListModel } from '@jupyterlab/pluginmanager';
+import type { IEntry } from '@jupyterlab/pluginmanager';
+import { PluginListModel } from '@jupyterlab/pluginmanager';
 
 /**
  * Custom PluginModel for use in JupyterLite

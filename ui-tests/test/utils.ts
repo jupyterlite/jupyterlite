@@ -1,4 +1,4 @@
-import { IJupyterLabPageFixture } from '@jupyterlab/galata';
+import type { IJupyterLabPageFixture } from '@jupyterlab/galata';
 
 const dirListingItemTextSelector = (name: string) =>
   `span.jp-DirListing-itemText > span:text-is("${name}")`;

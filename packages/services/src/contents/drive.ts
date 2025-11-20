@@ -1,14 +1,16 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import { Contents, Drive, ServerConnection } from '@jupyterlab/services';
+import type { Contents, Drive } from '@jupyterlab/services';
+import { ServerConnection } from '@jupyterlab/services';
 
-import { INotebookContent } from '@jupyterlab/nbformat';
+import type { INotebookContent } from '@jupyterlab/nbformat';
 
 import { PathExt } from '@jupyterlab/coreutils';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { ISignal, Signal } from '@lumino/signaling';
+import type { ISignal } from '@lumino/signaling';
+import { Signal } from '@lumino/signaling';
 
 import { FILE, MIME } from './tokens';
 

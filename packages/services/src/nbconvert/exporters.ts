@@ -1,9 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Contents } from '@jupyterlab/services';
+import type { Contents } from '@jupyterlab/services';
 
-import { IExporter } from './tokens';
+import type { IExporter } from './tokens';
 
 /**
  * Base class for notebook exporters.

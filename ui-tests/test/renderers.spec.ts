@@ -3,7 +3,8 @@
 
 import { test } from '@jupyterlab/galata';
 
-import { ConsoleMessage, expect } from '@playwright/test';
+import type { ConsoleMessage } from '@playwright/test';
+import { expect } from '@playwright/test';
 
 import { firefoxWaitForApplication } from './utils';
 

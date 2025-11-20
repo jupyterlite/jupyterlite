@@ -1,10 +1,10 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
+import type { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { PathExt } from '@jupyterlab/coreutils';
 import { RenderMimeRegistry, IUrlResolverFactory } from '@jupyterlab/rendermime';
-import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
-import { Contents } from '@jupyterlab/services';
+import type { IRenderMime } from '@jupyterlab/rendermime-interfaces';
+import type { Contents } from '@jupyterlab/services';
 
 class UrlResolver extends RenderMimeRegistry.UrlResolver {
   constructor(options: RenderMimeRegistry.IUrlResolverOptions) {
