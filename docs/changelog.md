@@ -8,9 +8,9 @@ JupyterLite 0.7.0 includes a number of new features (described below), bug fixes
 
 Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
 
-This feature brings JupyterLite closer to the JupyterLab experience, enabling better project organization and workflow management.
-
-<!-- TODO: Add screencast showing workspace creation and switching -->
+<video controls>
+  <source src="https://github.com/user-attachments/assets/f7e1f993-c407-4d75-b16a-cea36b0575cf" type="video/mp4">
+</video>
 
 ### Layout Restoration
 
@@ -18,15 +18,12 @@ The UI layout is now automatically persisted across sessions. When you return to
 
 This provides a seamless continuation of your work, eliminating the need to manually rearrange panels and reopen files each time you start a new session.
 
-<!-- TODO: Add screencast showing layout persistence -->
+### Audio and Video Playback
 
-### Enhanced Markdown Support
+JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
 
-Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
-
-Additionally, links to local files in Markdown now work correctly, improving the ability to reference and navigate between files in your JupyterLite deployment. This is particularly useful for creating documentation that references other notebooks or files in your project.
-
-<!-- TODO: Add screencast showing images in Markdown -->
+<img alt="Video and audio files opened in JupyterLite"
+src="./changelog_assets/0.7-jupyterlite-audio-video.png">
 
 ### Basic Interrupt Functionality
 
@@ -34,13 +31,33 @@ The interrupt button now cancels the execution of cells that are scheduled to ru
 
 This is useful when you've selected multiple cells to run and want to stop the remaining cells from executing without waiting for them all to complete.
 
-<!-- TODO: Add screencast showing interrupting cell execution -->
+<img alt="Basic interrupt functionality in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-basic-interrupt.png">
+
+### Basic Notebook Export
+
+JupyterLite now includes basic notebook export functionality through a custom export plugin. Users can export notebooks to different formats including `.ipynb` (notebook format) and script formats directly from the File menu.
+
+Additionally, JupyterLite provides extension points for third-party extensions to register custom exporters. This enables the development of additional export formats, such as PDF, in future extensions.
+
+```{warning}
+There is currently no built-in support for PDF export, but this may be added in the future via a third-party extension.
+```
+
+<img alt="Basic notebook export options in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-basic-notebook-export.png">
 
 ### File Menu Download Option
 
 A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
 
 This complements the existing download functionality in the file browser and provides a more discoverable way to export your work, especially when you have a file open in the editor.
+
+<img alt="File menu download option in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-filemenu-download.png">
+
+### Enhanced Markdown Support
+
+Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
+
+Additionally, links to local files in Markdown now work correctly, improving the ability to reference and navigate between files in your JupyterLite deployment. This is particularly useful for creating documentation that references other notebooks or files in your project.
 
 ### JupyterLab 4.5 and Notebook 7.5
 
