@@ -8,28 +8,19 @@ JupyterLite 0.7.0 includes a number of new features (described below), bug fixes
 
 Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
 
-<video controls>
-  <source src="https://github.com/user-attachments/assets/f7e1f993-c407-4d75-b16a-cea36b0575cf" type="video/mp4">
-</video>
+<img alt="Workspace support in JupyterLite" src="./changelog_assets/0.7-jupyterlite-workspaces.png">
 
-### Layout Restoration
-
-The UI layout is now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
-
-This provides a seamless continuation of your work, eliminating the need to manually rearrange panels and reopen files each time you start a new session.
+The UI layout is also now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
 
 ### Audio and Video Playback
 
 JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
 
-<img alt="Video and audio files opened in JupyterLite"
-src="./changelog_assets/0.7-jupyterlite-audio-video.png">
+<img alt="Video and audio files opened in JupyterLite" src="./changelog_assets/0.7-jupyterlite-audio-video.png">
 
 ### Basic Interrupt Functionality
 
 The interrupt button now cancels the execution of cells that are scheduled to run after the currently executing cell. While this doesn't interrupt the currently running cell itself, it provides better control when executing multiple cells in sequence.
-
-This is useful when you've selected multiple cells to run and want to stop the remaining cells from executing without waiting for them all to complete.
 
 <img alt="Basic interrupt functionality in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-basic-interrupt.png">
 
@@ -49,22 +40,18 @@ There is currently no built-in support for PDF export, but this may be added in 
 
 A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
 
-This complements the existing download functionality in the file browser and provides a more discoverable way to export your work, especially when you have a file open in the editor.
-
 <img alt="File menu download option in JupyterLite" height="500" src="./changelog_assets/0.7-jupyterlite-filemenu-download.png">
 
 ### Enhanced Markdown Support
 
 Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
 
-Additionally, links to local files in Markdown now work correctly, improving the ability to reference and navigate between files in your JupyterLite deployment. This is particularly useful for creating documentation that references other notebooks or files in your project.
-
 ### JupyterLab 4.5 and Notebook 7.5
 
-JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
+JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and brings many of the respective improvements and bug fixes. Check out the notes for these two releases to learn more:
 
-- [https://github.com/jupyterlab/jupyterlab/releases/tag/v4.5.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.5.0)
-- [https://github.com/jupyter/notebook/releases/tag/v7.5.0](https://github.com/jupyter/notebook/releases/tag/v7.5.0)
+- [JupyterLab 4.5](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-5)
+- [Jupyter Notebook 7.5](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
 
 ### Improved Pyodide Compatibility
 
