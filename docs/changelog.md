@@ -65,6 +65,32 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0rc1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-rc.0...3f6649c81be51132d33b80eb12d89334bc5ff38f))
+
+### Bugs fixed
+
+- Missing dependency from @jupyterlite/apputils on @jupyterlab/pluginmanager [#1785](https://github.com/jupyterlite/jupyterlite/pull/1785) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Remove `SessionContext` workaround [#1788](https://github.com/jupyterlite/jupyterlite/pull/1788) ([@jtpio](https://github.com/jtpio))
+- Linter: Enforce type imports when applicable [#1786](https://github.com/jupyterlite/jupyterlite/pull/1786) ([@martinRenou](https://github.com/martinRenou))
+- Update to `jupyterlite-pyodide-kernel==0.7.0rc0` [#1784](https://github.com/jupyterlite/jupyterlite/pull/1784) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Add user-facing changelog for 0.7.0 [#1782](https://github.com/jupyterlite/jupyterlite/pull/1782) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-19&to=2025-11-21&type=c))
+
+[@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-11-19..2025-11-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-11-19..2025-11-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-19..2025-11-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-11-19..2025-11-21&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0rc0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-beta.1...16c3808cffa05bac52d76a16dcad7b8b1637e074))
@@ -97,8 +123,6 @@ The minimum supported Python version for building JupyterLite sites has been inc
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-04&to=2025-11-19&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-11-04..2025-11-19&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-11-04..2025-11-19&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-11-04..2025-11-19&type=Issues) | [@jimwhite](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajimwhite+updated%3A2025-11-04..2025-11-19&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-04..2025-11-19&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-11-04..2025-11-19&type=Issues) | [@tan-i-ham](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atan-i-ham+updated%3A2025-11-04..2025-11-19&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0b1
 
