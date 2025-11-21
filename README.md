@@ -78,27 +78,23 @@ JupyterLite is all about accessible browser-based interactive computing:
 - Requires no dedicated _application server_ much less a container orchestrator
 - Fine-grained configurability of page settings, including reuse of federated extensions
 
-## Showcase
+## Version Compatibility
 
-### Jupyter Interactive Widgets
+The table below shows the minimum required versions of Python, JupyterLab, and Jupyter Notebook for each JupyterLite core release.
 
-![widgets](https://user-images.githubusercontent.com/591645/123929339-086f6180-d98f-11eb-8ab0-c7f9661ff41e.gif)
+The Python version refers to the environment used to run the `jupyter lite` CLI for building JupyterLite sites, not the Python version available in the browser notebooks.
 
-### JupyterLab Mimerender Extensions
+| jupyterlite-core | python | jupyterlab | notebook | supported |
+|-|-|-|-|-|
+| 0.7.0 | 3.10+ | 4.5.0 | 7.5.0 | ✅ |
+| 0.6.0 | 3.9+ | 4.4.3 | 7.4.3 | ✅ |
+| 0.5.0 | 3.9+ | 4.3.4 | 7.3.2 | ❌ |
+| 0.4.0 | 3.8+ | 4.2.4 | 7.2.0 | ❌ |
+| 0.3.0 | 3.8+ | 4.1.1 | 7.1.0 | ❌ |
+| 0.2.0 | 3.8+ | 4.0.7 | 7.0.6 | ❌ |
+| 0.1.0 | 3.8+ | 3.5.3 | - | ❌ |
 
-![image](https://user-images.githubusercontent.com/591645/123927543-3d7ab480-d98d-11eb-9e7e-eb47baf76bc0.png)
-
-### Matplotlib Figures
-
-![image](https://user-images.githubusercontent.com/591645/123927611-4d929400-d98d-11eb-9201-c46dd47b9047.png)
-
-### Altair
-
-![altair](https://user-images.githubusercontent.com/591645/123929321-04dbda80-d98f-11eb-9d5f-c5429d7aeb51.gif)
-
-### Plotly
-
-![plotly](https://user-images.githubusercontent.com/591645/123929332-06a59e00-d98f-11eb-8c51-4a094859c128.gif)
+> **Note:** Only the last two releases are actively supported.
 
 ## Development install
 
