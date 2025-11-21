@@ -22,8 +22,8 @@ from the ground-up using JupyterLab components and extensions.
 Although JupyterLite is currently being developed by core Jupyter developers, the
 project is still _unofficial_.
 
-Not all the usual features available in JupyterLab and the Classic Notebook will work
-with JupyterLite, but many already do!
+Not all the features available in JupyterLab and the Classic Notebook will work with
+JupyterLite, but many do!
 
 Don't hesitate to check out the
 [documentation](https://jupyterlite.readthedocs.io/en/stable/howto/index.html) for more
@@ -31,17 +31,17 @@ information and project updates.
 
 ## ✨ Try it in your browser ✨
 
-JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and
-[Jupyter Notebook](https://github.com/jupyter/notebook).
+JupyterLite works with both the [JupyterLab](https://github.com/jupyterlab/jupyterlab)
+and [Jupyter Notebook](https://github.com/jupyter/notebook) interfaces.
 
-| [Try it with JupyterLab!] | [Try it with Jupyter Notebook!] |
+| [Try it with JupyterLab] | [Try it with Jupyter Notebook] |
 | :-----------------------: | :-----------------------------: |
 |     ![lab-screenshot]     |     ![notebook-screenshot]      |
 
-[try it with jupyterlab!]: https://jupyterlite.readthedocs.io/en/stable/try/lab
+[try it with jupyterlab]: https://jupyterlite.readthedocs.io/en/stable/try/lab
 [lab-screenshot]:
   https://github.com/jupyterlite/jupyterlite/assets/591645/8cd26a4e-59db-4b34-bf9b-cd2e9cbc7f98
-[try it with jupyter notebook!]: https://jupyterlite.readthedocs.io/en/stable/try/tree
+[try it with jupyter notebook]: https://jupyterlite.readthedocs.io/en/stable/try/tree
 [notebook-screenshot]:
   https://github.com/jupyterlite/jupyterlite/assets/591645/39acb251-69aa-4e2e-8768-6f33fc32b3e2
 
@@ -58,10 +58,13 @@ more details.
 
 JupyterLite is all about accessible browser-based interactive computing:
 
-- Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-  - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
-    `ipywidgets`, `matplotlib`, and `plotly`
-- JavaScript kernel running in a Web Worker
+- Python kernels running in a Web Worker:
+  - [Pyodide](https://pyodide.org) :
+    [jupyterlite-pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
+  - [Xeus Python](https://xeus-python.readthedocs.io/en/latest/) :
+    [jupyterlite-xeus](https://github.com/jupyterlite/xeus)
+- Support for interactive visualization libraries such as `altair`, `bqplot`,
+  `ipywidgets`, `matplotlib`, and `plotly`
 - View hosted example Notebooks and other files, then edit, save, and download from the
   browser's `IndexDB` (or `localStorage`)
 - Support for saving settings for JupyterLab/Lite core and federated extensions
@@ -76,7 +79,7 @@ JupyterLite is all about accessible browser-based interactive computing:
 - Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained configurability of page settings, including reuse of federated extensions
+- Fine-grained configurability of page settings, including reuse of federated JupyterLab extensions
 
 ## Version Compatibility
 
