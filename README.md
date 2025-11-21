@@ -35,8 +35,8 @@ JupyterLite works with both the [JupyterLab](https://github.com/jupyterlab/jupyt
 and [Jupyter Notebook](https://github.com/jupyter/notebook) interfaces.
 
 | [Try it with JupyterLab] | [Try it with Jupyter Notebook] |
-| :-----------------------: | :-----------------------------: |
-|     ![lab-screenshot]     |     ![notebook-screenshot]      |
+| :----------------------: | :----------------------------: |
+|    ![lab-screenshot]     |     ![notebook-screenshot]     |
 
 [try it with jupyterlab]: https://jupyterlite.readthedocs.io/en/stable/try/lab
 [lab-screenshot]:
@@ -79,7 +79,8 @@ JupyterLite is all about accessible browser-based interactive computing:
 - Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained configurability of page settings, including reuse of federated JupyterLab extensions
+- Fine-grained configurability of page settings, including reuse of federated JupyterLab
+  extensions
 
 ## Version Compatibility
 
