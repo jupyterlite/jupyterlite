@@ -1,116 +1,67 @@
 # CHANGELOG
 
-## 0.6.0
+## 0.7.0
 
-JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience and new customization options for JupyterLite deployments.
+JupyterLite 0.7.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings workspace support, layout persistence, improved Markdown rendering capabilities, and updates to the latest JupyterLab and Jupyter Notebook releases.
 
-### Interactive Input Support
+### Workspace Support
 
-Support for kernel `stdin` requests is now available, enabling interactive input functions like Python's `input()` in notebooks. This fixes a long standing limitation of JupyterLite when executing the following code:
+Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
 
-```python
-name = input("What is your name? ")
-print(f"Hello {name}!")
+![Workspace support in JupyterLite](./changelog_assets/0.7-jupyterlite-workspaces.png)
+
+The UI layout is also now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
+
+### Audio and Video Playback
+
+JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
+
+![Video and audio files opened in JupyterLite](./changelog_assets/0.7-jupyterlite-audio-video.png)
+
+### Basic Interrupt Functionality
+
+The interrupt button now cancels the execution of cells that are scheduled to run after the currently executing cell. While this doesn't interrupt the currently running cell itself, it provides better control when executing multiple cells in sequence.
+
+![Basic interrupt functionality in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-interrupt.png)
+
+### Basic Notebook Export
+
+JupyterLite now includes basic notebook export functionality through a custom export plugin. Users can export notebooks to different formats including `.ipynb` (notebook format) and script formats directly from the File menu.
+
+Additionally, JupyterLite provides extension points for third-party extensions to register custom exporters. This enables the development of additional export formats, such as PDF, in future extensions.
+
+```{warning}
+There is currently no built-in support for PDF export, but this may be added in the future via a third-party extension.
 ```
 
-![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
+![Basic notebook export options in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-notebook-export.png)
 
-Since `input()` is used quite extensively in introductory Python courses, we hope this new feature will help make teaching with JupyterLite easier!
+### File Menu Download Option
 
-### New REPL Options
+A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
 
-The REPL now exposes new options as URL parameters:
+![File menu download option in JupyterLite](./changelog_assets/0.7-jupyterlite-filemenu-download.png)
 
-- `promptCellPosition` - place the prompt cell to the top, left, right or bottom
-- `clearCodeContentOnExecute` - when disabled, the code submitted for execution remains in the code editor, allowing for further edits.
-- `hideCodeInput` - when enabled, only the execution output is shown in the console.
-- `clearCellsOnExecute` - when enabled, only the last cell is displayed.
-- `showBanner` - when disabled, hide the banner for the kernel
+### Enhanced Markdown Support
 
-Toggling all the new options transforms the console into an interactive editor resembling an ephemeral notebook with a single cell.
+Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
 
-![a screenshot showing an embedded single cell REPL with the new options](./changelog_assets/0.6-jupyterlite-single-cell.png)
+### JupyterLab 4.5 and Notebook 7.5
 
-In addition to these URL parameters, the toolbar includes new items to:
+JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and brings many of the respective improvements and bug fixes. Check out the notes for these two releases to learn more:
 
-- Execute code
-- Restart the kernel
-- Clear the cells
-- Switch the kernel
+- [JupyterLab 4.5](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-5)
+- [Jupyter Notebook 7.5](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
 
-Check out the [REPL documentation](./quickstart/embed-repl.md) for more details on how to use these parameters.
+JupyterLab 4.5 notably includes significant [notebook performance improvements](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#performance-and-windowing), such as the new optimized cell rendering with the new `contentVisibility` windowing mode.
 
-### Kernel Indicator and Logs
+### Improved Pyodide Compatibility
 
-A new notebook toolbar item has been added to show the kernel status with three different states:
+JupyterLite 0.7.0 includes compatibility fixes for the latest Pyodide releases that use Emscripten 4. These fixes ensure stable kernel startup and operation with modern Python environments running in the browser.
 
-- Loading: the kernel is starting or performing some actions
-- Success: the kernel is ready to execute code
-- Failure: an error occurred while starting the kernel or during execution, and likely requires a restart
+### Python 3.9 support dropped
 
-This new toolbar item gives users better visibility into the kernel's status and allows them to view the kernel logs (if the kernel reports them) by clicking on the toolbar item to open the log console.
-
-![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./changelog_assets/0.6-jupyterlite-kernel-status.png)
-
-### Clear Browser Data
-
-By default JupyterLite stores user created notebooks and settings in the browser.
-
-In previous versions, users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
-
-![a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
-
-### Loading indicator
-
-A new indicator has been added to let users know JupyterLite is currently loading, which is useful for deployments that take some time to load, especially on slow connections.
-
-By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
-
-![a screenshot of the page loading indicator](./changelog_assets/0.6-jupyterlite-loading-indicator.png)
-
-### Settings import and export
-
-Settings can now be exported to an `overrides.json` file from the Settings Editor, which can be used to pre-configure defaults in deployments or to restore settings.
-
-This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` that can be included in a JupyterLite deployment.
-
-![a screenshot of the settings editor with the new import and export buttons](./changelog_assets/0.6-jupyterlite-settings-import-export.png)
-
-### Plugin Manager
-
-Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager. With the plugin manager, users can:
-
-- View active plugins in the running JupyterLite environment
-- Understand dependency relationships between plugins
-- Gain better visibility into the configuration of their environment
-
-![a screenshot of the plugin manager](./changelog_assets/0.6-jupyterlite-plugin-manager.png)
-
-### Improved Multi-site Contents Management
-
-The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other, for example:
-
-- `https://username.github.io/jupyterlite-foo`
-- `https://username.github.io/jupyterlite-bar`
-
-In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
-
-### Multi-Tab File System Access
-
-Using JupyterLite in multiple browser tabs should now result in less issues, in particular when interacting with the file system.
-
-### Extension system
-
-In previous versions, JupyterLite was creating a separate application to register "server" extensions. Examples of such extensions are the different managers (sessions, kernels, settings, contents) but also the actual kernels (Pyodide, Xeus Python). This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
-
-Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
-
-### JupyterLab 4.4 and Notebook 7.4
-
-JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
-
-- [https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0)
-- [https://github.com/jupyter/notebook/releases/tag/v7.4.0](https://github.com/jupyter/notebook/releases/tag/v7.4.0)
+The minimum supported Python version for building JupyterLite sites has been increased to Python 3.10. Users on Python 3.9 will need to upgrade their Python installation to use the `jupyterlite` CLI and build tools.
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
@@ -386,6 +337,116 @@ JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-06-02..2025-06-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-02..2025-06-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-02..2025-06-05&type=Issues)
 
 ## 0.6.0
+
+JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience and new customization options for JupyterLite deployments.
+
+### Interactive Input Support
+
+Support for kernel `stdin` requests is now available, enabling interactive input functions like Python's `input()` in notebooks. This fixes a long standing limitation of JupyterLite when executing the following code:
+
+```python
+name = input("What is your name? ")
+print(f"Hello {name}!")
+```
+
+![a screenshot of a notebook with an input prompt](./changelog_assets/0.6-jupyterlite-stdin.png)
+
+Since `input()` is used quite extensively in introductory Python courses, we hope this new feature will help make teaching with JupyterLite easier!
+
+### New REPL Options
+
+The REPL now exposes new options as URL parameters:
+
+- `promptCellPosition` - place the prompt cell to the top, left, right or bottom
+- `clearCodeContentOnExecute` - when disabled, the code submitted for execution remains in the code editor, allowing for further edits.
+- `hideCodeInput` - when enabled, only the execution output is shown in the console.
+- `clearCellsOnExecute` - when enabled, only the last cell is displayed.
+- `showBanner` - when disabled, hide the banner for the kernel
+
+Toggling all the new options transforms the console into an interactive editor resembling an ephemeral notebook with a single cell.
+
+![a screenshot showing an embedded single cell REPL with the new options](./changelog_assets/0.6-jupyterlite-single-cell.png)
+
+In addition to these URL parameters, the toolbar includes new items to:
+
+- Execute code
+- Restart the kernel
+- Clear the cells
+- Switch the kernel
+
+Check out the [REPL documentation](./quickstart/embed-repl.md) for more details on how to use these parameters.
+
+### Kernel Indicator and Logs
+
+A new notebook toolbar item has been added to show the kernel status with three different states:
+
+- Loading: the kernel is starting or performing some actions
+- Success: the kernel is ready to execute code
+- Failure: an error occurred while starting the kernel or during execution, and likely requires a restart
+
+This new toolbar item gives users better visibility into the kernel's status and allows them to view the kernel logs (if the kernel reports them) by clicking on the toolbar item to open the log console.
+
+![a screenshot showing the kernel status notebook toolbar item and the log console in JupyterLite](./changelog_assets/0.6-jupyterlite-kernel-status.png)
+
+### Clear Browser Data
+
+By default JupyterLite stores user created notebooks and settings in the browser.
+
+In previous versions, users had to manually clear the data using the browser developer tools. With JupyterLite 0.6.0 it is now possible to clear the browser data from the UI by clicking on the `Help > Clear Browser Data` menu item. The confirmation dialog will show options to clear settings and contents.
+
+![a screenshot of the clear browser data confirmation dialog](./changelog_assets/0.6-jupyterlite-clear-browser-data.png)
+
+### Loading indicator
+
+A new indicator has been added to let users know JupyterLite is currently loading, which is useful for deployments that take some time to load, especially on slow connections.
+
+By default, the loading indicator is only visible in the JupyterLab application (not for Jupyter Notebook or REPL). If you would like to enable or disable the indicator for some or all applications, check out the [guide in the documentation](./howto/configure/loading_indicator.md).
+
+![a screenshot of the page loading indicator](./changelog_assets/0.6-jupyterlite-loading-indicator.png)
+
+### Settings import and export
+
+Settings can now be exported to an `overrides.json` file from the Settings Editor, which can be used to pre-configure defaults in deployments or to restore settings.
+
+This allows users to interact with a JupyterLite deployment, make a couple of changes to the settings, and export them to an `overrides.json` that can be included in a JupyterLite deployment.
+
+![a screenshot of the settings editor with the new import and export buttons](./changelog_assets/0.6-jupyterlite-settings-import-export.png)
+
+### Plugin Manager
+
+Open the command palette and search for `Advanced Plugin Manager` to open the plugin manager. With the plugin manager, users can:
+
+- View active plugins in the running JupyterLite environment
+- Understand dependency relationships between plugins
+- Gain better visibility into the configuration of their environment
+
+![a screenshot of the plugin manager](./changelog_assets/0.6-jupyterlite-plugin-manager.png)
+
+### Improved Multi-site Contents Management
+
+The default in-browser storage is now scoped using the `baseUrl` of the deployment. This allows hosting multiple sites under the same domain, and keeps user created files isolated from each other, for example:
+
+- `https://username.github.io/jupyterlite-foo`
+- `https://username.github.io/jupyterlite-bar`
+
+In practice this fixes the issue where users would create new files in one site, and they would show up in another site hosted under the same domain.
+
+### Multi-Tab File System Access
+
+Using JupyterLite in multiple browser tabs should now result in less issues, in particular when interacting with the file system.
+
+### Extension system
+
+In previous versions, JupyterLite was creating a separate application to register "server" extensions. Examples of such extensions are the different managers (sessions, kernels, settings, contents) but also the actual kernels (Pyodide, Xeus Python). This was not ideal because it introduced a separate namespace for these extensions, and extension authors had to configure their extension to be either a regular JupyterLab extension or a JupyterLite "server" extension.
+
+Starting with JupyterLite 0.6.0, all extensions are now registered at the same level as regular JupyterLab extensions, making use of the new `ServiceManagerPlugin` type of extension introduced in JupyterLab 4.4.
+
+### JupyterLab 4.4 and Notebook 7.4
+
+JupyterLite 0.6.0 is built on top of JupyterLab 4.4 and Notebook 7.4, and brings many of the respective improvements and bug fixes. Check out the release notes for these two releases to learn more:
+
+- [https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v4.4.0)
+- [https://github.com/jupyter/notebook/releases/tag/v7.4.0](https://github.com/jupyter/notebook/releases/tag/v7.4.0)
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.5.0...9b3bd5bce12b15466c2e518d7b23aae40b8f42c7))
 
