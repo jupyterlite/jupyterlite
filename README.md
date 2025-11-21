@@ -80,19 +80,17 @@ JupyterLite is all about accessible browser-based interactive computing:
 
 ## Version Compatibility
 
-The table below shows the minimum required versions of Python, JupyterLab, and Jupyter Notebook for each JupyterLite core release.
+The table below shows the versions of JupyterLab and Jupyter Notebook bundled with each JupyterLite core release.
 
-The Python version refers to the environment used to run the `jupyter lite` CLI for building JupyterLite sites, not the Python version available in the browser notebooks.
-
-| jupyterlite-core | python | jupyterlab | notebook | supported |
-|-|-|-|-|-|
-| 0.7.0 | 3.10+ | 4.5.0 | 7.5.0 | ✅ |
-| 0.6.0 | 3.9+ | 4.4.3 | 7.4.3 | ✅ |
-| 0.5.0 | 3.9+ | 4.3.4 | 7.3.2 | ❌ |
-| 0.4.0 | 3.8+ | 4.2.4 | 7.2.0 | ❌ |
-| 0.3.0 | 3.8+ | 4.1.1 | 7.1.0 | ❌ |
-| 0.2.0 | 3.8+ | 4.0.7 | 7.0.6 | ❌ |
-| 0.1.0 | 3.8+ | 3.5.3 | - | ❌ |
+| jupyterlite-core | jupyterlab | notebook | supported |
+|-|-|-|-|
+| 0.7.0 | 4.5.0 | 7.5.0 | ✅ |
+| 0.6.0 | 4.4.3 | 7.4.3 | ✅ |
+| 0.5.0 | 4.3.4 | 7.3.2 | ❌ |
+| 0.4.0 | 4.2.4 | 7.2.0 | ❌ |
+| 0.3.0 | 4.1.1 | 7.1.0 | ❌ |
+| 0.2.0 | 4.0.7 | 7.0.6 | ❌ |
+| 0.1.0 | 3.5.3 | - | ❌ |
 
 > **Note:** Only the last two releases are actively supported.
 
