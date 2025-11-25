@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 0.7.0
+## v0.7
 
 JupyterLite 0.7.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings workspace support, layout persistence, improved Markdown rendering capabilities, and updates to the latest JupyterLab and Jupyter Notebook releases.
 
@@ -366,7 +366,7 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-06-02..2025-06-05&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-02..2025-06-05&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-02..2025-06-05&type=Issues)
 
-## 0.6.0
+## v0.6
 
 JupyterLite 0.6.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings significant improvements to the user experience and new customization options for JupyterLite deployments.
 

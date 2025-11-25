@@ -3,7 +3,7 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
-## `0.6.0` to `0.7.0`
+## `v0.6.0` to `v0.7.0`
 
 ```{warning}
 JupyterLite 0.7.0 comes with a couple of major changes that may be considered
@@ -107,7 +107,7 @@ The `@jupyterlite/server` package will continue to work as a re-export from
 imports to use `@jupyterlite/apputils` directly.
 ```
 
-## `0.5.0` to `0.6.0`
+## `v0.5.0` to `v0.6.0`
 
 ```{warning}
 JupyterLite 0.6.0 comes with a couple of major changes that may be considered
@@ -367,7 +367,7 @@ Translations are now supported by implementing the `ITranslatorConnector` interf
 provided by JupyterLab, which is then exposed via the
 `@jupyterlite/apputils-extension:translator-connector` plugin.
 
-## `0.4.0` to `0.5.0`
+## `v0.4.0` to `v0.5.0`
 
 ### Extensions
 
@@ -402,7 +402,7 @@ The following configuration options were removed from the
 - `collaborative`
 - `fullWebRtcSignalingUrls`
 
-## `0.3.0` to `0.4.0`
+## `v0.3.0` to `v0.4.0`
 
 ### Extensions
 
@@ -462,7 +462,7 @@ combination to extending the abstract `ContentsAPI` class in order to provide a 
 way to implement file access from the kernel (e.g. bypassing the service worker
 approach).
 
-## `0.2.0` to `0.3.0`
+## `v0.2.0` to `v0.3.0`
 
 ### Extensions
 
@@ -519,7 +519,7 @@ To enable the Service Worker cache, add the `enableServiceWorkerCache` option to
 }
 ```
 
-## `0.1.0` to `0.2.0`
+## `v0.1.0` to `v0.2.0`
 
 ### Extensions
 
