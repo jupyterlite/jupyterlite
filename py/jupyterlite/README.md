@@ -22,8 +22,8 @@ from the ground-up using JupyterLab components and extensions.
 Although JupyterLite is currently being developed by core Jupyter developers, the
 project is still _unofficial_.
 
-Not all the usual features available in JupyterLab and the Classic Notebook will work
-with JupyterLite, but many already do!
+Not all the features available in JupyterLab and the Classic Notebook will work with
+JupyterLite, but many do!
 
 Don't hesitate to check out the
 [documentation](https://jupyterlite.readthedocs.io/en/stable/howto/index.html) for more
@@ -31,17 +31,17 @@ information and project updates.
 
 ## ✨ Try it in your browser ✨
 
-JupyterLite works with both [JupyterLab](https://github.com/jupyterlab/jupyterlab) and
-[Jupyter Notebook](https://github.com/jupyter/notebook).
+JupyterLite works with both the [JupyterLab](https://github.com/jupyterlab/jupyterlab)
+and [Jupyter Notebook](https://github.com/jupyter/notebook) interfaces.
 
-| [Try it with JupyterLab!] | [Try it with Jupyter Notebook!] |
-| :-----------------------: | :-----------------------------: |
-|     ![lab-screenshot]     |     ![notebook-screenshot]      |
+| [Try it with JupyterLab] | [Try it with Jupyter Notebook] |
+| :----------------------: | :----------------------------: |
+|    ![lab-screenshot]     |     ![notebook-screenshot]     |
 
-[try it with jupyterlab!]: https://jupyterlite.readthedocs.io/en/stable/try/lab
+[try it with jupyterlab]: https://jupyterlite.readthedocs.io/en/stable/try/lab
 [lab-screenshot]:
   https://github.com/jupyterlite/jupyterlite/assets/591645/8cd26a4e-59db-4b34-bf9b-cd2e9cbc7f98
-[try it with jupyter notebook!]: https://jupyterlite.readthedocs.io/en/stable/try/tree
+[try it with jupyter notebook]: https://jupyterlite.readthedocs.io/en/stable/try/tree
 [notebook-screenshot]:
   https://github.com/jupyterlite/jupyterlite/assets/591645/39acb251-69aa-4e2e-8768-6f33fc32b3e2
 
@@ -58,10 +58,13 @@ more details.
 
 JupyterLite is all about accessible browser-based interactive computing:
 
-- Python kernel backed by [Pyodide](https://pyodide.org) running in a Web Worker
-  - Initial support for interactive visualization libraries such as `altair`, `bqplot`,
-    `ipywidgets`, `matplotlib`, and `plotly`
-- JavaScript kernel running in a Web Worker
+- Python kernels running in a Web Worker:
+  - [Pyodide](https://pyodide.org) :
+    [jupyterlite-pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
+  - [Xeus Python](https://xeus-python.readthedocs.io/en/latest/) :
+    [jupyterlite-xeus](https://github.com/jupyterlite/xeus)
+- Support for interactive visualization libraries such as `altair`, `bqplot`,
+  `ipywidgets`, `matplotlib`, and `plotly`
 - View hosted example Notebooks and other files, then edit, save, and download from the
   browser's `IndexDB` (or `localStorage`)
 - Support for saving settings for JupyterLab/Lite core and federated extensions
@@ -76,29 +79,25 @@ JupyterLite is all about accessible browser-based interactive computing:
 - Served via well-cacheable, static HTTP(S), locally or on most static web hosts
 - Embeddable within larger applications
 - Requires no dedicated _application server_ much less a container orchestrator
-- Fine-grained configurability of page settings, including reuse of federated extensions
+- Fine-grained configurability of page settings, including reuse of federated JupyterLab
+  extensions
 
-## Showcase
+## Version Compatibility
 
-### Jupyter Interactive Widgets
+The table below shows the versions of JupyterLab and Jupyter Notebook bundled with each
+JupyterLite core release.
 
-![widgets](https://user-images.githubusercontent.com/591645/123929339-086f6180-d98f-11eb-8ab0-c7f9661ff41e.gif)
+| jupyterlite-core | jupyterlab | notebook | supported |
+| ---------------- | ---------- | -------- | --------- |
+| 0.7.0            | 4.5.0      | 7.5.0    | ✅        |
+| 0.6.0            | 4.4.3      | 7.4.3    | ✅        |
+| 0.5.0            | 4.3.4      | 7.3.2    | ❌        |
+| 0.4.0            | 4.2.4      | 7.2.0    | ❌        |
+| 0.3.0            | 4.1.1      | 7.1.0    | ❌        |
+| 0.2.0            | 4.0.7      | 7.0.6    | ❌        |
+| 0.1.0            | 3.5.3      | -        | ❌        |
 
-### JupyterLab Mimerender Extensions
-
-![image](https://user-images.githubusercontent.com/591645/123927543-3d7ab480-d98d-11eb-9e7e-eb47baf76bc0.png)
-
-### Matplotlib Figures
-
-![image](https://user-images.githubusercontent.com/591645/123927611-4d929400-d98d-11eb-9201-c46dd47b9047.png)
-
-### Altair
-
-![altair](https://user-images.githubusercontent.com/591645/123929321-04dbda80-d98f-11eb-9d5f-c5429d7aeb51.gif)
-
-### Plotly
-
-![plotly](https://user-images.githubusercontent.com/591645/123929332-06a59e00-d98f-11eb-8c51-4a094859c128.gif)
+> **Note:** Only the last two releases are actively supported.
 
 ## Development install
 

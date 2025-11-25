@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/apputils-extension",
-  "version": "0.7.0-rc.1",
+  "version": "0.7.0-rc.2",
   "description": "JupyterLite - Application Utilities Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -44,8 +44,8 @@
     "@jupyterlab/pluginmanager": "~4.5.0",
     "@jupyterlab/translation": "~4.5.0",
     "@jupyterlab/ui-components": "~4.5.0",
-    "@jupyterlite/application": "^0.7.0-rc.1",
-    "@jupyterlite/apputils": "^0.7.0-rc.1"
+    "@jupyterlite/application": "^0.7.0-rc.2",
+    "@jupyterlite/apputils": "^0.7.0-rc.2"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",

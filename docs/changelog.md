@@ -71,6 +71,28 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.0rc2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-rc.1...61d77d496d35c8b34dc5e690e2960c8ded05b094))
+
+### Maintenance and upkeep improvements
+
+- Revert "Remove `SessionContext` workaround" [#1793](https://github.com/jupyterlite/jupyterlite/pull/1793) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix changelog headings [#1795](https://github.com/jupyterlite/jupyterlite/pull/1795) ([@jtpio](https://github.com/jtpio))
+- Mention missing packages in Pyodide 0.28 [#1792](https://github.com/jupyterlite/jupyterlite/pull/1792) ([@jtpio](https://github.com/jtpio))
+- Add version compatibility table to the README [#1789](https://github.com/jupyterlite/jupyterlite/pull/1789) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-21&to=2025-11-25&type=c))
+
+[@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-11-21..2025-11-25&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-21..2025-11-25&type=Issues)
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0rc1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0-rc.0...3f6649c81be51132d33b80eb12d89334bc5ff38f))
@@ -94,8 +116,6 @@ The minimum supported Python version for building JupyterLite sites has been inc
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-19&to=2025-11-21&type=c))
 
 [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-11-19..2025-11-21&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-11-19..2025-11-21&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-19..2025-11-21&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-11-19..2025-11-21&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0rc0
 
