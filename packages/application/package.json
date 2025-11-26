@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/application",
-  "version": "0.7.0-rc.2",
+  "version": "0.7.0",
   "description": "JupyterLite - Application",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
