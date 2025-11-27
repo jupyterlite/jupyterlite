@@ -12,14 +12,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build dist
         uses: ./.github/actions/build-dist
 
       - name: Install JupyterLite
         run: |
-          python3 -m pip install importlib_metadata 'doit >=0.34,<1' jupyter_core jupyterlab~=4.0
+          python3 -m pip install 'doit >=0.34,<1' jupyter_core jupyterlab~=4.0
           python3 -m pip install --find-links dist --no-index jupyterlite_core
 
       - name: Build JupyterLite
@@ -34,7 +34,7 @@ jobs:
           jlpm build
 
       - name: Upload the JupyterLite website
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
@@ -49,9 +49,9 @@ jobs:
         browser: [firefox, chromium, webkit]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v6
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
@@ -67,7 +67,7 @@ jobs:
       - name: Install dependencies and browser
         run: |
           # Install JupyterLab to get jlpm
-          python -m pip install jupyterlab~=4.0
+          python -m pip install "jupyterlab>=4.3.4,<4.4"
           cd ui-tests
           jlpm
           jlpm playwright install --with-deps
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload Playwright Test assets
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jupyterlite-${{ matrix.browser }}-test-assets
           path: |
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload Playwright Test report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jupyterlite-${{ matrix.browser }}-test-report
           path: |
@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload updated snapshots
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: jupyterlite-${{ matrix.browser }}-updated-snapshots
           path: ui-tests/test

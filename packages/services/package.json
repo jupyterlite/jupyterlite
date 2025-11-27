@@ -1,0 +1,82 @@
+{
+  "name": "@jupyterlite/services",
+  "version": "0.7.0",
+  "description": "JupyterLite - Services",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js",
+    "lib/**/*.d.ts",
+    "lib/**/*.js.map",
+    "lib/**/*.js",
+    "style/*.css",
+    "style/index.js",
+    "src/**/*.{ts,tsx}"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "build:test": "tsc --build tsconfig.test.json",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
+    "docs": "typedoc src",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "test:cov": "jest --collect-coverage",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "test:debug:watch": "node --inspect-brk node_modules/.bin/jest --runInBand --watch",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {
+    "@jupyterlab/coreutils": "~6.5.0",
+    "@jupyterlab/nbformat": "~4.5.0",
+    "@jupyterlab/observables": "~5.5.0",
+    "@jupyterlab/services": "~7.5.0",
+    "@jupyterlab/settingregistry": "~4.5.0",
+    "@jupyterlite/localforage": "^0.7.0",
+    "@lumino/algorithm": "^2.0.4",
+    "@lumino/coreutils": "^2.2.2",
+    "@lumino/disposable": "^2.1.5",
+    "@lumino/signaling": "^2.1.5",
+    "@types/emscripten": "^1.39.6",
+    "async-mutex": "^0.3.1",
+    "comlink": "^4.3.1",
+    "json5": "^2.2.0",
+    "localforage": "^1.9.0",
+    "mime": "^3.0.0",
+    "mock-socket": "^9.3.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.12.1",
+    "@jupyterlab/testutils": "~4.5.0",
+    "@types/jest": "^29.5.3",
+    "@types/mime": "^2.0.3",
+    "jest": "^29.6.2",
+    "rimraf": "~5.0.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "~5.5.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "styleModule": "style/index.js"
+}

@@ -8,17 +8,19 @@
   "references": [
     { "path": "../application" },
     { "path": "../application-extension" },
+    { "path": "../apputils" },
+    { "path": "../apputils-extension" },
     { "path": "../contents" },
     { "path": "../iframe-extension" },
     { "path": "../kernel" },
-    { "path": "../licenses" },
     { "path": "../localforage" },
     { "path": "../notebook-application-extension" },
     { "path": "../repl-extension" },
-    { "path": "../server-extension" },
+    { "path": "../server" },
+    { "path": "../services" },
+    { "path": "../services-extension" },
     { "path": "../session" },
     { "path": "../settings" },
-    { "path": "../translation" },
     { "path": "../types" },
     { "path": "../ui-components" }
   ]

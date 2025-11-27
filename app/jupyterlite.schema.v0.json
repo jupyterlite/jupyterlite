@@ -86,6 +86,11 @@
           "default": "./extensions",
           "$ref": "#/definitions/non-trailing-slash-uri"
         },
+        "workspacesApiUrl": {
+          "description": "path to workspaces",
+          "default": "./api/workspaces",
+          "$ref": "#/definitions/non-trailing-slash-uri"
+        },
         "fullStaticUrl": {
           "description": "relative path to built static assets",
           "default": "./build",
@@ -101,16 +106,30 @@
           "$ref": "#/definitions/localforage-driver-set"
         },
         "contentsStorageName": {
-          "description": "name used to store Jupyter contents in the browser",
+          "description": "Name used to store Jupyter contents in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
+        },
+        "workspacesStorageDrivers": {
+          "description": "names of the localforage driver for workspaces, or `null` for the best available",
+          "$ref": "#/definitions/localforage-driver-set"
+        },
+        "workspacesStorageName": {
+          "description": "Name used to store Jupyter workspaces in the browser. The baseUrl is appended to the default value",
+          "type": "string",
+          "default": "JupyterLite Storage"
+        },
+        "showLoadingIndicator": {
+          "description": "Whether to show the loading indicator during app initialization",
+          "type": "boolean",
+          "default": false
         },
         "settingsStorageDrivers": {
           "description": "names of the localforage driver for settings, or `null` for the best available",
           "$ref": "#/definitions/localforage-driver-set"
         },
         "settingsStorageName": {
-          "description": "name used to store Jupyter settings in the browser",
+          "description": "Name used to store Jupyter settings in the browser. The baseUrl is appended to the default value",
           "type": "string",
           "default": "JupyterLite Storage"
         },
@@ -298,7 +317,7 @@
           "title": "memory",
           "description": "use the memory-based, volatile store: must be enabled with enableMemoryStorage",
           "type": "string",
-          "enum": ["localStorageWrapper"]
+          "enum": ["memoryStorageDriver"]
         }
       ]
     }

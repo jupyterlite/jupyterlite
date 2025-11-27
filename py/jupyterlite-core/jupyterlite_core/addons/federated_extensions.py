@@ -350,10 +350,8 @@ class FederatedExtensionAddon(BaseAddon):
 
         for pkg_json in self.env_extensions(lab_extensions_root):
             pkg_data = json.loads(pkg_json.read_text(**UTF8))
-            is_lite = pkg_data.get("jupyterlite", {}).get("liteExtension", False)
             extension_data = {
                 **pkg_data["jupyterlab"]["_build"],
-                "liteExtension": is_lite,
             }
             extensions += [dict(name=pkg_data["name"], **extension_data)]
 

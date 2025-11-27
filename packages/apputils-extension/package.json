@@ -1,0 +1,62 @@
+{
+  "name": "@jupyterlite/apputils-extension",
+  "version": "0.7.0",
+  "description": "JupyterLite - Application Utilities Extension",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
+  "sideEffects": [
+    "style/*.css",
+    "style/index.js"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "style": "style/index.css",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js",
+    "style/*.css",
+    "style/index.js",
+    "src/**/*.{ts,tsx}"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
+    "docs": "typedoc src",
+    "prepublishOnly": "npm run build",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {
+    "@jupyterlab/application": "~4.5.0",
+    "@jupyterlab/apputils": "~4.6.0",
+    "@jupyterlab/logconsole": "~4.5.0",
+    "@jupyterlab/pluginmanager": "~4.5.0",
+    "@jupyterlab/translation": "~4.5.0",
+    "@jupyterlab/ui-components": "~4.5.0",
+    "@jupyterlite/application": "^0.7.0",
+    "@jupyterlite/apputils": "^0.7.0"
+  },
+  "devDependencies": {
+    "rimraf": "~5.0.1",
+    "typescript": "~5.5.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true,
+    "schemaDir": "schema"
+  },
+  "styleModule": "style/index.js"
+}

@@ -1,0 +1,51 @@
+{
+  "name": "@jupyterlite/services-extension",
+  "version": "0.7.0",
+  "description": "JupyterLite - Services Extension",
+  "homepage": "https://github.com/jupyterlite/jupyterlite",
+  "bugs": {
+    "url": "https://github.com/jupyterlite/jupyterlite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyterlite/jupyterlite.git"
+  },
+  "license": "BSD-3-Clause",
+  "author": "JupyterLite Contributors",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib/"
+  },
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js.map",
+    "lib/*.js",
+    "src/**/*.{ts,tsx}"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
+    "docs": "typedoc src",
+    "prepublishOnly": "npm run build",
+    "watch": "tsc -b --watch"
+  },
+  "dependencies": {
+    "@jupyterlab/coreutils": "~6.5.0",
+    "@jupyterlab/services": "~7.5.0",
+    "@jupyterlite/apputils": "^0.7.0",
+    "@jupyterlite/localforage": "^0.7.0",
+    "@jupyterlite/services": "^0.7.0",
+    "@lumino/coreutils": "^2.2.2"
+  },
+  "devDependencies": {
+    "rimraf": "~5.0.1",
+    "typescript": "~5.5.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "jupyterlab": {
+    "extension": true
+  }
+}

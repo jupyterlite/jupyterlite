@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin, JupyterFrontEnd } from '@jupyterlab/application';
 
 import { PageConfig } from '@jupyterlab/coreutils';
 

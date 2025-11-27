@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/iframe-extension",
-  "version": "0.5.0-alpha.1",
+  "version": "0.7.0",
   "description": "JupyterLite - IFrame Viewer",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -38,13 +38,13 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/rendermime-interfaces": "~3.11.3",
-    "@lumino/coreutils": "^2.2.0",
-    "@lumino/widgets": "^2.5.0"
+    "@jupyterlab/rendermime-interfaces": "~3.13.0",
+    "@lumino/coreutils": "^2.2.2",
+    "@lumino/widgets": "^2.7.2"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.5.4"
   },
   "publishConfig": {
     "access": "public"

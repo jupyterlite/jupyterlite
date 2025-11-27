@@ -38,6 +38,89 @@ function getOption(name) {
   return _CONFIG_DATA[name] || '';
 }
 
+/**
+ * Hide the loading indicator once the app is fully loaded
+ */
+function hideAppLoadingIndicator() {
+  const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (indicator) {
+    indicator.classList.add('hidden');
+    indicator.addEventListener('animationend', () => {
+      indicator.remove();
+      // Remove theme classes after the loading indicator is removed
+      document.body.classList.remove('jp-mod-dark', 'jp-mod-light');
+    }, { once: true });
+  }
+}
+
+/**
+ * Apply theme to loading indicator based on saved settings in IndexedDB
+ */
+async function applyThemeToAppLoadingIndicator() {
+  const indicator = document.getElementById('jupyterlite-loading-indicator');
+  if (!indicator) {
+    return;
+  }
+
+  // Hide the indicator by default
+  indicator.classList.add('hidden');
+
+  const showLoadingIndicator = getOption('showLoadingIndicator');
+  // Only show the indicator if explicitly set to true
+  if (showLoadingIndicator === true) {
+    indicator.classList.remove('hidden');
+  } else {
+    return;
+  }
+
+  try {
+    const baseUrl = getOption('baseUrl');
+    const defaultStorageName = `JupyterLite Storage - ${baseUrl}`;
+    const storageName = getOption('settingsStorageName') || defaultStorageName;
+
+    const localforageModule = await import('localforage');
+    const localforage = localforageModule.default;
+
+    const settingsDB = localforage.createInstance({
+      name: storageName,
+      storeName: 'settings'
+    });
+
+    const key = '@jupyterlab/apputils-extension:themes';
+    const settings = await settingsDB.getItem(key);
+
+    let isDarkTheme = false;
+
+    if (settings) {
+      // Use regex to find "theme": "name of theme" pattern, since the
+      // settings are stored as a raw string
+      const themeRegex = /"theme"\s*:\s*"([^"]+)"/i;
+      const matches = settings.match(themeRegex);
+
+      if (matches && matches[1]) {
+        const themeName = matches[1].toLowerCase();
+        isDarkTheme =
+          themeName.includes('dark') ||
+          themeName.includes('night') ||
+          themeName.includes('black');
+      }
+    }
+
+    document.body.classList.remove('jp-mod-dark', 'jp-mod-light');
+
+    if (isDarkTheme) {
+      document.body.classList.add('jp-mod-dark');
+    } else {
+      document.body.classList.add('jp-mod-light');
+    }
+  } catch (e) {
+    console.warn('Could not apply theme to loading indicator:', e);
+    // Fallback to light theme on error
+    document.body.classList.remove('jp-mod-dark');
+    document.body.classList.add('jp-mod-light');
+  }
+}
+
 // eslint-disable-next-line no-undef
 __webpack_public_path__ = getOption('fullStaticUrl') + '/';
 
@@ -63,6 +146,8 @@ async function loadComponent(url, scope) {
 }
 
 void (async function bootstrap() {
+  await applyThemeToAppLoadingIndicator();
+
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
   const extension_data = getOption('federated_extensions');
@@ -89,5 +174,7 @@ void (async function bootstrap() {
   // Now that all federated containers are initialized with the main
   // container, we can import the main function.
   let main = (await import('./index.js')).main;
-  void main();
+  await main();
+
+  hideAppLoadingIndicator();
 })();

@@ -1,0 +1,53 @@
+// Copyright (c) JupyterLite Contributors
+// Distributed under the terms of the Modified BSD License.
+
+import { test as base } from '@jupyterlab/galata';
+
+import { expect } from '@playwright/test';
+
+// Use custom waitForApplication to wait for the REPL to be ready
+const test = base.extend({
+  waitForApplication: async ({ baseURL }, use, testInfo) => {
+    const waitIsReady = async (page): Promise<void> => {
+      await page.waitForSelector('.jp-InputArea');
+    };
+    await use(waitIsReady);
+  },
+});
+
+test.describe('Basic REPL Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('repl/index.html?toolbar=1&kernel=javascript');
+  });
+
+  test('Page', async ({ page }) => {
+    const imageName = 'page.png';
+    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+  });
+
+  test('Toggle Dark theme', async ({ page }) => {
+    await page.theme.setDarkTheme();
+    const imageName = 'dark-theme.png';
+    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+  });
+
+  test('Toggle Light theme', async ({ page }) => {
+    await page.theme.setDarkTheme();
+    await page.theme.setLightTheme();
+
+    expect(await page.theme.getTheme()).toEqual('JupyterLab Light');
+  });
+});
+
+test.describe('Populate REPL prompt', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(
+      'repl/index.html?toolbar=1&kernel=javascript&code=console.log("hello")&code=console.log("world")&execute=0',
+    );
+  });
+
+  test('Populate prompt without executing', async ({ page }) => {
+    const imageName = 'populate-prompt.png';
+    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+  });
+});

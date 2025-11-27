@@ -3,8 +3,6 @@ name: jupyterlite-dev
 
 channels:
   - conda-forge
-  - conda-forge/label/jupyterlite_pyodide_kernel_beta
-  - conda-forge/label/jupyterlite_core_beta
 
 dependencies:
   # build stuff
@@ -33,7 +31,7 @@ dependencies:
   # https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16
   # - jupyterlab-webrtc-docprovider >=0.1.1
   - jupyterlab-night
-  - jupyterlite-pyodide-kernel >=0.4.2
+  - jupyterlite-pyodide-kernel >=0.5.1
   # if a package is pinned with == `doit check` will ensure the version is pinned
   # in `docs/_build/_static/files/*.ipynb`
   - bqplot
@@ -53,10 +51,9 @@ dependencies:
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
-  - importlib_metadata
   - jsonschema >=3
-  - jupyterlab >=4.3.2,<4.4
-  - notebook >=7.3.1,<7.4
+  - jupyterlab >=4.5.0,<4.6
+  - notebook >=7.5.0,<7.6
   - pip
   - pkginfo
   - python-libarchive-c
@@ -79,7 +76,7 @@ dependencies:
   # test
   - ansi2html
   - pytest-console-scripts >=1.4.0
-  - pytest-cov
+  - pytest-cov <7
   - pytest-html
   - pytest-xdist
   # language packs and contents

@@ -8,6 +8,5 @@ py/jupyterlite-core
 
 ```{toctree}
 :caption: TypeScript API
-:maxdepth: 2
-ts/index
+ts/README
 ```

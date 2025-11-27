@@ -1,6 +1,5 @@
 """documentation for jupyterlite"""
 
-import datetime
 import json
 import os
 import subprocess
@@ -29,7 +28,7 @@ sys.path += [str(ROOT / "py/jupyterlite/src")]
 # metadata
 author = APP_DATA["author"]
 project = author.replace("Contributors", "").strip()
-copyright = f"{datetime.datetime.now(tz=datetime.timezone.utc).year}, {author}"
+copyright = f"2021-, {author}"
 
 # The full version, including alpha/beta/rc tags
 release = APP_DATA["version"]

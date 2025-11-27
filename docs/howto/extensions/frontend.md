@@ -15,9 +15,6 @@ Example of such extensions are:
 - [jupyterlab-tour]: walk users through the JupyterLab interface
 - [jupyterlab-night]: custom dark theme for JupyterLab
 
-In this guide, we cover frontend extensions. If you would like to create a server
-extension, check out [Server Extension Guide](./server.md).
-
 [jupyterlab-tour]: https://github.com/jupyterlab-contrib/jupyterlab-tour
 [jupyterlab-night]: https://github.com/martinRenou/jupyterlab-night
 

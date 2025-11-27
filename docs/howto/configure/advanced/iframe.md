@@ -3,208 +3,80 @@
 When a JupyterLite instance is embedded in a website via an IFrame, it may be relevant
 to establish a communication channel between the host page and the instance.
 
-In the following, we build a frontend extension that allows an instance of JupyterLite
-located in an IFrame to receive and process a theme change order triggered by a button
-on the host page. The instance is also able to send a message back to the host page.
+## Using the `jupyter-iframe-commands` extension
 
-This extension is first built for JupyterLab and then for JupyterLite.
+The [jupyter-iframe-commands](https://github.com/TileDB-Inc/jupyter-iframe-commands)
+extension is a JupyterLab extension that provides an API to execute JupyterLab commands
+from a host page, with JupyterLite embedded in an iframe.
 
-## Create a development environment and initialize the project
+### Installation
 
-It's a good practice to create a specific environment for the development of the
-extension. Several methods are possible. Here we use
-[conda](https://conda.io/projects/conda/en/latest/index.html), a package and environment
-manager. The installation procedure for conda is
-[here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
-
-Follow the
-[JupyterLab tutorial](https://jupyterlab.readthedocs.io/en/latest/extension/extension_tutorial.html#install-nodejs-jupyterlab-etc-in-a-conda-environment)
-to create an environment:
+Install the extension in your environment:
 
 ```bash
-conda create -n jupyterlab-iframe-ext --override-channels --strict-channel-priority -c conda-forge -c nodefaults jupyterlab=4 nodejs=20 git copier=7 jinja2-time jupyterlite-core
-conda activate jupyterlab-iframe-ext
+pip install jupyter-iframe-commands
 ```
 
-Create a directory in your workspace, move to this directory, then generate an extension
-template using [copier](https://copier.readthedocs.io):
+Then rebuild your JupyterLite site:
 
 ```bash
-copier copy https://github.com/jupyterlab/extension-template .
+jupyter lite build
 ```
 
-```bash
-Select kind:
-1 - frontend
-2 - server
-3 - theme
-Choose from 1, 2, 3 [1]: 1
-author_name [My Name]:
-author_email [me@test.com]:
-labextension_name [myextension]: jupyterlab-iframe-bridge-example
-python_name [jupyterlab-iframe-bridge-example]: jupyterlab-iframe-bridge-example
-project_short_description [A JupyterLab extension.]: Communication between a host page and an instance of JupyterLab located in an IFrame
-has_settings [n]: n
-has_binder [n]: n
-test [y]: n
-repository [https://github.com/github_username/jupyterlab-iframe-bridge-example]:
-```
+### Usage
 
-Finally, install the dependencies and the extension (empty for now) into the
-environment, then create a symbolic link from JupyterLab to the source code in order to
-avoid running `pip install` every time a modification is made:
+The extension consists of two packages:
 
-```bash
-cd jupyterlab-iframe-bridge-example
-pip install -ve .
-jupyter labextension develop --overwrite .
-```
+1. `jupyter-iframe-commands`: The JupyterLab extension that runs inside the iframe
+2. `jupyter-iframe-commands-host`: A JavaScript package for the host page interacting
+   with the JupyterLite instance
 
-## Extension development
-
-Modify the file `jupyterlab-iframe-bridge-example/src/index.ts` with a text editor.
-
-As the host page will ask the IFrame to change the theme, import the plugin that
-supports themes management:
-
-```typescript
-import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
-
-import { IThemeManager } from '@jupyterlab/apputils';
-```
-
-The code of the `plugin` object must also be modified:
-
-```typescript
-/**
- * Initialization data for the jupyterlab-iframe-bridge-example extension.
- */
-const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-iframe-bridge-example:plugin',
-  autoStart: true,
-  requires: [IThemeManager],
-  activate: (app: JupyterFrontEnd, themeManager: IThemeManager) => {
-    console.log('JupyterLab extension jupyterlab-iframe-bridge-example is activated!');
-
-    /* Incoming messages management */
-    window.addEventListener('message', (event) => {
-      if (event.data.type === 'from-host-to-iframe') {
-        console.log('Message received in the iframe:', event.data);
-
-        if (themeManager.theme === 'JupyterLab Dark') {
-          themeManager.setTheme('JupyterLab Light');
-        } else {
-          themeManager.setTheme('JupyterLab Dark');
-        }
-      }
-    });
-
-    /* Outgoing messages management */
-    const notifyThemeChanged = (): void => {
-      const message = { type: 'from-iframe-to-host', theme: themeManager.theme };
-      window.parent.postMessage(message, '*');
-      console.log('Message sent to the host:', message);
-    };
-    themeManager.themeChanged.connect(notifyThemeChanged);
-  },
-};
-
-export default plugin;
-```
-
-The `themeManager` object implements the `IThemeManager` interface whose
-[documentation](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/apputils.IThemeManager-1.html)
-lists the accessible properties and methods.
-
-Two situations are to be distinguished: the reception of a message sent from the host
-page and the sending of a message to the host page.
-
-For the first situation, we use the `themeManager.theme` property to identify the
-current theme and the `themeManager.setTheme` method to change it. The theme change is
-triggered when the IFrame receives a message whose type is `from-host-to-iframe`.
-
-For the second situation, the `themeManager.themeChanged` property is used. This signal
-is fired when the theme has actually changed. It is used to notify the host page through
-the `postMessage` method
-([documentation](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)).
-
-## From JupyterLab extension to JupyterLite extension
-
-Start by installing the dependencies shown in the previous code:
-
-```bash
-jlpm add @jupyterlab/apputils
-jlpm add @jupyterlab/application
-```
-
-Build JupyterLab extension:
-
-```bash
-jlpm run build
-```
-
-The JupyterLab extension is created! The following command checks if it is correctly
-loaded in the environment:
-
-```bash
-jupyter labextension list
-```
-
-Move to a directory where the extension should be tested and run the build of this
-extension for JupyterLite:
-
-```bash
-mkdir examples
-cd examples
-jupyter lite build --output-dir lite
-```
-
-The following lines show that the extension has been correctly built:
-
-```
-...
-federated_extensions:copy:ext:jupyterlab-iframe-bridge-example
-.  pre_build:federated_extensions:copy:ext:jupyterlab-iframe-bridge-example
-...
-```
-
-A `jupyterlab-iframe-bridge-example/examples/lite/` directory containing everything
-needed for JupyterLite to work is created (notice the presence of our extension in the
-`extensions` subdirectory).
-
-## Test the extension
-
-To test the communication between a host page and an IFrame containing JupyterLite,
-create a file `jupyterlab-iframe-bridge-example/examples/index.html`. Edit this file
-with the following code:
+To use the extension in your host page:
 
 ```html
 <html>
-  <title>Example bridge between a host app and JupyterLite</title>
-  <body>
-    <script type="text/javascript">
-      /* Outgoing messages */
-      function toggle() {
-        window.frames.jupyterlab.postMessage({ type: 'from-host-to-iframe' });
+  <head>
+    <title>JupyterLite in an iframe</title>
+    <script type="module">
+      import { createBridge } from 'jupyter-iframe-commands-host';
+
+      // Create a bridge to the JupyterLite instance
+      const commandBridge = createBridge({ iframeId: 'jupyter-iframe' });
+
+      // Example: Toggle the left sidebar
+      async function toggleLeftSidebar() {
+        await commandBridge.execute('application:toggle-left-area');
       }
 
-      /* Incoming messages */
-      window.addEventListener('message', (event) => {
-        if (event.data.type === 'from-iframe-to-host') {
-          document.getElementById('chosenTheme').innerText = event.data.theme;
-        }
-      });
+      // Example: Change the theme
+      async function setDarkTheme() {
+        await commandBridge.execute('apputils:change-theme', {
+          theme: 'JupyterLab Dark',
+        });
+      }
+
+      // List all available JupyterLab commands
+      async function listCommands() {
+        const commands = await commandBridge.listCommands();
+        console.log(commands);
+      }
+
+      // Make functions available globally
+      window.toggleLeftSidebar = toggleLeftSidebar;
+      window.setDarkTheme = setDarkTheme;
+      window.listCommands = listCommands;
     </script>
-    <h2>Below is a JupyterLite site running in an IFrame</h2>
-    <p>
-      Click the following button sends a message to the JupyterLab IFrame to toggle the
-      theme.
-    </p>
-    <p>The IFrame indicates that the current theme is: <em id="chosenTheme"></em></p>
-    <input type="button" value="Toggle the JupyterLab Theme" onclick="toggle()" />
+  </head>
+  <body>
+    <h2>JupyterLite with command bridge</h2>
+    <div>
+      <button onclick="toggleLeftSidebar()">Toggle Left Sidebar</button>
+      <button onclick="setDarkTheme()">Set Dark Theme</button>
+      <button onclick="listCommands()">List Commands (check console)</button>
+    </div>
     <iframe
-      name="jupyterlab"
-      src="lite/"
+      id="jupyter-iframe"
+      src="path/to/jupyterlite/"
       width="100%"
       height="600px"
       sandbox="allow-scripts allow-same-origin"
@@ -213,24 +85,21 @@ with the following code:
 </html>
 ```
 
-When the user clicks on the button, the `toggle` function sends a message to the IFrame
-via the `postMessage` method. This message is intercepted by our extension which changes
-the theme. Moreover, when the host page receives a message from the IFrame notifying of
-an effective theme change, it displays it to the user.
+The `jupyter-iframe-commands` extension provides access to all JupyterLab commands, so
+you can control various aspects of the JupyterLite instance, such as:
 
-In order to visualize this process, launch a minimalist server from the `examples`
-directory:
+- Toggling UI elements (sidebars, panels, etc.)
+- Creating new notebooks or files
+- Changing the theme
 
-```bash
-cd examples
-python -m http.server -b 127.0.0.1
-```
+For more information, refer to the
+[jupyter-iframe-commands repository](https://github.com/TileDB-Inc/jupyter-iframe-commands).
 
-In a browser, at the address `http://127.0.0.1:8000`, you should be able to notice the
-communication between the host page and the IFrame (refresh the browser if necessary):
+## Exposing additional functionality
 
-![jupyterlite-bridge-iframe](https://user-images.githubusercontent.com/44410933/218969739-2f78788d-00a3-4715-b20e-59c48bb2f2bd.gif)
+If you need additional functionality beyond what the `jupyter-iframe-commands` extension
+provides, you can develop your own custom JupyterLab extension. Custom extensions can
+implement new commands to expose more functionality to the host page.
 
-In addition, the browser console should display messages similar to the following:
-
-![image](https://user-images.githubusercontent.com/44410933/218319071-0095cbe5-ca53-45e5-9bae-a9beeb6197e2.png)
+For information on developing JupyterLab extensions, refer to the
+[JupyterLab Extension Developer Guide](https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html).

@@ -127,6 +127,10 @@ class LiteBuildConfig(LoggingConfigurable):
         help="extra JupyterLab-compatible file types for the server and browser"
     ).tag(config=True)
 
+    workspaces: tuple[Path] = TypedTuple(
+        CPath(), help=("Specific .jupyterlab-workspaces to include")
+    ).tag(config=True)
+
     @default("apps")
     def _default_apps(self):
         return []
@@ -178,6 +182,7 @@ class LiteBuildConfig(LoggingConfigurable):
             r"/\.env",
             r"/\.git",
             r"/\.ipynb_checkpoints",
+            r"/\.pixi",
             r"/build/",
             r"/dist/",
             r"/envs/",
@@ -186,6 +191,7 @@ class LiteBuildConfig(LoggingConfigurable):
             r"/overrides\.json",
             r"/untitled\..*",
             r"/Untitled\..*",
+            r"/workspaces/",
             r"/venvs/",
             r"\.*doit\.db$",
             r"\.pyc$",

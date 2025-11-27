@@ -3,16 +3,12 @@
 
 import { {{ appClassName }} } from '{{ appModuleName }}';
 
-import { JupyterLiteServer } from '@jupyterlite/server';
-
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 
-import './style.js';
+import { PluginRegistry } from '@lumino/coreutils';
 
-const serverExtensions = [
-  import('@jupyterlite/server-extension')
-];
+import './style.js';
 
 // custom list of disabled plugins
 const disabled = [
@@ -24,7 +20,9 @@ const disabled = [
 async function createModule(scope, module) {
   try {
     const factory = await window._JUPYTERLAB[scope].get(module);
-    return factory();
+    const instance = factory();
+    instance.__scope__ = scope;
+    return instance;
   } catch (e) {
     console.warn(`Failed to create module: package: ${scope}; module: ${module}`);
     throw e;
@@ -35,12 +33,11 @@ async function createModule(scope, module) {
  * The main entry point for the application.
  */
 export async function main() {
+  const allPlugins = [];
   const pluginsToRegister = [];
   const federatedExtensionPromises = [];
   const federatedMimeExtensionPromises = [];
   const federatedStylePromises = [];
-  const litePluginsToRegister = [];
-  const liteExtensionPromises = [];
 
   // This is all the data needed to load and activate plugins. This should be
   // gathered by the server and put onto the initial page template.
@@ -52,10 +49,6 @@ export async function main() {
   const federatedExtensionNames = new Set();
 
   extensions.forEach(data => {
-    if (data.liteExtension) {
-      liteExtensionPromises.push(createModule(data.name, data.extension));
-      return;
-    }
     if (data.extension) {
       federatedExtensionNames.add(data.name);
       federatedExtensionPromises.push(createModule(data.name, data.extension));
@@ -91,6 +84,10 @@ export async function main() {
       ) {
         continue;
       }
+      allPlugins.push({
+        ...plugin,
+        extension: extension.__scope__
+      });
       yield plugin;
     }
   }
@@ -101,6 +98,7 @@ export async function main() {
   if (!federatedExtensionNames.has('{{@key}}')) {
     try {
       let ext = require('{{@key}}{{#if this}}/{{this}}{{/if}}');
+      ext.__scope__ = '{{@key}}';
       for (let plugin of activePlugins(ext)) {
         mimeExtensions.push(plugin);
       }
@@ -127,6 +125,7 @@ export async function main() {
   if (!federatedExtensionNames.has('{{@key}}')) {
     try {
       let ext = require('{{@key}}{{#if this}}/{{this}}{{/if}}');
+      ext.__scope__ = '{{@key}}';
       for (let plugin of activePlugins(ext)) {
         pluginsToRegister.push(plugin);
       }
@@ -148,48 +147,29 @@ export async function main() {
     }
   });
 
-  // Add the base serverlite extensions
-  const baseServerExtensions = await Promise.all(serverExtensions);
-  baseServerExtensions.forEach(p => {
-    for (let plugin of activePlugins(p)) {
-      litePluginsToRegister.push(plugin);
-    }
-  })
-
-  // Add the serverlite federated extensions.
-  const federatedLiteExtensions = await Promise.allSettled(liteExtensionPromises);
-  federatedLiteExtensions.forEach(p => {
-    if (p.status === "fulfilled") {
-      for (let plugin of activePlugins(p.value)) {
-        litePluginsToRegister.push(plugin);
-      }
-    } else {
-      console.error(p.reason);
-    }
-  });
-
   // Load all federated component styles and log errors for any that do not
   (await Promise.allSettled(federatedStylePromises)).filter(({status}) => status === "rejected").forEach(({reason}) => {
      console.error(reason);
     });
 
-  // create the in-browser JupyterLite Server
-  const jupyterLiteServer = new JupyterLiteServer({});
-  jupyterLiteServer.registerPluginModules(litePluginsToRegister);
-  // start the server
-  await jupyterLiteServer.start();
+  // 1. Create a plugin registry
+  const pluginRegistry = new PluginRegistry();
 
-  // retrieve the custom service manager from the server app
-  const { serviceManager } = jupyterLiteServer;
+  // 2. Register the plugins
+  pluginRegistry.registerPlugins(pluginsToRegister);
 
-  // create a full-blown JupyterLab frontend
+  // 3. Get and resolve the service manager and connection status plugins
+  const IServiceManager = require('@jupyterlab/services').IServiceManager;
+  const serviceManager = await pluginRegistry.resolveRequiredService(IServiceManager);
+
+  // create the application
   const app = new {{ appClassName }}({
+    pluginRegistry,
     mimeExtensions,
-    serviceManager
+    serviceManager,
+    availablePlugins: allPlugins
   });
   app.name = PageConfig.getOption('appName') || 'JupyterLite';
-
-  app.registerPluginModules(pluginsToRegister);
 
   // Expose global app instance when in dev mode or when toggled explicitly.
   const exposeAppInBrowser =
@@ -199,7 +179,7 @@ export async function main() {
     window.jupyterapp = app;
   }
 
-  /* eslint-disable no-console */
-  await app.start();
+  // 4. Start the application, which will activate the other plugins
+  await app.start({ bubblingKeydown: true });
   await app.restored;
 }

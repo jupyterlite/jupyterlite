@@ -24,6 +24,9 @@ configure/translation
 configure/rtc
 configure/config_files
 configure/interface_switcher
+configure/loading_indicator
+configure/urls
+configure/workspaces
 ```
 
 ## Contents
@@ -56,6 +59,14 @@ pyodide/pyodide
 xeus-python/preinstalled_packages
 ```
 
+## Configuring the Xeus R kernel
+
+```{toctree}
+:maxdepth: 1
+
+xeus-r/preinstalled_packages
+```
+
 ## Deploying
 
 ```{toctree}
@@ -63,6 +74,7 @@ xeus-python/preinstalled_packages
 
 ../quickstart/deploy
 deployment/github-pages
+../quickstart/embed-repl.md
 deployment/sphinx
 deployment/vercel-netlify
 deployment/gitlab
@@ -78,8 +90,8 @@ more features and plugins, such as frontend extensions and new kernels.
 :maxdepth: 1
 
 extensions/frontend
-extensions/server
 extensions/kernel
+extensions/custom-exporters
 extensions/cli-addons
 ```
 

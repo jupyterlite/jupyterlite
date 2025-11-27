@@ -56,7 +56,7 @@ At its very simplest, an Addon is initialized with a signature like:
 class MyAddon:
     __all__ = ["status"]
 
-    def status(self, maanger):
+    def status(self, manager):
         yield dict(name="hello", actions=[lambda: print("world")])
 ```
 

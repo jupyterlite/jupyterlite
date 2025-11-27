@@ -11,7 +11,7 @@ and make them widely available via their CDN.
 To deploy your own JupyterLite on Netlify, you can start from the [JupyterLite Demo] by
 generating a new repository from the template.
 
-Then add a `runtime.txt` file with `3.7` as the content to specify Python 3.7 as
+Then add a `runtime.txt` file with `3.10` as the content to specify Python 3.10 as
 dependency.
 
 Finally specify `jupyter lite build --contents content --output-dir dist` as the "Build
@@ -38,7 +38,7 @@ The build environments of hosted platforms like Netlify and Vercel generally all
 limited control on the Python version installed on the build machine.
 
 This was the case for a while when their build image only included Python 3.6 while
-JupyterLite requires Python 3.7+. This can be limiting in some cases, especially when
+JupyterLite requires Python 3.10+. This can be limiting in some cases, especially when
 you want to have more control on the build.
 
 Fortunately it is possible to run arbitrary bash scripts, which provides a convenient
@@ -57,30 +57,30 @@ Then create a new `deploy.sh` file with the following content:
 
 ```bash
 #!/bin/bash
+set -e
 
-yum install wget -y
+# Install wget
+# yum is not available on netlify, but it´s not a problem because wget is already installed, this validation is just to avoid errors on build step.
+if command -v yum &> /dev/null; then
+    yum install wget -y
+fi
 
+# Download and extract Micromamba
 wget -qO- https://micro.mamba.pm/api/micromamba/linux-64/latest | tar -xvj bin/micromamba
 
-export PATH="$PWD/bin:$PATH"
+# Set up environment variables
 export MAMBA_ROOT_PREFIX="$PWD/micromamba"
+export PATH="$PWD/bin:$PATH"
 
-# Initialize Micromamba shell
-./bin/micromamba shell init -s bash --no-modify-profile -p $MAMBA_ROOT_PREFIX
+# Create the environment
+micromamba create -n jupyterenv python=3.12 -c conda-forge -y
 
-# Source Micromamba environment directly
-eval "$(./bin/micromamba shell hook -s bash)"
+# Install dependencies via pip in the micromamba environment
+micromamba run -n jupyterenv python -m pip install -r requirements-deploy.txt
 
-# Activate the Micromamba environment
-micromamba create -n jupyterenv python=3.11 -c conda-forge -y
-micromamba activate jupyterenv
-
-# install the dependencies
-python -m pip install -r requirements-deploy.txt
-
-# build the JupyterLite site
-jupyter lite --version
-jupyter lite build --contents content --output-dir dist
+# Build JupyterLite
+micromamba run -n jupyterenv jupyter lite --version
+micromamba run -n jupyterenv jupyter lite build --contents content --output-dir dist
 ```
 
 [Micromamba](https://github.com/mamba-org/mamba#micromamba) creates a new self-contained

@@ -1,0 +1,32 @@
+{
+  "title": "File Browser Download",
+  "description": "File Browser Download settings.",
+  "jupyter.lab.menus": {
+    "main": [
+      {
+        "id": "jp-mainmenu-file",
+        "items": [
+          { "type": "separator", "rank": 6 },
+          {
+            "command": "docmanager:download",
+            "rank": 6,
+            "args": {
+              "isMenu": true
+            }
+          },
+          { "type": "separator", "rank": 6 }
+        ]
+      }
+    ],
+    "context": [
+      {
+        "command": "filebrowser:download",
+        "selector": ".jp-DirListing-item[data-isdir=\"false\"]",
+        "rank": 9
+      }
+    ]
+  },
+  "properties": {},
+  "additionalProperties": false,
+  "type": "object"
+}

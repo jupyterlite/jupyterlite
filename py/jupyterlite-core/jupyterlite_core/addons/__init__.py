@@ -1,18 +1,11 @@
-"""Handle efficient discovery of"""
+"""Handle efficient discovery of entry points."""
 
-import sys
 import warnings
 from copy import deepcopy
 from functools import lru_cache
+from importlib.metadata import entry_points
 
 from ..constants import ADDON_ENTRYPOINT
-
-# See compatibility note on `group` keyword in
-# https://docs.python.org/3/library/importlib.metadata.html#entry-points
-if sys.version_info < (3, 10):  # pragma: no cover
-    from importlib_metadata import entry_points
-else:  # pragma: no cover
-    from importlib.metadata import entry_points
 
 
 def merge_addon_aliases(base_aliases, force=None):

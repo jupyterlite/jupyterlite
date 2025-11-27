@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.5.0a1",
+  "version": "0.7.0",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -61,21 +61,18 @@
   "prettier": {
     "printWidth": 88,
     "proseWrap": "always",
-    "singleQuote": true
-  },
-  "resolutions": {
-    "@types/react": "^18.0.26",
-    "json-schema": "^0.4.0",
-    "prettier": "^3.0.0",
-    "react": "^18.2.0",
-    "schema-utils": "^4.0.0",
-    "typescript": "~5.1.6",
-    "uuid": "^9.0.0",
-    "validator": "^13.7.0",
-    "yjs": "^13.5.40"
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.jupyterlab-workspace",
+        "options": {
+          "parser": "json"
+        }
+      }
+    ]
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~4.3.3",
+    "@jupyterlab/buildutils": "~4.5.0",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
@@ -93,9 +90,9 @@
     "rimraf": "^5.0.1",
     "shell-quote": "^1.8.1",
     "svgo": "^3.0.1",
-    "typedoc": "~0.23.21",
-    "typedoc-plugin-markdown": "~3.14.0",
-    "typescript": "~5.1.6"
+    "typedoc": "~0.28.2",
+    "typedoc-plugin-markdown": "~4.6.2",
+    "typescript": "~5.5.4"
   },
   "packageManager": "yarn@3.5.0"
 }

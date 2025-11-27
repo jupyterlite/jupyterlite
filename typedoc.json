@@ -4,18 +4,13 @@
   "entryPoints": [
     "packages/application",
     "packages/application-extension",
-    "packages/contents",
+    "packages/apputils",
+    "packages/apputils-extension",
     "packages/iframe-extension",
-    "packages/kernel",
-    "packages/licenses",
     "packages/localforage",
     "packages/repl-extension",
     "packages/notebook-application-extension",
-    "packages/server",
-    "packages/server-extension",
-    "packages/session",
-    "packages/settings",
-    "packages/translation",
+    "packages/services-extension",
     "packages/types",
     "packages/ui-components"
   ],
@@ -24,5 +19,6 @@
   "name": "@jupyterlite",
   "out": "build/typedoc",
   "readme": "none",
-  "tsconfig": "tsconfig.typedoc.json"
+  "tsconfig": "tsconfig.typedoc.json",
+  "plugin": ["typedoc-plugin-markdown"]
 }

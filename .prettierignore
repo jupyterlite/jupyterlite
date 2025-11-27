@@ -23,7 +23,10 @@ app/**/*.html
 app/service-worker-*.js
 
 # The changelog is updated by the releaser
-CHANGELOG.md
+docs/changelog.md
 
 # UI tests
 ui-tests/ui-tests-app
+
+# Virtual environments
+.venv

@@ -7,25 +7,7 @@
   "include": ["src/**/*"],
   "references": [
     {
-      "path": "../contents"
-    },
-    {
-      "path": "../kernel"
-    },
-    {
-      "path": "../licenses"
-    },
-    {
-      "path": "../localforage"
-    },
-    {
-      "path": "../session"
-    },
-    {
-      "path": "../settings"
-    },
-    {
-      "path": "../translation"
+      "path": "../apputils"
     }
   ]
 }

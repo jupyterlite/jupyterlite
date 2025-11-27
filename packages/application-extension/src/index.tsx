@@ -1,42 +1,64 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  IRouter,
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd,
-  ILabShell,
-} from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { ILabShell, IRouter, JupyterFrontEnd } from '@jupyterlab/application';
 
-import {
-  Clipboard,
-  ICommandPalette,
-  Dialog,
-  showDialog,
-  SessionContext,
-} from '@jupyterlab/apputils';
+import type { SessionContext } from '@jupyterlab/apputils';
+import { Clipboard, Dialog, ICommandPalette, showDialog } from '@jupyterlab/apputils';
 
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
-import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import { IDefaultFileBrowser, IFileBrowserFactory } from '@jupyterlab/filebrowser';
+
+import {
+  DocumentConnectionManager,
+  ILSPDocumentConnectionManager,
+  IWidgetLSPAdapterTracker,
+  LanguageServerManager,
+} from '@jupyterlab/lsp';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
+import type { Contents, Setting, Workspace } from '@jupyterlab/services';
+import {
+  IDefaultDrive,
+  ISettingManager,
+  IWorkspaceManager,
+} from '@jupyterlab/services';
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+
+import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
+
+import {
+  IServiceWorkerManager,
+  LiteWorkspaceManager,
+  ServiceWorkerManager,
+} from '@jupyterlite/apputils';
+
+import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
+// Import deprecated packages for backward compatibility with federated extensions
+import '@jupyterlite/contents';
+import '@jupyterlite/kernel';
+import '@jupyterlite/server';
+
 import { filter } from '@lumino/algorithm';
 
+import type { DockPanel } from '@lumino/widgets';
 import { Widget } from '@lumino/widgets';
 
 import React from 'react';
+
+import { ClearDataDialog } from './clear-data-dialog';
 
 /**
  * A regular expression to match path to notebooks, documents and consoles
@@ -59,6 +81,8 @@ namespace CommandIDs {
   export const filebrowserDownload = 'filebrowser:download';
 
   export const copyShareableLink = 'filebrowser:share-main';
+
+  export const clearBrowserData = 'application:clear-browser-data';
 }
 
 /**
@@ -66,6 +90,48 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * The custom URL router provider.
+ *
+ * Provides IRouter, plus the additional methods to transform `/path/`-based routes
+ */
+const liteRouter: JupyterFrontEndPlugin<ILiteRouter> = {
+  id: '@jupyterlite/application-extension:lite-router',
+  autoStart: true,
+  provides: ILiteRouter,
+  requires: [JupyterFrontEnd.IPaths],
+  activate: (app: JupyterFrontEnd, paths: JupyterFrontEnd.IPaths) => {
+    const { commands } = app;
+    const { base } = paths.urls;
+    const router = new LiteRouter({ base, commands });
+
+    void app.started.then(() => {
+      // Route the very first request on load.
+      void router.route();
+
+      // Route all pop state events.
+      window.addEventListener('popstate', () => {
+        void router.route();
+      });
+    });
+
+    return router;
+  },
+};
+
+/**
+ * The default URL router provider.
+ */
+const router: JupyterFrontEndPlugin<IRouter> = {
+  id: '@jupyterlite/application-extension:router',
+  autoStart: true,
+  provides: IRouter,
+  requires: [ILiteRouter],
+  activate: (app: JupyterFrontEnd, router: ILiteRouter) => {
+    return router;
+  },
+};
 
 /**
  * Add a command to show an About dialog.
@@ -129,7 +195,7 @@ const about: JupyterFrontEndPlugin<void> = {
         );
         const copyright = (
           <span className="jp-About-copyright">
-            {trans.__('© 2021-2022 JupyterLite Contributors')}
+            {trans.__('© 2021-, JupyterLite Contributors')}
           </span>
         );
         const body = (
@@ -281,7 +347,10 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             }
           });
         },
-        icon: downloadIcon.bindprops({ stylesheet: 'menuItem' }),
+        icon: (args) =>
+          args['isMenu']
+            ? undefined
+            : downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
       });
     }
@@ -310,6 +379,34 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
     });
     logo.id = 'jp-MainLogo';
     labShell.add(logo, 'top', { rank: 0 });
+  },
+};
+
+/**
+ * A plugin to provide the language server connection manager
+ *
+ * Currently does nothing until LSP is supported in JupyterLite
+ */
+const lspConnectionManager: JupyterFrontEndPlugin<ILSPDocumentConnectionManager> = {
+  id: '@jupyterlite/application-extension:lsp-connection-manager',
+  autoStart: true,
+  requires: [IWidgetLSPAdapterTracker],
+  provides: ILSPDocumentConnectionManager,
+  activate: (app: JupyterFrontEnd, tracker: IWidgetLSPAdapterTracker) => {
+    const languageServerManager = new (class extends LanguageServerManager {
+      async fetchSessions(): Promise<void> {
+        // no-op
+      }
+    })({
+      settings: app.serviceManager.serverSettings,
+    });
+
+    const connectionManager = new DocumentConnectionManager({
+      languageServerManager,
+      adapterTracker: tracker,
+    });
+
+    return connectionManager;
   },
 };
 
@@ -444,6 +541,27 @@ const opener: JupyterFrontEndPlugin<void> = {
 };
 
 /**
+ * A plugin installing the service worker.
+ */
+const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
+  id: '@jupyterlite/application-extension:service-worker-manager',
+  autoStart: true,
+  provides: IServiceWorkerManager,
+  optional: [IKernelClient],
+  activate: (app: JupyterFrontEnd, kernelClient?: IKernelClient) => {
+    const { contents } = app.serviceManager;
+    const serviceWorkerManager = new ServiceWorkerManager({ contents });
+    if (kernelClient !== undefined) {
+      serviceWorkerManager.registerStdinHandler(
+        'kernel',
+        kernelClient.handleStdin.bind(kernelClient),
+      );
+    }
+    return serviceWorkerManager;
+  },
+};
+
+/**
  * A plugin to patch the session context path so it includes the drive name.
  * TODO: investigate a better way for the kernel to be aware of the drive it is
  * associated with.
@@ -547,12 +665,174 @@ const shareFile: JupyterFrontEndPlugin<void> = {
   },
 };
 
+/**
+ * A plugin to add a command for clearing browser data.
+ */
+const clearBrowserData: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:clear-browser-data',
+  autoStart: true,
+  requires: [ITranslator],
+  optional: [
+    ICommandPalette,
+    ISettingManager,
+    IDefaultDrive,
+    IDefaultFileBrowser,
+    IWorkspaceManager,
+  ],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+    palette: ICommandPalette | null,
+    settingManager: Setting.IManager | null,
+    defaultDrive: Contents.IDrive | null,
+    defaultFileBrowser: IDefaultFileBrowser | null,
+    workspaceManager: Workspace.IManager | null,
+  ): void => {
+    const { commands } = app;
+    const trans = translator.load(I18N_BUNDLE);
+    const category = trans.__('Help');
+
+    const isBrowserStorageDrive = defaultDrive instanceof BrowserStorageDrive;
+    const isLiteSettingsManager = settingManager instanceof Settings;
+    const isLiteWorkspaceManager = workspaceManager instanceof LiteWorkspaceManager;
+
+    if (!isBrowserStorageDrive && !isLiteSettingsManager && !isLiteWorkspaceManager) {
+      // not available if none of the default managers
+      // are the ones provided by JupyterLite by default
+      return;
+    }
+
+    // Add a CSS class to the drive if it is a BrowserStorageDrive for the context menu entry
+    if (isBrowserStorageDrive && defaultFileBrowser) {
+      defaultFileBrowser.addClass('jp-BrowserStorageDrive');
+    }
+
+    const clearData = async (options: ClearDataDialog.IClearOptions): Promise<void> => {
+      const { clearSettings, clearContents, clearWorkspaces } = options;
+      const promises: Promise<void>[] = [];
+
+      if (clearContents && isBrowserStorageDrive) {
+        const browserStorageDrive = defaultDrive as BrowserStorageDrive;
+        promises.push(browserStorageDrive.clearStorage());
+      }
+
+      if (clearSettings && isLiteSettingsManager) {
+        const settings = settingManager as Settings;
+        promises.push(settings.clear());
+      }
+
+      if (clearWorkspaces && isLiteWorkspaceManager) {
+        const workspace = workspaceManager as any;
+        promises.push(workspace.clear());
+      }
+
+      await Promise.all(promises);
+
+      window.location.reload();
+    };
+
+    commands.addCommand(CommandIDs.clearBrowserData, {
+      label: trans.__('Clear Browser Data'),
+      icon: (args) => (args['isPalette'] ? undefined : clearIcon),
+      execute: async () => {
+        // Pass the availability information to the dialog
+        const availability = {
+          canClearSettings: isLiteSettingsManager && !!settingManager,
+          canClearContents: isBrowserStorageDrive && !!defaultDrive,
+          canClearWorkspaces: isLiteWorkspaceManager && !!workspaceManager,
+        };
+
+        const body = new ClearDataDialog({
+          translator,
+          availability,
+        });
+
+        const result = await showDialog({
+          title: trans.__('Clear Browser Data'),
+          body,
+          buttons: [
+            Dialog.cancelButton({ label: trans.__('Cancel') }),
+            Dialog.warnButton({ label: trans.__('Clear') }),
+          ],
+        });
+        if (result.button.accept) {
+          return clearData(body.getValue());
+        }
+        return await Promise.resolve();
+      },
+    });
+
+    if (palette) {
+      palette.addItem({ command: CommandIDs.clearBrowserData, category });
+    }
+  },
+};
+
+/**
+ * A plugin to configure the application mode (single-document vs multiple-document)
+ */
+const modeSupport: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:mode-support',
+  autoStart: true,
+  optional: [ILabShell, IRouter],
+  activate: (
+    app: JupyterFrontEnd,
+    labShell: ILabShell | null,
+    router: IRouter | null,
+  ) => {
+    // only effective in JupyterLab
+    if (!labShell) {
+      return;
+    }
+
+    // Query string parameter has higher priority
+    const url = new URL(window.location.href);
+    const urlMode = url.searchParams.get('mode');
+    const mode = urlMode || PageConfig.getOption('mode') || 'multiple-document';
+
+    // Wait for the app to be restored before setting the mode
+    // so the switch button has time to set the signal
+    app.restored.then(() => {
+      // Only set the mode if it's valid
+      if (mode === 'single-document' || mode === 'multiple-document') {
+        labShell.mode = mode;
+
+        // Update PageConfig to match the effective mode
+        PageConfig.setOption('mode', mode);
+      }
+    });
+
+    // Watch the mode and update the URL to reflect the change
+    labShell.modeChanged.connect((_, newMode: DockPanel.Mode) => {
+      const currentUrl = new URL(window.location.href);
+      const currentUrlMode = currentUrl.searchParams.get('mode');
+
+      // Update the URL parameter if it differs from the new mode
+      if (currentUrlMode !== newMode) {
+        currentUrl.searchParams.set('mode', newMode as string);
+        if (router) {
+          const { pathname, search } = currentUrl;
+          router.navigate(`${pathname}${search}`, { skipRouting: true });
+        }
+      }
+
+      PageConfig.setOption('mode', newMode);
+    });
+  },
+};
+
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
+  clearBrowserData,
   downloadPlugin,
+  liteRouter,
   liteLogo,
+  lspConnectionManager,
+  modeSupport,
   notifyCommands,
   opener,
+  router,
+  serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
 ];

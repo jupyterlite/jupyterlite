@@ -1,21 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  ILabStatus,
-  IRouter,
-  JupyterFrontEndPlugin,
-  JupyterFrontEnd,
-  Router,
-} from '@jupyterlab/application';
+import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
+import { ILabStatus, IRouter, JupyterFrontEnd, Router } from '@jupyterlab/application';
 
-import { CommandToolbarButton, IThemeManager, Toolbar } from '@jupyterlab/apputils';
+import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
 
+import type { CodeConsole, ConsolePanel } from '@jupyterlab/console';
 import { IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
-
-import { clearIcon, refreshIcon, runIcon } from '@jupyterlab/ui-components';
 
 import { SingleWidgetApp } from '@jupyterlite/application';
 
@@ -32,91 +26,38 @@ const I18N_BUNDLE = 'jupyterlite';
  * A plugin to add buttons to the console toolbar.
  */
 const buttons: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/console-application:buttons',
+  id: '@jupyterlite/repl-extension:buttons',
   autoStart: true,
   requires: [ITranslator],
-  optional: [IConsoleTracker],
+  optional: [IToolbarWidgetRegistry],
   activate: (
     app: JupyterFrontEnd,
     translator: ITranslator,
-    tracker: IConsoleTracker | null,
+    toolbarRegistry: IToolbarWidgetRegistry | null,
   ) => {
-    if (!tracker) {
-      return;
-    }
-
-    const { commands } = app;
     const trans = translator.load(I18N_BUNDLE);
 
-    // wrapper commands to be able to override the icon
-    const runCommand = 'repl:run';
-    commands.addCommand(runCommand, {
-      caption: trans.__('Run'),
-      icon: runIcon,
-      execute: () => {
-        return commands.execute('console:run-forced');
-      },
-    });
+    if (toolbarRegistry) {
+      const factory = 'ConsolePanel';
+      toolbarRegistry.addFactory<ConsolePanel>(factory, 'liteIcon', (panel) => {
+        const node = document.createElement('a');
+        node.title = trans.__('Powered by JupyterLite');
+        node.href = 'https://github.com/jupyterlite/jupyterlite';
+        node.target = '_blank';
+        node.rel = 'noopener noreferrer';
+        const poweredBy = new Widget({ node });
+        liteIcon.element({
+          container: node,
+          elementPosition: 'center',
+          margin: '2px',
+          height: 'auto',
+          width: '16px',
+        });
 
-    const runButton = new CommandToolbarButton({
-      commands,
-      id: runCommand,
-    });
-
-    const restartCommand = 'repl:restart';
-    commands.addCommand(restartCommand, {
-      caption: trans.__('Restart'),
-      icon: refreshIcon,
-      execute: () => {
-        return commands.execute('console:restart-kernel');
-      },
-    });
-
-    const restartButton = new CommandToolbarButton({
-      commands,
-      id: restartCommand,
-    });
-
-    const clearCommand = 'repl:clear';
-    commands.addCommand(clearCommand, {
-      caption: trans.__('Clear'),
-      icon: clearIcon,
-      execute: () => {
-        return commands.execute('console:clear');
-      },
-    });
-
-    const clearButton = new CommandToolbarButton({
-      commands,
-      id: clearCommand,
-    });
-
-    tracker.widgetAdded.connect((_, console) => {
-      const { toolbar } = console;
-
-      console.toolbar.addItem('run', runButton);
-      console.toolbar.addItem('restart', restartButton);
-      console.toolbar.addItem('clear', clearButton);
-
-      toolbar.addItem('spacer', Toolbar.createSpacerItem());
-
-      const node = document.createElement('a');
-      node.title = trans.__('Powered by JupyterLite');
-      node.href = 'https://github.com/jupyterlite/jupyterlite';
-      node.target = '_blank';
-      node.rel = 'noopener noreferrer';
-      const poweredBy = new Widget({ node });
-      liteIcon.element({
-        container: node,
-        elementPosition: 'center',
-        margin: '2px 2px 2px 8px',
-        height: 'auto',
-        width: '16px',
+        poweredBy.addClass('jp-PoweredBy');
+        return poweredBy;
       });
-
-      poweredBy.addClass('jp-PoweredBy');
-      toolbar.insertAfter('spacer', 'powered-by', poweredBy);
-    });
+    }
   },
 };
 
@@ -136,37 +77,73 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     if (!tracker) {
       return;
     }
-    const { commands, serviceManager, started } = app;
+    const { commands, started } = app;
 
     const search = window.location.search;
     const urlParams = new URLSearchParams(search);
     const code = urlParams.getAll('code');
+    const execute = urlParams.get('execute');
     const kernel = urlParams.get('kernel') || undefined;
     const theme = urlParams.get('theme')?.trim();
     const toolbar = urlParams.get('toolbar');
 
-    Promise.all([started, serviceManager.ready]).then(async () => {
-      commands.execute('console:create', { kernelPreference: { name: kernel } });
+    // normalize config options
+    const clearCellsOnExecute =
+      urlParams.get('clearCellsOnExecute') === '1' || undefined;
+    const clearCodeContentOnExecute =
+      urlParams.get('clearCodeContentOnExecute') === '0' ? false : undefined;
+    const hideCodeInput = urlParams.get('hideCodeInput') === '1' || undefined;
+    const showBanner = urlParams.get('showBanner') === '0' ? false : undefined;
+
+    const position = urlParams.get('promptCellPosition') ?? '';
+    const validPositions = ['top', 'bottom', 'left', 'right'];
+    const promptCellPosition = validPositions.includes(position)
+      ? (position as CodeConsole.PromptCellPosition)
+      : undefined;
+
+    started.then(async () => {
+      // create a new console at application startup
+      void commands.execute('console:create', {
+        kernelPreference: { name: kernel },
+      });
+    });
+
+    tracker.widgetAdded.connect(async (_, panel) => {
+      if (!toolbar) {
+        // hide the toolbar by default if not specified
+        panel.toolbar.dispose();
+      }
+
+      const { console: widget } = panel;
+      const { sessionContext } = widget;
+
+      await sessionContext.ready;
+
+      widget.setConfig({
+        clearCellsOnExecute,
+        clearCodeContentOnExecute,
+        hideCodeInput,
+        promptCellPosition,
+        showBanner,
+      });
+
+      // TODO: find a better way to make sure the banner is removed if showBanner is false
+      widget['_onKernelChanged']();
+
+      if (code.length > 0) {
+        if (execute === '0') {
+          const codeContent = code.join('\n');
+          widget.replaceSelection(codeContent);
+        } else {
+          code.forEach((line) => widget.inject(line));
+        }
+      }
     });
 
     if (theme && themeManager) {
       const themeName = decodeURIComponent(theme);
       themeManager.setTheme(themeName);
     }
-
-    tracker.widgetAdded.connect(async (_, widget) => {
-      const { console } = widget;
-
-      if (!toolbar) {
-        // hide the toolbar by default if not specified
-        widget.toolbar.dispose();
-      }
-
-      if (code) {
-        await console.sessionContext.ready;
-        code.forEach((line) => console.inject(line));
-      }
-    });
   },
 };
 

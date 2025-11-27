@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/localforage",
-  "version": "0.5.0-alpha.1",
+  "version": "0.7.0",
   "description": "JupyterLite - Localforage singleton",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -31,14 +31,14 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.3.3",
-    "@lumino/coreutils": "^2.2.0",
+    "@jupyterlab/coreutils": "~6.5.0",
+    "@lumino/coreutils": "^2.2.2",
     "localforage": "^1.9.0",
     "localforage-memoryStorageDriver": "^0.9.2"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
-    "typescript": "~5.1.6"
+    "typescript": "~5.5.4"
   },
   "publishConfig": {
     "access": "public"

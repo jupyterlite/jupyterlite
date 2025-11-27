@@ -1,0 +1,65 @@
+{
+  "data": {
+    "layout-restorer:data": {
+      "main": {
+        "dock": {
+          "type": "split-area",
+          "orientation": "horizontal",
+          "sizes": [0.5, 0.5],
+          "children": [
+            {
+              "type": "tab-area",
+              "currentIndex": 0,
+              "widgets": ["markdownviewer-widget:README.md"]
+            },
+            {
+              "type": "tab-area",
+              "currentIndex": 0,
+              "widgets": ["notebook:intro.ipynb"]
+            }
+          ]
+        },
+        "current": "markdownviewer-widget:README.md"
+      },
+      "down": {
+        "size": 0,
+        "widgets": []
+      },
+      "left": {
+        "collapsed": false,
+        "current": "filebrowser",
+        "widgets": [
+          "filebrowser",
+          "github-filebrowser",
+          "running-sessions",
+          "@jupyterlab/toc:plugin"
+        ]
+      },
+      "right": {
+        "collapsed": true,
+        "widgets": ["jp-property-inspector"]
+      },
+      "relativeSizes": [0.2, 0.8, 0]
+    },
+    "file-browser-github-filebrowser:cwd": {
+      "path": "GitHub:jupyterlite/jupyterlite"
+    },
+    "notebook:intro.ipynb": {
+      "data": {
+        "path": "intro.ipynb",
+        "factory": "Notebook"
+      }
+    },
+    "markdownviewer-widget:README.md": {
+      "data": {
+        "path": "README.md",
+        "factory": "Markdown Preview"
+      }
+    }
+  },
+  "metadata": {
+    "created": "2022-09-17T18:29:30.357+00:00",
+    "last_updated": "2022-09-17T18:29:30.357+00:00",
+    "id": "default"
+  }
+}

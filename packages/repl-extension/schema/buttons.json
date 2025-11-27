@@ -1,0 +1,16 @@
+{
+  "title": "REPL extension settings",
+  "description": "REPL extension settings.",
+  "jupyter.lab.toolbars": {
+    "ConsolePanel": [{ "name": "liteIcon", "rank": 10000 }]
+  },
+  "properties": {
+    "toolbar": {
+      "title": "Console panel toolbar items",
+      "type": "array",
+      "default": []
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

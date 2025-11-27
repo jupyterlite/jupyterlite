@@ -3,6 +3,4 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
-@import url('~@jupyterlab/help-extension/style/index.css');
-
 @import url('./base.css');

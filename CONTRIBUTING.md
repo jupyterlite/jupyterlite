@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=20,<21`
-- `jupyterlab >=4.3,<4.4`
+- `jupyterlab >=4.5.0,<4.6`
 - `python >=3.12,<3.13`
 
 Various package managers on different operating systems provide these.
@@ -54,6 +54,14 @@ python -m pip install -r requirements-docs.txt -r requirements-lint.txt
 [`doit`](https://github.com/pydoit/doit) handles the full software lifecycle, spanning
 JavaScript to documentation building and link checking. It understands the dependencies
 between different nested _tasks_, usually as files that change on disk.
+
+#### Setup dev installation
+
+To setup the dev installation, just run:
+
+```bash
+doit dev
+```
 
 #### List Tasks
 
@@ -194,12 +202,19 @@ jlpm test
 
 By default this repository only includes the JavaScript kernel.
 
-If you would like to setup a local environment with an additional, you can install
-explicitely, before running the `jupyter lite build` command. For example:
+If you would like to setup a local environment with an additional kernel, you must
+explicitely install the kernel before running the `jupyter lite build` command. For
+example:
 
-- To install the Pyodide kernel: `pip install jupyterlite-pyodide-kernel`
-- To install the Xeus Python kernel:
-  https://jupyterlite-xeus.readthedocs.io/en/latest/environment.html
+- To install the Pyodide kernel, run
+
+  ```bash
+  pip install jupyterlite-pyodide-kernel
+  ```
+
+- To install one of the many kernels provided by the
+  [`jupyterlite-xeus`](https://jupyterlite-xeus.readthedocs.io/) extension, follow
+  ["xeus kernels in JupyterLite: Usage"](https://jupyterlite-xeus.readthedocs.io/en/latest/index.html#usage).
 
 ### UI Tests
 
@@ -410,6 +425,6 @@ page, including:
 [new issue]: https://github.com/jupyterlite/jupyterlite/issues/new
 [pull requests]: https://github.com/jupyterlite/jupyterlite/pulls
 [repo]: https://github.com/jupyterlite/jupyterlite
-[coc]: https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md
+[coc]: https://github.com/jupyter/governance/blob/main/docs/conduct/code_of_conduct.md
 [mambaforge]: https://github.com/conda-forge/miniforge
 [dodo]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
