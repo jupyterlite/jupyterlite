@@ -25,7 +25,6 @@
     "@jupyterlite/apputils": "^0.8.0-alpha.1",
     "@jupyterlite/apputils-extension": "^0.8.0-alpha.1",
     "@jupyterlite/contents": "^0.8.0-alpha.1",
-    "@jupyterlite/iframe-extension": "^0.8.0-alpha.1",
     "@jupyterlite/kernel": "^0.8.0-alpha.1",
     "@jupyterlite/localforage": "^0.8.0-alpha.1",
     "@jupyterlite/notebook-application-extension": "^0.8.0-alpha.1",

@@ -99,7 +99,6 @@
     "@jupyterlite/apputils": "~0.8.0-alpha.1",
     "@jupyterlite/apputils-extension": "~0.8.0-alpha.1",
     "@jupyterlite/contents": "~0.8.0-alpha.1",
-    "@jupyterlite/iframe-extension": "~0.8.0-alpha.1",
     "@jupyterlite/kernel": "~0.8.0-alpha.1",
     "@jupyterlite/localforage": "~0.8.0-alpha.1",
     "@jupyterlite/notebook-application-extension": "~0.8.0-alpha.1",
@@ -183,7 +182,6 @@
     "@jupyterlab/workspaces-extension": "~4.6.0-alpha.3",
     "@jupyterlite/application-extension": "^0.8.0-alpha.1",
     "@jupyterlite/apputils-extension": "^0.8.0-alpha.1",
-    "@jupyterlite/iframe-extension": "^0.8.0-alpha.1",
     "@jupyterlite/localforage": "^0.8.0-alpha.1",
     "@jupyterlite/notebook-application-extension": "^0.8.0-alpha.1",
     "@jupyterlite/server": "^0.8.0-alpha.1",
@@ -249,7 +247,6 @@
       "@jupyterlab/workspaces-extension",
       "@jupyterlite/application-extension",
       "@jupyterlite/apputils-extension",
-      "@jupyterlite/iframe-extension",
       "@jupyterlite/notebook-application-extension",
       "@jupyterlite/services-extension"
     ],

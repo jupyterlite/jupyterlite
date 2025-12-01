@@ -68,7 +68,6 @@
     "@jupyterlite/application-extension": "~0.8.0-alpha.1",
     "@jupyterlite/apputils-extension": "~0.8.0-alpha.1",
     "@jupyterlite/contents": "~0.8.0-alpha.1",
-    "@jupyterlite/iframe-extension": "~0.8.0-alpha.1",
     "@jupyterlite/kernel": "~0.8.0-alpha.1",
     "@jupyterlite/repl-extension": "~0.8.0-alpha.1",
     "@jupyterlite/server": "~0.8.0-alpha.1",
@@ -127,7 +126,6 @@
     "@jupyterlite/application": "^0.8.0-alpha.1",
     "@jupyterlite/application-extension": "^0.8.0-alpha.1",
     "@jupyterlite/apputils-extension": "^0.8.0-alpha.1",
-    "@jupyterlite/iframe-extension": "^0.8.0-alpha.1",
     "@jupyterlite/repl-extension": "^0.8.0-alpha.1",
     "@jupyterlite/server": "^0.8.0-alpha.1",
     "@jupyterlite/services-extension": "^0.8.0-alpha.1",
@@ -172,7 +170,6 @@
       "@jupyterlite/application-extension",
       "@jupyterlite/apputils-extension",
       "@jupyterlite/repl-extension",
-      "@jupyterlite/iframe-extension",
       "@jupyterlite/services-extension"
     ],
     "singletonPackages": [
