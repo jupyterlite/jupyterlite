@@ -58,6 +58,10 @@ class WorkspacesAddon(BaseAddon):
 
     def check(self, manager):
         """verify /api/workspaces/all.json"""
+        # Only check workspaces all.json if there are workspaces to index
+        if not self.workspaces:
+            return
+
         yield dict(
             name="workspaces",
             doc="validate the workspaces in api/workspaces/all.json",
