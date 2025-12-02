@@ -6,7 +6,15 @@ import pprint
 import re
 from pathlib import Path
 
-from ..constants import ALL_JSON, API_CONTENTS, JSON_FMT, UTF8
+from ..constants import (
+    ALL_JSON,
+    API_CONTENTS,
+    CONTENTS_ALL_JSON_FILE,
+    JSON_FMT,
+    JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_JSON,
+    UTF8,
+)
 from ..optional import has_optional_dependency
 from .base import BaseAddon
 
@@ -65,6 +73,8 @@ class ContentsAddon(BaseAddon):
         output_file_dirs = [d for d in self.output_files_dir.rglob("*") if d.is_dir()] + [
             self.output_files_dir
         ]
+        root_all_json = self.api_dir / ALL_JSON
+
         for output_file_dir in output_file_dirs:
             stem = output_file_dir.relative_to(self.output_files_dir)
             api_path = self.api_dir / stem / ALL_JSON
@@ -79,6 +89,15 @@ class ContentsAddon(BaseAddon):
                 file_dep=[p for p in output_file_dir.rglob("*") if not p.is_dir()],
                 targets=[api_path],
             )
+
+        # Update jupyter-lite.json with the contents all.json filename
+        jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
+        yield self.task(
+            name="patch:contentsAllJsonFile",
+            doc="update jupyter-lite.json with contentsAllJsonFile",
+            file_dep=[root_all_json, jupyterlite_json],
+            actions=[(self.patch_contents_config, [jupyterlite_json])],
+        )
 
     def check(self, manager):
         """verify that all Contents API is valid (sorta)"""
@@ -208,6 +227,25 @@ class ContentsAddon(BaseAddon):
         )
 
         self.maybe_timestamp(api_path.parent)
+
+    def patch_contents_config(self, jupyterlite_json):
+        """Update jupyter-lite.json with the contents all.json filename."""
+        try:
+            config = json.loads(jupyterlite_json.read_text(**UTF8))
+        except (FileNotFoundError, json.JSONDecodeError):
+            config = {JUPYTER_CONFIG_DATA: {}}
+
+        if JUPYTER_CONFIG_DATA not in config:
+            config[JUPYTER_CONFIG_DATA] = {}
+
+        # Set the filename for contents all.json
+        config[JUPYTER_CONFIG_DATA][CONTENTS_ALL_JSON_FILE] = ALL_JSON
+
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
+        self.maybe_timestamp(jupyterlite_json)
+        self.log.debug(
+            f"[lite] [contents] Updated {jupyterlite_json} with {CONTENTS_ALL_JSON_FILE}"
+        )
 
     def patch_listing_timestamps(self, listing, sde=None):
         """clamp a contents listing's times to ``SOURCE_DATE_EPOCH``

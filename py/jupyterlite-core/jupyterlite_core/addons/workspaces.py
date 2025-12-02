@@ -10,9 +10,12 @@ from ..constants import (
     ALL_JSON,
     API_WORKSPACES,
     JSON_FMT,
+    JUPYTER_CONFIG_DATA,
+    JUPYTERLITE_JSON,
     UTF8,
     WORKSPACE_FILE,
     WORKSPACES,
+    WORKSPACES_ALL_JSON_FILE,
 )
 from .base import BaseAddon
 
@@ -30,6 +33,10 @@ class WorkspacesAddon(BaseAddon):
 
     def post_build(self, manager):
         """Update /api/workspaces/all.json"""
+        # Only create workspaces all.json if there are workspaces to index
+        if not self.workspaces:
+            return
+
         yield dict(
             name="workspaces",
             file_dep=[*self.workspaces],
@@ -38,6 +45,15 @@ class WorkspacesAddon(BaseAddon):
                 (doit.tools.create_folder, [self.output_workspaces_json.parent]),
                 self.update_workspaces_all_json,
             ],
+        )
+
+        # Update jupyter-lite.json with the workspaces all.json filename
+        jupyterlite_json = self.manager.output_dir / JUPYTERLITE_JSON
+        yield self.task(
+            name="patch:workspacesAllJsonFile",
+            doc="update jupyter-lite.json with workspacesAllJsonFile",
+            file_dep=[self.output_workspaces_json, jupyterlite_json],
+            actions=[(self.patch_workspaces_config, [jupyterlite_json])],
         )
 
     def check(self, manager):
@@ -62,6 +78,25 @@ class WorkspacesAddon(BaseAddon):
         self.output_workspaces_json.write_text(
             json.dumps(workspaces, **JSON_FMT),
             **UTF8,
+        )
+
+    def patch_workspaces_config(self, jupyterlite_json):
+        """Update jupyter-lite.json with the workspaces all.json filename."""
+        try:
+            config = json.loads(jupyterlite_json.read_text(**UTF8))
+        except (FileNotFoundError, json.JSONDecodeError):
+            config = {JUPYTER_CONFIG_DATA: {}}
+
+        if JUPYTER_CONFIG_DATA not in config:
+            config[JUPYTER_CONFIG_DATA] = {}
+
+        # Set the filename for workspaces all.json
+        config[JUPYTER_CONFIG_DATA][WORKSPACES_ALL_JSON_FILE] = ALL_JSON
+
+        jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
+        self.maybe_timestamp(jupyterlite_json)
+        self.log.debug(
+            f"[lite] [workspaces] Updated {jupyterlite_json} with {WORKSPACES_ALL_JSON_FILE}"
         )
 
     def validate_workspaces_json(self):
