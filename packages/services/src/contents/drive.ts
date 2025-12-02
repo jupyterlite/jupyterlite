@@ -926,7 +926,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
   };
 
   /**
-   * retrieve the contents for this path from `__index__.json` in the appropriate
+   * retrieve the contents for this path from the contents index file in the appropriate
    * folder.
    *
    * @param newLocalPath - The new file path.
@@ -937,11 +937,18 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const content = this._serverContents.get(path) || new Map();
 
     if (!this._serverContents.has(path)) {
+      // Check if contents are indexed by looking for the filename in PageConfig
+      const contentsAllJsonFile = PageConfig.getOption('contentsAllJsonFile');
+      if (!contentsAllJsonFile) {
+        this._serverContents.set(path, content);
+        return content;
+      }
+
       const apiURL = URLExt.join(
         PageConfig.getBaseUrl(),
         'api/contents',
         path,
-        'all.json',
+        contentsAllJsonFile,
       );
 
       try {
