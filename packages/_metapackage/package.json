@@ -25,7 +25,6 @@
     "@jupyterlite/apputils": "^0.7.0",
     "@jupyterlite/apputils-extension": "^0.7.0",
     "@jupyterlite/contents": "^0.7.0",
-    "@jupyterlite/iframe-extension": "^0.7.0",
     "@jupyterlite/kernel": "^0.7.0",
     "@jupyterlite/localforage": "^0.7.0",
     "@jupyterlite/notebook-application-extension": "^0.7.0",
