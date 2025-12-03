@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 /**
- * @deprecated This package is deprecated. Please import from @jupyterlite/services instead.
+ * @deprecated This package is deprecated and will be removed in 0.8.0. Please import from @jupyterlite/services instead.
  *
  * This package now acts as a shim that re-exports settings-related components from
  * @jupyterlite/services for backward compatibility.
