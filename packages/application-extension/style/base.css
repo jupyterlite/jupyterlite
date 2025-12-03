@@ -70,3 +70,11 @@
   color: var(--jp-ui-font-color2);
   font-style: italic;
 }
+
+/* About dialog dependency versions */
+.jp-About-dependencies {
+  font-size: 0.85em;
+  color: var(--jp-ui-font-color2);
+  margin-top: 4px;
+  white-space: nowrap;
+}
