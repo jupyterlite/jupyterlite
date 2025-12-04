@@ -1,6 +1,7 @@
 lint-staged.config.js
 .eslintrc.js
 scripts/serve.js
+scripts/update-versions.js
 
 .yarn-packages
 .yarn
