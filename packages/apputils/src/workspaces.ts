@@ -41,7 +41,6 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
    *
    * @param id - The workspace id
    * @returns A promise that resolves with the workspace.
-   * @throws Error if workspace is not found.
    */
   async fetch(id: string): Promise<Workspace.IWorkspace> {
     // First try to get from local storage
@@ -60,8 +59,11 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
       console.warn('Failed to fetch workspace from server:', error);
     }
 
-    // If neither local nor server has the workspace, throw an error
-    throw new Error(`Workspace with id '${id}' not found`);
+    // If neither local nor server has the workspace, return an empty workspace
+    return {
+      data: {},
+      metadata: { id },
+    };
   }
 
   /**
