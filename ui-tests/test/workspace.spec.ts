@@ -5,7 +5,9 @@ import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { refreshFilebrowser } from './utils';
+import type { ConsoleMessage } from '@playwright/test';
+
+import { firefoxWaitForApplication, refreshFilebrowser } from './utils';
 
 /**
  * Custom waitForApplication for workspace tests that doesn't depend on the launcher
@@ -200,5 +202,39 @@ test.describe('Workspace Tests', () => {
     expect(page.url()).toContain(`workspace=${workspace2}`);
     expect(await page.notebook.isOpen(notebook2)).toBeTruthy();
     expect(await page.notebook.isOpen(notebook1)).toBeFalsy();
+  });
+});
+
+/**
+ * Tests for workspace loading behavior
+ */
+test.describe('Workspace Loading Tests', () => {
+  test.use({
+    waitForApplication: firefoxWaitForApplication,
+  });
+
+  test('No workspace warning on first page load', async ({ page, context }) => {
+    await context.clearCookies();
+
+    const warnings: string[] = [];
+    page.on('console', (msg: ConsoleMessage) => {
+      if (msg.type() === 'warning') {
+        warnings.push(msg.text());
+      }
+    });
+
+    await page.goto('lab/index.html');
+
+    await page.waitForSelector('.jp-LauncherCard');
+
+    const workspaceWarnings = warnings.filter(
+      (w) =>
+        w.includes('Failed to fetch workspace from local storage') ||
+        w.includes('Failed to fetch id') ||
+        w.includes('from StateDB') ||
+        w.includes('Fetching workspace'),
+    );
+
+    expect(workspaceWarnings).toEqual([]);
   });
 });
