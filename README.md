@@ -17,18 +17,6 @@
 JupyterLite is a JupyterLab distribution that **runs entirely in the browser** built
 from the ground-up using JupyterLab components and extensions.
 
-## ⚡ Status ⚡
-
-Although JupyterLite is currently being developed by core Jupyter developers, the
-project is still _unofficial_.
-
-Not all the features available in JupyterLab and the Classic Notebook will work with
-JupyterLite, but many do!
-
-Don't hesitate to check out the
-[documentation](https://jupyterlite.readthedocs.io/en/stable/howto/index.html) for more
-information and project updates.
-
 ## ✨ Try it in your browser ✨
 
 JupyterLite works with both the [JupyterLab](https://github.com/jupyterlab/jupyterlab)
