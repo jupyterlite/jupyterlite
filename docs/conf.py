@@ -175,6 +175,13 @@ def after_build(app: Sphinx, error):
 
 
 def setup(app):
+    # Enable Plausible.io stats
+    app.add_js_file("https://plausible.io/js/pa-eNfnVmf5sGWJaB1mfLZJF.js", loading_method="async")
+    app.add_js_file(
+        filename=None,
+        body="window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({hashBasedRouting:true})",
+    )
+
     app.connect("build-finished", after_build)
     if RTD:
         app.connect("config-inited", before_rtd_build)
