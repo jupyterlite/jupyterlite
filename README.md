@@ -19,8 +19,8 @@ from the ground-up using JupyterLab components and extensions.
 
 ## ⚡ Status ⚡
 
-Although JupyterLite is currently being developed by core Jupyter developers, the
-project is still _unofficial_.
+JupyterLite is part of the [Project Jupyter](https://jupyter.org/) 
+[Frontends subproject](https://jupyterlab-team-compass.readthedocs.io).
 
 Not all the features available in JupyterLab and the Classic Notebook will work with
 JupyterLite, but many do!
