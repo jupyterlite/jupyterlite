@@ -19,7 +19,7 @@ from the ground-up using JupyterLab components and extensions.
 
 ## ⚡ Status ⚡
 
-JupyterLite is part of the [Project Jupyter](https://jupyter.org/) 
+JupyterLite is part of the [Project Jupyter](https://jupyter.org/)
 [Frontends subproject](https://jupyterlab-team-compass.readthedocs.io).
 
 Not all the features available in JupyterLab and the Classic Notebook will work with
