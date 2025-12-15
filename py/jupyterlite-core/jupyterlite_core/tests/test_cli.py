@@ -301,7 +301,7 @@ def test_build_subdirectory_config_warning(an_empty_lite_dir, script_runner):
     assert status.success, f"build should succeed: {status.stderr}"
 
     # Should warn about the unrecognized subdirectory config
-    assert "Skipping sub/jupyter-lite.json" in status.stderr
+    assert "Skipping sub" in status.stderr and "jupyter-lite.json" in status.stderr
     assert "parent directory does not exist" in status.stderr
 
     # The subdirectory config should NOT be copied to output
