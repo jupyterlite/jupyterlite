@@ -18,7 +18,7 @@
       "https://conda.anaconda.org/conda-forge/noarch/jupyterlab-tour-4.0.1-pyhd8ed1ab_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/notebook-7.5.0-pyhcf101f3_0.conda",
       "https://conda.anaconda.org/conda-forge/noarch/plotly-5.22.0-pyhd8ed1ab_0.conda",
-      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.2.0/jupyterlite_p5_kernel-0.2.0-py3-none-any.whl"
+      "https://github.com/jupyterlite/p5-kernel/releases/download/v0.3.0/jupyterlite_p5_kernel-0.3.0-py3-none-any.whl"
     ],
     "ignore_sys_prefix": ["federated_extensions"],
     "output_dir": "../build/docs-app"

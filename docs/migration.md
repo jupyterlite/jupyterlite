@@ -3,6 +3,35 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `v0.7.0` to `v0.8.0`
+
+### Removed Packages
+
+The `@jupyterlite/iframe-extension` package has been removed. This package provided a
+MIME renderer for the `text/html-sandboxed` MIME type, which rendered HTML content
+inside sandboxed iframes in notebook outputs.
+
+This functionality is no longer needed as JupyterLab's built-in HTML renderer can be
+used instead. If you need to display HTML content in your notebooks, you can use the
+`IPython.display.HTML` class:
+
+```python
+from IPython.display import HTML
+
+HTML("<h1>Hello, World!</h1>")
+```
+
+If you specifically need iframe-based rendering, you can use `IPython.display.IFrame`:
+
+```python
+from IPython.display import IFrame
+
+IFrame(src="https://example.com", width=800, height=400)
+```
+
+If your JupyterLite deployment or custom application referenced this extension, you
+should remove it from your configuration.
+
 ## `v0.6.0` to `v0.7.0`
 
 ```{warning}

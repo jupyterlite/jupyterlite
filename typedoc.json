@@ -6,7 +6,6 @@
     "packages/application-extension",
     "packages/apputils",
     "packages/apputils-extension",
-    "packages/iframe-extension",
     "packages/localforage",
     "packages/repl-extension",
     "packages/notebook-application-extension",
