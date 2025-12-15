@@ -329,3 +329,21 @@ def test_build_app_subdirectory_config(an_empty_lite_dir, script_runner):
     out_lab_config = an_empty_lite_dir / "_output" / "lab" / "jupyter-lite.json"
     assert out_lab_config.exists(), "app-specific config should be merged"
     assert "Custom Lab" in out_lab_config.read_text(encoding="utf-8")
+
+
+def test_build_ignores_hidden_directories(an_empty_lite_dir, script_runner):
+    """Config files in hidden directories like .venv should be silently ignored"""
+    # Create config in .venv (should be ignored by default)
+    venv = an_empty_lite_dir / ".venv" / "lib"
+    venv.mkdir(parents=True)
+    venv_config = venv / "jupyter-lite.json"
+    venv_config.write_text('{"jupyter-config-data": {}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should NOT warn about .venv - it's silently ignored
+    assert "Skipping" not in status.stderr or ".venv" not in status.stderr
+    assert ".venv" not in status.stderr
