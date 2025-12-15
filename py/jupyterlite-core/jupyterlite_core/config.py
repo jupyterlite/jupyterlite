@@ -106,11 +106,17 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     ignore_lite_config: tuple[str] = Tuple(
-        help="Path regular expressions for directories to ignore when searching for jupyter-lite.json"
+        help=(
+            "Path regular expressions for directories to ignore "
+            "when searching for jupyter-lite.json"
+        )
     ).tag(config=True)
 
     extra_ignore_lite_config: tuple[str] = Tuple(
-        help="Additional path regular expressions for directories to ignore when searching for jupyter-lite.json"
+        help=(
+            "Additional path regular expressions for directories to ignore "
+            "when searching for jupyter-lite.json"
+        )
     ).tag(config=True)
 
     source_date_epoch: _Optional[int] = CInt(
