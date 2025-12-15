@@ -285,3 +285,47 @@ def test_check_bad_workspace(an_empty_lite_dir, script_runner):
     assert not status.success, "should have caught bad workspace"
     assert "missing `data`" in status.stdout
     assert "missing `metadata`" in status.stdout
+
+
+def test_build_subdirectory_config_warning(an_empty_lite_dir, script_runner):
+    """Regression test for https://github.com/jupyterlite/jupyterlite/issues/1095"""
+    # Create subdirectory structure with jupyter-lite.json in unknown location
+    sub = an_empty_lite_dir / "sub"
+    sub.mkdir()
+    sub_config = sub / "jupyter-lite.json"
+    sub_config.write_text('{"jupyter-config-data": {}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should warn about the unrecognized subdirectory config
+    assert "Skipping sub/jupyter-lite.json" in status.stderr
+    assert "parent directory does not exist" in status.stderr
+
+    # The subdirectory config should NOT be copied to output
+    out_sub_config = an_empty_lite_dir / "_output" / "sub" / "jupyter-lite.json"
+    assert not out_sub_config.exists(), "unrecognized subdirectory config should not be copied"
+
+
+def test_build_app_subdirectory_config(an_empty_lite_dir, script_runner):
+    """does building with a jupyter-lite.json in a known app directory work"""
+    # Create app-specific config (lab directory will exist after init)
+    lab = an_empty_lite_dir / "lab"
+    lab.mkdir()
+    lab_config = lab / "jupyter-lite.json"
+    lab_config.write_text('{"jupyter-config-data": {"appName": "Custom Lab"}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should NOT warn about lab directory
+    assert "Skipping lab/jupyter-lite.json" not in status.stderr
+
+    # The app config should be merged into output
+    out_lab_config = an_empty_lite_dir / "_output" / "lab" / "jupyter-lite.json"
+    assert out_lab_config.exists(), "app-specific config should be merged"
+    assert "Custom Lab" in out_lab_config.read_text(encoding="utf-8")

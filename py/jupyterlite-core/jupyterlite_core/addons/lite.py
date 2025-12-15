@@ -33,6 +33,17 @@ class LiteAddon(BaseAddon):
         for jupyterlite_file in self.lite_files:
             rel = jupyterlite_file.relative_to(lite_dir)
             dest = output_dir / rel
+
+            # Skip config files in subdirectories that don't exist in the output
+            # (i.e., not a known app directory like lab, repl, tree, etc.)
+            is_in_subdirectory = str(rel.parent) != "."
+            if is_in_subdirectory and not dest.parent.exists():
+                self.log.warning(
+                    f"[lite] Skipping {rel}: parent directory does not exist in output. "
+                    f"Config files should be in the root or in app directories (lab, repl, etc.)"
+                )
+                continue
+
             yield self.task(
                 name=f"patch:{rel}",
                 file_dep=[jupyterlite_file],
