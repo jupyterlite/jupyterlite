@@ -59,6 +59,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this.initialize().catch(console.warn);
   }
 
+  readonly contentProviderRegistry: ContentProviderRegistry;
+
   /**
    * Dispose the drive.
    */
@@ -1013,8 +1015,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     await counters.setItem(type, counter);
     return counter;
   }
-
-  contentProviderRegistry: ContentProviderRegistry;
 
   private _serverContents = new Map<string, Map<string, IModel>>();
   private _isDisposed = false;
