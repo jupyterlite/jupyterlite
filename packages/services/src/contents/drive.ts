@@ -59,6 +59,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this.initialize().catch(console.warn);
   }
 
+  /**
+   * Content provider registry.
+   * @experimental
+   */
   readonly contentProviderRegistry: ContentProviderRegistry;
 
   /**
