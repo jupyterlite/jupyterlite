@@ -108,14 +108,14 @@ class LiteBuildConfig(LoggingConfigurable):
     ignore_lite_config: tuple[str] = Tuple(
         help=(
             "Path regular expressions for directories to ignore "
-            "when searching for jupyter-lite.json"
+            "when searching for jupyter-lite.json and jupyter-lite.ipynb"
         )
     ).tag(config=True)
 
     extra_ignore_lite_config: tuple[str] = Tuple(
         help=(
             "Additional path regular expressions for directories to ignore "
-            "when searching for jupyter-lite.json"
+            "when searching for jupyter-lite.json and jupyter-lite.ipynb"
         )
     ).tag(config=True)
 
