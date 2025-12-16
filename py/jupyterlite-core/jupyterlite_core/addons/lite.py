@@ -1,5 +1,7 @@
 """a JupyterLite addon for jupyterlite-specific tasks"""
 
+import re
+
 from ..constants import (
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_JSON,
@@ -33,6 +35,17 @@ class LiteAddon(BaseAddon):
         for jupyterlite_file in self.lite_files:
             rel = jupyterlite_file.relative_to(lite_dir)
             dest = output_dir / rel
+
+            # Skip config files in subdirectories that don't exist in the output
+            # (i.e., not a known app directory like lab, repl, tree, etc.)
+            is_in_subdirectory = str(rel.parent) != "."
+            if is_in_subdirectory and not dest.parent.exists():
+                self.log.warning(
+                    f"[lite] Skipping {rel}: parent directory does not exist in output. "
+                    f"Config files should be in the root or in app directories (lab, repl, etc.)"
+                )
+                continue
+
             yield self.task(
                 name=f"patch:{rel}",
                 file_dep=[jupyterlite_file],
@@ -73,10 +86,19 @@ class LiteAddon(BaseAddon):
 
     @property
     def lite_files(self):
-        """all the source `jupyter-lite.*` files"""
+        """all the source `jupyter-lite.*` files, excluding ignored directories"""
         lite_dir = self.manager.lite_dir
         all_lite_files = [
             *lite_dir.rglob(JUPYTERLITE_JSON),
             *lite_dir.rglob(JUPYTERLITE_IPYNB),
         ]
-        return [p for p in all_lite_files if not str(p).startswith(str(self.manager.output_dir))]
+        return [p for p in all_lite_files if not self._is_ignored_lite_config(p)]
+
+    def _is_ignored_lite_config(self, path):
+        """check if a path should be ignored based on ignore patterns"""
+        rel_posix_path = f"/{path.relative_to(self.manager.lite_dir).as_posix()}"
+        ignore_patterns = [
+            *self.manager.ignore_lite_config,
+            *self.manager.extra_ignore_lite_config,
+        ]
+        return any(re.findall(p, rel_posix_path) for p in ignore_patterns)
