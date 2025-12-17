@@ -182,7 +182,7 @@ class BaseAddon(LoggingConfigurable):
             klass = Draft7Validator
 
         schema = json.loads(schema_path.read_text(**UTF8))
-        return klass(schema)
+        return klass(schema, format_checker=klass.FORMAT_CHECKER)
 
     def merge_one_jupyterlite(self, out_path, in_paths):  # noqa: C901, PLR0912
         """write the ``out_path`` with the merge content of ``in_paths``, where
