@@ -323,6 +323,20 @@ module.exports = [
           },
         },
       },
+      // Use less aggressive minification to work around rspack minifier bug
+      // https://github.com/web-infra-dev/rspack/issues/12492
+      // https://github.com/jupyterlab/jupyterlab/issues/18227
+      minimizer: [
+        new rspack.SwcJsMinimizerRspackPlugin({
+          minimizerOptions: {
+            compress: {
+              // Disable sequences to prevent incorrect statement collapsing
+              sequences: false,
+            },
+          },
+        }),
+        new rspack.SwcCssMinimizerRspackPlugin(),
+      ],
     },
     plugins: [
       ...licensePlugins,
