@@ -45,7 +45,7 @@
         "baseUrl": {
           "description": "base URL of this JupyterLite, must end in `/`, will be expanded by `config-utils.js` to include a leading `/`",
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "default": "./",
           "pattern": ".*/$"
         },
@@ -62,7 +62,7 @@
         "faviconUrl": {
           "description": "browser tab icon to show",
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "default": "./lab/favicon.ico"
         },
         "settingsOverrides": {
@@ -198,7 +198,7 @@
     "non-trailing-slash-uri": {
       "title": "A URI what doesn't end in /",
       "type": "string",
-      "format": "uri",
+      "format": "uri-reference",
       "pattern": ".*[^/]$"
     },
     "federated-extension": {
@@ -208,17 +208,17 @@
       "properties": {
         "extension": {
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "description": "path to the extension module to load, relative to the extension's `package.json`"
         },
         "mimeExtension": {
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "description": "path to the mime extension module to load, relative to the extension's `package.json`"
         },
         "load": {
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "description": "path to the WebPack 5-compatible `remoteEntry*.js` file describing the bundle"
         },
         "name": {
@@ -226,7 +226,7 @@
         },
         "style": {
           "type": "string",
-          "format": "uri",
+          "format": "uri-reference",
           "description": "path to the optional style module provided by the extension"
         }
       }
