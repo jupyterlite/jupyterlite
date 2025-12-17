@@ -142,7 +142,7 @@ PHASES = ["pre_", "", "post_"]
 
 
 #: extensions to be considered sourcemaps
-SOURCEMAPS = [".js.map", ".mjs.map"]
+SOURCEMAPS = [".js.map", ".mjs.map", ".css.map"]
 SOURCEMAP_IGNORE_PATTERNS = shutil.ignore_patterns(*[f"*{p}" for p in SOURCEMAPS])
 
 #: enough file types to serve all our demo files
