@@ -335,7 +335,6 @@ module.exports = [
             },
           },
         }),
-        new rspack.SwcCssMinimizerRspackPlugin(),
       ],
     },
     plugins: [
