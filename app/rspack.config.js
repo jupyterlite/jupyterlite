@@ -3,9 +3,10 @@
 const path = require('path');
 const fs = require('fs-extra');
 const glob = require('glob');
-const webpack = require('webpack');
+const rspack = require('@rspack/core');
 const merge = require('webpack-merge').default;
-const { ModuleFederationPlugin } = webpack.container;
+const { ModuleFederationPlugin } = rspack.container;
+// TODO: investigate using https://rspack.dev/plugins/rspack/html-rspack-plugin instead of html-webpack-plugin
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
@@ -286,13 +287,6 @@ module.exports = [
       chunkFilename: '[name].[contenthash:7].js',
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]',
-    },
-    cache: {
-      type: 'filesystem',
-      cacheDirectory: path.resolve(__dirname, '../build/webpack'),
-      buildDependencies: {
-        config: [__filename],
-      },
     },
     module: {
       rules: [
