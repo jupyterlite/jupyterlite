@@ -122,7 +122,7 @@ from:
 
 - a set of `packages` in the `@jupyterlite` namespace, , written in TypeScript
 - some `buildutils`
-- some `webpack` configuration
+- some `rspack` configuration
 - some un-compiled, vanilla JS for very early-loading utilities
   - > TODO: fix this, perhaps with jsdoc tags
 
