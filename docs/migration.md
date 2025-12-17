@@ -16,6 +16,13 @@ This change should be transparent for most users. However, if you have custom bu
 configurations that extend or modify the JupyterLite webpack configuration, you may need
 to update your setup to use rspack instead.
 
+### Build Optimization Settings
+
+The switch to rspack may affect some build optimization settings due to changes in the
+internal bundle format. If you were using `--no-unused-shared-packages` or
+`--no-sourcemaps` flags and notice unexpected behavior, please report it to the
+[JupyterLite issue tracker](https://github.com/jupyterlite/jupyterlite/issues).
+
 ## `v0.6.0` to `v0.7.0`
 
 ```{warning}
