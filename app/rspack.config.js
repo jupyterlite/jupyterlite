@@ -330,8 +330,8 @@ module.exports = [
         new rspack.SwcJsMinimizerRspackPlugin({
           minimizerOptions: {
             compress: {
-              // Disable sequences to prevent incorrect statement collapsing
               sequences: false,
+              collapse_vars: false,
             },
           },
         }),
