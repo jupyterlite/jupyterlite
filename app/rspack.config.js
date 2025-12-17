@@ -329,10 +329,7 @@ module.exports = [
       minimizer: [
         new rspack.SwcJsMinimizerRspackPlugin({
           minimizerOptions: {
-            compress: {
-              sequences: false,
-              collapse_vars: false,
-            },
+            compress: false,
           },
         }),
       ],
