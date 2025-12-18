@@ -6,8 +6,7 @@ const glob = require('glob');
 const rspack = require('@rspack/core');
 const merge = require('webpack-merge').default;
 const { ModuleFederationPlugin } = rspack.container;
-// TODO: investigate using https://rspack.dev/plugins/rspack/html-rspack-plugin instead of html-webpack-plugin
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { HtmlRspackPlugin } = rspack;
 const Handlebars = require('handlebars');
 const Build = require('@jupyterlab/builder').Build;
 const WPPlugin = require('@jupyterlab/builder').WPPlugin;
@@ -209,12 +208,24 @@ for (const [name, data] of Object.entries(liteAppData)) {
   );
   // Use templates to create cache-busting templates
   allHtmlPlugins.push(
-    new HtmlWebpackPlugin({
+    new HtmlRspackPlugin({
       inject: false,
       minify: false,
       title: data.jupyterlab.title,
       filename: `../${name}/index.html`,
       template: `${name}/build/index.template.html`,
+      chunks: [`${name}/bundle`, `${name}/publicpath`],
+      templateParameters: (params) => {
+        const bundleFile = params.htmlRspackPlugin.files.js.find((f) =>
+          f.includes(`${name}/bundle`),
+        );
+        const cacheBuster = bundleFile?.split('?')[1] ?? '';
+        return {
+          ...params,
+          bundleFile,
+          cacheBuster,
+        };
+      },
     }),
   );
 }
