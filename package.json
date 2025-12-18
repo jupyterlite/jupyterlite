@@ -28,7 +28,7 @@
     "build": "jlpm build:lib && jlpm build:app",
     "build:app": "jlpm update-versions && jlpm workspaces foreach -pvi --include @jupyterlite/app run build",
     "build:lib": "jlpm workspaces foreach -tv --include @jupyterlite/metapackage run build",
-    "build:prod": "jlpm build:lib && jlpm workspaces foreach -tv --include @jupyterlite/app run build:prod",
+    "build:prod": "jlpm update-versions && jlpm build:lib && jlpm workspaces foreach -tv --include @jupyterlite/app run build:prod",
     "build:py": "cd py/jupyterlite-core && hatch build ../../dist && cd ../jupyterlite && hatch build ../../dist",
     "clean": "jlpm workspaces foreach -A run clean",
     "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
