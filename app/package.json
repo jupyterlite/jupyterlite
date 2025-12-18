@@ -13,6 +13,7 @@
   "license": "BSD-3-Clause",
   "author": "JupyterLite Contributors",
   "scripts": {
+    "analyze": "rspack --analyze --config rspack.config.analyze.js",
     "build": "rspack",
     "build:prod": "jlpm clean && jlpm build --mode=production",
     "clean": "rimraf -g build \"**/build\"",
@@ -26,8 +27,6 @@
     "glob": "^7.2.0",
     "handlebars": "^4.7.8",
     "rimraf": "^5.0.1",
-    "source-map-loader": "^4.0.1",
-    "webpack-bundle-analyzer": "^4.9.0",
     "webpack-merge": "^5.9.0"
   },
   "jupyterlite": {
