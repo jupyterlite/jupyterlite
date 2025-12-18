@@ -71,6 +71,39 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.0...207809d2189db60111e6419f8b9c8ec58c6f3133))
+
+### Bugs fixed
+
+- Fix handling of `jupyter-lite.json` in sub-directories [#1817](https://github.com/jupyterlite/jupyterlite/pull/1817) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl), [@trungleduc](https://github.com/trungleduc))
+- Fix handling of the default workspaces on first load [#1810](https://github.com/jupyterlite/jupyterlite/pull/1810) ([@jtpio](https://github.com/jtpio))
+- Implement ContentProviderRegistry [#1808](https://github.com/jupyterlite/jupyterlite/pull/1808) ([@martinRenou](https://github.com/martinRenou), [@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.5.1 and Notebook 7.5.1 [#1819](https://github.com/jupyterlite/jupyterlite/pull/1819) ([@jtpio](https://github.com/jtpio))
+- Add plausible stats to docs [#1816](https://github.com/jupyterlite/jupyterlite/pull/1816) ([@jasongrout](https://github.com/jasongrout), [@jtpio](https://github.com/jtpio))
+- Update docs to mention JupyterLite is part of Jupyter [#1815](https://github.com/jupyterlite/jupyterlite/pull/1815) ([@jasongrout](https://github.com/jasongrout), [@jtpio](https://github.com/jtpio))
+- Package removal note for 0.8.0 (kernel, contents, server, settings) [#1805](https://github.com/jupyterlite/jupyterlite/pull/1805) ([@jtpio](https://github.com/jtpio))
+- Bump actions/checkout from 5 to 6 in the actions group [#1802](https://github.com/jupyterlite/jupyterlite/pull/1802) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update kernels in the demo site [#1797](https://github.com/jupyterlite/jupyterlite/pull/1797) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-26&to=2025-12-16&type=c))
+
+@bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-11-26..2025-12-16&type=Issues)) | @jasongrout ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajasongrout+updated%3A2025-11-26..2025-12-16&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-26..2025-12-16&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-11-26..2025-12-16&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-11-26..2025-12-16&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.6.1...af4955da9f632729c750f88e6f2639470b17e33a))
@@ -150,8 +183,6 @@ The minimum supported Python version for building JupyterLite sites has been inc
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-06-05&to=2025-11-26&type=c))
 
 [@agriyakhetarpal](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagriyakhetarpal+updated%3A2025-06-05..2025-11-26&type=Issues) | [@bollwyvl](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-06-05..2025-11-26&type=Issues) | [@brichet](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abrichet+updated%3A2025-06-05..2025-11-26&type=Issues) | [@dependabot](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adependabot+updated%3A2025-06-05..2025-11-26&type=Issues) | [@DerThorsten](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADerThorsten+updated%3A2025-06-05..2025-11-26&type=Issues) | [@diegofcornejo](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Adiegofcornejo+updated%3A2025-06-05..2025-11-26&type=Issues) | [@github-actions](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Agithub-actions+updated%3A2025-06-05..2025-11-26&type=Issues) | [@ianthomas23](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-06-05..2025-11-26&type=Issues) | [@jimwhite](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajimwhite+updated%3A2025-06-05..2025-11-26&type=Issues) | [@jtpio](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-06-05..2025-11-26&type=Issues) | [@krassowski](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2025-06-05..2025-11-26&type=Issues) | [@martinRenou](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-06-05..2025-11-26&type=Issues) | [@rgaiacs](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Argaiacs+updated%3A2025-06-05..2025-11-26&type=Issues) | [@tan-i-ham](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atan-i-ham+updated%3A2025-06-05..2025-11-26&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.0rc2
 

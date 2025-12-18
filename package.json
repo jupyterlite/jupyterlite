@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/root",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -73,7 +73,7 @@
     ]
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "~4.5.0",
+    "@jupyterlab/buildutils": "~4.5.1",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",

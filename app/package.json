@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/app",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -19,7 +19,7 @@
     "watch": "webpack --config webpack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "~4.5.0",
+    "@jupyterlab/builder": "~4.5.1",
     "fs-extra": "^9.0.1",
     "glob": "^7.2.0",
     "handlebars": "^4.7.8",
