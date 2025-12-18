@@ -29,7 +29,7 @@
     "build": "jlpm build:lib && jlpm build:app",
     "build:app": "jlpm update-versions && lerna run build --stream --parallel --scope @jupyterlite/app",
     "build:lib": "lerna run build --scope @jupyterlite/metapackage",
-    "build:prod": "lerna run build:prod",
+    "build:prod": "jlpm update-versions && lerna run build:prod",
     "build:test": "lerna run build:test",
     "clean": "lerna run clean",
     "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
