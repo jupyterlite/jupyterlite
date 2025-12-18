@@ -2,6 +2,7 @@
   "name": "@jupyterlite/app-notebooks",
   "version": "0.7.1",
   "private": true,
+  "license": "BSD-3-Clause",
   "resolutions": {
     "@codemirror/language": "^6.11.0",
     "@codemirror/state": "^6.5.2",

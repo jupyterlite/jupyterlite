@@ -22,7 +22,30 @@ const liteAppData = topLevelData.jupyterlite.apps.reduce(
 const licensePlugins = [];
 
 if (!process.env.NO_WEBPACK_LICENSES) {
-  licensePlugins.push(new WPPlugin.JSONLicenseWebpackPlugin({}));
+  // Override license types for packages missing the license field in package.json
+  const licenseTypeOverrides = {
+    'localforage-memoryStorageDriver': 'Apache-2.0',
+    khroma: 'MIT',
+  };
+
+  // JupyterLite LICENSE text for @jupyterlite/* packages
+  const jupyterliteLicenseText = fs.readFileSync(
+    path.resolve(__dirname, '../LICENSE'),
+    'utf-8',
+  );
+
+  licensePlugins.push(
+    new WPPlugin.JSONLicenseWebpackPlugin({
+      licenseTypeOverrides,
+      handleMissingLicenseText: (packageName) => {
+        // Return LICENSE text for @jupyterlite/* packages
+        if (packageName.startsWith('@jupyterlite/')) {
+          return jupyterliteLicenseText;
+        }
+        return null;
+      },
+    }),
+  );
 }
 
 // custom handlebars helper to check if a page corresponds to a value
@@ -299,6 +322,21 @@ module.exports = [
       // to generate valid wheel names
       assetModuleFilename: '[name][ext][query]',
     },
+    ignoreWarnings: [
+      // mathjax-full uses __dirname which gets mocked in browser builds
+      { module: /mathjax-full/, message: /__dirname/ },
+      // Suppress license file warnings for Jupyter ecosystem packages
+      // (handleMissingLicenseText provides the text, but warning is logged first)
+      /license-webpack-plugin: could not find any license file for @jupyterlite\//,
+      /license-webpack-plugin: could not find any license file for @jupyterlab\//,
+      /license-webpack-plugin: could not find any license file for @jupyter-notebook\//,
+      /license-webpack-plugin: could not find any license file for @jupyter\//,
+      /license-webpack-plugin: could not find any license file for @lumino\//,
+      // Third-party packages without license files in their npm distributions
+      /license-webpack-plugin: could not find any license file for @microsoft\/fast-/,
+      /license-webpack-plugin: could not find any license file for json-schema-merge-allof/,
+      /license-webpack-plugin: could not find any license file for vega-lite/,
+    ],
     module: {
       rules: [
         {
