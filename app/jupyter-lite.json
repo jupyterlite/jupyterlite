@@ -10,6 +10,8 @@
     "federated_extensions": [],
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses"
+    "licensesUrl": "./lab/api/licenses",
+    "jupyterlabVersion": "4.5.0",
+    "notebookVersion": "7.5.0"
   }
 }
