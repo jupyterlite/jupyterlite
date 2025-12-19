@@ -79,16 +79,11 @@ export class IndexedDBDataConnector<T> implements IDataConnector<T> {
    *
    * @param id - The identifier of the value to fetch.
    *
-   * @returns A promise that resolves with the fetched value.
+   * @returns A promise that resolves with the fetched value, or undefined if not found.
    */
-  async fetch(id: string): Promise<T> {
-    const result = (await (await this.storage).getItem(id)) as T;
-
-    if (!result) {
-      throw new Error(`Failed to fetch id ${id} from StateDB`);
-    }
-
-    return result;
+  async fetch(id: string): Promise<T | undefined> {
+    const result = (await (await this.storage).getItem(id)) as T | null;
+    return result ?? undefined;
   }
 
   /**

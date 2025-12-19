@@ -105,6 +105,20 @@ class LiteBuildConfig(LoggingConfigurable):
         help="Additional path regular expressions that should never be included as contents"
     ).tag(config=True)
 
+    ignore_lite_config: tuple[str] = Tuple(
+        help=(
+            "Path regular expressions for directories to ignore "
+            "when searching for jupyter-lite.json and jupyter-lite.ipynb"
+        )
+    ).tag(config=True)
+
+    extra_ignore_lite_config: tuple[str] = Tuple(
+        help=(
+            "Additional path regular expressions for directories to ignore "
+            "when searching for jupyter-lite.json and jupyter-lite.ipynb"
+        )
+    ).tag(config=True)
+
     source_date_epoch: _Optional[int] = CInt(
         allow_none=True,
         min=1,
@@ -203,6 +217,25 @@ class LiteBuildConfig(LoggingConfigurable):
 
     @default("extra_ignore_contents")
     def _default_extra_ignore_files(self):
+        return []
+
+    @default("ignore_lite_config")
+    def _default_ignore_lite_config(self):
+        output_dir = self.output_dir.name.replace(".", "\\.")
+        return [
+            r"/\.",  # all hidden directories
+            r"/_",  # common build/private directories
+            r"/node_modules/",
+            r"/venvs?/",
+            r"/envs/",
+            r"/lib/",
+            r"/build/",
+            r"/dist/",
+            rf"""/{output_dir}/""",
+        ]
+
+    @default("extra_ignore_lite_config")
+    def _default_extra_ignore_lite_config(self):
         return []
 
     @default("app_archive")

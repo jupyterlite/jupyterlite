@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 /**
- * @deprecated The `@jupyterlite/server` package is deprecated.
+ * @deprecated The `@jupyterlite/server` package is deprecated and will be removed in 0.8.0.
  * Please use `@jupyterlite/apputils` instead.
  *
  * This package now re-exports from `@jupyterlite/apputils` for backward compatibility.

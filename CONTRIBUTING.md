@@ -21,7 +21,7 @@ You'll need:
 
 - `git`
 - `nodejs >=20,<21`
-- `jupyterlab >=4.5.0,<4.6`
+- `jupyterlab >=4.6.0a0,<4.7`
 - `python >=3.12,<3.13`
 
 Various package managers on different operating systems provide these.
@@ -122,7 +122,7 @@ from:
 
 - a set of `packages` in the `@jupyterlite` namespace, , written in TypeScript
 - some `buildutils`
-- some `webpack` configuration
+- some `rspack` configuration
 - some un-compiled, vanilla JS for very early-loading utilities
   - > TODO: fix this, perhaps with jsdoc tags
 

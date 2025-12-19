@@ -219,7 +219,7 @@ def task_build():
     app_deps = [
         B.YARN_STATE,
         B.META_BUILDINFO,
-        P.WEBPACK_CONFIG,
+        P.RSPACK_CONFIG,
         P.LITE_ICON,
         P.LITE_WORDMARK,
         P.APP_PACKAGE_JSON,
@@ -245,7 +245,7 @@ def task_build():
 
     yield dict(
         name="js:app",
-        doc="build JupyterLite with webpack",
+        doc="build JupyterLite with rspack",
         file_dep=[
             *app_deps,
             *extra_app_deps,
@@ -806,7 +806,7 @@ class P:
         *[p for p in APP.rglob("*/index.html") if not (p.parent / "index.template.html").exists()],
     ]
 
-    WEBPACK_CONFIG = APP / "webpack.config.js"
+    RSPACK_CONFIG = APP / "rspack.config.js"
     APP_JSONS = sorted(APP.glob("*/package.json"))
     APP_EXTRA_JSON = sorted(APP.glob("*/*.json"))
     APP_NPM_IGNORE = APP / ".npmignore"

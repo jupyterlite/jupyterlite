@@ -1,7 +1,7 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import type { Contents, Drive } from '@jupyterlab/services';
-import { ServerConnection } from '@jupyterlab/services';
+import { ContentProviderRegistry, ServerConnection } from '@jupyterlab/services';
 
 import type { INotebookContent } from '@jupyterlab/nbformat';
 
@@ -48,9 +48,22 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
     this._storageDrivers = options.storageDrivers || null;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
+    if (options.defaultContentProvider) {
+      this.contentProviderRegistry = new ContentProviderRegistry({
+        defaultProvider: options.defaultContentProvider,
+      });
+    } else {
+      this.contentProviderRegistry = new ContentProviderRegistry();
+    }
     this._ready = new PromiseDelegate();
     this.initialize().catch(console.warn);
   }
+
+  /**
+   * Content provider registry.
+   * @experimental
+   */
+  readonly contentProviderRegistry: ContentProviderRegistry;
 
   /**
    * Dispose the drive.
@@ -402,6 +415,16 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @returns A promise which resolves with the file content.
    */
   async get(path: string, options?: Contents.IFetchOptions): Promise<IModel> {
+    const contentProvider = this.contentProviderRegistry.getProvider(
+      options?.contentProviderId,
+    );
+
+    // If a content provider is assigned, use the content provider's get
+    if (contentProvider) {
+      return contentProvider.get(path, options);
+    }
+
+    // Otherwise fallback to our default drive implementation
     // remove leading slash
     path = decodeURIComponent(path.replace(/^\//, ''));
 
@@ -524,7 +547,30 @@ export class BrowserStorageDrive implements Contents.IDrive {
    *
    * @returns A promise which resolves with the file content model when the file is saved.
    */
-  async save(path: string, options: Partial<IModel> = {}): Promise<IModel> {
+  async save(
+    path: string,
+    options: Partial<Contents.IModel> & Contents.IContentProvisionOptions = {},
+  ): Promise<IModel> {
+    const contentProvider = this.contentProviderRegistry.getProvider(
+      options?.contentProviderId,
+    );
+
+    let item: IModel | null = null;
+
+    // If a content provider is assigned, use the content provider's save
+    if (contentProvider) {
+      item = await contentProvider.save(path, options);
+
+      this._fileChanged.emit({
+        type: 'save',
+        oldValue: null,
+        newValue: item,
+      });
+
+      return item;
+    }
+
+    // Otherwise fallback to our default drive implementation
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
@@ -534,9 +580,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     // retrieve the content if it is a later chunk or the last one
     // the new content will then be appended to the existing one
     const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
-    let item: IModel | null = await this.get(path, { content: appendChunk }).catch(
-      () => null,
-    );
+    item = await this.get(path, { content: appendChunk }).catch(() => null);
 
     if (!item) {
       item = await this.newUntitled({ path, ext, type: 'file' });

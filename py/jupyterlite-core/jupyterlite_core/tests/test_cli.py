@@ -253,14 +253,16 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
 
     assert len(no_chunk_files) < len(repl_files), f"unexpected {unexpected}"
 
+    no_chunk_maps = [f for f in no_chunk_files if f.name.endswith(".map")]
+    assert no_chunk_maps, "expected maps before --no-sourcemaps"
+
     args = [*args, "--no-sourcemaps"]
     status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     min_files = sorted(out.rglob("*"))
     assert status.success
 
-    assert not [f for f in min_files if f.name.endswith(".map")], "expected no maps"
-
-    assert len(min_files) < len(no_chunk_files), "expected fewer files still"
+    min_maps = [f for f in min_files if f.name.endswith(".map")]
+    assert not min_maps, "expected no maps after --no-sourcemaps"
 
     status = script_runner.run(original_args, cwd=str(an_empty_lite_dir))
     rebuild_files = sorted(out.rglob("*"))
@@ -285,3 +287,65 @@ def test_check_bad_workspace(an_empty_lite_dir, script_runner):
     assert not status.success, "should have caught bad workspace"
     assert "missing `data`" in status.stdout
     assert "missing `metadata`" in status.stdout
+
+
+def test_build_subdirectory_config_warning(an_empty_lite_dir, script_runner):
+    """Regression test for https://github.com/jupyterlite/jupyterlite/issues/1095"""
+    # Create subdirectory structure with jupyter-lite.json in unknown location
+    sub = an_empty_lite_dir / "sub"
+    sub.mkdir()
+    sub_config = sub / "jupyter-lite.json"
+    sub_config.write_text('{"jupyter-config-data": {}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should warn about the unrecognized subdirectory config
+    assert "Skipping sub" in status.stderr and "jupyter-lite.json" in status.stderr
+    assert "parent directory does not exist" in status.stderr
+
+    # The subdirectory config should NOT be copied to output
+    out_sub_config = an_empty_lite_dir / "_output" / "sub" / "jupyter-lite.json"
+    assert not out_sub_config.exists(), "unrecognized subdirectory config should not be copied"
+
+
+def test_build_app_subdirectory_config(an_empty_lite_dir, script_runner):
+    """does building with a jupyter-lite.json in a known app directory work"""
+    # Create app-specific config (lab directory will exist after init)
+    lab = an_empty_lite_dir / "lab"
+    lab.mkdir()
+    lab_config = lab / "jupyter-lite.json"
+    lab_config.write_text('{"jupyter-config-data": {"appName": "Custom Lab"}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should NOT warn about lab directory
+    assert "Skipping lab/jupyter-lite.json" not in status.stderr
+
+    # The app config should be merged into output
+    out_lab_config = an_empty_lite_dir / "_output" / "lab" / "jupyter-lite.json"
+    assert out_lab_config.exists(), "app-specific config should be merged"
+    assert "Custom Lab" in out_lab_config.read_text(encoding="utf-8")
+
+
+def test_build_ignores_hidden_directories(an_empty_lite_dir, script_runner):
+    """Config files in hidden directories like .venv should be silently ignored"""
+    # Create config in .venv (should be ignored by default)
+    venv = an_empty_lite_dir / ".venv" / "lib"
+    venv.mkdir(parents=True)
+    venv_config = venv / "jupyter-lite.json"
+    venv_config.write_text('{"jupyter-config-data": {}}', encoding="utf-8")
+
+    args = "jupyter", "lite", "build"
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+
+    assert status.success, f"build should succeed: {status.stderr}"
+
+    # Should NOT warn about .venv - it's silently ignored
+    assert "Skipping" not in status.stderr or ".venv" not in status.stderr
+    assert ".venv" not in status.stderr
