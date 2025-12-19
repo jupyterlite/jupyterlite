@@ -14,11 +14,8 @@ run(
 )
 
 # Build a no-content version to test for 404 errors
-no_content_cmd = (
-    f"jupyter lite build "
-    f"--FederatedExtensionAddon.extra_labextensions_path={extra_labextensions_path} "
-    f"--config=jupyter_lite_config_no_content.json"
-)
+# This build doesn't need Galata extensions since the test uses raw Playwright
+no_content_cmd = "jupyter lite build --config=jupyter_lite_config_no_content.json"
 run(
     no_content_cmd,
     check=True,
