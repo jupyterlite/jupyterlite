@@ -157,6 +157,7 @@ _output
 ui-tests/playwright-report
 ui-tests/test-results
 ui-tests/ui-tests-app
+ui-tests/ui-tests-app-no-content
 
 # yarn >=2.x local files
 .pnp.*
