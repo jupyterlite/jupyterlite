@@ -24,5 +24,11 @@ module.exports = {
       timeout: 120 * 1000,
       reuseExistingServer: true,
     },
+    {
+      command: 'jlpm run start:no-content',
+      port: 8002,
+      timeout: 120 * 1000,
+      reuseExistingServer: true,
+    },
   ],
 };
