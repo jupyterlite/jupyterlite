@@ -1,16 +1,10 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
-import { test } from '@jupyterlab/galata';
-
-import { expect } from '@playwright/test';
-
-import { firefoxWaitForApplication } from './utils';
-
-const NO_CONTENT_URL = 'http://localhost:8002';
+import { expect, test } from '@playwright/test';
 
 test.use({
-  waitForApplication: firefoxWaitForApplication,
+  baseURL: 'http://localhost:8002',
 });
 
 test.describe('No Content Tests', () => {
@@ -24,7 +18,7 @@ test.describe('No Content Tests', () => {
       }
     });
 
-    await page.goto(`${NO_CONTENT_URL}/lab/index.html`);
+    await page.goto('lab/index.html');
 
     await page.waitForSelector('.jp-LauncherCard');
 
