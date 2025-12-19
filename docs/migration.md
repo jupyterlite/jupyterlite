@@ -3,6 +3,26 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `v0.7.0` to `v0.8.0`
+
+### Build System
+
+JupyterLite 0.8.0 switches from [webpack](https://webpack.js.org/) to
+[rspack](https://rspack.dev/) for bundling. This change follows the upstream JupyterLab
+migration to rspack, which provides significantly faster build times while maintaining
+full compatibility with webpack configurations and plugins.
+
+This change should be transparent for most users. However, if you have custom build
+configurations that extend or modify the JupyterLite webpack configuration, you may need
+to update your setup to use rspack instead.
+
+### Build Optimization Settings
+
+The switch to rspack may affect some build optimization settings due to changes in the
+internal bundle format. If you were using `--no-unused-shared-packages` or
+`--no-sourcemaps` flags and notice unexpected behavior, please report it to the
+[JupyterLite issue tracker](https://github.com/jupyterlite/jupyterlite/issues).
+
 ## `v0.6.0` to `v0.7.0`
 
 ```{warning}

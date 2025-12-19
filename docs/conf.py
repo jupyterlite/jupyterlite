@@ -90,7 +90,7 @@ exclude_patterns = [
     ".jupyter_cache",
     "test/",
     "tsconfig.*",
-    "webpack.config.*",
+    "rspack.config.*",
 ]
 nb_execution_mode = "auto"
 

@@ -133,7 +133,7 @@ class StaticAddon(BaseAddon):
 
     def prune_unused_shared_packages(self, all_apps, apps_to_remove):
         """manually remove unused webpack chunks from shared packages"""
-        chunk_pattern = r'(\d+):"([\da-f]+)"'
+        chunk_pattern = r'"(\d+)":"([\da-f]+)"'
         used_chunks = {}
         removed_used_chunks = {}
         build_dir = self.manager.output_dir / "build"

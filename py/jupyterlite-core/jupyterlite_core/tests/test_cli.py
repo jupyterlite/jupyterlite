@@ -253,14 +253,16 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
 
     assert len(no_chunk_files) < len(repl_files), f"unexpected {unexpected}"
 
+    no_chunk_maps = [f for f in no_chunk_files if f.name.endswith(".map")]
+    assert no_chunk_maps, "expected maps before --no-sourcemaps"
+
     args = [*args, "--no-sourcemaps"]
     status = script_runner.run(args, cwd=str(an_empty_lite_dir))
     min_files = sorted(out.rglob("*"))
     assert status.success
 
-    assert not [f for f in min_files if f.name.endswith(".map")], "expected no maps"
-
-    assert len(min_files) < len(no_chunk_files), "expected fewer files still"
+    min_maps = [f for f in min_files if f.name.endswith(".map")]
+    assert not min_maps, "expected no maps after --no-sourcemaps"
 
     status = script_runner.run(original_args, cwd=str(an_empty_lite_dir))
     rebuild_files = sorted(out.rglob("*"))
