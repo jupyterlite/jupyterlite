@@ -39,4 +39,4 @@ The process is detailed in the [Pyodide documentation][pyodide-packages].
 Once you have added the new package(s) and rebuilt Pyodide, you can
 [configure JupyterLite to use a custom Pyodide distribution](./pyodide.md).
 
-[pyodide-packages]: https://pyodide.org/en/stable/development/new-packages.html
+[pyodide-packages]: https://pyodide.org/en/stable/development/building-packages.html
