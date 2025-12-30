@@ -132,8 +132,8 @@ class StaticAddon(BaseAddon):
         self.maybe_timestamp(output_dir)
 
     def prune_unused_shared_packages(self, all_apps, apps_to_remove):
-        """manually remove unused webpack chunks from shared packages"""
-        chunk_pattern = r'"(\d+)":"([\da-f]+)"'
+        """manually remove unused webpack/rspack chunks from shared packages"""
+        chunk_pattern = r'"([^"]+)":\s*"([a-f0-9]{7})"'
         used_chunks = {}
         removed_used_chunks = {}
         build_dir = self.manager.output_dir / "build"
