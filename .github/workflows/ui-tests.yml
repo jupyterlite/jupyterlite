@@ -34,7 +34,7 @@ jobs:
           jlpm build
 
       - name: Upload the JupyterLite website
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
@@ -51,13 +51,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
 
       - name: Cache (ui-tests/node_modules)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: cache-ui-tests-node-modules
         with:
           path: ui-tests/node_modules/
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload Playwright Test assets
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-test-assets
           path: |
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload Playwright Test report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-test-report
           path: |
@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload updated snapshots
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-updated-snapshots
           path: ui-tests/test

@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/build-dist
 
       - name: Upload (dist)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v6
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: |
@@ -79,7 +79,7 @@ jobs:
       - name: Docs (typedoc)
         run: doit -n4 docs:typedoc:mystify
       - name: Upload (typedoc)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
@@ -127,12 +127,12 @@ jobs:
       - name: Setup pip (base)
         run: ${{ matrix.python-command }} -m pip install --user -U pip setuptools wheel
       - name: Download (dist)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Cache (pip)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ${{ matrix.pip-cache }}
           key: |
@@ -178,7 +178,7 @@ jobs:
         run: doit test:py:*
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -195,18 +195,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Download (dist)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Download (typedoc)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Cache (pip)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: |
@@ -215,7 +215,7 @@ jobs:
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-docs-
             ${{ env.CACHE_EPOCH }}-${{ runner.os }}-pip-
       - name: Cache (docs extensions)
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ./examples/.cache
           key: |
@@ -233,7 +233,7 @@ jobs:
       - name: Docs (app archive)
         run: doit docs:app:pack
       - name: Upload (docs app archive)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite docs archive ${{ github.run_number }}
           path: |
@@ -246,7 +246,7 @@ jobs:
         run: doit test:py:jupyterlite-core
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -255,7 +255,7 @@ jobs:
             build/pytest
       - name: Upload (sphinx logs)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
