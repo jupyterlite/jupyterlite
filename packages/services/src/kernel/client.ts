@@ -8,6 +8,7 @@ import { KernelAPI, KernelMessage, ServerConnection } from '@jupyterlab/services
 
 import { deserialize, serialize } from '@jupyterlab/services/lib/kernel/serialize';
 
+import type { IInterruptRequestMsg } from '@jupyterlab/services/lib/kernel/messages';
 import { supportedKernelWebSocketProtocols } from '@jupyterlab/services/lib/kernel/messages';
 
 import { PromiseDelegate, UUID } from '@lumino/coreutils';
@@ -343,15 +344,30 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
 
     // Wait for kernel to be ready
     await kernel.ready;
+    kernel;
+    const interrupt_mode =
+      this._kernelspecs.specs?.kernelspecs[kernel.name]?.interrupt_mode ?? 'signal';
 
-    // Cancel execution of following cells
-    const mutex = this._mutexMap.get(kernelId);
-    if (!mutex) {
-      console.warn('No mutex to cancel');
-      return;
+    console.log(`Interrupting kernel ${kernelId} using ${interrupt_mode}`);
+
+    if (interrupt_mode === 'message') {
+      const msg = KernelMessage.createMessage<IInterruptRequestMsg>({
+        msgType: 'interrupt_request',
+        channel: 'control',
+        content: {},
+        session: '',
+      });
+      await kernel.handleMessage(msg);
+    } else {
+      // Cancel execution of following cells
+      const mutex = this._mutexMap.get(kernelId);
+      if (!mutex) {
+        console.warn('No mutex to cancel');
+        return;
+      }
+      this._cancelReason.set(mutex, 'interrupt');
+      mutex.cancel();
     }
-    this._cancelReason.set(mutex, 'interrupt');
-    mutex.cancel();
   }
 
   /**
