@@ -1,0 +1,18 @@
+# Packages bundled as piplite_urls for the demo site
+# These are downloaded at build time and served locally for faster/offline installation
+# Run: python scripts/compile-lock-files.py to generate the URLs
+#
+# Note: some dependencies are already in Pyodide 0.29 and don't need to be included here
+
+bqplot
+folium
+ipycanvas
+ipycytoscape
+ipyleaflet
+ipympl
+ipyvue
+ipyvuetify
+ipywidgets
+nbformat
+plotly
+seaborn

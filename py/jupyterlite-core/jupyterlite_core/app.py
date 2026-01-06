@@ -1,6 +1,5 @@
 """the JupyterLite CLI App(s)"""
 
-import typing
 from pathlib import Path
 
 from jupyter_core.application import JupyterApp, base_aliases, base_flags
@@ -121,7 +120,7 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
             for c in cls.mro()[:-3]:
                 classdict[c.__name__] = c
 
-        fhelp: typing.Optional[str]
+        fhelp: str | None
         for alias, longname in self.aliases.items():
             try:
                 if isinstance(longname, tuple):
