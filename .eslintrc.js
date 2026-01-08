@@ -4,7 +4,6 @@ module.exports = {
     es6: true,
     commonjs: true,
     node: true,
-    'jest/globals': true,
   },
   root: true,
   extends: [
@@ -13,14 +12,13 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
     'plugin:react/recommended',
-    'plugin:jest/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: 'tsconfig.eslint.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'jest'],
+  plugins: ['@typescript-eslint'],
   rules: {
     '@typescript-eslint/naming-convention': [
       'error',
@@ -51,8 +49,6 @@ module.exports = {
       'single',
       { avoidEscape: true, allowTemplateLiterals: false },
     ],
-    'jest/no-done-callback': 'off',
-    'jest/no-standalone-expect': 'off',
     'no-console': ['error', { allow: ['warn', 'error'] }],
     'prefer-arrow-callback': 'error',
     curly: ['error', 'all'],

@@ -153,6 +153,7 @@ docs/jupyter_execute
 *.tgz
 *.whl
 _output
+_site
 
 ui-tests/playwright-report
 ui-tests/test-results

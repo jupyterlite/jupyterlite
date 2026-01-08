@@ -15,7 +15,7 @@ Kernels using Emscripten (like [pyodide](https://github.com/jupyterlite/pyodide-
 or [xeus kernels](https://github.com/jupyterlite/xeus/)) relies on the
 [Emscripten filesystem](https://emscripten.org/docs/api_reference/Filesystem-API.html)
 to access their contents. For such case, `@jupyterlite/services` provides a
-[`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/classes/jupyterlite_services.DriveFS-1.html)
+[`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/@jupyterlite/services/classes/DriveFS.html)
 helper class which can be used to mount files in the Emscripten filesystem:
 
 ```ts

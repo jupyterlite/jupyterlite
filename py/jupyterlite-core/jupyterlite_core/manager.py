@@ -123,7 +123,6 @@ class LiteManager(LiteBuildConfig):
                         for task in getattr(addon, attr)(self):
                             patched_task = {**task}
                             patched_task["name"] = f"""{self.task_prefix}{name}:{task["name"]}"""
-                            print(patched_task["name"])
                             yield patched_task
                     except Exception as error:
                         self.log.error(f"[lite] [{attr}] [{name}] [ERR] {error}")

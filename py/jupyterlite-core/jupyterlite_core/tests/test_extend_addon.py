@@ -29,7 +29,7 @@ MOCK_ARGV_CONFIG = [
 
 
 def test_extend_addon_config(an_empty_lite_dir, a_configured_mock_addon, capsys):
-    argv, config = a_configured_mock_addon
+    argv = a_configured_mock_addon[0]
     app = LiteStatusApp(log_level="DEBUG")
     app.initialize(argv=argv)
     manager = app.lite_manager

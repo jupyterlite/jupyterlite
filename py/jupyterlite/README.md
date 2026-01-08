@@ -1,14 +1,11 @@
 # JupyterLite
 
-[![ci-badge]][ci] [![lite-badge]][lite] [![binder-badge]][binder] [![docs-badge]][docs]
-[![zulip-badge]][zulip]
+[![ci-badge]][ci] [![lite-badge]][lite] [![docs-badge]][docs] [![zulip-badge]][zulip]
 
 [ci-badge]: https://github.com/jupyterlite/jupyterlite/workflows/Build/badge.svg
 [lite-badge]: https://jupyterlite.rtfd.io/en/latest/_static/badge.svg
 [lite]: https://jupyterlite.rtfd.io/en/stable/try/lab
 [ci]: https://github.com/jupyterlite/jupyterlite/actions?query=branch%3Amain
-[binder-badge]: https://mybinder.org/badge_logo.svg
-[binder]: https://mybinder.org/v2/gh/jupyterlite/jupyterlite/main?urlpath=lab
 [docs-badge]: https://readthedocs.org/projects/jupyterlite/badge/?version=latest
 [docs]: https://jupyterlite.readthedocs.io/en/stable/?badge=latest
 [zulip-badge]: https://img.shields.io/badge/social_chat-zulip-blue.svg
@@ -126,8 +123,7 @@ See also:
 - [jyve](https://github.com/deathbeds/jyve): Jupyter Kernels, right inside JupyterLab
 - [Starboard Notebook](https://github.com/gzuidhof/starboard-notebook): In-browser
   literal notebooks
-- [Basthon](https://basthon.fr/about.html): A Jupyter notebook implementation using
-  Pyodide
+- [Basthon](https://basthon.fr): A Jupyter notebook implementation using Pyodide
 
 ## 👥 Contributors
 

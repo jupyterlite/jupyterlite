@@ -9,45 +9,38 @@ on:
       - '*'
 
 env:
-  CACHE_EPOCH: 7
-  CI: 0
-  WIN_DEV_IN_CI: 1
   PYTHONUTF8: 1
+  # Workaround for https://github.com/xz64/license-webpack-plugin/issues/111
+  NO_WEBPACK_LICENSES: 1
 
 jobs:
   win-dev:
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: cmd /C CALL {0}
     steps:
       - name: Set git to use LF
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
+
       - name: Checkout
         uses: actions/checkout@v6
-      - uses: mamba-org/setup-micromamba@v2
-        with:
-          micromamba-version: '1.5.1-0'
-          environment-file: .binder/environment.yml
-          init-shell: cmd.exe
-          cache-environment: true
-          post-cleanup: 'all'
-      - name: Cache (node_modules)
-        uses: actions/cache@v4
-        id: cache-node-modules
-        with:
-          path: node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
-      - name: Node
-        run: doit setup || doit setup || doit setup
+
+      - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install Python dependencies
+        run: python -m pip install --group build --group lint
+
+      - name: Install JS dependencies
+        run: jlpm install
+
       - name: Build
-        run: doit build
-      - name: Dist
-        run: doit dist
-      - name: Dev
-        run: doit dev
+        run: jlpm build:prod
+
+      - name: Pack app
+        run: jlpm pack:app
+
+      - name: Install (dev)
+        run: jlpm install:py
+
       - name: Lint
         run: jlpm lint
