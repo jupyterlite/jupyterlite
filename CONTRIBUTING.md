@@ -21,9 +21,10 @@ installing Python dependencies.
 
 ### Quick Start
 
-Install all dependencies with a single command:
+Install all dependencies and set up the dev environment with the following commands:
 
 ```bash
+jlpm install
 jlpm setup
 ```
 

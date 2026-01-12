@@ -53,7 +53,7 @@
     "pack:app": "npm pack app/ --pack-destination py/jupyterlite-core/jupyterlite_core/",
     "prettier:check": "prettier --list-different \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
-    "setup": "jlpm install && jlpm install:py",
+    "setup": "jlpm install:py",
     "test:py": "python -m pytest --pyargs jupyterlite_core -v",
     "test:py:cov": "python -m pytest --pyargs jupyterlite_core -v --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82",
     "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js --lerna",
