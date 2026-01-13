@@ -14,25 +14,26 @@ You'll need:
 
 - `git`
 - `nodejs >=24,<25`
-- `python >=3.12,<3.13`
+- `python >=3.10`
 
 **Tip**: You can use any Python package manager you prefer (`pip`, `conda`, etc.) for
 installing Python dependencies.
 
 ### Quick Start
 
-Install all dependencies and set up the dev environment with the following commands:
+Install all dependencies and set up the dev environment:
 
 ```bash
+# 1. Install build dependencies (includes JupyterLab which provides `jlpm`)
+pip install --group build
+
+# 2. Install Node.js dependencies and Python packages
 jlpm install
-jlpm setup
+jlpm install:py
 ```
 
-This runs:
-
-- `jlpm install` - Install Node.js dependencies
-- `pip install --group dev --group test ...` - Install development dependencies and
-  Python packages in editable mode
+The `jlpm install:py` command installs remaining Python dependencies and packages in
+editable mode.
 
 You can also install dependencies manually:
 
@@ -181,6 +182,12 @@ This will update both `examples/requirements-demo.txt` and the `piplite_urls` in
 
 ### Documentation
 
+Install the docs dependency group first:
+
+```bash
+pip install --group docs
+```
+
 | Command           | Description                         |
 | ----------------- | ----------------------------------- |
 | `jlpm docs:build` | Build Sphinx documentation          |
@@ -199,6 +206,9 @@ jlpm test:py
 
 JupyterLite uses [Galata](https://github.com/jupyterlab/jupyterlab/tree/master/galata)
 for end-to-end and visual regression testing.
+
+> **Note**: Complete the [Quick Start](#quick-start) setup first - UI tests require
+> `jupyterlite-core` to be installed.
 
 ```bash
 cd ui-tests
