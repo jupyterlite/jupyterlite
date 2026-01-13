@@ -89,7 +89,7 @@ test = [
 # UI tests
 ui-tests = [
     { include-group = "build" },
-    "jupyterlab==7.6.0a0",
+    "jupyterlab==4.6.0a0",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel>=0.4.0a0",
     "jupyterlite-p5-kernel~=0.2.0",
