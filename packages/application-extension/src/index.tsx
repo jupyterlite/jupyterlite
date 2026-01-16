@@ -151,13 +151,27 @@ const about: JupyterFrontEndPlugin<void> = {
     const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Help');
 
+    // Get the JupyterLab and Notebook versions from PageConfig
+    const jupyterlabVersion = PageConfig.getOption('jupyterlabVersion');
+    const notebookVersion = PageConfig.getOption('notebookVersion');
+
     commands.addCommand(CommandIDs.about, {
       label: trans.__('About %1', app.name),
       execute: () => {
         const versionNumber = trans.__('Version %1', app.version);
+
         const versionInfo = (
           <span className="jp-About-version-info">
             <span className="jp-About-version">{versionNumber}</span>
+            <span className="jp-About-dependencies">
+              {jupyterlabVersion && (
+                <span>{trans.__('JupyterLab %1', jupyterlabVersion)}</span>
+              )}
+              {jupyterlabVersion && notebookVersion && <span>{' · '}</span>}
+              {notebookVersion && (
+                <span>{trans.__('Jupyter Notebook %1', notebookVersion)}</span>
+              )}
+            </span>
           </span>
         );
         const title = (

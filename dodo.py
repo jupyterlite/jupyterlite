@@ -250,7 +250,7 @@ def task_build():
             *app_deps,
             *extra_app_deps,
         ],
-        actions=[U.do("jlpm", "lerna", "run", "build:prod", "--scope", "@jupyterlite/app")],
+        actions=[U.do("jlpm", "build:prod")],
         targets=[*all_app_targets],
     )
 
