@@ -4,7 +4,8 @@ Script to upgrade JupyterLab and Notebook dependencies.
 
 This script fetches releases from GitHub and updates:
 - pyproject.toml: Python dependency version constraints
-- All package.json files: @jupyterlab/* dependencies
+- All package.json files: @jupyterlab/*, @lumino/*, @jupyter/* dependencies
+  (and @jupyter-notebook/* when --notebook-version is specified)
 
 At least one of --jupyterlab-version or --notebook-version must be specified.
 Packages without a version argument are left unchanged.
@@ -18,7 +19,7 @@ Usage:
     python scripts/upgrade-dependencies.py --jupyterlab-version latest --dry-run
 
 Environment variables:
-    GITHUB_TOKEN: Optional GitHub token to avoid API rate limiting (recommended for CI)
+    GITHUB_TOKEN: Optional GitHub token to avoid API rate limiting
 """
 
 import argparse
@@ -32,23 +33,25 @@ GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 
 ROOT = Path(__file__).parent.parent
 
-# All pyproject.toml files that contain jupyterlab/notebook version constraints
-PYPROJECT_TOML_FILES = [
-    ROOT / "pyproject.toml",
-    ROOT / "py" / "jupyterlite-core" / "pyproject.toml",
-    ROOT / "py" / "jupyterlite" / "pyproject.toml",
-]
-
-# Directories to exclude when searching for package.json files
+# Directories to exclude when searching for source files
 EXCLUDED_DIRS = {"node_modules", "_site", ".venv", ".yarn", "lib", "docs", "build"}
+
+
+def find_pyproject_toml_files() -> list[Path]:
+    """Find all pyproject.toml files, excluding build artifacts."""
+    return sorted(
+        path
+        for path in ROOT.glob("**/pyproject.toml")
+        if not any(part in EXCLUDED_DIRS or part.startswith(".") for part in path.parts)
+    )
 
 
 def find_package_json_files() -> list[Path]:
     """Find all source package.json files, excluding build artifacts."""
     return sorted(
-        pkg_path
-        for pkg_path in ROOT.glob("**/package.json")
-        if not any(part in EXCLUDED_DIRS or part.startswith(".") for part in pkg_path.parts)
+        path
+        for path in ROOT.glob("**/package.json")
+        if not any(part in EXCLUDED_DIRS or part.startswith(".") for part in path.parts)
     )
 
 
@@ -363,7 +366,7 @@ def update_all_pyproject_tomls(
     print("\nUpdating pyproject.toml files...")
     changed = any(
         update_pyproject_toml(path, jupyterlab_version, notebook_version, dry_run)
-        for path in PYPROJECT_TOML_FILES
+        for path in find_pyproject_toml_files()
     )
     if not changed:
         print("  No changes to pyproject.toml files")
