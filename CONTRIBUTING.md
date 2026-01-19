@@ -220,8 +220,7 @@ You can trigger the upgrade workflow directly from GitHub Actions from a fork, w
 automates the entire process (running the script, updating lock files, and creating a
 PR):
 
-1. Go to
-   [Actions → Upgrade JupyterLab/Notebook dependencies](../../actions/workflows/upgrade-dependencies.yml)
+1. Go to **Actions → Upgrade JupyterLab/Notebook dependencies** in the GitHub repository
 2. Click "Run workflow"
 3. Fill in the parameters:
    - **JupyterLab version**: Version number or `latest` (default: `latest`)
