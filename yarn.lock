@@ -3245,8 +3245,8 @@ __metadata:
   resolution: "@jupyterlite/app@workspace:app"
   dependencies:
     "@jupyterlab/builder": ~4.6.0-alpha.1
-    "@rspack/cli": ^1.6.4
-    "@rspack/core": ^1.6.4
+    "@rspack/cli": ^1.7.2
+    "@rspack/core": ^1.7.2
     fs-extra: ^9.0.1
     glob: ^7.2.0
     handlebars: ^4.7.8
@@ -4821,23 +4821,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspack/cli@npm:^1.6.4":
-  version: 1.6.8
-  resolution: "@rspack/cli@npm:1.6.8"
+"@rspack/cli@npm:^1.7.2":
+  version: 1.7.2
+  resolution: "@rspack/cli@npm:1.7.2"
   dependencies:
     "@discoveryjs/json-ext": ^0.5.7
-    "@rspack/dev-server": ~1.1.4
+    "@rspack/dev-server": ~1.1.5
     exit-hook: ^4.0.0
     webpack-bundle-analyzer: 4.10.2
   peerDependencies:
     "@rspack/core": ^1.0.0-alpha || ^1.x
   bin:
     rspack: bin/rspack.js
-  checksum: c8c7aa5ec8f33d8480156e5009505790ba78159738ffb49174e14a35de8a03fa123e6bddd3b63faa70b4e8655876c3cabf315e789b337a4fb15ed4f82255c2fb
+  checksum: eb68d3b08e1197f932febe942a00e69047d6f17dc082b887c566cd0411b7b48ca2be024cd4fcbfdb6930dc66420601de37d019bf4629d2b2fef378e8515088e3
   languageName: node
   linkType: hard
 
-"@rspack/core@npm:^1.6.4, @rspack/core@npm:^1.7.1":
+"@rspack/core@npm:^1.7.1, @rspack/core@npm:^1.7.2":
   version: 1.7.2
   resolution: "@rspack/core@npm:1.7.2"
   dependencies:
@@ -4853,9 +4853,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspack/dev-server@npm:~1.1.4":
-  version: 1.1.4
-  resolution: "@rspack/dev-server@npm:1.1.4"
+"@rspack/dev-server@npm:~1.1.5":
+  version: 1.1.5
+  resolution: "@rspack/dev-server@npm:1.1.5"
   dependencies:
     chokidar: ^3.6.0
     http-proxy-middleware: ^2.0.9
@@ -4864,7 +4864,7 @@ __metadata:
     ws: ^8.18.0
   peerDependencies:
     "@rspack/core": "*"
-  checksum: 28e1ee041a88d432df2a29b30d022e78ce32ede5f2b0ce5347b35e6a57fa0351f4f9a17c8e49e3e44c26972e9478157541d1b77cfce0ec81759ebcf31e4d2ad0
+  checksum: 78c9bf8e2cf00907fc77914da6e3f1b0bf9588ed53fd3327d6ff73e0a91ad054342326802d210a31b465c1e6a8e83e01ac1e844212cb32dfdce7a7000d46edac
   languageName: node
   linkType: hard
 
