@@ -1,0 +1,181 @@
+name: Upgrade JupyterLab/Notebook dependencies
+
+on:
+  workflow_dispatch:
+    inputs:
+      jupyterlab_version:
+        description: 'JupyterLab version (or "latest")'
+        default: latest
+        required: false
+        type: string
+      notebook_version:
+        description: 'Notebook version (or "latest")'
+        default: ''
+        required: false
+        type: string
+      branch:
+        description: 'The branch to target'
+        default: main
+        required: false
+        type: string
+      target_repo:
+        description: 'Target repository for the PR'
+        required: false
+        default: jupyterlite/jupyterlite
+        type: string
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  upgrade_dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.branch || 'main' }}
+
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install Python dependencies
+        run: python -m pip install --group build
+
+      - name: Install JS dependencies
+        run: jlpm install
+
+      - name: Upgrade dependencies
+        id: upgrade
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -eux
+
+          UPGRADE_ARGS=""
+          JUPYTERLAB_VERSION=""
+          NOTEBOOK_VERSION=""
+
+          # Handle JupyterLab version
+          if [[ -n "${{ inputs.jupyterlab_version }}" ]]; then
+            UPGRADE_ARGS="$UPGRADE_ARGS --jupyterlab-version ${{ inputs.jupyterlab_version }}"
+          fi
+
+          # Handle Notebook version
+          if [[ -n "${{ inputs.notebook_version }}" ]]; then
+            UPGRADE_ARGS="$UPGRADE_ARGS --notebook-version ${{ inputs.notebook_version }}"
+          fi
+
+          # Run the upgrade script if we have any args
+          if [[ -n "$UPGRADE_ARGS" ]]; then
+            python scripts/upgrade-dependencies.py $UPGRADE_ARGS 2>&1 | tee upgrade_output.txt
+
+            # Extract versions from output
+            if grep -q "JupyterLab:" upgrade_output.txt; then
+              JUPYTERLAB_VERSION=$(grep "JupyterLab:" upgrade_output.txt | awk '{print $2}')
+              echo "jupyterlab_version=${JUPYTERLAB_VERSION}" >> $GITHUB_OUTPUT
+            fi
+            if grep -q "Notebook:" upgrade_output.txt; then
+              NOTEBOOK_VERSION=$(grep "Notebook:" upgrade_output.txt | awk '{print $2}')
+              echo "notebook_version=${NOTEBOOK_VERSION}" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: Update yarn.lock and deduplicate
+        if: ${{ hashFiles('package.json') != '' }}
+        run: |
+          set -eux
+
+          # Check if there were any changes
+          if [[ ! -z "$(git status --porcelain)" ]]; then
+            jlpm install
+            jlpm deduplicate
+            jlpm integrity
+          fi
+
+      - name: Create a PR
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -eux
+
+          JUPYTERLAB_VERSION="${{ steps.upgrade.outputs.jupyterlab_version }}"
+          NOTEBOOK_VERSION="${{ steps.upgrade.outputs.notebook_version }}"
+
+          # Build branch name and PR title
+          BRANCH_NAME="update-dependencies"
+          PR_TITLE="Update dependencies"
+          PR_BODY_PARTS=""
+
+          if [[ -n "$JUPYTERLAB_VERSION" ]]; then
+            BRANCH_NAME="${BRANCH_NAME}-lab-v${JUPYTERLAB_VERSION}"
+            PR_TITLE="Update to JupyterLab v${JUPYTERLAB_VERSION}"
+            PR_BODY_PARTS="- JupyterLab [v${JUPYTERLAB_VERSION}](https://github.com/jupyterlab/jupyterlab/releases/tag/v${JUPYTERLAB_VERSION})"
+          fi
+
+          if [[ -n "$NOTEBOOK_VERSION" ]]; then
+            if [[ -n "$JUPYTERLAB_VERSION" ]]; then
+              BRANCH_NAME="${BRANCH_NAME}-nb-v${NOTEBOOK_VERSION}"
+              PR_TITLE="${PR_TITLE} and Notebook v${NOTEBOOK_VERSION}"
+              PR_BODY_PARTS="${PR_BODY_PARTS}
+          - Notebook [v${NOTEBOOK_VERSION}](https://github.com/jupyter/notebook/releases/tag/v${NOTEBOOK_VERSION})"
+            else
+              BRANCH_NAME="update-dependencies-nb-v${NOTEBOOK_VERSION}"
+              PR_TITLE="Update to Notebook v${NOTEBOOK_VERSION}"
+              PR_BODY_PARTS="- Notebook [v${NOTEBOOK_VERSION}](https://github.com/jupyter/notebook/releases/tag/v${NOTEBOOK_VERSION})"
+            fi
+          fi
+
+          # Check if there were any changes
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "No changes detected, skipping PR creation"
+            exit 0
+          fi
+
+          # Check if branch already exists
+          if git ls-remote --heads origin | grep "refs/heads/${BRANCH_NAME}$" > /dev/null; then
+            echo "Branch '${BRANCH_NAME}' already exists."
+            exit 0
+          fi
+
+          # Create and push branch
+          git checkout -b "${BRANCH_NAME}"
+          git config user.name "github-actions[bot]"
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git add -A
+          git commit -m "${PR_TITLE}"
+
+          git push --set-upstream origin "${BRANCH_NAME}"
+
+          # Create PR
+          PR_ARGS=(
+            --base "${{ inputs.branch || 'main' }}"
+            --title "${PR_TITLE}"
+            --body "$(cat <<EOF
+          ## Summary
+
+          New releases are available:
+          ${PR_BODY_PARTS}
+
+          Please review the changes carefully, especially the lock file updates.
+
+          ## Checklist
+
+          - [ ] Verify the build succeeds
+          - [ ] Check that UI tests pass
+          - [ ] Review dependency changes in yarn.lock
+          EOF
+          )"
+          )
+
+          # Add --repo flag only if target_repo is specified
+          if [[ -n "${{ inputs.target_repo }}" ]]; then
+            PR_ARGS+=(--repo "${{ inputs.target_repo }}")
+          fi
+
+          gh pr create "${PR_ARGS[@]}"
