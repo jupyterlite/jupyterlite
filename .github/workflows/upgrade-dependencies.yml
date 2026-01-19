@@ -182,4 +182,9 @@ jobs:
             PR_ARGS+=(--repo "${{ inputs.target_repo }}")
           fi
 
-          gh pr create "${PR_ARGS[@]}"
+          PR_URL=$(gh pr create "${PR_ARGS[@]}")
+
+          # Add PR link to GitHub Actions summary
+          echo "## Pull Request Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 ${PR_URL}" >> $GITHUB_STEP_SUMMARY
