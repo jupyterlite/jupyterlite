@@ -20,7 +20,7 @@
     "watch": "rspack --watch --config rspack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "~4.6.0-alpha.0",
+    "@jupyterlab/builder": "~4.6.0-alpha.1",
     "@rspack/cli": "^1.6.4",
     "@rspack/core": "^1.6.4",
     "fs-extra": "^9.0.1",
