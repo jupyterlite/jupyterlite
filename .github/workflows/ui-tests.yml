@@ -2,9 +2,6 @@ name: UI Tests
 
 on: [push, pull_request]
 
-env:
-  CACHE_EPOCH: 0
-
 jobs:
   build:
     name: Build
@@ -14,27 +11,34 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build dist
-        uses: ./.github/actions/build-dist
+      - name: Base Setup
+        uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
+
+      - name: Install Python dependencies
+        run: python -m pip install --group build
+
+      - name: Install JS dependencies
+        run: jlpm install
+
+      - name: Build
+        run: jlpm build:prod
+
+      - name: Pack app
+        run: jlpm pack:app
 
       - name: Install JupyterLite
-        run: |
-          python3 -m pip install 'doit >=0.34,<1' jupyter_core jupyterlab~=4.0
-          python3 -m pip install --find-links dist --no-index jupyterlite_core
+        run: python -m pip install --group ui-tests ./py/jupyterlite-core[all]
 
       - name: Build JupyterLite
         run: |
           cd ui-tests
           jlpm
 
-          # Install test dependencies
-          python3 -m pip install -r requirements.txt --no-deps
-
           # Build the JupyterLite website
           jlpm build
 
       - name: Upload the JupyterLite website
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
@@ -51,23 +55,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
 
-      - name: Cache (ui-tests/node_modules)
-        uses: actions/cache@v4
-        id: cache-ui-tests-node-modules
-        with:
-          path: ui-tests/node_modules/
-          key: |
-            ${{ env.CACHE_EPOCH }}-${{ runner.os }}-node-modules-${{ hashFiles('ui-tests/yarn.lock') }}
-
       - name: Install dependencies and browser
         run: |
+          python -m pip install --upgrade pip
           # Install JupyterLab to get jlpm
-          python -m pip install "jupyterlab>=4.3.4,<4.4"
+          python -m pip install --group build
           cd ui-tests
           jlpm
           jlpm playwright install
@@ -79,7 +76,7 @@ jobs:
 
       - name: Upload Playwright Test assets
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-test-assets
           path: |
@@ -87,7 +84,7 @@ jobs:
 
       - name: Upload Playwright Test report
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-test-report
           path: |
@@ -104,7 +101,7 @@ jobs:
 
       - name: Upload updated snapshots
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jupyterlite-${{ matrix.browser }}-updated-snapshots
           path: ui-tests/test

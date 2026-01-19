@@ -2,14 +2,118 @@
 name = "jupyterlite-root"
 version = "0.8.0a0"
 
+# Dependency groups (PEP 735) for development dependencies
+# Install with: pip install --group dev
+[dependency-groups]
+# Minimal build dependencies
+build = [
+    "hatch>=1.6.3,<2",
+    "jupyterlab>=4.6.0a0,<4.7",
+]
+
+# Demo site extensions
+demo = [
+    "bqplot~=0.12.43",
+    "ipycanvas~=0.14.2",
+    "ipycytoscape~=1.3.3",
+    "ipyleaflet~=0.20.0",
+    "ipympl~=0.9.4",
+    "ipyvue~=1.11.0",
+    "ipyvuetify~=1.11.0",
+    "ipywidgets~=8.1.3",
+    "jupyterlab-fasta~=3.3.0",
+    "jupyterlab-geojson~=3.4.0",
+    "jupyterlab-kernelspy~=4.0.0",
+    "jupyterlab-miami-nights~=0.4.2",
+    "jupyterlab-tour~=4.0.1",
+    "jupyterlite-p5-kernel~=0.2.0",
+    "jupyterlite-pyodide-kernel>=0.8.0a0",
+    "notebook>=7.6.0a0,<7.7",
+    "plotly~=5.22.0",
+]
+
+# Core development
+dev = [
+    { include-group = "build" },
+    "jupyterlite-pyodide-kernel>=0.8.0a0",
+    "notebook>=7.6.0a0,<7.7",
+    "pkginfo",
+    "ruff>=0.8.3",
+    "twine>=5.1.1",
+    "watchfiles>=0.21",
+]
+
+# Documentation building
+docs = [
+    "docutils>=0.18",
+    "myst-nb>=1",
+    "pydata-sphinx-theme",
+    "pytest-check-links",
+    "sphinx>=5.1,<8.2",
+    "sphinx-autodoc-typehints",
+    "sphinx-autobuild",
+    "sphinx-jsonschema",
+    "sphinxcontrib-mermaid",
+    "sphinxext-rediraffe",
+]
+
+# Linting
+lint = [
+    "jsonschema>=3",
+    "nbconvert",
+    "nbstripout",
+    "pre-commit",
+    "ruff>=0.8.3",
+]
+
+# Release process
+release = [
+    { include-group = "build" },
+    { include-group = "lint" },
+    "jupyter-releaser",
+]
+
+# Testing
+test = [
+    "ansi2html",
+    "jsonschema>=3",
+    "jupyter_server>=1.11,<3",
+    "jupyterlab_server>=2.8.1,<3",
+    "pytest>=7",
+    "pytest-console-scripts>=1.4.0",
+    "pytest-cov<7",
+    "pytest-html",
+    "pytest-xdist",
+]
+
+# UI tests
+ui-tests = [
+    { include-group = "build" },
+    "jupyterlab==4.6.0a0",
+    "jupyterlab-language-pack-fr-FR",
+    "jupyterlite-javascript-kernel==0.4.0a0",
+    "jupyterlite-p5-kernel==0.2.0",
+    "jupyterlite-pyodide-kernel==0.8.0a0",
+    "notebook==7.6.0a0",
+    "theme-darcula==4.0.0",
+]
+
+# All development dependencies (excludes demo)
+all-dev = [
+    { include-group = "dev" },
+    { include-group = "docs" },
+    { include-group = "lint" },
+    { include-group = "test" },
+]
+
 [tool.jupyter-releaser]
-skip = [ "build-python", "check-links", "check-python",]
+skip = ["build-python", "check-links", "check-python"]
 
 [tool.jupyter-releaser.hooks]
-before-bump-version = [ "python -m pip install jupyter-releaser -r requirements-build.txt -r requirements-lint.txt", "jlpm", ]
-after-bump-version = [ "doit repo:integrity", "jlpm lint", "jlpm",]
-before-build-npm = [ "doit build",]
-after-check-npm = [ "doit dist", "rm dist/jupyterlite-app-*.tgz",]
+before-bump-version = ["python -m pip install --group release", "jlpm install"]
+after-bump-version = ["jlpm deduplicate", "jlpm install", "jlpm lint"]
+before-build-npm = ["jlpm build:prod", "jlpm pack:app"]
+after-check-npm = ["jlpm build:py"]
 
 [tool.jupyter-releaser.options]
 version-cmd = "python scripts/bump-version.py --force"
@@ -19,7 +123,7 @@ changelog-path = "docs/changelog.md"
 ignore = ["W002"]
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 100
 extend-include = ["*.ipynb"]
 
@@ -46,6 +150,8 @@ ignore = [
 "C408", "C416",
 # RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
 "RUF012",
+# PLC0415 `import` should be at the top-level of a file (allow lazy imports for optional deps)
+"PLC0415",
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -53,6 +159,8 @@ ignore = [
 # S603 `subprocess` call: check for execution of untrusted input
 # S607 Starting a process with a partial executable path
 "docs/conf.py" = ["A001", "S603", "S607"]
+"scripts/dev-build.py" = ["S603"]
+"scripts/compile-lock-files.py" = ["S310", "S603", "S607"]
 "**/conftest.py" = ["S603", "S607"]
 
 # TID252 [*] Relative imports from parent modules are banned

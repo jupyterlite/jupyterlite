@@ -9,7 +9,7 @@ default_language_version:
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: forbid-new-submodules
       - id: end-of-file-fixer
@@ -30,21 +30,27 @@ repos:
     hooks:
       - id: check-github-workflows
 
-  # Check ruff version is aligned in .binder/environment.yml
+  # Check ruff version is aligned in pyproject.toml
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.7
+    rev: v0.14.10
     hooks:
       - id: ruff
-        args: ["--fix"]
+        args: ['--fix']
       - id: ruff-format
 
   - repo: local
     hooks:
+      - id: sync-readme
+        name: sync README to py/jupyterlite
+        entry: cp README.md py/jupyterlite/README.md
+        language: system
+        files: ^README\.md$
+        pass_filenames: false
       - id: prettier
         name: prettier
         entry: 'npm run prettier:fix'
         language: node
-        types_or: [json, ts, tsx, javascript, jsx, css]
+        types_or: [json, markdown, ts, tsx, javascript, jsx, css, yaml]
       - id: eslint
         name: eslint
         entry: 'npm run eslint:fix'

@@ -7,7 +7,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  binder:
+  rtd:
     runs-on: ubuntu-latest
     steps:
       - name: Comment on the PR with the RTD preview

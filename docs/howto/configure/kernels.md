@@ -42,13 +42,9 @@ There are currently two JupyterLite kernels for Python:
 
 Check out the dedicated guides for configuring the Pyodide kernel:
 
-```{toctree}
-:maxdepth: 1
-
-../pyodide/packages
-../pyodide/wheels
-../pyodide/pyodide
-```
+- [Installing Python packages](../pyodide/packages.md)
+- [Preloading custom Python wheels](../pyodide/wheels.md)
+- [Configuring the Pyodide kernel](../pyodide/pyodide.md)
 
 #### `jupyterlite-xeus`
 
@@ -71,11 +67,7 @@ Xeus Python:
 
 Check out the dedicated guides for configuring the Xeus Python kernel:
 
-```{toctree}
-:maxdepth: 1
-
-../xeus-python/preinstalled_packages
-```
+- [Pre-installed packages](../xeus-python/preinstalled_packages.md)
 
 ```{note}
 These two Python kernels are very similar but yet still have some slight differences.
