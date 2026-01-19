@@ -23,6 +23,11 @@ on:
         required: false
         default: jupyterlite/jupyterlite
         type: string
+      draft:
+        description: 'Create PR as draft'
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   actions: write
@@ -185,6 +190,10 @@ jobs:
           # Add --repo flag only if target_repo is specified
           if [[ -n "${{ inputs.target_repo }}" ]]; then
             PR_ARGS+=(--repo "${{ inputs.target_repo }}")
+          fi
+
+          if [[ "${{ inputs.draft }}" == "true" ]]; then
+            PR_ARGS+=(--draft)
           fi
 
           PR_URL=$(gh pr create "${PR_ARGS[@]}")
