@@ -72,15 +72,16 @@ jobs:
 
           # Run the upgrade script if we have any args
           if [[ -n "$UPGRADE_ARGS" ]]; then
-            python scripts/upgrade-dependencies.py $UPGRADE_ARGS 2>&1 | tee upgrade_output.txt
+            OUTPUT=$(python scripts/upgrade-dependencies.py $UPGRADE_ARGS 2>&1)
+            echo "$OUTPUT"
 
             # Extract versions from output
-            if grep -q "JupyterLab:" upgrade_output.txt; then
-              JUPYTERLAB_VERSION=$(grep "JupyterLab:" upgrade_output.txt | awk '{print $2}')
+            if echo "$OUTPUT" | grep -q "JupyterLab:"; then
+              JUPYTERLAB_VERSION=$(echo "$OUTPUT" | grep "JupyterLab:" | awk '{print $2}')
               echo "jupyterlab_version=${JUPYTERLAB_VERSION}" >> $GITHUB_OUTPUT
             fi
-            if grep -q "Notebook:" upgrade_output.txt; then
-              NOTEBOOK_VERSION=$(grep "Notebook:" upgrade_output.txt | awk '{print $2}')
+            if echo "$OUTPUT" | grep -q "Notebook:"; then
+              NOTEBOOK_VERSION=$(echo "$OUTPUT" | grep "Notebook:" | awk '{print $2}')
               echo "notebook_version=${NOTEBOOK_VERSION}" >> $GITHUB_OUTPUT
             fi
           fi
