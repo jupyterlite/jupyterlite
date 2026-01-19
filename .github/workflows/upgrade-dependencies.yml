@@ -158,18 +158,21 @@ jobs:
             --base "${{ inputs.branch || 'main' }}"
             --title "${PR_TITLE}"
             --body "$(cat <<EOF
-          ## Summary
+          ## References
 
-          New releases are available:
           ${PR_BODY_PARTS}
 
-          Please review the changes carefully, especially the lock file updates.
+          ## Code changes
 
-          ## Checklist
+          Dependency updates to match upstream releases.
 
-          - [ ] Verify the build succeeds
-          - [ ] Check that UI tests pass
-          - [ ] Review dependency changes in yarn.lock
+          ## User-facing changes
+
+          N/A
+
+          ## Backwards-incompatible changes
+
+          N/A
           EOF
           )"
           )
