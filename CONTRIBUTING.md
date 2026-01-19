@@ -218,7 +218,23 @@ automatic `GITHUB_TOKEN` won't trigger CI checks on the PR itself.
 
 You can trigger the upgrade workflow directly from GitHub Actions from a fork, which
 automates the entire process (running the script, updating lock files, and creating a
-PR):
+PR).
+
+###### Setting Up the Token in Your Fork
+
+Before running the workflow from a fork, you need to create a `PERSONAL_GITHUB_TOKEN`
+repository secret:
+
+1. Create a [Personal Access Token](https://github.com/settings/tokens) with these
+   permissions:
+   - **Classic PAT**: `repo` scope (to push branches and create PRs)
+   - **Fine-grained PAT**: Select the target repository with "Contents" (read/write) and
+     "Pull requests" (read/write) permissions
+2. Go to your fork's **Settings → Secrets and variables → Actions**
+3. Click **New repository secret**
+4. Name it `PERSONAL_GITHUB_TOKEN` and paste your token
+
+###### Running the Workflow
 
 1. Go to **Actions → Upgrade JupyterLab/Notebook dependencies** in the GitHub repository
 2. Click "Run workflow"
