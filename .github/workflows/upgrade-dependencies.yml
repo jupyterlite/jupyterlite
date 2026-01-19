@@ -96,6 +96,11 @@ jobs:
             jlpm install
             jlpm deduplicate
             jlpm integrity
+
+            # Update ui-tests yarn.lock
+            pushd ui-tests
+            jlpm install
+            popd
           fi
 
       - name: Create a PR
