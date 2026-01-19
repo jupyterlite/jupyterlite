@@ -179,7 +179,7 @@ This script:
   dependencies in `package.json` files to match upstream versions
 - Only updates packages for which a version argument is provided
 
-**Common usage patterns:**
+##### Common Usage Patterns
 
 ```bash
 # Preview changes without modifying files
@@ -192,7 +192,7 @@ python scripts/upgrade-dependencies.py --jupyterlab-version next --notebook-vers
 python scripts/upgrade-dependencies.py --jupyterlab-version 4.4.0 --notebook-version 7.4.0
 ```
 
-**After running the script:**
+##### After Running the Script
 
 ```bash
 jlpm install      # Update yarn.lock
@@ -201,7 +201,9 @@ jlpm integrity    # Sync app resolutions
 jlpm build        # Verify the build succeeds
 ```
 
-**Note**: Set the `GITHUB_TOKEN` environment variable to avoid GitHub API rate limiting
+##### GitHub Token for API Rate Limiting
+
+Set the `GITHUB_TOKEN` environment variable to avoid GitHub API rate limiting
 (unauthenticated requests are limited to 60/hour, authenticated to 5,000/hour). For
 local development, create a [Personal Access Token](https://github.com/settings/tokens):
 
@@ -211,6 +213,24 @@ local development, create a [Personal Access Token](https://github.com/settings/
 In GitHub Actions, the CI workflow uses `PERSONAL_GITHUB_TOKEN` (a PAT stored as a
 repository secret) to create PRs. This is required because PRs created with the
 automatic `GITHUB_TOKEN` won't trigger CI checks on the PR itself.
+
+##### Automated Upgrade via GitHub Actions
+
+You can trigger the upgrade workflow directly from GitHub Actions from a fork, which
+automates the entire process (running the script, updating lock files, and creating a
+PR):
+
+1. Go to
+   [Actions → Upgrade JupyterLab/Notebook dependencies](../../actions/workflows/upgrade-dependencies.yml)
+2. Click "Run workflow"
+3. Fill in the parameters:
+   - **JupyterLab version**: Version number or `latest` (default: `latest`)
+   - **Notebook version**: Version number or `latest` (default: `latest`)
+   - **Branch**: Target branch for the PR (default: `main`)
+   - **Target repository**: Where to create the PR (default: `jupyterlite/jupyterlite`)
+4. Click "Run workflow"
+
+The workflow will create a PR with all necessary changes if updates are available.
 
 ### Demo Site Dependencies
 

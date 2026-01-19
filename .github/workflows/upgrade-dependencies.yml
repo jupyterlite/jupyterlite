@@ -10,7 +10,7 @@ on:
         type: string
       notebook_version:
         description: 'Notebook version (or "latest")'
-        default: ''
+        default: latest
         required: false
         type: string
       branch:
