@@ -154,6 +154,64 @@ jlpm update:dependency --regex @jupyterlab latest
 
 After updating dependencies, run `jlpm integrity` to sync app resolutions.
 
+#### Upgrading JupyterLab and Notebook Versions
+
+When a new JupyterLab or Notebook release is available, use the upgrade script to update
+dependencies across the repository. At least one of `--jupyterlab-version` or
+`--notebook-version` must be specified:
+
+```bash
+# Update JupyterLab to latest stable
+python scripts/upgrade-dependencies.py --jupyterlab-version latest
+
+# Update Notebook to latest stable
+python scripts/upgrade-dependencies.py --notebook-version latest
+
+# Update both to latest stable
+python scripts/upgrade-dependencies.py --jupyterlab-version latest --notebook-version latest
+```
+
+This script:
+
+- Fetches the specified releases from GitHub
+- Updates version constraints in `pyproject.toml`
+- Updates all `@jupyterlab/*`, `@lumino/*`, `@jupyter/*`, and `@jupyter-notebook/*`
+  dependencies in `package.json` files to match upstream versions
+- Only updates packages for which a version argument is provided
+
+**Common usage patterns:**
+
+```bash
+# Preview changes without modifying files
+python scripts/upgrade-dependencies.py --jupyterlab-version latest --dry-run
+
+# Update to the latest pre-release versions
+python scripts/upgrade-dependencies.py --jupyterlab-version next --notebook-version next
+
+# Update to specific versions
+python scripts/upgrade-dependencies.py --jupyterlab-version 4.4.0 --notebook-version 7.4.0
+```
+
+**After running the script:**
+
+```bash
+jlpm install      # Update yarn.lock
+jlpm deduplicate  # Clean up duplicate dependencies
+jlpm integrity    # Sync app resolutions
+jlpm build        # Verify the build succeeds
+```
+
+**Note**: Set the `GITHUB_TOKEN` environment variable to avoid GitHub API rate limiting
+(unauthenticated requests are limited to 60/hour, authenticated to 5,000/hour). For
+local development, create a [Personal Access Token](https://github.com/settings/tokens):
+
+- **Classic PAT**: No scopes required (public repo read access is implicit)
+- **Fine-grained PAT**: Select "Public Repositories (read-only)"
+
+In GitHub Actions, the CI workflow uses `PERSONAL_GITHUB_TOKEN` (a PAT stored as a
+repository secret) to create PRs. This is required because PRs created with the
+automatic `GITHUB_TOKEN` won't trigger CI checks on the PR itself.
+
 ### Demo Site Dependencies
 
 The demo site extensions are defined in the `demo` dependency group in `pyproject.toml`.
