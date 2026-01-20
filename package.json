@@ -54,7 +54,6 @@
     "prettier:fix": "prettier --list-different --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json,.md,.yml}\"",
     "test:py": "python -m pytest --pyargs jupyterlite_core -v",
     "test:py:cov": "python -m pytest --pyargs jupyterlite_core -v --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82",
-    "update:dependency": "node ./node_modules/@jupyterlab/buildutils/lib/update-dependency.js",
     "watch": "run-p watch:lib watch:app",
     "watch:app": "jlpm workspaces foreach -pvi --include @jupyterlite/app exec jlpm watch",
     "watch:lib": "jlpm workspaces foreach -vi --include @jupyterlite/metapackage exec jlpm watch"

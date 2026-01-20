@@ -143,13 +143,13 @@ jlpm deduplicate
 To update a dependency across the monorepo:
 
 ```bash
-jlpm update:dependency --regex <package-name-regex> <new-version>
+jlpm up "<package-pattern>"
 ```
 
 For example, to update all `@jupyterlab/*` packages to the latest version:
 
 ```bash
-jlpm update:dependency --regex @jupyterlab latest
+jlpm up "@jupyterlab/*"
 ```
 
 After updating dependencies, run `jlpm integrity` to sync app resolutions.
