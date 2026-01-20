@@ -31,7 +31,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.6.0-alpha.0",
+    "@jupyterlab/coreutils": "~6.6.0-alpha.1",
     "@lumino/coreutils": "^2.2.2",
     "localforage": "^1.9.0",
     "localforage-memoryStorageDriver": "^0.9.2"
