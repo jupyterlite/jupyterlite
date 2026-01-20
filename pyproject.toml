@@ -116,7 +116,7 @@ before-build-npm = ["jlpm build:prod", "jlpm pack:app"]
 after-check-npm = ["jlpm build:py"]
 
 [tool.jupyter-releaser.options]
-version-cmd = "python scripts/bump-version.py --force"
+version-cmd = "python scripts/bump-version.py"
 changelog-path = "docs/changelog.md"
 
 [tool.check-wheel-contents]
