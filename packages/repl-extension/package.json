@@ -43,7 +43,7 @@
     "@jupyterlab/console": "~4.6.0-alpha.1",
     "@jupyterlab/translation": "~4.6.0-alpha.1",
     "@jupyterlab/ui-components": "~4.6.0-alpha.1",
-    "@jupyterlite/application": "^0.8.0-alpha.0",
+    "@jupyterlite/application": "workspace:^",
     "@lumino/widgets": "^2.7.2"
   },
   "devDependencies": {

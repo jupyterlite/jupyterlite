@@ -38,7 +38,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/services": "^0.8.0-alpha.0"
+    "@jupyterlite/services": "workspace:^"
   },
   "devDependencies": {
     "@types/mime": "^2.0.3",

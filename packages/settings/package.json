@@ -38,7 +38,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/services": "^0.8.0-alpha.0"
+    "@jupyterlite/services": "workspace:^"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",

@@ -20,9 +20,8 @@ APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
 
 @click.command()
-@click.option("--force", default=False, is_flag=True)
 @click.argument("spec", nargs=1)
-def bump(force, spec):
+def bump(spec):
     status = run("git status --porcelain").strip()
     if len(status) > 0:
         raise Exception("Must be in a clean git state with no untracked files")
@@ -41,11 +40,8 @@ def bump(force, spec):
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
     run(f"jlpm prettier --write {APP_JUPYTERLITE_JSON}")
 
-    # bump the JS packages
-    cmd = f"jlpm run lerna version --force-publish --no-push --no-git-tag-version {js_version}"
-    if force:
-        cmd += " --yes"
-    run(cmd)
+    # bump the JS packages using npm workspaces
+    run(f"npm version {js_version} --workspaces --no-git-tag-version")
 
 
 if __name__ == "__main__":
