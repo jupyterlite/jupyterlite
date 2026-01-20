@@ -10,7 +10,7 @@ on:
         type: string
       notebook_version:
         description: 'Notebook version (or "latest")'
-        default: ''
+        default: latest
         required: false
         type: string
       branch:
@@ -23,6 +23,11 @@ on:
         required: false
         default: jupyterlite/jupyterlite
         type: string
+      draft:
+        description: 'Create PR as draft'
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   actions: write
@@ -72,15 +77,16 @@ jobs:
 
           # Run the upgrade script if we have any args
           if [[ -n "$UPGRADE_ARGS" ]]; then
-            python scripts/upgrade-dependencies.py $UPGRADE_ARGS 2>&1 | tee upgrade_output.txt
+            OUTPUT=$(python scripts/upgrade-dependencies.py $UPGRADE_ARGS 2>&1)
+            echo "$OUTPUT"
 
             # Extract versions from output
-            if grep -q "JupyterLab:" upgrade_output.txt; then
-              JUPYTERLAB_VERSION=$(grep "JupyterLab:" upgrade_output.txt | awk '{print $2}')
+            if echo "$OUTPUT" | grep -q "JupyterLab:"; then
+              JUPYTERLAB_VERSION=$(echo "$OUTPUT" | grep "JupyterLab:" | awk '{print $2}')
               echo "jupyterlab_version=${JUPYTERLAB_VERSION}" >> $GITHUB_OUTPUT
             fi
-            if grep -q "Notebook:" upgrade_output.txt; then
-              NOTEBOOK_VERSION=$(grep "Notebook:" upgrade_output.txt | awk '{print $2}')
+            if echo "$OUTPUT" | grep -q "Notebook:"; then
+              NOTEBOOK_VERSION=$(echo "$OUTPUT" | grep "Notebook:" | awk '{print $2}')
               echo "notebook_version=${NOTEBOOK_VERSION}" >> $GITHUB_OUTPUT
             fi
           fi
@@ -95,6 +101,11 @@ jobs:
             jlpm install
             jlpm deduplicate
             jlpm integrity
+
+            # Update ui-tests yarn.lock
+            pushd ui-tests
+            jlpm install
+            popd
           fi
 
       - name: Create a PR
@@ -157,18 +168,21 @@ jobs:
             --base "${{ inputs.branch || 'main' }}"
             --title "${PR_TITLE}"
             --body "$(cat <<EOF
-          ## Summary
+          ## References
 
-          New releases are available:
           ${PR_BODY_PARTS}
 
-          Please review the changes carefully, especially the lock file updates.
+          ## Code changes
 
-          ## Checklist
+          Dependency updates to match upstream releases.
 
-          - [ ] Verify the build succeeds
-          - [ ] Check that UI tests pass
-          - [ ] Review dependency changes in yarn.lock
+          ## User-facing changes
+
+          N/A
+
+          ## Backwards-incompatible changes
+
+          N/A
           EOF
           )"
           )
@@ -178,4 +192,13 @@ jobs:
             PR_ARGS+=(--repo "${{ inputs.target_repo }}")
           fi
 
-          gh pr create "${PR_ARGS[@]}"
+          if [[ "${{ inputs.draft }}" == "true" ]]; then
+            PR_ARGS+=(--draft)
+          fi
+
+          PR_URL=$(gh pr create "${PR_ARGS[@]}")
+
+          # Add PR link to GitHub Actions summary
+          echo "## Pull Request Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 ${PR_URL}" >> $GITHUB_STEP_SUMMARY
