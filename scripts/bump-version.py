@@ -1,5 +1,5 @@
 # Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.import click
+# Distributed under the terms of the Modified BSD License.
 
 # Heavily inspired by:
 # - https://github.com/jupyterlab/jupyterlab/blob/master/buildutils/src/bumpversion.ts
@@ -41,7 +41,10 @@ def bump(spec):
     run(f"jlpm prettier --write {APP_JUPYTERLITE_JSON}")
 
     # bump the JS packages using npm workspaces
-    run(f"npm version {js_version} --workspaces --no-git-tag-version")
+    # use `npm pkg set` instead of `npm version` to avoid parsing workspace:^ protocol
+    # see https://github.com/npm/rfcs/issues/765
+    run(f"npm pkg set version={js_version} --workspaces")
+    run("jlpm prettier --write '**/package.json'")
 
 
 if __name__ == "__main__":
