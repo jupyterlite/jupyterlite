@@ -20,22 +20,22 @@
     "watch": "tsc -b -w --preserveWatchOutput"
   },
   "dependencies": {
-    "@jupyterlite/application": "workspace:^",
-    "@jupyterlite/application-extension": "workspace:^",
-    "@jupyterlite/apputils": "workspace:^",
-    "@jupyterlite/apputils-extension": "workspace:^",
-    "@jupyterlite/contents": "workspace:^",
-    "@jupyterlite/iframe-extension": "workspace:^",
-    "@jupyterlite/kernel": "workspace:^",
-    "@jupyterlite/localforage": "workspace:^",
-    "@jupyterlite/notebook-application-extension": "workspace:^",
-    "@jupyterlite/repl-extension": "workspace:^",
-    "@jupyterlite/server": "workspace:^",
-    "@jupyterlite/services": "workspace:^",
-    "@jupyterlite/services-extension": "workspace:^",
-    "@jupyterlite/session": "workspace:^",
-    "@jupyterlite/settings": "workspace:^",
-    "@jupyterlite/ui-components": "workspace:^"
+    "@jupyterlite/application": "^0.8.0-alpha.0",
+    "@jupyterlite/application-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/apputils": "^0.8.0-alpha.0",
+    "@jupyterlite/apputils-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/contents": "^0.8.0-alpha.0",
+    "@jupyterlite/iframe-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/kernel": "^0.8.0-alpha.0",
+    "@jupyterlite/localforage": "^0.8.0-alpha.0",
+    "@jupyterlite/notebook-application-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/repl-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/server": "^0.8.0-alpha.0",
+    "@jupyterlite/services": "^0.8.0-alpha.0",
+    "@jupyterlite/services-extension": "^0.8.0-alpha.0",
+    "@jupyterlite/session": "^0.8.0-alpha.0",
+    "@jupyterlite/settings": "^0.8.0-alpha.0",
+    "@jupyterlite/ui-components": "^0.8.0-alpha.0"
   },
   "devDependencies": {
     "typescript": "~5.5.4"

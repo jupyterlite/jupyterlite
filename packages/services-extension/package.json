@@ -33,9 +33,9 @@
   "dependencies": {
     "@jupyterlab/coreutils": "~6.6.0-alpha.1",
     "@jupyterlab/services": "~7.6.0-alpha.1",
-    "@jupyterlite/apputils": "workspace:^",
-    "@jupyterlite/localforage": "workspace:^",
-    "@jupyterlite/services": "workspace:^",
+    "@jupyterlite/apputils": "^0.8.0-alpha.0",
+    "@jupyterlite/localforage": "^0.8.0-alpha.0",
+    "@jupyterlite/services": "^0.8.0-alpha.0",
     "@lumino/coreutils": "^2.2.2"
   },
   "devDependencies": {

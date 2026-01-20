@@ -15,7 +15,6 @@ from jupyter_releaser.util import run
 ENC = dict(encoding="utf-8")
 ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
-APP_PACKAGE_JSON = ROOT / "app" / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 
 
@@ -40,10 +39,10 @@ def bump(spec):
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
     run(f"jlpm prettier --write {APP_JUPYTERLITE_JSON}")
 
-    # bump the JS packages using npm workspaces
-    # use `npm pkg set` instead of `npm version` to avoid parsing workspace:^ protocol
-    # see https://github.com/npm/rfcs/issues/765
-    run(f"npm pkg set version={js_version} --workspaces")
+    # bump all JS packages using yarn version plugin
+    # this also auto-updates internal @jupyterlite/* dependencies
+    run(f"jlpm workspaces foreach --all --exclude @jupyterlite/root exec jlpm version {js_version}")
+
     run("jlpm prettier --write '**/package.json'")
 
 
