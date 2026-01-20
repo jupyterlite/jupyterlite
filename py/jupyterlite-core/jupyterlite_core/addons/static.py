@@ -143,7 +143,7 @@ class StaticAddon(BaseAddon):
             if not bundle.exists():  # pragma: no cover
                 continue
             bundle_txt = bundle.read_text(**UTF8)
-            chunks = dict(re.findall(chunk_pattern, bundle_txt, re.VERBOSE))
+            chunks = dict(re.findall(chunk_pattern, bundle_txt))
             if app in apps_to_remove:
                 removed_used_chunks.update(chunks)
             else:
