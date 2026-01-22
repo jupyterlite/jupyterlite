@@ -33,7 +33,7 @@
     "clean": "jlpm workspaces foreach -A run clean",
     "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
     "dev:build": "python scripts/dev-build.py",
-    "dev:serve": "python -m http.server -b 127.0.0.1 8000 -d _site",
+    "dev:serve": "python -m http.server -b 127.0.0.1 -d _site",
     "dev:watch": "run-p watch dev:watch:content",
     "dev:watch:content": "python scripts/dev-build.py --watch",
     "docs": "typedoc && python scripts/post-process-typedoc.py",
