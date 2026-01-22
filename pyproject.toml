@@ -70,7 +70,7 @@ lint = [
 release = [
     { include-group = "build" },
     { include-group = "lint" },
-    "jupyter-releaser",
+    "tbump",
 ]
 
 # Testing
@@ -160,6 +160,7 @@ ignore = [
 # S607 Starting a process with a partial executable path
 "docs/conf.py" = ["A001", "S603", "S607"]
 "scripts/dev-build.py" = ["S603"]
+"scripts/bump-version.py" = ["S603"]
 "scripts/compile-lock-files.py" = ["S310", "S603", "S607"]
 "scripts/upgrade-dependencies.py" = ["S310"]
 "**/conftest.py" = ["S603", "S607"]
