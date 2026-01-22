@@ -20,7 +20,10 @@ APP_DIR = ROOT / "app"
 
 def run(cmd: list[str]) -> str:
     """Run a command and return its stdout."""
-    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+    result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+    if result.returncode != 0:
+        error_msg = result.stderr.strip() or result.stdout.strip()
+        raise RuntimeError(f"Command {cmd} failed:\n{error_msg}")
     return result.stdout.strip()
 
 
