@@ -7,8 +7,10 @@
 
 import argparse
 import json
-import subprocess
 from pathlib import Path
+
+from jupyter_releaser.util import bump_version as bump_py
+from jupyter_releaser.util import run
 
 ENC = {"encoding": "utf-8"}
 ROOT = Path(__file__).parent.parent
@@ -16,15 +18,6 @@ ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
 PACKAGES_DIR = ROOT / "packages"
 APP_DIR = ROOT / "app"
-
-
-def run(cmd: list[str]) -> str:
-    """Run a command and return its stdout."""
-    result = subprocess.run(cmd, check=False, capture_output=True, text=True)
-    if result.returncode != 0:
-        error_msg = result.stderr.strip() or result.stdout.strip()
-        raise RuntimeError(f"Command {cmd} failed:\n{error_msg}")
-    return result.stdout.strip()
 
 
 def get_internal_package_names() -> set[str]:
@@ -63,14 +56,14 @@ def update_internal_dependencies(js_version: str) -> None:
             package_json_path.write_text(json.dumps(package_json, indent=2) + "\n", **ENC)
 
 
-def bump(version_spec: str) -> None:
+def bump(spec: str) -> None:
     """Bump version across Python and JavaScript packages."""
-    status = run(["git", "status", "--porcelain"])
+    status = run("git status --porcelain").strip()
     if len(status) > 0:
         raise Exception("Must be in a clean git state with no untracked files")
 
-    # bump Python version using tbump (only patch files, no git operations)
-    run(["tbump", "--non-interactive", "--only-patch", version_spec])
+    # bump Python version
+    bump_py(spec, changelog_path="CHANGELOG.md")
 
     # read the new app version
     app_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
@@ -81,23 +74,26 @@ def bump(version_spec: str) -> None:
     jupyterlite_json = json.loads(APP_JUPYTERLITE_JSON.read_text(**ENC))
     jupyterlite_json["jupyter-config-data"]["appVersion"] = js_version
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
-    run(["jlpm", "prettier", "--write", str(APP_JUPYTERLITE_JSON)])
+    run(f"jlpm prettier --write {APP_JUPYTERLITE_JSON}")
 
     # bump the JS package versions using npm workspaces
-    run(["npm", "version", js_version, "--workspaces", "--no-git-tag-version", "--no-package-lock"])
+    run(f"npm version {js_version} --workspaces --no-git-tag-version --no-package-lock")
 
     # update internal @jupyterlite/* dependencies to the new version
     update_internal_dependencies(js_version)
 
-    run(["jlpm", "prettier", "--write", "**/package.json"])
+    run("jlpm prettier --write '**/package.json'")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Bump JupyterLite version")
-    parser.add_argument("version_spec", help="Version to bump to (e.g., 0.8.0a1)")
+    parser.add_argument(
+        "spec",
+        help="Version spec: 'next', 'patch', 'minor', or explicit (e.g., 0.8.0a1)",
+    )
     args = parser.parse_args()
 
-    bump(args.version_spec)
+    bump(args.spec)
 
 
 if __name__ == "__main__":

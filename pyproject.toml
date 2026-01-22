@@ -70,7 +70,7 @@ lint = [
 release = [
     { include-group = "build" },
     { include-group = "lint" },
-    "tbump",
+    "jupyter-releaser",
 ]
 
 # Testing
