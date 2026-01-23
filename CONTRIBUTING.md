@@ -304,6 +304,9 @@ for end-to-end and visual regression testing.
 > `jupyterlite-core` to be installed.
 
 ```bash
+# Install the ui-tests dependencies
+pip install --group ui-tests
+
 cd ui-tests
 
 # Install dependencies
