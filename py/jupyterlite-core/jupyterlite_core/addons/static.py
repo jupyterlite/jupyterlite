@@ -133,7 +133,7 @@ class StaticAddon(BaseAddon):
 
     def prune_unused_shared_packages(self, all_apps, apps_to_remove):
         """manually remove unused webpack chunks from shared packages"""
-        chunk_pattern = r'"(\d+)":"([\da-f]+)"'
+        chunk_pattern = r'(\d+):"([0-9a-f]+)"'
         used_chunks = {}
         removed_used_chunks = {}
         build_dir = self.manager.output_dir / "build"
@@ -143,7 +143,7 @@ class StaticAddon(BaseAddon):
             if not bundle.exists():  # pragma: no cover
                 continue
             bundle_txt = bundle.read_text(**UTF8)
-            chunks = dict(re.findall(chunk_pattern, bundle_txt, re.VERBOSE))
+            chunks = dict(re.findall(chunk_pattern, bundle_txt))
             if app in apps_to_remove:
                 removed_used_chunks.update(chunks)
             else:
