@@ -1,6 +1,6 @@
 [project]
 name = "jupyterlite-root"
-version = "0.8.0a0"
+version = "0.8.0a1"
 
 # Dependency groups (PEP 735) for development dependencies
 # Install with: pip install --group dev
@@ -27,7 +27,7 @@ demo = [
     "jupyterlab-miami-nights~=0.4.2",
     "jupyterlab-tour~=4.0.1",
     "jupyterlite-p5-kernel~=0.2.0",
-    "jupyterlite-pyodide-kernel>=0.8.0a0",
+    "jupyterlite-pyodide-kernel>=0.8.0a1",
     "notebook>=7.6.0a0,<7.7",
     "plotly~=5.22.0",
 ]
@@ -35,7 +35,7 @@ demo = [
 # Core development
 dev = [
     { include-group = "build" },
-    "jupyterlite-pyodide-kernel>=0.8.0a0",
+    "jupyterlite-pyodide-kernel>=0.8.0a1",
     "notebook>=7.6.0a0,<7.7",
     "pkginfo",
     "ruff>=0.8.3",
@@ -93,7 +93,7 @@ ui-tests = [
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.2.0",
-    "jupyterlite-pyodide-kernel==0.8.0a0",
+    "jupyterlite-pyodide-kernel==0.8.0a1",
     "notebook==7.6.0a0",
     "theme-darcula==4.0.0",
 ]
@@ -178,7 +178,7 @@ ignore = [
 "ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
-current = "0.8.0a0"
+current = "0.8.0a1"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?

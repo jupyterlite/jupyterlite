@@ -1,3 +1,3 @@
 """JupyterLite metapackage"""
 
-__version__ = "0.8.0a0"
+__version__ = "0.8.0a1"

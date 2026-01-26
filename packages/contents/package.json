@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/contents",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0-alpha.1",
   "description": "JupyterLite - Contents (DEPRECATED: Use @jupyterlite/services instead)",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -38,7 +38,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/services": "^0.8.0-alpha.0"
+    "@jupyterlite/services": "^0.8.0-alpha.1"
   },
   "devDependencies": {
     "@types/mime": "^2.0.3",

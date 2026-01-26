@@ -71,6 +71,41 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.0a1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-alpha.0...53536b1d20a03723698778e17a12f8a73ad2231f))
+
+### Maintenance and upkeep improvements
+
+- Bump lodash from 4.17.21 to 4.17.23 [#1849](https://github.com/jupyterlite/jupyterlite/pull/1849) ([@jtpio](https://github.com/jtpio))
+- Bump tar from 6.1.11 to 6.2.1 [#1848](https://github.com/jupyterlite/jupyterlite/pull/1848) ([@jtpio](https://github.com/jtpio))
+- Expand UI tests contrib docs [#1847](https://github.com/jupyterlite/jupyterlite/pull/1847) ([@jtpio](https://github.com/jtpio))
+- Remove pin on `pytest-cov` [#1846](https://github.com/jupyterlite/jupyterlite/pull/1846) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl))
+- Update to JupyterLab v4.6.0a2 and Notebook v7.6.0a2 [#1845](https://github.com/jupyterlite/jupyterlite/pull/1845) ([@jtpio](https://github.com/jtpio))
+- Drop `lerna` [#1843](https://github.com/jupyterlite/jupyterlite/pull/1843) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl))
+- Remove Rspack `compress: false` [#1842](https://github.com/jupyterlite/jupyterlite/pull/1842) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab v4.6.0a1 and Notebook v7.6.0a1 [#1841](https://github.com/jupyterlite/jupyterlite/pull/1841) ([@jtpio](https://github.com/jtpio))
+- Fix update workflow [#1840](https://github.com/jupyterlite/jupyterlite/pull/1840) ([@jtpio](https://github.com/jtpio))
+- Add script and workflow to update JupyterLab and Notebook [#1839](https://github.com/jupyterlite/jupyterlite/pull/1839) ([@jtpio](https://github.com/jtpio))
+- Bump vega-selections from 5.6.0 to 5.6.3 in /ui-tests [#1838](https://github.com/jupyterlite/jupyterlite/pull/1838) ([@jtpio](https://github.com/jtpio))
+- Simplify the dev setup [#1835](https://github.com/jupyterlite/jupyterlite/pull/1835) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl), [@ianthomas23](https://github.com/ianthomas23), [@trungleduc](https://github.com/trungleduc))
+- Update conda dependencies [#1826](https://github.com/jupyterlite/jupyterlite/pull/1826) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix a broken link to Pyodide documentation [#1829](https://github.com/jupyterlite/jupyterlite/pull/1829) ([@wata727](https://github.com/wata727), [@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-12-19&to=2026-01-26&type=c))
+
+@bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-12-19..2026-01-26&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-12-19..2026-01-26&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-12-19..2026-01-26&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-12-19..2026-01-26&type=Issues)) | @wata727 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awata727+updated%3A2025-12-19..2026-01-26&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.0a0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.1...23d43e872530c1f5fbad7ea07a5065b549ae2745))
@@ -93,8 +128,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-12-16&to=2025-12-19&type=c))
 
 @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-12-16..2025-12-19&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-12-16..2025-12-19&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.1
 

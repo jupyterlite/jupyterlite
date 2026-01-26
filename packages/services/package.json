@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/services",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0-alpha.1",
   "description": "JupyterLite - Services",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -46,7 +46,7 @@
     "@jupyterlab/observables": "~5.6.0-alpha.2",
     "@jupyterlab/services": "~7.6.0-alpha.2",
     "@jupyterlab/settingregistry": "~4.6.0-alpha.2",
-    "@jupyterlite/localforage": "^0.8.0-alpha.0",
+    "@jupyterlite/localforage": "^0.8.0-alpha.1",
     "@lumino/algorithm": "^2.0.4",
     "@lumino/coreutils": "^2.2.2",
     "@lumino/disposable": "^2.1.5",

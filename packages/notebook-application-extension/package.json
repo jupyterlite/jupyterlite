@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/notebook-application-extension",
-  "version": "0.8.0-alpha.0",
+  "version": "0.8.0-alpha.1",
   "description": "JupyterLite - Notebook Application Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -42,7 +42,7 @@
     "@jupyterlab/application": "~4.6.0-alpha.2",
     "@jupyterlab/coreutils": "~6.6.0-alpha.2",
     "@jupyterlab/services": "~7.6.0-alpha.2",
-    "@jupyterlite/ui-components": "^0.8.0-alpha.0"
+    "@jupyterlite/ui-components": "^0.8.0-alpha.1"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
