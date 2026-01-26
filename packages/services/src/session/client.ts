@@ -157,6 +157,30 @@ export class LiteSessionClient implements ISessionAPIClient {
     if (running) {
       return running;
     }
+
+    // Check if we should reuse an existing kernel (kernel.id takes precedence over name).
+    // Note: The Session.ISessionOptions type doesn't include kernel.id, but at runtime
+    // it may be passed (e.g., from SessionContext._changeKernel when sharing a kernel).
+    const requestedKernelId = (options.kernel as { id?: string } | undefined)?.id;
+    if (requestedKernelId) {
+      const existingSession = this._sessions.find(
+        (session) => session.kernel?.id === requestedKernelId,
+      );
+      if (existingSession) {
+        // Create a new session that shares the existing kernel
+        const id = UUID.uuid4();
+        const session: Session.IModel = {
+          id,
+          path,
+          name: name ?? path,
+          type: 'notebook',
+          kernel: existingSession.kernel,
+        };
+        this._sessions.push(session);
+        return session;
+      }
+    }
+
     const kernelName = options.kernel?.name ?? '';
     const id = UUID.uuid4();
     const nameOrPath = options.name ?? options.path;
