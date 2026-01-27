@@ -194,6 +194,7 @@ search = "\"version\": \"{current_version}\""
 
 [[tool.tbump.file]]
 src = "pyproject.toml"
+search = 'version = "{current_version}"'
 
 [[tool.tbump.file]]
 src = "py/jupyterlite/jupyterlite/__init__.py"
