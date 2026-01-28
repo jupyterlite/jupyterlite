@@ -106,6 +106,9 @@ def bump(spec: str) -> None:
     print("\nFormatting package.json files...", file=sys.stderr, flush=True)
     run("jlpm prettier --write '**/package.json'")
 
+    print("\nRunning integrity check to sync app resolutions...", file=sys.stderr, flush=True)
+    run("jlpm integrity")
+
     print("\nVersion bump complete!", file=sys.stderr, flush=True)
     print("\nChanged files:", file=sys.stderr, flush=True)
     print(run("git diff --stat"), file=sys.stderr, flush=True)
