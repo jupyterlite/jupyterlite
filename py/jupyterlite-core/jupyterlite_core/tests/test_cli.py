@@ -220,7 +220,7 @@ def test_cli_raw_doit(an_empty_lite_dir, script_runner):
         ["jupyter", "lite", "doit", "--", "--help"], cwd=str(an_empty_lite_dir)
     )
     assert returned_status.success
-    assert "http://pydoit.org" in returned_status.stdout
+    assert "https://pydoit.org" in returned_status.stdout
 
 
 def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
