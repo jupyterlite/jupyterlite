@@ -205,17 +205,6 @@ jobs:
           "https://github.com/.*" --check-links-ignore "https://pypi.org/.*"
           --check-links-ignore "https://www.sphinx-doc.org/.*" --check-links-ignore
           "https://jupyterlite.readthedocs.io/.*" -q
-      - name: Test (py)
-        run: jlpm test:py:cov
-      - name: Upload (reports)
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: |
-            jupyterlite reports ${{ github.run_number }} docs
-          path: |
-            build/htmlcov
-            build/pytest
       - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v6
