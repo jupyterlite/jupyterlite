@@ -151,7 +151,7 @@ jobs:
           echo 'See https://github.com/jupyterlite/jupyterlite/issues/1308' >> $GITHUB_STEP_SUMMARY
       - name: Test (py)
         run: |
-          python -m pytest --pyargs jupyterlite_core -v --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82
+          python -m pytest --pyargs jupyterlite_core -v --script-launch-mode=subprocess --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82
       - name: Upload (reports)
         if: always()
         uses: actions/upload-artifact@v6
