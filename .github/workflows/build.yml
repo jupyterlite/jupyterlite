@@ -151,11 +151,7 @@ jobs:
           echo 'See https://github.com/jupyterlite/jupyterlite/issues/1308' >> $GITHUB_STEP_SUMMARY
       - name: Test (py)
         run: |
-          EXTRA_ARGS=""
-          if [[ "${{ matrix.os }}" == "windows" ]]; then
-            EXTRA_ARGS="--script-launch-mode=subprocess"
-          fi
-          python -m pytest --pyargs jupyterlite_core -v $EXTRA_ARGS --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82
+          python -m pytest --pyargs jupyterlite_core -v --script-launch-mode=subprocess --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82
       - name: Upload (reports)
         if: always()
         uses: actions/upload-artifact@v6
@@ -209,17 +205,6 @@ jobs:
           "https://github.com/.*" --check-links-ignore "https://pypi.org/.*"
           --check-links-ignore "https://www.sphinx-doc.org/.*" --check-links-ignore
           "https://jupyterlite.readthedocs.io/.*" -q
-      - name: Test (py)
-        run: jlpm test:py:cov
-      - name: Upload (reports)
-        if: always()
-        uses: actions/upload-artifact@v6
-        with:
-          name: |
-            jupyterlite reports ${{ github.run_number }} docs
-          path: |
-            build/htmlcov
-            build/pytest
       - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v6
