@@ -106,9 +106,6 @@ all-dev = [
     { include-group = "test" },
 ]
 
-[tool.pytest.ini_options]
-script_launch_mode = "subprocess"
-
 [tool.jupyter-releaser]
 skip = ["build-python", "check-links", "check-python"]
 
