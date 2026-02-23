@@ -25,6 +25,11 @@ LINUX = sys.platform.startswith("linux")
 PYPY = "__pypy__" in sys.builtin_module_names
 
 
+def pytest_load_initial_conftests(args: list[str]) -> None:
+    if not any(arg.startswith("--script-launch-mode=") for arg in args):
+        args.extend(["--script-launch-mode=subprocess"])
+
+
 @pytest.fixture
 def an_empty_lite_dir(tmp_path):
     lite_dir = tmp_path / "a_lite_dir"
