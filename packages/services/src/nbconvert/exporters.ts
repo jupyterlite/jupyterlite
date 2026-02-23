@@ -55,8 +55,31 @@ export class NotebookExporter extends BaseExporter {
    * @param path The path to the notebook
    */
   async export(model: Contents.IModel, path: string): Promise<void> {
+    let content = '';
+    switch (model.format) {
+      case 'base64': {
+        const decoded = atob(model.content);
+        try {
+          // If it contains JSON, format it nicely
+          const parsed = JSON.parse(decoded);
+          content = JSON.stringify(parsed, null, 2);
+        } catch {
+          // If it's not JSON, just use decoded text
+          content = decoded;
+        }
+        break;
+      }
+      case 'json': {
+        content = JSON.stringify(model.content, null, 2);
+        break;
+      }
+      case 'text': {
+        content = model.content;
+        break;
+      }
+    }
+
     const mime = model.mimetype ?? 'application/json';
-    const content = JSON.stringify(model.content, null, 2);
     this.triggerDownload(content, mime, path);
   }
 }
