@@ -38,9 +38,9 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/rendermime-interfaces": "~3.14.0-alpha.2",
+    "@jupyterlab/rendermime-interfaces": "~3.14.0-alpha.3",
     "@lumino/coreutils": "^2.2.2",
-    "@lumino/widgets": "^2.7.3"
+    "@lumino/widgets": "^2.7.5"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",

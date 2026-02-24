@@ -38,13 +38,13 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.6.0-alpha.2",
-    "@jupyterlab/coreutils": "~6.6.0-alpha.2",
-    "@jupyterlab/docregistry": "~4.6.0-alpha.2",
-    "@jupyterlab/rendermime-interfaces": "~3.14.0-alpha.2",
+    "@jupyterlab/application": "~4.6.0-alpha.3",
+    "@jupyterlab/coreutils": "~6.6.0-alpha.3",
+    "@jupyterlab/docregistry": "~4.6.0-alpha.3",
+    "@jupyterlab/rendermime-interfaces": "~3.14.0-alpha.3",
     "@lumino/coreutils": "^2.2.2",
     "@lumino/signaling": "^2.1.5",
-    "@lumino/widgets": "^2.7.3"
+    "@lumino/widgets": "^2.7.5"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",

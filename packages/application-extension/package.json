@@ -39,16 +39,16 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.6.0-alpha.2",
-    "@jupyterlab/apputils": "~4.7.0-alpha.2",
-    "@jupyterlab/docmanager": "~4.6.0-alpha.2",
-    "@jupyterlab/filebrowser": "~4.6.0-alpha.2",
-    "@jupyterlab/lsp": "~4.6.0-alpha.2",
-    "@jupyterlab/mainmenu": "~4.6.0-alpha.2",
-    "@jupyterlab/services": "~7.6.0-alpha.2",
-    "@jupyterlab/settingregistry": "~4.6.0-alpha.2",
-    "@jupyterlab/translation": "~4.6.0-alpha.2",
-    "@jupyterlab/ui-components": "~4.6.0-alpha.2",
+    "@jupyterlab/application": "~4.6.0-alpha.3",
+    "@jupyterlab/apputils": "~4.7.0-alpha.3",
+    "@jupyterlab/docmanager": "~4.6.0-alpha.3",
+    "@jupyterlab/filebrowser": "~4.6.0-alpha.3",
+    "@jupyterlab/lsp": "~4.6.0-alpha.3",
+    "@jupyterlab/mainmenu": "~4.6.0-alpha.3",
+    "@jupyterlab/services": "~7.6.0-alpha.3",
+    "@jupyterlab/settingregistry": "~4.6.0-alpha.3",
+    "@jupyterlab/translation": "~4.6.0-alpha.3",
+    "@jupyterlab/ui-components": "~4.6.0-alpha.3",
     "@jupyterlite/apputils": "^0.8.0-alpha.1",
     "@jupyterlite/contents": "^0.8.0-alpha.1",
     "@jupyterlite/kernel": "^0.8.0-alpha.1",
@@ -57,7 +57,7 @@
     "@jupyterlite/ui-components": "^0.8.0-alpha.1",
     "@lumino/algorithm": "^2.0.4",
     "@lumino/coreutils": "^2.2.2",
-    "@lumino/widgets": "^2.7.3"
+    "@lumino/widgets": "^2.7.5"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
