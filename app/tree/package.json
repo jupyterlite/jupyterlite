@@ -271,6 +271,7 @@
     ],
     "disabledExtensions": [
       "@jupyterlab/application-extension:dirty",
+      "@jupyterlab/application-extension:commands",
       "@jupyterlab/application-extension:info",
       "@jupyterlab/application-extension:layout",
       "@jupyterlab/application-extension:logo",
