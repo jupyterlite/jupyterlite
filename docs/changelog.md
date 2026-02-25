@@ -71,6 +71,25 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.2...3b79422401058db64d80f5fe97fb7be9ce8dd2b4))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.5.5 and Notebook 7.5.4 [#1871](https://github.com/jupyterlite/jupyterlite/pull/1871) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-02-23&to=2026-02-25&type=c))
+
+@jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-02-23..2026-02-25&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.1...a8af197ee1ba0ec995f93622567b403fedd81abb))
@@ -99,8 +118,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-12-16&to=2026-02-23&type=c))
 
 @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-12-16..2026-02-23&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-12-16..2026-02-23&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-12-16..2026-02-23&type=Issues)) | @wata727 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awata727+updated%3A2025-12-16..2026-02-23&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.1
 
