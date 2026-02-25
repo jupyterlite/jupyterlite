@@ -46,11 +46,11 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.5.1",
-    "@jupyterlab/nbformat": "~4.5.1",
-    "@jupyterlab/observables": "~5.5.1",
-    "@jupyterlab/services": "~7.5.1",
-    "@jupyterlab/settingregistry": "~4.5.1",
+    "@jupyterlab/coreutils": "~6.5.5",
+    "@jupyterlab/nbformat": "~4.5.5",
+    "@jupyterlab/observables": "~5.5.5",
+    "@jupyterlab/services": "~7.5.5",
+    "@jupyterlab/settingregistry": "~4.5.5",
     "@jupyterlite/localforage": "^0.7.2",
     "@lumino/algorithm": "^2.0.4",
     "@lumino/coreutils": "^2.2.2",
