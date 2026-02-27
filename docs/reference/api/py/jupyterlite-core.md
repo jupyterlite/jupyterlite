@@ -5,6 +5,7 @@
 ```{eval-rst}
 .. automodule:: jupyterlite_core.config
    :members:
+   :exclude-members: Dict
 ```
 
 ## Constants
@@ -26,6 +27,7 @@
 ```{eval-rst}
 .. automodule:: jupyterlite_core.manager
    :members:
+   :exclude-members: Dict
 ```
 
 ## Addons
