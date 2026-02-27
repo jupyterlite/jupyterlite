@@ -49,7 +49,7 @@ docs = [
     "myst-nb>=1",
     "pydata-sphinx-theme",
     "pytest-check-links",
-    "sphinx>=5.1,<8.2",
+    "sphinx>=8.2",
     "sphinx-autodoc-typehints",
     "sphinx-autobuild",
     "sphinx-jsonschema",
