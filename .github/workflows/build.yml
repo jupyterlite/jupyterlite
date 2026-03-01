@@ -34,7 +34,7 @@ jobs:
         run: jlpm build:py
 
       - name: Upload (dist)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -89,7 +89,7 @@ jobs:
       - name: Docs (typedoc)
         run: jlpm docs
       - name: Upload (typedoc)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
@@ -117,7 +117,7 @@ jobs:
         with:
           python_version: ${{ matrix.python-version }}
       - name: Download (dist)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
@@ -154,7 +154,7 @@ jobs:
           python -m pytest --pyargs jupyterlite_core -v --script-launch-mode=subprocess --cov=jupyterlite_core --cov-report=html:build/htmlcov --cov-report=term-missing --cov-fail-under=82
       - name: Upload (reports)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: |
             jupyterlite reports ${{ github.run_number }} ${{ matrix.os }} ${{ matrix.python-version }}
@@ -172,12 +172,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Download (dist)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: jupyterlite dist ${{ github.run_number }}
           path: ./dist
       - name: Download (typedoc)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: jupyterlite typedoc ${{ github.run_number }}
           path: ./docs/reference/api/ts
@@ -193,7 +193,7 @@ jobs:
       - name: Docs (app)
         run: jupyter lite build --contents examples --output-dir build/docs-app
       - name: Upload (docs app)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: jupyterlite docs app ${{ github.run_number }}
           path: build/docs-app
@@ -207,7 +207,7 @@ jobs:
           "https://jupyterlite.readthedocs.io/.*" -q
       - name: Upload (sphinx logs)
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: jupyterlite sphinx logs ${{ github.run_number }}
           if-no-files-found: ignore
