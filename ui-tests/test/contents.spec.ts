@@ -50,7 +50,9 @@ test.describe('Contents Tests', () => {
     expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
     // Check that the read-only indicator is visible in the toolbar
-    const readonlyIndicator = page.getByText('notebook is read-only');
+    const readonlyIndicator = page.getByText('notebook is read-only', {
+      exact: true,
+    });
     await expect(readonlyIndicator).toBeVisible();
   });
 
