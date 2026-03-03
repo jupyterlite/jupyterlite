@@ -176,12 +176,18 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   }
 
   async mknod(request: TDriveRequest<'mknod'>): Promise<TDriveResponse<'mknod'>> {
-    const model = await this.contentsManager.newUntitled({
-      path: PathExt.dirname(request.path),
-      type: request.data.mode === DIR_MODE ? 'directory' : 'file',
-      ext: PathExt.extname(request.path),
-    });
-    await this.contentsManager.rename(model.path, request.path);
+    // Contents API does not permit creating folders with given name. We can only create untitled folder then rename.
+    if (request.data.mode === DIR_MODE) {
+      const model = await this.contentsManager.newUntitled({
+        path: PathExt.dirname(request.path),
+        type: 'directory',
+        ext: PathExt.extname(request.path),
+      });
+      await this.contentsManager.rename(model.path, request.path);
+      return null;
+    }
+
+    await this.contentsManager.save(request.path, { type: 'file' });
     return null;
   }
 
