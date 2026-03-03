@@ -51,6 +51,7 @@ dependencies:
   # build
   - doit >=0.34,<1
   - hatch >=1.6.3,<2
+  - virtualenv <21
   - jsonschema >=3
   - jupyterlab >=4.5.5,<4.6
   - notebook >=7.5.4,<7.6
