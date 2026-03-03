@@ -124,3 +124,38 @@ def test_contents_missing_jupyter_server(
         "jupyter-server is not installed. You cannot add custom content to jupyterlite."
     )
     assert expected_error in result.stdout or expected_error in result.stderr
+
+
+def test_contents_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Contents paths from config should resolve relative to lite_dir, not CWD.
+
+    Regression test: when running ``jupyter lite build --lite-dir <dir>`` from
+    a different working directory, ``"contents": ["."]`` in the config file
+    should resolve to ``lite_dir``, not to CWD.
+    """
+    # Create a content file in the lite dir
+    (an_empty_lite_dir / "notebook.ipynb").write_text("{}")
+    config = {
+        "LiteBuildConfig": {
+            "ignore_sys_prefix": True,
+            "contents": ["."],
+        },
+    }
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
+
+    # Run from a *different* directory, pointing --lite-dir at an_empty_lite_dir
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    root_contents_json = out / "api/contents/all.json"
+    root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
+    assert len(root_contents["content"]) == 1, root_contents
+    assert root_contents["content"][0]["name"] == "notebook.ipynb"
