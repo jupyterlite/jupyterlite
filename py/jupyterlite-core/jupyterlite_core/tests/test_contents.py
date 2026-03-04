@@ -159,3 +159,35 @@ def test_contents_resolved_relative_to_lite_dir(
     root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
     assert len(root_contents["content"]) == 1, root_contents
     assert root_contents["content"][0]["name"] == "notebook.ipynb"
+
+
+def test_contents_path_in_py_config_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Path-based contents in py config should resolve relative to lite_dir."""
+    (an_empty_lite_dir / "notebook.ipynb").write_text("{}")
+    (an_empty_lite_dir / "jupyter_lite_config.py").write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "c = get_config()",
+                "c.LiteBuildConfig.ignore_sys_prefix = True",
+                "c.LiteBuildConfig.contents = [Path('.')]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    root_contents_json = out / "api/contents/all.json"
+    root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
+    assert len(root_contents["content"]) == 1, root_contents
+    assert root_contents["content"][0]["name"] == "notebook.ipynb"
