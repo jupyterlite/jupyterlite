@@ -16,6 +16,15 @@ This change should be transparent for most users. However, if you have custom bu
 configurations that extend or modify the JupyterLite webpack configuration, you may need
 to update your setup to use rspack instead.
 
+### Relative Path Resolution for `contents` and `workspaces`
+
+Relative paths specified in `contents` and `workspaces` configuration options (via
+`jupyter_lite_config.json`, `jupyter_lite_config.py`, or the CLI) are now resolved
+relative to `lite_dir` instead of the current working directory. This fix ensures
+consistent behavior when running `jupyter lite build --lite-dir <dir>` from a different
+directory. If your build relied on paths being resolved relative to the working
+directory, you may need to adjust your configuration.
+
 ### Build Optimization Settings
 
 The switch to rspack may affect some build optimization settings due to changes in the
