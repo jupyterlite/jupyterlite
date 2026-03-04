@@ -132,9 +132,8 @@ def test_contents_resolved_relative_to_lite_dir(
 ):
     """Contents paths from config should resolve relative to lite_dir, not CWD.
 
-    Regression test: when running ``jupyter lite build --lite-dir <dir>`` from
-    a different working directory, ``"contents": ["."]`` in the config file
-    should resolve to ``lite_dir``, not to CWD.
+    When running ``jupyter lite build --lite-dir <dir>`` from a different working directory,
+    ``"contents": ["."]`` in the config file should resolve to ``lite_dir``, not to CWD.
     """
     # Create a content file in the lite dir
     (an_empty_lite_dir / "notebook.ipynb").write_text("{}")
@@ -167,8 +166,8 @@ def test_workspaces_resolved_relative_to_lite_dir(
 ):
     """Workspace paths from config should resolve relative to lite_dir, not CWD.
 
-    Regression test: same relative-path resolution issue as contents, but for
-    the ``workspaces`` config option.
+    When running ``jupyter lite build --lite-dir <dir>`` from a different working directory,
+    the ``"workspaces"`` config option should resolve to ``lite_dir``, not to CWD.
     """
     workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
     workspace.write_text(
