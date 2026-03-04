@@ -166,14 +166,17 @@ def test_contents_path_in_py_config_resolved_relative_to_lite_dir(
     script_runner,
 ):
     """Path-based contents in py config should resolve relative to lite_dir."""
-    (an_empty_lite_dir / "notebook.ipynb").write_text("{}")
+    # Use a subdirectory so the .py config file itself is not picked up as content
+    content_dir = an_empty_lite_dir / "my_contents"
+    content_dir.mkdir()
+    (content_dir / "notebook.ipynb").write_text("{}")
     (an_empty_lite_dir / "jupyter_lite_config.py").write_text(
         "\n".join(
             [
                 "from pathlib import Path",
                 "c = get_config()",
                 "c.LiteBuildConfig.ignore_sys_prefix = True",
-                "c.LiteBuildConfig.contents = [Path('.')]",
+                "c.LiteBuildConfig.contents = [Path('my_contents')]",
             ]
         ),
         encoding="utf-8",
