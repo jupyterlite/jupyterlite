@@ -178,19 +178,18 @@ class ManagedApp(BaseLiteApp):
         if self.extra_file_types:
             kwargs["extra_file_types"] = self.extra_file_types
         if self.contents:
-            resolved = []
-            for p in self.contents:
-                if p.is_absolute():
-                    resolved.append(p)
-                else:
-                    resolved.append((self.lite_dir / p).resolve())
-            kwargs["contents"] = resolved
+            kwargs["contents"] = [
+                p if p.is_absolute() else (self.lite_dir / p).resolve() for p in self.contents
+            ]
         if self.ignore_contents:
             kwargs["ignore_contents"] = self.ignore_contents
         if self.extra_ignore_contents:
             kwargs["extra_ignore_contents"] = self.extra_ignore_contents
         if self.settings_overrides:
-            kwargs["settings_overrides"] = [Path(p) for p in self.settings_overrides]
+            kwargs["settings_overrides"] = [
+                p if p.is_absolute() else (self.lite_dir / p).resolve()
+                for p in self.settings_overrides
+            ]
         if self.apps:
             kwargs["apps"] = self.apps
         if self.no_sourcemaps is not None:
@@ -212,7 +211,9 @@ class ManagedApp(BaseLiteApp):
         if self.ignore_sys_prefix is not None:
             kwargs["ignore_sys_prefix"] = self.ignore_sys_prefix
         if self.workspaces is not None:
-            kwargs["workspaces"] = [Path(p) for p in self.workspaces]
+            kwargs["workspaces"] = [
+                p if p.is_absolute() else (self.lite_dir / p).resolve() for p in self.workspaces
+            ]
 
         return LiteManager(**kwargs)
 

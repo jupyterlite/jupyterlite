@@ -77,7 +77,10 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     settings_overrides: tuple[str] = TypedTuple(
-        CPath(), help=("Specific overrides.json to include")
+        CPath(resolve_relative=False),
+        help=(
+            "Specific overrides.json to include. Relative paths are resolved relative to lite_dir."
+        ),
     ).tag(config=True)
 
     no_sourcemaps: bool = Bool(
@@ -143,7 +146,11 @@ class LiteBuildConfig(LoggingConfigurable):
     ).tag(config=True)
 
     workspaces: tuple[Path] = TypedTuple(
-        CPath(), help=("Specific .jupyterlab-workspaces to include")
+        CPath(resolve_relative=False),
+        help=(
+            "Specific .jupyterlab-workspaces to include. "
+            "Relative paths are resolved relative to lite_dir."
+        ),
     ).tag(config=True)
 
     @default("apps")
