@@ -13,7 +13,7 @@
  * Ideally, much more of these would be taken from `@types/emscripten`.
  */
 
-type EmscriptenFS = typeof FS;
+type EmscriptenFS = typeof globalThis extends { FS: infer T } ? T : Record<string, any>;
 
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
