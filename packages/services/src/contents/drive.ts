@@ -29,6 +29,11 @@ const DEFAULT_STORAGE_NAME = 'JupyterLite Storage';
 export const DRIVE_NAME = 'BrowserStorage';
 
 /**
+ * The content layer key used to annotate models with their storage layer.
+ */
+export const CONTENT_LAYER = 'jupyterlite:content-layer' as const;
+
+/**
  * The number of checkpoints to save.
  */
 const N_CHECKPOINTS = 5;
@@ -437,58 +442,59 @@ export class BrowserStorageDrive implements Contents.IDrive {
     }
 
     const storage = await this.storage;
-    const item = await storage.getItem(path);
+    const localItem = (await storage.getItem(path)) as IModel | null;
     const serverItem = await this._getServerContents(path, options);
+    const layer = this._getContentLayer(localItem, serverItem);
 
-    const model = (item || serverItem) as IModel | null;
+    const model = (localItem || serverItem) as IModel | null;
 
     if (!model) {
       throw Error(`Could not find content with path ${path}`);
     }
 
     if (!options?.content) {
-      return {
-        size: 0,
-        ...model,
-        content: null,
-      };
+      return this._setContentLayer(
+        {
+          size: 0,
+          ...model,
+          content: null,
+        },
+        layer,
+      );
     }
 
     // for directories, find all files with the path as the prefix
     if (model.type === 'directory') {
-      const contentMap = new Map<string, IModel>();
+      const localContents: IModel[] = [];
       await storage.iterate<IModel, void>((file, key) => {
         // use an additional slash to not include the directory itself
         if (key === `${path}/${file.name}`) {
-          contentMap.set(file.name, file);
+          localContents.push(file);
         }
       });
 
       const serverContents: IModel[] = serverItem
         ? serverItem.content
         : Array.from((await this._getServerDirectory(path)).values());
-      for (const file of serverContents) {
-        if (!contentMap.has(file.name)) {
-          contentMap.set(file.name, file);
-        }
-      }
 
-      const content = [...contentMap.values()];
-
-      return {
-        name: PathExt.basename(path),
-        path,
-        last_modified: model.last_modified,
-        created: model.created,
-        format: 'json',
-        mimetype: MIME.JSON,
-        content,
-        size: 0,
-        writable: true,
-        type: 'directory',
-      };
+      return this._setContentLayer(
+        {
+          name: PathExt.basename(path),
+          path,
+          last_modified: model.last_modified,
+          created: model.created,
+          format: 'json',
+          mimetype: MIME.JSON,
+          content: this._mergeDirectoryContent(localContents, serverContents),
+          size: 0,
+          writable: true,
+          type: 'directory',
+        },
+        layer,
+      );
     }
-    return model;
+
+    return this._setContentLayer(model, layer);
   }
 
   /**
@@ -847,23 +853,19 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @returns A promise which resolves with a Map of contents, keyed by local file name
    */
   private async _getFolder(path: string): Promise<IModel | null> {
-    const content = new Map<string, IModel>();
+    const localContents: IModel[] = [];
     const storage = await this.storage;
     await storage.iterate<IModel, void>((file, key) => {
       if (key.includes('/')) {
         return;
       }
-      content.set(file.path, file);
+      localContents.push(file);
     });
 
-    // layer in contents that don't have local overwrites
-    for (const file of (await this._getServerDirectory(path)).values()) {
-      if (!content.has(file.path)) {
-        content.set(file.path, file);
-      }
-    }
+    const serverContents = Array.from((await this._getServerDirectory(path)).values());
+    const content = this._mergeDirectoryContent(localContents, serverContents);
 
-    if (path && content.size === 0) {
+    if (path && content.length === 0) {
       return null;
     }
 
@@ -874,7 +876,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
       created: new Date(0).toISOString(),
       format: 'json',
       mimetype: MIME.JSON,
-      content: Array.from(content.values()),
+      content,
       size: 0,
       writable: true,
       type: 'directory',
@@ -1027,6 +1029,61 @@ export class BrowserStorageDrive implements Contents.IDrive {
     return counter;
   }
 
+  /**
+   * Determine the content layer for a given item based on whether it exists
+   * in local storage, on the server, or both.
+   */
+  private _getContentLayer(
+    localModel: IModel | null,
+    serverModel: IModel | null,
+  ): BrowserStorageDrive.TContentLayer {
+    if (localModel && serverModel) {
+      return 'writable-override';
+    }
+
+    if (localModel) {
+      return 'writable';
+    }
+
+    return 'server';
+  }
+
+  /**
+   * Annotate a model with a content layer.
+   */
+  private _setContentLayer(
+    model: IModel,
+    layer: BrowserStorageDrive.TContentLayer,
+  ): BrowserStorageDrive.ILayeredModel {
+    return {
+      ...model,
+      [CONTENT_LAYER]: layer,
+    } as BrowserStorageDrive.ILayeredModel;
+  }
+
+  /**
+   * Merge local and server directory contents, annotating each item with its
+   * content layer.
+   */
+  private _mergeDirectoryContent(local: IModel[], server: IModel[]): IModel[] {
+    const merged = new Map<string, IModel>();
+    const localByName = new Map(local.map((model) => [model.name, model]));
+    const serverByName = new Map(server.map((model) => [model.name, model]));
+
+    for (const [name, localModel] of localByName) {
+      const layer = serverByName.has(name) ? 'writable-override' : 'writable';
+      merged.set(name, this._setContentLayer(localModel, layer));
+    }
+
+    for (const [name, serverModel] of serverByName) {
+      if (!merged.has(name)) {
+        merged.set(name, this._setContentLayer(serverModel, 'server'));
+      }
+    }
+
+    return Array.from(merged.values());
+  }
+
   private _serverContents = new Map<string, Map<string, IModel>>();
   private _isDisposed = false;
   private _fileChanged = new Signal<Contents.IDrive, Contents.IChangedArgs>(this);
@@ -1044,6 +1101,18 @@ export class BrowserStorageDrive implements Contents.IDrive {
  * A namespace for contents information.
  */
 export namespace BrowserStorageDrive {
+  /**
+   * The content layer type for annotating models.
+   */
+  export type TContentLayer = 'server' | 'writable' | 'writable-override';
+
+  /**
+   * A contents model annotated with its content layer.
+   */
+  export interface ILayeredModel extends Contents.IModel {
+    'jupyterlite:content-layer': TContentLayer;
+  }
+
   /**
    * The options used to create a BrowserStorageDrive.
    */

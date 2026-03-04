@@ -70,3 +70,76 @@
   color: var(--jp-ui-font-color2);
   font-style: italic;
 }
+
+.jp-DriveLayerBadges {
+  --jp-DriveLayerBadge-hover-inner-color: var(--jp-layout-color0);
+  --jp-DriveLayerBadge-hover-outer-color: var(--jp-border-color2);
+  --jp-DriveLayerBadge-server-fill-color: var(--jp-layout-color0);
+  --jp-DriveLayerBadge-server-border-color: var(--jp-border-color2);
+  --jp-DriveLayerBadge-writable-fill-color: var(--jp-success-color1);
+  --jp-DriveLayerBadge-writable-border-color: var(--jp-success-color1);
+  --jp-DriveLayerBadge-override-fill-color: var(--jp-warn-color0);
+  --jp-DriveLayerBadge-override-border-color: var(--jp-warn-color1);
+}
+
+.jp-DriveLayerBadge {
+  display: none;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  width: 11px;
+  height: 11px;
+  margin-left: 4px;
+  margin-right: 6px;
+  vertical-align: middle;
+  flex: 0 0 auto;
+}
+
+.jp-DriveLayerBadges .jp-DriveLayerBadge {
+  display: inline-flex;
+}
+
+.jp-DriveLayerBadge::before {
+  content: '';
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  transition:
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+.jp-DriveLayerBadge:hover::before {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 0 1px var(--jp-DriveLayerBadge-hover-inner-color),
+    0 0 0 2px var(--jp-DriveLayerBadge-hover-outer-color);
+}
+
+.jp-DriveLayerBadge.jp-mod-server::before {
+  border-radius: 999px;
+  border-color: var(--jp-DriveLayerBadge-server-border-color);
+  background: var(--jp-DriveLayerBadge-server-fill-color);
+}
+
+.jp-DriveLayerBadge.jp-mod-writable::before {
+  border-radius: 999px;
+  background: var(--jp-DriveLayerBadge-writable-fill-color);
+  border-color: var(--jp-DriveLayerBadge-writable-border-color);
+}
+
+.jp-DriveLayerBadge.jp-mod-override::before {
+  width: 78%;
+  height: 78%;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: var(--jp-DriveLayerBadge-override-fill-color);
+  border-color: var(--jp-DriveLayerBadge-override-border-color);
+  transform: rotate(45deg);
+}
+
+.jp-DriveLayerBadge.jp-mod-override:hover::before {
+  transform: rotate(45deg) scale(1.1);
+}
