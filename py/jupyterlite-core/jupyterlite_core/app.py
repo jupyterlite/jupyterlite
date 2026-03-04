@@ -98,7 +98,13 @@ class BaseLiteApp(JupyterApp, LiteBuildConfig, DescribedMixin):
 
     @default("config_file_paths")
     def _config_file_paths_default(self):
-        return [str(Path.cwd()), *jupyter_config_path()]
+        paths = [str(Path.cwd()), *jupyter_config_path()]
+        # Include lite_dir in config search paths so that
+        # jupyter_lite_config.json is found when --lite-dir is specified
+        lite_dir = str(self.lite_dir)
+        if lite_dir not in paths:
+            paths.insert(0, lite_dir)
+        return paths
 
     def emit_alias_help(self):  # pragma: no cover
         """Yield the lines for alias part of the help.
@@ -172,7 +178,13 @@ class ManagedApp(BaseLiteApp):
         if self.extra_file_types:
             kwargs["extra_file_types"] = self.extra_file_types
         if self.contents:
-            kwargs["contents"] = [Path(p) for p in self.contents]
+            resolved = []
+            for p in self.contents:
+                if p.is_absolute():
+                    resolved.append(p)
+                else:
+                    resolved.append((self.lite_dir / p).resolve())
+            kwargs["contents"] = resolved
         if self.ignore_contents:
             kwargs["ignore_contents"] = self.ignore_contents
         if self.extra_ignore_contents:

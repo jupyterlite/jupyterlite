@@ -63,7 +63,10 @@ class LiteBuildConfig(LoggingConfigurable):
         config=True
     )
 
-    contents: tuple[Path] = TypedTuple(CPath(), help="Contents to add and index").tag(config=True)
+    contents: tuple[Path] = TypedTuple(
+        CPath(resolve_relative=False),
+        help=("Contents to add and index. Relative paths are resolved relative to lite_dir."),
+    ).tag(config=True)
 
     ignore_sys_prefix: bool | tuple[str] = Union(
         [Bool(), TypedTuple(Unicode())], help="ignore components from sys.prefix"
