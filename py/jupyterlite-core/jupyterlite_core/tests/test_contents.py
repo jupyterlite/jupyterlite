@@ -161,6 +161,76 @@ def test_contents_resolved_relative_to_lite_dir(
     assert root_contents["content"][0]["name"] == "notebook.ipynb"
 
 
+def test_workspaces_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Workspace paths from config should resolve relative to lite_dir, not CWD.
+
+    Regression test: same relative-path resolution issue as contents, but for
+    the ``workspaces`` config option.
+    """
+    workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
+    workspace.write_text(
+        json.dumps({"data": {}, "metadata": {"id": "default"}}),
+        encoding="utf-8",
+    )
+    config = {
+        "LiteBuildConfig": {
+            "ignore_sys_prefix": True,
+            "workspaces": ["default.jupyterlab-workspace"],
+        },
+    }
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    workspaces_json = out / "api/workspaces/all.json"
+    workspaces = json.loads(workspaces_json.read_text(encoding="utf-8"))
+    assert "default" in workspaces, workspaces
+
+
+def test_workspaces_path_in_py_config_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Path-based workspaces in py config should resolve relative to lite_dir."""
+    workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
+    workspace.write_text(
+        json.dumps({"data": {}, "metadata": {"id": "default"}}),
+        encoding="utf-8",
+    )
+    (an_empty_lite_dir / "jupyter_lite_config.py").write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "c = get_config()",
+                "c.LiteBuildConfig.ignore_sys_prefix = True",
+                "c.LiteBuildConfig.workspaces = [Path('default.jupyterlab-workspace')]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    workspaces_json = out / "api/workspaces/all.json"
+    workspaces = json.loads(workspaces_json.read_text(encoding="utf-8"))
+    assert "default" in workspaces, workspaces
+
+
 def test_contents_path_in_py_config_resolved_relative_to_lite_dir(
     an_empty_lite_dir,
     script_runner,
