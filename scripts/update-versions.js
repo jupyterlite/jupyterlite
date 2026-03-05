@@ -1,7 +1,7 @@
 /**
  * Script to resolve upstream package versions in app/jupyter-lite.json.
  *
- * Reads the `aboutVersions` map from jupyter-config-data, resolves each
+ * Reads the `versionInfo` map from jupyter-config-data, resolves each
  * npm package's installed version, and writes it back so the About dialog
  * can display accurate version information at runtime.
  *
@@ -21,10 +21,10 @@ if (!configData) {
   process.exit(1);
 }
 
-const upstreams = configData.aboutVersions;
+const upstreams = configData.versionInfo;
 
 if (!upstreams || typeof upstreams !== 'object') {
-  console.log('No aboutVersions found, nothing to update.');
+  console.log('No versionInfo found, nothing to update.');
   process.exit(0);
 }
 
@@ -35,4 +35,4 @@ for (const [pkg, entry] of Object.entries(upstreams)) {
 }
 
 fs.writeFileSync(JUPYTER_LITE_JSON, JSON.stringify(config, null, 2) + '\n');
-console.log(`Updated aboutVersions in ${JUPYTER_LITE_JSON}`);
+console.log(`Updated versionInfo in ${JUPYTER_LITE_JSON}`);

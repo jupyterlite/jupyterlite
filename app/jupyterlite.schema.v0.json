@@ -193,7 +193,7 @@
           "type": "boolean",
           "default": false
         },
-        "aboutVersions": {
+        "versionInfo": {
           "description": "A map of npm package names to display labels (and optionally versions) shown in the About dialog. Versions are resolved automatically at build time from installed packages.",
           "type": "object",
           "additionalProperties": {

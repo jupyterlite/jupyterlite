@@ -11,7 +11,7 @@
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
     "licensesUrl": "./lab/api/licenses",
-    "aboutVersions": {
+    "versionInfo": {
       "@jupyterlab/application": {
         "label": "JupyterLab",
         "version": "4.6.0-alpha.3"
