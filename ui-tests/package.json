@@ -7,11 +7,12 @@
   "description": "JupyterLite UI Tests",
   "scripts": {
     "build": "python build.py",
-    "clean": "rimraf .jupyterlite.doit.db ui-tests-app",
+    "clean": "rimraf .jupyterlite.doit.db ui-tests-app ui-tests-app-no-content",
     "clean:snapshots": "rimraf -g \"test/**/*-snapshots/*.png\"",
     "deduplicate": "jlpm dlx yarn-berry-deduplicate -s fewerHighest && jlpm install",
     "start": "cd ui-tests-app && python -m http.server -b 127.0.0.1 8000",
     "start:embed": "python -m http.server -b 127.0.0.1 8001",
+    "start:no-content": "cd ui-tests-app-no-content && python -m http.server -b 127.0.0.1 8002",
     "start:detached": "jlpm run start&",
     "test": "playwright test",
     "test:debug": "PWDEBUG=1 playwright test",

@@ -16,6 +16,29 @@ This change should be transparent for most users. However, if you have custom bu
 configurations that extend or modify the JupyterLite webpack configuration, you may need
 to update your setup to use rspack instead.
 
+### Contents and Workspaces Indexing
+
+The `all.json` files used for indexing contents and workspaces are no longer hardcoded
+in the frontend. Instead, the build addons now populate `contentsAllJsonFile` and
+`workspacesAllJsonFile` as `PageConfig` options in `jupyter-lite.json` at build time.
+
+The frontend checks for these options before attempting to fetch the index files. If the
+options are not present (e.g. when no contents or workspaces were provided during the
+build), the fetch is skipped entirely. This avoids unnecessary requests to the server
+and eliminates spurious 404 errors that previously appeared in the browser's developer
+console.
+
+This change should be transparent for most users. However, if you have custom code that
+relies on fetching `all.json` directly from `api/contents/` or `api/workspaces/`, you
+should update it to read the filename from `PageConfig` instead:
+
+```typescript
+import { PageConfig } from '@jupyterlab/coreutils';
+
+const contentsAllJsonFile = PageConfig.getOption('contentsAllJsonFile');
+const workspacesAllJsonFile = PageConfig.getOption('workspacesAllJsonFile');
+```
+
 ### Build Optimization Settings
 
 The switch to rspack may affect some build optimization settings due to changes in the

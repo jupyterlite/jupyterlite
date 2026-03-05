@@ -43,6 +43,12 @@ jobs:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
 
+      - name: Upload the JupyterLite website (no content)
+        uses: actions/upload-artifact@v6
+        with:
+          name: jupyterlite-ui-tests-app-no-content-${{ github.run_number }}
+          path: ./ui-tests/ui-tests-app-no-content
+
   ui-tests:
     needs: [build]
     name: Visual Regression
@@ -59,6 +65,11 @@ jobs:
         with:
           name: jupyterlite-ui-tests-app-${{ github.run_number }}
           path: ./ui-tests/ui-tests-app
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: jupyterlite-ui-tests-app-no-content-${{ github.run_number }}
+          path: ./ui-tests/ui-tests-app-no-content
 
       - name: Install dependencies and browser
         run: |
