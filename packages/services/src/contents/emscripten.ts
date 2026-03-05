@@ -15,10 +15,24 @@
 
 type EmscriptenFS = typeof globalThis extends { FS: infer T } ? T : Record<string, any>;
 
+// Those constants are standard that is very unlikely to change
+// https://github.com/bminor/glibc/blob/04e750e75b73957cf1c791535a3f4319534a52fc/bits/stat.h#L66
+const S_IFMT = 0o170000;
+const S_IFDIR = 0o040000;
+const S_IFREG = 0o100000;
+
 export const DIR_MODE = 16895; // 040777
 export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
 export const SEEK_END = 2;
+
+export function isDirMode(mode: number): boolean {
+  return (mode & S_IFMT) === S_IFDIR;
+}
+
+export function isFileMode(mode: number): boolean {
+  return (mode & S_IFMT) === S_IFREG;
+}
 
 export interface IStats {
   dev: number;
