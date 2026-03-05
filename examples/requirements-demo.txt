@@ -185,7 +185,7 @@ jupyterlab-widgets==3.0.16
     # via ipywidgets
 jupyterlite-core==0.8.0a0
     # via jupyterlite-pyodide-kernel
-jupyterlite-p5-kernel==0.2.0
+jupyterlite-p5-kernel==0.4.0a0
     # via jupyterlite-root (pyproject.toml:demo)
 jupyterlite-pyodide-kernel==0.8.0a0
     # via jupyterlite-root (pyproject.toml:demo)
