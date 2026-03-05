@@ -11,7 +11,7 @@
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
     "licensesUrl": "./lab/api/licenses",
-    "jupyterlabVersion": "4.5.0",
-    "notebookVersion": "7.5.0"
+    "jupyterlabVersion": "4.6.0-alpha.3",
+    "notebookVersion": "7.6.0-alpha.3"
   }
 }
