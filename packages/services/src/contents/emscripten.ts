@@ -26,7 +26,6 @@ export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
 export const SEEK_END = 2;
 
-
 export function isDirMode(mode: number): boolean {
   return (mode & S_IFMT) === S_IFDIR;
 }
