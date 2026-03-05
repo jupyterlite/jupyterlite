@@ -20,6 +20,18 @@ export const FILE_MODE = 33206; // 100666
 export const SEEK_CUR = 1;
 export const SEEK_END = 2;
 
+const S_IFMT = 0o170000;
+const S_IFDIR = 0o040000;
+const S_IFREG = 0o100000;
+
+export function isDirMode(mode: number): boolean {
+  return (mode & S_IFMT) === S_IFDIR;
+}
+
+export function isFileMode(mode: number): boolean {
+  return (mode & S_IFMT) === S_IFREG;
+}
+
 export interface IStats {
   dev: number;
   ino?: number;

@@ -2,7 +2,7 @@ import { PathExt } from '@jupyterlab/coreutils';
 import type { Contents } from '@jupyterlab/services';
 import type { TDriveMethod, TDriveRequest, TDriveResponse } from './drivefs';
 import { BLOCK_SIZE } from './drivefs';
-import { DIR_MODE, FILE_MODE } from './emscripten';
+import { isDirMode, DIR_MODE, FILE_MODE } from './emscripten';
 
 export interface IDriveContentsProcessor {
   /**
@@ -177,7 +177,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
 
   async mknod(request: TDriveRequest<'mknod'>): Promise<TDriveResponse<'mknod'>> {
     // Contents API does not permit creating folders with given name. We can only create untitled folder then rename.
-    if (request.data.mode === DIR_MODE) {
+    if (isDirMode(request.data.mode)) {
       const model = await this.contentsManager.newUntitled({
         path: PathExt.dirname(request.path),
         type: 'directory',
