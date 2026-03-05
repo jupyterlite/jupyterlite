@@ -154,7 +154,7 @@ const about: JupyterFrontEndPlugin<void> = {
     // Parse upstream project versions from PageConfig
     let upstreams: { label: string; version: string }[] = [];
     try {
-      const raw = PageConfig.getOption('aboutUpstreams');
+      const raw = PageConfig.getOption('aboutVersions');
       if (raw) {
         const parsed = JSON.parse(raw) as Record<
           string,
