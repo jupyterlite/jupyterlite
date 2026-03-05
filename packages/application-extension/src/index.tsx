@@ -151,9 +151,22 @@ const about: JupyterFrontEndPlugin<void> = {
     const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Help');
 
-    // Get the JupyterLab and Notebook versions from PageConfig
-    const jupyterlabVersion = PageConfig.getOption('jupyterlabVersion');
-    const notebookVersion = PageConfig.getOption('notebookVersion');
+    // Parse upstream project versions from PageConfig
+    let upstreams: { label: string; version: string }[] = [];
+    try {
+      const raw = PageConfig.getOption('aboutUpstreams');
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<
+          string,
+          { label: string; version?: string }
+        >;
+        upstreams = Object.values(parsed).filter(
+          (e): e is { label: string; version: string } => !!e.version,
+        );
+      }
+    } catch {
+      // ignore malformed config
+    }
 
     commands.addCommand(CommandIDs.about, {
       label: trans.__('About %1', app.name),
@@ -163,15 +176,15 @@ const about: JupyterFrontEndPlugin<void> = {
         const versionInfo = (
           <span className="jp-About-version-info">
             <span className="jp-About-version">{versionNumber}</span>
-            <span className="jp-About-dependencies">
-              {jupyterlabVersion && (
-                <span>{trans.__('JupyterLab %1', jupyterlabVersion)}</span>
-              )}
-              {jupyterlabVersion && notebookVersion && <span>{' · '}</span>}
-              {notebookVersion && (
-                <span>{trans.__('Jupyter Notebook %1', notebookVersion)}</span>
-              )}
-            </span>
+            {upstreams.length > 0 && (
+              <ul className="jp-About-upstreams">
+                {upstreams.map((entry) => (
+                  <li key={entry.label}>
+                    {trans.__('%1 %2', entry.label, entry.version)}
+                  </li>
+                ))}
+              </ul>
+            )}
           </span>
         );
         const title = (

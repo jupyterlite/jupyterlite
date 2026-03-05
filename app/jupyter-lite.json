@@ -11,7 +11,15 @@
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
     "licensesUrl": "./lab/api/licenses",
-    "jupyterlabVersion": "4.6.0-alpha.3",
-    "notebookVersion": "7.6.0-alpha.3"
+    "aboutUpstreams": {
+      "@jupyterlab/application": {
+        "label": "JupyterLab",
+        "version": "4.6.0-alpha.3"
+      },
+      "@jupyter-notebook/application": {
+        "label": "Jupyter Notebook",
+        "version": "7.6.0-alpha.3"
+      }
+    }
   }
 }
