@@ -70,3 +70,12 @@
   color: var(--jp-ui-font-color2);
   font-style: italic;
 }
+
+/* About dialog upstream versions */
+.jp-About-upstreams {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  font-size: 0.85em;
+  color: var(--jp-ui-font-color2);
+}
