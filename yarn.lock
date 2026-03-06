@@ -2833,7 +2833,6 @@ __metadata:
     "@jupyterlab/vega5-extension": ~4.6.0-alpha.3
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
     "@jupyterlite/services-extension": ^0.8.0-alpha.1
@@ -2902,7 +2901,6 @@ __metadata:
     "@jupyterlab/vega5-extension": ~4.6.0-alpha.3
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
     "@jupyterlite/services-extension": ^0.8.0-alpha.1
@@ -2970,7 +2968,6 @@ __metadata:
     "@jupyterlab/workspaces-extension": ~4.6.0-alpha.3
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/notebook-application-extension": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
@@ -3042,7 +3039,6 @@ __metadata:
     "@jupyterlab/vega5-extension": ~4.6.0-alpha.3
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/notebook-application-extension": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
@@ -3090,7 +3086,6 @@ __metadata:
     "@jupyterlite/application": ^0.8.0-alpha.1
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/repl-extension": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
     "@jupyterlite/services-extension": ^0.8.0-alpha.1
@@ -3146,7 +3141,6 @@ __metadata:
     "@jupyterlab/ui-components-extension": ~4.6.0-alpha.3
     "@jupyterlite/application-extension": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/notebook-application-extension": ^0.8.0-alpha.1
     "@jupyterlite/server": ^0.8.0-alpha.1
@@ -3274,18 +3268,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jupyterlite/iframe-extension@^0.8.0-alpha.1, @jupyterlite/iframe-extension@workspace:packages/iframe-extension":
-  version: 0.0.0-use.local
-  resolution: "@jupyterlite/iframe-extension@workspace:packages/iframe-extension"
-  dependencies:
-    "@jupyterlab/rendermime-interfaces": ~3.14.0-alpha.3
-    "@lumino/coreutils": ^2.2.2
-    "@lumino/widgets": ^2.7.5
-    rimraf: ~5.0.1
-    typescript: ~5.5.4
-  languageName: unknown
-  linkType: soft
-
 "@jupyterlite/kernel@^0.8.0-alpha.1, @jupyterlite/kernel@workspace:packages/kernel":
   version: 0.0.0-use.local
   resolution: "@jupyterlite/kernel@workspace:packages/kernel"
@@ -3318,7 +3300,6 @@ __metadata:
     "@jupyterlite/apputils": ^0.8.0-alpha.1
     "@jupyterlite/apputils-extension": ^0.8.0-alpha.1
     "@jupyterlite/contents": ^0.8.0-alpha.1
-    "@jupyterlite/iframe-extension": ^0.8.0-alpha.1
     "@jupyterlite/kernel": ^0.8.0-alpha.1
     "@jupyterlite/localforage": ^0.8.0-alpha.1
     "@jupyterlite/notebook-application-extension": ^0.8.0-alpha.1
