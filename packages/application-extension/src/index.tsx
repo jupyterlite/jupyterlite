@@ -60,6 +60,8 @@ import React from 'react';
 
 import { ClearDataDialog } from './clear-data-dialog';
 
+type TVersionInfo = { label: string; version: string };
+
 /**
  * A regular expression to match path to notebooks, documents and consoles
  */
@@ -152,17 +154,12 @@ const about: JupyterFrontEndPlugin<void> = {
     const category = trans.__('Help');
 
     // Parse upstream project versions from PageConfig
-    let upstreams: { label: string; version: string }[] = [];
+    let upstreams: TVersionInfo[] = [];
     try {
       const raw = PageConfig.getOption('versionInfo');
       if (raw) {
-        const parsed = JSON.parse(raw) as Record<
-          string,
-          { label: string; version?: string }
-        >;
-        upstreams = Object.values(parsed).filter(
-          (e): e is { label: string; version: string } => !!e.version,
-        );
+        const parsed = JSON.parse(raw) as Record<string, Partial<TVersionInfo>>;
+        upstreams = Object.values(parsed).filter((e): e is TVersionInfo => !!e.version);
       }
     } catch {
       // ignore malformed config
