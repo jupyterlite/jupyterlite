@@ -43,6 +43,19 @@ test.describe('Contents Tests', () => {
   //   expect(await page.contents.fileExists(`${tmpPath}/${renamed}`)).toEqual(true);
   // });
 
+  test('A read-only notebook should show a read-only indicator', async ({ page }) => {
+    const notebook = 'readonly.ipynb';
+    await refreshFilebrowser({ page });
+    await page.notebook.open(notebook);
+    expect(await page.notebook.isOpen(notebook)).toBeTruthy();
+
+    // Check that the read-only indicator is visible in the toolbar
+    const readonlyIndicator = page.getByText('notebook is read-only', {
+      exact: true,
+    });
+    await expect(readonlyIndicator).toBeVisible();
+  });
+
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
     await refreshFilebrowser({ page });
