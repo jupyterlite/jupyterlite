@@ -243,8 +243,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IStreamMsg>({
       channel: 'iopub',
       msgType: 'stream',
@@ -269,8 +268,7 @@ export abstract class BaseKernel implements IKernel {
       | undefined = undefined,
   ): void {
     // Make sure metadata is always set
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     content.metadata = content.metadata ?? {};
 
     const message = KernelMessage.createMessage<KernelMessage.IDisplayDataMsg>({
@@ -296,8 +294,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IInputRequestMsg>({
       channel: 'stdin',
       msgType: 'input_request',
@@ -321,8 +318,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IExecuteResultMsg>({
       channel: 'iopub',
       msgType: 'execute_result',
@@ -346,8 +342,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IErrorMsg>({
       channel: 'iopub',
       msgType: 'error',
@@ -371,8 +366,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IUpdateDisplayDataMsg>({
       channel: 'iopub',
       msgType: 'update_display_data',
@@ -396,8 +390,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<KernelMessage.IClearOutputMsg>({
       channel: 'iopub',
       msgType: 'clear_output',
@@ -423,8 +416,7 @@ export abstract class BaseKernel implements IKernel {
       | KernelMessage.IHeader<KernelMessage.MessageType>
       | undefined = undefined,
   ): void {
-    const parentHeaderValue =
-      typeof parentHeader !== 'undefined' ? parentHeader : this._parentHeader;
+    const parentHeaderValue = parentHeader ?? this._parentHeader;
     const message = KernelMessage.createMessage<any>({
       channel: 'iopub',
       msgType: type,
