@@ -3192,7 +3192,7 @@ __metadata:
     "@lumino/coreutils": ^2.2.2
     "@lumino/widgets": ^2.7.5
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3208,7 +3208,7 @@ __metadata:
     "@lumino/signaling": ^2.1.5
     "@lumino/widgets": ^2.7.5
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3225,7 +3225,7 @@ __metadata:
     "@jupyterlite/application": ^0.8.0-alpha.1
     "@jupyterlite/apputils": ^0.8.0-alpha.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3253,7 +3253,7 @@ __metadata:
     "@types/serviceworker": ^0.0.56
     mock-socket: ^9.3.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3264,7 +3264,7 @@ __metadata:
     "@jupyterlite/services": ^0.8.0-alpha.1
     "@types/mime": ^2.0.3
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3274,7 +3274,7 @@ __metadata:
   dependencies:
     "@jupyterlite/services": ^0.8.0-alpha.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3287,7 +3287,7 @@ __metadata:
     localforage: ^1.9.0
     localforage-memoryStorageDriver: ^0.9.2
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3310,7 +3310,7 @@ __metadata:
     "@jupyterlite/session": ^0.8.0-alpha.1
     "@jupyterlite/settings": ^0.8.0-alpha.1
     "@jupyterlite/ui-components": ^0.8.0-alpha.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3324,7 +3324,7 @@ __metadata:
     "@jupyterlab/services": ~7.6.0-alpha.3
     "@jupyterlite/ui-components": ^0.8.0-alpha.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3340,7 +3340,7 @@ __metadata:
     "@jupyterlite/application": ^0.8.0-alpha.1
     "@lumino/widgets": ^2.7.5
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3361,7 +3361,7 @@ __metadata:
     svgo: ^3.3.3
     typedoc: ~0.28.2
     typedoc-plugin-markdown: ~4.6.2
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3372,7 +3372,7 @@ __metadata:
     "@jupyterlite/apputils": ^0.8.0-alpha.1
     "@types/serviceworker": ^0.0.56
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3387,7 +3387,7 @@ __metadata:
     "@jupyterlite/services": ^0.8.0-alpha.1
     "@lumino/coreutils": ^2.2.2
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3414,7 +3414,7 @@ __metadata:
     mime: ^3.0.0
     mock-socket: ^9.3.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3424,7 +3424,7 @@ __metadata:
   dependencies:
     "@jupyterlite/services": ^0.8.0-alpha.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3434,7 +3434,7 @@ __metadata:
   dependencies:
     "@jupyterlite/services": ^0.8.0-alpha.1
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3444,7 +3444,7 @@ __metadata:
   dependencies:
     "@lumino/coreutils": ^2.2.2
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -3454,7 +3454,7 @@ __metadata:
   dependencies:
     "@jupyterlab/ui-components": ~4.6.0-alpha.3
     rimraf: ~5.0.1
-    typescript: ~5.5.4
+    typescript: ~5.9.3
   languageName: unknown
   linkType: soft
 
@@ -11916,23 +11916,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.5.4":
-  version: 5.5.4
-  resolution: "typescript@npm:5.5.4"
+"typescript@npm:~5.9.3":
+  version: 5.9.3
+  resolution: "typescript@npm:5.9.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: b309040f3a1cd91c68a5a58af6b9fdd4e849b8c42d837b2c2e73f9a4f96a98c4f1ed398a9aab576ee0a4748f5690cf594e6b99dbe61de7839da748c41e6d6ca8
+  checksum: 0d0ffb84f2cd072c3e164c79a2e5a1a1f4f168e84cb2882ff8967b92afe1def6c2a91f6838fb58b168428f9458c57a2ba06a6737711fdd87a256bbe83e9a217f
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@~5.5.4#~builtin<compat/typescript>":
-  version: 5.5.4
-  resolution: "typescript@patch:typescript@npm%3A5.5.4#~builtin<compat/typescript>::version=5.5.4&hash=85af82"
+"typescript@patch:typescript@~5.9.3#~builtin<compat/typescript>":
+  version: 5.9.3
+  resolution: "typescript@patch:typescript@npm%3A5.9.3#~builtin<compat/typescript>::version=5.9.3&hash=85af82"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: fc52962f31a5bcb716d4213bef516885e4f01f30cea797a831205fc9ef12b405a40561c40eae3127ab85ba1548e7df49df2bcdee6b84a94bfbe3a0d7eff16b14
+  checksum: 8bb8d86819ac86a498eada254cad7fb69c5f74778506c700c2a712daeaff21d3a6f51fd0d534fe16903cb010d1b74f89437a3d02d4d0ff5ca2ba9a4660de8497
   languageName: node
   linkType: hard
 
