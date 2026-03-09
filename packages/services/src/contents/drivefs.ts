@@ -168,7 +168,7 @@ export class DriveFSEmscriptenStreamOps implements IEmscriptenStreamOps {
       try {
         const file = this.fs.API.get(path);
         stream.file = file;
-      } catch (e) {
+      } catch {
         // If we're opening a file for writing and the file does not exist, create it! Otherwise, throw the proper error
         // We need to do this because the current thread is thinking a file exist (isFile returns true)
         // whilst it was actually deleted in the main thread
@@ -342,7 +342,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
             let file;
             try {
               file = this.fs.API.get(path);
-            } catch (e) {
+            } catch {
               // TODO: Should do anything here? Should we create the file?
               break;
             }

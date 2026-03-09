@@ -168,7 +168,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
         ok: true,
         mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
       };
-    } catch (e) {
+    } catch {
       response = { ok: false };
     }
 
@@ -217,7 +217,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
     let model: Contents.IModel;
     try {
       model = await this.contentsManager.get(request.path, { content: true });
-    } catch (e) {
+    } catch {
       return null;
     }
 

@@ -2,7 +2,7 @@
   "extends": "./tsconfigbase",
   "include": [
     "*",
-    ".eslintrc.js",
+    "eslint.config.mjs",
     "app/**/*.config.js",
     "docs/**/*",
     "packages/**/src/**/*",
