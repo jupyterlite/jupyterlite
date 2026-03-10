@@ -34,7 +34,28 @@
     ],
     "lock_extra_prefetch": ["ipywidgets"],
     "lock_compile_options": {
-      "preserve_url_prefixes": ["https://"]
+      "preserve_url_prefixes": ["https://"],
+      "specs": [
+        "altair",
+        "vega-datasets",
+        "folium",
+        "ipyleaflet",
+        "nbformat",
+        "bqplot",
+        "ipycanvas",
+        "ipycytoscape",
+        "ipympl",
+        "ipyvue",
+        "ipyvuetify",
+        "jupyter_leaflet",
+        "jupyterlab_miami_nights",
+        "jupyterlab_fasta",
+        "jupyterlab_geojson",
+        "jupyterlab_kernelspy",
+        "jupyterlab_tour",
+        "notebook",
+        "plotly ",
+      ]
     }
   }
 }
