@@ -1,6 +1,8 @@
 {
   "LiteBuildConfig": {
-    "contents": ["."],
+    "contents": [
+      "."
+    ],
     "federated_extensions": [
       "https://jupyterlite-pyodide-kernel--269.org.readthedocs.build/en/269/_static/jupyterlite_pyodide_kernel-0.7.1-py3-none-any.whl",
       "https://pypi.org/packages/py3/j/jupyterlab-widgets/jupyterlab_widgets-3.0.15-py3-none-any.whl",
@@ -20,7 +22,9 @@
       "https://files.pythonhosted.org/packages/0b/f8/b65cdd2be32e442c4efe7b672f73c90b05eab5a7f3f4115efe181d432c60/plotly-5.22.0-py3-none-any.whl",
       "https://github.com/jupyterlite/p5-kernel/releases/download/v0.2.0/jupyterlite_p5_kernel-0.2.0-py3-none-any.whl"
     ],
-    "ignore_sys_prefix": ["federated_extensions"],
+    "ignore_sys_prefix": [
+      "federated_extensions"
+    ],
     "output_dir": "../build/docs-app"
   },
   "PyodideAddon": {
@@ -32,9 +36,13 @@
       "matplotlib-inline >=0.1.6",
       "pygments >=2.14.0"
     ],
-    "lock_extra_prefetch": ["ipywidgets"],
+    "lock_extra_prefetch": [
+      "ipywidgets"
+    ],
     "lock_compile_options": {
-      "preserve_url_prefixes": ["https://"],
+      "preserve_url_prefixes": [
+        "https://"
+      ],
       "specs": [
         "altair",
         "vega-datasets",
@@ -54,7 +62,7 @@
         "jupyterlab_kernelspy",
         "jupyterlab_tour",
         "notebook",
-        "plotly ",
+        "plotly"
       ]
     }
   }
