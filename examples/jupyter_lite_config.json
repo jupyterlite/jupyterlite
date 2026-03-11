@@ -61,6 +61,17 @@
       "preserve_url_prefixes": [
         "https://"
       ]
+    },
+    "patch_lock": {
+      "packages": {
+        "plotly": {
+          "depends": [
+            "tenacity",
+            "packaging",
+            "nbformat"
+          ]
+        }
+      }
     }
   }
 }
