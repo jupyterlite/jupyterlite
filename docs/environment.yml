@@ -16,8 +16,8 @@ dependencies:
   - hatch >=1.6.3,<2
   - virtualenv <21
   - jsonschema >=3
-  - jupyterlab >=4.5.5,<4.6
-  - notebook >=7.5.4,<7.6
+  - jupyterlab >=4.5.6,<4.6
+  - notebook >=7.5.5,<7.6 # todo https://github.com/jupyter/notebook/pull/7861
   - pip
   - pkginfo
   - python-libarchive-c
