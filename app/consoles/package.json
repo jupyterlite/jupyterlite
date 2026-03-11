@@ -6,7 +6,7 @@
     "@codemirror/language": "^6.12.1",
     "@codemirror/state": "^6.5.4",
     "@codemirror/view": "^6.39.15",
-    "@jupyter-notebook/application": "~7.5.4",
+    "@jupyter-notebook/application": "~7.5.5",
     "@jupyter/react-components": "~0.16.7",
     "@jupyter/web-components": "~0.16.7",
     "@jupyter/ydoc": "~3.1.0",
