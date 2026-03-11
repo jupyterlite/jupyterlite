@@ -50,7 +50,6 @@
       "jupyterlab_tour",
       "matplotlib-inline >=0.1.6",
       "nbformat",
-      "notebook",
       "plotly",
       "pygments >=2.14.0",
       "vega-datasets"
