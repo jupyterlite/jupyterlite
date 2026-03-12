@@ -102,14 +102,21 @@ namespace CommandIDs {
 
 const I18N_BUNDLE = 'jupyterlite';
 const DRIVE_LAYER_BADGE_CLASS = 'jp-DriveLayerBadge';
+const DRIVE_LAYER_BADGE_RENDERER_PLUGIN_ID =
+  '@jupyterlite/application-extension:drive-layer-badge-renderer';
+const DRIVE_LAYER_BADGES_PLUGIN_ID =
+  '@jupyterlite/application-extension:drive-layer-badges';
 
 class DriveLayerBadgeRenderer extends DirListing.Renderer {
-  constructor(private trans: TranslationBundle) {
+  constructor(private readonly trans: TranslationBundle) {
     super();
   }
 
-  updateItemNode(node: HTMLElement, model: Contents.IModel, ...args: any[]): void {
-    super.updateItemNode(node, model, ...args);
+  override updateItemNode(
+    ...args: Parameters<DirListing.Renderer['updateItemNode']>
+  ): void {
+    const [node, model] = args;
+    super.updateItemNode(...args);
 
     const layer = (model as BrowserStorageDrive.ILayeredModel)[CONTENT_LAYER];
     const existingBadge = node.querySelector<HTMLElement>(
@@ -437,12 +444,15 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
 /**
  * A plugin to provide a custom file browser renderer for drive layer badges.
  */
-const driveLayerBadgeRenderer: JupyterFrontEndPlugin<DirListing.IRenderer> = {
-  id: '@jupyterlite/application-extension:drive-layer-badge-renderer',
+const driveLayerBadgeRenderer: JupyterFrontEndPlugin<IDefaultFileBrowserRenderer> = {
+  id: DRIVE_LAYER_BADGE_RENDERER_PLUGIN_ID,
   autoStart: true,
   provides: IDefaultFileBrowserRenderer,
   requires: [ITranslator],
-  activate: (_: JupyterFrontEnd, translator: ITranslator): DirListing.IRenderer => {
+  activate: (
+    _: JupyterFrontEnd,
+    translator: ITranslator,
+  ): IDefaultFileBrowserRenderer => {
     const trans = translator.load(I18N_BUNDLE);
     return new DriveLayerBadgeRenderer(trans);
   },
@@ -452,7 +462,7 @@ const driveLayerBadgeRenderer: JupyterFrontEndPlugin<DirListing.IRenderer> = {
  * A plugin to annotate file browser items with server/writable layer badges.
  */
 const driveLayerBadges: JupyterFrontEndPlugin<void> = {
-  id: '@jupyterlite/application-extension:drive-layer-badges',
+  id: DRIVE_LAYER_BADGES_PLUGIN_ID,
   autoStart: true,
   requires: [IFileBrowserFactory],
   optional: [ISettingRegistry],
@@ -462,9 +472,10 @@ const driveLayerBadges: JupyterFrontEndPlugin<void> = {
     settingRegistry: ISettingRegistry | null,
   ): void => {
     let showBadges = true;
+    const { tracker } = factory;
 
     const updateBadgeVisibility = () => {
-      factory.tracker.forEach((browser) => {
+      tracker.forEach((browser) => {
         browser.toggleClass('jp-DriveLayerBadges', showBadges);
       });
     };
@@ -476,21 +487,28 @@ const driveLayerBadges: JupyterFrontEndPlugin<void> = {
       void browser.model.refresh();
     };
 
-    factory.tracker.forEach(initBrowser);
-    factory.tracker.widgetAdded.connect((_, browser) => {
+    tracker.forEach(initBrowser);
+    tracker.widgetAdded.connect((_, browser) => {
       initBrowser(browser);
     });
 
     if (settingRegistry) {
-      const pluginId = '@jupyterlite/application-extension:drive-layer-badges';
-      void settingRegistry.load(pluginId).then((settings) => {
-        const updateSetting = () => {
-          showBadges = (settings.get('showBadges').composite ?? true) as boolean;
-          updateBadgeVisibility();
-        };
-        updateSetting();
-        settings.changed.connect(updateSetting);
-      });
+      void settingRegistry
+        .load(DRIVE_LAYER_BADGES_PLUGIN_ID)
+        .then((settings) => {
+          const updateSetting = () => {
+            showBadges = (settings.get('showBadges').composite ?? true) as boolean;
+            updateBadgeVisibility();
+          };
+          updateSetting();
+          settings.changed.connect(updateSetting);
+        })
+        .catch((reason) => {
+          console.warn(
+            `Failed to load ${DRIVE_LAYER_BADGES_PLUGIN_ID} settings`,
+            reason,
+          );
+        });
     }
   },
 };
