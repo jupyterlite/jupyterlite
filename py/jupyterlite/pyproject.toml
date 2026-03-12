@@ -8,7 +8,7 @@ authors = [
     {name = "JupyterLite Contributors"},
 ]
 dependencies = [
-    "jupyterlite-core >=0.7.3",
+    "jupyterlite-core >=0.7.4",
 ]
 keywords = [
     "browser",
