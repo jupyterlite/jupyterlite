@@ -932,7 +932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyterlab/galata@npm:^5.5.6":
+"@jupyterlab/galata@npm:~5.5.6":
   version: 5.5.6
   resolution: "@jupyterlab/galata@npm:5.5.6"
   dependencies:
@@ -1274,7 +1274,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/ui-tests@workspace:."
   dependencies:
-    "@jupyterlab/galata": ^5.5.6
+    "@jupyterlab/galata": ~5.5.6
     "@playwright/test": ^1.57.0
     rimraf: ^5
   languageName: unknown
