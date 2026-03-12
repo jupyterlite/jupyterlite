@@ -38,7 +38,14 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import type { TranslationBundle } from '@jupyterlab/translation';
 import { ITranslator } from '@jupyterlab/translation';
 
-import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import type { LabIcon } from '@jupyterlab/ui-components';
+import {
+  clearIcon,
+  downloadIcon,
+  editIcon,
+  linkIcon,
+  offlineBoltIcon,
+} from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
@@ -55,7 +62,7 @@ import {
   Settings,
 } from '@jupyterlite/services';
 
-import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
+import { cloudIcon, liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 // Import deprecated packages for backward compatibility with federated extensions
 import '@jupyterlite/contents';
@@ -108,7 +115,10 @@ const DRIVE_LAYER_BADGES_PLUGIN_ID =
   '@jupyterlite/application-extension:drive-layer-badges';
 
 class DriveLayerBadgeRenderer extends DirListing.Renderer {
-  constructor(private readonly trans: TranslationBundle) {
+  constructor(
+    private readonly trans: TranslationBundle,
+    private readonly contents: Contents.IManager,
+  ) {
     super();
   }
 
@@ -132,10 +142,37 @@ class DriveLayerBadgeRenderer extends DirListing.Renderer {
     const badge = existingBadge ?? document.createElement('span');
     const tooltip = this.trans.__('%1: %2', description.label, description.title);
     badge.className = `${DRIVE_LAYER_BADGE_CLASS} ${description.className}`;
-    badge.textContent = '';
     badge.title = tooltip;
     badge.setAttribute('aria-label', tooltip);
     badge.setAttribute('role', 'img');
+
+    // Render icon if it changed
+    const currentIcon = badge.dataset.icon;
+    if (currentIcon !== description.icon.name) {
+      badge.replaceChildren();
+      description.icon.element({
+        container: badge,
+        tag: 'span',
+        height: '14px',
+        width: '14px',
+      });
+      badge.dataset.icon = description.icon.name;
+    }
+
+    // Make override badges clickable to revert to the server version
+    if (layer === 'writable-override') {
+      badge.dataset.path = model.path;
+      badge.dataset.name = model.name;
+      if (!badge.dataset.hasClickHandler) {
+        badge.addEventListener('click', (event: Event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          const target = event.currentTarget as HTMLElement;
+          void this._handleRevertClick(target.dataset.path!, target.dataset.name!);
+        });
+        badge.dataset.hasClickHandler = 'true';
+      }
+    }
 
     if (!existingBadge) {
       const iconNode = node.querySelector<HTMLElement>('.jp-DirListing-itemIcon');
@@ -147,27 +184,49 @@ class DriveLayerBadgeRenderer extends DirListing.Renderer {
     }
   }
 
+  private async _handleRevertClick(path: string, name: string): Promise<void> {
+    const result = await showDialog({
+      title: this.trans.__('Revert to Server Version'),
+      body: this.trans.__(
+        'This will remove your local changes to "%1" and revert to the original version bundled with the deployment.',
+        name,
+      ),
+      buttons: [
+        Dialog.cancelButton({ label: this.trans.__('Cancel') }),
+        Dialog.warnButton({ label: this.trans.__('Revert') }),
+      ],
+    });
+    if (result.button.accept) {
+      await this.contents.delete(path);
+    }
+  }
+
   private _getBadgeDescription(
     layer: BrowserStorageDrive.TContentLayer | undefined,
-  ): { className: string; label: string; title: string } | null {
+  ): { className: string; label: string; title: string; icon: LabIcon } | null {
     switch (layer) {
       case 'server':
         return {
           className: 'jp-mod-server',
           label: this.trans.__('Server'),
           title: this.trans.__('Read from site assets'),
+          icon: cloudIcon,
         };
       case 'writable':
         return {
           className: 'jp-mod-writable',
           label: this.trans.__('Writable'),
           title: this.trans.__('Saved in browser storage'),
+          icon: editIcon,
         };
       case 'writable-override':
         return {
           className: 'jp-mod-override',
           label: this.trans.__('Override'),
-          title: this.trans.__('Writable copy overrides a server file'),
+          title: this.trans.__(
+            'Writable copy overrides a server file (click to revert)',
+          ),
+          icon: offlineBoltIcon,
         };
       default:
         return null;
@@ -450,11 +509,11 @@ const driveLayerBadgeRenderer: JupyterFrontEndPlugin<IDefaultFileBrowserRenderer
   provides: IDefaultFileBrowserRenderer,
   requires: [ITranslator],
   activate: (
-    _: JupyterFrontEnd,
+    app: JupyterFrontEnd,
     translator: ITranslator,
   ): IDefaultFileBrowserRenderer => {
     const trans = translator.load(I18N_BUNDLE);
-    return new DriveLayerBadgeRenderer(trans);
+    return new DriveLayerBadgeRenderer(trans, app.serviceManager.contents);
   },
 };
 
