@@ -159,7 +159,9 @@ const about: JupyterFrontEndPlugin<void> = {
       const raw = PageConfig.getOption('versionInfo');
       if (raw) {
         const parsed = JSON.parse(raw) as Record<string, Partial<TVersionInfo>>;
-        upstreams = Object.values(parsed).filter((e): e is TVersionInfo => !!e.version);
+        upstreams = Object.values(parsed).filter(
+          (e): e is TVersionInfo => !!e.label && !!e.version,
+        );
       }
     } catch {
       // ignore malformed config
