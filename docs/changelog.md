@@ -71,6 +71,32 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.4
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.3...e03be6c9d150b407547307b58c106235164aa998))
+
+### Bugs fixed
+
+- DriveFS: Fix handling of creating directories [#1886](https://github.com/jupyterlite/jupyterlite/pull/1886) ([@martinRenou](https://github.com/martinRenou))
+- Fix `EmscriptenFS` type definition [#1872](https://github.com/jupyterlite/jupyterlite/pull/1872) ([@jtpio](https://github.com/jtpio))
+- DriveContentsProcessor: speed-up creating files [#1878](https://github.com/jupyterlite/jupyterlite/pull/1878) ([@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab 4.5.6 and Notebook 7.5.5 [#1894](https://github.com/jupyterlite/jupyterlite/pull/1894) ([@agriyakhetarpal](https://github.com/agriyakhetarpal), [@jtpio](https://github.com/jtpio))
+- Fix 0.7.x CI [#1880](https://github.com/jupyterlite/jupyterlite/pull/1880) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-02-25&to=2026-03-12&type=c))
+
+@agriyakhetarpal ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagriyakhetarpal+updated%3A2026-02-25..2026-03-12&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-02-25..2026-03-12&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-02-25..2026-03-12&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.3
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.2...3b79422401058db64d80f5fe97fb7be9ce8dd2b4))
@@ -87,8 +113,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-02-23&to=2026-02-25&type=c))
 
 @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-02-23..2026-02-25&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.2
 

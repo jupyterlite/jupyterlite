@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/notebook-application-extension",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "JupyterLite - Notebook Application Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -38,11 +38,11 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyter-notebook/application": "~7.5.4",
-    "@jupyterlab/application": "~4.5.5",
-    "@jupyterlab/coreutils": "~6.5.5",
-    "@jupyterlab/services": "~7.5.5",
-    "@jupyterlite/ui-components": "^0.7.3"
+    "@jupyter-notebook/application": "~7.5.5",
+    "@jupyterlab/application": "~4.5.6",
+    "@jupyterlab/coreutils": "~6.5.6",
+    "@jupyterlab/services": "~7.5.6",
+    "@jupyterlite/ui-components": "^0.7.4"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
