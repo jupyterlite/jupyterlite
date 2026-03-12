@@ -25,12 +25,62 @@ consistent behavior when running `jupyter lite build --lite-dir <dir>` from a di
 directory. If your build relied on paths being resolved relative to the working
 directory, you may need to adjust your configuration.
 
+### Contents and Workspaces Indexing
+
+The `all.json` files used for indexing contents and workspaces are no longer hardcoded
+in the frontend. Instead, the build addons now populate `contentsAllJsonFile` and
+`workspacesAllJsonFile` as `PageConfig` options in `jupyter-lite.json` at build time.
+
+The frontend checks for these options before attempting to fetch the index files. If the
+options are not present (e.g. when no contents or workspaces were provided during the
+build), the fetch is skipped entirely. This avoids unnecessary requests to the server
+and eliminates spurious 404 errors that previously appeared in the browser's developer
+console.
+
+This change should be transparent for most users. However, if you have custom code that
+relies on fetching `all.json` directly from `api/contents/` or `api/workspaces/`, you
+should update it to read the filename from `PageConfig` instead:
+
+```typescript
+import { PageConfig } from '@jupyterlab/coreutils';
+
+const contentsAllJsonFile = PageConfig.getOption('contentsAllJsonFile');
+const workspacesAllJsonFile = PageConfig.getOption('workspacesAllJsonFile');
+```
+
 ### Build Optimization Settings
 
 The switch to rspack may affect some build optimization settings due to changes in the
 internal bundle format. If you were using `--no-unused-shared-packages` or
 `--no-sourcemaps` flags and notice unexpected behavior, please report it to the
 [JupyterLite issue tracker](https://github.com/jupyterlite/jupyterlite/issues).
+
+### Removed Packages
+
+The `@jupyterlite/iframe-extension` package has been removed. This package provided a
+MIME renderer for the `text/html-sandboxed` MIME type, which rendered HTML content
+inside sandboxed iframes in notebook outputs.
+
+This functionality is no longer needed as JupyterLab's built-in HTML renderer can be
+used instead. If you need to display HTML content in your notebooks, you can use the
+`IPython.display.HTML` class:
+
+```python
+from IPython.display import HTML
+
+HTML("<h1>Hello, World!</h1>")
+```
+
+If you specifically need iframe-based rendering, you can use `IPython.display.IFrame`:
+
+```python
+from IPython.display import IFrame
+
+IFrame(src="https://example.com", width=800, height=400)
+```
+
+If your JupyterLite deployment or custom application referenced this extension, you
+should remove it from your configuration.
 
 ## `v0.6.0` to `v0.7.0`
 

@@ -2,7 +2,7 @@ import { PathExt } from '@jupyterlab/coreutils';
 import type { Contents } from '@jupyterlab/services';
 import type { TDriveMethod, TDriveRequest, TDriveResponse } from './drivefs';
 import { BLOCK_SIZE } from './drivefs';
-import { DIR_MODE, FILE_MODE } from './emscripten';
+import { isDirMode, DIR_MODE, FILE_MODE } from './emscripten';
 
 export interface IDriveContentsProcessor {
   /**
@@ -168,7 +168,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
         ok: true,
         mode: model.type === 'directory' ? DIR_MODE : FILE_MODE,
       };
-    } catch (e) {
+    } catch {
       response = { ok: false };
     }
 
@@ -176,12 +176,18 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   }
 
   async mknod(request: TDriveRequest<'mknod'>): Promise<TDriveResponse<'mknod'>> {
-    const model = await this.contentsManager.newUntitled({
-      path: PathExt.dirname(request.path),
-      type: request.data.mode === DIR_MODE ? 'directory' : 'file',
-      ext: PathExt.extname(request.path),
-    });
-    await this.contentsManager.rename(model.path, request.path);
+    // Contents API does not permit creating folders with given name. We can only create untitled folder then rename.
+    if (isDirMode(request.data.mode)) {
+      const model = await this.contentsManager.newUntitled({
+        path: PathExt.dirname(request.path),
+        type: 'directory',
+        ext: PathExt.extname(request.path),
+      });
+      await this.contentsManager.rename(model.path, request.path);
+      return null;
+    }
+
+    await this.contentsManager.save(request.path, { type: 'file' });
     return null;
   }
 
@@ -211,7 +217,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
     let model: Contents.IModel;
     try {
       model = await this.contentsManager.get(request.path, { content: true });
-    } catch (e) {
+    } catch {
       return null;
     }
 

@@ -31,14 +31,14 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.6.0-alpha.3",
+    "@jupyterlab/coreutils": "~6.6.0-alpha.4",
     "@lumino/coreutils": "^2.2.2",
     "localforage": "^1.9.0",
     "localforage-memoryStorageDriver": "^0.9.2"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
-    "typescript": "~5.5.4"
+    "typescript": "~5.9.3"
   },
   "publishConfig": {
     "access": "public"
