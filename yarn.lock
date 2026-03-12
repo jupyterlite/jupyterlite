@@ -3202,8 +3202,8 @@ __metadata:
   resolution: "@jupyterlite/app@workspace:app"
   dependencies:
     "@jupyterlab/builder": ~4.6.0-alpha.4
-    "@rspack/cli": ^1.7.3
-    "@rspack/core": ^1.7.3
+    "@rspack/cli": ^1.7.7
+    "@rspack/core": ^1.7.7
     fs-extra: ^9.0.1
     glob: ^7.2.0
     handlebars: ^4.7.8
@@ -4141,9 +4141,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rspack/cli@npm:^1.7.3":
-  version: 1.7.3
-  resolution: "@rspack/cli@npm:1.7.3"
+"@rspack/cli@npm:^1.7.7":
+  version: 1.7.8
+  resolution: "@rspack/cli@npm:1.7.8"
   dependencies:
     "@discoveryjs/json-ext": ^0.5.7
     "@rspack/dev-server": ~1.1.5
@@ -4153,11 +4153,11 @@ __metadata:
     "@rspack/core": ^1.0.0-alpha || ^1.x
   bin:
     rspack: bin/rspack.js
-  checksum: a3e07cb183a6cf7a29a65c4bf368facd04483d12578102b29e2a40c297916ff3c5187d54316f2535189beaeaac109c90ed9dbbeb0455b55f2bb94018e518fabc
+  checksum: 9028f7062bb5fd6628ad0fccd2756b7ffd098666ddc3bd2e54e5620da5e61bd341fc11603ebfa47616f1084a9f91604fcfc58005622bb0e8cf693b9da1ebdb82
   languageName: node
   linkType: hard
 
-"@rspack/core@npm:^1.7.3, @rspack/core@npm:^1.7.7":
+"@rspack/core@npm:^1.7.7":
   version: 1.7.8
   resolution: "@rspack/core@npm:1.7.8"
   dependencies:
