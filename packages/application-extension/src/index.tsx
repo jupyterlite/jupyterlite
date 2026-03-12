@@ -71,6 +71,10 @@ import '@jupyterlite/server';
 
 import { filter } from '@lumino/algorithm';
 
+import type { CommandRegistry } from '@lumino/commands';
+
+import type { ReadonlyPartialJSONObject } from '@lumino/coreutils';
+
 import type { DockPanel } from '@lumino/widgets';
 import { Widget } from '@lumino/widgets';
 
@@ -101,6 +105,8 @@ namespace CommandIDs {
   export const copyShareableLink = 'filebrowser:share-main';
 
   export const clearBrowserData = 'application:clear-browser-data';
+
+  export const revertToServer = 'application:revert-to-server';
 }
 
 /**
@@ -117,7 +123,7 @@ const DRIVE_LAYER_BADGES_PLUGIN_ID =
 class DriveLayerBadgeRenderer extends DirListing.Renderer {
   constructor(
     private readonly trans: TranslationBundle,
-    private readonly contents: Contents.IManager,
+    private readonly commands: CommandRegistry,
   ) {
     super();
   }
@@ -162,13 +168,14 @@ class DriveLayerBadgeRenderer extends DirListing.Renderer {
     // Make override badges clickable to revert to the server version
     if (layer === 'writable-override') {
       badge.dataset.path = model.path;
-      badge.dataset.name = model.name;
       if (!badge.dataset.hasClickHandler) {
         badge.addEventListener('click', (event: Event) => {
           event.stopPropagation();
           event.preventDefault();
           const target = event.currentTarget as HTMLElement;
-          void this._handleRevertClick(target.dataset.path!, target.dataset.name!);
+          void this.commands.execute(CommandIDs.revertToServer, {
+            path: target.dataset.path,
+          });
         });
         badge.dataset.hasClickHandler = 'true';
       }
@@ -181,23 +188,6 @@ class DriveLayerBadgeRenderer extends DirListing.Renderer {
       } else {
         node.querySelector<HTMLElement>('.jp-DirListing-itemName')?.prepend(badge);
       }
-    }
-  }
-
-  private async _handleRevertClick(path: string, name: string): Promise<void> {
-    const result = await showDialog({
-      title: this.trans.__('Revert to Server Version'),
-      body: this.trans.__(
-        'This will remove your local changes to "%1" and revert to the original version bundled with the deployment.',
-        name,
-      ),
-      buttons: [
-        Dialog.cancelButton({ label: this.trans.__('Cancel') }),
-        Dialog.warnButton({ label: this.trans.__('Revert') }),
-      ],
-    });
-    if (result.button.accept) {
-      await this.contents.delete(path);
     }
   }
 
@@ -513,7 +503,7 @@ const driveLayerBadgeRenderer: JupyterFrontEndPlugin<IDefaultFileBrowserRenderer
     translator: ITranslator,
   ): IDefaultFileBrowserRenderer => {
     const trans = translator.load(I18N_BUNDLE);
-    return new DriveLayerBadgeRenderer(trans, app.serviceManager.contents);
+    return new DriveLayerBadgeRenderer(trans, app.commands);
   },
 };
 
@@ -568,6 +558,96 @@ const driveLayerBadges: JupyterFrontEndPlugin<void> = {
             reason,
           );
         });
+    }
+  },
+};
+
+/**
+ * A plugin to add a "Revert to Server Version" command for override files.
+ *
+ * This adds an entry to the File menu that is only enabled when the current
+ * document is a writable override of a server file. Using it removes the local
+ * copy and reverts to the original version bundled with the deployment.
+ */
+const revertToServer: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:revert-to-server',
+  autoStart: true,
+  requires: [IDocumentManager, ITranslator],
+  optional: [IMainMenu, ILabShell],
+  activate: (
+    app: JupyterFrontEnd,
+    docManager: IDocumentManager,
+    translator: ITranslator,
+    menu: IMainMenu | null,
+    labShell: ILabShell | null,
+  ): void => {
+    const { commands, shell, serviceManager } = app;
+    const { contents } = serviceManager;
+    const trans = translator.load(I18N_BUNDLE);
+
+    const getOverridePath = async (): Promise<string | null> => {
+      const current = shell.currentWidget;
+      if (!current) {
+        return null;
+      }
+      const context = docManager.contextForWidget(current);
+      if (!context) {
+        return null;
+      }
+      try {
+        const model = await contents.get(context.path);
+        const layer = (model as BrowserStorageDrive.ILayeredModel)[CONTENT_LAYER];
+        if (layer === 'writable-override') {
+          return context.path;
+        }
+      } catch {
+        // file may not exist or drive may not support layers
+      }
+      return null;
+    };
+
+    commands.addCommand(CommandIDs.revertToServer, {
+      label: trans.__('Revert to Server Version'),
+      isEnabled: () => {
+        const current = shell.currentWidget;
+        return !!(current && docManager.contextForWidget(current));
+      },
+      execute: async (args: ReadonlyPartialJSONObject) => {
+        // Accept a path argument (from badge click) or infer from the current widget
+        const path = (args.path as string) ?? (await getOverridePath());
+        if (!path) {
+          return;
+        }
+        const name = path.split('/').pop() ?? path;
+        const result = await showDialog({
+          title: trans.__('Revert to Server Version'),
+          body: trans.__(
+            'This will remove your local changes to "%1" and revert to the original version bundled with the deployment.',
+            name,
+          ),
+          buttons: [
+            Dialog.cancelButton({ label: trans.__('Cancel') }),
+            Dialog.warnButton({ label: trans.__('Revert') }),
+          ],
+        });
+        if (result.button.accept) {
+          await docManager.deleteFile(path);
+        }
+      },
+    });
+
+    if (menu) {
+      menu.fileMenu.addGroup(
+        [{ command: CommandIDs.revertToServer }],
+        40, // after the standard "Revert Notebook to Checkpoint" group
+      );
+    }
+
+    // Re-evaluate command state when the active widget changes
+    if (labShell) {
+      labShell.currentChanged.connect(() => {
+        commands.notifyCommandChanged(CommandIDs.revertToServer);
+      });
     }
   },
 };
@@ -1048,6 +1128,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   modeSupport,
   notifyCommands,
   opener,
+  revertToServer,
   router,
   serviceWorkerManagerPlugin,
   sessionContextPatch,
