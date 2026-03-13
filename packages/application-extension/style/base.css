@@ -72,7 +72,7 @@
 }
 
 .jp-DriveLayerBadges {
-  --jp-DriveLayerBadge-server-color: var(--jp-border-color2);
+  --jp-DriveLayerBadge-server-color: var(--jp-inverse-layout-color3);
   --jp-DriveLayerBadge-writable-color: var(--jp-success-color1);
   --jp-DriveLayerBadge-override-color: var(--jp-warn-color0);
 }
