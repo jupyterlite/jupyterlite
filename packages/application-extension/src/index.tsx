@@ -163,8 +163,8 @@ const about: JupyterFrontEndPlugin<void> = {
           (e): e is TVersionEntry => !!e.label && !!e.version,
         );
       }
-    } catch {
-      // ignore malformed config
+    } catch (e) {
+      console.error('Failed to parse versionInfo from PageConfig', e);
     }
 
     commands.addCommand(CommandIDs.about, {
