@@ -194,7 +194,7 @@
           "default": false
         },
         "versionInfo": {
-          "description": "A map of npm package names to upstream project metadata shown in the About dialog. Each entry must define a display label; versions may be populated during the build.",
+          "description": "A map of identifiers to metadata shown in the About dialog. Each entry must define a display label; versions may be populated during the build.",
           "type": "object",
           "additionalProperties": {
             "type": "object",

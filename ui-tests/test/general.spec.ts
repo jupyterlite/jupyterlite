@@ -54,16 +54,16 @@ test.describe('General Tests', () => {
     expect(await page.theme.getTheme()).toEqual('Darcula');
   });
 
-  test('About Dialog shows upstream versions', async ({ page }) => {
+  test('About Dialog shows version info', async ({ page }) => {
     await page.menu.clickMenuItem('Help>About JupyterLite UI Tests');
 
     const dialog = page.locator('.jp-Dialog');
     await dialog.waitFor();
 
-    const upstreamsList = dialog.locator('.jp-About-upstreams');
-    await expect(upstreamsList).toBeVisible();
+    const versionList = dialog.locator('.jp-About-versionList');
+    await expect(versionList).toBeVisible();
 
-    const items = upstreamsList.locator('li');
+    const items = versionList.locator('li');
     await expect(items).toHaveCount(2);
     await expect(items.filter({ hasText: 'JupyterLab' })).toHaveCount(1);
     await expect(items.filter({ hasText: 'Jupyter Notebook' })).toHaveCount(1);

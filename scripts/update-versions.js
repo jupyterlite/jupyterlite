@@ -1,9 +1,9 @@
 /**
- * Script to resolve upstream package versions in app/jupyter-lite.json.
+ * Script to resolve configured package versions in app/jupyter-lite.json.
  *
- * Reads the `versionInfo` map from jupyter-config-data, resolves each
- * npm package's installed version, and writes it back so the About dialog
- * can display accurate version information at runtime.
+ * Reads the `versionInfo` map from jupyter-config-data, resolves versions
+ * for entries keyed by installed npm package name, and writes them back so
+ * the About dialog can display accurate version information at runtime.
  *
  * Usage: node scripts/update-versions.js
  */
@@ -21,14 +21,14 @@ if (!configData) {
   process.exit(1);
 }
 
-const upstreams = configData.versionInfo;
+const versionEntries = configData.versionInfo;
 
-if (!upstreams || typeof upstreams !== 'object') {
+if (!versionEntries || typeof versionEntries !== 'object') {
   console.log('No versionInfo found, nothing to update.');
   process.exit(0);
 }
 
-for (const [pkg, entry] of Object.entries(upstreams)) {
+for (const [pkg, entry] of Object.entries(versionEntries)) {
   const version = require(`${pkg}/package.json`).version;
   entry.version = version;
   console.log(`  ${entry.label}: ${version} (${pkg})`);

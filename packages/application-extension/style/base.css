@@ -71,8 +71,8 @@
   font-style: italic;
 }
 
-/* About dialog upstream versions */
-.jp-About-upstreams {
+/* About dialog version list */
+.jp-About-versionList {
   list-style: none;
   padding: 0;
   margin: 4px 0 0;
