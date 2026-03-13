@@ -207,11 +207,6 @@
               "version": {
                 "type": "string",
                 "description": "The resolved version (populated at build time)"
-              },
-              "url": {
-                "type": "string",
-                "format": "uri",
-                "description": "An optional URL for this upstream project"
               }
             }
           }
