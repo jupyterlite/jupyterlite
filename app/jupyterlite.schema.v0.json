@@ -194,7 +194,7 @@
           "default": false
         },
         "versionInfo": {
-          "description": "A map of npm package names to display labels (and optionally versions) shown in the About dialog. Versions are resolved automatically at build time from installed packages.",
+          "description": "A map of npm package names to upstream project metadata shown in the About dialog. Each entry must define a display label; versions may be populated during the build.",
           "type": "object",
           "additionalProperties": {
             "type": "object",
@@ -202,11 +202,11 @@
             "properties": {
               "label": {
                 "type": "string",
-                "description": "The display name for this upstream project"
+                "description": "The display name shown in the About dialog"
               },
               "version": {
                 "type": "string",
-                "description": "The resolved version (populated at build time)"
+                "description": "The version shown in the About dialog"
               }
             }
           }
