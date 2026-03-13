@@ -1,0 +1,14 @@
+{
+  "title": "File Provenance Badges",
+  "description": "Settings for file provenance badges in the file browser.",
+  "properties": {
+    "showBadges": {
+      "type": "boolean",
+      "title": "Show file provenance badges",
+      "description": "Whether to show badges indicating where files come from (server, browser storage, or override).",
+      "default": true
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

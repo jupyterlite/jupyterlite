@@ -70,3 +70,49 @@
   color: var(--jp-ui-font-color2);
   font-style: italic;
 }
+
+.jp-DriveLayerBadges {
+  --jp-DriveLayerBadge-server-color: var(--jp-inverse-layout-color3);
+  --jp-DriveLayerBadge-writable-color: var(--jp-success-color1);
+  --jp-DriveLayerBadge-override-color: var(--jp-warn-color0);
+}
+
+.jp-DriveLayerBadge {
+  display: none;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  margin-right: 4px;
+  vertical-align: middle;
+  flex: 0 0 auto;
+  transition: transform 120ms ease;
+}
+
+.jp-DriveLayerBadges .jp-DriveLayerBadge {
+  display: inline-flex;
+}
+
+.jp-DriveLayerBadge:hover {
+  transform: scale(1.2);
+}
+
+/* Override icon fill colors to use the badge color */
+.jp-DriveLayerBadge [fill]:not([fill='none']) {
+  fill: currentColor !important;
+}
+
+.jp-DriveLayerBadge.jp-mod-server {
+  color: var(--jp-DriveLayerBadge-server-color);
+}
+
+.jp-DriveLayerBadge.jp-mod-writable {
+  color: var(--jp-DriveLayerBadge-writable-color);
+}
+
+.jp-DriveLayerBadge.jp-mod-override {
+  color: var(--jp-DriveLayerBadge-override-color);
+  cursor: pointer;
+}
