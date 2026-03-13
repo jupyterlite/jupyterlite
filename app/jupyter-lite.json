@@ -10,6 +10,16 @@
     "federated_extensions": [],
     "fullLabextensionsUrl": "./extensions",
     "fullStaticUrl": "./build",
-    "licensesUrl": "./lab/api/licenses"
+    "licensesUrl": "./lab/api/licenses",
+    "versionInfo": {
+      "@jupyterlab/application": {
+        "label": "JupyterLab",
+        "version": "4.6.0-alpha.3"
+      },
+      "@jupyter-notebook/application": {
+        "label": "Jupyter Notebook",
+        "version": "7.6.0-alpha.3"
+      }
+    }
   }
 }

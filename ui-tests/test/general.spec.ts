@@ -54,6 +54,21 @@ test.describe('General Tests', () => {
     expect(await page.theme.getTheme()).toEqual('Darcula');
   });
 
+  test('About Dialog shows version info', async ({ page }) => {
+    await page.menu.clickMenuItem('Help>About JupyterLite UI Tests');
+
+    const dialog = page.locator('.jp-Dialog');
+    await dialog.waitFor();
+
+    const versionList = dialog.locator('.jp-About-versionList');
+    await expect(versionList).toBeVisible();
+
+    const items = versionList.locator('li');
+    await expect(items).toHaveCount(2);
+    await expect(items.filter({ hasText: 'JupyterLab' })).toHaveCount(1);
+    await expect(items.filter({ hasText: 'Jupyter Notebook' })).toHaveCount(1);
+  });
+
   test('Multiple Document Mode (default)', async ({ page }) => {
     const mainDockPanel = page.locator('#jp-main-dock-panel');
     await expect(mainDockPanel).toHaveAttribute('data-mode', 'multiple-document');

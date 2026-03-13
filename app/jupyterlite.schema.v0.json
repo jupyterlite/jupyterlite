@@ -192,6 +192,24 @@
           "description": "Whether to enable the service worker cache",
           "type": "boolean",
           "default": false
+        },
+        "versionInfo": {
+          "description": "A map of identifiers to metadata shown in the About dialog. Each entry must define a display label; versions may be populated during the build.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["label"],
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "The display name shown in the About dialog"
+              },
+              "version": {
+                "type": "string",
+                "description": "The version shown in the About dialog"
+              }
+            }
+          }
         }
       }
     },
