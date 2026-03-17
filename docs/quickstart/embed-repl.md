@@ -53,6 +53,9 @@ The toolbar can be enabled (opt-in) to add a couple of useful buttons:
 ></iframe>
 ```
 
+When enabled, the toolbar includes a share button that updates the current URL and
+copies a link with the current prompt content and REPL URL options.
+
 ### Auto execute code on startup
 
 Custom code can automatically be executed on startup:

@@ -4,23 +4,61 @@
 import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { ILabStatus, IRouter, JupyterFrontEnd, Router } from '@jupyterlab/application';
 
-import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
+import {
+  Clipboard,
+  CommandToolbarButton,
+  ICommandPalette,
+  SemanticCommand,
+  IThemeManager,
+  IToolbarWidgetRegistry,
+} from '@jupyterlab/apputils';
 
 import type { CodeConsole, ConsolePanel } from '@jupyterlab/console';
 import { IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
 
+import { shareIcon } from '@jupyterlab/ui-components';
+
 import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
+import type { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
 /**
  * The name of the translation bundle for internationalized strings.
  */
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * The command ids used by the REPL extension.
+ */
+namespace CommandIDs {
+  export const copyShareableLink = 'repl:copy-shareable-link';
+}
+
+const DEFAULT_REPL_CONFIG: Required<CodeConsole.IConfig> = {
+  clearCellsOnExecute: false,
+  clearCodeContentOnExecute: true,
+  hideCodeInput: false,
+  promptCellPosition: 'bottom',
+  showBanner: true,
+};
+
+const SHAREABLE_PARAMETERS = [
+  'clearCellsOnExecute',
+  'clearCodeContentOnExecute',
+  'code',
+  'execute',
+  'hideCodeInput',
+  'kernel',
+  'promptCellPosition',
+  'showBanner',
+  'theme',
+  'toolbar',
+];
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -58,6 +96,131 @@ const buttons: JupyterFrontEndPlugin<void> = {
         poweredBy.addClass('jp-PoweredBy');
         return poweredBy;
       });
+    }
+  },
+};
+
+/**
+ * A plugin to expose a shareable REPL link command and toolbar button.
+ */
+const share: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:share',
+  autoStart: true,
+  requires: [IConsoleTracker, ITranslator],
+  optional: [ICommandPalette, IThemeManager, IToolbarWidgetRegistry],
+  activate: (
+    app: JupyterFrontEnd,
+    tracker: IConsoleTracker,
+    translator: ITranslator,
+    palette: ICommandPalette | null,
+    themeManager: IThemeManager | null,
+    toolbarRegistry: IToolbarWidgetRegistry | null,
+  ) => {
+    const trans = translator.load(I18N_BUNDLE);
+    const { commands } = app;
+    const getCurrent = (args: ReadonlyPartialJSONObject = {}): ConsolePanel | null => {
+      const widget = args[SemanticCommand.WIDGET];
+
+      return typeof widget === 'string'
+        ? tracker.find((panel) => panel.id === widget) ?? null
+        : tracker.currentWidget;
+    };
+
+    commands.addCommand(CommandIDs.copyShareableLink, {
+      execute: (args: ReadonlyPartialJSONObject) => {
+        const panel = getCurrent(args);
+        if (!panel) {
+          return;
+        }
+
+        const url = new URL(window.location.href);
+        SHAREABLE_PARAMETERS.forEach((parameter) => {
+          url.searchParams.delete(parameter);
+        });
+
+        const config = Private.getConsoleConfig(panel);
+        const promptCode =
+          panel.console.promptCell?.model.sharedModel.getSource() ?? '';
+        const kernelName = panel.sessionContext.session?.kernel?.name ?? '';
+        const theme = themeManager?.theme?.trim() ?? '';
+
+        if (!panel.toolbar.isDisposed) {
+          url.searchParams.set('toolbar', '1');
+        }
+
+        if (kernelName) {
+          url.searchParams.set('kernel', kernelName);
+        }
+
+        if (theme) {
+          url.searchParams.set('theme', theme);
+        }
+
+        url.searchParams.set('promptCellPosition', config.promptCellPosition);
+
+        if (config.clearCellsOnExecute) {
+          url.searchParams.set('clearCellsOnExecute', '1');
+        }
+
+        if (!config.clearCodeContentOnExecute) {
+          url.searchParams.set('clearCodeContentOnExecute', '0');
+        }
+
+        if (config.hideCodeInput) {
+          url.searchParams.set('hideCodeInput', '1');
+        }
+
+        if (!config.showBanner) {
+          url.searchParams.set('showBanner', '0');
+        }
+
+        if (promptCode !== '') {
+          url.searchParams.set('execute', '0');
+          promptCode.split('\n').forEach((line) => {
+            url.searchParams.append('code', line);
+          });
+        }
+
+        window.history.replaceState(
+          window.history.state,
+          document.title,
+          `${url.pathname}${url.search}${url.hash}`,
+        );
+
+        Clipboard.copyToSystem(url.toString());
+        return url.toString();
+      },
+      icon: (args) => (args['isPalette'] ? undefined : shareIcon),
+      isEnabled: (args) => !!getCurrent(args),
+      caption: trans.__(
+        'Copy a shareable link for this REPL with the current prompt and options',
+      ),
+      label: trans.__('Copy Shareable Link'),
+    });
+
+    if (palette) {
+      palette.addItem({
+        command: CommandIDs.copyShareableLink,
+        category: trans.__('REPL'),
+        args: { isPalette: true },
+      });
+    }
+
+    if (toolbarRegistry) {
+      toolbarRegistry.addFactory<ConsolePanel>(
+        'ConsolePanel',
+        'copyShareableLink',
+        (panel) =>
+          new CommandToolbarButton({
+            commands,
+            id: CommandIDs.copyShareableLink,
+            args: { [SemanticCommand.WIDGET]: panel.id },
+            icon: shareIcon,
+            label: '',
+            caption: trans.__('Copy Shareable Link'),
+            noFocusOnClick: panel.toolbar.noFocusOnClick,
+          }),
+      );
     }
   },
 };
@@ -214,7 +377,20 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   consolePlugin,
   paths,
   router,
+  share,
   status,
 ];
 
 export default plugins;
+
+namespace Private {
+  export function getConsoleConfig(panel: ConsolePanel): Required<CodeConsole.IConfig> {
+    // JupyterLab exposes config updates but not a public getter.
+    const config = (panel.console as any)._config as CodeConsole.IConfig | undefined;
+
+    return {
+      ...DEFAULT_REPL_CONFIG,
+      ...config,
+    };
+  }
+}
