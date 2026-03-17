@@ -124,6 +124,8 @@ See also:
 - [Starboard Notebook](https://github.com/gzuidhof/starboard-notebook): In-browser
   literal notebooks
 - [Basthon](https://basthon.fr): A Jupyter notebook implementation using Pyodide
+- [Notebook.link](https://notebook.link/): A cloud-backed, in-browser notebook platform
+  based on JupyterLite
 
 ## 👥 Contributors
 
