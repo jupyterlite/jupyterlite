@@ -575,7 +575,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
       item = {
         ...item,
         name,
-        path: PathExt.join(path, name),
+        path,
         last_modified: now,
         format,
         mimetype,
@@ -586,7 +586,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       item = {
         name,
-        path: PathExt.join(path, name),
+        path,
         last_modified: now,
         created: now,
         format,
