@@ -258,10 +258,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
-    const dirname = PathExt.dirname(path);
-    const basename = PathExt.basename(path);
-
-    let name = basename;
+    let name: string | undefined = undefined;
 
     let file: IModel;
     switch (type) {
@@ -270,7 +267,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = `Untitled Folder${counter || ''}`;
         file = {
           name,
-          path: PathExt.join(dirname, name),
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format: 'json',
@@ -287,7 +284,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
-          path: PathExt.join(dirname, name),
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format: 'json',
@@ -323,7 +320,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `untitled${counter || ''}${ext}`;
         file = {
           name,
-          path: PathExt.join(dirname, name),
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format,
