@@ -317,15 +317,19 @@ export class BrowserStorageDrive implements Contents.IDrive {
         break;
       }
       default: {
-        let ext = options?.ext ?? '.txt';
-        if (!ext.startsWith('.')) {
+        let ext = options?.ext;
+        if (ext && !ext.startsWith('.')) {
           ext = `.${ext}`;
         }
         const counter = await this._incrementCounter('file');
-        const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
+        const mimetype = ext
+          ? FILE.getType(ext) || MIME.OCTET_STREAM
+          : MIME.OCTET_STREAM;
 
         let format: Contents.FileFormat;
-        if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
+        if (!ext) {
+          format = 'base64';
+        } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
           format = 'json';
@@ -574,7 +578,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
-    const ext = PathExt.extname(options.name ?? '');
+    const ext = options.name ? PathExt.extname(options.name) : undefined;
     const chunk = options.chunk;
 
     // retrieve the content if it is a later chunk or the last one
@@ -610,7 +614,18 @@ export class BrowserStorageDrive implements Contents.IDrive {
         appendChunk,
       );
 
-      if (ext === '.ipynb') {
+      if (!ext) {
+        const content = lastChunk
+          ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
+          : contentBinaryString;
+        item = {
+          ...item,
+          content,
+          format: 'text',
+          type: 'file',
+          size: contentBinaryString.length,
+        };
+      } else if (ext === '.ipynb') {
         const content = lastChunk
           ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
           : contentBinaryString;
