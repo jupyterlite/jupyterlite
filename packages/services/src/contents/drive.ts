@@ -569,12 +569,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     item = await this.get(path, { content: appendChunk }).catch(() => null);
 
     const now = new Date().toISOString();
-    const format =
-      options.type === 'directory'
-        ? null
-        : options.type === 'notebook'
-        ? 'json'
-        : 'text';
+    const format = options.format ?? 'text';
 
     if (item) {
       item = {
@@ -596,7 +591,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         created: now,
         format,
         mimetype,
-        content: '',
+        content: options.content,
         size: 0,
         writable: true,
         type: 'file',
