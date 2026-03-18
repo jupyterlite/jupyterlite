@@ -569,7 +569,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
     item = await this.get(path, { content: appendChunk }).catch(() => null);
 
     const now = new Date().toISOString();
-    const format = options.format ?? 'text';
+
+    const type = options?.type || 'file';
+    const format = options?.format || 'text';
+    const content = options?.content || '';
 
     console.log('DEBUG save', options);
 
@@ -584,10 +587,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
         last_modified: now,
         format,
         mimetype,
-        content: options.content,
+        content,
         size: 0,
         writable: true,
-        type: 'file',
+        type,
       };
     } else {
       item = {
@@ -597,19 +600,19 @@ export class BrowserStorageDrive implements Contents.IDrive {
         created: now,
         format,
         mimetype,
-        content: options.content,
+        content,
         size: 0,
         writable: true,
-        type: 'file',
+        type,
       };
     }
 
     // Handle multichunks uploads
-    if (options.content && options.format === 'base64') {
+    if (content && options.format === 'base64') {
       const lastChunk = chunk ? chunk === -1 : true;
 
       const contentBinaryString = this._handleUploadChunk(
-        options.content,
+        content,
         originalContent,
         appendChunk,
       );
