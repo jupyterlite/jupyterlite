@@ -571,6 +571,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const now = new Date().toISOString();
     const format = options.format ?? 'text';
 
+    // keep a reference to the original content
+    const originalContent = item?.content;
+
     if (item) {
       item = {
         ...item,
@@ -579,6 +582,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         last_modified: now,
         format,
         mimetype,
+        content: options.content,
         size: 0,
         writable: true,
         type: 'file',
@@ -598,9 +602,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
       };
     }
 
-    // keep a reference to the original content
-    const originalContent = item.content;
-
+    // Handle multichunks uploads
     if (options.content && options.format === 'base64') {
       const lastChunk = chunk ? chunk === -1 : true;
 
