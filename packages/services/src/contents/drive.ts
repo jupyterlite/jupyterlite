@@ -261,18 +261,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let dirname = PathExt.dirname(path);
     const basename = PathExt.basename(path);
 
-    // handle the case of "Save As", where the path points to the new file
-    // to create, e.g. subfolder/example-copy.ipynb
-    let name = '';
-    if (dirname && basename) {
-      // file in a subfolder
-      dirname = `${dirname}/`;
-      name = basename;
-    } else {
-      // file at the top level
-      dirname = '';
-      name = path;
-    }
+    let name = basename;
 
     let file: IModel;
     switch (type) {
@@ -281,7 +270,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = `Untitled Folder${counter || ''}`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(dirname, name),
           last_modified: created,
           created,
           format: 'json',
@@ -298,7 +287,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(dirname, name),
           last_modified: created,
           created,
           format: 'json',
@@ -334,7 +323,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `untitled${counter || ''}${ext}`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(dirname, name),
           last_modified: created,
           created,
           format,
