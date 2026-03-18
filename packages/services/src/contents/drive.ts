@@ -258,7 +258,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
-    let dirname = PathExt.dirname(path);
+    const dirname = PathExt.dirname(path);
     const basename = PathExt.basename(path);
 
     let name = basename;
