@@ -561,7 +561,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
-    const ext = options.name ? PathExt.extname(options.name) : undefined;
+    const ext = options.name
+      ? PathExt.extname(options.name)
+      : PathExt.extname(path) ?? undefined;
     const chunk = options.chunk;
 
     // retrieve the content if it is a later chunk or the last one
@@ -570,7 +572,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     item = await this.get(path, { content: appendChunk }).catch(() => null);
 
     if (!item) {
-      item = await this.newUntitled({ path, ext, type: 'file' });
+      item = await this.newUntitled({ path, type: 'file' });
     }
 
     if (!item) {
