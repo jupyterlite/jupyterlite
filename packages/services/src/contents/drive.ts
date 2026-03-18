@@ -260,19 +260,11 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     let dirname = PathExt.dirname(path);
     const basename = PathExt.basename(path);
-    const extname = PathExt.extname(path);
-    const item = await this.get(dirname).catch(() => null);
-
-    console.log("DEBUG create file", dirname, basename, extname);
 
     // handle the case of "Save As", where the path points to the new file
     // to create, e.g. subfolder/example-copy.ipynb
     let name = '';
-    if (path && !extname && item) {
-      // directory
-      dirname = `${path}/`;
-      name = '';
-    } else if (dirname && basename) {
+    if (dirname && basename) {
       // file in a subfolder
       dirname = `${dirname}/`;
       name = basename;
@@ -695,8 +687,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       item = { ...item, size: 0 };
     }
-
-    console.log('DEBUG Save item', item);
 
     await (await this.storage).setItem(path, item);
 
