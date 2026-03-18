@@ -571,6 +571,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const now = new Date().toISOString();
     const format = options.format ?? 'text';
 
+    console.log('DEBUG save', options);
+
     // keep a reference to the original content
     const originalContent = item?.content;
 
@@ -691,6 +693,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       item = { ...item, size: 0 };
     }
+
+
+    console.log('DEBUG saved', item);
 
     await (await this.storage).setItem(path, item);
 
