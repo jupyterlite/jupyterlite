@@ -558,9 +558,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
-    const ext = options.name
-      ? PathExt.extname(options.name)
-      : PathExt.extname(path) ?? undefined;
+    const name = options.name ? options.name : PathExt.basename(path) ?? undefined;
+    const ext = name ? PathExt.extname(name) ?? undefined : undefined;
+    const mimetype = ext ? FILE.getType(ext) || MIME.OCTET_STREAM : MIME.OCTET_STREAM;
     const chunk = options.chunk;
 
     // retrieve the content if it is a later chunk or the last one
@@ -568,24 +568,43 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
     item = await this.get(path, { content: appendChunk }).catch(() => null);
 
-    if (!item) {
-      item = await this.newUntitled({ path, type: 'file' });
-    }
+    const now = new Date().toISOString();
+    const format =
+      options.type === 'directory'
+        ? null
+        : options.type === 'notebook'
+        ? 'json'
+        : 'text';
 
-    if (!item) {
-      throw Error(`Could not find file with path ${path}`);
+    if (item) {
+      item = {
+        ...item,
+        name,
+        path: PathExt.join(path, name),
+        last_modified: now,
+        format,
+        mimetype,
+        size: 0,
+        writable: true,
+        type: 'file',
+      };
+    } else {
+      item = {
+        name,
+        path: PathExt.join(path, name),
+        last_modified: now,
+        created: now,
+        format,
+        mimetype,
+        content: '',
+        size: 0,
+        writable: true,
+        type: 'file',
+      };
     }
 
     // keep a reference to the original content
     const originalContent = item.content;
-
-    const modified = new Date().toISOString();
-    // override with the new values
-    item = {
-      ...item,
-      ...options,
-      last_modified: modified,
-    };
 
     if (options.content && options.format === 'base64') {
       const lastChunk = chunk ? chunk === -1 : true;
