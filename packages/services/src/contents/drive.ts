@@ -570,7 +570,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     const now = new Date().toISOString();
 
-    let type = options?.type || 'file';
+    let type = options.type || 'file';
 
     // Yeah sure, we all know notebooks are not files
     // This is some contents API nonsense
@@ -578,10 +578,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
       type = 'notebook';
     }
 
-    const format = options?.format || 'text';
-    const content = options?.content || '';
+    console.log('DEBUG save', path, options);
 
-    console.log('DEBUG save', options);
+    const format = options.format || 'base64';
+    const content = options.content || '';
 
     // keep a reference to the original content
     const originalContent = item?.content;
@@ -589,13 +589,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (item) {
       item = {
         ...item,
-        name,
-        path,
         last_modified: now,
         format,
         mimetype,
         content,
-        size: 0,
         writable: true,
         type,
       };
@@ -608,7 +605,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
         format,
         mimetype,
         content,
-        size: 0,
         writable: true,
         type,
       };
@@ -703,9 +699,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       item = { ...item, size: 0 };
     }
-
-
-    console.log('DEBUG saved', item);
+    console.log('DEBUG saved', path, item);
 
     await (await this.storage).setItem(path, item);
 
