@@ -578,8 +578,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
       type = 'notebook';
     }
 
-    console.log('DEBUG save', path, options);
-
     const format = options.format || 'base64';
     const content = options.content || '';
 
@@ -699,7 +697,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       item = { ...item, size: 0 };
     }
-    console.log('DEBUG saved', path, item);
 
     await (await this.storage).setItem(path, item);
 
