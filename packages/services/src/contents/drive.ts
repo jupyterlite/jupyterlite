@@ -577,8 +577,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
       type = 'notebook';
     }
 
-    const format = options.format || 'base64';
-    const content = options.content;
+    const format = options.format ?? 'base64';
+    const content = options.content ?? '';
 
     // keep a reference to the original content
     const originalContent = item?.content;
@@ -608,8 +608,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     }
 
     // Handle multichunks uploads
-    if (content && options.format === 'base64') {
-      const lastChunk = chunk ? chunk === -1 : true;
+    if (chunk) {
+      const lastChunk = chunk === -1;
 
       const contentBinaryString = this._handleUploadChunk(
         content,
