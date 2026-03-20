@@ -290,6 +290,8 @@ test.describe('Contents Tests', () => {
       'from pathlib import Path; Path("somefilewithoutextension").write_text("Hello there")',
     );
 
+    await page.notebook.runCellByCell();
+
     expect(
       await page.filebrowser.isFileListedInBrowser('somefilewithoutextension'),
     ).toBeTruthy();
