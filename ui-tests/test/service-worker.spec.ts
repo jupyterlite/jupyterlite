@@ -134,6 +134,8 @@ test.describe('Service Worker Tests', () => {
     const expectedOutput = 'file-access-5 done';
 
     // wait for the execution to finish in both tabs
-    expect(page.getByText(expectedOutput)).toBeVisible({ timeout: TIMEOUT });
+    expect(page.getByText(expectedOutput, { exact: true })).toBeVisible({
+      timeout: TIMEOUT,
+    });
   });
 });
