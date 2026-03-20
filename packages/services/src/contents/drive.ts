@@ -572,14 +572,13 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     let type = options.type || 'file';
 
-    // Yeah sure, we all know notebooks are not files
-    // This is some contents API nonsense
+    // The Contents API treats Notebooks as a special case.
     if (ext && ext === '.ipynb') {
       type = 'notebook';
     }
 
     const format = options.format || 'base64';
-    const content = options.content || '';
+    const content = options.content;
 
     // keep a reference to the original content
     const originalContent = item?.content;
