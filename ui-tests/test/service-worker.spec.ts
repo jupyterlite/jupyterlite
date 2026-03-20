@@ -131,7 +131,7 @@ test.describe('Service Worker Tests', () => {
     await page.notebook.open(notebook);
     await page.notebook.runCellByCell();
 
-    const expectedOutput = 'done';
+    const expectedOutput = 'file-access-5 done';
 
     // wait for the execution to finish in both tabs
     expect(page.getByText(expectedOutput)).toBeVisible({ timeout: TIMEOUT });
