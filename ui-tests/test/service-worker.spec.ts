@@ -121,8 +121,9 @@ test.describe('Service Worker Tests', () => {
     await page.notebook.runCellByCell();
   });
 
-
-  test('Creating a binary file and reading it gives the same value', async ({ page }) => {
+  test('Creating a binary file and reading it gives the same value', async ({
+    page,
+  }) => {
     const notebook = 'file-access-5.ipynb';
 
     await page.menu.clickMenuItem('Settings>Autosave Documents');
