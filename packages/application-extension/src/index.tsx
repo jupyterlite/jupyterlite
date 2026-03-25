@@ -510,12 +510,12 @@ const opener: JupyterFrontEndPlugin<void> = {
             }
 
             const factory = urlParams.get('factory') ?? defaultFactory;
-            docManager.open(file, factory, undefined, {
+            docManager.openOrReveal(file, factory, undefined, {
               ref: '_noref',
             });
           } else {
             // open all files in the lab interface
-            files.forEach((file) => docManager.open(file));
+            files.forEach((file) => docManager.openOrReveal(file));
             const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
             // only remove the path (to keep extra parameters like the RTC room)
             url.searchParams.delete('path');
