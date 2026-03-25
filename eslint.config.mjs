@@ -78,6 +78,11 @@ export default defineConfig([
       '@typescript-eslint/no-empty-object-type': 'off',
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'prefer-arrow-callback': 'error',
+      '@typescript-eslint/quotes': [
+        'error',
+        'single',
+        { avoidEscape: true, allowTemplateLiterals: false },
+      ],
       curly: ['error', 'all'],
       eqeqeq: 'error',
     },
