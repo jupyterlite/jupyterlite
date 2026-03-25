@@ -3393,6 +3393,7 @@ __metadata:
   resolution: "@jupyterlite/root@workspace:."
   dependencies:
     "@eslint/js": ^9.26.0
+    "@stylistic/eslint-plugin": ^5.10.0
     eslint: ^9.26.0
     eslint-config-prettier: ^10.0.0
     eslint-plugin-prettier: ^5.2.0
@@ -4265,6 +4266,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stylistic/eslint-plugin@npm:^5.10.0":
+  version: 5.10.0
+  resolution: "@stylistic/eslint-plugin@npm:5.10.0"
+  dependencies:
+    "@eslint-community/eslint-utils": ^4.9.1
+    "@typescript-eslint/types": ^8.56.0
+    eslint-visitor-keys: ^4.2.1
+    espree: ^10.4.0
+    estraverse: ^5.3.0
+    picomatch: ^4.0.3
+  peerDependencies:
+    eslint: ^9.0.0 || ^10.0.0
+  checksum: 747cf1a6d8afcceec19e3d25d3d7b539bce03676a7223d4c51534ac5f1374f7a6566514d596f15b939ffd62ab8090e73b7178f01b586f0f9c86228009a24ed41
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -4984,7 +5001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.56.1, @typescript-eslint/types@npm:^8.56.1":
+"@typescript-eslint/types@npm:8.56.1, @typescript-eslint/types@npm:^8.56.0, @typescript-eslint/types@npm:^8.56.1":
   version: 8.56.1
   resolution: "@typescript-eslint/types@npm:8.56.1"
   checksum: 67716a6699becdef1dd23acb0762b940caa2c541fd27573328b5047a7cd08d19f775eb01cd11080d16dc2d2a23af8f9b8fc5813f935b12170769de074af3c77a
