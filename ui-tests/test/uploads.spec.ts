@@ -51,6 +51,7 @@ test.describe('Upload Tests', () => {
   test('Upload multiple small text and binary files', async ({ page }) => {
     test.setTimeout(120000);
 
+    // Include multi-byte UTF-8 characters to verify they survive the upload round-trip and that size is counted in bytes.
     const textFile = createTextFileFromContent(
       '00-upload-small.txt',
       `${createDeterministicText(4096, 'small-text')}\nCrème brûlée 😀\n`,
@@ -383,6 +384,8 @@ async function openAndGetEditorContent(
   });
 }
 
+// Read cell source directly from the notebook model rather than using Galata's
+// getCellTextInput(), which uses a clipboard-based approach (enter edit mode, Ctrl+A, Ctrl+C, read clipboard).
 async function openAndGetNotebookCellSource(
   page: IJupyterLabPageFixture,
   name: string,
