@@ -6,20 +6,19 @@ import { createHash } from 'crypto';
 import { expect, test, type IJupyterLabPageFixture } from '@jupyterlab/galata';
 import type { Contents } from '@jupyterlab/services';
 
-import { firefoxWaitForApplication, refreshFilebrowser } from './utils';
+import {
+  chooseFilesForUpload,
+  firefoxWaitForApplication,
+  refreshFilebrowser,
+  type UploadFile,
+  uploadFiles,
+} from './utils';
 
 // Deliberately larger than JupyterLab's 1 MiB upload chunking threshold.
 const LARGE_UPLOAD_SIZE = 2 * 1024 * 1024 + 4096;
 
 // Larger than JupyterLab's 15 MiB threshold that triggers a confirmation dialog.
 const VERY_LARGE_UPLOAD_SIZE = 15 * 1024 * 1024 + 4096;
-
-type UploadFile = {
-  base64: string;
-  mimeType: string;
-  name: string;
-  size: number;
-};
 
 type GeneratedBinaryFile = UploadFile & {
   sha256: string;
@@ -186,20 +185,7 @@ test.describe('Upload Tests', () => {
       37,
     );
 
-    const uploadButton = page.locator('.jp-id-upload');
-    await expect(uploadButton).toBeVisible();
-
-    const fileChooserPromise = page.waitForEvent('filechooser');
-    await uploadButton.click();
-    const fileChooser = await fileChooserPromise;
-
-    await fileChooser.setFiles([
-      {
-        buffer: Buffer.from(binaryFile.base64, 'base64'),
-        mimeType: binaryFile.mimeType,
-        name: binaryFile.name,
-      },
-    ]);
+    await chooseFilesForUpload(page, [binaryFile]);
 
     // Handle the large file size warning dialog
     const dialog = page.locator('.jp-Dialog');
@@ -332,12 +318,18 @@ async function getFileModel(
 ): Promise<UploadContentsModel> {
   return page.evaluate(
     async (options) => {
-      const app = (window as any).jupyterapp;
-      const model = await app.serviceManager.contents.get(options.path, {
+      await window.galata.app.serviceManager.ready;
+      const model = await window.galata.app.serviceManager.contents.get(options.path, {
         content: true,
         format: options.format,
       });
-      return model;
+      return {
+        content: model.content,
+        format: model.format,
+        path: model.path,
+        size: model.size,
+        type: model.type,
+      };
     },
     { path, format },
   );
@@ -347,52 +339,29 @@ function normalizeNotebookSource(source: string | string[]): string {
   return Array.isArray(source) ? source.join('') : source;
 }
 
-async function uploadFiles(
-  page: IJupyterLabPageFixture,
-  files: UploadFile[],
-): Promise<void> {
-  const uploadButton = page.locator('.jp-id-upload');
-  await expect(uploadButton).toBeVisible();
-
-  const fileChooserPromise = page.waitForEvent('filechooser');
-  await uploadButton.click();
-  const fileChooser = await fileChooserPromise;
-
-  await fileChooser.setFiles(
-    files.map((file) => ({
-      buffer: Buffer.from(file.base64, 'base64'),
-      mimeType: file.mimeType,
-      name: file.name,
-    })),
-  );
-  const progressBar = page.locator('.jp-Statusbar-ProgressBar-progress-bar');
-
-  for (const file of files) {
-    await expect
-      .poll(async () => {
-        const isListed = await page.filebrowser.isFileListedInBrowser(file.name);
-        const isProgressHidden = !(await progressBar.isVisible().catch(() => false));
-
-        return isListed && isProgressHidden;
-      })
-      .toBeTruthy();
-  }
-}
-
 async function openAndGetEditorContent(
   page: IJupyterLabPageFixture,
   name: string,
 ): Promise<string> {
-  await page.filebrowser.open(name);
+  expect(await page.filebrowser.open(name)).toBeTruthy();
   await page.waitForSelector('.jp-FileEditor');
   return page.evaluate(() => {
-    const app = (window as any).jupyterapp;
-    return app.shell.currentWidget.context.model.toString();
+    const currentWidget = window.galata.app.shell.currentWidget as {
+      context: {
+        model: {
+          toString(): string;
+        };
+      };
+    } | null;
+
+    if (!currentWidget) {
+      throw new Error('No active file editor widget');
+    }
+
+    return currentWidget.context.model.toString();
   });
 }
 
-// Read cell source directly from the notebook model rather than using Galata's
-// getCellTextInput(), which uses a clipboard-based approach (enter edit mode, Ctrl+A, Ctrl+C, read clipboard).
 async function openAndGetNotebookCellSource(
   page: IJupyterLabPageFixture,
   name: string,
@@ -401,9 +370,25 @@ async function openAndGetNotebookCellSource(
   await page.notebook.open(name);
   expect(await page.notebook.isOpen(name)).toBeTruthy();
   return page.evaluate((index) => {
-    const app = (window as any).jupyterapp;
-    const widget = app.shell.currentWidget;
-    return widget.content.model.cells.get(index).sharedModel.getSource();
+    const currentWidget = window.galata.app.shell.currentWidget as {
+      content: {
+        model: {
+          cells: {
+            get(cellIndex: number): {
+              sharedModel: {
+                getSource(): string;
+              };
+            };
+          };
+        };
+      };
+    } | null;
+
+    if (!currentWidget) {
+      throw new Error('No active notebook widget');
+    }
+
+    return currentWidget.content.model.cells.get(index).sharedModel.getSource();
   }, cellIndex);
 }
 
@@ -448,17 +433,19 @@ async function verifyBinaryFileViaPython(
 
 async function getPythonKernelName(page: IJupyterLabPageFixture): Promise<string> {
   const kernelName = await page.evaluate(async () => {
-    const app = (window as any).jupyterapp;
-    const kernelspecs = app.serviceManager.kernelspecs?.specs?.kernelspecs ?? {};
+    await window.galata.app.serviceManager.ready;
 
-    for (const name of ['python3', 'python']) {
+    const specs = window.galata.app.serviceManager.kernelspecs.specs;
+    const kernelspecs = specs?.kernelspecs ?? {};
+    const candidateNames = [
+      specs?.default,
+      'python3',
+      'python',
+      ...Object.keys(kernelspecs),
+    ].filter((name): name is string => typeof name === 'string');
+
+    for (const name of candidateNames) {
       if (kernelspecs[name]?.language === 'python') {
-        return name;
-      }
-    }
-
-    for (const [name, spec] of Object.entries(kernelspecs) as Array<[string, any]>) {
-      if (spec?.language === 'python') {
         return name;
       }
     }
