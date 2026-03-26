@@ -11,6 +11,9 @@ import { firefoxWaitForApplication, refreshFilebrowser } from './utils';
 // Deliberately larger than JupyterLab's 1 MiB upload chunking threshold.
 const LARGE_UPLOAD_SIZE = 2 * 1024 * 1024 + 4096;
 
+// Larger than JupyterLab's 15 MiB threshold that triggers a confirmation dialog.
+const VERY_LARGE_UPLOAD_SIZE = 15 * 1024 * 1024 + 4096;
+
 type UploadFile = {
   base64: string;
   mimeType: string;
@@ -171,6 +174,60 @@ test.describe('Upload Tests', () => {
 
     const cellSource = await openAndGetNotebookCellSource(page, notebook.name);
     expect(cellSource).toBe(notebook.source);
+  });
+
+  test('Upload a very large binary file with confirmation dialog', async ({ page }) => {
+    test.setTimeout(240000);
+
+    const binaryFile = createBinaryFile(
+      '06-upload-very-large',
+      VERY_LARGE_UPLOAD_SIZE,
+      37,
+    );
+
+    const uploadButton = page.locator('.jp-id-upload');
+    await expect(uploadButton).toBeVisible();
+
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await uploadButton.click();
+    const fileChooser = await fileChooserPromise;
+
+    await fileChooser.setFiles([
+      {
+        buffer: Buffer.from(binaryFile.base64, 'base64'),
+        mimeType: binaryFile.mimeType,
+        name: binaryFile.name,
+      },
+    ]);
+
+    // Handle the large file size warning dialog
+    const dialog = page.locator('.jp-Dialog');
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Upload' }).click();
+
+    await expect
+      .poll(() => page.filebrowser.isFileListedInBrowser(binaryFile.name))
+      .toBeTruthy();
+
+    // Wait for all chunks to finish uploading before verifying content.
+    await expect
+      .poll(async () => (await getFileModel(page, binaryFile.name)).size, {
+        timeout: 120000,
+      })
+      .toBe(binaryFile.size);
+
+    const uploadedBinary = await getFileModel(page, binaryFile.name);
+    expect(uploadedBinary.type).toBe('file');
+    expect(uploadedBinary.format).toBe('base64');
+    expect(uploadedBinary.size).toBe(binaryFile.size);
+    expect(uploadedBinary.content).toBe(binaryFile.base64);
+
+    await verifyBinaryFileViaPython(
+      page,
+      binaryFile.name,
+      binaryFile.size,
+      binaryFile.sha256,
+    );
   });
 });
 
