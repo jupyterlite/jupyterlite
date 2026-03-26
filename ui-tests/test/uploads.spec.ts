@@ -308,9 +308,9 @@ async function uploadFiles(
   );
 
   for (const file of files) {
-    await expect(
-      page.locator(`span.jp-DirListing-itemText > span:text-is("${file.name}")`),
-    ).toBeVisible();
+    await expect
+      .poll(() => page.filebrowser.isFileListedInBrowser(file.name))
+      .toBeTruthy();
   }
 }
 
