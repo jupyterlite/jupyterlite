@@ -1,7 +1,16 @@
-import type { IJupyterLabPageFixture } from '@jupyterlab/galata';
+import { Buffer } from 'buffer';
+
+import { expect, type IJupyterLabPageFixture } from '@jupyterlab/galata';
 
 const dirListingItemTextSelector = (name: string) =>
   `span.jp-DirListing-itemText > span:text-is("${name}")`;
+
+export type UploadFile = Readonly<{
+  base64: string;
+  mimeType: string;
+  name: string;
+  size: number;
+}>;
 
 export async function deleteItem({
   page,
@@ -34,6 +43,40 @@ export async function download({
 
   // wait for download to complete
   return download.path();
+}
+
+export async function chooseFilesForUpload(
+  page: IJupyterLabPageFixture,
+  files: UploadFile[],
+): Promise<void> {
+  const uploadButton = page.locator('.jp-id-upload');
+  await expect(uploadButton).toBeVisible();
+
+  const [fileChooser] = await Promise.all([
+    page.waitForEvent('filechooser'),
+    uploadButton.click(),
+  ]);
+
+  await fileChooser.setFiles(
+    files.map((file) => ({
+      buffer: Buffer.from(file.base64, 'base64'),
+      mimeType: file.mimeType,
+      name: file.name,
+    })),
+  );
+}
+
+export async function uploadFiles(
+  page: IJupyterLabPageFixture,
+  files: UploadFile[],
+): Promise<void> {
+  await chooseFilesForUpload(page, files);
+
+  for (const file of files) {
+    await expect
+      .poll(() => page.filebrowser.isFileListedInBrowser(file.name))
+      .toBeTruthy();
+  }
 }
 
 /**
