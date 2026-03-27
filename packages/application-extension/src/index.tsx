@@ -11,7 +11,12 @@ import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
 import { IDocumentManager, IDocumentWidgetOpener } from '@jupyterlab/docmanager';
 
-import { IDefaultFileBrowser, IFileBrowserFactory } from '@jupyterlab/filebrowser';
+import {
+  DirListing,
+  IDefaultFileBrowser,
+  IFileBrowserFactory,
+  IDefaultFileBrowserRenderer,
+} from '@jupyterlab/filebrowser';
 
 import {
   DocumentConnectionManager,
@@ -30,9 +35,17 @@ import {
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
+import type { TranslationBundle } from '@jupyterlab/translation';
 import { ITranslator } from '@jupyterlab/translation';
 
-import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import type { LabIcon } from '@jupyterlab/ui-components';
+import {
+  clearIcon,
+  downloadIcon,
+  editIcon,
+  linkIcon,
+  offlineBoltIcon,
+} from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
@@ -42,9 +55,14 @@ import {
   ServiceWorkerManager,
 } from '@jupyterlite/apputils';
 
-import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/services';
+import {
+  BrowserStorageDrive,
+  CONTENT_LAYER,
+  IKernelClient,
+  Settings,
+} from '@jupyterlite/services';
 
-import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
+import { cloudIcon, liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
 // Import deprecated packages for backward compatibility with federated extensions
 import '@jupyterlite/contents';
@@ -52,6 +70,10 @@ import '@jupyterlite/kernel';
 import '@jupyterlite/server';
 
 import { filter } from '@lumino/algorithm';
+
+import type { CommandRegistry } from '@lumino/commands';
+
+import type { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 
 import type { DockPanel } from '@lumino/widgets';
 import { Widget } from '@lumino/widgets';
@@ -83,6 +105,8 @@ namespace CommandIDs {
   export const copyShareableLink = 'filebrowser:share-main';
 
   export const clearBrowserData = 'application:clear-browser-data';
+
+  export const revertToServer = 'application:revert-to-server';
 }
 
 /**
@@ -90,6 +114,115 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+const DRIVE_LAYER_BADGE_CLASS = 'jp-DriveLayerBadge';
+const DRIVE_LAYER_BADGE_RENDERER_PLUGIN_ID =
+  '@jupyterlite/application-extension:drive-layer-badge-renderer';
+const DRIVE_LAYER_BADGES_PLUGIN_ID =
+  '@jupyterlite/application-extension:drive-layer-badges';
+
+class DriveLayerBadgeRenderer extends DirListing.Renderer {
+  constructor(
+    private readonly trans: TranslationBundle,
+    private readonly commands: CommandRegistry,
+  ) {
+    super();
+  }
+
+  override updateItemNode(
+    ...args: Parameters<DirListing.Renderer['updateItemNode']>
+  ): void {
+    const [node, model] = args;
+    super.updateItemNode(...args);
+
+    const layer = (model as BrowserStorageDrive.ILayeredModel)[CONTENT_LAYER];
+    const existingBadge = node.querySelector<HTMLElement>(
+      `.${DRIVE_LAYER_BADGE_CLASS}`,
+    );
+    const description = this._getBadgeDescription(layer);
+
+    if (!description) {
+      existingBadge?.remove();
+      return;
+    }
+
+    const badge = existingBadge ?? document.createElement('span');
+    const tooltip = this.trans.__('%1: %2', description.label, description.title);
+    badge.className = `${DRIVE_LAYER_BADGE_CLASS} ${description.className}`;
+    badge.title = tooltip;
+    badge.setAttribute('aria-label', tooltip);
+    badge.setAttribute('role', 'img');
+
+    // Render icon if it changed
+    const currentIcon = badge.dataset.icon;
+    if (currentIcon !== description.icon.name) {
+      badge.replaceChildren();
+      description.icon.element({
+        container: badge,
+        tag: 'span',
+        height: '14px',
+        width: '14px',
+      });
+      badge.dataset.icon = description.icon.name;
+    }
+
+    // Make override badges clickable to revert to the server version
+    if (layer === 'writable-override') {
+      badge.dataset.path = model.path;
+      if (!badge.dataset.hasClickHandler) {
+        badge.addEventListener('click', (event: Event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          const target = event.currentTarget as HTMLElement;
+          void this.commands.execute(CommandIDs.revertToServer, {
+            path: target.dataset.path,
+          });
+        });
+        badge.dataset.hasClickHandler = 'true';
+      }
+    }
+
+    if (!existingBadge) {
+      const iconNode = node.querySelector<HTMLElement>('.jp-DirListing-itemIcon');
+      if (iconNode?.parentElement) {
+        iconNode.insertAdjacentElement('afterend', badge);
+      } else {
+        node.querySelector<HTMLElement>('.jp-DirListing-itemName')?.prepend(badge);
+      }
+    }
+  }
+
+  private _getBadgeDescription(
+    layer: BrowserStorageDrive.TContentLayer | undefined,
+  ): { className: string; label: string; title: string; icon: LabIcon } | null {
+    switch (layer) {
+      case 'server':
+        return {
+          className: 'jp-mod-server',
+          label: this.trans.__('Server'),
+          title: this.trans.__('Read from site assets'),
+          icon: cloudIcon,
+        };
+      case 'writable':
+        return {
+          className: 'jp-mod-writable',
+          label: this.trans.__('Writable'),
+          title: this.trans.__('Saved in browser storage'),
+          icon: editIcon,
+        };
+      case 'writable-override':
+        return {
+          className: 'jp-mod-override',
+          label: this.trans.__('Override'),
+          title: this.trans.__(
+            'Writable copy overrides a server file (click to revert)',
+          ),
+          icon: offlineBoltIcon,
+        };
+      default:
+        return null;
+    }
+  }
+}
 
 /**
  * The custom URL router provider.
@@ -352,6 +485,168 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
             ? undefined
             : downloadIcon.bindprops({ stylesheet: 'menuItem' }),
         label: trans.__('Download'),
+      });
+    }
+  },
+};
+
+/**
+ * A plugin to provide a custom file browser renderer for drive layer badges.
+ */
+const driveLayerBadgeRenderer: JupyterFrontEndPlugin<IDefaultFileBrowserRenderer> = {
+  id: DRIVE_LAYER_BADGE_RENDERER_PLUGIN_ID,
+  autoStart: true,
+  provides: IDefaultFileBrowserRenderer,
+  requires: [ITranslator],
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator,
+  ): IDefaultFileBrowserRenderer => {
+    const trans = translator.load(I18N_BUNDLE);
+    return new DriveLayerBadgeRenderer(trans, app.commands);
+  },
+};
+
+/**
+ * A plugin to annotate file browser items with server/writable layer badges.
+ */
+const driveLayerBadges: JupyterFrontEndPlugin<void> = {
+  id: DRIVE_LAYER_BADGES_PLUGIN_ID,
+  autoStart: true,
+  requires: [IFileBrowserFactory],
+  optional: [ISettingRegistry],
+  activate: (
+    _: JupyterFrontEnd,
+    factory: IFileBrowserFactory,
+    settingRegistry: ISettingRegistry | null,
+  ): void => {
+    let showBadges = true;
+    const { tracker } = factory;
+
+    const updateBadgeVisibility = () => {
+      tracker.forEach((browser) => {
+        browser.toggleClass('jp-DriveLayerBadges', showBadges);
+      });
+    };
+
+    const initBrowser = (
+      browser: ReturnType<IFileBrowserFactory['createFileBrowser']>,
+    ) => {
+      browser.toggleClass('jp-DriveLayerBadges', showBadges);
+      void browser.model.refresh();
+    };
+
+    tracker.forEach(initBrowser);
+    tracker.widgetAdded.connect((_, browser) => {
+      initBrowser(browser);
+    });
+
+    if (settingRegistry) {
+      void settingRegistry
+        .load(DRIVE_LAYER_BADGES_PLUGIN_ID)
+        .then((settings) => {
+          const updateSetting = () => {
+            showBadges = (settings.get('showBadges').composite ?? true) as boolean;
+            updateBadgeVisibility();
+          };
+          updateSetting();
+          settings.changed.connect(updateSetting);
+        })
+        .catch((reason) => {
+          console.warn(
+            `Failed to load ${DRIVE_LAYER_BADGES_PLUGIN_ID} settings`,
+            reason,
+          );
+        });
+    }
+  },
+};
+
+/**
+ * A plugin to add a "Revert to Server Version" command for override files.
+ *
+ * This adds an entry to the File menu that is only enabled when the current
+ * document is a writable override of a server file. Using it removes the local
+ * copy and reverts to the original version bundled with the deployment.
+ */
+const revertToServer: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:revert-to-server',
+  autoStart: true,
+  requires: [IDocumentManager, ITranslator],
+  optional: [IMainMenu, ILabShell],
+  activate: (
+    app: JupyterFrontEnd,
+    docManager: IDocumentManager,
+    translator: ITranslator,
+    menu: IMainMenu | null,
+    labShell: ILabShell | null,
+  ): void => {
+    const { commands, shell, serviceManager } = app;
+    const { contents } = serviceManager;
+    const trans = translator.load(I18N_BUNDLE);
+
+    const getOverridePath = async (): Promise<string | null> => {
+      const current = shell.currentWidget;
+      if (!current) {
+        return null;
+      }
+      const context = docManager.contextForWidget(current);
+      if (!context) {
+        return null;
+      }
+      try {
+        const model = await contents.get(context.path);
+        const layer = (model as BrowserStorageDrive.ILayeredModel)[CONTENT_LAYER];
+        if (layer === 'writable-override') {
+          return context.path;
+        }
+      } catch {
+        // file may not exist or drive may not support layers
+      }
+      return null;
+    };
+
+    commands.addCommand(CommandIDs.revertToServer, {
+      label: trans.__('Revert to Server Version'),
+      isEnabled: () => {
+        const current = shell.currentWidget;
+        return !!(current && docManager.contextForWidget(current));
+      },
+      execute: async (args: ReadonlyPartialJSONObject) => {
+        // Accept a path argument (from badge click) or infer from the current widget
+        const path = (args.path as string) ?? (await getOverridePath());
+        if (!path) {
+          return;
+        }
+        const name = path.split('/').pop() ?? path;
+        const result = await showDialog({
+          title: trans.__('Revert to Server Version'),
+          body: trans.__(
+            'This will remove your local changes to "%1" and revert to the original version bundled with the deployment.',
+            name,
+          ),
+          buttons: [
+            Dialog.cancelButton({ label: trans.__('Cancel') }),
+            Dialog.warnButton({ label: trans.__('Revert') }),
+          ],
+        });
+        if (result.button.accept) {
+          await docManager.deleteFile(path);
+        }
+      },
+    });
+
+    if (menu) {
+      menu.fileMenu.addGroup(
+        [{ command: CommandIDs.revertToServer }],
+        40, // after the standard "Revert Notebook to Checkpoint" group
+      );
+    }
+
+    // Re-evaluate command state when the active widget changes
+    if (labShell) {
+      labShell.currentChanged.connect(() => {
+        commands.notifyCommandChanged(CommandIDs.revertToServer);
       });
     }
   },
@@ -824,6 +1119,8 @@ const modeSupport: JupyterFrontEndPlugin<void> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
+  driveLayerBadgeRenderer,
+  driveLayerBadges,
   downloadPlugin,
   liteRouter,
   liteLogo,
@@ -831,6 +1128,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   modeSupport,
   notifyCommands,
   opener,
+  revertToServer,
   router,
   serviceWorkerManagerPlugin,
   sessionContextPatch,
