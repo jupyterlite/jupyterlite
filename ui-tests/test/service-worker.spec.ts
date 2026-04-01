@@ -138,4 +138,21 @@ test.describe('Service Worker Tests', () => {
       timeout: TIMEOUT,
     });
   });
+
+  test('Write/read roundtrips on the file system', async ({ page }) => {
+    const notebook = 'file-roundtrips.ipynb';
+
+    await page.menu.clickMenuItem('Settings>Autosave Documents');
+
+    await page.notebook.open(notebook);
+
+    await page.notebook.runCellByCell({
+      onAfterCellRun: async (_: number) => {
+        // Always get first cell output which must contain the plot
+        const cell = await page.notebook.getCellOutputLocator(0);
+
+        expect(cell?.innerHTML.toString().includes('Ok')).toBeTruthy();
+      },
+    });
+  });
 });
