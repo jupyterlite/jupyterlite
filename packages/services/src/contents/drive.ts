@@ -1,6 +1,6 @@
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import type { Contents, Drive } from '@jupyterlab/services';
+import type { Contents, Drive, IContentProvider } from '@jupyterlab/services';
 import { ContentProviderRegistry, ServerConnection } from '@jupyterlab/services';
 
 import type { INotebookContent } from '@jupyterlab/nbformat';
@@ -48,13 +48,15 @@ export class BrowserStorageDrive implements Contents.IDrive {
     this._storageName = options.storageName || DEFAULT_STORAGE_NAME;
     this._storageDrivers = options.storageDrivers || null;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
-    if (options.defaultContentProvider) {
-      this.contentProviderRegistry = new ContentProviderRegistry({
-        defaultProvider: options.defaultContentProvider,
-      });
-    } else {
-      this.contentProviderRegistry = new ContentProviderRegistry();
-    }
+    const contentProviderRegistry = options.defaultContentProvider
+      ? new ContentProviderRegistry({
+          defaultProvider: options.defaultContentProvider,
+        })
+      : new ContentProviderRegistry();
+    const register = contentProviderRegistry.register.bind(contentProviderRegistry);
+    contentProviderRegistry.register = (identifier, provider) =>
+      register(identifier, Private.wrapContentProvider({ drive: this, provider }));
+    this.contentProviderRegistry = contentProviderRegistry;
     this._ready = new PromiseDelegate();
     this.initialize().catch(console.warn);
   }
@@ -1069,6 +1071,34 @@ export namespace BrowserStorageDrive {
  * A namespace for private data.
  */
 namespace Private {
+  /**
+   * Wrap a content provider so it delegates to the drive instead of making
+   * REST calls.  This is the JupyterLite equivalent of the upstream fix in
+   * jupyterlab/jupyterlab#18652: content providers such as the audio and video
+   * providers extend RestContentProvider, which makes HTTP requests to
+   * /api/contents — requests that will always fail in JupyterLite because there
+   * is no real server.  Rather than letting those requests fail and catching the
+   * error, we bypass the provider entirely and route straight to the drive's own
+   * get/save implementation (with contentProviderId cleared to avoid recursion).
+   */
+  export function wrapContentProvider(options: {
+    drive: BrowserStorageDrive;
+    provider: IContentProvider;
+  }): IContentProvider {
+    const { drive, provider } = options;
+
+    return {
+      fileChanged: provider.fileChanged,
+      sharedModelFactory: provider.sharedModelFactory,
+      async get(path, fetchOptions) {
+        return drive.get(path, { ...fetchOptions, contentProviderId: undefined });
+      },
+      async save(path, saveOptions) {
+        return drive.save(path, { ...saveOptions, contentProviderId: undefined });
+      },
+    };
+  }
+
   /**
    * The content for an empty notebook.
    */
