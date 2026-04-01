@@ -187,7 +187,7 @@ jobs:
       - name: Install Python dependencies
         run:
           python -m pip install --group docs --group dev --group test -r
-          examples/requirements-demo.txt
+          examples/requirements-pyodide-lock.txt
       - name: Install JS dependencies
         run: jlpm
       - name: Docs (app)

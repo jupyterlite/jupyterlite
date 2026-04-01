@@ -7,7 +7,7 @@ build:
   jobs:
     post_install:
       - python -m pip install --upgrade pip
-      - python -m pip install --group docs --group dev -r examples/requirements-demo.txt
+      - python -m pip install --group readthedocs -r examples/requirements-pyodide-lock.txt
       - jlpm
       - jlpm build
       - jlpm pack:app

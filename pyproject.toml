@@ -13,6 +13,7 @@ build = [
 
 # Demo site extensions
 demo = [
+    { include-group = "pyodide-kernel" },
     "bqplot~=0.12.43",
     "ipycanvas~=0.14.2",
     "ipycytoscape~=1.3.3",
@@ -27,14 +28,14 @@ demo = [
     "jupyterlab-night~=0.5.0",
     "jupyterlab-tour~=4.0.1",
     "jupyterlite-p5-kernel~=0.4.0a0",
-    "jupyterlite-pyodide-kernel>=0.8.0a0",
     "plotly~=5.22.0",
 ]
+
 
 # Core development
 dev = [
     { include-group = "build" },
-    "jupyterlite-pyodide-kernel>=0.8.0a0",
+    { include-group = "pyodide-kernel" },
     "notebook>=7.6.0a4,<7.7",
     "pkginfo",
     "ruff>=0.8.3",
@@ -65,6 +66,18 @@ lint = [
     "ruff>=0.8.3",
 ]
 
+# An example downstream kernel
+pyodide-kernel = [
+    "jupyterlite-pyodide-kernel[lock] @ https://jupyterlite-pyodide-kernel--275.org.readthedocs.build/en/275/_static/jupyterlite_pyodide_kernel-0.8.0a1-py3-none-any.whl ; sys_platform != 'emscripten'",
+]
+
+## Documentation build platform
+readthedocs = [
+    {include-group = "demo"},
+    {include-group = "dev"},
+    {include-group = "docs"},
+]
+
 # Release process
 release = [
     { include-group = "build" },
@@ -88,14 +101,15 @@ test = [
 # UI tests
 ui-tests = [
     { include-group = "build" },
+    { include-group = "pyodide-kernel" },
     "jupyterlab==4.6.0a4",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.4.0a0",
-    "jupyterlite-pyodide-kernel==0.8.0a0",
     "notebook==7.6.0a4",
     "jupyterlab-night==0.5.2",
 ]
+
 
 # All development dependencies (excludes demo)
 all-dev = [
@@ -163,7 +177,6 @@ ignore = [
 "docs/conf.py" = ["A001", "S603", "S607"]
 "scripts/dev-build.py" = ["S603"]
 "scripts/bump-version.py" = ["S603"]
-"scripts/compile-lock-files.py" = ["S310", "S603", "S607"]
 "scripts/upgrade-dependencies.py" = ["S310"]
 "**/conftest.py" = ["S603", "S607"]
 
