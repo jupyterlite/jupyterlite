@@ -14,7 +14,8 @@ build:
       - python -m pip install './py/jupyterlite-core[all]'
       - jlpm build:py
       - jlpm docs
-      - jupyter lite build --contents examples --output-dir build/docs-app
+      - cd examples
+      - jupyter lite build
 sphinx:
   builder: html
   configuration: docs/conf.py
