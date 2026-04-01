@@ -768,8 +768,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
           item = { ...item, size: encoder.encode(item.content).length };
           break;
         }
-        // base64 save was already handled above
         case 'base64': {
+          const padding = (item.content.match(/=+$/) || [''])[0].length;
+          item = { ...item, size: (item.content.length * 3) / 4 - padding };
           break;
         }
         default: {
