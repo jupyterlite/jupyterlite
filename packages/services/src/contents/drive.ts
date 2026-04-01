@@ -37,6 +37,96 @@ const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
 /**
+ * Converts a contents model into JSON
+ *
+ * @param model the model to convert
+ * @returns the converted model
+ */
+export function convertToJSON(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return model;
+    }
+    case 'text': {
+      return {
+        ...model,
+        content: JSON.parse(model.content),
+        format: 'json',
+      };
+    }
+    case 'base64': {
+      return {
+        ...model,
+        content: JSON.parse(btoa(model.content)),
+        format: 'json',
+      };
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
+ * Converts a contents model into Text
+ *
+ * @param model the model to convert
+ * @returns the converted model
+ */
+export function convertToText(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return {
+        ...model,
+        content: JSON.stringify(model.content),
+        format: 'text',
+      };
+    }
+    case 'text': {
+      return model;
+    }
+    case 'base64': {
+      return {
+        ...model,
+        content: atob(model.content),
+        format: 'text',
+      };
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
+ * Converts a contents model into Base64
+ *
+ * @param model the model to convert
+ * @returns the converted model
+ */
+export function convertToBase64(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return {
+        ...model,
+        content: btoa(JSON.stringify(model.content)),
+        format: 'base64',
+      };
+    }
+    case 'text': {
+      return {
+        ...model,
+        content: btoa(model.content),
+        format: 'base64',
+      };
+    }
+    case 'base64': {
+      return model;
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
  * A custom drive to store files in the browser storage.
  */
 export class BrowserStorageDrive implements Contents.IDrive {
@@ -424,16 +514,36 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const item = await storage.getItem(path);
     const serverItem = await this._getServerContents(path, options);
 
-    const model = (item || serverItem) as IModel | null;
+    let model = (item || serverItem) as IModel | null;
 
     if (!model) {
       throw Error(`Could not find content with path ${path}`);
     }
 
-    if (!options?.content) {
+    if (options?.content) {
+      // Fix model format if the requested format does not match
+      const requestedFormat = options?.format;
+      if (requestedFormat && model.format !== requestedFormat) {
+        switch (requestedFormat) {
+          case 'json': {
+            model = convertToJSON(model);
+            break;
+          }
+          case 'text': {
+            model = convertToText(model);
+            break;
+          }
+          case 'base64': {
+            model = convertToBase64(model);
+            break;
+          }
+        }
+      }
+    } else {
       return {
-        size: 0,
         ...model,
+        size: 0,
+        format: options?.format ?? model.format,
         content: null,
       };
     }
@@ -573,12 +683,12 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let type = options.type || 'file';
 
     // The Contents API treats Notebooks as a special case.
-    if (ext && ext === '.ipynb') {
+    if (ext && ext.toLowerCase() === '.ipynb') {
       type = 'notebook';
     }
 
-    const format = options.format ?? 'base64';
-    const content = options.content ?? '';
+    const format = options?.format || 'base64';
+    const content = options?.content || '';
 
     // keep a reference to the original content
     const originalContent = item?.content;
@@ -617,57 +727,30 @@ export class BrowserStorageDrive implements Contents.IDrive {
         appendChunk,
       );
 
-      if (!ext) {
-        const content = lastChunk
-          ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
-          : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          format: 'text',
-          type: 'file',
-          size: contentBinaryString.length,
-        };
-      } else if (ext === '.ipynb') {
+      if (item.format === 'json') {
         const content = lastChunk
           ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
           : contentBinaryString;
         item = {
           ...item,
           content,
-          format: 'json',
-          type: 'notebook',
           size: contentBinaryString.length,
         };
-      } else if (FILE.hasFormat(ext, 'json')) {
-        const content = lastChunk
-          ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
-          : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          format: 'json',
-          type: 'file',
-          size: contentBinaryString.length,
-        };
-      } else if (FILE.hasFormat(ext, 'text')) {
+      } else if (item.format === 'text') {
         const content = lastChunk
           ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
           : contentBinaryString;
         item = {
           ...item,
           content,
-          format: 'text',
-          type: 'file',
           size: contentBinaryString.length,
         };
       } else {
+        // item.format is base64
         const content = lastChunk ? btoa(contentBinaryString) : contentBinaryString;
         item = {
           ...item,
           content,
-          format: 'base64',
-          type: 'file',
           size: contentBinaryString.length,
         };
       }
@@ -675,7 +758,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     // fixup content sizes if necessary
     if (item.content) {
-      switch (options.format) {
+      switch (item.format) {
         case 'json': {
           item = { ...item, size: encoder.encode(JSON.stringify(item.content)).length };
           break;
