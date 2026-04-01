@@ -328,11 +328,14 @@ function encodeStringToBase64(content: string): string {
 async function getFileModel(
   page: IJupyterLabPageFixture,
   path: string,
-  format: 'json' | 'text' | 'base64'
+  format: 'json' | 'text' | 'base64',
 ): Promise<UploadContentsModel> {
   return page.evaluate(async (filePath) => {
     const app = (window as any).jupyterapp;
-    const model = await app.serviceManager.contents.get(filePath, { content: true, format });
+    const model = await app.serviceManager.contents.get(filePath, {
+      content: true,
+      format,
+    });
     return {
       content: model.content,
       format: model.format,
