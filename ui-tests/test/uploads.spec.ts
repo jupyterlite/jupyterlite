@@ -337,13 +337,7 @@ async function getFileModel(
         content: true,
         format: options.format,
       });
-      return {
-        content: model.content,
-        format: model.format,
-        path: model.path,
-        size: model.size,
-        type: model.type,
-      };
+      return model;
     },
     { path, format },
   );
@@ -371,10 +365,16 @@ async function uploadFiles(
       name: file.name,
     })),
   );
+  const progressBar = page.locator('.jp-Statusbar-ProgressBar-progress-bar');
 
   for (const file of files) {
     await expect
-      .poll(() => page.filebrowser.isFileListedInBrowser(file.name))
+      .poll(async () => {
+        const isListed = await page.filebrowser.isFileListedInBrowser(file.name);
+        const isProgressHidden = !(await progressBar.isVisible().catch(() => false));
+
+        return isListed && isProgressHidden;
+      })
       .toBeTruthy();
   }
 }
