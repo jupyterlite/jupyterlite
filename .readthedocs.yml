@@ -13,9 +13,8 @@ build:
       - jlpm pack:app
       - python -m pip install './py/jupyterlite-core[all]'
       - jlpm build:py
+      - cd examples && jupyter lite build && cd ..
       - jlpm docs
-      - cd examples
-      - jupyter lite build
 sphinx:
   builder: html
   configuration: docs/conf.py
