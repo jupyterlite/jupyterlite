@@ -55,9 +55,13 @@ export function convertToJSON(model: Contents.IModel): Contents.IModel {
       };
     }
     case 'base64': {
+      const binary = atob(model.content);
+      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+      const decoded = new TextDecoder('utf-8').decode(bytes);
+
       return {
         ...model,
-        content: JSON.parse(atob(model.content)),
+        content: JSON.parse(decoded),
         format: 'json',
       };
     }
@@ -85,9 +89,13 @@ export function convertToText(model: Contents.IModel): Contents.IModel {
       return model;
     }
     case 'base64': {
+      const binary = atob(model.content);
+      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+      const decoded = new TextDecoder('utf-8').decode(bytes);
+
       return {
         ...model,
-        content: atob(model.content),
+        content: decoded,
         format: 'text',
       };
     }

@@ -129,9 +129,8 @@ test.describe('Service Worker Tests', () => {
     await page.notebook.open(notebook);
 
     await page.notebook.runCellByCell({
-      onAfterCellRun: async (_: number) => {
-        // Always get first cell output which must contain the plot
-        const cell = await page.notebook.getCellOutputLocator(0);
+      onAfterCellRun: async (cellIndex: number) => {
+        const cell = await page.notebook.getCellOutputLocator(cellIndex);
 
         expect(cell?.innerHTML.toString().includes('Ok')).toBeTruthy();
       },
