@@ -62,13 +62,13 @@ test.describe('Upload Tests', () => {
     expect(await page.filebrowser.isFileListedInBrowser(textFile.name)).toBeTruthy();
     expect(await page.filebrowser.isFileListedInBrowser(binaryFile.name)).toBeTruthy();
 
-    const uploadedText = await getFileModel(page, textFile.name);
+    const uploadedText = await getFileModel(page, textFile.name, 'text');
     expect(uploadedText.type).toBe('file');
     expect(uploadedText.format).toBe('text');
     expect(uploadedText.size).toBe(textFile.size);
     expect(uploadedText.content).toBe(textFile.text);
 
-    const uploadedBinary = await getFileModel(page, binaryFile.name);
+    const uploadedBinary = await getFileModel(page, binaryFile.name, 'base64');
     expect(uploadedBinary.type).toBe('file');
     expect(uploadedBinary.format).toBe('base64');
     expect(uploadedBinary.size).toBe(binaryFile.size);
@@ -97,7 +97,7 @@ test.describe('Upload Tests', () => {
     await uploadFiles(page, [textFile]);
     expect(await page.filebrowser.isFileListedInBrowser(textFile.name)).toBeTruthy();
 
-    const uploadedText = await getFileModel(page, textFile.name);
+    const uploadedText = await getFileModel(page, textFile.name, 'text');
     expect(uploadedText.type).toBe('file');
     expect(uploadedText.format).toBe('text');
     expect(uploadedText.size).toBe(textFile.size);
@@ -115,7 +115,7 @@ test.describe('Upload Tests', () => {
     await uploadFiles(page, [binaryFile]);
     expect(await page.filebrowser.isFileListedInBrowser(binaryFile.name)).toBeTruthy();
 
-    const uploadedBinary = await getFileModel(page, binaryFile.name);
+    const uploadedBinary = await getFileModel(page, binaryFile.name, 'base64');
     expect(uploadedBinary.type).toBe('file');
     expect(uploadedBinary.format).toBe('base64');
     expect(uploadedBinary.size).toBe(binaryFile.size);
@@ -141,7 +141,7 @@ test.describe('Upload Tests', () => {
     await uploadFiles(page, [notebook]);
     expect(await page.filebrowser.isFileListedInBrowser(notebook.name)).toBeTruthy();
 
-    const uploadedNotebook = await getFileModel(page, notebook.name);
+    const uploadedNotebook = await getFileModel(page, notebook.name, 'json');
     expect(uploadedNotebook.type).toBe('notebook');
     expect(uploadedNotebook.format).toBe('json');
     expect(uploadedNotebook.size).toBe(notebook.size);
@@ -165,7 +165,7 @@ test.describe('Upload Tests', () => {
     await uploadFiles(page, [notebook]);
     expect(await page.filebrowser.isFileListedInBrowser(notebook.name)).toBeTruthy();
 
-    const uploadedNotebook = await getFileModel(page, notebook.name);
+    const uploadedNotebook = await getFileModel(page, notebook.name, 'json');
     expect(uploadedNotebook.type).toBe('notebook');
     expect(uploadedNotebook.format).toBe('json');
     expect(uploadedNotebook.size).toBe(notebook.size);
@@ -212,12 +212,12 @@ test.describe('Upload Tests', () => {
 
     // Wait for all chunks to finish uploading before verifying content.
     await expect
-      .poll(async () => (await getFileModel(page, binaryFile.name)).size, {
+      .poll(async () => (await getFileModel(page, binaryFile.name, 'base64')).size, {
         timeout: 120000,
       })
       .toBe(binaryFile.size);
 
-    const uploadedBinary = await getFileModel(page, binaryFile.name);
+    const uploadedBinary = await getFileModel(page, binaryFile.name, 'base64');
     expect(uploadedBinary.type).toBe('file');
     expect(uploadedBinary.format).toBe('base64');
     expect(uploadedBinary.size).toBe(binaryFile.size);
@@ -328,10 +328,11 @@ function encodeStringToBase64(content: string): string {
 async function getFileModel(
   page: IJupyterLabPageFixture,
   path: string,
+  format: 'json' | 'text' | 'base64'
 ): Promise<UploadContentsModel> {
   return page.evaluate(async (filePath) => {
     const app = (window as any).jupyterapp;
-    const model = await app.serviceManager.contents.get(filePath, { content: true });
+    const model = await app.serviceManager.contents.get(filePath, { content: true, format });
     return {
       content: model.content,
       format: model.format,
