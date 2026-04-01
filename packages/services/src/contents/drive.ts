@@ -57,7 +57,7 @@ export function convertToJSON(model: Contents.IModel): Contents.IModel {
     case 'base64': {
       return {
         ...model,
-        content: JSON.parse(btoa(model.content)),
+        content: JSON.parse(atob(model.content)),
         format: 'json',
       };
     }
