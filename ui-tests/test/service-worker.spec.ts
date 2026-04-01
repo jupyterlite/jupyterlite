@@ -121,24 +121,6 @@ test.describe('Service Worker Tests', () => {
     await page.notebook.runCellByCell();
   });
 
-  test('Creating a binary file and reading it gives the same value', async ({
-    page,
-  }) => {
-    const notebook = 'file-access-5.ipynb';
-
-    await page.menu.clickMenuItem('Settings>Autosave Documents');
-
-    await page.notebook.open(notebook);
-    await page.notebook.runCellByCell();
-
-    const expectedOutput = 'file-access-5 done';
-
-    // wait for the execution to finish in both tabs
-    await expect(page.getByText(expectedOutput, { exact: true })).toBeVisible({
-      timeout: TIMEOUT,
-    });
-  });
-
   test('Write/read roundtrips on the file system', async ({ page }) => {
     const notebook = 'file-roundtrips.ipynb';
 

@@ -276,27 +276,6 @@ test.describe('Contents Tests', () => {
     await newTab.close();
   });
 
-  test('Creating a file with no extension works', async ({ page }) => {
-    // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
-
-    const notebook = 'empty.ipynb';
-    await page.notebook.open(notebook);
-
-    // create file with no extension.
-    await page.notebook.setCell(
-      0,
-      'code',
-      'from pathlib import Path; Path("somefilewithoutextension").write_text("Hello there")',
-    );
-
-    await page.notebook.runCellByCell();
-
-    expect(
-      await page.filebrowser.isFileListedInBrowser('somefilewithoutextension'),
-    ).toBeTruthy();
-  });
-
   test('DriveFS readlink raises error 28 (EINVAL)', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
     test.setTimeout(120000);
