@@ -348,8 +348,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
-    console.log('DEBUG new untitled', options);
-
     let name: string | undefined = undefined;
 
     let file: IModel;
