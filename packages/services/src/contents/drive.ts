@@ -348,6 +348,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
+    console.log('DEBUG new untitled', options);
+
     let name: string | undefined = undefined;
 
     let file: IModel;
@@ -399,6 +401,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         let format: Contents.FileFormat;
         if (!ext) {
           format = 'base64';
+          ext = '';
         } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
