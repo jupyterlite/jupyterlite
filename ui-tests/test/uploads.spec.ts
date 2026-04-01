@@ -330,20 +330,23 @@ async function getFileModel(
   path: string,
   format: 'json' | 'text' | 'base64',
 ): Promise<UploadContentsModel> {
-  return page.evaluate(async (filePath, format) => {
-    const app = (window as any).jupyterapp;
-    const model = await app.serviceManager.contents.get(filePath, {
-      content: true,
-      format,
-    });
-    return {
-      content: model.content,
-      format: model.format,
-      path: model.path,
-      size: model.size,
-      type: model.type,
-    };
-  }, path, format);
+  return page.evaluate(
+    async (options) => {
+      const app = (window as any).jupyterapp;
+      const model = await app.serviceManager.contents.get(options.path, {
+        content: true,
+        format: options.format,
+      });
+      return {
+        content: model.content,
+        format: model.format,
+        path: model.path,
+        size: model.size,
+        type: model.type,
+      };
+    },
+    { path, format },
+  );
 }
 
 function normalizeNotebookSource(source: string | string[]): string {
