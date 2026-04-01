@@ -130,9 +130,10 @@ test.describe('Service Worker Tests', () => {
 
     await page.notebook.runCellByCell({
       onAfterCellRun: async (cellIndex: number) => {
-        const cell = await page.notebook.getCellOutputLocator(cellIndex);
+        const output = await page.notebook.getCellTextOutput(cellIndex);
 
-        expect(cell?.innerHTML.toString().includes('Ok')).toBeTruthy();
+        expect(output).toBeTruthy();
+        expect(output![0]).toContain('Ok');
       },
     });
   });
