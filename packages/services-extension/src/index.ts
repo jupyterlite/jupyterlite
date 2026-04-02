@@ -310,11 +310,11 @@ const sessionManagerPlugin: ServiceManagerPlugin<Session.IManager> = {
   activate: (
     _: null,
     kernelManager: Kernel.IManager,
-    kernelClient: LiteKernelClient,
+    kernelClient: IKernelClient,
     serverSettings: ServerConnection.ISettings | undefined,
   ): Session.IManager => {
     const sessionAPIClient = new LiteSessionClient({
-      kernelClient,
+      kernelClient: kernelClient as unknown as LiteKernelClient,
       serverSettings,
     });
     return new SessionManager({
