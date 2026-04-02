@@ -58,8 +58,8 @@ export default defineConfig([
     },
     rules: {
       'jupyter/command-described-by': 'error',
-      'jupyter/plugin-activation-args': 'off',
-      'jupyter/plugin-description': 'off',
+      'jupyter/plugin-activation-args': 'error',
+      'jupyter/plugin-description': 'error',
       '@typescript-eslint/naming-convention': [
         'error',
         {
