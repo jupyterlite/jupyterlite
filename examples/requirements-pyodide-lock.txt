@@ -20,6 +20,7 @@ jupyterlab-geojson ==3.4.0
 jupyterlab-kernelspy ==4.0.0
 jupyterlab-night ==0.5.2
 jupyterlab-tour ==4.0.1
+jupyterlab-widgets ==3.0.16
 jupyterlite-p5-kernel ==0.4.0a2
 nbformat ==5.10.4
 plotly ==5.22.0
@@ -27,3 +28,4 @@ spectate ==1.0.1
 tenacity ==9.1.4
 traittypes ==0.2.3
 vega-datasets ==0.9.0
+widgetsnbextension ==4.0.15

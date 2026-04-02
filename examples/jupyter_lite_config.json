@@ -15,6 +15,9 @@
       "packages": {
         "plotly": {
           "depends": ["tenacity", "packaging", "nbformat"]
+        },
+        "ipywidgets": {
+          "depends": ["comm", "ipython", "traitlets"]
         }
       }
     }
