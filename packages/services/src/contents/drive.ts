@@ -42,7 +42,7 @@ const decoder = new TextDecoder('utf-8');
  * @param model the model to convert
  * @returns the converted model
  */
-export function convertToJSON(model: Contents.IModel): Contents.IModel {
+function convertToJSON(model: Contents.IModel): Contents.IModel {
   switch (model.format) {
     case 'json': {
       return model;
@@ -76,7 +76,7 @@ export function convertToJSON(model: Contents.IModel): Contents.IModel {
  * @param model the model to convert
  * @returns the converted model
  */
-export function convertToText(model: Contents.IModel): Contents.IModel {
+function convertToText(model: Contents.IModel): Contents.IModel {
   switch (model.format) {
     case 'json': {
       return {
@@ -110,7 +110,7 @@ export function convertToText(model: Contents.IModel): Contents.IModel {
  * @param model the model to convert
  * @returns the converted model
  */
-export function convertToBase64(model: Contents.IModel): Contents.IModel {
+function convertToBase64(model: Contents.IModel): Contents.IModel {
   switch (model.format) {
     case 'json': {
       return {
