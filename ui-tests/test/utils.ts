@@ -45,7 +45,7 @@ export async function download({
 export async function refreshFilebrowser({ page }): Promise<void> {
   try {
     await page.filebrowser.refresh();
-  } catch {
+  } catch (e) {
     // no-op
   }
 }

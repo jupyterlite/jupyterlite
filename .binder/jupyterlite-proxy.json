@@ -1,0 +1,23 @@
+{
+  "ServerProxy": {
+    "servers": {
+      "jupyterlite-py": {
+        "command": ["jlpm", "serve:py", "{port}"],
+        "launcher_entry": {
+          "icon_path": "docs/_static/icon.svg",
+          "title": "JupyterLite (py)"
+        }
+      },
+      "jupyterlite-js": {
+        "command": ["jlpm", "serve"],
+        "launcher_entry": {
+          "icon_path": "docs/_static/icon.svg",
+          "title": "JupyterLite (js)"
+        },
+        "environment": {
+          "PORT": "{port}"
+        }
+      }
+    }
+  }
+}

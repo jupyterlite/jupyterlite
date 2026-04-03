@@ -22,6 +22,9 @@
       "path": "./packages/apputils-extension"
     },
     {
+      "path": "./packages/iframe-extension"
+    },
+    {
       "path": "./packages/localforage"
     },
     {

@@ -180,7 +180,7 @@ export class LiteLicensesClient extends Licenses.LicensesClient {
     try {
       const response = await fetch(this.appLicensesUrl);
       bundle = response.json() as any;
-    } catch {
+    } catch (err) {
       console.warn('Could not resolve licenses for', this.appName);
     }
 

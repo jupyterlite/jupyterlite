@@ -2,8 +2,11 @@
 
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
+
+from sphinx.application import Sphinx
 
 os.environ.update(IN_SPHINX="1")
 
@@ -12,6 +15,12 @@ HERE = CONF_PY.parent
 ROOT = HERE.parent
 APP_PKG = ROOT / "app/package.json"
 APP_DATA = json.loads(APP_PKG.read_text(encoding="utf-8"))
+RTD = json.loads(os.environ.get("READTHEDOCS", "False").lower())
+
+# tasks that won't have been run prior to building the docs on RTD
+RTD_PRE_TASKS = ["build", "docs:typedoc:mystify", "docs:app:pack"]
+
+RTD_POST_TASKS = ["docs:post:schema", "docs:post:images"]
 
 # this is _not_ the way
 sys.path += [str(ROOT / "py/jupyterlite/src")]
@@ -81,7 +90,7 @@ exclude_patterns = [
     ".jupyter_cache",
     "test/",
     "tsconfig.*",
-    "rspack.config.*",
+    "webpack.config.*",
 ]
 nb_execution_mode = "auto"
 
@@ -131,6 +140,40 @@ html_context = {
 }
 
 
+def do_tasks(label, tasks):
+    """Run some doit tasks before/after the build"""
+    task_rcs = []
+
+    for task in tasks:
+        print(f"[jupyterlite-docs] running {label} {task}", flush=True)
+        rc = subprocess.call(["doit", "-n4", task], cwd=str(ROOT))
+
+        if rc != 0:
+            rc = subprocess.call(["doit", task], cwd=str(ROOT))
+
+        print(f"[jupyterlite-docs] ... ran {label} {task}: returned {rc}", flush=True)
+        task_rcs += [rc]
+
+    if max(task_rcs) > 0:
+        raise Exception("[jupyterlite-docs] ... FAIL, see log above")
+
+    print(f"[jupyterlite-docs] ... {label.upper()} OK", flush=True)
+
+
+def before_rtd_build(app: Sphinx, error):
+    """ensure doit docs:sphinx precursors have been met on RTD"""
+    print("[jupyterlite-docs] Staging files changed by RTD...", flush=True)
+    subprocess.call(["git", "add", "."], cwd=str(ROOT))
+    do_tasks("post", RTD_PRE_TASKS)
+
+
+def after_build(app: Sphinx, error):
+    """sphinx-jsonschema makes duplicate ids. clean them"""
+    # dodo.py already looking for this
+    os.environ.update(JLITE_DOCS_OUT=str(app.builder.outdir))
+    do_tasks("post", RTD_POST_TASKS)
+
+
 def setup(app):
     # Enable Plausible.io stats
     app.add_js_file("https://plausible.io/js/pa-eNfnVmf5sGWJaB1mfLZJF.js", loading_method="async")
@@ -138,3 +181,7 @@ def setup(app):
         filename=None,
         body="window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init({hashBasedRouting:true})",
     )
+
+    app.connect("build-finished", after_build)
+    if RTD:
+        app.connect("config-inited", before_rtd_build)

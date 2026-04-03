@@ -49,9 +49,9 @@ test.describe('General Tests', () => {
   });
 
   test('Toggle Federated Theme', async ({ page }) => {
-    await page.theme.setTheme('JupyterLab Night');
+    await page.theme.setTheme('Darcula');
 
-    expect(await page.theme.getTheme()).toEqual('JupyterLab Night');
+    expect(await page.theme.getTheme()).toEqual('Darcula');
   });
 
   test('Multiple Document Mode (default)', async ({ page }) => {

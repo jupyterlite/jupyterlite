@@ -114,13 +114,7 @@ export class LiteWorkspaceManager extends IndexedDBDataConnector<Workspace.IWork
    * @returns A promise that resolves with server workspaces
    */
   private async _getServerWorkspaces(): Promise<IWorkspaces.IWorkspacesBundle> {
-    // Check if workspaces are indexed by looking for the filename in PageConfig
-    const workspacesAllJsonFile = PageConfig.getOption('workspacesAllJsonFile');
-    if (!workspacesAllJsonFile) {
-      return {};
-    }
-
-    const workspacesUrl = URLExt.join(this._workspacesApiUrl, workspacesAllJsonFile);
+    const workspacesUrl = URLExt.join(this._workspacesApiUrl, 'all.json');
 
     const response = await fetch(workspacesUrl);
     if (!response.ok) {

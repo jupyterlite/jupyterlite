@@ -4,6 +4,7 @@ import '@jupyterlite/apputils';
 import '@jupyterlite/apputils-extension';
 import '@jupyterlite/contents';
 import '@jupyterlite/repl-extension';
+import '@jupyterlite/iframe-extension';
 import '@jupyterlite/kernel';
 import '@jupyterlite/localforage';
 import '@jupyterlite/notebook-application-extension';

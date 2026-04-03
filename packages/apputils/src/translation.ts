@@ -54,7 +54,7 @@ export class LiteTranslatorConnector
       }
       this._prevLocale = locale;
       return json;
-    } catch {
+    } catch (e) {
       if (locale) {
         return {
           data: {},

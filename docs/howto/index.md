@@ -35,7 +35,6 @@ configure/workspaces
 :maxdepth: 1
 
 content/files
-content/readonly
 content/python
 content/filesystem-access
 content/open-url-parameter

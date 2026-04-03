@@ -190,7 +190,7 @@ const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
 
     try {
       return solver;
-    } catch {
+    } catch (error) {
       const { workspaces } = app.serviceManager;
       const oldWorkspace = await workspaces.fetch(workspace);
       const newWorkspaceId = `${workspace.split('-')[0]}-${+new Date()}`;

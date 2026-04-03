@@ -11,6 +11,7 @@
     { "path": "../apputils" },
     { "path": "../apputils-extension" },
     { "path": "../contents" },
+    { "path": "../iframe-extension" },
     { "path": "../kernel" },
     { "path": "../localforage" },
     { "path": "../notebook-application-extension" },

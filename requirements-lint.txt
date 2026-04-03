@@ -1,0 +1,9 @@
+# minimum needed to build jupyterlite... in addition to nodejs
+# see .binder/ and docs/ for full development/docs environments
+-r requirements-build.txt
+jsonschema >=3
+
+jupyterlab >=4.5.6,<4.6
+nbconvert
+nbstripout
+ruff==0.8.3
