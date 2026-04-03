@@ -36,6 +36,100 @@ const N_CHECKPOINTS = 5;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
 
+function base64ToBytes(content: string): Uint8Array {
+  const binary = atob(content);
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary);
+}
+
+/**
+ * Converts a contents model into JSON.
+ */
+function convertToJSON(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return model;
+    }
+    case 'text': {
+      return {
+        ...model,
+        content: JSON.parse(model.content),
+        format: 'json',
+      };
+    }
+    case 'base64': {
+      return {
+        ...model,
+        content: JSON.parse(decoder.decode(base64ToBytes(model.content))),
+        format: 'json',
+      };
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
+ * Converts a contents model into text.
+ */
+function convertToText(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return {
+        ...model,
+        content: JSON.stringify(model.content),
+        format: 'text',
+      };
+    }
+    case 'text': {
+      return model;
+    }
+    case 'base64': {
+      return {
+        ...model,
+        content: decoder.decode(base64ToBytes(model.content)),
+        format: 'text',
+      };
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
+ * Converts a contents model into base64.
+ */
+function convertToBase64(model: Contents.IModel): Contents.IModel {
+  switch (model.format) {
+    case 'json': {
+      return {
+        ...model,
+        content: bytesToBase64(encoder.encode(JSON.stringify(model.content))),
+        format: 'base64',
+      };
+    }
+    case 'text': {
+      return {
+        ...model,
+        content: bytesToBase64(encoder.encode(model.content)),
+        format: 'base64',
+      };
+    }
+    case 'base64': {
+      return model;
+    }
+  }
+
+  throw new Error(`Invalid format ${model.format}`);
+}
+
 /**
  * A custom drive to store files in the browser storage.
  */
@@ -258,27 +352,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
-    let dirname = PathExt.dirname(path);
-    const basename = PathExt.basename(path);
-    const extname = PathExt.extname(path);
-    const item = await this.get(dirname).catch(() => null);
-
-    // handle the case of "Save As", where the path points to the new file
-    // to create, e.g. subfolder/example-copy.ipynb
     let name = '';
-    if (path && !extname && item) {
-      // directory
-      dirname = `${path}/`;
-      name = '';
-    } else if (dirname && basename) {
-      // file in a subfolder
-      dirname = `${dirname}/`;
-      name = basename;
-    } else {
-      // file at the top level
-      dirname = '';
-      name = path;
-    }
 
     let file: IModel;
     switch (type) {
@@ -287,7 +361,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = `Untitled Folder${counter || ''}`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format: 'json',
@@ -304,7 +378,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `Untitled${counter || ''}.ipynb`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format: 'json',
@@ -317,15 +391,18 @@ export class BrowserStorageDrive implements Contents.IDrive {
         break;
       }
       default: {
-        let ext = options?.ext ?? '.txt';
-        if (!ext.startsWith('.')) {
+        let ext = options?.ext;
+        if (ext && !ext.startsWith('.')) {
           ext = `.${ext}`;
         }
         const counter = await this._incrementCounter('file');
-        const mimetype = FILE.getType(ext) || MIME.OCTET_STREAM;
+        const mimetype = ext ? FILE.getType(ext) || MIME.OCTET_STREAM : MIME.OCTET_STREAM;
 
         let format: Contents.FileFormat;
-        if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
+        if (!ext) {
+          format = 'base64';
+          ext = '';
+        } else if (FILE.hasFormat(ext, 'text') || mimetype.indexOf('text') !== -1) {
           format = 'text';
         } else if (ext.indexOf('json') !== -1 || ext.indexOf('ipynb') !== -1) {
           format = 'json';
@@ -336,7 +413,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
         name = name || `untitled${counter || ''}${ext}`;
         file = {
           name,
-          path: `${dirname}${name}`,
+          path: PathExt.join(path, name),
           last_modified: created,
           created,
           format,
@@ -440,16 +517,35 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const item = await storage.getItem(path);
     const serverItem = await this._getServerContents(path, options);
 
-    const model = (item || serverItem) as IModel | null;
+    let model = (item || serverItem) as IModel | null;
 
     if (!model) {
       throw Error(`Could not find content with path ${path}`);
     }
 
-    if (!options?.content) {
+    if (options?.content) {
+      const requestedFormat = options.format;
+      if (requestedFormat && model.format !== requestedFormat) {
+        switch (requestedFormat) {
+          case 'json': {
+            model = convertToJSON(model);
+            break;
+          }
+          case 'text': {
+            model = convertToText(model);
+            break;
+          }
+          case 'base64': {
+            model = convertToBase64(model);
+            break;
+          }
+        }
+      }
+    } else {
       return {
-        size: 0,
         ...model,
+        size: 0,
+        format: options?.format ?? model.format,
         content: null,
       };
     }
@@ -574,73 +670,80 @@ export class BrowserStorageDrive implements Contents.IDrive {
     path = decodeURIComponent(path);
 
     // process the file if coming from an upload
-    const ext = PathExt.extname(options.name ?? '');
+    const name = options.name ?? PathExt.basename(path);
+    const ext = PathExt.extname(name);
     const chunk = options.chunk;
+    const hasContent = Object.prototype.hasOwnProperty.call(options, 'content');
 
     // retrieve the content if it is a later chunk or the last one
     // the new content will then be appended to the existing one
     const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
-    item = await this.get(path, { content: appendChunk }).catch(() => null);
+    item = await this.get(path, { content: appendChunk || !hasContent }).catch(() => null);
 
-    if (!item) {
-      item = await this.newUntitled({ path, ext, type: 'file' });
+    const now = new Date().toISOString();
+    let type = options.type || item?.type || 'file';
+    if (ext.toLowerCase() === '.ipynb') {
+      type = 'notebook';
     }
-
-    if (!item) {
-      throw Error(`Could not find file with path ${path}`);
-    }
+    const format = options.format || item?.format || 'base64';
+    const mimetype = ext
+      ? FILE.getType(ext) || MIME.OCTET_STREAM
+      : item?.mimetype || MIME.OCTET_STREAM;
+    const content = hasContent ? options.content ?? '' : item?.content ?? '';
 
     // keep a reference to the original content
-    const originalContent = item.content;
+    const originalContent = item?.content;
 
-    const modified = new Date().toISOString();
-    // override with the new values
-    item = {
-      ...item,
-      ...options,
-      last_modified: modified,
-    };
+    if (item) {
+      item = {
+        ...item,
+        last_modified: now,
+        format,
+        mimetype,
+        content,
+        writable: true,
+        type,
+      };
+    } else {
+      item = {
+        name,
+        path,
+        last_modified: now,
+        created: now,
+        format,
+        mimetype,
+        content,
+        size: 0,
+        writable: true,
+        type,
+      };
+    }
 
-    if (options.content && options.format === 'base64') {
-      const lastChunk = chunk ? chunk === -1 : true;
+    if (chunk) {
+      const lastChunk = chunk === -1;
 
       const contentBinaryString = this._handleUploadChunk(
-        options.content,
+        content,
         originalContent,
         appendChunk,
       );
 
-      if (ext === '.ipynb') {
+      if (item.format === 'json') {
         const content = lastChunk
           ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
           : contentBinaryString;
         item = {
           ...item,
           content,
-          format: 'json',
-          type: 'notebook',
           size: contentBinaryString.length,
         };
-      } else if (FILE.hasFormat(ext, 'json')) {
-        const content = lastChunk
-          ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
-          : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          format: 'json',
-          type: 'file',
-          size: contentBinaryString.length,
-        };
-      } else if (FILE.hasFormat(ext, 'text')) {
+      } else if (item.format === 'text') {
         const content = lastChunk
           ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
           : contentBinaryString;
         item = {
           ...item,
           content,
-          format: 'text',
-          type: 'file',
           size: contentBinaryString.length,
         };
       } else {
@@ -648,8 +751,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
         item = {
           ...item,
           content,
-          format: 'base64',
-          type: 'file',
           size: contentBinaryString.length,
         };
       }
@@ -657,7 +758,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     // fixup content sizes if necessary
     if (item.content) {
-      switch (options.format) {
+      switch (item.format) {
         case 'json': {
           item = { ...item, size: encoder.encode(JSON.stringify(item.content)).length };
           break;
@@ -666,8 +767,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
           item = { ...item, size: encoder.encode(item.content).length };
           break;
         }
-        // base64 save was already handled above
         case 'base64': {
+          const padding = (item.content.match(/=+$/) || [''])[0].length;
+          item = { ...item, size: (item.content.length * 3) / 4 - padding };
           break;
         }
         default: {
