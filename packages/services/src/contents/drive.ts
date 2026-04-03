@@ -38,7 +38,7 @@ const decoder = new TextDecoder('utf-8');
 
 function base64ToBytes(content: string): Uint8Array {
   const binary = atob(content);
-  return Uint8Array.from(binary, char => char.charCodeAt(0));
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
 }
 
 function bytesToBase64(bytes: Uint8Array): string {
@@ -396,7 +396,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
           ext = `.${ext}`;
         }
         const counter = await this._incrementCounter('file');
-        const mimetype = ext ? FILE.getType(ext) || MIME.OCTET_STREAM : MIME.OCTET_STREAM;
+        const mimetype = ext
+          ? FILE.getType(ext) || MIME.OCTET_STREAM
+          : MIME.OCTET_STREAM;
 
         let format: Contents.FileFormat;
         if (!ext) {
@@ -678,7 +680,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     // retrieve the content if it is a later chunk or the last one
     // the new content will then be appended to the existing one
     const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
-    item = await this.get(path, { content: appendChunk || !hasContent }).catch(() => null);
+    item = await this.get(path, { content: appendChunk || !hasContent }).catch(
+      () => null,
+    );
 
     const now = new Date().toISOString();
     let type = options.type || item?.type || 'file';

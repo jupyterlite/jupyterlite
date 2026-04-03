@@ -102,21 +102,24 @@ test.describe('Contents Tests', () => {
   test('Contents API can save a file with no extension', async ({ page }) => {
     const content = 'Coucou toi';
 
-    const model = await page.evaluate(async ({ content }) => {
-      const app = (window as any).jupyterapp;
+    const model = await page.evaluate(
+      async ({ content }) => {
+        const app = (window as any).jupyterapp;
 
-      await app.serviceManager.contents.save('example', { type: 'file' });
-      await app.serviceManager.contents.save('example', {
-        content,
-        format: 'text',
-        type: 'file',
-      });
+        await app.serviceManager.contents.save('example', { type: 'file' });
+        await app.serviceManager.contents.save('example', {
+          content,
+          format: 'text',
+          type: 'file',
+        });
 
-      return app.serviceManager.contents.get('example', {
-        content: true,
-        format: 'text',
-      });
-    }, { content });
+        return app.serviceManager.contents.get('example', {
+          content: true,
+          format: 'text',
+        });
+      },
+      { content },
+    );
 
     expect(model.name).toBe('example');
     expect(model.path).toBe('example');
