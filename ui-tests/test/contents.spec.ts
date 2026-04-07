@@ -43,6 +43,93 @@ test.describe('Contents Tests', () => {
   //   expect(await page.contents.fileExists(`${tmpPath}/${renamed}`)).toEqual(true);
   // });
 
+  test('Contents API save/get respects explicit file formats', async ({ page }) => {
+    const textContent = 'Hello there';
+    const jsonContent = { hello: 'coucou' };
+    const encodedText = Buffer.from(textContent, 'utf-8').toString('base64');
+    const encodedJson = Buffer.from(JSON.stringify(jsonContent), 'utf-8').toString(
+      'base64',
+    );
+
+    const models = await page.evaluate(
+      async ({ encodedText, encodedJson }) => {
+        const app = (window as any).jupyterapp;
+
+        await app.serviceManager.contents.save('uploaded.txt', {
+          content: encodedText,
+          format: 'base64',
+          name: 'uploaded.txt',
+          type: 'file',
+        });
+        await app.serviceManager.contents.save('uploaded.custom.json', {
+          content: encodedJson,
+          format: 'base64',
+          name: 'uploaded.custom.json',
+          type: 'file',
+        });
+
+        const rawText = await app.serviceManager.contents.get('uploaded.txt', {
+          content: true,
+        });
+        const asText = await app.serviceManager.contents.get('uploaded.txt', {
+          content: true,
+          format: 'text',
+        });
+        const rawJson = await app.serviceManager.contents.get('uploaded.custom.json', {
+          content: true,
+        });
+        const asJson = await app.serviceManager.contents.get('uploaded.custom.json', {
+          content: true,
+          format: 'json',
+        });
+
+        return { rawText, asText, rawJson, asJson };
+      },
+      { encodedText, encodedJson },
+    );
+
+    expect(models.rawText.format).toBe('base64');
+    expect(models.rawText.content).toBe(encodedText);
+    expect(models.asText.format).toBe('text');
+    expect(models.asText.content).toBe(textContent);
+
+    expect(models.rawJson.format).toBe('base64');
+    expect(models.rawJson.content).toBe(encodedJson);
+    expect(models.asJson.format).toBe('json');
+    expect(models.asJson.content).toEqual(jsonContent);
+  });
+
+  test('Contents API can save a file with no extension', async ({ page }) => {
+    const content = 'Coucou toi';
+
+    const model = await page.evaluate(
+      async ({ content }) => {
+        const app = (window as any).jupyterapp;
+
+        await app.serviceManager.contents.save('example', { type: 'file' });
+        await app.serviceManager.contents.save('example', {
+          content,
+          format: 'text',
+          type: 'file',
+        });
+
+        return app.serviceManager.contents.get('example', {
+          content: true,
+          format: 'text',
+        });
+      },
+      { content },
+    );
+
+    expect(model.name).toBe('example');
+    expect(model.path).toBe('example');
+    expect(model.format).toBe('text');
+    expect(model.content).toBe(content);
+
+    await refreshFilebrowser({ page });
+    expect(await page.filebrowser.isFileListedInBrowser('example')).toBeTruthy();
+  });
+
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
     await refreshFilebrowser({ page });
