@@ -243,6 +243,7 @@ const liteKernelSpecManagerPlugin: ServiceManagerPlugin<IKernelSpecs> = {
  */
 const localforagePlugin: ServiceManagerPlugin<ILocalForage> = {
   id: '@jupyterlite/services-extension:localforage',
+  description: 'Provides the localforage storage instance.',
   autoStart: true,
   provides: ILocalForage,
   activate: async (_: null) => {
@@ -330,6 +331,7 @@ const sessionManagerPlugin: ServiceManagerPlugin<Session.IManager> = {
  */
 const settingsPlugin: ServiceManagerPlugin<Setting.IManager> = {
   id: '@jupyterlite/services-extension:settings',
+  description: 'Provides the in-browser settings manager.',
   autoStart: true,
   requires: [ILocalForage],
   optional: [IServerSettings],
