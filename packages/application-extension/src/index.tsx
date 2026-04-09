@@ -457,7 +457,7 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
  */
 const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
-  description: 'Opens documents from URL path query parameters.',
+  description: 'Opens docs from URL params.',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
   optional: [ILabShell, ISettingRegistry],
@@ -476,8 +476,16 @@ const opener: JupyterFrontEndPlugin<void> = {
         args: {
           type: 'object',
           properties: {
-            request: { type: 'string' },
-            search: { type: 'string' },
+            request: {
+              type: 'string',
+              description:
+                'The routed URL request with the router base omitted, including the query string and hash if present.',
+            },
+            search: {
+              type: 'string',
+              description:
+                'The URL search string containing query parameters, including any path values to open.',
+            },
           },
         },
       },
