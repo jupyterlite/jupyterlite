@@ -457,7 +457,7 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
  */
 const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
-  description: 'Opens docs from URL params.',
+  description: 'Opens documents from URL path query parameters.',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
   optional: [ILabShell, ISettingRegistry],
