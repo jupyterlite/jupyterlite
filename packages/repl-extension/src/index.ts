@@ -27,6 +27,7 @@ const I18N_BUNDLE = 'jupyterlite';
  */
 const buttons: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:buttons',
+  description: 'Adds toolbar buttons to the console panel.',
   autoStart: true,
   requires: [ITranslator],
   optional: [IToolbarWidgetRegistry],
@@ -67,6 +68,7 @@ const buttons: JupyterFrontEndPlugin<void> = {
  */
 const consolePlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:console',
+  description: 'Opens a code console and parses URL query parameters.',
   autoStart: true,
   optional: [IConsoleTracker, IThemeManager],
   activate: (
@@ -152,6 +154,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
  */
 const status: JupyterFrontEndPlugin<ILabStatus> = {
   id: '@jupyterlite/repl-extension:status',
+  description: 'Provides the application status for the REPL app.',
   autoStart: true,
   provides: ILabStatus,
   requires: [ITranslator],
@@ -169,6 +172,7 @@ const status: JupyterFrontEndPlugin<ILabStatus> = {
  */
 const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
   id: '@jupyterlite/repl-extension:paths',
+  description: 'Provides the default paths for the REPL app.',
   autoStart: true,
   provides: JupyterFrontEnd.IPaths,
   activate: (app: JupyterFrontEnd): JupyterFrontEnd.IPaths => {
@@ -184,6 +188,7 @@ const paths: JupyterFrontEndPlugin<JupyterFrontEnd.IPaths> = {
  */
 const router: JupyterFrontEndPlugin<IRouter> = {
   id: '@jupyterlite/repl-extension:router',
+  description: 'Provides the URL router for the REPL app.',
   autoStart: true,
   provides: IRouter,
   requires: [JupyterFrontEnd.IPaths],

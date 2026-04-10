@@ -5,6 +5,7 @@ import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
+import jupyterPlugin from '@jupyter/eslint-plugin';
 
 export default defineConfig([
   {
@@ -41,6 +42,9 @@ export default defineConfig([
   reactPlugin.configs.flat.recommended,
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: {
+      jupyter: jupyterPlugin,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -53,6 +57,9 @@ export default defineConfig([
       },
     },
     rules: {
+      'jupyter/command-described-by': 'error',
+      'jupyter/plugin-activation-args': 'error',
+      'jupyter/plugin-description': 'error',
       '@typescript-eslint/naming-convention': [
         'error',
         {

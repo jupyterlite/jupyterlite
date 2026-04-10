@@ -865,6 +865,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyter/eslint-plugin@npm:0.0.3":
+  version: 0.0.3
+  resolution: "@jupyter/eslint-plugin@npm:0.0.3"
+  dependencies:
+    "@typescript-eslint/utils": ^8.54.0
+  peerDependencies:
+    eslint: ">=9.0.0"
+  checksum: dcb427d1b5127fd59e3d8c72662fd4b0ba226f16fac163839bbe7739d33e93beda2c4b8d2d2040552c2512a276e27ac119ce24467818c923f42da6081da9e37b
+  languageName: node
+  linkType: hard
+
 "@jupyter/react-components@npm:^0.16.6":
   version: 0.16.7
   resolution: "@jupyter/react-components@npm:0.16.7"
@@ -3393,6 +3404,7 @@ __metadata:
   resolution: "@jupyterlite/root@workspace:."
   dependencies:
     "@eslint/js": ^9.26.0
+    "@jupyter/eslint-plugin": 0.0.3
     "@stylistic/eslint-plugin": ^5.10.0
     eslint: ^9.26.0
     eslint-config-prettier: ^10.0.0
@@ -5027,7 +5039,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.56.1":
+"@typescript-eslint/utils@npm:8.56.1, @typescript-eslint/utils@npm:^8.54.0":
   version: 8.56.1
   resolution: "@typescript-eslint/utils@npm:8.56.1"
   dependencies:
@@ -11854,11 +11866,11 @@ __metadata:
   linkType: hard
 
 "ts-api-utils@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "ts-api-utils@npm:2.4.0"
+  version: 2.5.0
+  resolution: "ts-api-utils@npm:2.5.0"
   peerDependencies:
     typescript: ">=4.8.4"
-  checksum: beae72a4fa22a7cc91a8a0f3dfb487d72e30f06ac50ff72f327d061dea2d4940c6451d36578d949caad3893d4d2c7d42d53b7663597ccda54ad32cdb842c3e34
+  checksum: 5b2a2db7aa041d60b040df691ee5e73d534fb4cb3cf4fd6d2c27c584a32836a7ca8272fb23d865e673559ea639fdba35f8623249bf931df22188f0aaef7f0075
   languageName: node
   linkType: hard
 
