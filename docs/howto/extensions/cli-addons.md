@@ -50,6 +50,10 @@ of sources, the CLI uses a number of layers.
 
 ## Structure of an Addon
 
+```{tip}
+A minimal working example addon is available as part of this documentation on GitHub.
+```
+
 At its very simplest, an Addon is initialized with a signature like:
 
 ```python
