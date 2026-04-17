@@ -144,7 +144,8 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   }
 
   async rename(request: TDriveRequest<'rename'>): Promise<TDriveResponse<'rename'>> {
-    await this.contentsManager.rename(request.path, request.data.newPath);
+    // We do not call rename on the contents manager, since rename is supposed to fail if the target exists
+    await this.contentsManager.overwrite(request.path, request.data.newPath);
     return null;
   }
 
