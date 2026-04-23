@@ -8,7 +8,7 @@ version = "0.8.0a1"
 # Minimal build dependencies
 build = [
     "hatch>=1.6.3,<2",
-    "jupyterlab>=4.6.0a4,<4.7",
+    "jupyter-builder>=0.0.8",
 ]
 
 # Demo site extensions

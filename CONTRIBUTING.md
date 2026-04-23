@@ -24,7 +24,7 @@ installing Python dependencies.
 Install all dependencies and set up the dev environment:
 
 ```bash
-# 1. Install build dependencies (includes JupyterLab which provides `jlpm`)
+# 1. Install build dependencies (includes Jupyter Builder which provides `jlpm`)
 pip install --group build
 
 # 2. Install Node.js dependencies and Python packages
@@ -47,17 +47,17 @@ pip install -e './py/jupyterlite-core[all,test]'
 
 Available dependency groups:
 
-| Group      | Description                                     |
-| ---------- | ----------------------------------------------- |
-| `build`    | Minimal build dependencies (hatch, jupyterlab)  |
-| `dev`      | Core development (includes `build`)             |
-| `docs`     | Documentation building (Sphinx, themes)         |
-| `lint`     | Linting tools (ruff, pre-commit)                |
-| `test`     | Testing (pytest and plugins)                    |
-| `demo`     | Demo site extensions (widgets, libraries)       |
-| `ui-tests` | UI/Playwright tests (includes `build`)          |
-| `release`  | Release process (includes `build` + `lint`)     |
-| `all-dev`  | All dev dependencies (dev + docs + lint + test) |
+| Group      | Description                                         |
+| ---------- | --------------------------------------------------- |
+| `build`    | Minimal build dependencies (hatch, jupyter-builder) |
+| `dev`      | Core development (includes `build`)                 |
+| `docs`     | Documentation building (Sphinx, themes)             |
+| `lint`     | Linting tools (ruff, pre-commit)                    |
+| `test`     | Testing (pytest and plugins)                        |
+| `demo`     | Demo site extensions (widgets, libraries)           |
+| `ui-tests` | UI/Playwright tests (includes `build`)              |
+| `release`  | Release process (includes `build` + `lint`)         |
+| `all-dev`  | All dev dependencies (dev + docs + lint + test)     |
 
 **Note**: Dependency groups (PEP 735) require pip 24.1+ or
 [uv](https://docs.astral.sh/uv/).
