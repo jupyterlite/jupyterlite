@@ -34,7 +34,6 @@ export const DRIVE_NAME = 'BrowserStorage';
 const N_CHECKPOINTS = 5;
 
 const encoder = new TextEncoder();
-const decoder = new TextDecoder('utf-8');
 
 /**
  * Converts a contents model into JSON
@@ -132,6 +131,39 @@ function convertToBase64(model: Contents.IModel): Contents.IModel {
   }
 
   throw new Error(`Invalid format ${model.format}`);
+}
+
+/**
+ * Base64 encoded string to Uint8Array
+ * @param content base64 encoded string
+ * @returns the array
+ */
+export function base64ToBuffer(content: string): Uint8Array {
+  const binary = atob(content);
+  const buffer = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    buffer[i] = binary.charCodeAt(i);
+  }
+
+  return buffer;
+}
+
+/**
+ * Combine multiple arrays together
+ *
+ * @param dataArray the list of arrays
+ * @returns the merge result
+ */
+export function combineArrayBuffer(dataArray: Uint8Array[]): Uint8Array {
+  const totalLength = dataArray.reduce((acc, arr) => acc + arr.length, 0);
+  const merged = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const arr of dataArray) {
+    merged.set(arr, offset);
+    offset += arr.length;
+  }
+
+  return merged;
 }
 
 /**
@@ -681,11 +713,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const ext = name ? PathExt.extname(name) ?? undefined : undefined;
     const mimetype = ext ? FILE.getType(ext) || MIME.OCTET_STREAM : MIME.OCTET_STREAM;
     const chunk = options.chunk;
-
-    // retrieve the content if it is a later chunk or the last one
-    // the new content will then be appended to the existing one
-    const appendChunk = chunk ? chunk > 1 || chunk === -1 : false;
-    item = await this.get(path, { content: appendChunk }).catch(() => null);
+    const firstChunk = chunk === 1;
+    const lastChunk = chunk === -1;
 
     const now = new Date().toISOString();
 
@@ -697,106 +726,76 @@ export class BrowserStorageDrive implements Contents.IDrive {
     }
 
     const format = options?.format || 'base64';
-    const content = options?.content || '';
-
-    // keep a reference to the original content
-    const originalContent = item?.content;
-
-    if (item) {
-      item = {
-        ...item,
-        last_modified: now,
-        format,
-        mimetype,
-        content,
-        writable: true,
-        type,
-      };
-    } else {
-      item = {
-        name,
-        path,
-        last_modified: now,
-        created: now,
-        format,
-        mimetype,
-        content,
-        writable: true,
-        type,
-      };
-    }
+    let content = options?.content || '';
 
     // Handle multichunks uploads
     if (chunk) {
-      const lastChunk = chunk === -1;
+      let buffer = base64ToBuffer(content);
 
-      const contentBinaryString = this._handleUploadChunk(
-        content,
-        originalContent,
-        appendChunk,
-      );
+      if (firstChunk) {
+        // Initialize a new array for multipart upload
+        this._multipartUploads[path] = [];
+      }
 
-      if (item.format === 'json') {
-        const content = lastChunk
-          ? JSON.parse(decoder.decode(this._binaryStringToBytes(contentBinaryString)))
-          : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          size: contentBinaryString.length,
-        };
-      } else if (item.format === 'text') {
-        const content = lastChunk
-          ? decoder.decode(this._binaryStringToBytes(contentBinaryString))
-          : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          size: contentBinaryString.length,
-        };
+      (this._multipartUploads[path] as Uint8Array[]).push(buffer);
+
+      if (lastChunk) {
+        buffer = combineArrayBuffer(this._multipartUploads[path] as Uint8Array[]);
+        content = btoa(
+          buffer.reduce((data, byte) => data + String.fromCharCode(byte), ''),
+        );
       } else {
-        // item.format is base64
-        const content = lastChunk ? btoa(contentBinaryString) : contentBinaryString;
-        item = {
-          ...item,
-          content,
-          size: contentBinaryString.length,
-        };
+        content = undefined;
       }
     }
 
-    // fixup content sizes if necessary
-    if (item.content) {
-      switch (item.format) {
-        case 'json': {
-          item = { ...item, size: encoder.encode(JSON.stringify(item.content)).length };
-          break;
-        }
-        case 'text': {
-          item = { ...item, size: encoder.encode(item.content).length };
-          break;
-        }
-        case 'base64': {
-          const padding = (item.content.match(/=+$/) || [''])[0].length;
-          item = { ...item, size: (item.content.length * 3) / 4 - padding };
-          break;
-        }
-        default: {
-          item = { ...item, size: 0 };
-          break;
+    item = {
+      name,
+      path,
+      last_modified: now,
+      created: now,
+      format,
+      mimetype,
+      content,
+      writable: true,
+      type,
+    };
+
+    // Actual save
+    if (!chunk || lastChunk) {
+      // Compute size
+      if (content) {
+        switch (format) {
+          case 'json': {
+            item = { ...item, size: encoder.encode(JSON.stringify(content)).length };
+            break;
+          }
+          case 'text': {
+            item = { ...item, size: encoder.encode(content).length };
+            break;
+          }
+          case 'base64': {
+            const padding = (content.match(/=+$/) || [''])[0].length;
+            item = { ...item, size: (content.length * 3) / 4 - padding };
+            break;
+          }
+          default: {
+            item = { ...item, size: 0 };
+            break;
+          }
         }
       }
-    } else {
-      item = { ...item, size: 0 };
+
+      await (await this.storage).setItem(path, item);
+
+      this._fileChanged.emit({
+        type: 'save',
+        oldValue: null,
+        newValue: item,
+      });
+
+      delete this._multipartUploads[path];
     }
-
-    await (await this.storage).setItem(path, item);
-
-    this._fileChanged.emit({
-      type: 'save',
-      oldValue: null,
-      newValue: item,
-    });
 
     return item;
   }
@@ -910,43 +909,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
     await (await this.checkpoints).setItem(path, copies);
-  }
-
-  /**
-   * Handle an upload chunk for a file.
-   * each chunk is base64 encoded, so we need to decode it and append it to the
-   * original content.
-   * @param newContent the new content to process, base64 encoded
-   * @param originalContent the original content, must be null or a binary string if chunked is true
-   * @param appendChunk whether the chunk should be appended to the originalContent
-   *
-   *
-   * @returns the decoded binary string, appended to the original content if requested
-   * /
-   */
-  private _handleUploadChunk(
-    newContent: string,
-    originalContent: any,
-    appendChunk: boolean,
-  ): string {
-    const newContentBinaryString = atob(newContent);
-    const contentBinaryString = appendChunk
-      ? originalContent + newContentBinaryString
-      : newContentBinaryString;
-    return contentBinaryString;
-  }
-
-  /**
-   * Convert a binary string to an Uint8Array
-   * @param binaryString the binary string
-   * @returns the bytes of the binary string
-   */
-  private _binaryStringToBytes(binaryString: string): Uint8Array {
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes;
   }
 
   /**
@@ -1149,6 +1111,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
   private _checkpoints: LocalForage | undefined;
   private _localforage: typeof localforage;
   private _serverSettings: ServerConnection.ISettings;
+  private _multipartUploads: { [key: string]: Uint8Array | Uint8Array[] | string } = {};
 }
 
 /**
