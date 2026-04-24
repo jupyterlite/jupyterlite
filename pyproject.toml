@@ -41,6 +41,7 @@ demo = [
 dev = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
+    "jupyterlab>=4.6.0a4,<4.7",
     "notebook>=7.6.0a4,<7.7",
     "pkginfo",
     "ruff>=0.8.3",
