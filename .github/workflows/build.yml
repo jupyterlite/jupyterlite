@@ -187,7 +187,7 @@ jobs:
       - name: Install Python dependencies
         run:
           python -m pip install --group docs --group dev --group test -r
-          examples/requirements-demo.txt
+          examples/requirements-pyodide-lock.txt
       - name: Install JS dependencies
         run: jlpm
       - name: Docs (app)
@@ -200,11 +200,13 @@ jobs:
       - name: Docs (sphinx)
         run: jlpm docs:build
       - name: Check Built Artifacts
-        run:
-          python -m pytest --check-links docs/_build/html --check-links-ignore
-          "https://github.com/.*" --check-links-ignore "https://pypi.org/.*"
-          --check-links-ignore "https://www.sphinx-doc.org/.*" --check-links-ignore
-          "https://jupyterlite.readthedocs.io/.*" -q
+        run: |-
+          python -m pytest -q --check-links docs/_build/html \
+            --check-links-ignore "https://binder.pangeo.io/.*" \
+            --check-links-ignore "https://github.com/.*" \
+            --check-links-ignore "https://jupyterlite.readthedocs.io/.*" \
+            --check-links-ignore "https://pypi.org/.*" \
+            --check-links-ignore "https://www.sphinx-doc.org/.*"
       - name: Upload (sphinx logs)
         if: always()
         uses: actions/upload-artifact@v7
