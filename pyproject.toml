@@ -14,6 +14,7 @@ build = [
 # Demo site extensions
 demo = [
     { include-group = "pyodide-kernel" },
+    "ipython>=9.13.0",
     "altair",
     "bqplot~=0.12.43",
     "folium",

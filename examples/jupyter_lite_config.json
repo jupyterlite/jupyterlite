@@ -11,6 +11,9 @@
       "preserve_url_prefixes": ["https://"]
     },
     "lite_constraints_file": "requirements-pyodide-lock.txt",
+    "excludes": [
+      "psutil"
+    ],
     "patches": {
       "packages": {
         "plotly": {
