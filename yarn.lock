@@ -865,6 +865,42 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyter/builder@npm:^0.0.8":
+  version: 0.0.8
+  resolution: "@jupyter/builder@npm:0.0.8"
+  dependencies:
+    "@jupyterlab/core-meta": 4.6.0-alpha.4
+    "@rspack/core": ^1.7.7
+    ajv: ^8.12.0
+    commander: ^9.4.1
+    css-loader: ^6.7.1
+    duplicate-package-checker-webpack-plugin: ^3.0.0
+    fs-extra: ^10.1.0
+    glob: ~7.1.6
+    license-webpack-plugin: ^4.0.2
+    mini-svg-data-uri: ^1.4.4
+    path-browserify: ^1.0.0
+    process: ^0.11.10
+    source-map-loader: ~1.0.2
+    style-loader: ~3.3.1
+    supports-color: ^7.2.0
+    webpack-merge: ^5.8.0
+    worker-loader: ^3.0.2
+  checksum: 5f80322e4eecd4c643e73996b9f383bc9bc60cc5d52d5909c80e658bfb7c9e8727a219c4330994cfc2df5d5fd900d89e28e2b29bd4d5078a32c142d22d4d9e9f
+  languageName: node
+  linkType: hard
+
+"@jupyter/eslint-plugin@npm:0.0.5":
+  version: 0.0.5
+  resolution: "@jupyter/eslint-plugin@npm:0.0.5"
+  dependencies:
+    "@typescript-eslint/utils": ^8.54.0
+  peerDependencies:
+    eslint: ">=9.0.0"
+  checksum: 8cd31224e09caf9046eee16784e42f1428bd3a3e67740821e463139cf85cd68ead731fa529af68cde06030fbb65e572aba71f281bb9c1b9cc59393e9bfba0ae7
+  languageName: node
+  linkType: hard
+
 "@jupyter/react-components@npm:^0.16.6":
   version: 0.16.7
   resolution: "@jupyter/react-components@npm:0.16.7"
@@ -1037,44 +1073,6 @@ __metadata:
     "@jupyterlab/translation": ^4.6.0-alpha.4
     "@lumino/widgets": ^2.7.5
   checksum: bd56cccbbef8399e56ef4941ad42f2e748cbf810c5f1c4cc3d607517ae4ffd42fcf9e8312f8136a88585af581c0f46e44f021464552e1bac044c9764df4339db
-  languageName: node
-  linkType: hard
-
-"@jupyterlab/builder@npm:~4.6.0-alpha.4":
-  version: 4.6.0-alpha.4
-  resolution: "@jupyterlab/builder@npm:4.6.0-alpha.4"
-  dependencies:
-    "@lumino/algorithm": ^2.0.4
-    "@lumino/application": ^2.4.8
-    "@lumino/commands": ^2.3.3
-    "@lumino/coreutils": ^2.2.2
-    "@lumino/disposable": ^2.1.5
-    "@lumino/domutils": ^2.0.4
-    "@lumino/dragdrop": ^2.1.8
-    "@lumino/messaging": ^2.0.4
-    "@lumino/properties": ^2.0.4
-    "@lumino/signaling": ^2.1.5
-    "@lumino/virtualdom": ^2.0.4
-    "@lumino/widgets": ^2.7.5
-    "@rspack/core": ^1.7.7
-    ajv: ^8.12.0
-    commander: ^9.4.1
-    css-loader: ^6.7.1
-    duplicate-package-checker-webpack-plugin: ^3.0.0
-    fs-extra: ^10.1.0
-    glob: ~7.1.6
-    license-webpack-plugin: ^4.0.2
-    mini-svg-data-uri: ^1.4.4
-    path-browserify: ^1.0.0
-    process: ^0.11.10
-    source-map-loader: ~1.0.2
-    style-loader: ~3.3.1
-    supports-color: ^7.2.0
-    webpack-merge: ^5.8.0
-    worker-loader: ^3.0.2
-  bin:
-    build-labextension: lib/build-labextension.js
-  checksum: 2bb29bef010dc05bf34f311162e64bb1ef9e7e54f3592671fe4061a08b44376b07adb64813f6dd83acb93d0fccf6dbdba2ed22327e8699cd7743d081504bee2c
   languageName: node
   linkType: hard
 
@@ -1354,6 +1352,13 @@ __metadata:
     "@lumino/signaling": ^2.1.5
     "@lumino/widgets": ^2.7.5
   checksum: 8f3e23f8e4c312aff9dabc1104f9197b732c3e43115cf143322fc371cb025e5958d9ae1a1717d57add357a5cff8b6349a489b7b4b16cf7ce44a8bd71bbcaa5f8
+  languageName: node
+  linkType: hard
+
+"@jupyterlab/core-meta@npm:4.6.0-alpha.4":
+  version: 4.6.0-alpha.4
+  resolution: "@jupyterlab/core-meta@npm:4.6.0-alpha.4"
+  checksum: 9ee7870b1a5f41a15d20bddd716bb916bc65888bb08b6d8fe6f51d71b9d7110e701b37dd0ae3fc83342839c74555da6d7b49006c638fd32808269e3558324c06
   languageName: node
   linkType: hard
 
@@ -3201,7 +3206,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app@workspace:app"
   dependencies:
-    "@jupyterlab/builder": ~4.6.0-alpha.4
+    "@jupyter/builder": ^0.0.8
     "@rspack/cli": ^1.7.7
     "@rspack/core": ^1.7.7
     fs-extra: ^9.0.1
@@ -3393,6 +3398,7 @@ __metadata:
   resolution: "@jupyterlite/root@workspace:."
   dependencies:
     "@eslint/js": ^9.26.0
+    "@jupyter/eslint-plugin": 0.0.5
     "@stylistic/eslint-plugin": ^5.10.0
     eslint: ^9.26.0
     eslint-config-prettier: ^10.0.0
@@ -5027,7 +5033,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.56.1":
+"@typescript-eslint/utils@npm:8.56.1, @typescript-eslint/utils@npm:^8.54.0":
   version: 8.56.1
   resolution: "@typescript-eslint/utils@npm:8.56.1"
   dependencies:
@@ -7665,12 +7671,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.0.0":
-  version: 1.15.11
-  resolution: "follow-redirects@npm:1.15.11"
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 20bf55e9504f59e6cc3743ba27edb2ebf41edea1baab34799408f2c050f73f0c612728db21c691276296d2795ea8a812dc532a98e8793619fcab91abe06d017f
+  checksum: e90dce4607b1f6b8b9883287f912585573c19088209ad82341d550a795b4ba514522b73b1b340cf618279df27975cd46504d09149be60291ba6767384c1fd8f8
   languageName: node
   linkType: hard
 
@@ -9260,9 +9266,9 @@ __metadata:
   linkType: hard
 
 "lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.4, lodash@npm:^4.7.0":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 7daad39758a72872e94651630fbb54ba76868f904211089721a64516ce865506a759d9ad3d8ff22a2a49a50a09db5d27c36f22762d21766e47e3ba918d6d7bab
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: bb5f5b49aad29614e709af02b64c56b0f8b78c6a81434a3c1ae527d2f0f78ca08f9d9fb22aa825a053876c9d2166e9c01f31c356014b5e2bdc0556c057433102
   languageName: node
   linkType: hard
 
@@ -11854,11 +11860,11 @@ __metadata:
   linkType: hard
 
 "ts-api-utils@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "ts-api-utils@npm:2.4.0"
+  version: 2.5.0
+  resolution: "ts-api-utils@npm:2.5.0"
   peerDependencies:
     typescript: ">=4.8.4"
-  checksum: beae72a4fa22a7cc91a8a0f3dfb487d72e30f06ac50ff72f327d061dea2d4940c6451d36578d949caad3893d4d2c7d42d53b7663597ccda54ad32cdb842c3e34
+  checksum: 5b2a2db7aa041d60b040df691ee5e73d534fb4cb3cf4fd6d2c27c584a32836a7ca8272fb23d865e673559ea639fdba35f8623249bf931df22188f0aaef7f0075
   languageName: node
   linkType: hard
 
