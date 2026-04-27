@@ -60,6 +60,8 @@ import React from 'react';
 
 import { ClearDataDialog } from './clear-data-dialog';
 
+type TVersionEntry = { label: string; version: string };
+
 /**
  * A regular expression to match path to notebooks, documents and consoles
  */
@@ -154,6 +156,20 @@ const about: JupyterFrontEndPlugin<void> = {
     const trans = translator.load(I18N_BUNDLE);
     const category = trans.__('Help');
 
+    // Parse configured version entries from PageConfig
+    let versionEntries: TVersionEntry[] = [];
+    try {
+      const raw = PageConfig.getOption('versionInfo');
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, Partial<TVersionEntry>>;
+        versionEntries = Object.values(parsed).filter(
+          (e): e is TVersionEntry => !!e.label && !!e.version,
+        );
+      }
+    } catch (e) {
+      console.error('Failed to parse versionInfo from PageConfig', e);
+    }
+
     commands.addCommand(CommandIDs.about, {
       label: trans.__('About %1', app.name),
       describedBy: {
@@ -164,9 +180,19 @@ const about: JupyterFrontEndPlugin<void> = {
       },
       execute: () => {
         const versionNumber = trans.__('Version %1', app.version);
+
         const versionInfo = (
           <span className="jp-About-version-info">
             <span className="jp-About-version">{versionNumber}</span>
+            {versionEntries.length > 0 && (
+              <ul className="jp-About-versionList">
+                {versionEntries.map((entry) => (
+                  <li key={entry.label}>
+                    {trans.__('%1 %2', entry.label, entry.version)}
+                  </li>
+                ))}
+              </ul>
+            )}
           </span>
         );
         const title = (
