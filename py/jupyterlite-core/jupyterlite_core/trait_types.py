@@ -6,12 +6,16 @@ from traitlets import Container, TraitType
 class CPath(TraitType):
     """A trait for casting to a Path. It might not actually exist yet"""
 
-    def validate(self, obj, value) -> Path:
-        if isinstance(value, Path):
-            return value.resolve()
+    def __init__(self, *args, resolve_relative=True, **kwargs):
+        self.resolve_relative = resolve_relative
+        super().__init__(*args, **kwargs)
 
+    def validate(self, obj, value) -> Path:
         try:
-            return Path(str(value)).resolve()
+            path = value if isinstance(value, Path) else Path(str(value))
+            if path.is_absolute() or self.resolve_relative:
+                return path.resolve()
+            return path
         except Exception:
             self.error(obj, value)
 
