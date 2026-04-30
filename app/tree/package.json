@@ -273,7 +273,6 @@
       "@jupyterlab/application-extension:layout",
       "@jupyterlab/application-extension:logo",
       "@jupyterlab/application-extension:main",
-      "@jupyterlab/application-extension:mode-switch",
       "@jupyterlab/application-extension:notfound",
       "@jupyterlab/application-extension:paths",
       "@jupyterlab/application-extension:property-inspector",
