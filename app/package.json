@@ -20,12 +20,12 @@
     "watch": "rspack --watch --config rspack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyterlab/builder": "~4.6.0-alpha.4",
+    "@jupyter/builder": "^0.0.8",
     "@rspack/cli": "^1.7.7",
     "@rspack/core": "^1.7.7",
     "fs-extra": "^9.0.1",
     "glob": "^7.2.0",
-    "handlebars": "^4.7.8",
+    "handlebars": "^4.7.9",
     "rimraf": "^5.0.1",
     "webpack-merge": "^5.9.0"
   },

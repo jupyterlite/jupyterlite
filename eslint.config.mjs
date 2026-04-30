@@ -1,9 +1,11 @@
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
+import jupyterPlugin from '@jupyter/eslint-plugin';
 
 export default defineConfig([
   {
@@ -40,6 +42,9 @@ export default defineConfig([
   reactPlugin.configs.flat.recommended,
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: {
+      jupyter: jupyterPlugin,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -52,6 +57,12 @@ export default defineConfig([
       },
     },
     rules: {
+      'jupyter/command-described-by': 'error',
+      'jupyter/plugin-activation-args': 'error',
+      'jupyter/plugin-description': 'error',
+      'jupyter/token-format': 'error',
+      'jupyter/no-translation-concatenation': 'error',
+      'jupyter/no-untranslated-string': 'error',
       '@typescript-eslint/naming-convention': [
         'error',
         {
@@ -83,4 +94,17 @@ export default defineConfig([
     },
   },
   eslintPluginPrettierRecommended,
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: {
+      '@stylistic': stylistic,
+    },
+    rules: {
+      '@stylistic/quotes': [
+        'error',
+        'single',
+        { avoidEscape: true, allowTemplateLiterals: 'never' },
+      ],
+    },
+  },
 ]);

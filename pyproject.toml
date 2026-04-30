@@ -8,7 +8,7 @@ version = "0.8.0a1"
 # Minimal build dependencies
 build = [
     "hatch>=1.6.3,<2",
-    "jupyterlab>=4.6.0a0,<4.7",
+    "jupyter-builder>=0.0.8",
 ]
 
 # Demo site extensions
@@ -24,11 +24,10 @@ demo = [
     "jupyterlab-fasta~=3.3.0",
     "jupyterlab-geojson~=3.4.0",
     "jupyterlab-kernelspy~=4.0.0",
-    "jupyterlab-miami-nights~=0.4.2",
+    "jupyterlab-night~=0.5.0",
     "jupyterlab-tour~=4.0.1",
     "jupyterlite-p5-kernel~=0.4.0a0",
     "jupyterlite-pyodide-kernel>=0.8.0a0",
-    "notebook>=7.6.0a0,<7.7",
     "plotly~=5.22.0",
 ]
 
@@ -36,7 +35,7 @@ demo = [
 dev = [
     { include-group = "build" },
     "jupyterlite-pyodide-kernel>=0.8.0a0",
-    "notebook>=7.6.0a0,<7.7",
+    "notebook>=7.6.0a4,<7.7",
     "pkginfo",
     "ruff>=0.8.3",
     "twine>=5.1.1",
@@ -89,13 +88,13 @@ test = [
 # UI tests
 ui-tests = [
     { include-group = "build" },
-    "jupyterlab==4.6.0a0",
+    "jupyterlab==4.6.0a4",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.4.0a0",
     "jupyterlite-pyodide-kernel==0.8.0a0",
-    "notebook==7.6.0a0",
-    "theme-darcula==4.0.0",
+    "notebook==7.6.0a4",
+    "jupyterlab-night==0.5.2",
 ]
 
 # All development dependencies (excludes demo)

@@ -120,4 +120,21 @@ test.describe('Service Worker Tests', () => {
     // Recreate it
     await page.notebook.runCellByCell();
   });
+
+  test('Write/read roundtrips on the file system', async ({ page }) => {
+    const notebook = 'file-roundtrips.ipynb';
+
+    await page.menu.clickMenuItem('Settings>Autosave Documents');
+
+    await page.notebook.open(notebook);
+
+    await page.notebook.runCellByCell({
+      onAfterCellRun: async (cellIndex: number) => {
+        const output = await page.notebook.getCellTextOutput(cellIndex);
+
+        expect(output).toBeTruthy();
+        expect(output![0]).toContain('Ok');
+      },
+    });
+  });
 });
