@@ -124,3 +124,142 @@ def test_contents_missing_jupyter_server(
         "jupyter-server is not installed. You cannot add custom content to jupyterlite."
     )
     assert expected_error in result.stdout or expected_error in result.stderr
+
+
+def test_contents_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Contents paths from config should resolve relative to lite_dir, not CWD.
+
+    When running ``jupyter lite build --lite-dir <dir>`` from a different working directory,
+    ``"contents": ["."]`` in the config file should resolve to ``lite_dir``, not to CWD.
+    """
+    # Create a content file in the lite dir
+    (an_empty_lite_dir / "notebook.ipynb").write_text("{}")
+    config = {
+        "LiteBuildConfig": {
+            "ignore_sys_prefix": True,
+            "contents": ["."],
+        },
+    }
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
+
+    # Run from a *different* directory, pointing --lite-dir at an_empty_lite_dir
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    root_contents_json = out / "api/contents/all.json"
+    root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
+    assert len(root_contents["content"]) == 1, root_contents
+    assert root_contents["content"][0]["name"] == "notebook.ipynb"
+
+
+def test_workspaces_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Workspace paths from config should resolve relative to lite_dir, not CWD.
+
+    When running ``jupyter lite build --lite-dir <dir>`` from a different working directory,
+    the ``"workspaces"`` config option should resolve to ``lite_dir``, not to CWD.
+    """
+    workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
+    workspace.write_text(
+        json.dumps({"data": {}, "metadata": {"id": "default"}}),
+        encoding="utf-8",
+    )
+    config = {
+        "LiteBuildConfig": {
+            "ignore_sys_prefix": True,
+            "workspaces": ["default.jupyterlab-workspace"],
+        },
+    }
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    workspaces_json = out / "api/workspaces/all.json"
+    workspaces = json.loads(workspaces_json.read_text(encoding="utf-8"))
+    assert "default" in workspaces, workspaces
+
+
+def test_workspaces_path_in_py_config_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Path-based workspaces in py config should resolve relative to lite_dir."""
+    workspace = an_empty_lite_dir / "default.jupyterlab-workspace"
+    workspace.write_text(
+        json.dumps({"data": {}, "metadata": {"id": "default"}}),
+        encoding="utf-8",
+    )
+    (an_empty_lite_dir / "jupyter_lite_config.py").write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "c = get_config()",
+                "c.LiteBuildConfig.ignore_sys_prefix = True",
+                "c.LiteBuildConfig.workspaces = [Path('default.jupyterlab-workspace')]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    workspaces_json = out / "api/workspaces/all.json"
+    workspaces = json.loads(workspaces_json.read_text(encoding="utf-8"))
+    assert "default" in workspaces, workspaces
+
+
+def test_contents_path_in_py_config_resolved_relative_to_lite_dir(
+    an_empty_lite_dir,
+    script_runner,
+):
+    """Path-based contents in py config should resolve relative to lite_dir."""
+    # Use a subdirectory so the .py config file itself is not picked up as content
+    content_dir = an_empty_lite_dir / "my_contents"
+    content_dir.mkdir()
+    (content_dir / "notebook.ipynb").write_text("{}")
+    (an_empty_lite_dir / "jupyter_lite_config.py").write_text(
+        "\n".join(
+            [
+                "from pathlib import Path",
+                "c = get_config()",
+                "c.LiteBuildConfig.ignore_sys_prefix = True",
+                "c.LiteBuildConfig.contents = [Path('my_contents')]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    other_dir = an_empty_lite_dir.parent
+    result = script_runner.run(
+        ["jupyter", "lite", "build", "--lite-dir", str(an_empty_lite_dir)],
+        cwd=str(other_dir),
+    )
+    assert result.success
+
+    out = an_empty_lite_dir / "_output"
+    root_contents_json = out / "api/contents/all.json"
+    root_contents = json.loads(root_contents_json.read_text(encoding="utf-8"))
+    assert len(root_contents["content"]) == 1, root_contents
+    assert root_contents["content"][0]["name"] == "notebook.ipynb"
