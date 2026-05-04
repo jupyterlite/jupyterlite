@@ -9768,21 +9768,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.11":
+"nanoid@npm:^3.3.11, nanoid@npm:^3.3.6":
   version: 3.3.11
   resolution: "nanoid@npm:3.3.11"
   bin:
     nanoid: bin/nanoid.cjs
   checksum: 3be20d8866a57a6b6d218e82549711c8352ed969f9ab3c45379da28f405363ad4c9aeb0b39e9abc101a529ca65a72ff9502b00bf74a912c4b64a9d62dfd26c29
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^3.3.6":
-  version: 3.3.7
-  resolution: "nanoid@npm:3.3.7"
-  bin:
-    nanoid: bin/nanoid.cjs
-  checksum: d36c427e530713e4ac6567d488b489a36582ef89da1d6d4e3b87eded11eb10d7042a877958c6f104929809b2ab0bafa17652b076cdf84324aa75b30b722204f2
   languageName: node
   linkType: hard
 
@@ -11361,14 +11352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map-js@npm:^1.0.1":
-  version: 1.2.0
-  resolution: "source-map-js@npm:1.2.0"
-  checksum: 791a43306d9223792e84293b00458bf102a8946e7188f3db0e4e22d8d530b5f80a4ce468eb5ec0bf585443ad55ebbd630bf379c98db0b1f317fd902500217f97
-  languageName: node
-  linkType: hard
-
-"source-map-js@npm:^1.2.1":
+"source-map-js@npm:^1.0.1, source-map-js@npm:^1.2.1":
   version: 1.2.1
   resolution: "source-map-js@npm:1.2.1"
   checksum: 4eb0cd997cdf228bc253bcaff9340afeb706176e64868ecd20efbe6efea931465f43955612346d6b7318789e5265bdc419bc7669c1cebe3db0eb255f57efa76b
