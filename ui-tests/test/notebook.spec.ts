@@ -171,7 +171,7 @@ test.describe('Switch between Notebook and JupyterLab', () => {
 
     const [treePage] = await Promise.all([
       page.waitForEvent('popup'),
-      page.menu.clickMenuItem('Help>Launch Jupyter Notebook File Browser'),
+      page.menu.clickMenuItem('View>Launch Jupyter Notebook File Browser'),
     ]);
 
     await treePage.waitForSelector('#filebrowser');
