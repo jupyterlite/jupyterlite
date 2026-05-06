@@ -29,6 +29,11 @@ const VERSION = PageConfig.getOption('appVersion');
 const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
 
 /**
+ * Time in milliseconds between heartbeat pings.
+ */
+const HEARTBEAT_MS = 20000;
+
+/**
  * A class that manages the ServiceWorker registration and communication,
  * used for accessing the file system.
  */
@@ -125,7 +130,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
         console.info('Registering new JupyterLite ServiceWorker', workerUrl);
         registration = await serviceWorker.register(workerUrl);
         // eslint-disable-next-line no-console
-        console.info('JupyterLite ServiceWorker was sucessfully registered');
+        console.info('JupyterLite ServiceWorker was successfully registered');
       } catch (err: any) {
         console.warn(err);
         console.warn(
@@ -140,7 +145,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
       this._ready.reject(void 0);
     } else {
       this._ready.resolve(void 0);
-      setTimeout(this._pingServiceWorker, 20000);
+      setTimeout(this._pingServiceWorker.bind(this), HEARTBEAT_MS);
     }
   }
 
@@ -174,7 +179,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     const response = await fetch(SW_PING_ENDPOINT);
     const text = await response.text();
     if (text === 'ok') {
-      setTimeout(this._pingServiceWorker, 20000);
+      setTimeout(this._pingServiceWorker.bind(this), HEARTBEAT_MS);
     }
   }
 
