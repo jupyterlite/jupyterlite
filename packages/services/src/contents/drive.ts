@@ -546,7 +546,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     } else {
       return {
         ...model,
-        size: 0,
+        size: model.size ?? 0,
         format: options?.format ?? model.format,
         content: null,
       };
