@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/apputils",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "JupyterLite - Application Utilities",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -48,9 +48,9 @@
     "@jupyterlab/settingregistry": "~4.5.7",
     "@jupyterlab/statedb": "~4.5.7",
     "@jupyterlab/translation": "~4.5.7",
-    "@jupyterlite/application": "^0.7.5",
-    "@jupyterlite/services": "^0.7.5",
-    "@jupyterlite/types": "^0.7.5",
+    "@jupyterlite/application": "^0.7.6",
+    "@jupyterlite/services": "^0.7.6",
+    "@jupyterlite/types": "^0.7.6",
     "@lumino/application": "^2.4.8",
     "@lumino/coreutils": "^2.2.2",
     "@lumino/signaling": "^2.1.5",

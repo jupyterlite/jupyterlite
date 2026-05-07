@@ -71,6 +71,26 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.7.6
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.7.5...39ebfe6bc844398bdcbae4a7d1a63b06840cf79e))
+
+### Bugs fixed
+
+- Fix service worker heartbeat bind so that it is called repeatedly [#1940](https://github.com/jupyterlite/jupyterlite/pull/1940) ([@ianthomas23](https://github.com/ianthomas23))
+- Fix getattr's size [#1942](https://github.com/jupyterlite/jupyterlite/pull/1942) ([@martinRenou](https://github.com/martinRenou))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-04&to=2026-05-07&type=c))
+
+@ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-05-04..2026-05-07&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-05-04..2026-05-07&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.7.5
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.7.4...d9d5706a056a8bddb8833ac14c48dbe2d23eb764))
@@ -92,8 +112,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-03-12&to=2026-05-04&type=c))
 
 @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-03-12..2026-05-04&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-03-12..2026-05-04&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.7.4
 
