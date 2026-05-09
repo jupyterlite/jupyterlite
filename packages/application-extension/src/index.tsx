@@ -388,7 +388,7 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
   // marking as optional to not throw errors in Notebook
   optional: [ILabShell],
   autoStart: true,
-  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
+  activate: (app: JupyterFrontEnd, labShell: ILabShell | null) => {
     if (!labShell) {
       return;
     }
