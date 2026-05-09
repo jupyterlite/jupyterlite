@@ -6,6 +6,7 @@ import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
 import jupyterPlugin from '@jupyter/eslint-plugin';
+import * as jsoncParser from 'jsonc-eslint-parser';
 
 export default defineConfig([
   {
@@ -63,6 +64,7 @@ export default defineConfig([
       'jupyter/token-format': 'error',
       'jupyter/no-translation-concatenation': 'error',
       'jupyter/no-untranslated-string': 'error',
+      'jupyter/require-soft-assertions-before-snapshots': 'error',
       '@typescript-eslint/naming-convention': [
         'error',
         {
@@ -91,6 +93,14 @@ export default defineConfig([
       'prefer-arrow-callback': 'error',
       curly: ['error', 'all'],
       eqeqeq: 'error',
+    },
+  },
+  {
+    files: ['**/schema/*.json'],
+    languageOptions: { parser: jsoncParser },
+    plugins: { jupyter: jupyterPlugin },
+    rules: {
+      'jupyter/no-schema-enum': 'error',
     },
   },
   eslintPluginPrettierRecommended,
