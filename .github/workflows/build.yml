@@ -50,8 +50,8 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --group lint --group dev
 
-      - name: Install JS dependencies
-        run: jlpm
+      - name: Install JS dependencies and build lib
+        run: jlpm && jlpm build:lib
 
       - name: Lint
         run: jlpm lint:check
