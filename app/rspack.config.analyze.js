@@ -7,8 +7,9 @@ const config = { ...base[0] };
 
 config.plugins = [
   ...config.plugins,
-  // rspack 2.0: stats.toJson() without args no longer includes assets/modules/chunks.
-  // webpack-bundle-analyzer calls it without args, so patch the stats object before it runs.
+  // webpack-bundle-analyzer calls stats.toJson() without arguments, but rspack only
+  // includes assets/modules/chunks when those options are explicitly requested.
+  // Patch toJson to supply them by default so the analyzer has data to render.
   {
     apply(compiler) {
       compiler.hooks.done.tapAsync('PatchStatsForBundleAnalyzer', (stats, callback) => {
