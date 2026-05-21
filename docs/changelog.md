@@ -71,6 +71,41 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-alpha.2...52c5c82a0e8ba4bbcc7a4c42a7705c84a90c4ed1))
+
+### Enhancements made
+
+- Update to JupyterLab v4.6.0b0 and Notebook v7.6.0b0 [#1954](https://github.com/jupyterlite/jupyterlite/pull/1954) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix getattr's size [#1942](https://github.com/jupyterlite/jupyterlite/pull/1942) ([@martinRenou](https://github.com/martinRenou), [@ianthomas23](https://github.com/ianthomas23))
+- Fix service worker heartbeat bind so that it is called repeatedly [#1940](https://github.com/jupyterlite/jupyterlite/pull/1940) ([@ianthomas23](https://github.com/ianthomas23), [@martinRenou](https://github.com/martinRenou), [@trungleduc](https://github.com/trungleduc))
+- Test opening audio and video files [#1909](https://github.com/jupyterlite/jupyterlite/pull/1909) ([@jtpio](https://github.com/jtpio), [@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Bump `@jupyter/eslint-plugin` to `v1` [#1948](https://github.com/jupyterlite/jupyterlite/pull/1948) ([@Darshan808](https://github.com/Darshan808), [@jtpio](https://github.com/jtpio))
+
+### Other merged PRs
+
+- Bump ws from 8.18.3 to 8.20.1 [#1953](https://github.com/jupyterlite/jupyterlite/pull/1953) ([@jtpio](https://github.com/jtpio))
+- Bump fast-uri from 3.1.0 to 3.1.2 in /ui-tests [#1947](https://github.com/jupyterlite/jupyterlite/pull/1947) ([@jtpio](https://github.com/jtpio))
+- Bump fast-uri from 3.0.6 to 3.1.2 [#1946](https://github.com/jupyterlite/jupyterlite/pull/1946) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-04&to=2026-05-21&type=c))
+
+@Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-05-04..2026-05-21&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-05-04..2026-05-21&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-04..2026-05-21&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-05-04..2026-05-21&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-05-04..2026-05-21&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.0a2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.8.0a1...67fb3b1b37a070962c5fe2febdfc6dbcd0562cae))
@@ -153,8 +188,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-01-26&to=2026-05-04&type=c))
 
 @agriyakhetarpal ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagriyakhetarpal+updated%3A2026-01-26..2026-05-04&type=Issues)) | @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-01-26..2026-05-04&type=Issues)) | @Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-01-26..2026-05-04&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-01-26..2026-05-04&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-01-26..2026-05-04&type=Issues)) | @juntyr ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2026-01-26..2026-05-04&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-01-26..2026-05-04&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-01-26..2026-05-04&type=Issues)) | @SylvainCorlay ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ASylvainCorlay+updated%3A2026-01-26..2026-05-04&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-01-26..2026-05-04&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.0a1
 
