@@ -137,4 +137,19 @@ test.describe('Service Worker Tests', () => {
       },
     });
   });
+
+  test('State read on the file system', async ({ page }) => {
+    const notebook = 'file-attr-read.ipynb';
+
+    await page.notebook.open(notebook);
+
+    await page.notebook.runCellByCell({
+      onAfterCellRun: async (cellIndex: number) => {
+        const output = await page.notebook.getCellTextOutput(cellIndex);
+
+        expect(output).toBeTruthy();
+        expect(output![0]).toContain('Ok');
+      },
+    });
+  });
 });

@@ -1,6 +1,6 @@
 [project]
 name = "jupyterlite-root"
-version = "0.8.0a1"
+version = "0.8.0b0"
 
 # Dependency groups (PEP 735) for development dependencies
 # Install with: pip install --group dev
@@ -41,8 +41,8 @@ demo = [
 dev = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab>=4.6.0a4,<4.7",
-    "notebook>=7.6.0a4,<7.7",
+    "jupyterlab>=4.6.0b0,<4.7",
+    "notebook>=7.6.0b0,<7.7",
     "pkginfo",
     "ruff>=0.8.3",
     "twine>=5.1.1",
@@ -74,7 +74,7 @@ lint = [
 
 # An example downstream kernel
 pyodide-kernel = [
-    "jupyterlite-pyodide-kernel[lock] @ https://jupyterlite-pyodide-kernel--275.org.readthedocs.build/en/275/_static/jupyterlite_pyodide_kernel-0.8.0a1-py3-none-any.whl ; sys_platform != 'emscripten'",
+    "jupyterlite-pyodide-kernel[lock] >=0.8.0b0; sys_platform != 'emscripten'",
 ]
 
 ## Documentation build platform
@@ -108,11 +108,11 @@ test = [
 ui-tests = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab==4.6.0a4",
+    "jupyterlab==4.6.0b0",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.4.0a0",
-    "notebook==7.6.0a4",
+    "notebook==7.6.0b0",
     "jupyterlab-night==0.5.2",
 ]
 
@@ -196,7 +196,7 @@ ignore = [
 "ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
-current = "0.8.0a1"
+current = "0.8.0b0"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
