@@ -13,6 +13,7 @@ node_modules
 .pytest_cache
 app/extensions/
 .cache/
+.pixi/
 
 # JS templating
 bootstrap.js

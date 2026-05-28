@@ -251,27 +251,13 @@ The workflow will create a PR with all necessary changes if updates are availabl
 
 The demo site extensions are defined in the `demo` dependency group in `pyproject.toml`.
 
-| File                                | Purpose                                    |
-| ----------------------------------- | ------------------------------------------ |
-| `pyproject.toml` (demo group)       | Source of truth for demo extensions        |
-| `examples/requirements-demo.txt`    | Lock file with pinned versions (generated) |
-| `examples/requirements-piplite.txt` | Additional packages for piplite bundling   |
-| `examples/jupyter_lite_config.json` | Contains generated `piplite_urls`          |
+| File                                     | Purpose                                   |
+| ---------------------------------------- | ----------------------------------------- |
+| `pyproject.toml` (demo group)            | Source of truth for demo extensions       |
+| `examples/requirements-pyodide-lock.txt` | Extracted constraints from `pyodide-lock` |
+| `examples/jupyter_lite_config.json`      | Contains references to above              |
 
-#### Updating Demo Dependencies
-
-When you change the `demo` dependency group in `pyproject.toml`, regenerate the lock
-file and piplite URLs:
-
-```bash
-python scripts/compile-lock-files.py
-```
-
-This will update both `examples/requirements-demo.txt` and the `piplite_urls` in
-`examples/jupyter_lite_config.json`. Commit these generated files.
-
-**Note**: This script uses `uv` if available, otherwise falls back to `pip-compile`
-(from pip-tools).
+When you change the `demo` dependency group in `pyproject.toml`, delete
 
 ### Documentation
 
