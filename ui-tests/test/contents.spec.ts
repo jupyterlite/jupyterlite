@@ -170,6 +170,53 @@ test.describe('Contents Tests', () => {
     expect(await isDirectoryListedInBrowser({ page, name })).toBeFalsy();
   });
 
+  test('Creating a file in a missing directory should fail', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const contents = (window as any).galata.app.serviceManager.contents;
+      const missing = 'missing-directory';
+      const errors: Record<string, string> = {};
+
+      try {
+        await contents.newUntitled({
+          path: missing,
+          type: 'file',
+          ext: '.txt',
+        });
+      } catch (error) {
+        errors.newUntitled = (error as Error).message;
+      }
+
+      try {
+        await contents.save(`${missing}/file.txt`, {
+          type: 'file',
+          format: 'text',
+          content: 'hidden content',
+        });
+      } catch (error) {
+        errors.save = (error as Error).message;
+      }
+
+      const hiddenFileExists = await contents
+        .get(`${missing}/file.txt`)
+        .then(() => true)
+        .catch(() => false);
+
+      const root = await contents.get('', { content: true });
+      const missingDirectoryExists = root.content.some(
+        (item: any) => item.name === missing,
+      );
+
+      return { errors, hiddenFileExists, missingDirectoryExists };
+    });
+
+    expect(result.errors.newUntitled).toContain(
+      'Directory does not exist: missing-directory',
+    );
+    expect(result.errors.save).toContain('Directory does not exist: missing-directory');
+    expect(result.hiddenFileExists).toBe(false);
+    expect(result.missingDirectoryExists).toBe(false);
+  });
+
   test('Download a notebook', async ({ page }) => {
     const name = await page.notebook.createNew();
     if (!name) {
