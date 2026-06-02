@@ -71,6 +71,42 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-beta.0...cdb0a78b22fc6198b0afbb771aa99adc1713f7c0))
+
+### Enhancements made
+
+- Replace loading indicator with JupyterLab splash-style spinner [#1963](https://github.com/jupyterlite/jupyterlite/pull/1963) ([@MMesch](https://github.com/MMesch), [@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- UI tests HTML report [#1965](https://github.com/jupyterlite/jupyterlite/pull/1965) ([@jtpio](https://github.com/jtpio), [@krassowski](https://github.com/krassowski))
+- Update to JupyterLab v4.6.0b1 and Notebook v7.6.0b1 [#1964](https://github.com/jupyterlite/jupyterlite/pull/1964) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update to pyodide-kernel 0.8.0b0 [#1916](https://github.com/jupyterlite/jupyterlite/pull/1916) ([@bollwyvl](https://github.com/bollwyvl), [@jtpio](https://github.com/jtpio))
+
+### Other merged PRs
+
+- Bump uuid from 11.1.0 to 11.1.1 [#1962](https://github.com/jupyterlite/jupyterlite/pull/1962) ([@jtpio](https://github.com/jtpio))
+- Bump @tootallnate/once from 2.0.0 to 2.0.1 in /ui-tests [#1961](https://github.com/jupyterlite/jupyterlite/pull/1961) ([@jtpio](https://github.com/jtpio))
+- Bump ws from 8.17.1 to 8.20.1 in /ui-tests [#1958](https://github.com/jupyterlite/jupyterlite/pull/1958) ([@jtpio](https://github.com/jtpio))
+- Bump uuid from 11.1.0 to 11.1.1 in /ui-tests [#1957](https://github.com/jupyterlite/jupyterlite/pull/1957) ([@jtpio](https://github.com/jtpio))
+- Bump @tootallnate/once from 2.0.0 to 2.0.1 [#1956](https://github.com/jupyterlite/jupyterlite/pull/1956) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-21&to=2026-06-02&type=c))
+
+@bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-05-21..2026-06-02&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-21..2026-06-02&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-05-21..2026-06-02&type=Issues)) | @MMesch ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AMMesch+updated%3A2026-05-21..2026-06-02&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-alpha.2...52c5c82a0e8ba4bbcc7a4c42a7705c84a90c4ed1))
@@ -103,8 +139,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-04&to=2026-05-21&type=c))
 
 @Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-05-04..2026-05-21&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-05-04..2026-05-21&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-04..2026-05-21&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-05-04..2026-05-21&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-05-04..2026-05-21&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.0a2
 
