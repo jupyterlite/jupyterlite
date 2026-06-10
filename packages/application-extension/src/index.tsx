@@ -100,6 +100,7 @@ const I18N_BUNDLE = 'jupyterlite';
  */
 const liteRouter: JupyterFrontEndPlugin<ILiteRouter> = {
   id: '@jupyterlite/application-extension:lite-router',
+  description: 'Provides the custom URL router for JupyterLite.',
   autoStart: true,
   provides: ILiteRouter,
   requires: [JupyterFrontEnd.IPaths],
@@ -127,6 +128,7 @@ const liteRouter: JupyterFrontEndPlugin<ILiteRouter> = {
  */
 const router: JupyterFrontEndPlugin<IRouter> = {
   id: '@jupyterlite/application-extension:router',
+  description: 'Provides the default URL router.',
   autoStart: true,
   provides: IRouter,
   requires: [ILiteRouter],
@@ -140,6 +142,7 @@ const router: JupyterFrontEndPlugin<IRouter> = {
  */
 const about: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:about',
+  description: 'Adds an About JupyterLite dialog command.',
   autoStart: true,
   requires: [ITranslator],
   optional: [ICommandPalette, IMainMenu],
@@ -169,6 +172,12 @@ const about: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(CommandIDs.about, {
       label: trans.__('About %1', app.name),
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {},
+        },
+      },
       execute: () => {
         const versionNumber = trans.__('Version %1', app.version);
 
@@ -259,6 +268,7 @@ const about: JupyterFrontEndPlugin<void> = {
  */
 const downloadPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:download',
+  description: 'Provides file download commands.',
   autoStart: true,
   requires: [ITranslator, IDocumentManager],
   optional: [ICommandPalette, IFileBrowserFactory],
@@ -314,6 +324,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
     commands.addCommand(CommandIDs.docmanagerDownload, {
       label: trans.__('Download'),
       caption: trans.__('Download the file to your computer'),
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {},
+        },
+      },
       isEnabled,
       execute: async () => {
         // Checks that shell.currentWidget is valid:
@@ -352,6 +368,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
       const { tracker } = factory;
 
       commands.addCommand(CommandIDs.filebrowserDownload, {
+        describedBy: {
+          args: {
+            type: 'object',
+            properties: {},
+          },
+        },
         execute: async () => {
           const widget = tracker.currentWidget;
 
@@ -388,10 +410,11 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
  */
 const liteLogo: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:logo',
+  description: 'Displays the JupyterLite logo in the top bar.',
   // marking as optional to not throw errors in Notebook
   optional: [ILabShell],
   autoStart: true,
-  activate: (app: JupyterFrontEnd, labShell: ILabShell) => {
+  activate: (app: JupyterFrontEnd, labShell: ILabShell | null) => {
     if (!labShell) {
       return;
     }
@@ -415,6 +438,7 @@ const liteLogo: JupyterFrontEndPlugin<void> = {
  */
 const lspConnectionManager: JupyterFrontEndPlugin<ILSPDocumentConnectionManager> = {
   id: '@jupyterlite/application-extension:lsp-connection-manager',
+  description: 'Provides the LSP document connection manager.',
   autoStart: true,
   requires: [IWidgetLSPAdapterTracker],
   provides: ILSPDocumentConnectionManager,
@@ -441,6 +465,7 @@ const lspConnectionManager: JupyterFrontEndPlugin<ILSPDocumentConnectionManager>
  */
 const notifyCommands: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:notify-commands',
+  description: 'Notifies command changes on shell layout updates.',
   autoStart: true,
   optional: [ILabShell],
   activate: (app: JupyterFrontEnd, labShell: ILabShell | null) => {
@@ -458,6 +483,7 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
  */
 const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
+  description: 'Opens documents from URL path query parameters.',
   autoStart: true,
   requires: [IRouter, IDocumentManager],
   optional: [ILabShell, ISettingRegistry],
@@ -472,6 +498,23 @@ const opener: JupyterFrontEndPlugin<void> = {
 
     const command = 'router:tree';
     commands.addCommand(command, {
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {
+            request: {
+              type: 'string',
+              description:
+                'The routed URL request with the router base omitted, including the query string and hash if present.',
+            },
+            search: {
+              type: 'string',
+              description:
+                'The URL search string containing query parameters, including any path values to open.',
+            },
+          },
+        },
+      },
       execute: (args: any) => {
         const parsed = args as IRouter.ILocation;
         // use request to do the matching
@@ -536,12 +579,12 @@ const opener: JupyterFrontEndPlugin<void> = {
             }
 
             const factory = urlParams.get('factory') ?? defaultFactory;
-            docManager.open(file, factory, undefined, {
+            docManager.openOrReveal(file, factory, undefined, {
               ref: '_noref',
             });
           } else {
             // open all files in the lab interface
-            files.forEach((file) => docManager.open(file));
+            files.forEach((file) => docManager.openOrReveal(file));
             const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
             // only remove the path (to keep extra parameters like the RTC room)
             url.searchParams.delete('path');
@@ -571,6 +614,7 @@ const opener: JupyterFrontEndPlugin<void> = {
  */
 const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> = {
   id: '@jupyterlite/application-extension:service-worker-manager',
+  description: 'Installs and manages the service worker.',
   autoStart: true,
   provides: IServiceWorkerManager,
   optional: [IKernelClient],
@@ -594,6 +638,7 @@ const serviceWorkerManagerPlugin: JupyterFrontEndPlugin<IServiceWorkerManager> =
  */
 const sessionContextPatch: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:session-context-patch',
+  description: 'Patches session context path to include the drive name.',
   autoStart: true,
   requires: [IDocumentManager, IDocumentWidgetOpener],
   activate: (
@@ -634,6 +679,7 @@ const sessionContextPatch: JupyterFrontEndPlugin<void> = {
  */
 const shareFile: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:share-file',
+  description: 'Adds a command to copy a shareable link to a file.',
   requires: [IFileBrowserFactory, ITranslator],
   autoStart: true,
   activate: (
@@ -646,6 +692,12 @@ const shareFile: JupyterFrontEndPlugin<void> = {
     const { tracker } = factory;
 
     commands.addCommand(CommandIDs.copyShareableLink, {
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {},
+        },
+      },
       execute: () => {
         const widget = tracker.currentWidget;
         if (!widget) {
@@ -696,6 +748,7 @@ const shareFile: JupyterFrontEndPlugin<void> = {
  */
 const clearBrowserData: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:clear-browser-data',
+  description: 'Adds a command to clear browser storage data.',
   autoStart: true,
   requires: [ITranslator],
   optional: [
@@ -759,6 +812,14 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
 
     commands.addCommand(CommandIDs.clearBrowserData, {
       label: trans.__('Clear Browser Data'),
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {
+            isPalette: { type: 'boolean' },
+          },
+        },
+      },
       icon: (args) => (args['isPalette'] ? undefined : clearIcon),
       execute: async () => {
         // Pass the availability information to the dialog
@@ -799,6 +860,7 @@ const clearBrowserData: JupyterFrontEndPlugin<void> = {
  */
 const modeSupport: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:mode-support',
+  description: 'Configures the application layout mode.',
   autoStart: true,
   optional: [ILabShell, IRouter],
   activate: (

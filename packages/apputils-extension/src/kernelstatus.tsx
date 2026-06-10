@@ -16,6 +16,7 @@ import type { ISignal } from '@lumino/signaling';
 import { Signal } from '@lumino/signaling';
 
 import React, { useState, useEffect } from 'react';
+import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 
 /**
  * Track the current execution status of a kernel.
@@ -58,9 +59,10 @@ export class KernelStatus {
 function KernelStatusComponent(props: {
   model: KernelStatus;
   onClick?: () => void;
+  translator: ITranslator;
 }): JSX.Element {
   const [status, setStatus] = useState<Kernel.Status>(props.model.status);
-
+  const trans = props.translator.load('jupyterlite');
   useEffect(() => {
     const onChange = (_: any, newStatus: Kernel.Status) => {
       setStatus(newStatus);
@@ -83,7 +85,7 @@ function KernelStatusComponent(props: {
       className={'jp-KernelStatus'}
       onClick={props.onClick}
       style={{ cursor: 'pointer' }}
-      title="Click to open kernel logs"
+      title={trans.__('Click to open kernel logs')}
     >
       <div className="jp-KernelStatus-icon-container">
         {isBusy && (
@@ -159,6 +161,7 @@ export class KernelStatusWidget extends ReactWidget {
     super();
     this._model = options.model;
     this._onClick = options.onClick || (() => {});
+    this._translator = options.translator || nullTranslator;
     this.addClass('jp-KernelStatus-widget');
     this.addClass('jp-mod-highlighted');
 
@@ -177,11 +180,18 @@ export class KernelStatusWidget extends ReactWidget {
    * Render the kernel status widget.
    */
   protected render(): JSX.Element {
-    return <KernelStatusComponent model={this._model} onClick={this._onClick} />;
+    return (
+      <KernelStatusComponent
+        model={this._model}
+        onClick={this._onClick}
+        translator={this._translator}
+      />
+    );
   }
 
   private _model: KernelStatus;
   private _onClick: () => void;
+  private _translator: ITranslator = nullTranslator;
 }
 
 /**
@@ -201,6 +211,11 @@ export namespace KernelStatusWidget {
      * The click handler for the widget.
      */
     onClick?: () => void;
+
+    /**
+     * The application language translator.
+     */
+    translator: ITranslator | null;
   }
 }
 
@@ -211,11 +226,12 @@ export const kernelStatusPlugin: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/apputils-extension:kernel-status',
   description: 'Kernel status indicator for JupyterLite',
   autoStart: true,
-  optional: [IToolbarWidgetRegistry, ILoggerRegistry],
+  optional: [IToolbarWidgetRegistry, ILoggerRegistry, ITranslator],
   activate: (
     app: JupyterFrontEnd,
     toolbarRegistry: IToolbarWidgetRegistry | null,
     loggerRegistry: ILoggerRegistry | null,
+    translator: ITranslator | null,
   ): void => {
     const { commands } = app;
 
@@ -263,6 +279,7 @@ export const kernelStatusPlugin: JupyterFrontEndPlugin<void> = {
             onClick: () => {
               commands.execute('logconsole:open');
             },
+            translator,
           });
         },
       );

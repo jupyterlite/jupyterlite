@@ -53,6 +53,7 @@ namespace CommandIDs {
  */
 const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
   id: '@jupyterlite/application-extension:licenses-client',
+  description: 'Provides the client for fetching license data.',
   autoStart: true,
   provides: ILicensesClient,
   activate: (app: JupyterFrontEnd): ILicensesClient => {
@@ -122,6 +123,12 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
 
     commands.addCommand(CommandIDs.openPluginManager, {
       label: widgetLabel,
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {},
+        },
+      },
       execute: (args) => {
         const main = createWidget(args);
         shell.add(main, 'main', { type: 'Plugins' });
@@ -167,6 +174,7 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
  */
 const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
   id: '@jupyterlite/application-extension:resolver',
+  description: 'Provides the default window name resolver.',
   autoStart: true,
   provides: IWindowResolver,
   requires: [JupyterFrontEnd.IPaths, IRouter, IWorkspaceRouter],
@@ -211,6 +219,7 @@ const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
  */
 const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
   id: '@jupyterlite/application-extension:workspaces',
+  description: 'Handles workspace URL routing.',
   requires: [ILiteRouter],
   autoStart: true,
   provides: IWorkspaceRouter,

@@ -7,14 +7,15 @@ build:
   jobs:
     post_install:
       - python -m pip install --upgrade pip
-      - python -m pip install --group docs --group dev -r examples/requirements-demo.txt
+      - python -m pip install --group readthedocs -r
+        examples/requirements-pyodide-lock.txt
       - jlpm
       - jlpm build
       - jlpm pack:app
       - python -m pip install './py/jupyterlite-core[all]'
       - jlpm build:py
+      - cd examples && jupyter lite build && cd ..
       - jlpm docs
-      - jupyter lite build --contents examples --output-dir build/docs-app
 sphinx:
   builder: html
   configuration: docs/conf.py

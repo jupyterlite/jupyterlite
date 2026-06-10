@@ -16,6 +16,7 @@ import { INotebookPathOpener, INotebookShell } from '@jupyter-notebook/applicati
  */
 const logo: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/notebook-application-extension:logo',
+  description: 'Displays the JupyterLite wordmark logo.',
   autoStart: true,
   activate: (app: JupyterFrontEnd) => {
     const baseUrl = PageConfig.getBaseUrl();
@@ -42,6 +43,7 @@ const logo: JupyterFrontEndPlugin<void> = {
  */
 const notifyCommands: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/notebook-application-extension:notify-commands',
+  description: 'Notifies command changes on shell layout updates.',
   autoStart: true,
   optional: [INotebookShell],
   activate: (app: JupyterFrontEnd, notebookShell: INotebookShell | null) => {
@@ -60,6 +62,7 @@ const notifyCommands: JupyterFrontEndPlugin<void> = {
  */
 const pathOpener: JupyterFrontEndPlugin<INotebookPathOpener> = {
   id: '@jupyterlite/notebook-application-extension:path-opener',
+  description: 'Opens paths in new browser tabs via query parameters.',
   autoStart: true,
   provides: INotebookPathOpener,
   activate: (app: JupyterFrontEnd): INotebookPathOpener => {

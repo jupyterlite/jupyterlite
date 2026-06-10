@@ -8,9 +8,9 @@ const merge = require('webpack-merge').default;
 const { ModuleFederationPlugin } = rspack.container;
 const { HtmlRspackPlugin } = rspack;
 const Handlebars = require('handlebars');
-const Build = require('@jupyterlab/builder').Build;
-const WPPlugin = require('@jupyterlab/builder').WPPlugin;
-const baseConfig = require('@jupyterlab/builder/lib/webpack.config.base');
+const Build = require('@jupyter/builder').Build;
+const WPPlugin = require('@jupyter/builder').WPPlugin;
+const baseConfig = require('@jupyter/builder/lib/webpack.config.base');
 
 const topLevelData = require('./package.json');
 

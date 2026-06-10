@@ -71,6 +71,158 @@ The minimum supported Python version for building JupyterLite sites has been inc
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-beta.0...cdb0a78b22fc6198b0afbb771aa99adc1713f7c0))
+
+### Enhancements made
+
+- Replace loading indicator with JupyterLab splash-style spinner [#1963](https://github.com/jupyterlite/jupyterlite/pull/1963) ([@MMesch](https://github.com/MMesch), [@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- UI tests HTML report [#1965](https://github.com/jupyterlite/jupyterlite/pull/1965) ([@jtpio](https://github.com/jtpio), [@krassowski](https://github.com/krassowski))
+- Update to JupyterLab v4.6.0b1 and Notebook v7.6.0b1 [#1964](https://github.com/jupyterlite/jupyterlite/pull/1964) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update to pyodide-kernel 0.8.0b0 [#1916](https://github.com/jupyterlite/jupyterlite/pull/1916) ([@bollwyvl](https://github.com/bollwyvl), [@jtpio](https://github.com/jtpio))
+
+### Other merged PRs
+
+- Bump uuid from 11.1.0 to 11.1.1 [#1962](https://github.com/jupyterlite/jupyterlite/pull/1962) ([@jtpio](https://github.com/jtpio))
+- Bump @tootallnate/once from 2.0.0 to 2.0.1 in /ui-tests [#1961](https://github.com/jupyterlite/jupyterlite/pull/1961) ([@jtpio](https://github.com/jtpio))
+- Bump ws from 8.17.1 to 8.20.1 in /ui-tests [#1958](https://github.com/jupyterlite/jupyterlite/pull/1958) ([@jtpio](https://github.com/jtpio))
+- Bump uuid from 11.1.0 to 11.1.1 in /ui-tests [#1957](https://github.com/jupyterlite/jupyterlite/pull/1957) ([@jtpio](https://github.com/jtpio))
+- Bump @tootallnate/once from 2.0.0 to 2.0.1 [#1956](https://github.com/jupyterlite/jupyterlite/pull/1956) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-21&to=2026-06-02&type=c))
+
+@bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-05-21..2026-06-02&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-21..2026-06-02&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-05-21..2026-06-02&type=Issues)) | @MMesch ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AMMesch+updated%3A2026-05-21..2026-06-02&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
+## 0.8.0b0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-alpha.2...52c5c82a0e8ba4bbcc7a4c42a7705c84a90c4ed1))
+
+### Enhancements made
+
+- Update to JupyterLab v4.6.0b0 and Notebook v7.6.0b0 [#1954](https://github.com/jupyterlite/jupyterlite/pull/1954) ([@jtpio](https://github.com/jtpio))
+
+### Bugs fixed
+
+- Fix getattr's size [#1942](https://github.com/jupyterlite/jupyterlite/pull/1942) ([@martinRenou](https://github.com/martinRenou), [@ianthomas23](https://github.com/ianthomas23))
+- Fix service worker heartbeat bind so that it is called repeatedly [#1940](https://github.com/jupyterlite/jupyterlite/pull/1940) ([@ianthomas23](https://github.com/ianthomas23), [@martinRenou](https://github.com/martinRenou), [@trungleduc](https://github.com/trungleduc))
+- Test opening audio and video files [#1909](https://github.com/jupyterlite/jupyterlite/pull/1909) ([@jtpio](https://github.com/jtpio), [@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Bump `@jupyter/eslint-plugin` to `v1` [#1948](https://github.com/jupyterlite/jupyterlite/pull/1948) ([@Darshan808](https://github.com/Darshan808), [@jtpio](https://github.com/jtpio))
+
+### Other merged PRs
+
+- Bump ws from 8.18.3 to 8.20.1 [#1953](https://github.com/jupyterlite/jupyterlite/pull/1953) ([@jtpio](https://github.com/jtpio))
+- Bump fast-uri from 3.1.0 to 3.1.2 in /ui-tests [#1947](https://github.com/jupyterlite/jupyterlite/pull/1947) ([@jtpio](https://github.com/jtpio))
+- Bump fast-uri from 3.0.6 to 3.1.2 [#1946](https://github.com/jupyterlite/jupyterlite/pull/1946) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-04&to=2026-05-21&type=c))
+
+@Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-05-04..2026-05-21&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-05-04..2026-05-21&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-04..2026-05-21&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-05-04..2026-05-21&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-05-04..2026-05-21&type=Issues))
+
+## 0.8.0a2
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/v0.8.0a1...67fb3b1b37a070962c5fe2febdfc6dbcd0562cae))
+
+### Enhancements made
+
+- Update to JupyterLab v4.6.0a4 and Notebook v7.6.0a4 [#1896](https://github.com/jupyterlite/jupyterlite/pull/1896) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab v4.6.0a3 and Notebook v7.6.0a3 [#1869](https://github.com/jupyterlite/jupyterlite/pull/1869) ([@jtpio](https://github.com/jtpio))
+- Avoid 404 when fetching `all.json` files [#1804](https://github.com/jupyterlite/jupyterlite/pull/1804) ([@jtpio](https://github.com/jtpio), [@agriyakhetarpal](https://github.com/agriyakhetarpal))
+
+### Bugs fixed
+
+- Do not open files twice at startup, when using query parameters [#1902](https://github.com/jupyterlite/jupyterlite/pull/1902) ([@martinRenou](https://github.com/martinRenou), [@SylvainCorlay](https://github.com/SylvainCorlay), [@jtpio](https://github.com/jtpio))
+- Drive: Multiple bug fixes [#1898](https://github.com/jupyterlite/jupyterlite/pull/1898) ([@martinRenou](https://github.com/martinRenou), [@ianthomas23](https://github.com/ianthomas23), [@jtpio](https://github.com/jtpio))
+- DriveFS: Fix handling of creating directories [#1886](https://github.com/jupyterlite/jupyterlite/pull/1886) ([@martinRenou](https://github.com/martinRenou), [@ianthomas23](https://github.com/ianthomas23), [@jtpio](https://github.com/jtpio))
+- Fix handling of paths relative to `lite-dir` [#1882](https://github.com/jupyterlite/jupyterlite/pull/1882) ([@jtpio](https://github.com/jtpio))
+- DriveContentsProcessor: speed-up creating files [#1878](https://github.com/jupyterlite/jupyterlite/pull/1878) ([@martinRenou](https://github.com/martinRenou), [@jtpio](https://github.com/jtpio))
+- Fix `EmscriptenFS` type definition [#1872](https://github.com/jupyterlite/jupyterlite/pull/1872) ([@jtpio](https://github.com/jtpio))
+- Fix Notebook export for some drives that set content as base64 by default [#1863](https://github.com/jupyterlite/jupyterlite/pull/1863) ([@martinRenou](https://github.com/martinRenou), [@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab v4.6.0a5 and Notebook v7.6.0a5 [#1935](https://github.com/jupyterlite/jupyterlite/pull/1935) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl))
+- Use `jupyter-builder` [#1932](https://github.com/jupyterlite/jupyterlite/pull/1932) ([@jtpio](https://github.com/jtpio), [@Darshan808](https://github.com/Darshan808), [@krassowski](https://github.com/krassowski))
+- Bump `@jupyter/eslint-plugin` and fix lint [#1929](https://github.com/jupyterlite/jupyterlite/pull/1929) ([@Darshan808](https://github.com/Darshan808), [@jtpio](https://github.com/jtpio))
+- Include `@jupyter/eslint-plugin` [#1917](https://github.com/jupyterlite/jupyterlite/pull/1917) ([@Darshan808](https://github.com/Darshan808), [@jtpio](https://github.com/jtpio))
+- Add missing ESLint quotes rule [#1905](https://github.com/jupyterlite/jupyterlite/pull/1905) ([@jtpio](https://github.com/jtpio))
+- Upload tests [#1903](https://github.com/jupyterlite/jupyterlite/pull/1903) ([@jtpio](https://github.com/jtpio), [@martinRenou](https://github.com/martinRenou))
+- Fix update script [#1901](https://github.com/jupyterlite/jupyterlite/pull/1901) ([@jtpio](https://github.com/jtpio))
+- ESLint 9 [#1891](https://github.com/jupyterlite/jupyterlite/pull/1891) ([@jtpio](https://github.com/jtpio))
+- Bump dompurify from 3.2.6 to 3.3.2 [#1890](https://github.com/jupyterlite/jupyterlite/pull/1890) ([@jtpio](https://github.com/jtpio))
+- TypeScript 5.9 [#1889](https://github.com/jupyterlite/jupyterlite/pull/1889) ([@jtpio](https://github.com/jtpio))
+- Bump dompurify from 3.2.6 to 3.3.2 in /ui-tests [#1888](https://github.com/jupyterlite/jupyterlite/pull/1888) ([@jtpio](https://github.com/jtpio))
+- Bump svgo from 3.0.2 to 3.3.3 [#1885](https://github.com/jupyterlite/jupyterlite/pull/1885) ([@jtpio](https://github.com/jtpio))
+- Bump minimatch from 3.1.2 to 3.1.5 [#1876](https://github.com/jupyterlite/jupyterlite/pull/1876) ([@jtpio](https://github.com/jtpio))
+- Bump the actions group with 2 updates [#1875](https://github.com/jupyterlite/jupyterlite/pull/1875) ([@jtpio](https://github.com/jtpio))
+- Bump minimatch from 3.1.2 to 3.1.5 in /ui-tests [#1874](https://github.com/jupyterlite/jupyterlite/pull/1874) ([@jtpio](https://github.com/jtpio))
+- Remove pin on `sphinx<8.2` [#1873](https://github.com/jupyterlite/jupyterlite/pull/1873) ([@jtpio](https://github.com/jtpio))
+- Bump ajv from 6.12.6 to 6.14.0 [#1865](https://github.com/jupyterlite/jupyterlite/pull/1865) ([@jtpio](https://github.com/jtpio))
+- Bump ajv from 8.12.0 to 8.18.0 in /ui-tests [#1864](https://github.com/jupyterlite/jupyterlite/pull/1864) ([@jtpio](https://github.com/jtpio))
+- Bump systeminformation from 5.27.14 to 5.31.1 in /ui-tests [#1862](https://github.com/jupyterlite/jupyterlite/pull/1862) ([@jtpio](https://github.com/jtpio))
+- Bump pillow from 12.1.0 to 12.1.1 in /examples [#1859](https://github.com/jupyterlite/jupyterlite/pull/1859) ([@jtpio](https://github.com/jtpio))
+- Fix CI [#1858](https://github.com/jupyterlite/jupyterlite/pull/1858) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl))
+- Bump nbconvert from 7.16.6 to 7.17.0 in /examples [#1857](https://github.com/jupyterlite/jupyterlite/pull/1857) ([@jtpio](https://github.com/jtpio))
+- Bump lodash from 4.17.21 to 4.17.23 in /ui-tests [#1852](https://github.com/jupyterlite/jupyterlite/pull/1852) ([@jtpio](https://github.com/jtpio))
+- Fix update script [#1851](https://github.com/jupyterlite/jupyterlite/pull/1851) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl))
+- Remove `iframe-extension` [#1803](https://github.com/jupyterlite/jupyterlite/pull/1803) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Update related projects [#1897](https://github.com/jupyterlite/jupyterlite/pull/1897) ([@trungleduc](https://github.com/trungleduc), [@martinRenou](https://github.com/martinRenou))
+- Document read-only files [#1881](https://github.com/jupyterlite/jupyterlite/pull/1881) ([@jtpio](https://github.com/jtpio), [@juntyr](https://github.com/juntyr))
+
+### Other merged PRs
+
+- Bump dompurify from 3.3.3 to 3.4.2 [#1938](https://github.com/jupyterlite/jupyterlite/pull/1938) ([@jtpio](https://github.com/jtpio))
+- Bump actions/github-script from 8 to 9 in the actions group [#1937](https://github.com/jupyterlite/jupyterlite/pull/1937) ([@jtpio](https://github.com/jtpio))
+- Bump postcss from 8.4.31 to 8.5.10 in /ui-tests [#1934](https://github.com/jupyterlite/jupyterlite/pull/1934) ([@jtpio](https://github.com/jtpio))
+- Bump postcss from 8.4.38 to 8.5.10 [#1933](https://github.com/jupyterlite/jupyterlite/pull/1933) ([@jtpio](https://github.com/jtpio))
+- Bump dompurify from 3.3.3 to 3.4.1 in /ui-tests [#1931](https://github.com/jupyterlite/jupyterlite/pull/1931) ([@jtpio](https://github.com/jtpio))
+- Bump follow-redirects from 1.15.11 to 1.16.0 [#1926](https://github.com/jupyterlite/jupyterlite/pull/1926) ([@jtpio](https://github.com/jtpio))
+- Bump pillow from 12.1.1 to 12.2.0 in /examples [#1925](https://github.com/jupyterlite/jupyterlite/pull/1925) ([@jtpio](https://github.com/jtpio))
+- Bump lodash from 4.17.23 to 4.18.1 [#1923](https://github.com/jupyterlite/jupyterlite/pull/1923) ([@jtpio](https://github.com/jtpio))
+- Bump lodash from 4.17.23 to 4.18.1 in /ui-tests [#1922](https://github.com/jupyterlite/jupyterlite/pull/1922) ([@jtpio](https://github.com/jtpio))
+- Bump the actions group with 3 updates [#1915](https://github.com/jupyterlite/jupyterlite/pull/1915) ([@jtpio](https://github.com/jtpio))
+- Bump brace-expansion from 1.1.12 to 1.1.13 in /ui-tests [#1914](https://github.com/jupyterlite/jupyterlite/pull/1914) ([@jtpio](https://github.com/jtpio))
+- Bump pygments from 2.19.2 to 2.20.0 in /examples [#1913](https://github.com/jupyterlite/jupyterlite/pull/1913) ([@jtpio](https://github.com/jtpio))
+- Bump path-to-regexp from 0.1.12 to 0.1.13 [#1912](https://github.com/jupyterlite/jupyterlite/pull/1912) ([@jtpio](https://github.com/jtpio))
+- Bump node-forge from 1.3.3 to 1.4.0 [#1911](https://github.com/jupyterlite/jupyterlite/pull/1911) ([@jtpio](https://github.com/jtpio))
+- Bump handlebars from 4.7.8 to 4.7.9 [#1910](https://github.com/jupyterlite/jupyterlite/pull/1910) ([@jtpio](https://github.com/jtpio))
+- Bump picomatch from 2.3.1 to 2.3.2 in /ui-tests [#1907](https://github.com/jupyterlite/jupyterlite/pull/1907) ([@jtpio](https://github.com/jtpio))
+- Bump picomatch from 2.3.1 to 2.3.2 [#1906](https://github.com/jupyterlite/jupyterlite/pull/1906) ([@jtpio](https://github.com/jtpio))
+- Bump flatted from 3.4.1 to 3.4.2 [#1900](https://github.com/jupyterlite/jupyterlite/pull/1900) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-01-26&to=2026-05-04&type=c))
+
+@agriyakhetarpal ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagriyakhetarpal+updated%3A2026-01-26..2026-05-04&type=Issues)) | @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-01-26..2026-05-04&type=Issues)) | @Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-01-26..2026-05-04&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-01-26..2026-05-04&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-01-26..2026-05-04&type=Issues)) | @juntyr ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajuntyr+updated%3A2026-01-26..2026-05-04&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-01-26..2026-05-04&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-01-26..2026-05-04&type=Issues)) | @SylvainCorlay ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ASylvainCorlay+updated%3A2026-01-26..2026-05-04&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-01-26..2026-05-04&type=Issues))
+
 ## 0.8.0a1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-alpha.0...53536b1d20a03723698778e17a12f8a73ad2231f))
@@ -103,8 +255,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-12-19&to=2026-01-26&type=c))
 
 @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-12-19..2026-01-26&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2025-12-19..2026-01-26&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-12-19..2026-01-26&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-12-19..2026-01-26&type=Issues)) | @wata727 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Awata727+updated%3A2025-12-19..2026-01-26&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.0a0
 

@@ -171,7 +171,7 @@ test.describe('Switch between Notebook and JupyterLab', () => {
 
     const [treePage] = await Promise.all([
       page.waitForEvent('popup'),
-      page.menu.clickMenuItem('Help>Launch Jupyter Notebook File Browser'),
+      page.menu.clickMenuItem('View>Launch Jupyter Notebook File Browser'),
     ]);
 
     await treePage.waitForSelector('#filebrowser');
@@ -203,5 +203,21 @@ test.describe('Switch between Notebook and JupyterLab', () => {
     await notebookPage.waitForSelector('.jp-NotebookPanel');
 
     expect(notebookPage.url()).toContain('notebooks');
+  });
+
+  test('Open a notebook with query parameter does not reopen the notebook another time', async ({
+    page,
+  }) => {
+    await page.goto('lab/index.html');
+
+    await page.notebook.open(NOTEBOOK);
+    await page.notebook.runCellByCell();
+    await page.notebook.save();
+
+    await page.goto(`lab/index.html?path=${NOTEBOOK}`);
+
+    const notebooks = page.locator('.jp-NotebookPanel');
+
+    await expect(notebooks).toHaveCount(1);
   });
 });

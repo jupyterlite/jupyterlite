@@ -364,10 +364,10 @@ def update_all_pyproject_tomls(
 ) -> None:
     """Update all pyproject.toml files with new version constraints."""
     print("\nUpdating pyproject.toml files...")
-    changed = any(
-        update_pyproject_toml(path, jupyterlab_version, notebook_version, dry_run)
-        for path in find_pyproject_toml_files()
-    )
+    changed = False
+    for path in find_pyproject_toml_files():
+        if update_pyproject_toml(path, jupyterlab_version, notebook_version, dry_run):
+            changed = True
     if not changed:
         print("  No changes to pyproject.toml files")
 
