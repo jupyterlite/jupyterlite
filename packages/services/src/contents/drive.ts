@@ -356,6 +356,8 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const type = options?.type ?? 'notebook';
     const created = new Date().toISOString();
 
+    await this._ensureDirectoryExists(path);
+
     let name: string | undefined = undefined;
 
     let file: IModel;
@@ -457,6 +459,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
    */
   async copy(path: string, toDir: string): Promise<IModel> {
     let name = PathExt.basename(path);
+    await this._ensureDirectoryExists(toDir);
     toDir = toDir === '' ? '' : `${PathExt.removeSlash(toDir)}/`;
     // TODO: better handle naming collisions with existing files
     while (
@@ -608,6 +611,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (!file) {
       throw Error(`Could not find file with path ${path}`);
     }
+    await this._ensureParentDirectoryExists(newLocalPath);
     const modified = new Date().toISOString();
     const name = PathExt.basename(newLocalPath);
     const newFile = {
@@ -675,6 +679,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     // Otherwise fallback to our default drive implementation
     path = decodeURIComponent(path);
+    await this._ensureParentDirectoryExists(path);
 
     // process the file if coming from an upload
     const name = options.name ? options.name : PathExt.basename(path) ?? undefined;
@@ -1122,6 +1127,27 @@ export class BrowserStorageDrive implements Contents.IDrive {
     }
 
     return content;
+  }
+
+  /**
+   * Ensure that a directory path exists before creating children in it.
+   */
+  private async _ensureDirectoryExists(path: string): Promise<void> {
+    if (!path) {
+      return;
+    }
+
+    const model = await this.get(path).catch(() => null);
+    if (!model || model.type !== 'directory') {
+      throw Error(`Directory does not exist: ${path}`);
+    }
+  }
+
+  /**
+   * Ensure that the parent directory for a path exists.
+   */
+  private async _ensureParentDirectoryExists(path: string): Promise<void> {
+    await this._ensureDirectoryExists(PathExt.dirname(path));
   }
 
   /**
