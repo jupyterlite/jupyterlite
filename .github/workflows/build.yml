@@ -204,6 +204,7 @@ jobs:
           python -m pytest -q --check-links docs/_build/html \
             --check-links-ignore "https://binder.pangeo.io/.*" \
             --check-links-ignore "https://github.com/.*" \
+            --check-links-ignore "https://gitlab.gwdg.de/.*" \
             --check-links-ignore "https://jupyterlite.readthedocs.io/.*" \
             --check-links-ignore "https://pypi.org/.*" \
             --check-links-ignore "https://www.sphinx-doc.org/.*"

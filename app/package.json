@@ -20,7 +20,7 @@
     "watch": "rspack --watch --config rspack.config.watch.js"
   },
   "devDependencies": {
-    "@jupyter/builder": "^1.0.0",
+    "@jupyter/builder": "^1.0.1",
     "@rspack/cli": "^2.0.2",
     "@rspack/core": "^2.0.2",
     "fs-extra": "^9.0.1",
