@@ -286,6 +286,7 @@
       "@jupyterlab/application-extension:layout",
       "@jupyterlab/application-extension:logo",
       "@jupyterlab/application-extension:main",
+      "@jupyterlab/application-extension:move-widget",
       "@jupyterlab/application-extension:notfound",
       "@jupyterlab/application-extension:paths",
       "@jupyterlab/application-extension:property-inspector",
