@@ -3,6 +3,8 @@
 
 import { expect, test } from '@playwright/test';
 
+import { waitForConsoleToSettle } from './utils';
+
 test.use({
   baseURL: 'http://localhost:8001',
   viewport: {
@@ -22,6 +24,10 @@ test.describe('Embed the REPL app', () => {
       .getByText('A JavaScript kernel running in the browser')
       .first()
       .waitFor({ state: 'visible' });
+
+    const frame = page.frame({ url: /repl\/index\.html/ });
+    expect(frame).not.toBeNull();
+    await waitForConsoleToSettle(frame!);
   });
 
   test('Page', async ({ page }) => {

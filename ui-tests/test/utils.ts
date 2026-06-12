@@ -2,6 +2,8 @@ import { Buffer } from 'buffer';
 
 import { expect, type IJupyterLabPageFixture } from '@jupyterlab/galata';
 
+import type { Frame, Page } from '@playwright/test';
+
 const dirListingItemTextSelector = (name: string) =>
   `span.jp-DirListing-itemText > span:text-is("${name}")`;
 
@@ -153,6 +155,30 @@ export async function notebooksWaitForApplication({ baseURL }, use, testInfo) {
     await page.waitForSelector('.jp-NotebookPanel');
   };
   await use(waitIsReady);
+}
+
+/**
+ * Wait for the fonts to be loaded and for the console prompt cell size to
+ * settle, so screenshots of the REPL are stable
+ */
+export async function waitForConsoleToSettle(target: Page | Frame): Promise<void> {
+  await target.evaluate(async () => {
+    await document.fonts.ready;
+  });
+
+  const prompt = target.locator('.jp-CodeConsole-promptCell');
+  let previous = '';
+  await expect
+    .poll(
+      async () => {
+        const current = JSON.stringify(await prompt.boundingBox());
+        const settled = current === previous;
+        previous = current;
+        return settled;
+      },
+      { intervals: [250] },
+    )
+    .toBe(true);
 }
 
 /**

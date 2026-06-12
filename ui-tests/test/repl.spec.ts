@@ -7,6 +7,8 @@ import { expect } from '@playwright/test';
 
 import type { Page } from '@playwright/test';
 
+import { waitForConsoleToSettle } from './utils';
+
 // Use custom waitForApplication to wait for the REPL to be ready
 const test = base.extend({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
@@ -23,12 +25,14 @@ test.describe('Basic REPL Tests', () => {
   });
 
   test('Page', async ({ page }) => {
+    await waitForConsoleToSettle(page);
     const imageName = 'page.png';
     expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
 
   test('Toggle Dark theme', async ({ page }) => {
     await page.theme.setDarkTheme();
+    await waitForConsoleToSettle(page);
     const imageName = 'dark-theme.png';
     expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
@@ -49,6 +53,7 @@ test.describe('Populate REPL prompt', () => {
   });
 
   test('Populate prompt without executing', async ({ page }) => {
+    await waitForConsoleToSettle(page);
     const imageName = 'populate-prompt.png';
     expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
   });
