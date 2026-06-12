@@ -9,6 +9,7 @@ import {
   ICommandPalette,
   IThemeManager,
   IToolbarWidgetRegistry,
+  Notification,
 } from '@jupyterlab/apputils';
 
 import type { CodeConsole, ConsolePanel } from '@jupyterlab/console';
@@ -43,6 +44,12 @@ const DEFAULT_REPL_CONFIG: Required<CodeConsole.IConfig> = {
   promptCellPosition: 'bottom',
   showBanner: true,
 };
+
+/**
+ * Auto-close delay (in ms) for the link-copied notification. Notifications
+ * without a positive `autoClose` delay are silent and do not show as a toast.
+ */
+const COPY_NOTIFICATION_AUTO_CLOSE = 5000;
 
 const SHAREABLE_PARAMETERS = [
   'clearCellsOnExecute',
@@ -115,6 +122,7 @@ const share: JupyterFrontEndPlugin<void> = {
   ) => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands } = app;
+    let copyNotificationId = '';
 
     commands.addCommand(CommandIDs.copyShareableLink, {
       execute: () => {
@@ -180,6 +188,20 @@ const share: JupyterFrontEndPlugin<void> = {
         );
 
         Clipboard.copyToSystem(url.toString());
+
+        // update the existing notification if any to avoid stacking them up
+        const message = trans.__('Link copied to clipboard');
+        const updated = Notification.update({
+          id: copyNotificationId,
+          message,
+          autoClose: COPY_NOTIFICATION_AUTO_CLOSE,
+        });
+        if (!updated) {
+          copyNotificationId = Notification.info(message, {
+            autoClose: COPY_NOTIFICATION_AUTO_CLOSE,
+          });
+        }
+
         return url.toString();
       },
       icon: (args) => (args['isPalette'] ? undefined : shareIcon),

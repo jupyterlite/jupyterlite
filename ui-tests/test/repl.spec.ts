@@ -173,4 +173,37 @@ test.describe('Share current REPL state', () => {
     expect(sharedUrl.searchParams.has('hideCodeInput')).toBe(false);
     expect(sharedUrl.searchParams.has('showBanner')).toBe(false);
   });
+
+  test('Shows a single notification when copying the link multiple times', async ({
+    page,
+  }) => {
+    // wait for the session to be ready so the share button is enabled
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const app = (window as any).jupyterapp;
+          const panel = app.shell.currentWidget;
+          return panel?.sessionContext.session?.kernel?.name ?? '';
+        }),
+      )
+      .toBe('javascript');
+
+    const shareButton = page.getByRole('button', { name: 'Copy a shareable link' });
+    const notifications = page.locator('.Toastify__toast');
+
+    await shareButton.click();
+
+    await expect(notifications).toHaveCount(1);
+    await expect(notifications).toContainText('Link copied to clipboard');
+
+    // clicking multiple times should not stack notifications
+    await shareButton.click();
+    await shareButton.click();
+
+    // give the notifications some time to settle
+    await page.waitForTimeout(500);
+
+    await expect(notifications).toHaveCount(1);
+    await expect(notifications).toContainText('Link copied to clipboard');
+  });
 });

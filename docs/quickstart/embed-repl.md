@@ -56,7 +56,7 @@ The toolbar can be enabled (opt-in) to add a couple of useful buttons:
 When enabled, the toolbar includes a `Copy Shareable Link` button that updates the page
 URL with the current state of the REPL (prompt content, kernel, theme and any
 non-default options documented on this page) and copies the resulting link to the
-clipboard.
+clipboard. A notification confirms the link was copied.
 
 ### Auto execute code on startup
 
