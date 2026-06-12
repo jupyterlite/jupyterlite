@@ -43,25 +43,18 @@ test.describe('Contents Tests', () => {
   //   expect(await page.contents.fileExists(`${tmpPath}/${renamed}`)).toEqual(true);
   // });
 
-  // TODO: re-enable once JupyterLite is updated to a JupyterLab release that
-  // includes the read-only indicator fix.
-  // Regression: https://github.com/jupyterlab/jupyterlab/pull/18739
-  // Fix: https://github.com/jupyterlab/jupyterlab/pull/18960
-  test.fixme(
-    'A read-only notebook should show a read-only indicator',
-    async ({ page }) => {
-      const notebook = 'readonly.ipynb';
-      await refreshFilebrowser({ page });
-      await page.notebook.open(notebook);
-      expect(await page.notebook.isOpen(notebook)).toBeTruthy();
+  test('A read-only notebook should show a read-only indicator', async ({ page }) => {
+    const notebook = 'readonly.ipynb';
+    await refreshFilebrowser({ page });
+    await page.notebook.open(notebook);
+    expect(await page.notebook.isOpen(notebook)).toBeTruthy();
 
-      // Check that the read-only indicator is visible in the toolbar
-      const readonlyIndicator = page.getByText('notebook is read-only', {
-        exact: true,
-      });
-      await expect(readonlyIndicator).toBeVisible();
-    },
-  );
+    // Check that the read-only indicator is visible in the toolbar
+    const readonlyIndicator = page.getByText('notebook is read-only', {
+      exact: true,
+    });
+    await expect(readonlyIndicator).toBeVisible();
+  });
 
   test('Open a file existing on the server', async ({ page }) => {
     const notebook = 'javascript.ipynb';
@@ -168,6 +161,53 @@ test.describe('Contents Tests', () => {
     await refreshFilebrowser({ page });
 
     expect(await isDirectoryListedInBrowser({ page, name })).toBeFalsy();
+  });
+
+  test('Creating a file in a missing directory should fail', async ({ page }) => {
+    const result = await page.evaluate(async () => {
+      const contents = (window as any).galata.app.serviceManager.contents;
+      const missing = 'missing-directory';
+      const errors: Record<string, string> = {};
+
+      try {
+        await contents.newUntitled({
+          path: missing,
+          type: 'file',
+          ext: '.txt',
+        });
+      } catch (error) {
+        errors.newUntitled = (error as Error).message;
+      }
+
+      try {
+        await contents.save(`${missing}/file.txt`, {
+          type: 'file',
+          format: 'text',
+          content: 'hidden content',
+        });
+      } catch (error) {
+        errors.save = (error as Error).message;
+      }
+
+      const hiddenFileExists = await contents
+        .get(`${missing}/file.txt`)
+        .then(() => true)
+        .catch(() => false);
+
+      const root = await contents.get('', { content: true });
+      const missingDirectoryExists = root.content.some(
+        (item: any) => item.name === missing,
+      );
+
+      return { errors, hiddenFileExists, missingDirectoryExists };
+    });
+
+    expect(result.errors.newUntitled).toContain(
+      'Directory does not exist: missing-directory',
+    );
+    expect(result.errors.save).toContain('Directory does not exist: missing-directory');
+    expect(result.hiddenFileExists).toBe(false);
+    expect(result.missingDirectoryExists).toBe(false);
   });
 
   test('Download a notebook', async ({ page }) => {
