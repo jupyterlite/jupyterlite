@@ -164,6 +164,12 @@ export async function notebooksWaitForApplication({ baseURL }, use, testInfo) {
 export async function waitForConsoleToSettle(target: Page | Frame): Promise<void> {
   await target.evaluate(async () => {
     await document.fonts.ready;
+
+    // hide the cursor as its fractional width renders differently from
+    // one page load to another, making screenshots flaky
+    const style = document.createElement('style');
+    style.textContent = '.cm-cursorLayer { display: none !important; }';
+    document.head.appendChild(style);
   });
 
   const prompt = target.locator('.jp-CodeConsole-promptCell');
