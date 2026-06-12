@@ -174,13 +174,17 @@ test.describe('Share current REPL state', () => {
     await expect(notifications).toHaveCount(1);
     await expect(notifications).toContainText('Link copied to clipboard');
 
-    // clicking multiple times should not stack notifications
+    // type more code and copy the link again multiple times
+    await page.locator('.jp-CodeConsole-promptCell .cm-content').click();
+    await page.keyboard.type('\nconsole.log("extra")');
+
     await shareButton.click();
     await shareButton.click();
 
-    // give the notifications some time to settle
-    await page.waitForTimeout(500);
+    // the link is updated with the new prompt content
+    await expect(page).toHaveURL(/extra/);
 
+    // the notifications should not stack up
     await expect(notifications).toHaveCount(1);
     await expect(notifications).toContainText('Link copied to clipboard');
   });
