@@ -5,11 +5,15 @@
  * for entries keyed by installed npm package name, and writes them back so
  * the About dialog can display accurate version information at runtime.
  *
- * Usage: node scripts/update-versions.js
+ * Usage:
+ *   node scripts/update-versions.js          # Update versions
+ *   node scripts/update-versions.js --check  # Check only (for CI)
  */
 
 const fs = require('fs');
 const path = require('path');
+
+const checkOnly = process.argv.includes('--check');
 
 const JUPYTER_LITE_JSON = path.resolve(__dirname, '../app/jupyter-lite.json');
 
@@ -28,11 +32,36 @@ if (!versionEntries || typeof versionEntries !== 'object') {
   process.exit(0);
 }
 
+const changes = [];
+
 for (const [pkg, entry] of Object.entries(versionEntries)) {
-  const version = require(`${pkg}/package.json`).version;
+  let version;
+  try {
+    version = require(`${pkg}/package.json`).version;
+  } catch (err) {
+    console.error(`Error: failed to resolve the version of "${pkg}":`, err.message);
+    process.exit(1);
+  }
+  if (entry.version !== version) {
+    changes.push(`  ${pkg}: ${entry.version ?? '(unset)'} -> ${version}`);
+  }
   entry.version = version;
-  console.log(`  ${entry.label}: ${version} (${pkg})`);
+  if (!checkOnly) {
+    console.log(`  ${entry.label}: ${version} (${pkg})`);
+  }
 }
 
-fs.writeFileSync(JUPYTER_LITE_JSON, JSON.stringify(config, null, 2) + '\n');
-console.log(`Updated versionInfo in ${JUPYTER_LITE_JSON}`);
+if (checkOnly) {
+  if (changes.length > 0) {
+    console.error('versionInfo mismatches found in app/jupyter-lite.json:');
+    for (const change of changes) {
+      console.error(change);
+    }
+    console.error("\nRun 'jlpm update-versions' to fix.");
+    process.exit(1);
+  }
+  console.log('All versionInfo entries are up to date.');
+} else {
+  fs.writeFileSync(JUPYTER_LITE_JSON, JSON.stringify(config, null, 2) + '\n');
+  console.log(`Updated versionInfo in ${JUPYTER_LITE_JSON}`);
+}

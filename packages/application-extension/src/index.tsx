@@ -60,6 +60,10 @@ import React from 'react';
 
 import { ClearDataDialog } from './clear-data-dialog';
 
+/**
+ * A version entry displayed in the About dialog, as configured via the
+ * `versionInfo` option in `jupyter-config-data`.
+ */
 type TVersionEntry = { label: string; version: string };
 
 /**
