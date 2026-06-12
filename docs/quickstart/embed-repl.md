@@ -58,6 +58,18 @@ URL with the current state of the REPL (prompt content, kernel, theme and any
 non-default options documented on this page) and copies the resulting link to the
 clipboard. A notification confirms the link was copied.
 
+To remove the share button from the toolbar of your deployment, disable its toolbar item
+with the following [settings override](../howto/configure/settings.md) in
+`overrides.json`:
+
+```json
+{
+  "@jupyterlab/console-extension:tracker": {
+    "toolbar": [{ "name": "copyShareableLink", "disabled": true }]
+  }
+}
+```
+
 ### Auto execute code on startup
 
 Custom code can automatically be executed on startup:
