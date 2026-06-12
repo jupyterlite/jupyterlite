@@ -5,6 +5,8 @@ import { test as base } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
+import type { Page } from '@playwright/test';
+
 // Use custom waitForApplication to wait for the REPL to be ready
 const test = base.extend({
   waitForApplication: async ({ baseURL }, use, testInfo) => {
@@ -53,38 +55,32 @@ test.describe('Populate REPL prompt', () => {
 });
 
 test.describe('Share current REPL state', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('repl/index.html?toolbar=1&kernel=javascript');
-  });
+  // the prompt cell is rendered to the left of the console cells
+  const promptIsLeftOfCells = async (page: Page): Promise<boolean> => {
+    const promptBox = await page.locator('.jp-CodeConsole-promptCell').boundingBox();
+    const cellsBox = await page.locator('.jp-CodeConsole-content').boundingBox();
+    return !!promptBox && !!cellsBox && promptBox.x + promptBox.width <= cellsBox.x;
+  };
 
-  test('Round-trips the current prompt and REPL options', async ({ page }) => {
-    // wait for the session to be ready so the kernel name is part of the link
-    await expect
-      .poll(() =>
-        page.evaluate(() => {
-          const app = (window as any).jupyterapp;
-          const panel = app.shell.currentWidget;
-          return panel?.sessionContext.session?.kernel?.name ?? '';
-        }),
-      )
-      .toBe('javascript');
+  test('Round-trips the current prompt and REPL options', async ({
+    page,
+    context,
+    browserName,
+  }) => {
+    await page.goto(
+      'repl/index.html?toolbar=1&kernel=javascript&promptCellPosition=left&clearCellsOnExecute=1&clearCodeContentOnExecute=0&hideCodeInput=1&showBanner=0',
+    );
 
-    await page.evaluate(async () => {
-      const app = (window as any).jupyterapp;
-      const panel = app.shell.currentWidget;
+    // the kernel name shows up in the toolbar once the session is started
+    await expect(
+      page.getByRole('button', { name: 'JavaScript (Web Worker)' }),
+    ).toBeVisible();
 
-      panel.console.promptCell.model.sharedModel.setSource(
-        'console.log("shared")\nconsole.log("state")',
-      );
-      panel.console.setConfig({
-        clearCellsOnExecute: true,
-        clearCodeContentOnExecute: false,
-        hideCodeInput: true,
-        showBanner: false,
-      });
+    // the prompt moves to the left once the URL options are applied
+    await expect.poll(() => promptIsLeftOfCells(page)).toBe(true);
 
-      await app.commands.execute('console:prompt-to-left');
-    });
+    await page.locator('.jp-CodeConsole-promptCell .cm-content').click();
+    await page.keyboard.type('console.log("shared")\nconsole.log("state")');
 
     await page.theme.setDarkTheme();
     await page.getByRole('button', { name: 'Copy a shareable link' }).click();
@@ -105,59 +101,45 @@ test.describe('Share current REPL state', () => {
       'console.log("state")',
     ]);
 
+    if (browserName === 'chromium') {
+      // check the link was copied to the clipboard (not supported on firefox)
+      await context.grantPermissions(['clipboard-read']);
+      const clipboard = await page.evaluate(() => navigator.clipboard.readText());
+      expect(clipboard).toBe(sharedUrl.toString());
+    }
+
     await page.goto(sharedUrl.toString());
+
+    // the prompt is populated with the shared code once the session is ready
+    const prompt = page.locator('.jp-CodeConsole-promptCell');
+    await expect(prompt).toContainText('console.log("shared")');
+    await expect(prompt).toContainText('console.log("state")');
 
     await expect.poll(async () => page.theme.getTheme()).toBe('JupyterLab Dark');
 
-    // the prompt is only populated after the session is ready
-    await expect
-      .poll(() =>
-        page.evaluate(() => {
-          const app = (window as any).jupyterapp;
-          const panel = app.shell.currentWidget;
-          return panel?.console.promptCell?.model.sharedModel.getSource() ?? '';
-        }),
-      )
-      .toBe('console.log("shared")\nconsole.log("state")');
+    // the kernel and the toolbar are restored
+    await expect(
+      page.getByRole('button', { name: 'JavaScript (Web Worker)' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Copy a shareable link' }),
+    ).toBeVisible();
 
-    const state = await page.evaluate(() => {
-      const app = (window as any).jupyterapp;
-      const panel = app.shell.currentWidget;
-
-      return {
-        config: panel.console._config,
-        kernelName: panel.sessionContext.session?.kernel?.name ?? '',
-        toolbarDisposed: panel.toolbar.isDisposed,
-      };
-    });
-
-    expect(state.config.promptCellPosition).toBe('left');
-    expect(state.config.clearCellsOnExecute).toBe(true);
-    expect(state.config.clearCodeContentOnExecute).toBe(false);
-    expect(state.config.hideCodeInput).toBe(true);
-    expect(state.config.showBanner).toBe(false);
-    expect(state.kernelName).toBe('javascript');
-    expect(state.toolbarDisposed).toBe(false);
+    // the prompt is restored to the left, and the banner stays hidden
+    await expect.poll(() => promptIsLeftOfCells(page)).toBe(true);
+    await expect(page.locator('.jp-CodeConsole-banner')).toHaveCount(0);
   });
 
   test('Does not include default REPL options in the link', async ({ page }) => {
-    // wait for the session to be ready so the kernel name is part of the link
-    await expect
-      .poll(() =>
-        page.evaluate(() => {
-          const app = (window as any).jupyterapp;
-          const panel = app.shell.currentWidget;
-          return panel?.sessionContext.session?.kernel?.name ?? '';
-        }),
-      )
-      .toBe('javascript');
+    await page.goto('repl/index.html?toolbar=1&kernel=javascript');
 
-    await page.evaluate(() => {
-      const app = (window as any).jupyterapp;
-      const panel = app.shell.currentWidget;
+    // the banner shows up once the kernel is ready
+    await expect(page.locator('.jp-CodeConsole-banner')).toContainText(
+      'A JavaScript kernel running in the browser',
+    );
 
-      panel.console.promptCell.model.sharedModel.setSource('console.log("shared")');
-    });
+    await page.locator('.jp-CodeConsole-promptCell .cm-content').click();
+    await page.keyboard.type('console.log("shared")');
 
     await page.getByRole('button', { name: 'Copy a shareable link' }).click();
 
@@ -177,19 +159,15 @@ test.describe('Share current REPL state', () => {
   test('Shows a single notification when copying the link multiple times', async ({
     page,
   }) => {
-    // wait for the session to be ready so the share button is enabled
-    await expect
-      .poll(() =>
-        page.evaluate(() => {
-          const app = (window as any).jupyterapp;
-          const panel = app.shell.currentWidget;
-          return panel?.sessionContext.session?.kernel?.name ?? '';
-        }),
-      )
-      .toBe('javascript');
+    await page.goto('repl/index.html?toolbar=1&kernel=javascript');
+
+    // the banner shows up once the kernel is ready
+    await expect(page.locator('.jp-CodeConsole-banner')).toContainText(
+      'A JavaScript kernel running in the browser',
+    );
 
     const shareButton = page.getByRole('button', { name: 'Copy a shareable link' });
-    const notifications = page.locator('.Toastify__toast');
+    const notifications = page.getByRole('alert');
 
     await shareButton.click();
 
