@@ -58,6 +58,17 @@ test.describe('Share current REPL state', () => {
   });
 
   test('Round-trips the current prompt and REPL options', async ({ page }) => {
+    // wait for the session to be ready so the kernel name is part of the link
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const app = (window as any).jupyterapp;
+          const panel = app.shell.currentWidget;
+          return panel?.sessionContext.session?.kernel?.name ?? '';
+        }),
+      )
+      .toBe('javascript');
+
     await page.evaluate(async () => {
       const app = (window as any).jupyterapp;
       const panel = app.shell.currentWidget;
@@ -76,7 +87,7 @@ test.describe('Share current REPL state', () => {
     });
 
     await page.theme.setDarkTheme();
-    await page.getByRole('button', { name: 'Copy Shareable Link' }).click();
+    await page.getByRole('button', { name: 'Copy a shareable link' }).click();
 
     const sharedUrl = new URL(page.url());
 
@@ -98,19 +109,28 @@ test.describe('Share current REPL state', () => {
 
     await expect.poll(async () => page.theme.getTheme()).toBe('JupyterLab Dark');
 
+    // the prompt is only populated after the session is ready
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const app = (window as any).jupyterapp;
+          const panel = app.shell.currentWidget;
+          return panel?.console.promptCell?.model.sharedModel.getSource() ?? '';
+        }),
+      )
+      .toBe('console.log("shared")\nconsole.log("state")');
+
     const state = await page.evaluate(() => {
       const app = (window as any).jupyterapp;
       const panel = app.shell.currentWidget;
 
       return {
-        code: panel.console.promptCell.model.sharedModel.getSource(),
         config: panel.console._config,
         kernelName: panel.sessionContext.session?.kernel?.name ?? '',
         toolbarDisposed: panel.toolbar.isDisposed,
       };
     });
 
-    expect(state.code).toBe('console.log("shared")\nconsole.log("state")');
     expect(state.config.promptCellPosition).toBe('left');
     expect(state.config.clearCellsOnExecute).toBe(true);
     expect(state.config.clearCodeContentOnExecute).toBe(false);
@@ -118,5 +138,39 @@ test.describe('Share current REPL state', () => {
     expect(state.config.showBanner).toBe(false);
     expect(state.kernelName).toBe('javascript');
     expect(state.toolbarDisposed).toBe(false);
+  });
+
+  test('Does not include default REPL options in the link', async ({ page }) => {
+    // wait for the session to be ready so the kernel name is part of the link
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const app = (window as any).jupyterapp;
+          const panel = app.shell.currentWidget;
+          return panel?.sessionContext.session?.kernel?.name ?? '';
+        }),
+      )
+      .toBe('javascript');
+
+    await page.evaluate(() => {
+      const app = (window as any).jupyterapp;
+      const panel = app.shell.currentWidget;
+
+      panel.console.promptCell.model.sharedModel.setSource('console.log("shared")');
+    });
+
+    await page.getByRole('button', { name: 'Copy a shareable link' }).click();
+
+    const sharedUrl = new URL(page.url());
+
+    expect(sharedUrl.searchParams.get('toolbar')).toBe('1');
+    expect(sharedUrl.searchParams.get('kernel')).toBe('javascript');
+    expect(sharedUrl.searchParams.get('execute')).toBe('0');
+    expect(sharedUrl.searchParams.getAll('code')).toEqual(['console.log("shared")']);
+    expect(sharedUrl.searchParams.has('promptCellPosition')).toBe(false);
+    expect(sharedUrl.searchParams.has('clearCellsOnExecute')).toBe(false);
+    expect(sharedUrl.searchParams.has('clearCodeContentOnExecute')).toBe(false);
+    expect(sharedUrl.searchParams.has('hideCodeInput')).toBe(false);
+    expect(sharedUrl.searchParams.has('showBanner')).toBe(false);
   });
 });

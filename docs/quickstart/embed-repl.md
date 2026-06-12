@@ -53,8 +53,10 @@ The toolbar can be enabled (opt-in) to add a couple of useful buttons:
 ></iframe>
 ```
 
-When enabled, the toolbar includes a share button that updates the current URL and
-copies a link with the current prompt content and REPL URL options.
+When enabled, the toolbar includes a `Copy Shareable Link` button that updates the page
+URL with the current state of the REPL (prompt content, kernel, theme and any
+non-default options documented on this page) and copies the resulting link to the
+clipboard.
 
 ### Auto execute code on startup
 

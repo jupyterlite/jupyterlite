@@ -6,9 +6,7 @@ import { ILabStatus, IRouter, JupyterFrontEnd, Router } from '@jupyterlab/applic
 
 import {
   Clipboard,
-  CommandToolbarButton,
   ICommandPalette,
-  SemanticCommand,
   IThemeManager,
   IToolbarWidgetRegistry,
 } from '@jupyterlab/apputils';
@@ -24,7 +22,6 @@ import { SingleWidgetApp } from '@jupyterlite/application';
 
 import { liteIcon } from '@jupyterlite/ui-components';
 
-import type { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { Widget } from '@lumino/widgets';
 
 /**
@@ -105,30 +102,23 @@ const buttons: JupyterFrontEndPlugin<void> = {
  */
 const share: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/repl-extension:share',
+  description: 'Adds a command to copy a shareable link to the current REPL state.',
   autoStart: true,
   requires: [IConsoleTracker, ITranslator],
-  optional: [ICommandPalette, IThemeManager, IToolbarWidgetRegistry],
+  optional: [ICommandPalette, IThemeManager],
   activate: (
     app: JupyterFrontEnd,
     tracker: IConsoleTracker,
     translator: ITranslator,
     palette: ICommandPalette | null,
     themeManager: IThemeManager | null,
-    toolbarRegistry: IToolbarWidgetRegistry | null,
   ) => {
     const trans = translator.load(I18N_BUNDLE);
     const { commands } = app;
-    const getCurrent = (args: ReadonlyPartialJSONObject = {}): ConsolePanel | null => {
-      const widget = args[SemanticCommand.WIDGET];
-
-      return typeof widget === 'string'
-        ? tracker.find((panel) => panel.id === widget) ?? null
-        : tracker.currentWidget;
-    };
 
     commands.addCommand(CommandIDs.copyShareableLink, {
-      execute: (args: ReadonlyPartialJSONObject) => {
-        const panel = getCurrent(args);
+      execute: () => {
+        const panel = tracker.currentWidget;
         if (!panel) {
           return;
         }
@@ -156,7 +146,9 @@ const share: JupyterFrontEndPlugin<void> = {
           url.searchParams.set('theme', theme);
         }
 
-        url.searchParams.set('promptCellPosition', config.promptCellPosition);
+        if (config.promptCellPosition !== DEFAULT_REPL_CONFIG.promptCellPosition) {
+          url.searchParams.set('promptCellPosition', config.promptCellPosition);
+        }
 
         if (config.clearCellsOnExecute) {
           url.searchParams.set('clearCellsOnExecute', '1');
@@ -191,11 +183,22 @@ const share: JupyterFrontEndPlugin<void> = {
         return url.toString();
       },
       icon: (args) => (args['isPalette'] ? undefined : shareIcon),
-      isEnabled: (args) => !!getCurrent(args),
+      isEnabled: () => !!tracker.currentWidget,
       caption: trans.__(
         'Copy a shareable link for this REPL with the current prompt and options',
       ),
       label: trans.__('Copy Shareable Link'),
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {
+            isPalette: {
+              type: 'boolean',
+              description: trans.__('Whether the command is executed from the palette'),
+            },
+          },
+        },
+      },
     });
 
     if (palette) {
@@ -204,23 +207,6 @@ const share: JupyterFrontEndPlugin<void> = {
         category: trans.__('REPL'),
         args: { isPalette: true },
       });
-    }
-
-    if (toolbarRegistry) {
-      toolbarRegistry.addFactory<ConsolePanel>(
-        'ConsolePanel',
-        'copyShareableLink',
-        (panel) =>
-          new CommandToolbarButton({
-            commands,
-            id: CommandIDs.copyShareableLink,
-            args: { [SemanticCommand.WIDGET]: panel.id },
-            icon: shareIcon,
-            label: '',
-            caption: trans.__('Copy Shareable Link'),
-            noFocusOnClick: panel.toolbar.noFocusOnClick,
-          }),
-      );
     }
   },
 };
@@ -386,11 +372,18 @@ export default plugins;
 namespace Private {
   export function getConsoleConfig(panel: ConsolePanel): Required<CodeConsole.IConfig> {
     // JupyterLab exposes config updates but not a public getter.
-    const config = (panel.console as any)._config as CodeConsole.IConfig | undefined;
+    const config = ((panel.console as any)._config ?? {}) as CodeConsole.IConfig;
 
     return {
-      ...DEFAULT_REPL_CONFIG,
-      ...config,
+      clearCellsOnExecute:
+        config.clearCellsOnExecute ?? DEFAULT_REPL_CONFIG.clearCellsOnExecute,
+      clearCodeContentOnExecute:
+        config.clearCodeContentOnExecute ??
+        DEFAULT_REPL_CONFIG.clearCodeContentOnExecute,
+      hideCodeInput: config.hideCodeInput ?? DEFAULT_REPL_CONFIG.hideCodeInput,
+      promptCellPosition:
+        config.promptCellPosition ?? DEFAULT_REPL_CONFIG.promptCellPosition,
+      showBanner: config.showBanner ?? DEFAULT_REPL_CONFIG.showBanner,
     };
   }
 }
