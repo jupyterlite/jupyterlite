@@ -32,6 +32,8 @@ test.describe('Embed the REPL app', () => {
 
   test('Page', async ({ page }) => {
     const imageName = 'embed-repl.png';
-    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+    expect(await page.screenshot({ animations: 'disabled' })).toMatchSnapshot(
+      imageName.toLowerCase(),
+    );
   });
 });

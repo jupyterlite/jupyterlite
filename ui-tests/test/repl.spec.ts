@@ -27,14 +27,18 @@ test.describe('Basic REPL Tests', () => {
   test('Page', async ({ page }) => {
     await waitForConsoleToSettle(page);
     const imageName = 'page.png';
-    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+    expect(await page.screenshot({ animations: 'disabled' })).toMatchSnapshot(
+      imageName.toLowerCase(),
+    );
   });
 
   test('Toggle Dark theme', async ({ page }) => {
     await page.theme.setDarkTheme();
     await waitForConsoleToSettle(page);
     const imageName = 'dark-theme.png';
-    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+    expect(await page.screenshot({ animations: 'disabled' })).toMatchSnapshot(
+      imageName.toLowerCase(),
+    );
   });
 
   test('Toggle Light theme', async ({ page }) => {
@@ -55,7 +59,9 @@ test.describe('Populate REPL prompt', () => {
   test('Populate prompt without executing', async ({ page }) => {
     await waitForConsoleToSettle(page);
     const imageName = 'populate-prompt.png';
-    expect(await page.screenshot()).toMatchSnapshot(imageName.toLowerCase());
+    expect(await page.screenshot({ animations: 'disabled' })).toMatchSnapshot(
+      imageName.toLowerCase(),
+    );
   });
 });
 
