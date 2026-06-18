@@ -63,6 +63,54 @@ For more details on these changes and how to update your deployment, see the [mi
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.0rc0
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-beta.1...780d361ee764b80c9fbb11b4479436e85e6b2ecd))
+
+### Enhancements made
+
+- Toolbar button to easily share a REPL with predefined state [#1972](https://github.com/jupyterlite/jupyterlite/pull/1972) ([@jtpio](https://github.com/jtpio), [@agriyakhetarpal](https://github.com/agriyakhetarpal), [@krassowski](https://github.com/krassowski), [@trungleduc](https://github.com/trungleduc))
+- Show JupyterLab and Notebook versions in the about dialog [#1807](https://github.com/jupyterlite/jupyterlite/pull/1807) ([@jtpio](https://github.com/jtpio), [@bollwyvl](https://github.com/bollwyvl), [@krassowski](https://github.com/krassowski))
+
+### Bugs fixed
+
+- Reject contents writes to missing directories [#1967](https://github.com/jupyterlite/jupyterlite/pull/1967) ([@MUFFANUJ](https://github.com/MUFFANUJ), [@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab v4.6.0 and Notebook v7.6.0 [#1985](https://github.com/jupyterlite/jupyterlite/pull/1985) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab v4.6.0rc1 and Notebook v7.6.0rc1 [#1981](https://github.com/jupyterlite/jupyterlite/pull/1981) ([@jtpio](https://github.com/jtpio))
+- Update to JupyterLab v4.6.0rc0 and Notebook v7.6.0rc0 [#1971](https://github.com/jupyterlite/jupyterlite/pull/1971) ([@jtpio](https://github.com/jtpio))
+- Remove explicit `workspaces foreach` plugin [#1968](https://github.com/jupyterlite/jupyterlite/pull/1968) ([@Darshan808](https://github.com/Darshan808), [@jtpio](https://github.com/jtpio))
+- Bump vega-selections from 5.4.1 to 5.6.3 [#1850](https://github.com/jupyterlite/jupyterlite/pull/1850) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- User facing changelog for the 0.8.0 release [#1982](https://github.com/jupyterlite/jupyterlite/pull/1982) ([@jtpio](https://github.com/jtpio), [@krassowski](https://github.com/krassowski))
+
+### Other merged PRs
+
+- Bump form-data from 4.0.4 to 4.0.6 in /ui-tests [#1980](https://github.com/jupyterlite/jupyterlite/pull/1980) ([@jtpio](https://github.com/jtpio))
+- Bump dompurify from 3.4.1 to 3.4.10 in /ui-tests [#1979](https://github.com/jupyterlite/jupyterlite/pull/1979) ([@jtpio](https://github.com/jtpio))
+- Bump markdown-it from 14.1.0 to 14.2.0 [#1977](https://github.com/jupyterlite/jupyterlite/pull/1977) ([@jtpio](https://github.com/jtpio))
+- Bump js-yaml from 4.1.1 to 4.2.0 [#1976](https://github.com/jupyterlite/jupyterlite/pull/1976) ([@jtpio](https://github.com/jtpio))
+- Bump dompurify from 3.4.2 to 3.4.10 [#1978](https://github.com/jupyterlite/jupyterlite/pull/1978) ([@jtpio](https://github.com/jtpio))
+- Bump form-data from 4.0.2 to 4.0.6 [#1975](https://github.com/jupyterlite/jupyterlite/pull/1975) ([@jtpio](https://github.com/jtpio))
+- Bump ws from 7.5.9 to 7.5.11 [#1974](https://github.com/jupyterlite/jupyterlite/pull/1974) ([@jtpio](https://github.com/jtpio))
+- Bump shell-quote from 1.8.3 to 1.8.4 [#1970](https://github.com/jupyterlite/jupyterlite/pull/1970) ([@jtpio](https://github.com/jtpio))
+- Bump lodash-es from 4.17.23 to 4.18.1 [#1969](https://github.com/jupyterlite/jupyterlite/pull/1969) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-06-02&to=2026-06-18&type=c))
+
+@agriyakhetarpal ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagriyakhetarpal+updated%3A2026-06-02..2026-06-18&type=Issues)) | @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-06-02..2026-06-18&type=Issues)) | @Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-06-02..2026-06-18&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-06-02..2026-06-18&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-06-02..2026-06-18&type=Issues)) | @MUFFANUJ ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AMUFFANUJ+updated%3A2026-06-02..2026-06-18&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2026-06-02..2026-06-18&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.0b1
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.0-beta.0...cdb0a78b22fc6198b0afbb771aa99adc1713f7c0))
@@ -96,8 +144,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-05-21&to=2026-06-02&type=c))
 
 @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-05-21..2026-06-02&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-05-21..2026-06-02&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-05-21..2026-06-02&type=Issues)) | @MMesch ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AMMesch+updated%3A2026-05-21..2026-06-02&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.0b0
 
