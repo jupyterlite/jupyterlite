@@ -92,6 +92,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
     request: TDriveRequest<T>,
   ): Promise<TDriveResponse<T>> {
     switch (request.method) {
+
       case 'readdir':
         return this.readdir(request as TDriveRequest<'readdir'>) as Promise<
           TDriveResponse<T>
