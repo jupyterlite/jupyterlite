@@ -4,12 +4,20 @@
 import type { JupyterFrontEndPlugin } from '@jupyterlab/application';
 import { ILabStatus, IRouter, JupyterFrontEnd, Router } from '@jupyterlab/application';
 
-import { IThemeManager, IToolbarWidgetRegistry } from '@jupyterlab/apputils';
+import {
+  Clipboard,
+  ICommandPalette,
+  IThemeManager,
+  IToolbarWidgetRegistry,
+  Notification,
+} from '@jupyterlab/apputils';
 
 import type { CodeConsole, ConsolePanel } from '@jupyterlab/console';
 import { IConsoleTracker } from '@jupyterlab/console';
 
 import { ITranslator } from '@jupyterlab/translation';
+
+import { shareIcon } from '@jupyterlab/ui-components';
 
 import { SingleWidgetApp } from '@jupyterlite/application';
 
@@ -21,6 +29,40 @@ import { Widget } from '@lumino/widgets';
  * The name of the translation bundle for internationalized strings.
  */
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * The command ids used by the REPL extension.
+ */
+namespace CommandIDs {
+  export const copyShareableLink = 'repl:copy-shareable-link';
+}
+
+const DEFAULT_REPL_CONFIG: Required<CodeConsole.IConfig> = {
+  clearCellsOnExecute: false,
+  clearCodeContentOnExecute: true,
+  hideCodeInput: false,
+  promptCellPosition: 'bottom',
+  showBanner: true,
+};
+
+/**
+ * Auto-close delay (in ms) for the link-copied notification. Notifications
+ * without a positive `autoClose` delay are silent and do not show as a toast.
+ */
+const COPY_NOTIFICATION_AUTO_CLOSE = 5000;
+
+const SHAREABLE_PARAMETERS = [
+  'clearCellsOnExecute',
+  'clearCodeContentOnExecute',
+  'code',
+  'execute',
+  'hideCodeInput',
+  'kernel',
+  'promptCellPosition',
+  'showBanner',
+  'theme',
+  'toolbar',
+];
 
 /**
  * A plugin to add buttons to the console toolbar.
@@ -57,6 +99,135 @@ const buttons: JupyterFrontEndPlugin<void> = {
 
         poweredBy.addClass('jp-PoweredBy');
         return poweredBy;
+      });
+    }
+  },
+};
+
+/**
+ * A plugin to expose a shareable REPL link command and toolbar button.
+ */
+const share: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/repl-extension:share',
+  description: 'Adds a command to copy a shareable link to the current REPL state.',
+  autoStart: true,
+  requires: [IConsoleTracker, ITranslator],
+  optional: [ICommandPalette, IThemeManager],
+  activate: (
+    app: JupyterFrontEnd,
+    tracker: IConsoleTracker,
+    translator: ITranslator,
+    palette: ICommandPalette | null,
+    themeManager: IThemeManager | null,
+  ) => {
+    const trans = translator.load(I18N_BUNDLE);
+    const { commands } = app;
+    let copyNotificationId = '';
+
+    commands.addCommand(CommandIDs.copyShareableLink, {
+      execute: () => {
+        const panel = tracker.currentWidget;
+        if (!panel) {
+          return;
+        }
+
+        const url = new URL(window.location.href);
+        SHAREABLE_PARAMETERS.forEach((parameter) => {
+          url.searchParams.delete(parameter);
+        });
+
+        const config = Private.getConsoleConfig(panel);
+        const promptCode =
+          panel.console.promptCell?.model.sharedModel.getSource() ?? '';
+        const kernelName = panel.sessionContext.session?.kernel?.name ?? '';
+        const theme = themeManager?.theme?.trim() ?? '';
+
+        if (!panel.toolbar.isDisposed) {
+          url.searchParams.set('toolbar', '1');
+        }
+
+        if (kernelName) {
+          url.searchParams.set('kernel', kernelName);
+        }
+
+        if (theme) {
+          url.searchParams.set('theme', theme);
+        }
+
+        if (config.promptCellPosition !== DEFAULT_REPL_CONFIG.promptCellPosition) {
+          url.searchParams.set('promptCellPosition', config.promptCellPosition);
+        }
+
+        if (config.clearCellsOnExecute) {
+          url.searchParams.set('clearCellsOnExecute', '1');
+        }
+
+        if (!config.clearCodeContentOnExecute) {
+          url.searchParams.set('clearCodeContentOnExecute', '0');
+        }
+
+        if (config.hideCodeInput) {
+          url.searchParams.set('hideCodeInput', '1');
+        }
+
+        if (!config.showBanner) {
+          url.searchParams.set('showBanner', '0');
+        }
+
+        if (promptCode !== '') {
+          url.searchParams.set('execute', '0');
+          promptCode.split('\n').forEach((line) => {
+            url.searchParams.append('code', line);
+          });
+        }
+
+        window.history.replaceState(
+          window.history.state,
+          document.title,
+          `${url.pathname}${url.search}${url.hash}`,
+        );
+
+        Clipboard.copyToSystem(url.toString());
+
+        // update the existing notification if any to avoid stacking them up
+        const message = trans.__('Link copied to clipboard');
+        const updated = Notification.update({
+          id: copyNotificationId,
+          message,
+          autoClose: COPY_NOTIFICATION_AUTO_CLOSE,
+        });
+        if (!updated) {
+          copyNotificationId = Notification.info(message, {
+            autoClose: COPY_NOTIFICATION_AUTO_CLOSE,
+          });
+        }
+
+        return url.toString();
+      },
+      icon: (args) => (args['isPalette'] ? undefined : shareIcon),
+      isEnabled: () => !!tracker.currentWidget,
+      caption: trans.__(
+        'Copy a shareable link for this REPL with the current prompt and options',
+      ),
+      label: trans.__('Copy Shareable Link'),
+      describedBy: {
+        args: {
+          type: 'object',
+          properties: {
+            isPalette: {
+              type: 'boolean',
+              description: trans.__('Whether the command is executed from the palette'),
+            },
+          },
+        },
+      },
+    });
+
+    if (palette) {
+      palette.addItem({
+        command: CommandIDs.copyShareableLink,
+        category: trans.__('REPL'),
+        args: { isPalette: true },
       });
     }
   },
@@ -214,7 +385,27 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   consolePlugin,
   paths,
   router,
+  share,
   status,
 ];
 
 export default plugins;
+
+namespace Private {
+  export function getConsoleConfig(panel: ConsolePanel): Required<CodeConsole.IConfig> {
+    // JupyterLab exposes config updates but not a public getter.
+    const config = ((panel.console as any)._config ?? {}) as CodeConsole.IConfig;
+
+    return {
+      clearCellsOnExecute:
+        config.clearCellsOnExecute ?? DEFAULT_REPL_CONFIG.clearCellsOnExecute,
+      clearCodeContentOnExecute:
+        config.clearCodeContentOnExecute ??
+        DEFAULT_REPL_CONFIG.clearCodeContentOnExecute,
+      hideCodeInput: config.hideCodeInput ?? DEFAULT_REPL_CONFIG.hideCodeInput,
+      promptCellPosition:
+        config.promptCellPosition ?? DEFAULT_REPL_CONFIG.promptCellPosition,
+      showBanner: config.showBanner ?? DEFAULT_REPL_CONFIG.showBanner,
+    };
+  }
+}
