@@ -94,6 +94,7 @@ all = [
 [project.entry-points."jupyterlite.addon.v0"]
 archive = "jupyterlite_core.addons.archive:ArchiveAddon"
 contents = "jupyterlite_core.addons.contents:ContentsAddon"
+extension_manager = "jupyterlite_core.addons.extension_manager:ExtensionManagerAddon"
 federated_extensions = "jupyterlite_core.addons.federated_extensions:FederatedExtensionAddon"
 icons = "jupyterlite_core.addons.icons:IconsAddon"
 lite = "jupyterlite_core.addons.lite:LiteAddon"

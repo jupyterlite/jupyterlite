@@ -1460,6 +1460,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/extensionmanager-extension@npm:~4.6.0":
+  version: 4.6.0
+  resolution: "@jupyterlab/extensionmanager-extension@npm:4.6.0"
+  dependencies:
+    "@jupyterlab/application": ^4.6.0
+    "@jupyterlab/apputils": ^4.7.0
+    "@jupyterlab/extensionmanager": ^4.6.0
+    "@jupyterlab/settingregistry": ^4.6.0
+    "@jupyterlab/translation": ^4.6.0
+    "@jupyterlab/ui-components": ^4.6.0
+  checksum: 13d8feb1856eb28fad62cc8819067931e0999d52fd49d6ad0d036b43948c167b3eab8e5dea281ee41e1fdf94823eb310e186055069797942f5f9b2f5942fc3f3
+  languageName: node
+  linkType: hard
+
+"@jupyterlab/extensionmanager@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@jupyterlab/extensionmanager@npm:4.6.0"
+  dependencies:
+    "@jupyterlab/apputils": ^4.7.0
+    "@jupyterlab/coreutils": ^6.6.0
+    "@jupyterlab/services": ^7.6.0
+    "@jupyterlab/translation": ^4.6.0
+    "@jupyterlab/ui-components": ^4.6.0
+    "@lumino/messaging": ^2.0.4
+    "@lumino/polling": ^2.1.5
+    "@lumino/widgets": ^2.8.0
+    react: ^18.2.0
+    react-paginate: ^6.3.2
+    semver: ^7.5.2
+  checksum: 36c80482f681c20f710c8516cf93b6cdf57b09ff594e1661acf6da4b74792aafcc4cebaea21139388103123871d30fe009ec6de75614e1c518b37091729095b8
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/filebrowser-extension@npm:~4.6.0":
   version: 4.6.0
   resolution: "@jupyterlab/filebrowser-extension@npm:4.6.0"
@@ -2869,6 +2902,7 @@ __metadata:
     "@jupyterlab/csvviewer-extension": ~4.6.0
     "@jupyterlab/docmanager-extension": ~4.6.0
     "@jupyterlab/documentsearch-extension": ~4.6.0
+    "@jupyterlab/extensionmanager-extension": ~4.6.0
     "@jupyterlab/filebrowser-extension": ~4.6.0
     "@jupyterlab/fileeditor-extension": ~4.6.0
     "@jupyterlab/help-extension": ~4.6.0
@@ -8968,7 +9002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.1, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -9072,6 +9106,17 @@ __metadata:
     "@types/react": ^16.8.0 || ^17.0.0 || ^18.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: e59244b1f7866a3fec7b5fe83d68833583568e9ae217c261b09077de196a51cc96642e8b1d6826d963aaf910a496e1cf432240ee142ce7efa965345915bb57ac
+  languageName: node
+  linkType: hard
+
+"react-paginate@npm:^6.3.2":
+  version: 6.5.0
+  resolution: "react-paginate@npm:6.5.0"
+  dependencies:
+    prop-types: ^15.6.1
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 39397de9a330e9ed16b2422d5893f47e16b5f7f188bf59ce4f60beeb16cfdba0ba76c7f0ca1b733d7282821a4e984ae64fb1a7086ecc22b416af95c1ff974fec
   languageName: node
   linkType: hard
 
@@ -9411,6 +9456,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 9b4a6a58e98b9723fafcafa393c9d4e8edefaa60b8dfbe39e30892a3604cf1f45f52df9cfb1ae1a22b44c8b3d57fec8a9bb7b3e1645431587cb272399ede152e
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.5.2":
+  version: 7.8.4
+  resolution: "semver@npm:7.8.4"
+  bin:
+    semver: bin/semver.js
+  checksum: 42404642f4b892bd95859c6e2c5777a2916d6e4f0d924441593dea0911cadf5d8761d41b4ca3701793818ecdc72982df5c6d6328cba88252a1f0ebf93e375463
   languageName: node
   linkType: hard
 
