@@ -20,7 +20,7 @@ When the [REPL toolbar](./quickstart/embed-repl.md#enable-the-toolbar) is enable
 
 ### File System Reliability Improvements
 
-JupyterLite 0.8.0 includes many fixes to the in-browser file system used to store your notebooks and files. Creating files and directories is now faster and more reliable, and files are no longer opened twice on startup when using query parameters. These changes make working with files in JupyterLite smoother and more dependable.
+JupyterLite 0.8.0 includes many fixes to the in-browser file system used to store your notebooks and files. Creating files and directories is now faster and more reliable, saving a file to a directory that does not exist is now rejected with a clear error rather than failing silently, and files are no longer opened twice on startup when using query parameters. These changes make working with files in JupyterLite smoother and more dependable.
 
 ### JupyterLab 4.6 and Notebook 7.6
 
@@ -38,6 +38,16 @@ The application layout is also more flexible. The **activity bar** (the strip of
 ![The activity bar placed at the bottom of the sidebar in JupyterLite](./changelog_assets/0.8-jupyterlite-activity-bar.webp)
 
 Other notable improvements from JupyterLab 4.6 include editable file browser breadcrumbs with tab-completion, a revamped keyboard shortcuts editor, and various accessibility and performance enhancements. See the [JupyterLab 4.6 changelog](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-6) for the full list.
+
+### Bundled Versions in the About Dialog
+
+The **Help → About JupyterLite** dialog now lists the versions of JupyterLab and Jupyter Notebook that the deployment is built on, making it easy to check exactly which versions you are running.
+
+```{image} ./changelog_assets/0.8-jupyterlite-about-versions.webp
+:alt: The JupyterLite About dialog listing the bundled JupyterLab and Notebook versions
+:width: 480px
+:align: center
+```
 
 ### Faster Builds with Rspack
 
