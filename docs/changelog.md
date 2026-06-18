@@ -51,7 +51,7 @@ The **Help → About JupyterLite** dialog now lists the versions of JupyterLab a
 
 ### Faster Builds with Rspack
 
-JupyterLite 0.8.0 switches from webpack to [rspack](https://rspack.dev/) for bundling, following the upstream JupyterLab migration. This provides significantly faster build times while remaining compatible with existing configurations, and should be transparent for most users building JupyterLite sites.
+JupyterLite 0.8.0 switches from webpack to [rspack](https://rspack.rs/) for bundling, following the upstream JupyterLab migration. This provides significantly faster build times while remaining compatible with existing configurations, and should be transparent for most users building JupyterLite sites.
 
 ### Removed Packages and Other Changes
 
