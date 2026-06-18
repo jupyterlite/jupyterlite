@@ -6,12 +6,15 @@ a static ``lab/api/extensions`` response built from the federated (prebuilt)
 extensions shipped with the site. The extensions are presented read-only, with
 their versions, and cannot be searched, installed, uninstalled, enabled or
 disabled in the browser.
+
+Extensions disabled in the instance (via ``disabledExtensions``) are omitted, as
+the read-only UI cannot surface a disabled state and they are not available anyway.
 """
 
 import json
-from pathlib import Path
 
 from ..constants import (
+    DISABLED_EXTENSIONS,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
@@ -72,7 +75,7 @@ class ExtensionManagerAddon(BaseAddon):
             targets=[api_extensions],
             actions=[
                 (self.patch_jupyterlite_json, [jupyterlite_json]),
-                (self.build_api_extensions, [lab_extensions, api_extensions]),
+                (self.build_api_extensions, [lab_extensions, api_extensions, jupyterlite_json]),
             ],
         )
 
@@ -101,20 +104,31 @@ class ExtensionManagerAddon(BaseAddon):
         jupyterlite_json.write_text(json.dumps(config, **JSON_FMT), **UTF8)
         self.maybe_timestamp(jupyterlite_json)
 
-    def build_api_extensions(self, lab_extensions, api_extensions):
-        """write the static ``IEntry[]`` response served to the extension manager"""
-        entries = sorted(
-            (self.to_entry(pkg_json) for pkg_json in lab_extensions),
-            key=lambda entry: entry["name"],
-        )
+    def build_api_extensions(self, lab_extensions, api_extensions, jupyterlite_json):
+        """write the static ``IEntry[]`` response served to the extension manager
+
+        Extensions disabled in the instance are skipped.
+        """
+        config = json.loads(jupyterlite_json.read_text(**UTF8))
+        disabled = set(config[JUPYTER_CONFIG_DATA].get(DISABLED_EXTENSIONS, []))
+
+        entries = []
+        for pkg_json in lab_extensions:
+            pkg = json.loads(pkg_json.read_text(**UTF8))
+            # a bare name disables the whole extension; a ``<name>:<plugin>`` entry
+            # only disables that plugin, so the extension itself stays listed
+            if pkg["name"] in disabled:
+                continue
+            entries.append(self.to_entry(pkg))
+
+        entries.sort(key=lambda entry: entry["name"])
+
         api_extensions.parent.mkdir(parents=True, exist_ok=True)
         api_extensions.write_text(json.dumps(entries, **JSON_FMT), **UTF8)
         self.maybe_timestamp(api_extensions)
 
-    def to_entry(self, pkg_json):
+    def to_entry(self, pkg):
         """map a federated extension's ``package.json`` to an extension entry"""
-        pkg = json.loads(Path(pkg_json).read_text(**UTF8))
-
         author = pkg.get("author")
         if isinstance(author, dict):
             author = author.get("name")
