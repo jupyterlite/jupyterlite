@@ -1,73 +1,65 @@
 # CHANGELOG
 
-## v0.7
+## v0.8
 
-JupyterLite 0.7.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings workspace support, layout persistence, improved Markdown rendering capabilities, and updates to the latest JupyterLab and Jupyter Notebook releases.
+JupyterLite 0.8.0 includes a number of new features (described below), bug fixes, and enhancements. This release updates JupyterLite to the latest JupyterLab and Jupyter Notebook releases, refreshes the loading screen, improves the reliability of the in-browser file system, and switches to a faster build system.
 
-### Workspace Support
+### Refreshed Loading Screen
 
-Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
+The loading indicator shown while JupyterLite starts up has been redesigned to match the JupyterLab splash screen, using the Jupyter planet logo with orbiting moons. This makes the transition from the initial loading screen to the fully loaded application feel more seamless.
 
-![Workspace support in JupyterLite](./changelog_assets/0.7-jupyterlite-workspaces.png)
+![The new JupyterLite loading screen, with the Jupyter planet logo and orbiting moons](./changelog_assets/0.8-jupyterlite-loading-spinner.webp)
 
-The UI layout is also now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
+The loading indicator remains configurable, and can be enabled or disabled for specific applications. See the [loading indicator guide](./howto/configure/loading_indicator.md) for more details.
 
-### Audio and Video Playback
+### Sharing a REPL
 
-JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
+When the [REPL toolbar](./quickstart/embed-repl.md#enable-the-toolbar) is enabled, it now includes a **Copy Shareable Link** button. Clicking it captures the current state of the REPL — the prompt content, the selected kernel and theme, and any non-default options — into the page URL, and copies the resulting link to the clipboard. A notification confirms the link was copied, making it easy to share a ready-to-run REPL with others.
 
-![Video and audio files opened in JupyterLite](./changelog_assets/0.7-jupyterlite-audio-video.png)
+![The REPL "Copy Shareable Link" toolbar button and the "Link copied to clipboard" notification](./changelog_assets/0.8-jupyterlite-repl-share.webp)
 
-### Basic Interrupt Functionality
+### File System Reliability Improvements
 
-The interrupt button now cancels the execution of cells that are scheduled to run after the currently executing cell. While this doesn't interrupt the currently running cell itself, it provides better control when executing multiple cells in sequence.
+JupyterLite 0.8.0 includes many fixes to the in-browser file system used to store your notebooks and files. Creating files and directories is now faster and more reliable, saving a file to a directory that does not exist is now rejected with a clear error rather than failing silently, and files are no longer opened twice on startup when using query parameters. These changes make working with files in JupyterLite smoother and more dependable.
 
-![Basic interrupt functionality in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-interrupt.png)
+### JupyterLab 4.6 and Notebook 7.6
 
-### Basic Notebook Export
+JupyterLite 0.8.0 is built on top of JupyterLab 4.6.0 and Notebook 7.6.0, and brings many of the respective improvements and bug fixes. Check out the notes for these two releases to learn more:
 
-JupyterLite now includes basic notebook export functionality through a custom export plugin. Users can export notebooks to different formats including `.ipynb` (notebook format) and script formats directly from the File menu.
+- [JupyterLab 4.6](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-6)
+- [Jupyter Notebook 7.6](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
 
-Additionally, JupyterLite provides extension points for third-party extensions to register custom exporters. This enables the development of additional export formats, such as PDF, in future extensions.
+In the Notebook interface, you can now open a **scratchpad console** next to a notebook to quickly try out code using the notebook's kernel, without adding cells to the notebook itself.
 
-```{warning}
-There is currently no built-in support for PDF export, but this may be added in the future via a third-party extension.
+![A scratchpad console opened next to a notebook in JupyterLite](./changelog_assets/0.8-jupyterlite-scratchpad.webp)
+
+The application layout is also more flexible. The **activity bar** (the strip of sidebar icons) can now be placed on the side, top, or bottom of the sidebars.
+
+![The activity bar placed at the bottom of the sidebar in JupyterLite](./changelog_assets/0.8-jupyterlite-activity-bar.webp)
+
+Other notable improvements from JupyterLab 4.6 include editable file browser breadcrumbs with tab-completion, a revamped keyboard shortcuts editor, and various accessibility and performance enhancements. See the [JupyterLab 4.6 changelog](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-6) for the full list.
+
+### Bundled Versions in the About Dialog
+
+The **Help → About JupyterLite** dialog now lists the versions of JupyterLab and Jupyter Notebook that the deployment is built on, making it easy to check exactly which versions you are running.
+
+```{image} ./changelog_assets/0.8-jupyterlite-about-versions.webp
+:alt: The JupyterLite About dialog listing the bundled JupyterLab and Notebook versions
+:width: 480px
+:align: center
 ```
 
-![Basic notebook export options in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-notebook-export.png)
+### Faster Builds with Rspack
 
-### File Menu Download Option
+JupyterLite 0.8.0 switches from webpack to [rspack](https://rspack.rs/) for bundling, following the upstream JupyterLab migration. This provides significantly faster build times while remaining compatible with existing configurations, and should be transparent for most users building JupyterLite sites.
 
-A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
+### Removed Packages and Other Changes
 
-![File menu download option in JupyterLite](./changelog_assets/0.7-jupyterlite-filemenu-download.png)
+The `@jupyterlite/iframe-extension` package has been removed, as JupyterLab's built-in HTML renderer can be used instead (for example via `IPython.display.HTML` or `IPython.display.IFrame`).
 
-### Enhanced Markdown Support
+In addition, relative paths for `contents` and `workspaces` are now resolved relative to the `lite-dir`, and JupyterLite no longer emits spurious `404` errors in the browser console when fetching content indexes.
 
-Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
-
-### JupyterLab 4.5 and Notebook 7.5
-
-JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and brings many of the respective improvements and bug fixes. Check out the notes for these two releases to learn more:
-
-- [JupyterLab 4.5](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-5)
-- [Jupyter Notebook 7.5](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
-
-JupyterLab 4.5 notably includes significant [notebook performance improvements](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#performance-and-windowing), such as the new optimized cell rendering with the new `contentVisibility` windowing mode.
-
-### Pyodide Compatibility
-
-JupyterLite 0.7.0 includes compatibility fixes for the latest Pyodide releases that use Emscripten 4. These fixes ensure stable kernel startup and operation with modern Python environments running in the browser.
-
-```{note}
-Some Pyodide packages have been removed from the Pyodide 0.28 release due to Python 3.13 support and compatibility changes. For more information about the affected packages, see the [Pyodide 0.28 release announcement](https://blog.pyodide.org/posts/0.28-release/#python-313-support-and-disabled-packages). Users should follow up on [pyodide/pyodide-recipes#99](https://github.com/pyodide/pyodide-recipes/issues/99) for updates on package availability.
-
-As an alternative, users can consider using [jupyterlite-xeus](https://jupyterlite-xeus.readthedocs.io/en/stable/), which allows installing packages in a more granular manner.
-```
-
-### Python 3.9 support dropped
-
-The minimum supported Python version for building JupyterLite sites has been increased to Python 3.10. Users on Python 3.9 will need to upgrade their Python installation to use the `jupyterlite` CLI and build tools.
+For more details on these changes and how to update your deployment, see the [migration guide](./migration.md).
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
@@ -309,6 +301,75 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2025-11-26&to=2025-12-16&type=c))
 
 @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2025-11-26..2025-12-16&type=Issues)) | @jasongrout ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajasongrout+updated%3A2025-11-26..2025-12-16&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2025-11-26..2025-12-16&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2025-11-26..2025-12-16&type=Issues)) | @trungleduc ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Atrungleduc+updated%3A2025-11-26..2025-12-16&type=Issues))
+
+## v0.7
+
+JupyterLite 0.7.0 includes a number of new features (described below), bug fixes, and enhancements. This release brings workspace support, layout persistence, improved Markdown rendering capabilities, and updates to the latest JupyterLab and Jupyter Notebook releases.
+
+### Workspace Support
+
+Support for workspaces is now available in JupyterLite. Workspaces allow you to organize your notebooks and files into separate workspace environments, making it easier to switch between different projects or contexts.
+
+![Workspace support in JupyterLite](./changelog_assets/0.7-jupyterlite-workspaces.png)
+
+The UI layout is also now automatically persisted across sessions. When you return to JupyterLite, your panel arrangements, open files, and workspace configuration will be restored exactly as you left them.
+
+### Audio and Video Playback
+
+JupyterLite now includes built-in audio and video viewers, allowing users to open audio and video files directly from within the UI.
+
+![Video and audio files opened in JupyterLite](./changelog_assets/0.7-jupyterlite-audio-video.png)
+
+### Basic Interrupt Functionality
+
+The interrupt button now cancels the execution of cells that are scheduled to run after the currently executing cell. While this doesn't interrupt the currently running cell itself, it provides better control when executing multiple cells in sequence.
+
+![Basic interrupt functionality in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-interrupt.png)
+
+### Basic Notebook Export
+
+JupyterLite now includes basic notebook export functionality through a custom export plugin. Users can export notebooks to different formats including `.ipynb` (notebook format) and script formats directly from the File menu.
+
+Additionally, JupyterLite provides extension points for third-party extensions to register custom exporters. This enables the development of additional export formats, such as PDF, in future extensions.
+
+```{warning}
+There is currently no built-in support for PDF export, but this may be added in the future via a third-party extension.
+```
+
+![Basic notebook export options in JupyterLite](./changelog_assets/0.7-jupyterlite-basic-notebook-export.png)
+
+### File Menu Download Option
+
+A download entry has been added to the File menu, making it easier to download files from your JupyterLite environment.
+
+![File menu download option in JupyterLite](./changelog_assets/0.7-jupyterlite-filemenu-download.png)
+
+### Enhanced Markdown Support
+
+Markdown cells now support displaying base64-encoded images stored in the browser's local storage. This makes it easier to include images in your notebooks without requiring external hosting or network access.
+
+### JupyterLab 4.5 and Notebook 7.5
+
+JupyterLite 0.7.0 is built on top of JupyterLab 4.5.0 and Notebook 7.5.0, and brings many of the respective improvements and bug fixes. Check out the notes for these two releases to learn more:
+
+- [JupyterLab 4.5](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#v4-5)
+- [Jupyter Notebook 7.5](https://jupyter-notebook.readthedocs.io/en/latest/changelog.html)
+
+JupyterLab 4.5 notably includes significant [notebook performance improvements](https://jupyterlab.readthedocs.io/en/latest/getting_started/changelog.html#performance-and-windowing), such as the new optimized cell rendering with the new `contentVisibility` windowing mode.
+
+### Pyodide Compatibility
+
+JupyterLite 0.7.0 includes compatibility fixes for the latest Pyodide releases that use Emscripten 4. These fixes ensure stable kernel startup and operation with modern Python environments running in the browser.
+
+```{note}
+Some Pyodide packages have been removed from the Pyodide 0.28 release due to Python 3.13 support and compatibility changes. For more information about the affected packages, see the [Pyodide 0.28 release announcement](https://blog.pyodide.org/posts/0.28-release/#python-313-support-and-disabled-packages). Users should follow up on [pyodide/pyodide-recipes#99](https://github.com/pyodide/pyodide-recipes/issues/99) for updates on package availability.
+
+As an alternative, users can consider using [jupyterlite-xeus](https://jupyterlite-xeus.readthedocs.io/en/stable/), which allows installing packages in a more granular manner.
+```
+
+### Python 3.9 support dropped
+
+The minimum supported Python version for building JupyterLite sites has been increased to Python 3.10. Users on Python 3.9 will need to upgrade their Python installation to use the `jupyterlite` CLI and build tools.
 
 ## 0.7.0
 
