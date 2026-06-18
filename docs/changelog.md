@@ -12,6 +12,12 @@ The loading indicator shown while JupyterLite starts up has been redesigned to m
 
 The loading indicator remains configurable, and can be enabled or disabled for specific applications. See the [loading indicator guide](./howto/configure/loading_indicator.md) for more details.
 
+### Sharing a REPL
+
+When the [REPL toolbar](./quickstart/embed-repl.md#enable-the-toolbar) is enabled, it now includes a **Copy Shareable Link** button. Clicking it captures the current state of the REPL — the prompt content, the selected kernel and theme, and any non-default options — into the page URL, and copies the resulting link to the clipboard. A notification confirms the link was copied, making it easy to share a ready-to-run REPL with others.
+
+![The REPL "Copy Shareable Link" toolbar button and the "Link copied to clipboard" notification](./changelog_assets/0.8-jupyterlite-repl-share.webp)
+
 ### File System Reliability Improvements
 
 JupyterLite 0.8.0 includes many fixes to the in-browser file system used to store your notebooks and files. Creating files and directories is now faster and more reliable, and files are no longer opened twice on startup when using query parameters. These changes make working with files in JupyterLite smoother and more dependable.
