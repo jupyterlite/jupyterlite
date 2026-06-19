@@ -132,8 +132,16 @@ const share: JupyterFrontEndPlugin<void> = {
         }
 
         const url = new URL(window.location.href);
+        // We share the state via the URL fragment rather than the query
+        // string. Fragments are not subject to the same length limits and
+        // are not stripped by some hosting platforms, such as Read The Docs.
+        // xref https://github.com/jupyterlite/jupyterlite/issues/1983.
+        const params = Private.parseHashParams(url.hash);
         SHAREABLE_PARAMETERS.forEach((parameter) => {
+          // clear params from query string
           url.searchParams.delete(parameter);
+          // clear params from fragment
+          params.delete(parameter);
         });
 
         const config = Private.getConsoleConfig(panel);
@@ -143,43 +151,45 @@ const share: JupyterFrontEndPlugin<void> = {
         const theme = themeManager?.theme?.trim() ?? '';
 
         if (!panel.toolbar.isDisposed) {
-          url.searchParams.set('toolbar', '1');
+          params.set('toolbar', '1');
         }
 
         if (kernelName) {
-          url.searchParams.set('kernel', kernelName);
+          params.set('kernel', kernelName);
         }
 
         if (theme) {
-          url.searchParams.set('theme', theme);
+          params.set('theme', theme);
         }
 
         if (config.promptCellPosition !== DEFAULT_REPL_CONFIG.promptCellPosition) {
-          url.searchParams.set('promptCellPosition', config.promptCellPosition);
+          params.set('promptCellPosition', config.promptCellPosition);
         }
 
         if (config.clearCellsOnExecute) {
-          url.searchParams.set('clearCellsOnExecute', '1');
+          params.set('clearCellsOnExecute', '1');
         }
 
         if (!config.clearCodeContentOnExecute) {
-          url.searchParams.set('clearCodeContentOnExecute', '0');
+          params.set('clearCodeContentOnExecute', '0');
         }
 
         if (config.hideCodeInput) {
-          url.searchParams.set('hideCodeInput', '1');
+          params.set('hideCodeInput', '1');
         }
 
         if (!config.showBanner) {
-          url.searchParams.set('showBanner', '0');
+          params.set('showBanner', '0');
         }
 
         if (promptCode !== '') {
-          url.searchParams.set('execute', '0');
+          params.set('execute', '0');
           promptCode.split('\n').forEach((line) => {
-            url.searchParams.append('code', line);
+            params.append('code', line);
           });
         }
+
+        url.hash = params.toString();
 
         window.history.replaceState(
           window.history.state,
@@ -252,8 +262,7 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
     }
     const { commands, started } = app;
 
-    const search = window.location.search;
-    const urlParams = new URLSearchParams(search);
+    const urlParams = Private.getShareableParams();
     const code = urlParams.getAll('code');
     const execute = urlParams.get('execute');
     const kernel = urlParams.get('kernel') || undefined;
@@ -392,6 +401,36 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
 export default plugins;
 
 namespace Private {
+  /**
+   * Parse a URL hash fragment as query-like parameters (`#key=value&...`)
+   * @param hash The URL hash fragment to parse.
+   * @returns A URLSearchParams object representing the parsed parameters.
+   */
+  export function parseHashParams(hash: string): URLSearchParams {
+    let fragment = hash.startsWith('#') ? hash.slice(1) : hash;
+    if (fragment.startsWith('?')) {
+      fragment = fragment.slice(1);
+    }
+    return new URLSearchParams(fragment);
+  }
+
+  /**
+   * Collect the shareable parameters from the current location.
+   *
+   * Sharing stores the REPL state in the URL fragment. Embedding configures the
+   * REPL through the documented query parameters. Read the fragment when it
+   * carries any shareable parameter, and the query string otherwise.
+   *
+   * @returns A URLSearchParams object containing the shareable parameters from the URL.
+   */
+  export function getShareableParams(): URLSearchParams {
+    const hashParams = parseHashParams(window.location.hash);
+    if (SHAREABLE_PARAMETERS.some((parameter) => hashParams.has(parameter))) {
+      return hashParams;
+    }
+    return new URLSearchParams(window.location.search);
+  }
+
   export function getConsoleConfig(panel: ConsolePanel): Required<CodeConsole.IConfig> {
     // JupyterLab exposes config updates but not a public getter.
     const config = ((panel.console as any)._config ?? {}) as CodeConsole.IConfig;

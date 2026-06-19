@@ -97,17 +97,19 @@ test.describe('Share current REPL state', () => {
     await page.getByRole('button', { name: 'Copy a shareable link' }).click();
 
     const sharedUrl = new URL(page.url());
+    expect(sharedUrl.search).toBe('');
+    const sharedParams = new URLSearchParams(sharedUrl.hash.slice(1));
 
-    expect(sharedUrl.searchParams.get('toolbar')).toBe('1');
-    expect(sharedUrl.searchParams.get('kernel')).toBe('javascript');
-    expect(sharedUrl.searchParams.get('theme')).toBe('JupyterLab Dark');
-    expect(sharedUrl.searchParams.get('promptCellPosition')).toBe('left');
-    expect(sharedUrl.searchParams.get('clearCellsOnExecute')).toBe('1');
-    expect(sharedUrl.searchParams.get('clearCodeContentOnExecute')).toBe('0');
-    expect(sharedUrl.searchParams.get('hideCodeInput')).toBe('1');
-    expect(sharedUrl.searchParams.get('showBanner')).toBe('0');
-    expect(sharedUrl.searchParams.get('execute')).toBe('0');
-    expect(sharedUrl.searchParams.getAll('code')).toEqual([
+    expect(sharedParams.get('toolbar')).toBe('1');
+    expect(sharedParams.get('kernel')).toBe('javascript');
+    expect(sharedParams.get('theme')).toBe('JupyterLab Dark');
+    expect(sharedParams.get('promptCellPosition')).toBe('left');
+    expect(sharedParams.get('clearCellsOnExecute')).toBe('1');
+    expect(sharedParams.get('clearCodeContentOnExecute')).toBe('0');
+    expect(sharedParams.get('hideCodeInput')).toBe('1');
+    expect(sharedParams.get('showBanner')).toBe('0');
+    expect(sharedParams.get('execute')).toBe('0');
+    expect(sharedParams.getAll('code')).toEqual([
       'console.log("shared")',
       'console.log("state")',
     ]);
@@ -155,16 +157,18 @@ test.describe('Share current REPL state', () => {
     await page.getByRole('button', { name: 'Copy a shareable link' }).click();
 
     const sharedUrl = new URL(page.url());
+    expect(sharedUrl.search).toBe('');
+    const sharedParams = new URLSearchParams(sharedUrl.hash.slice(1));
 
-    expect(sharedUrl.searchParams.get('toolbar')).toBe('1');
-    expect(sharedUrl.searchParams.get('kernel')).toBe('javascript');
-    expect(sharedUrl.searchParams.get('execute')).toBe('0');
-    expect(sharedUrl.searchParams.getAll('code')).toEqual(['console.log("shared")']);
-    expect(sharedUrl.searchParams.has('promptCellPosition')).toBe(false);
-    expect(sharedUrl.searchParams.has('clearCellsOnExecute')).toBe(false);
-    expect(sharedUrl.searchParams.has('clearCodeContentOnExecute')).toBe(false);
-    expect(sharedUrl.searchParams.has('hideCodeInput')).toBe(false);
-    expect(sharedUrl.searchParams.has('showBanner')).toBe(false);
+    expect(sharedParams.get('toolbar')).toBe('1');
+    expect(sharedParams.get('kernel')).toBe('javascript');
+    expect(sharedParams.get('execute')).toBe('0');
+    expect(sharedParams.getAll('code')).toEqual(['console.log("shared")']);
+    expect(sharedParams.has('promptCellPosition')).toBe(false);
+    expect(sharedParams.has('clearCellsOnExecute')).toBe(false);
+    expect(sharedParams.has('clearCodeContentOnExecute')).toBe(false);
+    expect(sharedParams.has('hideCodeInput')).toBe(false);
+    expect(sharedParams.has('showBanner')).toBe(false);
   });
 
   test('Shows a single notification when copying the link multiple times', async ({
@@ -194,6 +198,13 @@ test.describe('Share current REPL state', () => {
 
     // the link is updated with the new prompt content
     await expect(page).toHaveURL(/extra/);
+
+    // re-sharing rewrites the fragment from the current state rather than
+    // stacking onto the previous one, so the code is not duplicated
+    const sharedParams = new URLSearchParams(new URL(page.url()).hash.slice(1));
+    expect(
+      sharedParams.getAll('code').filter((line) => line.includes('extra')),
+    ).toHaveLength(1);
 
     // the notifications should not stack up
     await expect(notifications).toHaveCount(1);
