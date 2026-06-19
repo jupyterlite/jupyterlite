@@ -2,7 +2,7 @@
 
 import json
 import re
-import sys
+import site
 import urllib.parse
 from pathlib import Path
 
@@ -28,7 +28,13 @@ class FederatedExtensionAddon(BaseAddon):
 
     __all__ = ["pre_build", "post_build", "post_init"]
 
-    labextensions_path = Path(sys.prefix) / SHARE_LABEXTENSIONS
+    # build self.labextensions_paths
+    __prefixes = (
+        site.PREFIXES.copy()
+    ) # Copy to be able to modify array without possibility for side effects
+    if site.ENABLE_USER_SITE:
+        __prefixes.append(site.USER_BASE)
+    labextensions_paths = [Path(prefix) / SHARE_LABEXTENSIONS for prefix in __prefixes]
 
     extra_labextensions_path = List(
         Unicode(), help="""Extra paths to look for federated JupyterLab extensions"""
@@ -68,8 +74,9 @@ class FederatedExtensionAddon(BaseAddon):
     def pre_build(self, manager):
         """yield a doit task to copy each federated extension into the output_dir"""
         if not self.is_sys_prefix_ignored():
-            for pkg_json in self.env_extensions(self.labextensions_path):
-                yield from self.copy_one_extension(pkg_json)
+            for labextensions_path in self.labextensions_paths:
+                for pkg_json in self.env_extensions(labextensions_path):
+                    yield from self.copy_one_extension(pkg_json)
 
         for p in self.extra_labextensions_path:
             for pkg_json in self.env_extensions(Path(p)):
@@ -86,7 +93,7 @@ class FederatedExtensionAddon(BaseAddon):
             yield self.copy_one_extension(pkg_json)
 
     def copy_one_env_extension(self, pkg_json):
-        """yield tasks to copy one unpacked on-disk extension from sys.prefix into the output dir"""
+        """yield tasks to copy one unpacked on-disk extension from shared package data into the output dir"""
         yield from self.copy_one_extension(pkg_json)
 
     def copy_one_extension(self, pkg_json):
