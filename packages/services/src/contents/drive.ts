@@ -616,7 +616,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const name = PathExt.basename(newLocalPath);
 
     const storage = await this.storage;
-    const alreadyExists = (await storage.getItem(newLocalPath)) !== null;
+    const alreadyExists =
+      (await storage.getItem(newLocalPath)) !== null ||
+      (await this._getServerContents(path)) !== null;
 
     if (alreadyExists) {
       // Hacky but JupyterLab assumes an HTTP error
