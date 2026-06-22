@@ -59,6 +59,9 @@ DISABLED_EXTENSIONS = "disabledExtensions"
 #: configuration key for extension settings overrides
 SETTINGS_OVERRIDES = "settingsOverrides"
 
+#: configuration key for the display-only extension manager metadata
+EXTENSION_MANAGER = "extensionManager"
+
 #: configuration key for file types
 SETTINGS_FILE_TYPES = "fileTypes"
 
@@ -118,6 +121,9 @@ API_TRANSLATIONS = "api/translations"
 
 #: the JupyterLab API route for Workspaces API
 API_WORKSPACES = "api/workspaces"
+
+#: the JupyterLab API route for the (display-only) Extensions API
+API_EXTENSIONS = "lab/api/extensions"
 
 #: the file path for lab extensions
 LAB_EXTENSIONS = "extensions"

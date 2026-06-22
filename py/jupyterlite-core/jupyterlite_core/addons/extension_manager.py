@@ -7,14 +7,17 @@ extensions shipped with the site. The extensions are presented read-only, with
 their versions, and cannot be searched, installed, uninstalled, enabled or
 disabled in the browser.
 
-Extensions disabled in the instance (via ``disabledExtensions``) are omitted, as
-the read-only UI cannot surface a disabled state and they are not available anyway.
+Extensions disabled via ``disabledExtensions`` in the merged root
+``jupyter-lite.json`` are omitted, as the read-only UI cannot surface a disabled
+state and they are not available anyway.
 """
 
 import json
 
 from ..constants import (
+    API_EXTENSIONS,
     DISABLED_EXTENSIONS,
+    EXTENSION_MANAGER,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
     JUPYTERLITE_JSON,
@@ -24,13 +27,6 @@ from ..constants import (
     UTF8,
 )
 from .base import BaseAddon
-
-#: the PageConfig option read by the JupyterLab extension manager
-EXTENSION_MANAGER = "extensionManager"
-
-#: the served path of the static extensions API: the JupyterLab extension
-#: manager performs a GET against ``{baseUrl}lab/api/extensions``
-EXTENSION_MANAGER_API = "lab/api/extensions"
 
 #: the (non-PyPI) name shown in the extension manager header (``%1 Manager``)
 EXTENSION_MANAGER_NAME = "JupyterLite"
@@ -51,26 +47,33 @@ class ExtensionManagerAddon(BaseAddon):
         return self.manager.output_dir / LAB_EXTENSIONS
 
     def env_extensions(self):
-        """the ``package.json`` of each federated extension in the output"""
+        """the ``package.json`` of each prebuilt federated extension in the output
+
+        Only actual prebuilt extensions (those carrying ``jupyterlab._build.load``)
+        are listed, mirroring the sibling ``FederatedExtensionAddon``.
+        """
         root = self.output_extensions
         if not root.is_dir():
             return []
         return sorted(
-            [
+            p
+            for p in [
                 *root.glob(f"*/{PACKAGE_JSON}"),
                 *root.glob(f"@*/*/{PACKAGE_JSON}"),
             ]
+            if json.loads(p.read_text(**UTF8)).get("jupyterlab", {}).get("_build", {}).get("load")
+            is not None
         )
 
     def post_build(self, manager):
         """yield a task to build the static API response and metadata"""
         jupyterlite_json = manager.output_dir / JUPYTERLITE_JSON
-        api_extensions = manager.output_dir / EXTENSION_MANAGER_API
+        api_extensions = manager.output_dir / API_EXTENSIONS
         lab_extensions = self.env_extensions()
 
         yield self.task(
             name="extensions",
-            doc=f"generate {EXTENSION_MANAGER_API} from the federated extensions",
+            doc=f"generate {API_EXTENSIONS} from the federated extensions",
             file_dep=[*lab_extensions, jupyterlite_json],
             targets=[api_extensions],
             actions=[
@@ -107,7 +110,8 @@ class ExtensionManagerAddon(BaseAddon):
     def build_api_extensions(self, lab_extensions, api_extensions, jupyterlite_json):
         """write the static ``IEntry[]`` response served to the extension manager
 
-        Extensions disabled in the instance are skipped.
+        Extensions disabled via ``disabledExtensions`` in the merged root
+        ``jupyter-lite.json`` are skipped.
         """
         config = json.loads(jupyterlite_json.read_text(**UTF8))
         disabled = set(config[JUPYTER_CONFIG_DATA].get(DISABLED_EXTENSIONS, []))
