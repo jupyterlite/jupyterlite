@@ -14,25 +14,27 @@ build = [
 # Demo site extensions
 demo = [
     { include-group = "pyodide-kernel" },
-    "ipython>=9.13.0",
     "altair",
-    "bqplot~=0.12.43",
+    "bqplot~=0.13.1",
     "folium",
-    "ipycanvas~=0.14.2",
+    "ipycanvas~=0.14.3",
     "ipycytoscape~=1.3.3",
     "ipyleaflet~=0.20.0",
-    "ipympl~=0.9.4",
-    "ipyvue~=1.11.0",
-    "ipyvuetify~=1.11.0",
+    "ipympl~=0.10.0",
+    "ipython>=9.14.1",
+    "ipyvue~=1.12.0",
+    "ipyvuetify~=1.11.3",
     "ipywidgets~=8.1.3",
     "jupyterlab-fasta~=3.3.0",
     "jupyterlab-geojson~=3.4.0",
     "jupyterlab-kernelspy~=4.0.0",
-    "jupyterlab-night~=0.5.0",
+    "jupyterlab-night~=0.5.2",
     "jupyterlab-tour~=4.0.1",
     "jupyterlite-p5-kernel~=0.4.0a0",
+    "matplotlib-inline~=0.2.2",
     "nbformat",
-    "plotly~=5.22.0",
+    "plotly~=6.8.0",
+    "tenacity",
     "vega-datasets",
 ]
 
@@ -74,7 +76,8 @@ lint = [
 
 # An example downstream kernel
 pyodide-kernel = [
-    "jupyterlite-pyodide-kernel[lock] >=0.8.0b0; sys_platform != 'emscripten'",
+    # "jupyterlite-pyodide-kernel[lock] >=0.8.0b0; sys_platform != 'emscripten'",
+    "jupyterlite-pyodide-kernel[lock] @ https://jupyterlite-pyodide-kernel--294.org.readthedocs.build/en/294/_static/jupyterlite_pyodide_kernel-0.8.0b0-py3-none-any.whl ; sys_platform != 'emscripten'",
 ]
 
 ## Documentation build platform
