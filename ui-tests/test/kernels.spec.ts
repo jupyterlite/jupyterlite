@@ -120,6 +120,30 @@ test.describe('Kernels', () => {
     await expect(page.locator('.jp-KernelStatus-spinner')).toHaveCount(0);
   });
 
+  // regression test: the kernel status indicator must show the spinner while a
+  // kernel is starting up, then the idle checkmark once it is ready.
+  // https://github.com/jupyterlite/jupyterlite/issues/1990
+  test('Kernel status indicator spins while a kernel is starting', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    await page.goto('lab/index.html');
+
+    // open a notebook backed by the Pyodide kernel: it takes a while to start,
+    // so the status indicator shows the loading spinner while it is starting up
+    // (opening does not wait for the kernel to be ready)
+    await page.notebook.open('stdin.ipynb');
+
+    await expect(page.locator('.jp-KernelStatus-spinner')).toBeVisible({
+      timeout: 30000,
+    });
+
+    // once the kernel is ready the spinner is replaced by the idle checkmark
+    await expect(page.locator('.jp-KernelStatus-success')).toBeVisible({
+      timeout: 90000,
+    });
+  });
+
   test('Multiple kernel restarts', async ({ page }) => {
     // Common selectors
     const runningKernelsTab = page.getByTitle('Running Terminals and Kernels').first();

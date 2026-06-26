@@ -3,14 +3,13 @@
 
 import type { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 
+import type { ISessionContext } from '@jupyterlab/apputils';
 import { IToolbarWidgetRegistry, ReactWidget } from '@jupyterlab/apputils';
 
 import type { NotebookPanel } from '@jupyterlab/notebook';
 
 import type { ILogOutputModel } from '@jupyterlab/logconsole';
 import { ILoggerRegistry } from '@jupyterlab/logconsole';
-
-import type { Kernel } from '@jupyterlab/services';
 
 import type { ISignal } from '@lumino/signaling';
 import { Signal } from '@lumino/signaling';
@@ -23,34 +22,45 @@ import { ITranslator, nullTranslator } from '@jupyterlab/translation';
  */
 export class KernelStatus {
   /**
-   * Current execution status of the kernel.
+   * Current display status of the kernel.
    */
-  get status(): Kernel.Status {
+  get status(): ISessionContext.KernelDisplayStatus {
     return this._status;
   }
 
   /**
-   * Signal emitted when the kernel status changes.
+   * Whether the session currently has no kernel (e.g. after a shutdown).
+   *
+   * This is tracked separately from the status because a session reports the
+   * 'unknown' status both while a kernel is starting up (a kernel is present
+   * but has not reported its status yet) and when there is no kernel at all.
    */
-  get statusChanged(): ISignal<this, Kernel.Status> {
-    return this._statusChanged;
+  get hasNoKernel(): boolean {
+    return this._hasNoKernel;
   }
 
   /**
-   * Set the current execution status.
-   *
-   * @param status - The new status
+   * Signal emitted when the status or kernel presence changes.
    */
-  setStatus(status: Kernel.Status): void {
-    if (this._status === status) {
+  get changed(): ISignal<this, void> {
+    return this._changed;
+  }
+
+  /**
+   * Set the current display status and whether a kernel is present.
+   */
+  setStatus(status: ISessionContext.KernelDisplayStatus, hasNoKernel: boolean): void {
+    if (this._status === status && this._hasNoKernel === hasNoKernel) {
       return;
     }
     this._status = status;
-    this._statusChanged.emit(status);
+    this._hasNoKernel = hasNoKernel;
+    this._changed.emit();
   }
 
-  private _status: Kernel.Status = 'idle';
-  private _statusChanged = new Signal<this, Kernel.Status>(this);
+  private _status: ISessionContext.KernelDisplayStatus = 'unknown';
+  private _hasNoKernel = true;
+  private _changed = new Signal<this, void>(this);
 }
 
 /**
@@ -61,26 +71,28 @@ function KernelStatusComponent(props: {
   onClick?: () => void;
   translator: ITranslator;
 }): JSX.Element {
-  const [status, setStatus] = useState<Kernel.Status>(props.model.status);
+  const [, forceUpdate] = useState({});
   const trans = props.translator.load('jupyterlite');
   useEffect(() => {
-    const onChange = (_: any, newStatus: Kernel.Status) => {
-      setStatus(newStatus);
+    const onChange = () => {
+      forceUpdate({});
     };
 
-    props.model.statusChanged.connect(onChange);
+    props.model.changed.connect(onChange);
 
     return () => {
-      props.model.statusChanged.disconnect(onChange);
+      props.model.changed.disconnect(onChange);
     };
   }, [props.model]);
 
+  const status = props.model.status;
   const isError = status === 'dead';
   const isIdle = status === 'idle';
-  // 'unknown' is reported when there is no kernel (e.g. after shutting it down).
-  // It must not be treated as a busy/loading state, otherwise the spinner would
-  // keep spinning forever even though nothing is happening.
-  const isBusy = !isError && !isIdle && status !== 'unknown';
+  // Show the loading spinner while a kernel is present (or starting up) and not
+  // yet idle or dead. When there is no kernel (e.g. after a shutdown) show
+  // nothing: the display status is also 'unknown' in that case, so it cannot be
+  // distinguished by the status alone, hence relying on `hasNoKernel`.
+  const isBusy = !props.model.hasNoKernel && !isError && !isIdle;
 
   // Return the appropriate icon and text based on status
   return (
@@ -250,10 +262,21 @@ export const kernelStatusPlugin: JupyterFrontEndPlugin<void> = {
 
           const sessionContext = panel.sessionContext;
 
-          // Update status when kernel status changes
-          sessionContext.statusChanged.connect((_, status) => {
-            kernelStatus.setStatus(status as Kernel.Status);
-          });
+          // Reflect the session's display status together with whether a kernel
+          // is present. The display status is recomputed on any signal that can
+          // affect it (mirroring the execution indicator), and `hasNoKernel`
+          // tells a starting kernel (spinner) apart from no kernel (no spinner),
+          // since both report the 'unknown' status.
+          const updateStatus = () => {
+            kernelStatus.setStatus(
+              sessionContext.kernelDisplayStatus,
+              sessionContext.hasNoKernel,
+            );
+          };
+          sessionContext.statusChanged.connect(updateStatus);
+          sessionContext.connectionStatusChanged.connect(updateStatus);
+          sessionContext.kernelChanged.connect(updateStatus);
+          updateStatus();
 
           if (loggerRegistry) {
             const path = panel.context.path;
@@ -268,10 +291,10 @@ export const kernelStatusPlugin: JupyterFrontEndPlugin<void> = {
                 const level = latestMessage.level;
                 // rely on kernels properly reporting a critical state
                 if (level === 'critical') {
-                  kernelStatus.setStatus('dead');
+                  kernelStatus.setStatus('dead', sessionContext.hasNoKernel);
                 } else if (level !== 'metadata') {
                   // if new messages are logged, set the status back to busy
-                  kernelStatus.setStatus('busy');
+                  kernelStatus.setStatus('busy', sessionContext.hasNoKernel);
                 }
               }
             });
