@@ -82,6 +82,41 @@ test.describe('Kernels', () => {
     expect(output![0]).toBe('4');
   });
 
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/1990
+  test('Shut Down Kernel from the menu does not raise', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    // collect uncaught errors and unhandled promise rejections raised in the page
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+
+    // make sure the kernel is up and running before shutting it down
+    await page.notebook.setCell(0, 'code', '1 + 1');
+    await page.notebook.run();
+    expect((await page.notebook.getCellTextOutput(0))![0]).toBe('2');
+
+    // shut down the kernel via the menu command
+    await page.menu.clickMenuItem('Kernel>Shut Down Kernel');
+
+    // wait until the kernel is gone from the running sessions panel
+    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(0);
+
+    // give any deferred error a chance to surface before asserting
+    await page.waitForTimeout(500);
+
+    expect(
+      pageErrors.filter((message) => /Session .* not found/.test(message)),
+    ).toEqual([]);
+  });
+
   test('Multiple kernel restarts', async ({ page }) => {
     // Common selectors
     const runningKernelsTab = page.getByTitle('Running Terminals and Kernels').first();
