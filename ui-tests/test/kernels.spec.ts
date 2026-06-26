@@ -118,6 +118,13 @@ test.describe('Kernels', () => {
 
     // the kernel status indicator should not keep spinning once the kernel is gone
     await expect(page.locator('.jp-KernelStatus-spinner')).toHaveCount(0);
+
+    // instead it shows the neutral "no kernel" icon, and neither the idle
+    // checkmark nor the error cross (which would reserve a misleading state),
+    // so the indicator never leaves an empty, icon-less gap
+    await expect(page.locator('.jp-KernelStatus-none')).toBeVisible();
+    await expect(page.locator('.jp-KernelStatus-success')).toHaveCount(0);
+    await expect(page.locator('.jp-KernelStatus-error')).toHaveCount(0);
   });
 
   // regression test: the kernel status indicator must show the spinner while a

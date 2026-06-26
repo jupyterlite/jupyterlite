@@ -19,6 +19,7 @@
 .jp-KernelStatus-spinner,
 .jp-KernelStatus-success,
 .jp-KernelStatus-error,
+.jp-KernelStatus-none,
 .jp-KernelStatus svg {
   width: 16px;
   height: 16px;
@@ -56,6 +57,13 @@
 /* Error state */
 .jp-KernelStatus-error {
   color: var(--jp-error-color1);
+}
+
+/* No kernel state (e.g. after a shutdown): a neutral, muted circle that is
+   quieter than the vivid idle/error states but still clearly an intentional
+   indicator rather than an empty gap */
+.jp-KernelStatus-none {
+  color: var(--jp-ui-font-color2);
 }
 
 /* Busy state */

@@ -86,13 +86,17 @@ function KernelStatusComponent(props: {
   }, [props.model]);
 
   const status = props.model.status;
-  const isError = status === 'dead';
-  const isIdle = status === 'idle';
+  // When there is no kernel (e.g. after a shutdown) show a neutral, muted icon
+  // rather than the spinner, the idle checkmark or the error cross. The display
+  // status is also 'unknown' in that case, so it cannot be distinguished by the
+  // status alone, hence relying on `hasNoKernel`. This takes precedence over the
+  // other states so the indicator never reserves an empty, icon-less gap.
+  const isNoKernel = props.model.hasNoKernel;
+  const isError = !isNoKernel && status === 'dead';
+  const isIdle = !isNoKernel && status === 'idle';
   // Show the loading spinner while a kernel is present (or starting up) and not
-  // yet idle or dead. When there is no kernel (e.g. after a shutdown) show
-  // nothing: the display status is also 'unknown' in that case, so it cannot be
-  // distinguished by the status alone, hence relying on `hasNoKernel`.
-  const isBusy = !props.model.hasNoKernel && !isError && !isIdle;
+  // yet idle or dead.
+  const isBusy = !isNoKernel && !isError && !isIdle;
 
   // Return the appropriate icon and text based on status
   return (
@@ -103,6 +107,18 @@ function KernelStatusComponent(props: {
       title={trans.__('Click to open kernel logs')}
     >
       <div className="jp-KernelStatus-icon-container">
+        {isNoKernel && (
+          <div className="jp-KernelStatus-none">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
+                stroke="currentColor"
+                strokeWidth="2"
+              />
+            </svg>
+          </div>
+        )}
+
         {isBusy && (
           <div className="jp-KernelStatus-spinner">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
