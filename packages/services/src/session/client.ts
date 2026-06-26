@@ -27,39 +27,21 @@ export class LiteSessionClient implements ISessionAPIClient {
   constructor(options: LiteSessionClient.IOptions) {
     this._kernelClient = options.kernelClient;
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
-    // Listen for kernel removals
+    // Clean up sessions whose kernel went away without an explicit session
+    // shutdown (e.g. the kernel was shut down on its own or crashed). Kernel
+    // restarts are skipped: the kernel client flags them while the kernel is
+    // being re-created, so the session is kept alive.
     this._kernelClient.changed.connect((_, args) => {
-      switch (args.type) {
-        case 'remove': {
-          const kernelId = args.oldValue?.id;
-          if (!kernelId) {
-            return;
-          }
-          // find the session associated with the kernel
-          const session = this._sessions.find((s) => s.kernel?.id === kernelId);
-          if (!session) {
-            return;
-          }
-          // Track the kernel ID for restart detection
-          this._pendingRestarts.add(kernelId);
-          setTimeout(async () => {
-            // If after a short delay the kernel hasn't been re-added, it was terminated
-            if (this._pendingRestarts.has(kernelId)) {
-              this._pendingRestarts.delete(kernelId);
-              await this.shutdown(session.id);
-            }
-          }, 100);
-          break;
-        }
-        case 'add': {
-          // If this was a restart, remove it from pending
-          const kernelId = args.newValue?.id;
-          if (!kernelId) {
-            return;
-          }
-          this._pendingRestarts.delete(kernelId);
-          break;
-        }
+      if (args.type !== 'remove') {
+        return;
+      }
+      const kernelId = args.oldValue?.id;
+      if (!kernelId || this._kernelClient.isRestarting(kernelId)) {
+        return;
+      }
+      const session = this._sessions.find((s) => s.kernel?.id === kernelId);
+      if (session) {
+        ArrayExt.removeFirstOf(this._sessions, session);
       }
     });
   }
@@ -223,10 +205,13 @@ export class LiteSessionClient implements ISessionAPIClient {
       throw Error(`Session ${id} not found`);
     }
     const kernelId = session.kernel?.id;
+    // Remove the session before shutting down its kernel so the resulting
+    // kernel removal is not mistaken for an externally terminated kernel (which
+    // would otherwise trigger a second, redundant cleanup of this session).
+    ArrayExt.removeFirstOf(this._sessions, session);
     if (kernelId) {
       await this._kernelClient.shutdown(kernelId);
     }
-    ArrayExt.removeFirstOf(this._sessions, session);
   }
 
   /**
@@ -252,7 +237,6 @@ export class LiteSessionClient implements ISessionAPIClient {
   private _kernelClient: LiteKernelClient;
   private _serverSettings: ServerConnection.ISettings;
   private _sessions: Session.IModel[] = [];
-  private _pendingRestarts = new Set<string>();
 }
 
 /**
