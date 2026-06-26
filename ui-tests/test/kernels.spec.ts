@@ -115,6 +115,9 @@ test.describe('Kernels', () => {
     expect(
       pageErrors.filter((message) => /Session .* not found/.test(message)),
     ).toEqual([]);
+
+    // the kernel status indicator should not keep spinning once the kernel is gone
+    await expect(page.locator('.jp-KernelStatus-spinner')).toHaveCount(0);
   });
 
   test('Multiple kernel restarts', async ({ page }) => {

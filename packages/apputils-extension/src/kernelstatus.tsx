@@ -77,7 +77,10 @@ function KernelStatusComponent(props: {
 
   const isError = status === 'dead';
   const isIdle = status === 'idle';
-  const isBusy = !isError && !isIdle;
+  // 'unknown' is reported when there is no kernel (e.g. after shutting it down).
+  // It must not be treated as a busy/loading state, otherwise the spinner would
+  // keep spinning forever even though nothing is happening.
+  const isBusy = !isError && !isIdle && status !== 'unknown';
 
   // Return the appropriate icon and text based on status
   return (
