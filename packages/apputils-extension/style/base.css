@@ -59,12 +59,9 @@
   color: var(--jp-error-color1);
 }
 
-/* No kernel state (e.g. after a shutdown): a neutral, muted circle that is
-   quieter than the vivid idle/error states but still clearly an intentional
-   indicator rather than an empty gap */
-.jp-KernelStatus-none {
-  color: var(--jp-ui-font-color2);
-}
+/* No kernel state (e.g. after a shutdown) uses JupyterLab's circleEmptyIcon,
+   which is already a muted, theme-aware ring (via its `jp-icon3` class), so no
+   color override is needed here. */
 
 /* Busy state */
 .jp-KernelStatus-busy {
