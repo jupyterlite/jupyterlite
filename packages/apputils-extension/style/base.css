@@ -19,6 +19,7 @@
 .jp-KernelStatus-spinner,
 .jp-KernelStatus-success,
 .jp-KernelStatus-error,
+.jp-KernelStatus-none,
 .jp-KernelStatus svg {
   width: 16px;
   height: 16px;
@@ -57,6 +58,10 @@
 .jp-KernelStatus-error {
   color: var(--jp-error-color1);
 }
+
+/* No kernel state (e.g. after a shutdown) uses JupyterLab's circleEmptyIcon,
+   which is already a muted, theme-aware ring (via its `jp-icon3` class), so no
+   color override is needed here. */
 
 /* Busy state */
 .jp-KernelStatus-busy {
