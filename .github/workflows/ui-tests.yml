@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
@@ -59,7 +59,7 @@ jobs:
         browser: [firefox, chromium]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: actions/download-artifact@v8
         with:
@@ -132,7 +132,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout lockfile
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: ui-tests/yarn.lock
           sparse-checkout-cone-mode: false
