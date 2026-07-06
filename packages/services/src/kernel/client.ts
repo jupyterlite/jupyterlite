@@ -335,6 +335,21 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
     try {
       kernel.dispose();
       await this.startNew({ id, name, location });
+    } catch (error) {
+      // The kernel could not be re-created, so the removal suppressed above
+      // turns out to be a real termination. Clear the flag before re-emitting
+      // the removal so consumers do not skip it as a restart. Only re-emit if
+      // the kernel is indeed gone (dispose itself may have failed instead).
+      this._restarting.delete(kernelId);
+      if (!this._kernels.has(kernelId)) {
+        this._changed.emit({
+          type: 'remove',
+          key: kernelId,
+          oldValue: kernel,
+          newValue: undefined,
+        });
+      }
+      throw error;
     } finally {
       this._restarting.delete(kernelId);
     }
