@@ -41,8 +41,8 @@ demo = [
 dev = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab>=4.6.0,<4.7",
-    "notebook>=7.6.0,<7.7",
+    "jupyterlab>=4.7.0a0,<4.8",
+    "notebook>=7.7.0a0,<7.8",
     "pkginfo",
     "ruff>=0.8.3",
     "twine>=5.1.1",
@@ -108,11 +108,11 @@ test = [
 ui-tests = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab==4.6.0",
+    "jupyterlab==4.7.0a0",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.4.0a0",
-    "notebook==7.6.0",
+    "notebook==7.7.0a0",
     "jupyterlab-night==0.5.2",
 ]
 
