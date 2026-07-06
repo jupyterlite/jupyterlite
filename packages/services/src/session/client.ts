@@ -114,12 +114,6 @@ export class LiteSessionClient implements ISessionAPIClient {
         if (newKernel) {
           patched.kernel = newKernel;
         }
-
-        // clean up the session on kernel shutdown
-        void this._handleKernelShutdown({
-          kernelId: newKernel.id,
-          sessionId: session.id,
-        });
       }
     }
 
@@ -188,9 +182,6 @@ export class LiteSessionClient implements ISessionAPIClient {
     };
     this._sessions.push(session);
 
-    // clean up the session on kernel shutdown
-    void this._handleKernelShutdown({ kernelId: id, sessionId: session.id });
-
     return session;
   }
 
@@ -219,19 +210,6 @@ export class LiteSessionClient implements ISessionAPIClient {
    */
   async shutdownAll(): Promise<void> {
     await Promise.all(this._sessions.map((s) => this.shutdown(s.id)));
-  }
-
-  /**
-   * Handle kernel shutdown
-   */
-  private async _handleKernelShutdown({
-    kernelId,
-    sessionId,
-  }: {
-    kernelId: string;
-    sessionId: string;
-  }): Promise<void> {
-    // No need to handle kernel shutdown here anymore since we're using the changed signal
   }
 
   private _kernelClient: LiteKernelClient;
