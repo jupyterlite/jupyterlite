@@ -116,3 +116,26 @@
   padding: 2px 8px;
   height: 24px;
 }
+
+/*
+ * The JupyterLite extension manager is display-only: it lists the prebuilt
+ * (federated) extensions shipped with the site, reusing the JupyterLab
+ * extension manager UI without a server.
+ *
+ * Hide the per-entry action buttons (install / uninstall / update / enable /
+ * disable), which are not supported in the browser.
+ */
+.jp-extensionmanager-view .jp-extensionmanager-entry-buttons {
+  display: none;
+}
+
+/*
+ * Hide the security disclaimer: JupyterLite does not fetch data from external
+ * web services nor install code, so the warning does not apply. This hides both
+ * the disclaimer panel and its (collapsed) accordion title.
+ */
+.jp-extensionmanager-view .jp-extensionmanager-disclaimer,
+.jp-extensionmanager-view
+  .jp-AccordionPanel-title:has(+ .jp-extensionmanager-disclaimer) {
+  display: none;
+}
