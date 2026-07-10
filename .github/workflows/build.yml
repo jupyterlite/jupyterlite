@@ -73,6 +73,10 @@ jobs:
           git diff --exit-code yarn.lock
       - name: Check app resolutions
         run: jlpm integrity:check
+      - name: Check release version bump script
+        run: |
+          python -m pip install --group release
+          python scripts/check-bump-version.py
 
   typedoc:
     runs-on: ubuntu-latest
