@@ -183,6 +183,7 @@ ignore = [
 "docs/conf.py" = ["A001", "S603", "S607"]
 "scripts/dev-build.py" = ["S603"]
 "scripts/bump-version.py" = ["S603"]
+"scripts/check-bump-version.py" = ["S603", "S607"]
 "scripts/upgrade-dependencies.py" = ["S310"]
 "**/conftest.py" = ["S603", "S607"]
 
