@@ -74,7 +74,7 @@ lint = [
 
 # An example downstream kernel
 pyodide-kernel = [
-    "jupyterlite-pyodide-kernel[lock] >=0.8.0b0; sys_platform != 'emscripten'",
+    "jupyterlite-pyodide-kernel[lock] >=0.9.0a0; sys_platform != 'emscripten'",
 ]
 
 ## Documentation build platform
