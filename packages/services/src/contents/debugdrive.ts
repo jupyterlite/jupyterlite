@@ -159,18 +159,30 @@ export class DebugDrive implements Contents.IDrive {
     return url;
   }
 
+  /**
+   * Create a new untitled file - not supported by the read-only drive.
+   */
   async newUntitled(options?: Contents.ICreateOptions): Promise<IModel> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Copy a file - not supported by the read-only drive.
+   */
   async copy(path: string, toDir: string): Promise<IModel> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Rename a file - not supported by the read-only drive.
+   */
   async rename(oldLocalPath: string, newLocalPath: string): Promise<IModel> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Save a file - not supported by the read-only drive.
+   */
   async save(
     path: string,
     options: Partial<IModel> & Contents.IContentProvisionOptions = {},
@@ -178,22 +190,37 @@ export class DebugDrive implements Contents.IDrive {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Delete a file - not supported by the read-only drive.
+   */
   async delete(path: string): Promise<void> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Create a checkpoint - not supported by the read-only drive.
+   */
   async createCheckpoint(path: string): Promise<Contents.ICheckpointModel> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * List the checkpoints for a file - always empty for the read-only drive.
+   */
   async listCheckpoints(path: string): Promise<Contents.ICheckpointModel[]> {
     return [];
   }
 
+  /**
+   * Restore a checkpoint - not supported by the read-only drive.
+   */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
     throw Private.readOnlyError();
   }
 
+  /**
+   * Delete a checkpoint - not supported by the read-only drive.
+   */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
     throw Private.readOnlyError();
   }
@@ -275,6 +302,9 @@ export namespace DebugDrive {
 }
 
 namespace Private {
+  /**
+   * An in-memory file exposed by the debug drive.
+   */
   export interface IVirtualFile {
     content: string;
     format: Contents.FileFormat;
@@ -284,6 +314,9 @@ namespace Private {
     type: Contents.ContentType;
   }
 
+  /**
+   * Add a file to the file map, deriving its name from its path.
+   */
   export function addFile(
     files: Map<string, IVirtualFile>,
     file: Omit<IVirtualFile, 'name'>,
@@ -291,6 +324,9 @@ namespace Private {
     files.set(file.path, { ...file, name: PathExt.basename(file.path) });
   }
 
+  /**
+   * Convert file content to the requested format.
+   */
   export function convertContent(
     content: string,
     format: Contents.FileFormat,
@@ -304,6 +340,9 @@ namespace Private {
     return content;
   }
 
+  /**
+   * Create a contents model for a directory.
+   */
   export function directoryModel(
     path: string,
     content: IModel[] | null,
@@ -323,6 +362,9 @@ namespace Private {
     };
   }
 
+  /**
+   * Encode bytes as a base64 string.
+   */
   export function encodeBase64(content: Uint8Array): string {
     let binary = '';
     for (const byte of content) {
@@ -331,6 +373,9 @@ namespace Private {
     return btoa(binary);
   }
 
+  /**
+   * Create a contents model for a file, without its content.
+   */
   export function fileMetadata(file: IVirtualFile, timestamp: string): IModel {
     return {
       name: file.name,
@@ -346,14 +391,24 @@ namespace Private {
     };
   }
 
+  /**
+   * Normalize a drive-local path.
+   */
   export function normalizePath(path: string): string {
     return decodeURIComponent(path.replace(/^\//, ''));
   }
 
+  /**
+   * Create the error thrown for write operations.
+   */
   export function readOnlyError(): Error {
     return new Error('The JupyterLite debug drive is read-only.');
   }
 
+  /**
+   * Compute the path of a URL relative to a root URL, or `null` if the URL is
+   * not below the root.
+   */
   export function relativePath(rootUrl: string, applicationUrl: string): string | null {
     const root = new URL(rootUrl);
     const application = new URL(applicationUrl);
@@ -367,6 +422,9 @@ namespace Private {
     );
   }
 
+  /**
+   * List the directories implied by the file paths, including the root.
+   */
   export function virtualDirectories(files: Map<string, IVirtualFile>): Set<string> {
     const directories = new Set<string>(['']);
     for (const path of files.keys()) {

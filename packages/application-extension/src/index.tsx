@@ -130,17 +130,10 @@ const debugDrive: JupyterFrontEndPlugin<void> = {
     }
 
     const { contents } = app.serviceManager;
-    const configElement = document.getElementById('jupyter-config-data');
-    const applicationUrl = new URL('.', window.location.href);
-    const rootUrl = new URL(
-      configElement?.dataset.jupyterLiteRoot ?? PageConfig.getBaseUrl(),
-      applicationUrl,
-    );
     const drive = new DebugDrive({
-      applicationUrl: applicationUrl.href,
-      rootUrl: rootUrl.href,
+      applicationUrl: new URL('.', window.location.href).href,
+      rootUrl: PageConfig.getBaseUrl(),
     });
-    await drive.ready;
     contents.addDrive(drive);
 
     if (!factory || !labShell) {
