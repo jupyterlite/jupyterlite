@@ -16,5 +16,8 @@
   },
   "@jupyterlab/github:drive": {
     "defaultRepo": "jupyterlite/jupyterlite"
+  },
+  "@jupyterlite/application-extension:debug-drive": {
+    "enabled": true
   }
 }

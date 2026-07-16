@@ -142,3 +142,51 @@ API (the Emscripten filesystem) with an asynchronous API (the Jupyter contents m
 This architecture makes it possible for lite kernels to access contents from a custom
 [JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html)
 to support multiple sources of contents.
+
+## Inspecting JupyterLite configuration
+
+JupyterLab users can opt into a read-only file browser for inspecting the generated
+JupyterLite configuration files. The setting is disabled by default. A deployment can
+enable it by default with the following configuration:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "settingsOverrides": {
+      "@jupyterlite/application-extension:debug-drive": {
+        "enabled": true
+      }
+    }
+  }
+}
+```
+
+Users can also change this value in the Settings Editor. Changes take effect after
+reloading the page. The `settingsOverrides` configuration only changes the default and
+does not lock the setting. To prevent users from enabling the drive, disable its plugin
+at the deployment level:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "disabledExtensions": ["@jupyterlite/application-extension:debug-drive"]
+  }
+}
+```
+
+The root of the file browser corresponds to the root of the generated site. It contains
+the root `jupyter-lite.json`, `jupyter-lite.ipynb`, and `overrides.json` files that are
+available, together with the same files under the current application directory, such as
+`lab/jupyter-lite.json`. Missing files are omitted.
+
+During a build, `overrides.json` is folded into the corresponding `jupyter-lite.json`.
+The `jupyter-lite.json` and `jupyter-lite.ipynb` files are then merged with the page
+configuration when the application starts.
+
+This view does not enumerate the original `lite_dir`, the full generated site, bundled
+contents, or kernel filesystems. The drive only displays configuration files already
+served by the JupyterLite site and makes them easier to discover and download. It does
+not expose additional build inputs or provide an access-control boundary. Do not include
+secrets in deployed configuration files.

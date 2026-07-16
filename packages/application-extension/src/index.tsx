@@ -32,7 +32,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { clearIcon, downloadIcon, jsonIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
@@ -42,7 +42,12 @@ import {
   ServiceWorkerManager,
 } from '@jupyterlite/apputils';
 
-import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/services';
+import {
+  BrowserStorageDrive,
+  DebugDrive,
+  IKernelClient,
+  Settings,
+} from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -77,6 +82,11 @@ const URL_PATTERN = new RegExp('/(lab|tree|notebooks|edit|consoles)\\/?');
 const JUPYTERLAB_DOCMANAGER_PLUGIN_ID = '@jupyterlab/docmanager-extension:plugin';
 
 /**
+ * The debug drive plugin id.
+ */
+const DEBUG_DRIVE_PLUGIN_ID = '@jupyterlite/application-extension:debug-drive';
+
+/**
  * The command IDs used by the application extension.
  */
 namespace CommandIDs {
@@ -96,6 +106,64 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * A plugin adding an opt-in read-only view of JupyterLite configuration files.
+ */
+const debugDrive: JupyterFrontEndPlugin<void> = {
+  id: DEBUG_DRIVE_PLUGIN_ID,
+  description:
+    'Provides an optional read-only view of JupyterLite configuration files.',
+  autoStart: true,
+  requires: [ISettingRegistry, ITranslator],
+  optional: [IFileBrowserFactory, ILabShell],
+  activate: async (
+    app: JupyterFrontEnd,
+    settingRegistry: ISettingRegistry,
+    translator: ITranslator,
+    factory: IFileBrowserFactory | null,
+    labShell: ILabShell | null,
+  ): Promise<void> => {
+    const settings = await settingRegistry.load(DEBUG_DRIVE_PLUGIN_ID);
+    if (settings.get('enabled').composite !== true) {
+      return;
+    }
+
+    const { contents } = app.serviceManager;
+    const configElement = document.getElementById('jupyter-config-data');
+    const applicationUrl = new URL('.', window.location.href);
+    const rootUrl = new URL(
+      configElement?.dataset.jupyterLiteRoot ?? PageConfig.getBaseUrl(),
+      applicationUrl,
+    );
+    const drive = new DebugDrive({
+      applicationUrl: applicationUrl.href,
+      rootUrl: rootUrl.href,
+    });
+    await drive.ready;
+    contents.addDrive(drive);
+
+    if (!factory || !labShell) {
+      return;
+    }
+
+    const trans = translator.load(I18N_BUNDLE);
+    const label = trans.__('JupyterLite Debug');
+    const browser = factory.createFileBrowser('jupyterlite-contents', {
+      allowFileUploads: false,
+      driveName: drive.name,
+      state: null,
+    });
+    browser.showFileCheckboxes = false;
+    browser.node.setAttribute('role', 'region');
+    browser.node.setAttribute('aria-label', label);
+    browser.title.caption = label;
+    browser.title.dataset = { ...browser.title.dataset, jpTabLabel: label };
+    browser.title.icon = jsonIcon;
+
+    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Debug' });
+  },
+};
 
 /**
  * The custom URL router provider.
@@ -916,6 +984,7 @@ const modeSupport: JupyterFrontEndPlugin<void> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
+  debugDrive,
   downloadPlugin,
   liteRouter,
   liteLogo,
