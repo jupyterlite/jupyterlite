@@ -44,9 +44,9 @@ import {
 
 import {
   BrowserStorageDrive,
-  DebugDrive,
   IKernelClient,
   Settings,
+  SiteDrive,
 } from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
@@ -82,9 +82,9 @@ const URL_PATTERN = new RegExp('/(lab|tree|notebooks|edit|consoles)\\/?');
 const JUPYTERLAB_DOCMANAGER_PLUGIN_ID = '@jupyterlab/docmanager-extension:plugin';
 
 /**
- * The debug drive plugin id.
+ * The site drive plugin id.
  */
-const DEBUG_DRIVE_PLUGIN_ID = '@jupyterlite/application-extension:debug-drive';
+const SITE_DRIVE_PLUGIN_ID = '@jupyterlite/application-extension:site-drive';
 
 /**
  * The command IDs used by the application extension.
@@ -110,8 +110,8 @@ const I18N_BUNDLE = 'jupyterlite';
 /**
  * A plugin adding an opt-in read-only view of JupyterLite configuration files.
  */
-const debugDrive: JupyterFrontEndPlugin<void> = {
-  id: DEBUG_DRIVE_PLUGIN_ID,
+const siteDrive: JupyterFrontEndPlugin<void> = {
+  id: SITE_DRIVE_PLUGIN_ID,
   description:
     'Provides an optional read-only view of JupyterLite configuration files.',
   autoStart: true,
@@ -124,13 +124,13 @@ const debugDrive: JupyterFrontEndPlugin<void> = {
     factory: IFileBrowserFactory | null,
     labShell: ILabShell | null,
   ): Promise<void> => {
-    const settings = await settingRegistry.load(DEBUG_DRIVE_PLUGIN_ID);
+    const settings = await settingRegistry.load(SITE_DRIVE_PLUGIN_ID);
     if (settings.get('enabled').composite !== true) {
       return;
     }
 
     const { contents } = app.serviceManager;
-    const drive = new DebugDrive({
+    const drive = new SiteDrive({
       applicationUrl: new URL('.', window.location.href).href,
       rootUrl: PageConfig.getBaseUrl(),
     });
@@ -141,8 +141,8 @@ const debugDrive: JupyterFrontEndPlugin<void> = {
     }
 
     const trans = translator.load(I18N_BUNDLE);
-    const label = trans.__('JupyterLite Debug');
-    const browser = factory.createFileBrowser('jupyterlite-contents', {
+    const label = trans.__('JupyterLite Site');
+    const browser = factory.createFileBrowser('jupyterlite-site', {
       allowFileUploads: false,
       driveName: drive.name,
       state: null,
@@ -154,7 +154,7 @@ const debugDrive: JupyterFrontEndPlugin<void> = {
     browser.title.dataset = { ...browser.title.dataset, jpTabLabel: label };
     browser.title.icon = jsonIcon;
 
-    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Debug' });
+    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Site' });
   },
 };
 
@@ -977,7 +977,6 @@ const modeSupport: JupyterFrontEndPlugin<void> = {
 const plugins: JupyterFrontEndPlugin<any>[] = [
   about,
   clearBrowserData,
-  debugDrive,
   downloadPlugin,
   liteRouter,
   liteLogo,
@@ -989,6 +988,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
+  siteDrive,
 ];
 
 export default plugins;

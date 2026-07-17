@@ -39,7 +39,7 @@ test.describe('Kernels', () => {
       const body = await response.json();
       body['jupyter-config-data'].settingsOverrides = {
         ...body['jupyter-config-data'].settingsOverrides,
-        '@jupyterlite/application-extension:debug-drive': { enabled: true },
+        '@jupyterlite/application-extension:site-drive': { enabled: true },
       };
       return route.fulfill({ response, body: JSON.stringify(body) });
     });
@@ -55,8 +55,8 @@ test.describe('Kernels', () => {
       },
     ]);
 
-    await page.sidebar.openTab('jupyterlite-contents');
-    const browser = page.getByRole('region', { name: 'JupyterLite Debug' });
+    await page.sidebar.openTab('jupyterlite-site');
+    const browser = page.getByRole('region', { name: 'JupyterLite Site' });
     await expect(
       browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
     ).toBeVisible();

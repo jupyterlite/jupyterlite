@@ -16,12 +16,12 @@ type IModel = Contents.IModel;
 const encoder = new TextEncoder();
 
 /**
- * The name of the debug drive.
+ * The name of the site drive.
  */
-export const DEBUG_DRIVE_NAME = 'JupyterLite';
+export const SITE_DRIVE_NAME = 'JupyterLite';
 
 /**
- * The configuration files exposed by the debug drive.
+ * The configuration files exposed by the site drive.
  */
 const CONFIGURATION_FILES = [
   'jupyter-lite.json',
@@ -32,11 +32,11 @@ const CONFIGURATION_FILES = [
 /**
  * A read-only drive exposing generated JupyterLite configuration files.
  */
-export class DebugDrive implements Contents.IDrive {
+export class SiteDrive implements Contents.IDrive {
   /**
-   * Construct a new debug drive.
+   * Construct a new site drive.
    */
-  constructor(options: DebugDrive.IOptions) {
+  constructor(options: SiteDrive.IOptions) {
     this._serverSettings = options.serverSettings ?? ServerConnection.makeSettings();
     this.ready = this._loadConfigurationFiles(options.rootUrl, options.applicationUrl);
   }
@@ -54,10 +54,6 @@ export class DebugDrive implements Contents.IDrive {
       return;
     }
     this._isDisposed = true;
-    for (const url of this._objectUrls) {
-      URL.revokeObjectURL(url);
-    }
-    this._objectUrls.clear();
     Signal.clearData(this);
   }
 
@@ -72,7 +68,7 @@ export class DebugDrive implements Contents.IDrive {
    * The name of the drive.
    */
   get name(): string {
-    return DEBUG_DRIVE_NAME;
+    return SITE_DRIVE_NAME;
   }
 
   /**
@@ -110,7 +106,7 @@ export class DebugDrive implements Contents.IDrive {
         format,
         mimetype: file.mimetype,
         content,
-        size: encoder.encode(file.content).length,
+        size: file.size,
         writable: false,
         type: file.type,
       };
@@ -153,10 +149,7 @@ export class DebugDrive implements Contents.IDrive {
     if (!file) {
       throw new Error(`Cannot download content with path ${path}`);
     }
-    const blob = new Blob([file.content], { type: file.mimetype });
-    const url = URL.createObjectURL(blob);
-    this._objectUrls.add(url);
-    return url;
+    return file.url;
   }
 
   /**
@@ -253,9 +246,12 @@ export class DebugDrive implements Contents.IDrive {
             return;
           }
           const content = await response.text();
+          // ignore files that are not valid JSON, such as an HTML fallback
+          // page served with a 200 status for a missing file
           JSON.parse(content);
           Private.addFile(this._files, {
             path,
+            url,
             content,
             format: path.endsWith('.ipynb') ? 'json' : 'text',
             mimetype: MIME.JSON,
@@ -271,17 +267,16 @@ export class DebugDrive implements Contents.IDrive {
   private _files = new Map<string, Private.IVirtualFile>();
   private _fileChanged = new Signal<Contents.IDrive, Contents.IChangedArgs>(this);
   private _isDisposed = false;
-  private _objectUrls = new Set<string>();
   private _serverSettings: ServerConnection.ISettings;
   private _timestamp = new Date().toISOString();
 }
 
 /**
- * A namespace for debug drive options.
+ * A namespace for site drive options.
  */
-export namespace DebugDrive {
+export namespace SiteDrive {
   /**
-   * The options used to create a debug drive.
+   * The options used to create a site drive.
    */
   export interface IOptions {
     /**
@@ -303,7 +298,7 @@ export namespace DebugDrive {
 
 namespace Private {
   /**
-   * An in-memory file exposed by the debug drive.
+   * An in-memory file exposed by the site drive.
    */
   export interface IVirtualFile {
     content: string;
@@ -311,17 +306,24 @@ namespace Private {
     mimetype: string;
     name: string;
     path: string;
+    size: number;
     type: Contents.ContentType;
+    url: string;
   }
 
   /**
-   * Add a file to the file map, deriving its name from its path.
+   * Add a file to the file map, deriving its name and size from its path and
+   * content.
    */
   export function addFile(
     files: Map<string, IVirtualFile>,
-    file: Omit<IVirtualFile, 'name'>,
+    file: Omit<IVirtualFile, 'name' | 'size'>,
   ): void {
-    files.set(file.path, { ...file, name: PathExt.basename(file.path) });
+    files.set(file.path, {
+      ...file,
+      name: PathExt.basename(file.path),
+      size: encoder.encode(file.content).length,
+    });
   }
 
   /**
@@ -385,7 +387,7 @@ namespace Private {
       format: file.format,
       mimetype: file.mimetype,
       content: null,
-      size: encoder.encode(file.content).length,
+      size: file.size,
       writable: false,
       type: file.type,
     };
@@ -402,7 +404,7 @@ namespace Private {
    * Create the error thrown for write operations.
    */
   export function readOnlyError(): Error {
-    return new Error('The JupyterLite debug drive is read-only.');
+    return new Error('The JupyterLite site drive is read-only.');
   }
 
   /**

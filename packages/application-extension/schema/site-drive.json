@@ -1,9 +1,9 @@
 {
-  "title": "JupyterLite Debug",
-  "description": "JupyterLite Debug settings.",
+  "title": "JupyterLite Site",
+  "description": "JupyterLite Site settings.",
   "properties": {
     "enabled": {
-      "title": "Show JupyterLite Debug",
+      "title": "Show JupyterLite Site",
       "description": "Whether to show a read-only file browser for generated JupyterLite configuration files.",
       "type": "boolean",
       "default": false

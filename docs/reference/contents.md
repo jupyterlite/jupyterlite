@@ -143,18 +143,18 @@ This architecture makes it possible for lite kernels to access contents from a c
 [JupyterLab drive](https://jupyterlab.readthedocs.io/en/latest/api/interfaces/services.Contents.IDrive.html)
 to support multiple sources of contents.
 
-## Inspecting JupyterLite configuration
+## Inspecting the site configuration
 
-JupyterLab users can opt into a read-only file browser for inspecting the generated
-JupyterLite configuration files. The setting is disabled by default. A deployment can
-enable it by default with the following configuration:
+JupyterLab users can opt into the _JupyterLite Site_ drive, a read-only file browser for
+inspecting the configuration files of the generated site. The setting is disabled by
+default. A deployment can enable it by default with the following configuration:
 
 ```json
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
     "settingsOverrides": {
-      "@jupyterlite/application-extension:debug-drive": {
+      "@jupyterlite/application-extension:site-drive": {
         "enabled": true
       }
     }
@@ -171,7 +171,7 @@ at the deployment level:
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "disabledExtensions": ["@jupyterlite/application-extension:debug-drive"]
+    "disabledExtensions": ["@jupyterlite/application-extension:site-drive"]
   }
 }
 ```
