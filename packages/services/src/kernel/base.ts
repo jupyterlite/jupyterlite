@@ -126,6 +126,9 @@ export abstract class BaseKernel implements IKernel {
       case 'complete_request':
         await this._complete(msg);
         break;
+      case 'comm_info_request':
+        await this._commInfo(msg);
+        break;
       case 'history_request':
         await this._historyRequest(msg);
         break;
@@ -608,6 +611,25 @@ export abstract class BaseKernel implements IKernel {
     const message = KernelMessage.createMessage<KernelMessage.IIsCompleteReplyMsg>({
       msgType: 'is_complete_reply',
       parentHeader: isCompleteMsg.header,
+      channel: 'shell',
+      session: msg.header.session,
+      content,
+    });
+
+    this._sendMessage(message);
+  }
+
+  /**
+   * Handle a comm_info_request message
+   *
+   * @param msg The parent message.
+   */
+  private async _commInfo(msg: KernelMessage.IMessage): Promise<void> {
+    const commInfoMsg = msg as KernelMessage.ICommInfoRequestMsg;
+    const content = await this.commInfoRequest(commInfoMsg.content);
+    const message = KernelMessage.createMessage<KernelMessage.ICommInfoReplyMsg>({
+      msgType: 'comm_info_reply',
+      parentHeader: commInfoMsg.header,
       channel: 'shell',
       session: msg.header.session,
       content,
