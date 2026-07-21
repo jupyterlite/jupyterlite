@@ -82,6 +82,29 @@ test.describe('Kernels', () => {
     expect(output![0]).toBe('4');
   });
 
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/155
+  // closing a notebook must not cancel a pending comm_info_request before the
+  // kernel has had a chance to reply
+  test('Closing a notebook does not cancel comm_info_request', async ({ page }) => {
+    const commInfoErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && msg.text().includes('comm_info_request')) {
+        commInfoErrors.push(msg.text());
+      }
+    });
+
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+
+    await page.notebook.save();
+    await page.notebook.close(true);
+
+    expect(commInfoErrors).toEqual([]);
+  });
+
   test('Multiple kernel restarts', async ({ page }) => {
     // Common selectors
     const runningKernelsTab = page.getByTitle('Running Terminals and Kernels').first();
