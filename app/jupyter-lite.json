@@ -14,11 +14,11 @@
     "versionInfo": {
       "@jupyterlab/application": {
         "label": "JupyterLab",
-        "version": "4.7.0-alpha.0"
+        "version": "4.7.0-alpha.1"
       },
       "@jupyter-notebook/application": {
         "label": "Jupyter Notebook",
-        "version": "7.7.0-alpha.0"
+        "version": "7.7.0-alpha.1"
       }
     }
   }
