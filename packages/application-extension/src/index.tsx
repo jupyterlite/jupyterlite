@@ -32,7 +32,7 @@ import { ISettingRegistry } from '@jupyterlab/settingregistry';
 
 import { ITranslator } from '@jupyterlab/translation';
 
-import { clearIcon, downloadIcon, linkIcon } from '@jupyterlab/ui-components';
+import { clearIcon, downloadIcon, jsonIcon, linkIcon } from '@jupyterlab/ui-components';
 
 import { ILiteRouter, LiteRouter } from '@jupyterlite/application';
 
@@ -42,7 +42,12 @@ import {
   ServiceWorkerManager,
 } from '@jupyterlite/apputils';
 
-import { BrowserStorageDrive, IKernelClient, Settings } from '@jupyterlite/services';
+import {
+  BrowserStorageDrive,
+  IKernelClient,
+  Settings,
+  SiteDrive,
+} from '@jupyterlite/services';
 
 import { liteIcon, liteWordmark } from '@jupyterlite/ui-components';
 
@@ -77,6 +82,11 @@ const URL_PATTERN = new RegExp('/(lab|tree|notebooks|edit|consoles)\\/?');
 const JUPYTERLAB_DOCMANAGER_PLUGIN_ID = '@jupyterlab/docmanager-extension:plugin';
 
 /**
+ * The site drive plugin id.
+ */
+const SITE_DRIVE_PLUGIN_ID = '@jupyterlite/application-extension:site-drive';
+
+/**
  * The command IDs used by the application extension.
  */
 namespace CommandIDs {
@@ -96,6 +106,57 @@ namespace CommandIDs {
  */
 
 const I18N_BUNDLE = 'jupyterlite';
+
+/**
+ * A plugin adding an opt-in read-only view of JupyterLite configuration files.
+ */
+const siteDrive: JupyterFrontEndPlugin<void> = {
+  id: SITE_DRIVE_PLUGIN_ID,
+  description:
+    'Provides an optional read-only view of JupyterLite configuration files.',
+  autoStart: true,
+  requires: [ISettingRegistry, ITranslator],
+  optional: [IFileBrowserFactory, ILabShell],
+  activate: async (
+    app: JupyterFrontEnd,
+    settingRegistry: ISettingRegistry,
+    translator: ITranslator,
+    factory: IFileBrowserFactory | null,
+    labShell: ILabShell | null,
+  ): Promise<void> => {
+    const settings = await settingRegistry.load(SITE_DRIVE_PLUGIN_ID);
+    if (settings.get('enabled').composite !== true) {
+      return;
+    }
+
+    const { contents } = app.serviceManager;
+    const drive = new SiteDrive({
+      applicationUrl: new URL('.', window.location.href).href,
+      rootUrl: PageConfig.getBaseUrl(),
+    });
+    contents.addDrive(drive);
+
+    if (!factory || !labShell) {
+      return;
+    }
+
+    const trans = translator.load(I18N_BUNDLE);
+    const label = trans.__('JupyterLite Site');
+    const browser = factory.createFileBrowser('jupyterlite-site', {
+      allowFileUploads: false,
+      driveName: drive.name,
+      state: null,
+    });
+    browser.showFileCheckboxes = false;
+    browser.node.setAttribute('role', 'region');
+    browser.node.setAttribute('aria-label', label);
+    browser.title.caption = label;
+    browser.title.dataset = { ...browser.title.dataset, jpTabLabel: label };
+    browser.title.icon = jsonIcon;
+
+    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Site' });
+  },
+};
 
 /**
  * The custom URL router provider.
@@ -927,6 +988,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   serviceWorkerManagerPlugin,
   sessionContextPatch,
   shareFile,
+  siteDrive,
 ];
 
 export default plugins;

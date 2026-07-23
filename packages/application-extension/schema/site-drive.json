@@ -1,0 +1,14 @@
+{
+  "title": "JupyterLite Site",
+  "description": "JupyterLite Site settings.",
+  "properties": {
+    "enabled": {
+      "title": "Show JupyterLite Site",
+      "description": "Whether to show a read-only file browser for generated JupyterLite configuration files.",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

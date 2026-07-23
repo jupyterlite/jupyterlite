@@ -3,6 +3,7 @@
 
 export * from './drive';
 export * from './drivefs';
+export * from './sitedrive';
 export * from './tokens';
 export * from './emscripten';
 export * from './drivecontents';

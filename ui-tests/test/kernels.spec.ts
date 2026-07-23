@@ -1,11 +1,17 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
+import { Buffer } from 'buffer';
+
 import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { firefoxWaitForApplication, notebooksWaitForApplication } from './utils';
+import {
+  firefoxWaitForApplication,
+  notebooksWaitForApplication,
+  uploadFiles,
+} from './utils';
 
 test.use({
   waitForApplication: firefoxWaitForApplication,
@@ -21,6 +27,74 @@ test.describe('Kernels', () => {
 
     const output = await page.notebook.getCellTextOutput(2);
     expect(output).toBeTruthy();
+  });
+
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/1794
+  test('Kernel uses a root-level custom drive', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    await page.route('jupyter-lite.json', async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body['jupyter-config-data'].settingsOverrides = {
+        ...body['jupyter-config-data'].settingsOverrides,
+        '@jupyterlite/application-extension:site-drive': { enabled: true },
+      };
+      return route.fulfill({ response, body: JSON.stringify(body) });
+    });
+    await page.goto('lab/index.html');
+
+    const defaultContent = 'default drive selected';
+    await uploadFiles(page, [
+      {
+        base64: Buffer.from(defaultContent).toString('base64'),
+        mimeType: 'text/plain',
+        name: 'default-only.txt',
+        size: Buffer.byteLength(defaultContent),
+      },
+    ]);
+
+    await page.sidebar.openTab('jupyterlite-site');
+    const browser = page.getByRole('region', { name: 'JupyterLite Site' });
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
+    ).toBeVisible();
+    await expect(browser.getByRole('checkbox')).toHaveCount(0);
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: overrides\.json/ }),
+    ).toBeVisible();
+    await expect(browser.getByRole('listitem', { name: /^Name: lab/ })).toBeVisible();
+    const notebook = browser.getByRole('listitem', {
+      name: /^Name: jupyter-lite\.ipynb/,
+    });
+    await expect(notebook).toBeVisible();
+    await notebook.dblclick();
+
+    await expect.poll(() => page.notebook.isOpen('jupyter-lite.ipynb')).toBeTruthy();
+    const readonlyIndicator = page.getByText('notebook is read-only', {
+      exact: true,
+    });
+    await expect(readonlyIndicator).toBeVisible();
+    const cellIndex = await page.notebook.getCellCount();
+    await page.notebook.addCell(
+      'code',
+      [
+        'from pathlib import Path',
+        '',
+        'default_file = Path("default-only.txt")',
+        'print(',
+        '    default_file.read_text()',
+        '    if default_file.exists()',
+        '    else Path("jupyter-lite.json").read_text()',
+        ')',
+      ].join('\n'),
+    );
+    await page.notebook.runCell(cellIndex);
+
+    const output = (await page.notebook.getCellTextOutput(cellIndex))![0];
+    expect(output).toContain('JupyterLite UI Tests');
+    expect(output).not.toContain(defaultContent);
   });
 
   test('Default kernel name', async ({ page }) => {
