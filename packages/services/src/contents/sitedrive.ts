@@ -225,10 +225,12 @@ export class SiteDrive implements Contents.IDrive {
     rootUrl: string,
     applicationUrl: string,
   ): Promise<void> {
-    const locations = [{ path: '', url: rootUrl }];
-    const applicationPath = Private.relativePath(rootUrl, applicationUrl);
+    const application = Private.directoryUrl(applicationUrl);
+    const root = Private.directoryUrl(rootUrl, application.href);
+    const locations = [{ path: '', url: root.href }];
+    const applicationPath = Private.relativePath(root.href, application.href);
     if (applicationPath) {
-      locations.push({ path: applicationPath, url: applicationUrl });
+      locations.push({ path: applicationPath, url: application.href });
     }
 
     const requests = locations.flatMap((location) => {
@@ -238,10 +240,12 @@ export class SiteDrive implements Contents.IDrive {
       }));
     });
 
+    const settings = this.serverSettings;
     await Promise.all(
       requests.map(async ({ path, url }) => {
         try {
-          const response = await fetch(url);
+          const request = new settings.Request(url, settings.init);
+          const response = await settings.fetch.call(null, request);
           if (!response.ok) {
             return;
           }
@@ -397,7 +401,7 @@ namespace Private {
    * Normalize a drive-local path.
    */
   export function normalizePath(path: string): string {
-    return decodeURIComponent(path.replace(/^\//, ''));
+    return path.replace(/^\//, '');
   }
 
   /**
@@ -408,14 +412,25 @@ namespace Private {
   }
 
   /**
+   * Resolve and normalize a URL that represents a directory.
+   */
+  export function directoryUrl(url: string, baseUrl?: string): URL {
+    const directory = new URL(url, baseUrl);
+    directory.pathname = directory.pathname.replace(/\/?$/, '/');
+    directory.search = '';
+    directory.hash = '';
+    return directory;
+  }
+
+  /**
    * Compute the path of a URL relative to a root URL, or `null` if the URL is
    * not below the root.
    */
   export function relativePath(rootUrl: string, applicationUrl: string): string | null {
-    const root = new URL(rootUrl);
-    const application = new URL(applicationUrl);
-    const rootPath = root.pathname.replace(/\/?$/, '/');
-    const applicationPath = application.pathname.replace(/\/?$/, '/');
+    const application = directoryUrl(applicationUrl);
+    const root = directoryUrl(rootUrl, application.href);
+    const rootPath = root.pathname;
+    const applicationPath = application.pathname;
     if (root.origin !== application.origin || !applicationPath.startsWith(rootPath)) {
       return null;
     }

@@ -4,7 +4,7 @@
   "properties": {
     "enabled": {
       "title": "Show JupyterLite Site",
-      "description": "Whether to show a read-only file browser for generated JupyterLite configuration files.",
+      "description": "Whether to show a read-only file browser for generated JupyterLite configuration files. Changes take effect after reloading the page.",
       "type": "boolean",
       "default": false
     }

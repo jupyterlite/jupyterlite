@@ -76,25 +76,37 @@ test.describe('Kernels', () => {
       exact: true,
     });
     await expect(readonlyIndicator).toBeVisible();
+
     const cellIndex = await page.notebook.getCellCount();
     await page.notebook.addCell(
       'code',
       [
+        'import json',
         'from pathlib import Path',
         '',
         'default_file = Path("default-only.txt")',
+        'site_file = Path("jupyter-lite.json")',
         'print(',
         '    default_file.read_text()',
         '    if default_file.exists()',
-        '    else Path("jupyter-lite.json").read_text()',
+        '    else json.loads(site_file.read_text())["jupyter-config-data"]["appName"]',
         ')',
       ].join('\n'),
     );
     await page.notebook.runCell(cellIndex);
 
     const output = (await page.notebook.getCellTextOutput(cellIndex))![0];
-    expect(output).toContain('JupyterLite UI Tests');
-    expect(output).not.toContain(defaultContent);
+    expect(output.trim()).toBe('JupyterLite UI Tests');
+
+    await browser.getByRole('listitem', { name: /^Name: lab/ }).dblclick();
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
+    ).toBeVisible();
+    const downloadUrl = await page.evaluate(async () => {
+      const contents = (window as any).galata.app.serviceManager.contents;
+      return contents.getDownloadUrl('JupyterLite:lab/jupyter-lite.json');
+    });
+    expect(new URL(downloadUrl).pathname).toBe('/lab/jupyter-lite.json');
   });
 
   test('Default kernel name', async ({ page }) => {

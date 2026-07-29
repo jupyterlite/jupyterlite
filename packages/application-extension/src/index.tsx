@@ -147,6 +147,7 @@ const siteDrive: JupyterFrontEndPlugin<void> = {
       driveName: drive.name,
       state: null,
     });
+    browser.allowFileUploads = false;
     browser.showFileCheckboxes = false;
     browser.node.setAttribute('role', 'region');
     browser.node.setAttribute('aria-label', label);
