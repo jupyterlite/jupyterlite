@@ -141,7 +141,7 @@ const siteDrive: JupyterFrontEndPlugin<void> = {
     }
 
     const trans = translator.load(I18N_BUNDLE);
-    const label = trans.__('JupyterLite Site');
+    const label = trans.__('JupyterLite Site Drive');
     const browser = factory.createFileBrowser('jupyterlite-site', {
       allowFileUploads: false,
       driveName: drive.name,
@@ -155,7 +155,7 @@ const siteDrive: JupyterFrontEndPlugin<void> = {
     browser.title.dataset = { ...browser.title.dataset, jpTabLabel: label };
     browser.title.icon = jsonIcon;
 
-    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Site' });
+    labShell.add(browser, 'left', { rank: 110, type: 'JupyterLite Site Drive' });
   },
 };
 

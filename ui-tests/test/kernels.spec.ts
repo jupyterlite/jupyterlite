@@ -56,7 +56,7 @@ test.describe('Kernels', () => {
     ]);
 
     await page.sidebar.openTab('jupyterlite-site');
-    const browser = page.getByRole('region', { name: 'JupyterLite Site' });
+    const browser = page.getByRole('region', { name: 'JupyterLite Site Drive' });
     await expect(
       browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
     ).toBeVisible();

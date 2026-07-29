@@ -145,7 +145,7 @@ to support multiple sources of contents.
 
 ## Inspecting the site configuration
 
-JupyterLab users can opt into the _JupyterLite Site_ drive, a read-only file browser for
+JupyterLab users can opt into the _JupyterLite Site Drive_, a read-only file browser for
 inspecting the configuration files of the generated site. The setting is disabled by
 default. A deployment can enable it by default with the following configuration:
 
