@@ -13,7 +13,7 @@ import pytest
         [False, True, False, [r"/\.binder/"]],
     ],
 )
-def test_contents_with_dot(  # noqa: PLR0913
+def test_contents_with_dot(  # noqa: PLR0913, PLR0917
     allow_hidden,
     expect_success,
     expect_content,

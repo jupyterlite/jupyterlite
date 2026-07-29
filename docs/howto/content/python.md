@@ -9,7 +9,7 @@ it in Python:
 ```py
 import pandas as pd
 
-data = pd.read_csv('file.csv')
+data = pd.read_csv("file.csv")
 
 data
 ```
@@ -92,7 +92,7 @@ To check if the filesystem syncing is enabled, see whether `cwd` starts with `/d
 import os
 
 os.getcwd()  # If successful:  "/drive/path/to/notebook"
-             # ... otherwise:  "/home/pyodide"
+# ... otherwise:  "/home/pyodide"
 ```
 
 [fs]: https://emscripten.org/docs/api_reference/Filesystem-API.html
@@ -112,12 +112,12 @@ URL = "https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/d
 res = await fetch(URL)
 text = await res.text()
 
-filename = 'data.csv'
+filename = "data.csv"
 
-with open(filename, 'w') as f:
+with open(filename, "w") as f:
     f.write(text)
 
-data = pd.read_csv(filename, sep=',')
+data = pd.read_csv(filename, sep=",")
 data
 ```
 
@@ -130,7 +130,9 @@ import pandas as pd
 
 pyodide_http.patch_all()
 
-data = pd.read_csv("https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/data/iris.csv")
+data = pd.read_csv(
+    "https://raw.githubusercontent.com/jupyterlite/jupyterlite/main/examples/data/iris.csv"
+)
 data
 ```
 
