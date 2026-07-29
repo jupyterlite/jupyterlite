@@ -44,7 +44,7 @@ dev = [
     "jupyterlab>=4.7.0a0,<4.8",
     "notebook>=7.7.0a0,<7.8",
     "pkginfo",
-    "ruff>=0.8.3",
+    "ruff>=0.16.0",
     "twine>=5.1.1",
     "watchfiles>=0.21",
 ]
@@ -69,7 +69,7 @@ lint = [
     "nbconvert",
     "nbstripout",
     "pre-commit",
-    "ruff>=0.8.3",
+    "ruff>=0.16.0",
 ]
 
 # An example downstream kernel
