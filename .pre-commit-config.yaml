@@ -32,7 +32,7 @@ repos:
 
   # Check ruff version is aligned in pyproject.toml
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.10
+    rev: v0.16.0
     hooks:
       - id: ruff
         args: ['--fix']

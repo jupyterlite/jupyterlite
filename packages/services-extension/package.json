@@ -31,12 +31,12 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/coreutils": "~6.7.0-alpha.0",
-    "@jupyterlab/services": "~7.7.0-alpha.0",
+    "@jupyterlab/coreutils": "~6.7.0-alpha.1",
+    "@jupyterlab/services": "~7.7.0-alpha.1",
     "@jupyterlite/apputils": "^0.9.0-alpha.0",
     "@jupyterlite/localforage": "^0.9.0-alpha.0",
     "@jupyterlite/services": "^0.9.0-alpha.0",
-    "@lumino/coreutils": "^2.2.2"
+    "@lumino/coreutils": "^2.2.3"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
