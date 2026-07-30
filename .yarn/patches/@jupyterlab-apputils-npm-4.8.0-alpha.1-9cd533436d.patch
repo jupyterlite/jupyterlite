@@ -1,0 +1,53 @@
+diff --git a/lib/sessioncontext.d.ts b/lib/sessioncontext.d.ts
+index e5ffcc76ad5de41f3364b083cca465ede5855137..e272ac704e44a32d04b9e4fd04c14dab12605847 100644
+--- a/lib/sessioncontext.d.ts
++++ b/lib/sessioncontext.d.ts
+@@ -526,6 +526,7 @@ export declare class SessionContext implements ISessionContext {
+      */
+     private _onUnhandledMessage;
+     private _path;
++    private _driveName;
+     private _name;
+     private _type;
+     private _prevKernelName;
+@@ -584,6 +585,10 @@ export declare namespace SessionContext {
+          * The initial path of the file.
+          */
+         path?: string;
++        /**
++         * The drive name for the path.
++         */
++        driveName?: string;
+         /**
+          * The name of the session.
+          */
+diff --git a/lib/sessioncontext.js b/lib/sessioncontext.js
+index 32308c22720a10c179244b2492c16e5501a56a76..90479d9cfdec380f0102a6a8dc05cb5a80091fce 100644
+--- a/lib/sessioncontext.js
++++ b/lib/sessioncontext.js
+@@ -19,6 +19,7 @@ export class SessionContext {
+     constructor(options) {
+         var _a, _b, _c, _d;
+         this._path = '';
++        this._driveName = '';
+         this._name = '';
+         this._type = '';
+         this._prevKernelName = '';
+@@ -51,6 +52,7 @@ export class SessionContext {
+         this.translator = options.translator || nullTranslator;
+         this._trans = this.translator.load('jupyterlab');
+         this._path = (_a = options.path) !== null && _a !== void 0 ? _a : UUID.uuid4();
++        this._driveName = options.driveName || '';
+         this._type = (_b = options.type) !== null && _b !== void 0 ? _b : '';
+         this._name = (_c = options.name) !== null && _c !== void 0 ? _c : '';
+         this._setBusy = options.setBusy;
+@@ -551,7 +553,8 @@ export class SessionContext {
+         // the kernel finishes starting.
+         // We later switch to the real path below.
+         // Use the correct directory so the kernel will be started in that directory.
+-        const dirName = PathExt.dirname(this._path);
++        const dirName = PathExt.dirname(this._path) ||
++            (this._driveName ? `${this._driveName}:` : '');
+         const requestId = (this._pendingSessionRequest = PathExt.join(dirName, UUID.uuid4()));
+         try {
+             this._statusChanged.emit('starting');
