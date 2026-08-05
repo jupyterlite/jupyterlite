@@ -328,8 +328,40 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
       throw Error(`Kernel ${kernelId} does not exist`);
     }
     const { id, name, location } = kernel;
-    kernel.dispose();
-    await this.startNew({ id, name, location });
+    // Flag the kernel as restarting so consumers of the `changed` signal (e.g.
+    // the session client) do not treat the upcoming removal as a termination
+    // while the kernel is being disposed and re-created with the same id.
+    this._restarting.add(kernelId);
+    try {
+      kernel.dispose();
+      await this.startNew({ id, name, location });
+    } catch (error) {
+      // The kernel could not be re-created, so the removal suppressed above
+      // turns out to be a real termination. Clear the flag before re-emitting
+      // the removal so consumers do not skip it as a restart. Only re-emit if
+      // the kernel is indeed gone (dispose itself may have failed instead).
+      this._restarting.delete(kernelId);
+      if (!this._kernels.has(kernelId)) {
+        this._changed.emit({
+          type: 'remove',
+          key: kernelId,
+          oldValue: kernel,
+          newValue: undefined,
+        });
+      }
+      throw error;
+    } finally {
+      this._restarting.delete(kernelId);
+    }
+  }
+
+  /**
+   * Whether a kernel is currently restarting.
+   *
+   * @param id The kernel id.
+   */
+  isRestarting(id: string): boolean {
+    return this._restarting.has(id);
   }
 
   /**
@@ -423,6 +455,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   }
 
   private _kernels = new ObservableMap<IKernel>();
+  private _restarting = new Set<string>();
   private _clients = new ObservableMap<WebSocketClient>();
   private _mutexMap = new Map<string, Mutex>();
   private _kernelClients = new ObservableMap<Set<string>>();

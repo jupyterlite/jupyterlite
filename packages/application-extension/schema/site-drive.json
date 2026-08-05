@@ -1,0 +1,14 @@
+{
+  "title": "JupyterLite Site Drive",
+  "description": "JupyterLite Site Drive settings.",
+  "properties": {
+    "enabled": {
+      "title": "Show the JupyterLite Site Drive",
+      "description": "Whether to show a read-only file browser for generated JupyterLite configuration files. Changes take effect after reloading the page.",
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false,
+  "type": "object"
+}

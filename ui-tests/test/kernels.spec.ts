@@ -1,11 +1,17 @@
 // Copyright (c) JupyterLite Contributors
 // Distributed under the terms of the Modified BSD License.
 
+import { Buffer } from 'buffer';
+
 import { test } from '@jupyterlab/galata';
 
 import { expect } from '@playwright/test';
 
-import { firefoxWaitForApplication, notebooksWaitForApplication } from './utils';
+import {
+  firefoxWaitForApplication,
+  notebooksWaitForApplication,
+  uploadFiles,
+} from './utils';
 
 test.use({
   waitForApplication: firefoxWaitForApplication,
@@ -21,6 +27,86 @@ test.describe('Kernels', () => {
 
     const output = await page.notebook.getCellTextOutput(2);
     expect(output).toBeTruthy();
+  });
+
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/1794
+  test('Kernel uses a root-level custom drive', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    await page.route('jupyter-lite.json', async (route) => {
+      const response = await route.fetch();
+      const body = await response.json();
+      body['jupyter-config-data'].settingsOverrides = {
+        ...body['jupyter-config-data'].settingsOverrides,
+        '@jupyterlite/application-extension:site-drive': { enabled: true },
+      };
+      return route.fulfill({ response, body: JSON.stringify(body) });
+    });
+    await page.goto('lab/index.html');
+
+    const defaultContent = 'default drive selected';
+    await uploadFiles(page, [
+      {
+        base64: Buffer.from(defaultContent).toString('base64'),
+        mimeType: 'text/plain',
+        name: 'default-only.txt',
+        size: Buffer.byteLength(defaultContent),
+      },
+    ]);
+
+    await page.sidebar.openTab('jupyterlite-site');
+    const browser = page.getByRole('region', { name: 'JupyterLite Site Drive' });
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
+    ).toBeVisible();
+    await expect(browser.getByRole('checkbox')).toHaveCount(0);
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: overrides\.json/ }),
+    ).toBeVisible();
+    await expect(browser.getByRole('listitem', { name: /^Name: lab/ })).toBeVisible();
+    const notebook = browser.getByRole('listitem', {
+      name: /^Name: jupyter-lite\.ipynb/,
+    });
+    await expect(notebook).toBeVisible();
+    await notebook.dblclick();
+
+    await expect.poll(() => page.notebook.isOpen('jupyter-lite.ipynb')).toBeTruthy();
+    const readonlyIndicator = page.getByText('notebook is read-only', {
+      exact: true,
+    });
+    await expect(readonlyIndicator).toBeVisible();
+
+    const cellIndex = await page.notebook.getCellCount();
+    await page.notebook.addCell(
+      'code',
+      [
+        'import json',
+        'from pathlib import Path',
+        '',
+        'default_file = Path("default-only.txt")',
+        'site_file = Path("jupyter-lite.json")',
+        'print(',
+        '    default_file.read_text()',
+        '    if default_file.exists()',
+        '    else json.loads(site_file.read_text())["jupyter-config-data"]["appName"]',
+        ')',
+      ].join('\n'),
+    );
+    await page.notebook.runCell(cellIndex);
+
+    const output = (await page.notebook.getCellTextOutput(cellIndex))![0];
+    expect(output.trim()).toBe('JupyterLite UI Tests');
+
+    await browser.getByRole('listitem', { name: /^Name: lab/ }).dblclick();
+    await expect(
+      browser.getByRole('listitem', { name: /^Name: jupyter-lite\.json/ }),
+    ).toBeVisible();
+    const downloadUrl = await page.evaluate(async () => {
+      const contents = (window as any).galata.app.serviceManager.contents;
+      return contents.getDownloadUrl('JupyterLite:lab/jupyter-lite.json');
+    });
+    expect(new URL(downloadUrl).pathname).toBe('/lab/jupyter-lite.json');
   });
 
   test('Default kernel name', async ({ page }) => {
@@ -82,7 +168,7 @@ test.describe('Kernels', () => {
     expect(output![0]).toBe('4');
   });
 
-  // regression test for https://github.com/jupyterlite/jupyterlite/issues/155
+// regression test for https://github.com/jupyterlite/jupyterlite/issues/155
   // closing a notebook must not cancel a pending comm_info_request before the
   // kernel has had a chance to reply
   test('Closing a notebook does not cancel comm_info_request', async ({ page }) => {
@@ -99,10 +185,56 @@ test.describe('Kernels', () => {
       throw new Error('Notebook name is undefined');
     }
 
-    await page.notebook.save();
+await page.notebook.save();
     await page.notebook.close(true);
 
     expect(commInfoErrors).toEqual([]);
+  });
+
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/1990
+  test('Shut Down Kernel from the menu does not raise', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    // collect uncaught errors and unhandled promise rejections raised in the page
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+
+    // make sure the kernel is up and running before shutting it down
+    await page.notebook.setCell(0, 'code', '1 + 1');
+    await page.notebook.run();
+    expect((await page.notebook.getCellTextOutput(0))![0]).toBe('2');
+
+    // shut down the kernel via the menu command
+    await page.menu.clickMenuItem('Kernel>Shut Down Kernel');
+
+    // wait until the kernel is gone from the running sessions panel
+    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(0);
+
+    // give any deferred error a chance to surface before asserting
+    await page.waitForTimeout(500);
+
+    expect(
+      pageErrors.filter((message) => /Session .* not found/.test(message)),
+    ).toEqual([]);
+
+    // the kernel status indicator should not keep spinning once the kernel is gone
+    await expect(page.locator('.jp-KernelStatus-spinner')).toHaveCount(0);
+
+    // instead it shows the neutral "no kernel" icon, and neither the idle
+    // checkmark nor the error cross (which would reserve a misleading state),
+    // so the indicator never leaves an empty, icon-less gap
+    await expect(page.locator('.jp-KernelStatus-none')).toBeVisible();
+    await expect(page.locator('.jp-KernelStatus-success')).toHaveCount(0);
+    await expect(page.locator('.jp-KernelStatus-error')).toHaveCount(0);
+  });
   });
 
   test('Multiple kernel restarts', async ({ page }) => {

@@ -2,7 +2,7 @@
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
     "appName": "JupyterLite",
-    "appVersion": "0.8.0",
+    "appVersion": "0.9.0-alpha.1",
     "appUrl": "./lab",
     "baseUrl": "./",
     "defaultKernelName": "python",
@@ -14,11 +14,11 @@
     "versionInfo": {
       "@jupyterlab/application": {
         "label": "JupyterLab",
-        "version": "4.6.0"
+        "version": "4.7.0-alpha.1"
       },
       "@jupyter-notebook/application": {
         "label": "Jupyter Notebook",
-        "version": "7.6.0"
+        "version": "7.7.0-alpha.1"
       }
     }
   }

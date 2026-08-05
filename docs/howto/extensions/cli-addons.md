@@ -82,7 +82,7 @@ the minimal form:
 ```python
 def post_build(manager):
     yield dict(
-        name="a:unique:name", # will have the Addon, and maybe a prefix, prepended
+        name="a:unique:name",  # will have the Addon, and maybe a prefix, prepended
         actions=[["things", "to", "do"]],
         file_dep=["a-file", Path("another-file")],
         targets=["an-output-file"],
@@ -144,10 +144,11 @@ An _alias_ maps a CLI argument to a single trait.
 ```py
 from traitlets import Int
 
+
 class MyFooAddon(BaseAddon):
     __all__ = ["status"]
     aliases = {
-      "how-many-foos": "MyFooAddon.foo",
+        "how-many-foos": "MyFooAddon.foo",
     }
     foo = Int(0, help="The number of foos").tag(config=True)
     # ...
@@ -166,13 +167,14 @@ A _flag_ maps a CLI argument to any number of traits on any number of
 ```py
 from traitlets import Int, Bool
 
+
 class MyFooBarAddon(BaseAddon):
     __all__ = ["status"]
     flags = {
-      "foo-bar": (
-        {"MyFooBarAddon": {"foo": 1, "bar": True}},
-        "Foo once, and bar",
-      )
+        "foo-bar": (
+            {"MyFooBarAddon": {"foo": 1, "bar": True}},
+            "Foo once, and bar",
+        )
     }
     foo = Int(0, help="The number of foos").tag(config=True)
     bar = Bar(False, help="Whether to bar").tag(config=True)

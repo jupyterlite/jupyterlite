@@ -17,17 +17,28 @@ ENC = {"encoding": "utf-8"}
 ROOT = Path(__file__).parent.parent
 ROOT_PACKAGE_JSON = ROOT / "package.json"
 APP_JUPYTERLITE_JSON = ROOT / "app" / "jupyter-lite.json"
-PACKAGES_DIR = ROOT / "packages"
-APP_DIR = ROOT / "app"
+
+
+def get_workspace_package_jsons() -> list[Path]:
+    """Return the package.json path of every workspace member."""
+    root_package_json = json.loads(ROOT_PACKAGE_JSON.read_text(**ENC))
+    workspaces = root_package_json.get("workspaces", [])
+    patterns = workspaces.get("packages", []) if isinstance(workspaces, dict) else workspaces
+
+    package_json_paths: list[Path] = []
+    seen: set[Path] = set()
+    for pattern in patterns:
+        for package_json_path in sorted(ROOT.glob(f"{pattern}/package.json")):
+            if package_json_path not in seen:
+                seen.add(package_json_path)
+                package_json_paths.append(package_json_path)
+    return package_json_paths
 
 
 def get_internal_package_names() -> set[str]:
     """Get the names of all packages in this monorepo."""
-    package_json_paths = list(PACKAGES_DIR.glob("*/package.json")) + list(
-        APP_DIR.glob("*/package.json")
-    )
     names = set()
-    for package_json_path in package_json_paths:
+    for package_json_path in get_workspace_package_jsons():
         package_json = json.loads(package_json_path.read_text(**ENC))
         names.add(package_json["name"])
     return names
@@ -37,13 +48,9 @@ def update_internal_dependencies(js_version: str) -> None:
     """Update internal @jupyterlite/* dependency versions to the new version."""
     internal_packages = get_internal_package_names()
 
-    package_json_paths = list(PACKAGES_DIR.glob("*/package.json")) + list(
-        APP_DIR.glob("*/package.json")
-    )
-
     print(f"\nUpdating JavaScript dependencies to ^{js_version}", file=sys.stderr, flush=True)
 
-    for package_json_path in package_json_paths:
+    for package_json_path in get_workspace_package_jsons():
         package_json = json.loads(package_json_path.read_text(**ENC))
         changes: dict[str, list[str]] = {}
 
@@ -68,6 +75,18 @@ def update_internal_dependencies(js_version: str) -> None:
                     f"    {dep_type}: {', '.join(sorted(dep_names))}", file=sys.stderr, flush=True
                 )
             package_json_path.write_text(json.dumps(package_json, indent=2) + "\n", **ENC)
+
+
+def set_workspace_versions(js_version: str) -> None:
+    """Set the ``version`` field of every workspace package.json."""
+    print(f"\nBumping JS package versions to {js_version}...", file=sys.stderr, flush=True)
+    for package_json_path in get_workspace_package_jsons():
+        package_json = json.loads(package_json_path.read_text(**ENC))
+        if package_json.get("version") == js_version:
+            continue
+        package_json["version"] = js_version
+        package_json_path.write_text(json.dumps(package_json, indent=2) + "\n", **ENC)
+        print(f"  {package_json_path.relative_to(ROOT)}", file=sys.stderr, flush=True)
 
 
 def bump(spec: str) -> None:
@@ -96,9 +115,9 @@ def bump(spec: str) -> None:
     APP_JUPYTERLITE_JSON.write_text(json.dumps(jupyterlite_json), **ENC)
     run(f"jlpm prettier --write {APP_JUPYTERLITE_JSON}")
 
-    # bump the JS package versions using npm workspaces
-    print("\nBumping JS package versions via npm workspaces...", file=sys.stderr, flush=True)
-    run(f"npm version {js_version} --workspaces --no-git-tag-version --no-package-lock")
+    # bump the JS package versions directly, as `npm version --workspaces` would
+    # install the previously published packages and pollute node_modules
+    set_workspace_versions(js_version)
 
     # update internal @jupyterlite/* dependencies to the new version
     update_internal_dependencies(js_version)

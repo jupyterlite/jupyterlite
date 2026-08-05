@@ -20,7 +20,7 @@ except Exception:  # pragma: no cover
     [p.name for p in [*WHEELS, *CONDA_PKGS] if HAS_LIBARCHIVE or not p.name.endswith(".conda")],
 )
 @mark.parametrize("use_libarchive", [True, False] if HAS_LIBARCHIVE else [False])
-def test_federated_extensions(  # noqa: PLR0913
+def test_federated_extensions(  # noqa: PLR0913, PLR0917
     an_empty_lite_dir, script_runner, remote, ext_name, use_libarchive, a_fixture_server
 ):
     """can we include a single extension from an archive"""

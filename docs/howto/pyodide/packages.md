@@ -16,6 +16,7 @@ which translates to:
 
 ```py
 import piplite
+
 await piplite.install("snowballstemmer")
 ```
 

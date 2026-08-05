@@ -1,6 +1,6 @@
 [project]
 name = "jupyterlite-root"
-version = "0.8.0"
+version = "0.9.0a1"
 
 # Dependency groups (PEP 735) for development dependencies
 # Install with: pip install --group dev
@@ -41,10 +41,10 @@ demo = [
 dev = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab>=4.6.0,<4.7",
-    "notebook>=7.6.0,<7.7",
+    "jupyterlab>=4.7.0a1,<4.8",
+    "notebook>=7.7.0a1,<7.8",
     "pkginfo",
-    "ruff>=0.8.3",
+    "ruff>=0.16.0",
     "twine>=5.1.1",
     "watchfiles>=0.21",
 ]
@@ -69,12 +69,12 @@ lint = [
     "nbconvert",
     "nbstripout",
     "pre-commit",
-    "ruff>=0.8.3",
+    "ruff>=0.16.0",
 ]
 
 # An example downstream kernel
 pyodide-kernel = [
-    "jupyterlite-pyodide-kernel[lock] >=0.8.0b0; sys_platform != 'emscripten'",
+    "jupyterlite-pyodide-kernel[lock] >=0.9.0a0; sys_platform != 'emscripten'",
 ]
 
 ## Documentation build platform
@@ -108,11 +108,11 @@ test = [
 ui-tests = [
     { include-group = "build" },
     { include-group = "pyodide-kernel" },
-    "jupyterlab==4.6.0",
+    "jupyterlab==4.7.0a1",
     "jupyterlab-language-pack-fr-FR",
     "jupyterlite-javascript-kernel==0.4.0a0",
     "jupyterlite-p5-kernel==0.4.0a0",
-    "notebook==7.6.0",
+    "notebook==7.7.0a1",
     "jupyterlab-night==0.5.2",
 ]
 
@@ -183,6 +183,7 @@ ignore = [
 "docs/conf.py" = ["A001", "S603", "S607"]
 "scripts/dev-build.py" = ["S603"]
 "scripts/bump-version.py" = ["S603"]
+"scripts/check-bump-version.py" = ["S603", "S607"]
 "scripts/upgrade-dependencies.py" = ["S310"]
 "**/conftest.py" = ["S603", "S607"]
 
@@ -196,7 +197,7 @@ ignore = [
 "ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
-current = "0.8.0"
+current = "0.9.0a1"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?

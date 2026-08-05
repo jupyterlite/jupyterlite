@@ -111,6 +111,7 @@ which translates to:
 
 ```py
 import piplite
+
 await piplite.install(["ipywidgets", "bqplot", "plotly"])
 ```
 
@@ -142,6 +143,7 @@ which translates to:
 
 ```py
 import piplite
+
 await piplite.install(["ipywidgets==7.7.0", "bqplot==0.12.30", "plotly==5.8.0"])
 ```
 
