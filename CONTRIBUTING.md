@@ -130,6 +130,19 @@ jlpm integrity
 Run `jlpm integrity` after updating dependencies (e.g., bumping JupyterLab versions) to
 sync the resolution entries.
 
+#### About Dialog Versions
+
+The `versionInfo` map in `app/jupyter-lite.json` records the versions of upstream
+packages (e.g. JupyterLab and Jupyter Notebook) shown in the About dialog. These
+versions must stay in sync with the packages installed in `node_modules`:
+
+```bash
+jlpm update-versions
+```
+
+This also runs as part of `jlpm integrity` and at the beginning of `jlpm build:app` and
+`jlpm build:prod`.
+
 #### Yarn Lock Deduplication
 
 The `yarn.lock` file should be deduplicated to minimize dependency duplication:
@@ -152,7 +165,8 @@ For example, to update all `@jupyterlab/*` packages to the latest version:
 jlpm up "@jupyterlab/*"
 ```
 
-After updating dependencies, run `jlpm integrity` to sync app resolutions.
+After updating dependencies, run `jlpm integrity` to sync app resolutions and the About
+dialog versions.
 
 #### Upgrading JupyterLab and Notebook Versions
 
@@ -197,7 +211,7 @@ python scripts/upgrade-dependencies.py --jupyterlab-version 4.4.0 --notebook-ver
 ```bash
 jlpm install      # Update yarn.lock
 jlpm deduplicate  # Clean up duplicate dependencies
-jlpm integrity    # Sync app resolutions
+jlpm integrity    # Sync app resolutions and About dialog versions
 jlpm build        # Verify the build succeeds
 ```
 

@@ -5,6 +5,13 @@ follow to update JupyterLite from one version to another.
 
 ## `v0.7.0` to `v0.8.0`
 
+### Extensions
+
+JupyterLite 0.8.0 is based on JupyterLab 4.6 and Jupyter Notebook 7.6 packages.
+
+This update may affect the extensions you are using, as they may rely on features
+introduced in JupyterLab 4.6 and Notebook 7.6.
+
 ### Build System
 
 JupyterLite 0.8.0 switches from [webpack](https://webpack.js.org/) to

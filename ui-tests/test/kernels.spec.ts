@@ -82,6 +82,75 @@ test.describe('Kernels', () => {
     expect(output![0]).toBe('4');
   });
 
+  // regression test for https://github.com/jupyterlite/jupyterlite/issues/1990
+  test('Shut Down Kernel from the menu does not raise', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    // collect uncaught errors and unhandled promise rejections raised in the page
+    const pageErrors: string[] = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+
+    // make sure the kernel is up and running before shutting it down
+    await page.notebook.setCell(0, 'code', '1 + 1');
+    await page.notebook.run();
+    expect((await page.notebook.getCellTextOutput(0))![0]).toBe('2');
+
+    // shut down the kernel via the menu command
+    await page.menu.clickMenuItem('Kernel>Shut Down Kernel');
+
+    // wait until the kernel is gone from the running sessions panel
+    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(0);
+
+    // give any deferred error a chance to surface before asserting
+    await page.waitForTimeout(500);
+
+    expect(
+      pageErrors.filter((message) => /Session .* not found/.test(message)),
+    ).toEqual([]);
+
+    // the kernel status indicator should not keep spinning once the kernel is gone
+    await expect(page.locator('.jp-KernelStatus-spinner')).toHaveCount(0);
+
+    // instead it shows the neutral "no kernel" icon, and neither the idle
+    // checkmark nor the error cross (which would reserve a misleading state),
+    // so the indicator never leaves an empty, icon-less gap
+    await expect(page.locator('.jp-KernelStatus-none')).toBeVisible();
+    await expect(page.locator('.jp-KernelStatus-success')).toHaveCount(0);
+    await expect(page.locator('.jp-KernelStatus-error')).toHaveCount(0);
+  });
+
+  // regression test: the kernel status indicator must show the spinner while a
+  // kernel is starting up, then the idle checkmark once it is ready.
+  // https://github.com/jupyterlite/jupyterlite/issues/1990
+  test('Kernel status indicator spins while a kernel is starting', async ({ page }) => {
+    // this test can sometimes take longer to run as it uses the Pyodide kernel
+    test.setTimeout(120000);
+
+    await page.goto('lab/index.html');
+
+    // open a notebook backed by the Pyodide kernel: it takes a while to start,
+    // so the status indicator shows the loading spinner while it is starting up
+    // (opening does not wait for the kernel to be ready)
+    await page.notebook.open('stdin.ipynb');
+
+    await expect(page.locator('.jp-KernelStatus-spinner')).toBeVisible({
+      timeout: 30000,
+    });
+
+    // once the kernel is ready the spinner is replaced by the idle checkmark
+    await expect(page.locator('.jp-KernelStatus-success')).toBeVisible({
+      timeout: 90000,
+    });
+  });
+
   test('Multiple kernel restarts', async ({ page }) => {
     // Common selectors
     const runningKernelsTab = page.getByTitle('Running Terminals and Kernels').first();

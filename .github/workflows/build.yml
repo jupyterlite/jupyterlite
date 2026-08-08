@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Base Setup
         uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
 
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install dependencies
         run: python -m pip install --group build
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
       - name: Install Python dependencies
         run: python -m pip install --group dev
@@ -112,7 +112,7 @@ jobs:
             python-version: pypy-3.11
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - uses: jupyterlab/maintainer-tools/.github/actions/base-setup@v1
         with:
           python_version: ${{ matrix.python-version }}
@@ -170,7 +170,7 @@ jobs:
         shell: bash -eux {0}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Download (dist)
         uses: actions/download-artifact@v8
         with:
