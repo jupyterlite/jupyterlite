@@ -189,6 +189,7 @@ ignore = [
 "scripts/bump-version.py" = ["S603"]
 "scripts/upgrade-dependencies.py" = ["S310"]
 "**/conftest.py" = ["S603", "S607"]
+"**/tests/**" = ["PLR0917"]
 
 # TID252 [*] Relative imports from parent modules are banned
 "py/*" = ["TID252"]
