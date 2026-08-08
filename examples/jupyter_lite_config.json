@@ -14,7 +14,7 @@
     "patches": {
       "packages": {
         "plotly": {
-          "depends": ["tenacity", "packaging", "nbformat"]
+          "depends": ["narwhals", "nbformat", "packaging", "tenacity"]
         },
         "ipywidgets": {
           "depends": ["comm", "ipython", "traitlets"]
