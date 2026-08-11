@@ -6,7 +6,7 @@ runtime:
 - Pyodide's [loadPackagesFromImports] functionality for packages in a Pyodide
   distribution
   - this may be modified by
-    [`jupyterlite-pyodide-kernel[lock]`](#patch-a-distribution-with-jupyterlite-pyodide-kernellock).
+    [`jupyterlite-pyodide-kernel[lock]`](patch-a-distribution-with-jupyterlite-pyodide-kernel-lock).
 - `piplite`'s API (or `%pip` magic) layer on top of [micropip]
 
 [loadPackagesFromImports]:
@@ -46,10 +46,12 @@ See also how to [ship additional wheels](./wheels.md) at build time.
 
 ### Bundling additional packages by default
 
+(patch-a-distribution-with-jupyterlite-pyodide-kernel-lock)=
+
 #### Patch a distribution with `jupyterlite-pyodide-kernel[lock]`
 
 Many wheels can be patched into a Pyodide distribution at build time with the optional
-[`jupyterlite-pyodide-kernel[lock]`](./wheels.md#jupyterlite-pyodide-kernellock).
+[`jupyterlite-pyodide-kernel[lock]`](./wheels.md#jupyterlite-pyodide-kernel-lock).
 
 #### Build a new distribution with `pyodide-build`
 

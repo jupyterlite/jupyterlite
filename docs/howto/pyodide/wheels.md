@@ -18,7 +18,7 @@ the `%pip install` magic wrapper around `micropip`.
 
 ## Adding wheels to the Pyodide kernel
 
-#### `jupyterlite-pyodide-kernel[lock]`
+### `jupyterlite-pyodide-kernel[lock]`
 
 `jupyterlite-pyodide-kernel[lock]` includes an extra dependency on
 [`pyodide-lock`][pyodide-lock] and _its_ optional dependency on
@@ -26,7 +26,9 @@ the `%pip install` magic wrapper around `micropip`.
 
 [pyodide-lock]: https://github.com/pyodide/pyodide-lock
 
-##### Adding wheels to a distribution
+(adding-wheels-to-a-distribution)=
+
+#### Adding wheels to a distribution
 
 ```{hint}
 See JupyterLite's own [jupyter_lite_config.json][jlcj-main] for an extensive example
@@ -70,9 +72,9 @@ These configuration options will be:
 - indexed into a `{output-dir}/static/pyodide-lock/pyodide-lock.json`
   - added to `lockFileUrl` in `jupyter-lite.json`
 
-#### `piplite`
+### `piplite`
 
-##### Adding wheels to a site
+#### Adding wheels to a site
 
 Extra wheels that can be installed via `%pip` in a running kernel can be added via the
 `--piplite-wheels` CLI flag or `PipliteAddon/piplite_urls` config value, or simply left
@@ -100,7 +102,7 @@ Package Index (PyPI). This behavior can be disabled via `jupyter-lite.json`:
 }
 ```
 
-##### Adding wheels to an extension
+#### Adding wheels to an extension
 
 Extension authors can include user-installable wheels in extensions at build time which
 will be available to `%pip install`.
