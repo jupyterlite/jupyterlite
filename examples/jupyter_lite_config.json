@@ -2,9 +2,7 @@
   "LiteBuildConfig": {
     "contents": ["."],
     "output_dir": "../build/docs-app",
-    "extra_ignore_contents": [
-      "requirements-pyodide-lock.txt"
-    ]
+    "extra_ignore_contents": ["requirements-pyodide-lock.txt"]
   },
   "PyodideLockAddon": {
     "enabled": true,
