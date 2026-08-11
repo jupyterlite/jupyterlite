@@ -18,6 +18,8 @@ the `%pip install` magic wrapper around `micropip`.
 
 ## Adding wheels to the Pyodide kernel
 
+(adding-wheels-with-jupyterlite-pyodide-kernel-lock)=
+
 ### `jupyterlite-pyodide-kernel[lock]`
 
 `jupyterlite-pyodide-kernel[lock]` includes an extra dependency on

@@ -51,7 +51,7 @@ See also how to [ship additional wheels](./wheels.md) at build time.
 #### Patch a distribution with `jupyterlite-pyodide-kernel[lock]`
 
 Many wheels can be patched into a Pyodide distribution at build time with the optional
-[`jupyterlite-pyodide-kernel[lock]`](./wheels.md#jupyterlite-pyodide-kernel-lock).
+[`jupyterlite-pyodide-kernel[lock]`][adding-wheels-with-jupyterlite-pyodide-kernel-lock].
 
 #### Build a new distribution with `pyodide-build`
 
