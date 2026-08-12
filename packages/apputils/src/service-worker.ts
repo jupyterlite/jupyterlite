@@ -47,7 +47,7 @@ async function onFetch(event: FetchEvent): Promise<void> {
   const { request } = event;
 
   const url = new URL(event.request.url);
-  if (url.pathname === '/api/service-worker-heartbeat') {
+  if (isHeartbeat(url)) {
     event.respondWith(new Response('ok'));
     return;
   }
@@ -108,6 +108,19 @@ async function refetch(request: Request): Promise<Response> {
   const fromServer = await fetch(request);
   await updateCache(request, fromServer);
   return fromServer;
+}
+
+/**
+ * Whether a given URL is a heartbeat ping from the main thread
+ *
+ * The pathname is prefixed with the base URL, which is not known here, so only
+ * match on its suffix.
+ */
+function isHeartbeat(url: URL): boolean {
+  return (
+    url.origin === location.origin &&
+    url.pathname.endsWith('/api/service-worker-heartbeat')
+  );
 }
 
 /**
