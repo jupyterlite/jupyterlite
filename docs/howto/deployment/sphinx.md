@@ -37,7 +37,7 @@ This search path can be merged several layers deep, such that your theme assets,
 html_static_path = [
     "_static",
     "../upstream-jupyterlite",
-    "../my-jupyterlite"        # <- these "win"
+    "../my-jupyterlite",  # <- these "win"
 ]
 ```
 
