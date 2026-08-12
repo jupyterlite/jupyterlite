@@ -1,7 +1,8 @@
 {
   "LiteBuildConfig": {
     "contents": ["."],
-    "output_dir": "../build/docs-app"
+    "output_dir": "../build/docs-app",
+    "extra_ignore_contents": ["requirements-pyodide-lock.txt"]
   },
   "PyodideLockAddon": {
     "enabled": true,
@@ -11,11 +12,10 @@
       "preserve_url_prefixes": ["https://"]
     },
     "lite_constraints_file": "requirements-pyodide-lock.txt",
-    "excludes": ["psutil"],
     "patches": {
       "packages": {
         "plotly": {
-          "depends": ["tenacity", "packaging", "nbformat"]
+          "depends": ["narwhals", "nbformat", "packaging", "tenacity"]
         },
         "ipywidgets": {
           "depends": ["comm", "ipython", "traitlets"]
