@@ -92,5 +92,14 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.0.0"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "resolutions": {
+    "@jupyterlab/apputils@~4.8.0-alpha.1": "patch:@jupyterlab/apputils@npm%3A4.8.0-alpha.1#./.yarn/patches/@jupyterlab-apputils-npm-4.8.0-alpha.1-9cd533436d.patch",
+    "@jupyterlab/apputils@^4.8.0-alpha.1": "patch:@jupyterlab/apputils@npm%3A4.8.0-alpha.1#./.yarn/patches/@jupyterlab-apputils-npm-4.8.0-alpha.1-9cd533436d.patch",
+    "@jupyterlab/docregistry@~4.7.0-alpha.1": "patch:@jupyterlab/docregistry@npm%3A4.7.0-alpha.1#./.yarn/patches/@jupyterlab-docregistry-npm-4.7.0-alpha.1-ccd7682d39.patch",
+    "@jupyterlab/docregistry@^4.7.0-alpha.1": "patch:@jupyterlab/docregistry@npm%3A4.7.0-alpha.1#./.yarn/patches/@jupyterlab-docregistry-npm-4.7.0-alpha.1-ccd7682d39.patch",
+    "@jupyterlab/console@~4.7.0-alpha.1": "patch:@jupyterlab/console@npm%3A4.7.0-alpha.1#./.yarn/patches/@jupyterlab-console-npm-4.7.0-alpha.1-29dc178331.patch",
+    "@jupyterlab/console@^4.7.0-alpha.1": "patch:@jupyterlab/console@npm%3A4.7.0-alpha.1#./.yarn/patches/@jupyterlab-console-npm-4.7.0-alpha.1-29dc178331.patch",
+    "@jupyterlab/console-extension@~4.7.0-alpha.1": "patch:@jupyterlab/console-extension@npm%3A4.7.0-alpha.1#./.yarn/patches/@jupyterlab-console-extension-npm-4.7.0-alpha.1-0c2829daba.patch"
+  }
 }

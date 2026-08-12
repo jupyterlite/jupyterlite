@@ -1,0 +1,17 @@
+diff --git a/lib/panel.js b/lib/panel.js
+index 6f793c288de64a079a38e60ca7ca7b5c06d5679f..d092a74915f7a6932f1ec9caef72b96ada558fa6 100644
+--- a/lib/panel.js
++++ b/lib/panel.js
+@@ -36,10 +36,11 @@ export class ConsolePanel extends MainAreaWidget {
+         }
+         sessionContext = this._sessionContext =
+             sessionContext !== null && sessionContext !== void 0 ? sessionContext : new SessionContext({
++                driveName: manager.contents.driveName(path),
+                 kernelManager: manager.kernels,
+                 sessionManager: manager.sessions,
+                 specsManager: manager.kernelspecs,
+-                path: manager.contents.localPath(path),
++                path,
+                 name: name || trans.__('Console %1', count),
+                 type: 'console',
+                 kernelPreference: options.kernelPreference,

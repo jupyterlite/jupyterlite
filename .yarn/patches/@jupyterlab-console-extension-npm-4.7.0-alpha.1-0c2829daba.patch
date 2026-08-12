@@ -1,0 +1,44 @@
+diff --git a/lib/index.js b/lib/index.js
+index 446bb12777a70ccd218b6476c8e0627736def4ad..33ac32c70bd7cfc1f6948d7a4af68fd5bd398635 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -9,7 +9,7 @@ import { createToolbarFactory, Dialog, ICommandPalette, IKernelStatusModel, Inpu
+ import { IEditorServices, IPositionModel } from '@jupyterlab/codeeditor';
+ import { ICompletionProviderManager } from '@jupyterlab/completer';
+ import { CodeConsole, ConsolePanel, IConsoleCellExecutor, IConsoleTracker } from '@jupyterlab/console';
+-import { IDefaultFileBrowser } from '@jupyterlab/filebrowser';
++import { IDefaultFileBrowser, IFileBrowserFactory } from '@jupyterlab/filebrowser';
+ import { ILauncher } from '@jupyterlab/launcher';
+ import { IMainMenu } from '@jupyterlab/mainmenu';
+ import { IPageHandler } from '@jupyterlab/outputarea';
+@@ -67,6 +67,7 @@ const tracker = {
+     optional: [
+         ILayoutRestorer,
+         IDefaultFileBrowser,
++        IFileBrowserFactory,
+         IMainMenu,
+         ICommandPalette,
+         ILauncher,
+@@ -177,7 +178,7 @@ export default plugins;
+ /**
+  * Activate the console extension.
+  */
+-async function activateConsole(app, contentFactory, editorServices, executor, rendermime, settingRegistry, restorer, filebrowser, mainMenu, palette, launcher, status, sessionDialogs_, pageHandler, formRegistry, translator_, sessionContextDialogs, toolbarRegistry) {
++async function activateConsole(app, contentFactory, editorServices, executor, rendermime, settingRegistry, restorer, filebrowser, filebrowserFactory, mainMenu, palette, launcher, status, sessionDialogs_, pageHandler, formRegistry, translator_, sessionContextDialogs, toolbarRegistry) {
+     var _a;
+     const translator = translator_ !== null && translator_ !== void 0 ? translator_ : nullTranslator;
+     const trans = translator.load('jupyterlab');
+@@ -575,10 +576,11 @@ async function activateConsole(app, contentFactory, editorServices, executor, re
+             }
+         },
+         execute: args => {
+-            var _a;
++            var _a, _b;
++            const currentBrowser = (_b = filebrowserFactory === null || filebrowserFactory === void 0 ? void 0 : filebrowserFactory.tracker.currentWidget) !== null && _b !== void 0 ? _b : filebrowser;
+             const basePath = (_a = (args['basePath'] ||
+                 args['cwd'] ||
+-                (filebrowser === null || filebrowser === void 0 ? void 0 : filebrowser.model.path))) !== null && _a !== void 0 ? _a : '';
++                (currentBrowser === null || currentBrowser === void 0 ? void 0 : currentBrowser.model.path))) !== null && _a !== void 0 ? _a : '';
+             return createConsole({ basePath, ...args });
+         }
+     });
