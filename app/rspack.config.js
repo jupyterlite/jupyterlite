@@ -267,7 +267,7 @@ class CompileSchemasPlugin {
       });
       const all = files.map((file) => {
         const schema = fs.readJSONSync(file);
-        const pluginFile = file.replace(`${schemaDir}/`, '');
+        const pluginFile = path.relative(schemaDir, file).split(path.sep).join('/');
         const basename = path.basename(pluginFile, '.json');
         const dirname = path.dirname(pluginFile);
         const packageJsonFile = path.resolve(schemaDir, dirname, 'package.json.orig');
