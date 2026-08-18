@@ -81,7 +81,7 @@ When you run `jupyter lite build`, all pre-built extensions in your JupyterLab
 environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 
 - copied to `{output-dir}/extensions`
-- have their theme information copied to `{output-dir}/{app/?}theme/`
+- have their theme assets copied to `{output-dir}/build/themes`
 
 ## The case of Jupyter Widgets and custom renderers
 
@@ -121,7 +121,7 @@ In some situations, the versions of the packages installed at runtime with
 `%pip install` or `piplite.install` might not be compatible with the deployed frontend
 extension anymore. This can for example happen when a JupyterLite website was built and
 deployed a couple of weeks ago, and new versions of the Python packages were released
-since. In that case the frontend extension have not been updated since they are still
+since. In that case the frontend extensions have not been updated since they are still
 available as static files as part of the deployment.
 
 One way to avoid this mismatch is to pin the dependencies more explicitly. For example:
@@ -156,10 +156,10 @@ to have more control on your dependencies.
 ## How to know if an extension is compatible with JupyterLite?
 
 A good starting point for extensions that _might_ work is the JupyterLab issue
-_[Extension Compatibility with 3.0 (#9461)][#9461]_. Additionally, this site
+_[Extension Compatibility with 4.0 (#14590)][#14590]_. Additionally, this site
 demonstrates a few [extensions](../../reference/demo.md).
 
-[#9461]: https://github.com/jupyterlab/jupyterlab/issues/9461
+[#14590]: https://github.com/jupyterlab/jupyterlab/issues/14590
 [pre-built extensions]: https://jupyterlab.readthedocs.io/en/stable/user/extensions.html
 
 ## Advanced extension configuration
