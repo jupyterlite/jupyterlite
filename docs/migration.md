@@ -477,8 +477,8 @@ higher.
 #### `@jupyterlite/kernel`
 
 The `IKernel` interface now includes a `changed` signal which is emitted when a kernel
-is started or stopped. This should only affect extensions providing implementing that
-interface to provide a custom kernel manager for JupyterLite.
+is started or stopped. This should only affect extensions implementing that interface to
+provide a custom kernel manager for JupyterLite.
 
 ### Configuration
 
@@ -511,10 +511,11 @@ kernel. Starting with version 0.4.0, JupyterLite allows kernels to leverage the 
 shared memory (via `SharedArrayBuffer`) to make accessing files more robust and
 resilient, and avoid caching issues.
 
-If the COOP and COEP headers, JupyterLite uses shared memory via `SharedArrayBuffer` to
-enable file access. Otherwise, it defaults to using the Service Worker, like before.
+If the COOP and COEP headers are set, JupyterLite uses shared memory via
+`SharedArrayBuffer` to enable file access. Otherwise, it defaults to using the Service
+Worker, like before.
 
-See the [documentation on accessing files](./howto/content/files.md) for more
+See the [documentation on accessing files](./howto/content/python.md) for more
 information.
 
 ### API changes
@@ -564,8 +565,8 @@ the JavaScript (Web Worker) kernel by default via the dependency on
 `jupyterlite-javascript-kernel`.
 
 This dependency on `jupyterlite-javascript-kernel` has now been removed, so you may need
-to explicitely add `jupyterlite-javascript-kernel` to your build dependencies if you
-want to use that kernel.
+to explicitly add `jupyterlite-javascript-kernel` to your build dependencies if you want
+to use that kernel.
 
 ```{note}
 As an alternative to `jupyterlite-javascript-kernel`, you may also want to use [Xeus JavaScript], which currently offers more features and is generally more usable.
@@ -631,7 +632,7 @@ In JupyterLite 0.2.0, the Notebook interface is now provided by
 Jupyter Notebook 7 is the successor of RetroLab and the Classic Notebook, based on
 JupyterLab components.
 
-This means the URL have also changed to be aligned with the ones provided by Jupyter
+This means the URLs have also changed to be aligned with the ones provided by Jupyter
 Notebook 7:
 
 - `/retro/consoles` -> `/consoles`
@@ -677,7 +678,7 @@ removed and the new file name is `service-worker.js`.
 These API changes are only relevant if you are reusing `@jupyterlite` packages in
 downstream applications.
 
-- The `IKernel` interface exposed by `@jupyterlite/kernels` has a new `get` method to
+- The `IKernel` interface exposed by `@jupyterlite/kernel` has a new `get` method to
   retrieve a running kernel by id.
 
 ## `0.1.0b19` to `0.1.0b20`
@@ -717,10 +718,10 @@ This release introduces a new `jupyterlite-core` package in addition to the exis
 `jupyterlite` package.
 
 The `jupyterlite-core` package provides the core functionality for building JupyterLite
-websites CLI
+websites and CLI
 [extension points](https://jupyterlite.readthedocs.io/en/latest/howto/extensions/cli-addons.html).
-Currently it only includes a JavaScript kernel that runs in Web Worker. If you would
-like to include a Python kernel in your deployment yyou will have to first install it
+Currently it only includes a JavaScript kernel that runs in a Web Worker. If you would
+like to include a Python kernel in your deployment you will have to first install it
 before building the JupyterLite site. For example with:
 
 ```
@@ -769,11 +770,11 @@ This was changed in the following PR:
 ### Use `PipliteAddon.piplite_urls` instead of `LiteBuildConfig.piplite_urls`
 
 If you were configuring the `piplite_urls` option (described in
-https://jupyterlite.readthedocs.io/en/latest/howto/python/wheels.html) to ship
+https://jupyterlite.readthedocs.io/en/latest/howto/pyodide/wheels.html) to ship
 additional wheels at build time, this configuration option has now been moved from
 `LiteBuildConfig.piplite_urls` to `PipliteAddon.piplite_urls`.
 
-If using a `jupyter_lite_build.json` file, the configuration should look like the
+If using a `jupyter_lite_config.json` file, the configuration should look like the
 following:
 
 ```json

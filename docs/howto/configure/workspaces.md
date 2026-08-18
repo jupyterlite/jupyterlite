@@ -12,7 +12,7 @@ By default, a `default` workspace will be loaded. Adding a
 any user changes being saved in browser storage.
 
 Adding more workspaces allows for different techniques for loading, and can be used to
-link to different confections of files.
+link to different collections of files.
 
 ## Workspace Files
 
@@ -33,15 +33,15 @@ needed.
 - See the `.jupyterlab-workspace` file
 
 At this point, the workspace is ready to be used either by double-clicking in the UI or
-downloading and using as part of a future `jupyter lab build`.
+downloading and using as part of a future `jupyter lite build`.
 
 ### Adding a Workspace to a built JupyterLite site
 
 - Either
   - Use the well-known location
     - Copy the file to `<lite_dir>/workspaces/<workspace-id>.jupyterlab-workspace`
-    - Run `jupyter lab build`
-  - Provide via configuration in `jupyter_lite_build.json`
+    - Run `jupyter lite build`
+  - Provide via configuration in `jupyter_lite_config.json`
     ```json
     {
       "LiteBuildConfig": {
@@ -50,11 +50,12 @@ downloading and using as part of a future `jupyter lab build`.
     }
     ```
   - Provide via CLI
-    - Run `jupyter lab build --workspaces ./path-to/<workspace-id>.jupyterlab-workspace`
+    - Run
+      `jupyter lite build --workspaces ./path-to/<workspace-id>.jupyterlab-workspace`
 
 ```{note}
-If a folder is given to `--workspaces`, `LiteBuildConfig`, any number of `.jupterlab-workspace`
-files in that folder will be discovered.
+If a folder is given to `--workspaces` or `LiteBuildConfig/workspaces`, any number of
+`.jupyterlab-workspace` files in that folder will be discovered.
 ```
 
 Now, when the application is opened, the workspace will be available to use in URLs.
@@ -113,9 +114,9 @@ Workspaces can be disabled by adding `@jupyterlab/workspaces-extension` to
 ## Customizing Workspace Storage
 
 By default, all of a user's workspaces on the same domain will be available to all
-JupyterLite instances hosted there. To create separate content stores, change the
+JupyterLite instances hosted there. To create separate workspace stores, change the
 `jupyter-lite.json#jupyter-config-data/workspacesStorageName` from the default of
-`JupyterLite Storage`.
+`JupyterLite Storage - <baseUrl>`.
 
 By default, the best available, persistent storage driver will be used. One may force a
 particular set of drivers to try with

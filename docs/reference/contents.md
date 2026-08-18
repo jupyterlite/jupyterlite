@@ -12,9 +12,9 @@ may depend on how kernels are implemented.
 ### Emscripten kernel
 
 Kernels using Emscripten (like [pyodide](https://github.com/jupyterlite/pyodide-kernel/)
-or [xeus kernels](https://github.com/jupyterlite/xeus/)) relies on the
+or [xeus kernels](https://github.com/jupyterlite/xeus/)) rely on the
 [Emscripten filesystem](https://emscripten.org/docs/api_reference/Filesystem-API.html)
-to access their contents. For such case, `@jupyterlite/services` provides a
+to access their contents. For such cases, `@jupyterlite/services` provides a
 [`DriveFS`](https://jupyterlite.readthedocs.io/en/stable/reference/api/ts/@jupyterlite/services/classes/DriveFS.html)
 helper class which can be used to mount files in the Emscripten filesystem:
 
@@ -76,7 +76,7 @@ Assuming the kernel executes the following python snippet code writing into a te
 Path("dummy.txt").write_text("Writing on Emscripten filesystem")
 ```
 
-Here is a simplification sequence of interaction happening to perform the filesystem
+Here is a simplified sequence of the interactions happening to perform the filesystem
 operation:
 
 ```{mermaid}

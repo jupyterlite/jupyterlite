@@ -29,7 +29,7 @@ Then build your JupyterLite site as usual:
 jupyter lite build
 ```
 
-The `notebook` package includes a JupyterLab extensions that adds the menu entries and
+The `notebook` package includes a JupyterLab extension that adds the menu entries and
 toolbar items to switch between interfaces.
 
 ## Launch the Jupyter Notebook File Browser menu item

@@ -3,11 +3,11 @@
 [Sphinx] is the workhorse of documentation of not only the scientific Python
 documentation community, but also the broader Python ecosystem, and many languages
 beyond it. It is well adapted to building sites of any size, and tools like [myst-nb]
-enable make it very palletable to include executable, and even interactive, content.
+make it very palatable to include executable, and even interactive, content.
 
 JupyterLite assets can be copied to the default static directory in `conf.py`, e.g.
 `docs/_static` with [`html_static_path`](#html_static_path), or replace the entire site
-with [`html_extra_path`](#html_extra_path)
+with [`html_extra_path`](#html_extra_path).
 
 ## Preview Pull Requests
 
@@ -46,7 +46,7 @@ The composite directory will end up in `docs/_build/_static`.
 ```{hint}
 See the JupyterLite [conf.py] for an example approach, though it's likely a good
 deal more complicated than you will need, because it needs to build _itself_ first!
-This complexity is managed in [dodo.py].
+This complexity is managed in [.readthedocs.yml].
 ```
 
 ### `html_extra_path`
@@ -94,7 +94,6 @@ sphinx-autobuild docs docs/_build -aj8
 [readthedocs]: https://readthedocs.org
 [myst-nb]: https://github.com/executablebooks/MyST-NB
 [conf.py]: https://github.com/jupyterlite/jupyterlite/blob/main/docs/conf.py
-[dodo.py]: https://github.com/jupyterlite/jupyterlite/blob/main/dodo.py
 [schema]: ../../reference/schema-v0.rst
 [.readthedocs.yml]:
   https://github.com/jupyterlite/jupyterlite/blob/main/.readthedocs.yml

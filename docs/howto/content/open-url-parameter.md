@@ -37,13 +37,13 @@ For example if you would like to open a notebook and a csv file:
 - https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/notebooks/Lorenz.ipynb
 - https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/data/iris.csv
 
-You can append the following to the URL of your JupyterLab instance:
+You can append the following to the URL of your JupyterLite instance:
 `?fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/notebooks/Lorenz.ipynb&fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/data/iris.csv`
 
 Which will result in the following URL:
 
 ```
-http://your-jupyterlite.example.com/lab?fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/data/iris.csv&fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/notebooks/Lorenz.ipynb
+http://your-jupyterlite.example.com/lab?fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/notebooks/Lorenz.ipynb&fromURL=https://raw.githubusercontent.com/jupyterlab/jupyterlab-demo/master/data/iris.csv
 ```
 
 ![a screenshot showing how to use the jupyterlab-open-url-parameter extension](https://user-images.githubusercontent.com/591645/230444694-5297f8b7-4558-4a9c-bb05-918e1cdde3bc.gif)

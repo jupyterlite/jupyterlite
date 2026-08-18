@@ -42,7 +42,7 @@ Then click on `Summary` to see the list of artifacts produced by the build:
 
 ## Inspecting the new version of the website
 
-Download the artifacts and extract it locally. Open a new terminal and run the following
+Download the artifact and extract it locally. Open a new terminal and run the following
 command to start a local web server:
 
 ```bash

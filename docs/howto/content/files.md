@@ -54,13 +54,13 @@ drive a great number of JupyterLab's (and therefore JupyterLite's) features. Whe
 uploaded as pre-indexed contents, the build process will usually detect MIME types
 correctly.
 
-In the browser, things are a bit trickier: a number of well-known file types (included
+In the browser, things are a bit trickier: a number of well-known file types (including
 everything needed to serve a core JupyterLite site) will be automatically detected when
 they are uploaded, but some customization might be required.
 
-The default file types, and any configured via `#/LiteBuildConfig/extra_file_types` will
-be merged with the default types into `jupyter-lite.json#jupyter-config-data/fileTypes`,
-and these will be used.
+Any file types configured via `#/LiteBuildConfig/extra_file_types` will be merged with
+the default types into `jupyter-lite.json#jupyter-config-data/fileTypes`, and these will
+be used.
 
 ```{note}
 These will not impact how the JupyterLite UI actually displays files: these are
@@ -100,7 +100,7 @@ and by default will not be
 - displayed in the _File Browser_
 
 To **ignore** these files entirely from being copied or indexed, provide the following
-for e.g. files in the `.binder`.
+for e.g. files in the `.binder` folder:
 
 ```json
 {

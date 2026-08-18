@@ -13,7 +13,7 @@ modified by [adding wheels to a distribution](#adding-wheels-to-a-distribution).
   https://pyodide.org/en/stable/usage/api/js-api.html#pyodide.loadPackagesFromImports
 
 Packages _not_ included in the distribution can be imported with
-`await micropip.install` or, for syntax compatiblity with a full `ipykernel` session,
+`await micropip.install` or, for syntax compatibility with a full `ipykernel` session,
 the `%pip install` magic wrapper around `micropip`.
 
 ## Adding wheels to the Pyodide kernel
@@ -86,7 +86,8 @@ These will be:
 
 - downloaded to the local cache
 - copied into `{output-dir}/pypi`
-- indexed into an `all.json` with data similar to the [PyPI Warehouse API]
+- indexed into an `all.json` with data similar to the [PyPI Warehouse
+  API][pypi-warehouse-api]
 - added to `pipliteUrls` in `jupyter-lite.json`
 
 [pypi-warehouse-api]: https://warehouse.pypa.io/api-reference

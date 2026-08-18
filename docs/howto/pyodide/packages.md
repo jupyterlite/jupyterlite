@@ -60,7 +60,7 @@ The most general way to make additional packages available to `import` when star
 
 The process is detailed in the [Pyodide documentation][pyodide-packages].
 
-Once you have added new package and their dependencies and rebuilt Pyodide, you can
+Once you have added new packages and their dependencies and rebuilt Pyodide, you can
 [configure JupyterLite to use a custom Pyodide distribution](./pyodide.md).
 
 [pyodide-packages]: https://pyodide.org/en/stable/development/building-packages.html

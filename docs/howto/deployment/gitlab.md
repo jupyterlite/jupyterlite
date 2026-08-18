@@ -1,12 +1,12 @@
 # Deploying on GitLab Pages
 
 Just like with GitHub Pages, JupyterLite can easily be deployed on GitLab Pages, using
-the `jupyterlite` CLI and setting the `output_path` to the `public` folder in your
+the `jupyterlite` CLI and setting the `output_dir` to the `public` folder in your
 `.gitlab-ci.yml` file.
 
 Suppose that your notebooks are stored in the `content` folder; and you don't require
 any additional python dependencies and configuration overrides, the `.gitlab-ci.yml`
-could look like.
+could look like:
 
 ```
 image: python

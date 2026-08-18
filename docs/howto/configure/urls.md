@@ -1,8 +1,8 @@
 # URL Parameters
 
 A number of JupyterLite core features can be enabled or configured via URL GET
-parameters, given of the form `?<param1>=<value1>&<param2>=<value2>`. Different
-applications may have interpret features.
+parameters of the form `?<param1>=<value1>&<param2>=<value2>`. Different applications
+may support different parameters.
 
 ```{hint}
 Check out the [Quick Start Guide](../../quickstart/deploy.md) to learn how to deploy your own JupyterLite website
@@ -67,7 +67,7 @@ Resets the current workspace to:
 - a _Launcher_ in the main area
 - collapsed right sidebar
 
-Accept no parameters.
+Accepts no value.
 
 | multiple | examples                                                  |
 | -------- | --------------------------------------------------------- |
