@@ -4,7 +4,7 @@ JupyterLite includes a loading indicator that appears during the initial loading
 application. This loading indicator helps users understand that the application is still
 loading, especially on slower connections.
 
-[a screenshot of the loading indicator](../../changelog_assets/0.6-jupyterlite-loading-indicator.png)
+![a screenshot of the loading indicator](../../changelog_assets/0.6-jupyterlite-loading-indicator.png)
 
 ## Default Behavior
 

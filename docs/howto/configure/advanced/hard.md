@@ -51,12 +51,12 @@ Open a browser:
 
 Now, when the app reloads, these files will appear in the File Browser _if_ there isn't
 an existing file of that name in browser storage. If a user _has_ created such a file,
-and is deleted, the original server-backed file will become visible.
+and it is deleted, the original server-backed file will become visible.
 
 ## Extensions, The Hard Way
 
 ```{warning}
-This is a very manual process, and other the methods in the other guides are recommended for production uses.
+This is a very manual process, and the methods in the other guides are recommended for production uses.
 ```
 
 ### Get the extension assets

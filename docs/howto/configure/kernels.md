@@ -37,7 +37,7 @@ There are currently two JupyterLite kernels for Python:
   IPython magics, support for the inline Matplotlib backend, _etc_)
 - Provides a way to dynamically install packages with `piplite` (**e.g.**
   `await piplite.install("ipywidgets")`)
-- **Does not support** sleeping with `from time import sleep`
+- **Supports** sleeping with `from time import sleep`
 - **Does not support** pre-installing packages
 
 Check out the dedicated guides for configuring the Pyodide kernel:
@@ -58,9 +58,8 @@ Xeus Python:
 
 - Uses [IPython](https://github.com/ipython/ipython) for the code execution (access to
   IPython magics, support for the inline Matplotlib backend, _etc_)
-- **Does not provide** (yet) a way to dynamically install packages. There is ongoing
-  work for building a `mamba` package manager for WebAssembly that would allow for
-  installing packages on the fly.
+- **Supports** installing packages at runtime with the `%pip install` and
+  `%mamba install` magics
 - **Supports** sleeping with `from time import sleep`
 - **Supports** pre-installing packages from `emscripten-forge` and `conda-forge`, by
   providing an `environment.yml` file defining the runtime environment
@@ -102,7 +101,7 @@ For example, to install the `jupyterlite-pyodide-kernel` kernel, you can add the
 following line to the `requirements.txt` file:
 
 ```
-# existing dependencices
+# existing dependencies
 # ...
 # add the Pyodide kernel
 jupyterlite-pyodide-kernel
@@ -119,7 +118,7 @@ Then rebuild the website with `jupyter lite build`.
 
 The kernel should now be available in the launcher:
 
-![a screenshot showing a JupyterLite instance with the pyodide kernel available](https://user-images.githubusercontent.com/591645/226577204-b2e0196d-5439-4001-9bc5-ca709eb941e7.png).
+![a screenshot showing a JupyterLite instance with the pyodide kernel available](https://user-images.githubusercontent.com/591645/226577204-b2e0196d-5439-4001-9bc5-ca709eb941e7.png)
 
 ## Next steps
 

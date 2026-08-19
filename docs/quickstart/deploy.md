@@ -47,7 +47,7 @@ website.
 ```
 
 ```{note}
-Alternatively, you can use the [JupyterLite demo using xeus-python](https://github.com/jupyterlite/xeus-python-demo) to publish a deployment on Github pages that uses xeus-python by default and allows to pre-install packages using ``emscripten-forge`` and ``conda-forge``.
+Alternatively, you can use the [JupyterLite demo using xeus kernels](https://github.com/jupyterlite/xeus-lite-demo) to publish a deployment on Github pages that uses xeus-python by default and allows pre-installing packages using ``emscripten-forge`` and ``conda-forge``.
 ```
 
 ## Accessing the JupyterLite website
@@ -79,11 +79,11 @@ The [jupyterlite/demo](https://github.com/jupyterlite/demo) repository uses a `r
 
 ```bash
 # core package for building the JupyterLite website
-jupyterlite-core==0.1.0b19
+jupyterlite-core==0.8.2
 # the Python kernel powered by Pyodide
-jupyterlite-pyodide-kernel==0.0.5
+jupyterlite-pyodide-kernel==0.8.3
 # dependency for indexing the content
-jupyterlab~=3.5.3
+jupyter-server
 ```
 ````
 
@@ -96,9 +96,9 @@ JupyterLab extensions to the deployed JupyterLite website. Follow the
 ### Using the xeus-python kernel and emscripten-forge
 
 Using
-[a JupyterLite deployment with xeus-python](https://github.com/jupyterlite/xeus-python-demo),
+[a JupyterLite deployment with xeus kernels](https://github.com/jupyterlite/xeus-lite-demo),
 you can pre-install packages available both on `conda-forge` and `emscripten-forge` by
-specifying them to the `environment.yml` file.
+specifying them in the `environment.yml` file.
 
 By pre-installing packages, they are readily usable in the kernel and can be imported
 without the need for `piplite`.
@@ -110,7 +110,7 @@ directory and dragging notebooks from your desktop onto the contents listing. Wa
 the files to be uploaded and then save them (commit them) to the `main` branch of the
 repository.
 
-Check out the how-to guide on [managing content](../howto//content/files.md) to learn
+Check out the how-to guide on [managing content](../howto/content/files.md) to learn
 more.
 
 ## Further Information

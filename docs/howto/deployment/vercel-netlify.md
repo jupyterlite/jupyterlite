@@ -1,7 +1,7 @@
 # Deploying on Vercel and Netlify
 
-[Vercel][vercel] and [Netfliy][netlify] are popular hosted platforms for deploying
-static website.
+[Vercel][vercel] and [Netlify][netlify] are popular hosted platforms for deploying
+static websites.
 
 They make it easy and convenient to host static websites from existing git repositories,
 and make them widely available via their CDN.
@@ -48,7 +48,7 @@ Specify the Python packages in a `requirements-deploy.txt` file with additional
 dependencies if needed:
 
 ```text
-jupyterlab~=3.4
+jupyter-server
 jupyterlite-core
 jupyterlite-pyodide-kernel
 ```

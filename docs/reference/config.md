@@ -1,6 +1,6 @@
 # Runtime Configuration Files
 
-The behavior JupyterLite in the browser can be controlled by creating specially-named
+The behavior of JupyterLite in the browser can be controlled by creating specially-named
 files at any level of the file tree. It is expected each file conforms to the
 [schema](./schema.md). For an example, see the [demo configuration](./demo.md).
 

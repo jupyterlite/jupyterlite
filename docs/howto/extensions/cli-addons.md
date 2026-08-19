@@ -60,15 +60,15 @@ class MyAddon:
         yield dict(name="hello", actions=[lambda: print("world")])
 ```
 
-- the `__all__` member list the _hooks_ the Addon implements
+- the `__all__` member lists the _hooks_ the Addon implements
   - hooks may also be prefixed with `pre_` and `post_` _phase_
 - hook implementations, as advertised
 
 Of note:
 
-- The `status` phase should have no side-effects
-- The `init` phase is mostly reserved for "gold master" content
-- The `build` is mostly reserved for user-authored content
+- The `status` hook should have no side-effects
+- The `init` hook is mostly reserved for "gold master" content
+- The `build` hook is mostly reserved for user-authored content
 
 ```{hint}
 See the existing examples in this JupyterLite repo for other hook implementations.
@@ -177,7 +177,7 @@ class MyFooBarAddon(BaseAddon):
         )
     }
     foo = Int(0, help="The number of foos").tag(config=True)
-    bar = Bar(False, help="Whether to bar").tag(config=True)
+    bar = Bool(False, help="Whether to bar").tag(config=True)
     # ...
 ```
 
@@ -197,6 +197,6 @@ my-unique-addon = "my_module:MyAddon"
 
 ## General Guidance
 
-- it's worth looking at how what `BaseAddon` and its subclasses handle certain tasks
-- keeping reproducibility in mind, cache liberally, and make use of `file_deps`,
+- it's worth looking at how `BaseAddon` and its subclasses handle certain tasks
+- keeping reproducibility in mind, cache liberally, and make use of `file_dep`,
   `targets`, and `uptodate` to keep builds snappy

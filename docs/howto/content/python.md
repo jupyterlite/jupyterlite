@@ -31,7 +31,7 @@ will be used for accessing files from the kernels.
 This approach should be more robust and help avoid most of the issues related to the
 Service Worker and browser caching.
 
-However they require setting proper HTTP headers when serving the JupyterLite
+However it requires setting proper HTTP headers when serving the JupyterLite
 application:
 
 - [Cross-Origin-Opener-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy)
@@ -60,12 +60,12 @@ File system access via `SharedArrayBuffer` is available with the following Pytho
 
 ### 2. Service Worker
 
-If the `SharedArrayBuffer` are not available in the browser, JupyterLite will default
-back to using the Service Worker (which was used by default until JupyterLite 0.4.0).
+If `SharedArrayBuffer` is not available in the browser, JupyterLite will default back to
+using the Service Worker (which was used by default until JupyterLite 0.4.0).
 
 Synchronized content works by mounting a custom [Emscripten Filesystem][fs] (FS) which
 communicates with the JupyterLite content manager through the JupyterLite
-[`ServiceWorker`](../configure/advanced/service-worker.md)-enabled.
+[`ServiceWorker`](../configure/advanced/service-worker.md).
 
 ```{note}
 The `ServiceWorker` will not always be enabled, based on

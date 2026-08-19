@@ -5,8 +5,8 @@ provided by [pyodide](https://pyodide.org). As the full distribution is **very l
 and self-hosting of all its assets brings their own challenges, this use of CDN is the
 default for JupyterLite.
 
-A custom `pyodide.js`, along with its `packages.json` and the rest of its assets, such
-as might be downloaded via the
+A custom `pyodide.js`, along with its `pyodide-lock.json` and the rest of its assets,
+such as might be downloaded via the
 [`--pyodide` CLI option](../../reference/cli.ipynb#pyodide), can also be configured.
 This can be either relative to the `lite_dir`, or as a full URL.
 

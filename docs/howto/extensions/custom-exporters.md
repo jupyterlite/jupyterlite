@@ -16,7 +16,7 @@ as HTML, PDF, Markdown, or any custom format you need.
 The export system in JupyterLite is based on the following extension points:
 
 1. **`INbConvertExporters`**: A token that provides access to the exporter registry
-2. **`IExporter`**: An interface that all exporters must implement registered exporters
+2. **`IExporter`**: An interface that all registered exporters must implement
 
 ## Creating a Custom Exporter
 

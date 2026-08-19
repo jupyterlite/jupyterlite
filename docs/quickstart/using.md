@@ -11,7 +11,7 @@ server-backed JupyterLab site, except:
 - The list of kernels, usually visible from the _Launcher_ as different _Notebook_
   flavors, will be different. See [the Kernels section below](#kernels).
 - Your data is written to in-browser storage
-  - though you may be able to copy
+  - though you may be able to download files to your local machine
 - None of your data leaves your browser unless...
   - Extensions are installed and enabled, and send data to external services
   - Your _Notebooks_ include code that uses the browser's `fetch` mechanism
@@ -29,9 +29,9 @@ of extensions, packages and content:
   [https://jupyterlite.rtfd.io/en/latest/try/lab](https://jupyterlite.rtfd.io/en/latest/try/lab).
   In fact it lives really next to this current documentation, and you can launch the
   different interfaces via the `Try` buttons in the top left corner of the page.
-- The JupyterLite `demo` repository:
-  [https://github.com/jupyterlite/demo](https://jupyterlite.github.io/demo/). This repo
-  can also be used as a template to create a your website, see the
+- The JupyterLite [`demo` repository](https://github.com/jupyterlite/demo), deployed to
+  [https://jupyterlite.github.io/demo](https://jupyterlite.github.io/demo/). This repo
+  can also be used as a template to create your own website, see the
   [quick-start guide](../quickstart/deploy.md) to learn how to deploy your own.
 - The [Try Jupyter](https://jupyter.org/try) deployment:
   [https://jupyter.org/try-jupyter/lab/](https://jupyter.org/try-jupyter/lab/)
@@ -47,8 +47,7 @@ A deployment can have one or more applications available.
 
 JupyterLab is the next-generation user interface for Project Jupyter offering all the
 familiar building blocks of the classic Jupyter Notebook (notebook, text editor, file
-browser, rich outputs, etc.) in a flexible and powerful user interface. JupyterLab will
-eventually replace the classic Jupyter Notebook.
+browser, rich outputs, etc.) in a flexible and powerful user interface.
 
 ![image](https://user-images.githubusercontent.com/591645/153932638-771ca1f4-0ec0-4b77-a5d4-644748c7538e.png)
 
@@ -77,7 +76,7 @@ The JupyterLite contributors develop and maintain the following kernels:
 - a Python kernel based on [Pyodide][pyodide]:
   [https://github.com/jupyterlite/pyodide-kernel](https://github.com/jupyterlite/pyodide-kernel)
 - a Python kernel based on [Xeus Python][xeus-python]
-- a R kernel based on [Xeus R][xeus-r]
+- an R kernel based on [Xeus R][xeus-r]
 
 There are a few more third-party in-browser kernels also compatible with JupyterLite.
 See this [GitHub discussion][github-discussion-kernels] for more information.
@@ -96,7 +95,7 @@ use and configure kernels.
 ## Working with files
 
 By default the files you create in JupyterLite are stored in the browser's local storage
-(IndexedDB). They are not shared between different JupyterLite website unless they are
+(IndexedDB). They are not shared between different JupyterLite websites unless they are
 deployed on the same domain, and you use the same browser.
 
 ### Uploading files
@@ -143,7 +142,7 @@ JupyterLite can also be installed as an application if it is supported by the br
 and the operating system.
 
 When you visit a JupyterLite website, you can install it as an application by clicking
-on the `Install` button in search bar:
+on the `Install` button in the address bar:
 
 ![a screenshot showing how to install the JupyterLite app](https://user-images.githubusercontent.com/591645/228767533-1535da26-7dd3-4223-9b43-62c6e65c4171.png)
 
