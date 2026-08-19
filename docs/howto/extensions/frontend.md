@@ -2,18 +2,17 @@
 
 ## Introduction
 
-There are two types of extensions in JupyterLite:
-
-- frontend extensions
-- server extensions
-
 Frontend extensions are JupyterLab extensions, and are meant to extend the interfaces
 and functionalities of the JupyterLab and Notebook UIs.
 
-Example of such extensions are:
+Examples of such extensions are:
 
 - [jupyterlab-tour]: walk users through the JupyterLab interface
 - [jupyterlab-night]: custom dark theme for JupyterLab
+
+Since JupyterLite runs entirely in the browser, there are no server extensions.
+Functionality usually provided by the Jupyter Server, such as kernels, is implemented by
+JupyterLab plugins instead (see [](./kernel.md) for an example).
 
 [jupyterlab-tour]: https://github.com/jupyterlab-contrib/jupyterlab-tour
 [jupyterlab-night]: https://github.com/martinRenou/jupyterlab-night
@@ -37,7 +36,7 @@ mamba activate my-jupyterlite-extension
 
 Follow the [Extension Tutorial][extension-tutorial] to get started.
 
-After the tutorial, you should have a new local folder with the extension activate in
+After the tutorial, you should have a new local folder with the extension activated in
 JupyterLab.
 
 [extension-tutorial]:
@@ -46,7 +45,7 @@ JupyterLab.
 ### Load the extension in JupyterLite
 
 By default JupyterLite is able to find JupyterLab extensions installed in the same
-environment under `PREFIX/share/labextensions`.
+environment under `PREFIX/share/jupyter/labextensions`.
 
 The `jupyterlite-core` CLI does this automatically by default. In your local
 environment:
@@ -91,7 +90,7 @@ installed by other folks.
 By default the extension created from the template is compatible with the Jupyter
 Releaser.
 
-The Jupyter Releaser simplifies the release process and ensure best practices.
+The Jupyter Releaser simplifies the release process and ensures best practices.
 
 You can learn more about publishing the extension on the [JupyterLab
 documentation][publish-extension].

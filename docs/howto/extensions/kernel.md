@@ -4,10 +4,9 @@
 We recommend checking out how to create a JupyterLab extension first: [](./frontend.md)
 ```
 
-## Bootstrap the server extension
+## Bootstrap the extension
 
-Once you have your server extension set up, add the following plugin to register the
-kernel:
+Once you have your extension set up, add the following plugin to register the kernel:
 
 ```ts
 /**
@@ -51,7 +50,7 @@ It is simple and is meant for demo purposes.
 
 If you want to start from that kernel:
 
-1. For the [repo][jupyterlite-echo-kernel]
+1. Fork the [repo][jupyterlite-echo-kernel]
 2. Follow the dev instructions to build the kernel locally
 3. Once the local setup is ready, you can iterate on the actual logic of the kernel and
    start implementing the protocol

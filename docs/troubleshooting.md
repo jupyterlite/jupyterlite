@@ -154,8 +154,10 @@ You can also configure the default log level in your `jupyter-lite.json` file:
 {
   "jupyter-lite-schema-version": 0,
   "jupyter-config-data": {
-    "@jupyterlab/logconsole-extension:plugin": {
-      "defaultLogLevel": "info"
+    "settingsOverrides": {
+      "@jupyterlab/logconsole-extension:plugin": {
+        "defaultLogLevel": "info"
+      }
     }
   }
 }

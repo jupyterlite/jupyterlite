@@ -39,7 +39,7 @@ browser-compatible driver being chosen.
 Many extensions and features require the ability to at least _think_ they are saving and
 loading contents and settings. If a user's data cannot be stored due to browser security
 settings, a JupyterLite app will generally fail to fully initialize: while this might be
-frustrating, losing a user's unique data creation is _even more_ frustating.
+frustrating, losing a user's unique data creation is _even more_ frustrating.
 
 ```{warning}
 If persistence is **entirely** handled outside of JupyterLite, e.g. in an embedded

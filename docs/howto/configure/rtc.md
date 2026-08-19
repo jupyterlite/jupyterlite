@@ -24,11 +24,11 @@ time collaboration:
 ## The current state of Real Time Collaboration in JupyterLite
 
 There used to be some basic support for RTC in JupyterLite 0.1.x, via the
-[jupyterlba-webrtc-provider extension](https://github.com/jupyterlite/jupyterlab-webrtc-docprovider).
+[jupyterlab-webrtc-docprovider extension](https://github.com/jupyterlite/jupyterlab-webrtc-docprovider).
 
 Currently there is **no official** support for JupyterLite 0.2.x or higher, but it is
 tracked in
 [this issue](https://github.com/jupyterlite/jupyterlab-webrtc-docprovider/issues/16)
 
 There is however a new experiment happening in a new
-[jupyter-shared-drived extension](https://github.com/davidbrochart/jupyter-shared-drive).
+[jupyter-shared-drive extension](https://github.com/davidbrochart/jupyter-shared-drive).

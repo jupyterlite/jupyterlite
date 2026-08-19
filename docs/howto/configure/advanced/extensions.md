@@ -80,7 +80,7 @@ added to `{output-dir}/jupyter-lite.json#jupyter-config-data/federated_extension
 
 ```{hint}
 For example, after building a lab extension, you can copy the contents of
-`packages.json#/jupyterlab/outputDir` right into the `lite-dir` to preview your
+`package.json#/jupyterlab/outputDir` right into the `lite-dir` to preview your
 extension.
 ```
 

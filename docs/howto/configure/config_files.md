@@ -14,11 +14,11 @@ The `jupyter_lite_config.json` file is used to configure the build time configur
 JupyterLite. It is a JSON file that can contain several keys at the top level for
 configuring the main build process, but also extra CLI addons.
 
-It is commonly used the configure common build settings such as the output directory or
+It is commonly used to configure common build settings such as the output directory or
 the contents folder.
 
 Here is an example of a `jupyter_lite_config.json` to configure the `contents` and
-`outputDir`:
+`output_dir`:
 
 ```json
 {
@@ -78,7 +78,7 @@ The `overrides.json` file is used to override the plugins and extension settings
 JupyterLite.
 
 For example it can be used to override the default theme when users launch JupyterLite.
-The content of the file then be:
+The content of the file would then be:
 
 ```json
 {

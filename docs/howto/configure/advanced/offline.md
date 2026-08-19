@@ -26,14 +26,14 @@ information.
 
 By default the Pyodide files are fetched from a CDN.
 
-The full Pyodide distribution can be pretty heavy (~180MB), but it's possible to
-self-host it.
+The full Pyodide distribution can be pretty heavy (several hundred MB), but it's
+possible to self-host it.
 
 Use the `--pyodide` flag to specify the Pyodide distribution you would like to use. For
 example:
 
 ```bash
-jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/0.22.1/pyodide-0.22.1.tar.bz2
+jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/314.0.4/pyodide-314.0.4.tar.bz2
 ```
 
 ```{warning}

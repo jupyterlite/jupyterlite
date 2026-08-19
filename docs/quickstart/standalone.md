@@ -4,7 +4,7 @@ Deploying a JupyterLite site requires:
 
 - a copy of the JupyterLite site assets
   - often provided by the `pip`-installable python package `jupyterlite-core`
-- an option set of configurations for the site and different apps
+- an optional set of configurations for the site and different apps
   - different options offer trade-offs between reproducibility, build speed, deployment
     size, and end-user performance, privacy, and security
 
@@ -123,8 +123,8 @@ local purposes.
 python -m http.server -b 127.0.0.1
 ```
 
-If you are using a recently-released Python 3.7+, this will correctly serve
-`application/wasm` files for WebAssembly kernels.
+If you are using Python 3.7+, this will correctly serve `application/wasm` files for
+WebAssembly kernels.
 
 #### NodeJS
 
@@ -136,7 +136,7 @@ however, that `http-server` does not support the `application/wasm` MIME type.
 As an alternative to using the `jupyter-lite` CLI, you can also download a release
 archive from the [GitHub Releases][releases] page.
 
-Download it an extract it, then use one of the approaches mentioned above to start the
+Download it and extract it, then use one of the approaches mentioned above to start the
 server.
 
 Nightly and work-in-progress archives are also available from [GitHub actions].

@@ -20,4 +20,5 @@ Available options are defined in the Jupyter Config Data
 In addition to the [Runtime Configuration Files](../reference/config.md) additional
 `overrides.json` files can be created as described in
 [Customizing Settings](../howto/configure/settings.md). These override specific
-`@jupyterlab` settings, are merged into the `settingsOverrides` of the jupyter config.
+`@jupyterlab` settings, and are merged into the `settingsOverrides` of the jupyter
+config.
