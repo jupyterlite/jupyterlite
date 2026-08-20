@@ -63,6 +63,29 @@ For more details on these changes and how to update your deployment, see the [mi
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.3
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.2...34dab73b761bf8b20d7bdbb3f2379a9b1fa16f6f))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab v4.6.3 and Notebook v7.6.2 [#2033](https://github.com/jupyterlite/jupyterlite/pull/2033) ([@jtpio](https://github.com/jtpio))
+
+### Documentation improvements
+
+- Fix outdated content in the extension docs [#2031](https://github.com/jupyterlite/jupyterlite/pull/2031) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-08-17&to=2026-08-20&type=c))
+
+@jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-08-17..2026-08-20&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.2
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.1...d871a9f75e9e95a61fc1c544ff446cfa6ee0afd4))
@@ -87,8 +110,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-07-08&to=2026-08-17&type=c))
 
 @agoudbg ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aagoudbg+updated%3A2026-07-08..2026-08-17&type=Issues)) | @bollwyvl ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abollwyvl+updated%3A2026-07-08..2026-08-17&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-07-08..2026-08-17&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.1
 
