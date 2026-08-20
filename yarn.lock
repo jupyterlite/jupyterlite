@@ -681,7 +681,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyter/builder@npm:^1.0.2":
+"@jupyter/builder@npm:^1.2.2":
   version: 1.2.2
   resolution: "@jupyter/builder@npm:1.2.2"
   dependencies:
@@ -3015,7 +3015,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jupyterlite/app@workspace:app"
   dependencies:
-    "@jupyter/builder": ^1.0.2
+    "@jupyter/builder": ^1.2.2
     "@rspack/cli": ^2.0.2
     "@rspack/core": ^2.0.2
     fs-extra: ^9.0.1
