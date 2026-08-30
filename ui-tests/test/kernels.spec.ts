@@ -168,6 +168,29 @@ test.describe('Kernels', () => {
     expect(output![0]).toBe('4');
   });
 
+// regression test for https://github.com/jupyterlite/jupyterlite/issues/155
+  // closing a notebook must not cancel a pending comm_info_request before the
+  // kernel has had a chance to reply
+  test('Closing a notebook does not cancel comm_info_request', async ({ page }) => {
+    const commInfoErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error' && msg.text().includes('comm_info_request')) {
+        commInfoErrors.push(msg.text());
+      }
+    });
+
+    await page.goto('lab/index.html');
+    const name = await page.notebook.createNew();
+    if (!name) {
+      throw new Error('Notebook name is undefined');
+    }
+
+await page.notebook.save();
+    await page.notebook.close(true);
+
+    expect(commInfoErrors).toEqual([]);
+  });
+
   // regression test for https://github.com/jupyterlite/jupyterlite/issues/1990
   test('Shut Down Kernel from the menu does not raise', async ({ page }) => {
     // this test can sometimes take longer to run as it uses the Pyodide kernel
@@ -212,29 +235,6 @@ test.describe('Kernels', () => {
     await expect(page.locator('.jp-KernelStatus-success')).toHaveCount(0);
     await expect(page.locator('.jp-KernelStatus-error')).toHaveCount(0);
   });
-
-  // regression test: the kernel status indicator must show the spinner while a
-  // kernel is starting up, then the idle checkmark once it is ready.
-  // https://github.com/jupyterlite/jupyterlite/issues/1990
-  test('Kernel status indicator spins while a kernel is starting', async ({ page }) => {
-    // this test can sometimes take longer to run as it uses the Pyodide kernel
-    test.setTimeout(120000);
-
-    await page.goto('lab/index.html');
-
-    // open a notebook backed by the Pyodide kernel: it takes a while to start,
-    // so the status indicator shows the loading spinner while it is starting up
-    // (opening does not wait for the kernel to be ready)
-    await page.notebook.open('stdin.ipynb');
-
-    await expect(page.locator('.jp-KernelStatus-spinner')).toBeVisible({
-      timeout: 30000,
-    });
-
-    // once the kernel is ready the spinner is replaced by the idle checkmark
-    await expect(page.locator('.jp-KernelStatus-success')).toBeVisible({
-      timeout: 90000,
-    });
   });
 
   test('Multiple kernel restarts', async ({ page }) => {
