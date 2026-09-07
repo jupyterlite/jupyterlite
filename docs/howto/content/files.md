@@ -20,13 +20,13 @@ Will be:
 - copied to the built site under `{output-dir}/files/`
   - may have timestamps changed if `--source-date-epoch` is provided.
 - indexed to provide `{output-dir}/api/contents/{subdir?}/all.json`
+- named in `jupyter-lite.json` as `contentsAllJsonFile`, which is what makes the
+  frontend read the index
 
 ```{note}
-If no contents are provided when building the JupyterLite website,
-the following error message might be logged in the browser console and can be safely ignored:
-
-    Failed to load resource: the server responded with a status of 404 (File not found) :8000/api/contents/all.json:1
-
+If contents are added after the build, set `contentsAllJsonFile` yourself. The build
+only writes it when `files/` exists at build time; without it no index is read, no
+request is made and the file browser is silently empty.
 ```
 
 ## Server Contents and Local Contents
