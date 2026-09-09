@@ -614,13 +614,25 @@ export class BrowserStorageDrive implements Contents.IDrive {
     await this._ensureParentDirectoryExists(newLocalPath);
     const modified = new Date().toISOString();
     const name = PathExt.basename(newLocalPath);
+
+    const storage = await this.storage;
+    const alreadyExists =
+      (await storage.getItem(newLocalPath)) !== null ||
+      (await this._getServerContents(newLocalPath)) !== null;
+
+    if (alreadyExists) {
+      // Hacky but JupyterLab assumes an HTTP error
+      const err = new Error(`Path ${newLocalPath} already exists.`);
+      (err as any).response = { status: 409 };
+      throw err;
+    }
+
     const newFile = {
       ...file,
       name,
       path: newLocalPath,
       last_modified: modified,
     };
-    const storage = await this.storage;
     await storage.setItem(newLocalPath, newFile);
     // remove the old file
     await storage.removeItem(path);
