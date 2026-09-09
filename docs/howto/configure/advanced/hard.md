@@ -46,6 +46,8 @@ Open a browser:
 ```
 
 - Paste this JSON in `$YOUR_JUPYTERLITE/api/contents/all.json`
+- Set `"contentsAllJsonFile": "all.json"` under `jupyter-config-data` in
+  `$YOUR_JUPYTERLITE/jupyter-lite.json`; without it the index is never read
 - Copy your files in `$YOUR_JUPYTERLITE/files`
 - Repeat this for every subfolder `:(`
 
