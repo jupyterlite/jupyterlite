@@ -25,8 +25,14 @@ const VERSION = PageConfig.getOption('appVersion');
 
 /**
  * Used to keep the service worker alive
+ *
+ * Must be under the base URL, otherwise the request falls outside of the scope of
+ * the service worker and is never intercepted by it.
  */
-const SW_PING_ENDPOINT = '/api/service-worker-heartbeat';
+const SW_PING_ENDPOINT = URLExt.join(
+  PageConfig.getBaseUrl(),
+  'api/service-worker-heartbeat',
+);
 
 /**
  * Time in milliseconds between heartbeat pings.
@@ -180,6 +186,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     const text = await response.text();
     if (text === 'ok') {
       setTimeout(this._pingServiceWorker.bind(this), HEARTBEAT_MS);
+    } else {
+      console.warn(
+        `JupyterLite ServiceWorker heartbeat was not answered by ${SW_PING_ENDPOINT}, ` +
+          'it may be terminated by the browser when idle',
+      );
     }
   }
 
