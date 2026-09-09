@@ -73,6 +73,32 @@ Accepts no value.
 | -------- | --------------------------------------------------------- |
 | no       | `https://jupyterlite.github.io/demo/lab/index.html?reset` |
 
+## Jupyter Notebook Features
+
+The `tree`, `notebooks` and `edit` pages of the Jupyter Notebook interface support the
+`path` parameter to open a single folder or document.
+
+### `path`
+
+> `?path={:path}`
+
+- `tree/index.html?path={:path}` opens the file browser in the given folder, or
+  redirects to the `notebooks` or `edit` page if the path is a file.
+- `notebooks/index.html?path={:path}` opens the given notebook.
+- `edit/index.html?path={:path}` opens the given file in the text editor.
+
+Without a `path`, the `notebooks` and `edit` pages redirect to the file browser
+(`tree`). If the path is a folder, they redirect to the file browser opened in that
+folder. If the path does not exist, a dialog says so and offers to open the file
+browser.
+
+The file browser also updates `?path=` when navigating to a folder, so the URL can be
+bookmarked or shared.
+
+| multiple | examples                                                                    |
+| -------- | --------------------------------------------------------------------------- |
+| no       | `https://jupyterlite.github.io/demo/notebooks/index.html?path=python.ipynb` |
+
 ## REPL Features
 
 As the primary configuration tool, these are handled more thoroughly in the
