@@ -110,6 +110,14 @@
           "type": "string",
           "default": "JupyterLite Storage"
         },
+        "contentsAllJsonFile": {
+          "description": "name of the index file, relative to `api/contents/{dir}/`, listing the contents served from `files/`. Written by `jupyter lite build` when `files/` exists; set it (usually to `all.json`) when contents are added after the build, or no index is read",
+          "type": "string"
+        },
+        "workspacesAllJsonFile": {
+          "description": "name of the index file under `api/workspaces/` listing the workspaces served from the site. Written by `jupyter lite build` when workspaces exist; set it when workspaces are added after the build",
+          "type": "string"
+        },
         "workspacesStorageDrivers": {
           "description": "names of the localforage driver for workspaces, or `null` for the best available",
           "$ref": "#/definitions/localforage-driver-set"
