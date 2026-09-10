@@ -109,6 +109,16 @@ test.describe('Notebook pages routing', () => {
       page.locator('.jp-DirListing-itemText', { hasText: 'iris.csv' }),
     ).toBeVisible();
     expect(page.url()).toContain('tree/index.html?path=data');
+  });
+
+  test('Going back in the browser history returns to the previous folder', async ({
+    page,
+  }) => {
+    await page.goto('tree/index.html');
+
+    await expect(page.locator(FILE_BROWSER)).toBeVisible();
+    await page.locator('.jp-DirListing-itemText', { hasText: 'data' }).dblclick();
+    await page.waitForURL('**/tree/index.html?path=data');
 
     await page.goBack();
     await page.waitForURL('**/tree/index.html');
