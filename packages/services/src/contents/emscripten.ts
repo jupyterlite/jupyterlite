@@ -142,6 +142,20 @@ export type FS = EmscriptenFS & {
     mode: number,
     dev: number,
   ) => IEmscriptenFSNode;
+  /**
+   * Remove a node from the FS.nameTable cache
+   */
+  destroyNode?: (node: IEmscriptenFSNode) => void;
+
+  /**
+   * Look a child node up, in the node cache first and then through node_ops
+   */
+  lookupNode?: (parent: IEmscriptenFSNode, name: string) => IEmscriptenFSNode;
+
+  /**
+   * Return the error code preventing name from being created in dir or 0.
+   */
+  mayCreate?: (dir: IEmscriptenFSNode, name: string) => number;
 };
 
 /**

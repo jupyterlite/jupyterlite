@@ -192,7 +192,13 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
   }
 
   async getattr(request: TDriveRequest<'getattr'>): Promise<TDriveResponse<'getattr'>> {
-    const model = await this.contentsManager.get(request.path);
+    let model: Contents.IModel;
+    try {
+      model = await this.contentsManager.get(request.path);
+    } catch {
+      return null;
+    }
+
     // create a default date for drives that send incomplete information
     // for nested foldes and files
     const defaultDate = new Date(0).toISOString();
@@ -205,7 +211,7 @@ export class DriveContentsProcessor implements IDriveContentsProcessor {
       rdev: 0,
       size: model.size || 0,
       blksize: BLOCK_SIZE,
-      blocks: Math.ceil(model.size || 0 / BLOCK_SIZE),
+      blocks: Math.ceil((model.size || 0) / BLOCK_SIZE),
       atime: model.last_modified || defaultDate, // TODO Get the proper atime?
       mtime: model.last_modified || defaultDate,
       ctime: model.created || defaultDate,

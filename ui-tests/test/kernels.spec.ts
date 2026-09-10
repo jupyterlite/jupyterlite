@@ -8,8 +8,11 @@ import { test } from '@jupyterlab/galata';
 import { expect } from '@playwright/test';
 
 import {
+  deleteItem,
   firefoxWaitForApplication,
+  isDirectoryListedInBrowser,
   notebooksWaitForApplication,
+  refreshFilebrowser,
   uploadFiles,
 } from './utils';
 
@@ -566,6 +569,39 @@ test.describe('Kernels', () => {
     // Expect all cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
     expect(idleCells).toHaveCount(5);
+  });
+
+  test('Recreate a directory in the kernel after deletion in the file browser', async ({
+    page,
+  }) => {
+    test.setTimeout(120000);
+
+    await page.goto('lab/index.html');
+    await page.notebook.open('empty.ipynb');
+
+    const dirName = 'test_dir';
+
+    // Create a directory via Python
+    await page.notebook.setCell(
+      0,
+      'code',
+      `import os\nos.mkdir("${dirName}")\nprint("created")`,
+    );
+    await page.notebook.run();
+    let output = await page.notebook.getCellTextOutput(0);
+    expect(output?.[0]?.trim()).toBe('created');
+
+    // Delete the directory in the file browser UI
+    await refreshFilebrowser({ page });
+    await deleteItem({ page, name: dirName });
+    await refreshFilebrowser({ page });
+    expect(await isDirectoryListedInBrowser({ page, name: dirName })).toBeFalsy();
+
+    // Recreate the directory via Python (should succeed without EEXIST)
+    await page.notebook.addCell('code', `os.mkdir("${dirName}")\nprint("recreated")`);
+    await page.notebook.runCell(1);
+    output = await page.notebook.getCellTextOutput(1);
+    expect(output?.[0]?.trim()).toBe('recreated');
   });
 });
 

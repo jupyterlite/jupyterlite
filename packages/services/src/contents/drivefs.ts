@@ -101,7 +101,7 @@ type TDriveResponses = {
   getmode: number;
   lookup: DriveFS.ILookup;
   mknod: null;
-  getattr: IStats;
+  getattr: IStats | null;
   get: {
     /**
      * The returned file content
@@ -567,6 +567,10 @@ export abstract class ContentsAPI {
       path: this.normalizePath(path),
     });
 
+    if (!stats) {
+      throw new this.FS.ErrnoError(this.ERRNO_CODES['ENOENT']);
+    }
+
     // Emscripten 4.0.9+ (used by Pyodide 0.28+) requires all three timestamps
     // to be valid Date objects with .getTime() method (see https://github.com/emscripten-core/emscripten/pull/22998).
     // Fallback to epoch if any timestamp is missing/null/undefined.
@@ -677,6 +681,8 @@ export class DriveFS {
 
     this.node_ops = new DriveFSEmscriptenNodeOps(this);
     this.stream_ops = new DriveFSEmscriptenStreamOps(this);
+
+    this._hookMayCreate();
   }
 
   node_ops: IEmscriptenNodeOps;
@@ -733,6 +739,35 @@ export class DriveFS {
     parts.reverse();
 
     return this.PATH.join.apply(null, parts);
+  }
+
+  /**
+   * Wrap `FS.mayCreate` to delete stale cached nodes when recreating a path
+   * deleted externally (e.g. from the UI file browser).
+   */
+  private _hookMayCreate(): void {
+    const FS = this.FS;
+    const { destroyNode, lookupNode, mayCreate } = FS;
+
+    if (!destroyNode || !lookupNode || !mayCreate) {
+      return;
+    }
+
+    FS.mayCreate = (dir: IEmscriptenFSNode, name: string): number => {
+      const errCode = mayCreate.call(FS, dir, name);
+
+      if (
+        errCode !== this.ERRNO_CODES['EEXIST'] ||
+        dir.node_ops !== this.node_ops ||
+        this.API.lookup(this.PATH.join2(this.realPath(dir), name)).ok
+      ) {
+        return errCode;
+      }
+
+      // destroy stale node and retry creation
+      destroyNode.call(FS, lookupNode.call(FS, dir, name));
+      return mayCreate.call(FS, dir, name);
+    };
   }
 }
 
