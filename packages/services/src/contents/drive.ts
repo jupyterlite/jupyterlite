@@ -517,7 +517,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (path === '') {
       const folder = await this._getFolder(path);
       if (folder === null) {
-        throw Error(`Could not find file with path ${path}`);
+        // Hacky but JupyterLab assumes an HTTP error
+        const err = new Error(`Path ${path} does not exist.`);
+        (err as any).response = { status: 404 };
+        throw err;
       }
       return folder;
     }
@@ -529,7 +532,10 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let model = (item || serverItem) as IModel | null;
 
     if (!model) {
-      throw Error(`Could not find content with path ${path}`);
+      // Hacky but JupyterLab assumes an HTTP error
+      const err = new Error(`Path ${path} does not exist.`);
+      (err as any).response = { status: 404 };
+      throw err;
     }
 
     if (options?.content) {
