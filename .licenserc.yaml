@@ -1,0 +1,33 @@
+header:
+  license:
+    spdx-id: BSD-3-Clause
+    copyright-owner: Jupyter Development Team
+    software-name: JupyterLite
+    content: |
+      Copyright (c) Jupyter Development Team.
+      Distributed under the terms of the Modified BSD License.
+
+  paths-ignore:
+    - '**/*.ipynb'
+    - '**/*.json'
+    - '**/*.md'
+    - '**/*.svg'
+    - '**/*.yml'
+    - '**/*.yaml'
+    - '**/*.jupyterlab-workspace'
+    - '**/*.webmanifest'
+    - '**/*.txt'
+    - '**/build'
+    - '**/lib'
+    - '**/node_modules'
+    - '**/static'
+    - '**/_output'
+    - '**/.*'
+    # rspack drops the doctype when a comment precedes it in this template
+    - 'app/index.template.html'
+    - 'examples'
+    - 'ui-tests/contents'
+    - 'LICENSE'
+    - 'yarn.lock'
+
+  comment: on-failure

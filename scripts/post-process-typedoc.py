@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Post-process typedoc output to add Sphinx toctree directives.
 
 This script adds a toctree to the TypeScript API README.md that includes all
