@@ -3,6 +3,33 @@
 This guide provides an overview of major (potentially breaking) changes and the steps to
 follow to update JupyterLite from one version to another.
 
+## `v0.8.0` to `v0.9.0`
+
+### Plugin IDs in `@jupyterlite/apputils-extension`
+
+The following plugins provided by the `@jupyterlite/apputils-extension` package were
+registered with a `@jupyterlite/application-extension:` prefix. They now use the
+`@jupyterlite/apputils-extension:` prefix, to match the package providing them:
+
+- `@jupyterlite/apputils-extension:licenses-client`
+- `@jupyterlite/apputils-extension:plugin-manager`
+- `@jupyterlite/apputils-extension:resolver`
+- `@jupyterlite/apputils-extension:translator-connector`
+- `@jupyterlite/apputils-extension:workspaces`
+
+If you were disabling or deferring any of these plugins in a custom `jupyter-lite.json`
+file, you will need to update the plugin IDs as follows:
+
+```diff
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+-   "disabledExtensions": ["@jupyterlite/application-extension:plugin-manager"]
++   "disabledExtensions": ["@jupyterlite/apputils-extension:plugin-manager"]
+  }
+}
+```
+
 ## `v0.7.0` to `v0.8.0`
 
 ### Extensions
