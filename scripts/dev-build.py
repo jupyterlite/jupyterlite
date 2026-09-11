@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Build JupyterLite site, optionally watching for content changes."""
 
 import argparse

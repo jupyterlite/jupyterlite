@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Ensure app yarn resolutions match installed versions.
 
 This script ensures that the "resolutions" field in each app's package.json

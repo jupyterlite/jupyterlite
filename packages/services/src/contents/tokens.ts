@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import type { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 import { PageConfig } from '@jupyterlab/coreutils';
 import mime from 'mime';
