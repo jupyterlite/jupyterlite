@@ -15,6 +15,7 @@ import { Signal } from '@lumino/signaling';
 import { FILE, MIME } from './tokens';
 
 import type localforage from 'localforage';
+import { notFoundError } from './tools';
 
 type IModel = Contents.IModel;
 
@@ -517,7 +518,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (path === '') {
       const folder = await this._getFolder(path);
       if (folder === null) {
-        throw Error(`Could not find file with path ${path}`);
+        throw notFoundError(path);
       }
       return folder;
     }
@@ -529,7 +530,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let model = (item || serverItem) as IModel | null;
 
     if (!model) {
-      throw Error(`Could not find content with path ${path}`);
+      throw notFoundError(path);
     }
 
     if (options?.content) {
