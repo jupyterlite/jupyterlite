@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """a JupyterLite addon for Jupyter Server-compatible contents"""
 
 import datetime

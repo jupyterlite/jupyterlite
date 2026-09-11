@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import '@jupyterlite/application';
 import '@jupyterlite/application-extension';
 import '@jupyterlite/apputils';

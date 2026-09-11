@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import { Buffer } from 'buffer';
 
 import { expect, type IJupyterLabPageFixture } from '@jupyterlab/galata';
