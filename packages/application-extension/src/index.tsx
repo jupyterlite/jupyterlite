@@ -551,16 +551,100 @@ const opener: JupyterFrontEndPlugin<void> = {
   id: '@jupyterlite/application-extension:opener',
   description: 'Opens documents from URL path query parameters.',
   autoStart: true,
-  requires: [IRouter, IDocumentManager],
+  requires: [IRouter, IDocumentManager, ITranslator],
   optional: [ILabShell, ISettingRegistry],
   activate: (
     app: JupyterFrontEnd,
     router: IRouter,
     docManager: IDocumentManager,
+    translator: ITranslator,
     labShell: ILabShell | null,
     settingRegistry: ISettingRegistry | null,
   ): void => {
     const { commands, docRegistry } = app;
+    const { contents } = docManager.services;
+    const trans = translator.load(I18N_BUNDLE);
+
+    /**
+     * Build the URL of a Notebook page, with optional query parameters.
+     */
+    const pageUrl = (page: string, params?: URLSearchParams): string => {
+      const url = new URL(URLExt.join(PageConfig.getBaseUrl(), page, 'index.html'));
+      url.search = params?.toString() ?? '';
+      return url.toString();
+    };
+
+    /**
+     * Find the widget factory to open a file with, honoring the default viewers.
+     */
+    const findFactory = async (file: string): Promise<string> => {
+      let defaultFactory = docRegistry.defaultWidgetFactory(file).name;
+
+      // Explicitly get the default viewers from the settings because
+      // JupyterLab might not have had the time to load the settings yet (race condition)
+      // Relevant code: https://github.com/jupyterlab/jupyterlab/blob/d56ff811f39b3c10c6d8b6eb27a94624b753eb53/packages/docmanager-extension/src/index.tsx#L265-L293
+      if (settingRegistry) {
+        const settings = await settingRegistry.load(JUPYTERLAB_DOCMANAGER_PLUGIN_ID);
+        const defaultViewers = settings.get('defaultViewers').composite as {
+          [ft: string]: string;
+        };
+        const types = docRegistry.getFileTypesForPath(file);
+        types.forEach((ft) => {
+          if (
+            defaultViewers[ft.name] !== undefined &&
+            docRegistry.getWidgetFactory(defaultViewers[ft.name])
+          ) {
+            defaultFactory = defaultViewers[ft.name];
+          }
+        });
+      }
+      return defaultFactory;
+    };
+
+    /**
+     * Report a path that cannot be opened, offering to open the file browser
+     * from the single-document pages.
+     */
+    const showNotFound = async (path: string, page: string): Promise<void> => {
+      const buttons =
+        page === 'tree'
+          ? [Dialog.okButton({ label: trans.__('OK') })]
+          : [
+              Dialog.cancelButton({ label: trans.__('Close') }),
+              Dialog.okButton({ label: trans.__('Open File Browser') }),
+            ];
+      const result = await showDialog({
+        title: trans.__('Cannot Open File'),
+        body: trans.__(
+          'Could not find "%1". Check that the path is correct. If the file was created in JupyterLite, it is only available in the browser where it was created.',
+          path,
+        ),
+        buttons,
+      });
+      if (page !== 'tree' && result.button.accept) {
+        window.location.replace(pageUrl('tree'));
+      }
+    };
+
+    let routed = false;
+    router.routed.connect(() => {
+      routed = true;
+    });
+
+    /**
+     * Show a directory in the file browser of the tree page.
+     */
+    const showDirectory = (path: string): void => {
+      // Jupyter Notebook restores the file browser in the tree path on the
+      // first route, so only navigate on later ones (e.g. browser history)
+      PageConfig.setOption('treePath', path);
+      if (routed) {
+        void commands.execute('filebrowser:go-to-path', {
+          path,
+          dontShowBrowser: true,
+        });
+      }
+    };
 
     const command = 'router:tree';
     commands.addCommand(command, {
@@ -581,97 +665,122 @@ const opener: JupyterFrontEndPlugin<void> = {
           },
         },
       },
-      execute: (args: any) => {
+      execute: async (args: any) => {
         const parsed = args as IRouter.ILocation;
-        // use request to do the matching
         const { request, search } = parsed;
-        const matches = request.match(URL_PATTERN) ?? [];
-        if (!matches) {
+        if (!request.match(URL_PATTERN)) {
           return;
         }
 
+        const page = PageConfig.getOption('notebookPage');
         const urlParams = new URLSearchParams(search);
-        const paths = urlParams.getAll('path');
+        const paths = urlParams.getAll('path').filter((path) => path);
         if (paths.length === 0) {
+          // Land on the file browser instead, like Jupyter Notebook does
+          if (page === 'notebooks' || page === 'edit') {
+            window.location.replace(pageUrl('tree'));
+          } else if (page === 'tree') {
+            showDirectory('');
+          }
           return;
         }
         const files = paths.map((path) => decodeURIComponent(path));
-        app.started.then(async () => {
-          const page = PageConfig.getOption('notebookPage');
-          const [file] = files;
-          if (page === 'tree') {
-            let appUrl = '/edit';
-            // check if the file is a notebook
-            const defaultFactory = docRegistry.defaultWidgetFactory(file);
-            if (defaultFactory.name === 'Notebook') {
-              appUrl = '/notebooks';
-            }
-            const baseUrl = PageConfig.getBaseUrl();
-            const url = new URL(URLExt.join(baseUrl, appUrl, 'index.html'));
-            url.searchParams.append('path', file);
+        const [file] = files;
 
-            // redirect to the proper page
-            window.location.href = url.toString();
+        if (page === 'tree' || page === 'notebooks' || page === 'edit') {
+          let model: Contents.IModel;
+          try {
+            model = await contents.get(file, { content: false });
+          } catch {
+            void showNotFound(file, page);
             return;
-          } else if (page === 'consoles') {
-            commands.execute('console:create', { path: file });
-            return;
-          } else if (page === 'notebooks' || page === 'edit') {
-            let defaultFactory = docRegistry.defaultWidgetFactory(file).name;
-
-            // Explicitly get the default viewers from the settings because
-            // JupyterLab might not have had the time to load the settings yet (race condition)
-            // Relevant code: https://github.com/jupyterlab/jupyterlab/blob/d56ff811f39b3c10c6d8b6eb27a94624b753eb53/packages/docmanager-extension/src/index.tsx#L265-L293
-            if (settingRegistry) {
-              const settings = await settingRegistry.load(
-                JUPYTERLAB_DOCMANAGER_PLUGIN_ID,
-              );
-              const defaultViewers = settings.get('defaultViewers').composite as {
-                [ft: string]: string;
-              };
-              // get the file types for the path
-              const types = docRegistry.getFileTypesForPath(file);
-              // for each file type, check if there is a default viewer and if it
-              // is available in the docRegistry. If it is the case, use it as the
-              // default factory
-              types.forEach((ft) => {
-                if (
-                  defaultViewers[ft.name] !== undefined &&
-                  docRegistry.getWidgetFactory(defaultViewers[ft.name])
-                ) {
-                  defaultFactory = defaultViewers[ft.name];
-                }
-              });
-            }
-
-            const factory = urlParams.get('factory') ?? defaultFactory;
-            docManager.openOrReveal(file, factory, undefined, {
-              ref: '_noref',
-            });
-          } else {
-            // open all files in the lab interface
-            files.forEach((file) => docManager.openOrReveal(file));
-            const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
-            // only remove the path (to keep extra parameters like the RTC room)
-            url.searchParams.delete('path');
-            const { pathname, search } = url;
-            router.navigate(`${pathname}${search}`, { skipRouting: true });
-
-            if (labShell) {
-              // open the folder where the files are located on startup
-              const showInBrowser = () => {
-                commands.execute('docmanager:show-in-file-browser');
-                labShell.currentChanged.disconnect(showInBrowser);
-              };
-
-              labShell.currentChanged.connect(showInBrowser);
-            }
           }
-        });
+          if (model.type === 'directory') {
+            if (page === 'tree') {
+              showDirectory(model.path);
+            } else {
+              window.location.replace(
+                pageUrl('tree', new URLSearchParams({ path: model.path })),
+              );
+            }
+            return;
+          }
+          if (page === 'tree') {
+            const defaultFactory = docRegistry.defaultWidgetFactory(file);
+            const target = defaultFactory.name === 'Notebook' ? 'notebooks' : 'edit';
+            window.location.replace(pageUrl(target, urlParams));
+            return;
+          }
+          const factory = urlParams.get('factory') ?? (await findFactory(file));
+          docManager.openOrReveal(file, factory, undefined, { ref: '_noref' });
+          return;
+        }
+
+        if (page === 'consoles') {
+          void commands.execute('console:create', { path: file });
+          return;
+        }
+
+        // open all files in the lab interface
+        files.forEach((file) => docManager.openOrReveal(file));
+        const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
+        // only remove the path
+        url.searchParams.delete('path');
+        const { pathname, search: labSearch } = url;
+        router.navigate(`${pathname}${labSearch}`, { skipRouting: true });
+
+        if (labShell) {
+          // open the folder where the files are located on startup
+          const showInBrowser = () => {
+            void commands.execute('docmanager:show-in-file-browser');
+            labShell.currentChanged.disconnect(showInBrowser);
+          };
+
+          labShell.currentChanged.connect(showInBrowser);
+        }
       },
     });
 
-    router.register({ command, pattern: URL_PATTERN });
+    // A lower rank runs first: the Jupyter Notebook tree resolver (rank 100)
+    // must see the tree path set above
+    router.register({ command, pattern: URL_PATTERN, rank: 50 });
+  },
+};
+
+/**
+ * A plugin to keep the tree page URL loadable on a static server.
+ *
+ * Jupyter Notebook rewrites the URL to `/tree/<directory>` when browsing folders,
+ * which does not exist as a static file: use `/tree/index.html?path=<directory>`.
+ */
+const treeUrl: JupyterFrontEndPlugin<void> = {
+  id: '@jupyterlite/application-extension:tree-url',
+  description: 'Reflects the file browser directory in the tree page URL.',
+  autoStart: true,
+  requires: [ILiteRouter],
+  activate: (app: JupyterFrontEnd, router: ILiteRouter): void => {
+    if (PageConfig.getOption('notebookPage') !== 'tree') {
+      return;
+    }
+    const treePath = new URL(URLExt.join(PageConfig.getBaseUrl(), 'tree')).pathname;
+    const indexPath = `${treePath}/index.html`;
+    router.addTransformer({
+      id: treeUrl.id,
+      transform: ({ url, options }) => {
+        const { pathname } = url;
+        const isTree = pathname === treePath || pathname.startsWith(`${treePath}/`);
+        if (isTree && pathname !== indexPath) {
+          const directory = decodeURIComponent(pathname.slice(treePath.length + 1));
+          url.pathname = indexPath;
+          if (directory) {
+            url.searchParams.set('path', directory);
+          } else {
+            url.searchParams.delete('path');
+          }
+        }
+        return { url, options };
+      },
+    });
   },
 };
 
@@ -990,6 +1099,7 @@ const plugins: JupyterFrontEndPlugin<any>[] = [
   sessionContextPatch,
   shareFile,
   siteDrive,
+  treeUrl,
 ];
 
 export default plugins;
