@@ -15,6 +15,7 @@ import { Signal } from '@lumino/signaling';
 import { FILE, MIME } from './tokens';
 
 import type localforage from 'localforage';
+import { notFoundError } from './tools';
 
 type IModel = Contents.IModel;
 
@@ -517,10 +518,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (path === '') {
       const folder = await this._getFolder(path);
       if (folder === null) {
-        // Hacky but JupyterLab assumes an HTTP error
-        const err = new Error(`Path ${path} does not exist.`);
-        (err as any).response = { status: 404 };
-        throw err;
+        throw notFoundError(path);
       }
       return folder;
     }
@@ -532,10 +530,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
     let model = (item || serverItem) as IModel | null;
 
     if (!model) {
-      // Hacky but JupyterLab assumes an HTTP error
-      const err = new Error(`Path ${path} does not exist.`);
-      (err as any).response = { status: 404 };
-      throw err;
+      throw notFoundError(path);
     }
 
     if (options?.content) {
