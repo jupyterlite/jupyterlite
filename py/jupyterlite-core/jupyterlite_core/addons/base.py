@@ -4,7 +4,6 @@ import os
 import shutil
 import tarfile
 import tempfile
-import time
 import zipfile
 from collections.abc import Generator
 from pathlib import Path
@@ -114,8 +113,13 @@ class BaseAddon(LoggingConfigurable):
                 with tmp_dest.open("wb") as fd:
                     shutil.copyfileobj(response, fd)
                 last_modified = response.headers.get("Last-Modified")
-                if last_modified:
-                    epoch_time = time.mktime(email.utils.parsedate(last_modified))
+                # ``Last-Modified`` carries its own time zone, so it needs the
+                # time-zone-aware pair: ``parsedate`` drops the offset and
+                # ``mktime`` would then read the result as local time. It also
+                # returns ``None`` for a header it cannot parse.
+                parsed = email.utils.parsedate_tz(last_modified) if last_modified else None
+                if parsed is not None:
+                    epoch_time = email.utils.mktime_tz(parsed)
                     os.utime(tmp_dest, (epoch_time, epoch_time))
             shutil.copy2(tmp_dest, dest)
 
