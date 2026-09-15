@@ -362,8 +362,12 @@ const downloadPlugin: JupyterFrontEndPlugin<void> = {
         model.format === 'json' ||
         model.mimetype === 'text/json'
       ) {
+        let filecontent = model.content;
+        if (model.format === 'base64') {
+          filecontent = JSON.parse(atob(model.content));
+        }
         const mime = model.mimetype ?? 'text/json';
-        const content = JSON.stringify(model.content, null, 2);
+        const content = JSON.stringify(filecontent, null, 2);
         element.href = `data:${mime};charset=utf-8,${encodeURIComponent(content)}`;
       } else if (model.format === 'text' || model.mimetype === 'text/plain') {
         const mime = model.mimetype ?? 'text/plain';
