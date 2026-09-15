@@ -138,6 +138,23 @@ test.describe('Service Worker Tests', () => {
     });
   });
 
+  test('rename on the file system', async ({ page }) => {
+    const notebook = 'file-rename.ipynb';
+
+    await page.menu.clickMenuItem('Settings>Autosave Documents');
+
+    await page.notebook.open(notebook);
+
+    await page.notebook.runCellByCell({
+      onAfterCellRun: async (cellIndex: number) => {
+        const output = await page.notebook.getCellTextOutput(cellIndex);
+
+        expect(output).toBeTruthy();
+        expect(output![0]).toContain('Ok');
+      },
+    });
+  });
+
   test('State read on the file system', async ({ page }) => {
     const notebook = 'file-attr-read.ipynb';
 
