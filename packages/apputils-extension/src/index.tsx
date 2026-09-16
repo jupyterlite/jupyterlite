@@ -52,7 +52,7 @@ namespace CommandIDs {
  * The client for fetching licenses data.
  */
 const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
-  id: '@jupyterlite/application-extension:licenses-client',
+  id: '@jupyterlite/apputils-extension:licenses-client',
   description: 'Provides the client for fetching license data.',
   autoStart: true,
   provides: ILicensesClient,
@@ -65,7 +65,7 @@ const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
  * A plugin for managing the status of other plugins.
  */
 export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
-  id: '@jupyterlite/application-extension:plugin-manager',
+  id: '@jupyterlite/apputils-extension:plugin-manager',
   description: 'Plugin manager viewer',
   autoStart: true,
   optional: [JupyterLab.IInfo, ITranslator, ICommandPalette],
@@ -158,7 +158,7 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
  * The main translator connector plugin.
  */
 const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
-  id: '@jupyterlite/application-extension:translator-connector',
+  id: '@jupyterlite/apputils-extension:translator-connector',
   description: 'Provides the application translation connector.',
   autoStart: true,
   provides: ITranslatorConnector,
@@ -173,7 +173,7 @@ const translatorConnector: JupyterFrontEndPlugin<ITranslatorConnector> = {
  * This adds a dependency on `IWorkspaceRouter`
  */
 const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
-  id: '@jupyterlite/application-extension:resolver',
+  id: '@jupyterlite/apputils-extension:resolver',
   description: 'Provides the default window name resolver.',
   autoStart: true,
   provides: IWindowResolver,
@@ -218,7 +218,7 @@ const resolver: JupyterFrontEndPlugin<IWindowResolver> = {
  * A custom plugin for workspace files and commands
  */
 const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
-  id: '@jupyterlite/application-extension:workspaces',
+  id: '@jupyterlite/apputils-extension:workspaces',
   description: 'Handles workspace URL routing.',
   requires: [ILiteRouter],
   autoStart: true,
