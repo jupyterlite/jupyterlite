@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """a JupyterLite addon for generating app archives which can be used as input"""
 
 import contextlib

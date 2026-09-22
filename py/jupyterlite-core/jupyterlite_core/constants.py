@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Well-known (and otherwise) constants used by JupyterLite"""
 
 import shutil

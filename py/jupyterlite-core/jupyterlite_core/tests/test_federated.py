@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """tests of various mechanisms of providing federated_extensions"""
 
 import json
