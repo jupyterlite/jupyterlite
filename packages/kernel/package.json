@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/kernel",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "JupyterLite - Kernel (DEPRECATED: Use @jupyterlite/services instead)",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -38,7 +38,7 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlite/services": "^0.8.3"
+    "@jupyterlite/services": "^0.8.4"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
