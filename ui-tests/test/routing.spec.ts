@@ -57,11 +57,11 @@ test.describe('Notebook pages routing', () => {
   }) => {
     await page.goto('notebooks/index.html?path=data');
 
+    await page.waitForURL('**/tree/index.html?path=data');
     await expect(page.locator(FILE_BROWSER)).toBeVisible();
     await expect(
       page.locator('.jp-DirListing-itemText', { hasText: 'iris.csv' }),
     ).toBeVisible();
-    expect(page.url()).toContain('/tree/');
   });
 
   test('File browser page with a folder path opens the folder', async ({ page }) => {
