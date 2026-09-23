@@ -1,9 +1,4 @@
-/*
- * Copyright (c) Jupyter Development Team.
- * Distributed under the terms of the Modified BSD License.
- */
-
-// Copyright (c) JupyterLite Contributors
+// Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
 import { expect, test } from '@playwright/test';
