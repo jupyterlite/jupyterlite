@@ -774,6 +774,8 @@ const treeUrl: JupyterFrontEndPlugin<void> = {
           url.pathname = indexPath;
           if (directory) {
             url.searchParams.set('path', directory);
+            // keep the folder separators readable in the shareable URL
+            url.search = url.search.replace(/%2F/g, '/');
           } else {
             url.searchParams.delete('path');
           }
