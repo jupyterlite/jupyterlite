@@ -9,6 +9,9 @@ This script fetches releases from GitHub and updates:
 - pyproject.toml: Python dependency version constraints
 - All package.json files: @jupyterlab/*, @lumino/*, @jupyter/* dependencies
   (and @jupyter-notebook/* when --notebook-version is specified)
+- ui-tests/package.json: @playwright/test, kept in sync with @jupyterlab/galata
+
+A dependency is never downgraded, so deliberate pins newer than upstream are kept.
 
 At least one of --jupyterlab-version or --notebook-version must be specified.
 Packages without a version argument are left unchanged.
@@ -40,22 +43,20 @@ ROOT = Path(__file__).parent.parent
 EXCLUDED_DIRS = {"node_modules", "_site", ".venv", ".yarn", "lib", "docs", "build"}
 
 
+def is_source_file(path: Path) -> bool:
+    """Whether a path is a source file rather than a build artifact."""
+    parts = path.relative_to(ROOT).parts
+    return not any(part in EXCLUDED_DIRS or part.startswith(".") for part in parts)
+
+
 def find_pyproject_toml_files() -> list[Path]:
     """Find all pyproject.toml files, excluding build artifacts."""
-    return sorted(
-        path
-        for path in ROOT.glob("**/pyproject.toml")
-        if not any(part in EXCLUDED_DIRS or part.startswith(".") for part in path.parts)
-    )
+    return sorted(path for path in ROOT.glob("**/pyproject.toml") if is_source_file(path))
 
 
 def find_package_json_files() -> list[Path]:
     """Find all source package.json files, excluding build artifacts."""
-    return sorted(
-        path
-        for path in ROOT.glob("**/package.json")
-        if not any(part in EXCLUDED_DIRS or part.startswith(".") for part in path.parts)
-    )
+    return sorted(path for path in ROOT.glob("**/package.json") if is_source_file(path))
 
 
 def convert_python_version_to_npm(version: str) -> str:
@@ -234,16 +235,49 @@ def get_absolute_version(version: str) -> str:
     return version.lstrip("^~") if version else version
 
 
+PRERELEASE_ORDER = {"a": 0, "b": 1, "rc": 2}
+
+
+def version_key(version: str) -> tuple:
+    """Build a sortable key from a version string.
+
+    A final release sorts after the pre-releases of the same version.
+    """
+    parsed = parse_version(version)
+    prerelease = parsed.get("prerelease")
+    if prerelease:
+        match = re.match(r"^(a|b|rc)(\d+)$", prerelease)
+        pre = (PRERELEASE_ORDER[match.group(1)], int(match.group(2)))
+    else:
+        pre = (len(PRERELEASE_ORDER), 0)
+    return (parsed["major"], parsed["minor"], parsed["patch"], *pre)
+
+
+def is_downgrade(current_version: str, new_version: str) -> bool:
+    """Whether new_version is lower than current_version.
+
+    Versions the script cannot parse are never treated as downgrades.
+    """
+    try:
+        current = version_key(get_absolute_version(current_version))
+        new = version_key(get_absolute_version(new_version))
+    except ValueError:
+        return False
+    return new < current
+
+
 def update_package_json_dependencies(
     package_json: dict,
     new_versions: dict,
     dependency_prefixes: list[str],
-) -> list[tuple[str, str, str]]:
+) -> tuple[list[tuple[str, str, str]], list[tuple[str, str, str]]]:
     """Update dependencies in a package.json dict.
 
-    Returns a list of (package_name, old_version, new_version) tuples for changes made.
+    Returns the (package_name, old_version, new_version) tuples of the changes made,
+    and those of the downgrades skipped.
     """
     changes = []
+    skipped = []
 
     for section in ["dependencies", "devDependencies", "resolutions"]:
         if section not in package_json:
@@ -261,23 +295,24 @@ def update_package_json_dependencies(
             if current_version and current_version[0] in ("^", "~"):
                 new_version = current_version[0] + new_version
 
-            if package_json[section][pkg] != new_version:
-                changes.append((pkg, current_version, new_version))
-                package_json[section][pkg] = new_version
+            if package_json[section][pkg] == new_version:
+                continue
+            if is_downgrade(current_version, new_version):
+                skipped.append((pkg, current_version, new_version))
+                continue
+            changes.append((pkg, current_version, new_version))
+            package_json[section][pkg] = new_version
 
-    return changes
+    return changes, skipped
 
 
-def update_all_package_jsons(
+def fetch_upstream_versions(
     jupyterlab_version: str | None,
     notebook_version: str | None,
-    dry_run: bool = False,
-) -> bool:
-    """Update all package.json files with new dependency versions."""
-    changed = False
+) -> dict:
+    """Collect the dependency versions used by the upstream releases."""
     new_versions = {}
 
-    # Fetch upstream package.json files
     if jupyterlab_version:
         print(f"Fetching JupyterLab {jupyterlab_version} package.json files...")
         staging_pkg = fetch_upstream_package_json(
@@ -297,6 +332,10 @@ def update_all_package_jsons(
         # Add galata version
         if "name" in galata_pkg and "version" in galata_pkg:
             new_versions[galata_pkg["name"]] = galata_pkg["version"]
+        # Two Playwright copies break the UI tests, so follow the galata requirement
+        playwright_version = galata_pkg.get("dependencies", {}).get("@playwright/test")
+        if playwright_version:
+            new_versions["@playwright/test"] = playwright_version
 
     if notebook_version:
         print(f"Fetching Notebook {notebook_version} package.json files...")
@@ -310,18 +349,33 @@ def update_all_package_jsons(
         new_versions.update(nb_pkg.get("devDependencies", {}))
         new_versions.update(nb_pkg.get("resolutions", {}))
 
+    return new_versions
+
+
+def update_all_package_jsons(
+    jupyterlab_version: str | None,
+    notebook_version: str | None,
+    dry_run: bool = False,
+) -> bool:
+    """Update all package.json files with new dependency versions."""
+    changed = False
+    new_versions = fetch_upstream_versions(jupyterlab_version, notebook_version)
     if not new_versions:
         return False
 
     # Update all package.json files
-    dependency_prefixes = ["@jupyterlab/", "@lumino/", "@jupyter/"]
+    dependency_prefixes = ["@jupyterlab/", "@lumino/", "@jupyter/", "@playwright/test"]
     if notebook_version:
         dependency_prefixes.append("@jupyter-notebook/")
 
     for pkg_path in find_package_json_files():
         rel_path = pkg_path.relative_to(ROOT)
         pkg_json = json.loads(pkg_path.read_text())
-        changes = update_package_json_dependencies(pkg_json, new_versions, dependency_prefixes)
+        changes, skipped = update_package_json_dependencies(
+            pkg_json, new_versions, dependency_prefixes
+        )
+        for pkg, current_ver, upstream_ver in skipped:
+            print(f"  Kept {pkg} {current_ver} in {rel_path} (upstream has {upstream_ver})")
         if changes:
             if dry_run:
                 print(f"  [DRY RUN] Would update {rel_path}")
