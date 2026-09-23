@@ -41,6 +41,7 @@
     "@jupyterlab/application": "~4.7.0-alpha.2",
     "@jupyterlab/apputils": "~4.8.0-alpha.2",
     "@jupyterlab/coreutils": "~6.7.0-alpha.2",
+    "@jupyterlab/extensionmanager": "~4.7.0-alpha.2",
     "@jupyterlab/nbformat": "~4.7.0-alpha.2",
     "@jupyterlab/observables": "~5.7.0-alpha.2",
     "@jupyterlab/pluginmanager": "~4.7.0-alpha.2",

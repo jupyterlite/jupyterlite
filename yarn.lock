@@ -1395,6 +1395,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jupyterlab/extensionmanager-extension@npm:~4.7.0-alpha.2":
+  version: 4.7.0-alpha.2
+  resolution: "@jupyterlab/extensionmanager-extension@npm:4.7.0-alpha.2"
+  dependencies:
+    "@jupyterlab/application": ^4.7.0-alpha.2
+    "@jupyterlab/apputils": ^4.8.0-alpha.2
+    "@jupyterlab/extensionmanager": ^4.7.0-alpha.2
+    "@jupyterlab/settingregistry": ^4.7.0-alpha.2
+    "@jupyterlab/translation": ^4.7.0-alpha.2
+    "@jupyterlab/ui-components": ^4.7.0-alpha.2
+  checksum: 8dcb7de8af7a146df75c927b8fd379b23e252792d851cb68a09223affab1ac509cd6ccd5de31b9f0f8f39105a766e361a290f2f4f53e1a78cd57fde6ad205405
+  languageName: node
+  linkType: hard
+
+"@jupyterlab/extensionmanager@npm:^4.7.0-alpha.2, @jupyterlab/extensionmanager@npm:~4.7.0-alpha.2":
+  version: 4.7.0-alpha.2
+  resolution: "@jupyterlab/extensionmanager@npm:4.7.0-alpha.2"
+  dependencies:
+    "@jupyterlab/apputils": ^4.8.0-alpha.2
+    "@jupyterlab/coreutils": ^6.7.0-alpha.2
+    "@jupyterlab/services": ^7.7.0-alpha.2
+    "@jupyterlab/translation": ^4.7.0-alpha.2
+    "@jupyterlab/ui-components": ^4.7.0-alpha.2
+    "@lumino/coreutils": ^2.2.3
+    "@lumino/messaging": ^2.0.5
+    "@lumino/polling": ^2.1.6
+    "@lumino/widgets": ^2.9.0
+    react: ^18.2.0
+    react-paginate: ^6.3.2
+    semver: ^7.5.2
+  checksum: f59af564b031a42ab9816c8eaddaa3c2617416e45f84af1971b5423b8eeaf661dd105adb569b4b64234d90da19c4d28a334547cbbf248be3660d2d01ed188a7a
+  languageName: node
+  linkType: hard
+
 "@jupyterlab/filebrowser-extension@npm:~4.7.0-alpha.2":
   version: 4.7.0-alpha.2
   resolution: "@jupyterlab/filebrowser-extension@npm:4.7.0-alpha.2"
@@ -2816,6 +2850,8 @@ __metadata:
     "@jupyterlab/csvviewer-extension": ~4.7.0-alpha.2
     "@jupyterlab/docmanager-extension": ~4.7.0-alpha.2
     "@jupyterlab/documentsearch-extension": ~4.7.0-alpha.2
+    "@jupyterlab/extensionmanager": ~4.7.0-alpha.2
+    "@jupyterlab/extensionmanager-extension": ~4.7.0-alpha.2
     "@jupyterlab/filebrowser-extension": ~4.7.0-alpha.2
     "@jupyterlab/fileeditor-extension": ~4.7.0-alpha.2
     "@jupyterlab/help-extension": ~4.7.0-alpha.2
@@ -3105,6 +3141,7 @@ __metadata:
   dependencies:
     "@jupyterlab/application": ~4.7.0-alpha.2
     "@jupyterlab/apputils": ~4.8.0-alpha.2
+    "@jupyterlab/extensionmanager": ~4.7.0-alpha.2
     "@jupyterlab/logconsole": ~4.7.0-alpha.2
     "@jupyterlab/pluginmanager": ~4.7.0-alpha.2
     "@jupyterlab/translation": ~4.7.0-alpha.2
@@ -3123,6 +3160,7 @@ __metadata:
     "@jupyterlab/application": ~4.7.0-alpha.2
     "@jupyterlab/apputils": ~4.8.0-alpha.2
     "@jupyterlab/coreutils": ~6.7.0-alpha.2
+    "@jupyterlab/extensionmanager": ~4.7.0-alpha.2
     "@jupyterlab/nbformat": ~4.7.0-alpha.2
     "@jupyterlab/observables": ~5.7.0-alpha.2
     "@jupyterlab/pluginmanager": ~4.7.0-alpha.2
@@ -8453,7 +8491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.8, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.8, prop-types@npm:^15.6.1, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -8550,6 +8588,17 @@ __metadata:
     "@types/react": ^16.8.0 || ^17.0.0 || ^18.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: e59244b1f7866a3fec7b5fe83d68833583568e9ae217c261b09077de196a51cc96642e8b1d6826d963aaf910a496e1cf432240ee142ce7efa965345915bb57ac
+  languageName: node
+  linkType: hard
+
+"react-paginate@npm:^6.3.2":
+  version: 6.5.0
+  resolution: "react-paginate@npm:6.5.0"
+  dependencies:
+    prop-types: ^15.6.1
+  peerDependencies:
+    react: ^16.0.0
+  checksum: 39397de9a330e9ed16b2422d5893f47e16b5f7f188bf59ce4f60beeb16cfdba0ba76c7f0ca1b733d7282821a4e984ae64fb1a7086ecc22b416af95c1ff974fec
   languageName: node
   linkType: hard
 
@@ -8852,7 +8901,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5, semver@npm:^7.5.4, semver@npm:^7.6.3, semver@npm:^7.7.3":
+"semver@npm:^7.3.5, semver@npm:^7.5.2, semver@npm:^7.5.4, semver@npm:^7.6.3, semver@npm:^7.7.3":
   version: 7.8.5
   resolution: "semver@npm:7.8.5"
   bin:
