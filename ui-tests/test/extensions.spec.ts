@@ -31,12 +31,11 @@ test.describe('Extension Manager', () => {
     );
   });
 
-  test('should be a read-only listing', async ({ page }) => {
+  test('should not install or uninstall extensions', async ({ page }) => {
     const panel = page.locator('.jp-extensionmanager-view');
     await expect(panel.locator('.jp-extensionmanager-entry').first()).toBeVisible();
 
-    // no install, uninstall, enable or disable actions
-    await expect(panel.locator('.jp-extensionmanager-entry-buttons')).toHaveCount(0);
+    await expect(panel.getByRole('button', { name: 'Uninstall' })).toHaveCount(0);
 
     // no registry to discover extensions from
     await expect(panel.locator('.jp-extensionmanager-searchresults')).toHaveCount(0);

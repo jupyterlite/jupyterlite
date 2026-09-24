@@ -1,12 +1,16 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { Dialog, showDialog } from '@jupyterlab/apputils';
+
 import { PageConfig, URLExt } from '@jupyterlab/coreutils';
 
-import type { IEntry } from '@jupyterlab/extensionmanager';
+import type { IActionReply, IEntry } from '@jupyterlab/extensionmanager';
 import { ListModel } from '@jupyterlab/extensionmanager';
 
 import type { IFederatedExtension } from '@jupyterlite/types';
+
+import { UserDisabledExtensions } from './disabledextensions';
 
 /**
  * The extension manager model for JupyterLite.
@@ -18,14 +22,15 @@ export class LiteExtensionListModel extends ListModel {
   /**
    * Fetch the federated extensions of the site as extension entries.
    *
-   * Extensions disabled via `disabledExtensions` are skipped, as the read-only
-   * listing has no disabled state to show.
+   * Extensions disabled via the `disabledExtensions` of the site are skipped, as
+   * they cannot be enabled from the browser.
    */
   protected async fetchInstalled(force: boolean): Promise<IEntry[]> {
     const extensions = JSON.parse(
       PageConfig.getOption('federated_extensions') || '[]',
     ) as IFederatedExtension[];
     const labExtensionsUrl = PageConfig.getOption('fullLabextensionsUrl');
+    const userDisabled = await UserDisabledExtensions.get();
 
     return Promise.all(
       extensions
@@ -42,9 +47,26 @@ export class LiteExtensionListModel extends ListModel {
           } catch (reason) {
             console.warn(`Could not fetch the package.json of ${name}:`, reason);
           }
-          return Private.toEntry(pkg);
+          return Private.toEntry(pkg, !userDisabled.get(name));
         }),
     );
+  }
+
+  /**
+   * Store the extension enabled or disabled by the user, applied on page reload.
+   */
+  protected async performAction(action: string, entry: IEntry): Promise<IActionReply> {
+    await UserDisabledExtensions.set(entry.name, action === 'disable');
+    const trans = this.translator.load('jupyterlab');
+    void showDialog({
+      title: trans.__('Information'),
+      body: trans.__(
+        'You will need to %1 to apply the changes.',
+        trans.__('refresh the web page'),
+      ),
+      buttons: [Dialog.okButton({ label: trans.__('Ok') })],
+    });
+    return { status: 'ok', needs_restart: ['frontend'] };
   }
 }
 
@@ -69,10 +91,10 @@ namespace Private {
   /**
    * Map the `package.json` of a federated extension to an extension entry.
    *
-   * Federated extensions are bundled with the site, so they are always installed,
-   * enabled and allowed, and their installed version is also the latest one.
+   * Federated extensions are bundled with the site, so they are always installed
+   * and allowed, and their installed version is also the latest one.
    */
-  export function toEntry(pkg: IPackageJson): IEntry {
+  export function toEntry(pkg: IPackageJson, enabled: boolean): IEntry {
     const { author, bugs, repository } = pkg;
     const version = pkg.version ?? '';
     return {
@@ -80,7 +102,7 @@ namespace Private {
       description: pkg.description ?? '',
       homepage_url: pkg.homepage ?? '',
       installed: true,
-      enabled: true,
+      enabled,
       allowed: true,
       approved: false,
       status: 'ok',
