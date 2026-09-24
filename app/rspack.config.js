@@ -19,6 +19,25 @@ const liteAppData = topLevelData.jupyterlite.apps.reduce(
   {},
 );
 
+// Every library of these scopes is a singleton, as in JupyterLab
+// (buildutils/src/ensure-repo.ts); the external singletons are listed in
+// app/package.json. scripts/check-integrity.py applies the same rule.
+const SINGLETON_SCOPES = ['@jupyterlab/', '@jupyter-notebook/', '@jupyterlite/'];
+const singletonPackages = new Set([
+  ...topLevelData.jupyterlab.singletonPackages,
+  ...topLevelData.jupyterlite.singletonPackages,
+]);
+
+function isSingleton(pkg) {
+  if (singletonPackages.has(pkg)) {
+    return true;
+  }
+  return (
+    SINGLETON_SCOPES.some((scope) => pkg.startsWith(scope)) &&
+    !pkg.endsWith('-extension')
+  );
+}
+
 const licensePlugins = [];
 
 if (!process.env.NO_WEBPACK_LICENSES) {
@@ -146,8 +165,8 @@ function createShared(packageData, shared = null) {
   }
 
   // Add singleton package information
-  for (let pkg of packageData.jupyterlab.singletonPackages) {
-    if (shared[pkg]) {
+  for (const pkg of Object.keys(shared)) {
+    if (isSingleton(pkg)) {
       shared[pkg].singleton = true;
     }
   }
