@@ -83,6 +83,13 @@ environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 - copied to `{output-dir}/extensions`
 - have their theme assets copied to `{output-dir}/build/themes`
 
+## Listing the extensions shipped with the website
+
+In the JupyterLab interface, the Extension Manager available in the left sidebar lists
+the extensions shipped with the website, with their versions. Since the extensions are
+bundled at build time, the listing is read-only: extensions cannot be installed, enabled
+or disabled from the browser. Extensions listed in `disabledExtensions` are not shown.
+
 ## The case of Jupyter Widgets and custom renderers
 
 Some extensions like Jupyter Widgets and custom renderers also need a Python package to

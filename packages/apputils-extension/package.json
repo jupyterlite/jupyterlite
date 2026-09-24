@@ -40,6 +40,7 @@
   "dependencies": {
     "@jupyterlab/application": "~4.7.0-alpha.2",
     "@jupyterlab/apputils": "~4.8.0-alpha.2",
+    "@jupyterlab/extensionmanager": "~4.7.0-alpha.2",
     "@jupyterlab/logconsole": "~4.7.0-alpha.2",
     "@jupyterlab/pluginmanager": "~4.7.0-alpha.2",
     "@jupyterlab/translation": "~4.7.0-alpha.2",

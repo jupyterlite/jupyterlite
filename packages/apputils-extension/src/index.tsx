@@ -14,6 +14,8 @@ import {
   IWindowResolver,
 } from '@jupyterlab/apputils';
 
+import { IExtensionManagerModel } from '@jupyterlab/extensionmanager';
+
 import type { PluginListModel } from '@jupyterlab/pluginmanager';
 import { IPluginManager, Plugins } from '@jupyterlab/pluginmanager';
 
@@ -28,6 +30,7 @@ import { extensionIcon } from '@jupyterlab/ui-components';
 import { ILiteRouter } from '@jupyterlite/application';
 
 import {
+  LiteExtensionListModel,
   LiteLicensesClient,
   LitePluginListModel,
   LiteTranslatorConnector,
@@ -58,6 +61,31 @@ const licensesClient: JupyterFrontEndPlugin<ILicensesClient> = {
   provides: ILicensesClient,
   activate: (app: JupyterFrontEnd): ILicensesClient => {
     return new LiteLicensesClient();
+  },
+};
+
+/**
+ * A plugin providing the extension manager model listing the extensions
+ * shipped with the site.
+ */
+const extensionManagerModel: JupyterFrontEndPlugin<IExtensionManagerModel> = {
+  id: '@jupyterlite/apputils-extension:extension-manager-model',
+  description: 'Provides the model listing the extensions shipped with the site.',
+  autoStart: true,
+  optional: [ITranslator],
+  provides: IExtensionManagerModel,
+  activate: (
+    app: JupyterFrontEnd,
+    translator: ITranslator | null,
+  ): IExtensionManagerModel => {
+    // the extensions are bundled with the site: nothing can be installed,
+    // enabled or disabled at runtime, so the manager is a read-only listing
+    const metadata = JSON.parse(PageConfig.getOption('extensionManager') || '{}');
+    PageConfig.setOption(
+      'extensionManager',
+      JSON.stringify({ ...metadata, can_install: false, can_manage: false }),
+    );
+    return new LiteExtensionListModel(app.serviceManager, translator ?? undefined);
   },
 };
 
@@ -251,6 +279,7 @@ const workspaces: JupyterFrontEndPlugin<IWorkspaceRouter> = {
 };
 
 const plugins: JupyterFrontEndPlugin<any>[] = [
+  extensionManagerModel,
   licensesClient,
   pluginManagerPlugin,
   translatorConnector,
