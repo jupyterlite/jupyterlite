@@ -133,6 +133,7 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
         ...args,
         pluginData: {
           availablePlugins,
+          availablePluginsChanged: info?.availablePluginsChanged,
         },
         serverSettings: serviceManager.serverSettings,
         extraLockedPlugins: [pluginManagerPlugin.id],
@@ -146,6 +147,10 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
       content.title.icon = extensionIcon;
       content.title.caption = trans.__('Plugin Manager');
       const main = new MainAreaWidget({ content, reveal: model.ready });
+      // The model listens to the application info, which outlives the widget.
+      main.disposed.connect(() => {
+        model.dispose();
+      });
       return main;
     }
 

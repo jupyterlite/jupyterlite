@@ -46,6 +46,16 @@ can disable the [`ServiceWorker`](./service-worker.md) plugin with the following
 }
 ```
 
+An entry is either a plugin id, such as `my-extension:plugin`, or an extension package
+name, such as `my-extension`. A package name disables every plugin the package provides,
+including a plugin whose id does not start with the package name; such a plugin is named
+in a browser console warning. To keep it enabled, list the plugin ids to disable instead
+of the package name.
+
+The code and the styles of a federated extension disabled by its package name are not
+loaded when the app starts. Its code is loaded once the app is idle, only to list its
+plugins in the Plugin Manager.
+
 ## Specifying extra paths to look for extensions
 
 The `jupyter-lite` CLI supports providing extra paths to look for extensions.
