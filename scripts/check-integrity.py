@@ -5,7 +5,12 @@
 
 This script ensures that the "resolutions" field in each app's package.json
 is in sync with the versions installed in node_modules. It regenerates
-resolutions from dependencies + singletonPackages.
+resolutions from the dependencies and from every singleton package they
+depend on, directly or not, so that each app shares the singletons it bundles.
+
+A package is a singleton when it is a library (not an extension) of the
+@jupyterlab, @jupyter-notebook or @jupyterlite scope, or when it is listed
+in app/package.json. app/rspack.config.js applies the same rule.
 
 Based on: https://github.com/jupyter/notebook/blob/main/buildutils/src/ensure-repo.ts
 
@@ -23,6 +28,57 @@ REPO_ROOT = Path(__file__).parent.parent
 NODE_MODULES = REPO_ROOT / "node_modules"
 APP_DIR = REPO_ROOT / "app"
 
+SINGLETON_SCOPES = ("@jupyterlab/", "@jupyter-notebook/", "@jupyterlite/")
+
+
+def get_singleton_packages() -> set[str]:
+    """Get the singleton packages listed in app/package.json."""
+    with open(APP_DIR / "package.json") as f:
+        data = json.load(f)
+    return set(data["jupyterlab"]["singletonPackages"]) | set(
+        data["jupyterlite"]["singletonPackages"]
+    )
+
+
+SINGLETON_PACKAGES = get_singleton_packages()
+
+
+def is_singleton(package_name: str) -> bool:
+    """Whether a package must be shared as a singleton."""
+    if package_name in SINGLETON_PACKAGES:
+        return True
+    return package_name.startswith(SINGLETON_SCOPES) and not package_name.endswith("-extension")
+
+
+def get_installed_dependencies(package_name: str) -> list[str]:
+    """Get the dependencies of a package installed in node_modules."""
+    package_json = NODE_MODULES / package_name / "package.json"
+    if not package_json.exists():
+        return []
+    with open(package_json) as f:
+        data = json.load(f)
+    return list(data.get("dependencies", {}))
+
+
+def collect_singletons(package_names: list[str]) -> set[str]:
+    """Collect the singleton packages that the given packages depend on.
+
+    The whole dependency graph is walked: an app bundles every package it
+    reaches, and a singleton it bundles must be shared.
+    """
+    singletons = set()
+    seen = set()
+    stack = list(package_names)
+    while stack:
+        name = stack.pop()
+        if name in seen:
+            continue
+        seen.add(name)
+        if is_singleton(name):
+            singletons.add(name)
+        stack.extend(get_installed_dependencies(name))
+    return singletons
+
 
 def get_installed_version(package_name: str) -> str | None:
     """Get the installed version of a package from node_modules."""
@@ -37,7 +93,7 @@ def get_installed_version(package_name: str) -> str | None:
 def ensure_app_resolutions(app_path: Path, check_only: bool) -> list[str]:
     """Ensure resolutions match installed versions for an app.
 
-    Collects all packages from dependencies + singletonPackages and
+    Collects the dependencies and the singleton packages they depend on, and
     sets resolutions to ~{installed_version} for each.
 
     Args:
@@ -56,10 +112,14 @@ def ensure_app_resolutions(app_path: Path, check_only: bool) -> list[str]:
 
     dependencies = data.get("dependencies", {})
     jupyterlab_config = data.get("jupyterlab", {})
-    singleton_packages = jupyterlab_config.get("singletonPackages", [])
-
-    # Collect all packages to include in resolutions
-    packages = set(dependencies.keys()) | set(singleton_packages)
+    # The app bundles its dependencies, its extensions and its application class,
+    # and some extensions are not declared as dependencies.
+    roots = [
+        *dependencies,
+        *jupyterlab_config.get("extensions", []),
+        jupyterlab_config["appModuleName"],
+    ]
+    packages = set(dependencies) | collect_singletons(roots)
 
     # Build expected resolutions from installed versions
     expected_resolutions = {}

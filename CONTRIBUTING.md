@@ -119,16 +119,23 @@ The repository has integrity checks to ensure consistency across package files.
 #### App Resolutions
 
 Each app (`app/lab`, `app/notebooks`, etc.) has a `resolutions` field in its
-`package.json` that pins dependency versions. Resolutions must stay in sync with
-`dependencies` - if you update a dependency version, the corresponding resolution must
-also be updated.
+`package.json` that pins the versions of the packages the app shares with federated
+extensions: its dependencies, and every singleton package they depend on. A package is a
+singleton when it is a library (not an extension) of the `@jupyterlab`,
+`@jupyter-notebook` or `@jupyterlite` scope, as in JupyterLab, or when it is listed in
+`app/package.json`: `jupyterlab.singletonPackages` mirrors the external singletons of
+JupyterLab (`jupyterlab/staging/package.json`) and is updated by
+`scripts/upgrade-dependencies.py`, and `jupyterlite.singletonPackages` holds the
+JupyterLite additions.
+
+The resolutions are generated from the packages installed in `node_modules`:
 
 ```bash
 jlpm integrity
 ```
 
-Run `jlpm integrity` after updating dependencies (e.g., bumping JupyterLab versions) to
-sync the resolution entries.
+Run `jlpm integrity` after updating dependencies (e.g., bumping JupyterLab versions) or
+adding an extension to an app.
 
 #### About Dialog Versions
 

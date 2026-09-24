@@ -10,6 +10,7 @@ This script fetches releases from GitHub and updates:
 - All package.json files: @jupyterlab/*, @lumino/*, @jupyter/* dependencies
   (and @jupyter-notebook/* when --notebook-version is specified)
 - ui-tests/package.json: @playwright/test, kept in sync with @jupyterlab/galata
+- app/package.json: the external singleton packages of JupyterLab
 
 A dependency is never downgraded, so deliberate pins newer than upstream are kept.
 
@@ -389,6 +390,42 @@ def update_all_package_jsons(
     return changed
 
 
+def update_singleton_packages(jupyterlab_version: str, dry_run: bool = False) -> bool:
+    """Sync the external singleton packages of app/package.json with JupyterLab.
+
+    The singletons of the core scopes follow a rule in the build, only the
+    external ones are listed.
+    """
+    staging_pkg = fetch_upstream_package_json(
+        "jupyterlab/jupyterlab",
+        jupyterlab_version,
+        "jupyterlab/staging/package.json",
+    )
+    upstream = sorted(
+        pkg
+        for pkg in staging_pkg.get("jupyterlab", {}).get("singletonPackages", [])
+        if not pkg.startswith("@jupyterlab/")
+    )
+    app_package_json = ROOT / "app" / "package.json"
+    data = json.loads(app_package_json.read_text())
+    current = data["jupyterlab"]["singletonPackages"]
+    if current == upstream:
+        return False
+
+    rel_path = app_package_json.relative_to(ROOT)
+    for pkg in sorted(set(upstream) - set(current)):
+        print(f"    + {pkg}")
+    for pkg in sorted(set(current) - set(upstream)):
+        print(f"    - {pkg}")
+    if dry_run:
+        print(f"  [DRY RUN] Would update {rel_path}")
+    else:
+        data["jupyterlab"]["singletonPackages"] = upstream
+        app_package_json.write_text(json.dumps(data, indent=2) + "\n")
+        print(f"  Updated {rel_path}")
+    return True
+
+
 def resolve_version(version_input: str, repo: str) -> str:
     """Resolve a version input.
 
@@ -482,6 +519,11 @@ def main():
         print("\nPackage.json files updated")
     else:
         print("\nNo changes to package.json files")
+
+    if jupyterlab_version:
+        print("\nUpdating the singleton packages...")
+        if not update_singleton_packages(jupyterlab_version, args.dry_run):
+            print("  No changes to the singleton packages")
 
     # Output summary
     print("\n" + "=" * 50)
