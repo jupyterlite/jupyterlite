@@ -83,12 +83,22 @@ environment, e.g. `{sys.prefix}/share/jupyter/labextensions` will be:
 - copied to `{output-dir}/extensions`
 - have their theme assets copied to `{output-dir}/build/themes`
 
-## Listing the extensions shipped with the website
+## Managing the extensions shipped with the website
 
 In the JupyterLab interface, the Extension Manager available in the left sidebar lists
 the extensions shipped with the website, with their versions. Since the extensions are
-bundled at build time, the listing is read-only: extensions cannot be installed, enabled
-or disabled from the browser. Extensions listed in `disabledExtensions` are not shown.
+bundled at build time, they cannot be installed or uninstalled from the browser.
+
+Users can disable and enable these extensions from the Extension Manager, and single
+plugins from the Advanced Plugin Manager available in the command palette. These choices
+are stored in the browser with the user settings, and apply to all the apps of the
+website once the page is reloaded. To reset them, use the "Clear Browser Data" command
+in the Help menu and select "Settings and preferences".
+
+The extensions and plugins listed in the `disabledExtensions` of the website cannot be
+enabled from the browser: such extensions are not shown in the Extension Manager, and
+such plugins are locked in the Plugin Manager. The plugins providing the in-browser
+services, such as settings and kernels, are locked too.
 
 ## The case of Jupyter Widgets and custom renderers
 

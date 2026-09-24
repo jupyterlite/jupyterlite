@@ -56,6 +56,9 @@ The code and the styles of a federated extension disabled by its package name ar
 loaded when the app starts. Its code is loaded once the app is idle, only to list its
 plugins in the Plugin Manager.
 
+Users can also disable extensions and plugins from the browser, on top of this list: see
+[Managing the extensions shipped with the website](../simple_extensions.md#managing-the-extensions-shipped-with-the-website).
+
 ## Specifying extra paths to look for extensions
 
 The `jupyter-lite` CLI supports providing extra paths to look for extensions.

@@ -6,6 +6,8 @@ import { {{ appClassName }} } from '{{ appModuleName }}';
 // The webpack public path needs to be set before loading the CSS assets.
 import { PageConfig } from '@jupyterlab/coreutils';
 
+import { UserDisabledExtensions } from '@jupyterlite/apputils';
+
 import { PluginRegistry } from '@lumino/coreutils';
 
 import { Signal } from '@lumino/signaling';
@@ -59,8 +61,12 @@ export async function main() {
   const federatedStylePromises = [];
   const deferredDisabledFederatedModules = [];
 
-  // The disabled entries from the page config and from the app build.
-  const disabledExtensions = [...PageConfig.Extension.disabled, ...disabled];
+  // The disabled entries from the page config, the app build and the user.
+  const disabledExtensions = [
+    ...PageConfig.Extension.disabled,
+    ...disabled,
+    ...(await UserDisabledExtensions.list())
+  ];
 
   // Whether a plugin id, or the name of the extension it belongs to, is disabled.
   const isPluginDisabled = id => {
