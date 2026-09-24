@@ -3,7 +3,7 @@
 
 [project]
 name = "jupyterlite-root"
-version = "0.9.0a1"
+version = "0.9.0a2"
 
 # Dependency groups (PEP 735) for development dependencies
 # Install with: pip install --group dev
@@ -203,7 +203,7 @@ ignore = [
 "ui-tests/build.py" = ["E501", "S602"]
 
 [tool.tbump.version]
-current = "0.9.0a1"
+current = "0.9.0a2"
 regex = '''
   (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
   ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
