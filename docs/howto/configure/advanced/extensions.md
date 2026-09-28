@@ -56,6 +56,21 @@ The code and the styles of a federated extension disabled by its package name ar
 loaded when the app starts. Its code is loaded once the app is idle, only to list its
 plugins in the Plugin Manager.
 
+As in JupyterLab, a federated extension can also disable other plugins, for example the
+ones it replaces, with the `jupyterlab.disabledExtensions` field of its `package.json`:
+
+```json
+{
+  "name": "my-extension",
+  "jupyterlab": {
+    "disabledExtensions": ["@jupyterlab/application-extension:logo"]
+  }
+}
+```
+
+These entries are added to the `disabledExtensions` of the site, unless the site
+disables the extension itself by its package name.
+
 ## Specifying extra paths to look for extensions
 
 The `jupyter-lite` CLI supports providing extra paths to look for extensions.

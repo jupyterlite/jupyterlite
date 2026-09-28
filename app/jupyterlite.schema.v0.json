@@ -232,6 +232,20 @@
       "type": "object",
       "required": ["name", "load"],
       "properties": {
+        "disabledExtensions": {
+          "description": "Lab extensions (or specific plugins) the extension disables, from the `jupyterlab.disabledExtensions` of its `package.json`",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/definitions/npm-package-name"
+              },
+              {
+                "$ref": "#/definitions/lab-extension-plugin-name"
+              }
+            ]
+          }
+        },
         "extension": {
           "type": "string",
           "format": "uri-reference",

@@ -18,17 +18,31 @@ const PLUGIN_ID = 'jupyterlab-night:plugin';
 const THEME = 'JupyterLab Night';
 
 /**
- * Add entries to the `disabledExtensions` list of the site configuration.
+ * Another federated extension of the test site, which declares `disabledExtensions`.
+ */
+const DECLARING_EXTENSION = '@jupyterlite/p5-kernel-extension';
+
+/**
+ * Add entries to the `disabledExtensions` list of the site configuration, and
+ * declare entries for another extension, as the build copies them from the
+ * `package.json` of the extension.
  */
 async function disableExtensions(
   page: IJupyterLabPageFixture,
   entries: string[],
+  declared: string[] = [],
 ): Promise<void> {
   await page.route('jupyter-lite.json', async (route) => {
     const response = await route.fetch();
     const body = await response.json();
     const config = body['jupyter-config-data'];
     config.disabledExtensions = [...(config.disabledExtensions ?? []), ...entries];
+    if (declared.length) {
+      const extension = config.federated_extensions.find(
+        ({ name }: { name: string }) => name === DECLARING_EXTENSION,
+      );
+      extension.disabledExtensions = declared;
+    }
     return route.fulfill({ response, body: JSON.stringify(body) });
   });
 }
@@ -118,6 +132,25 @@ test.describe('Disabled federated extensions', () => {
 
     await expectListedAsDisabled(await openPluginManager(page));
     await expectThemeNotAdded(page);
+  });
+
+  test('An extension disables the plugins it declares', async ({ page }) => {
+    await disableExtensions(page, [], [PLUGIN_ID]);
+
+    await page.goto('lab/index.html');
+
+    await expectListedAsDisabled(await openPluginManager(page));
+    await expectThemeNotAdded(page);
+  });
+
+  test('A disabled extension does not disable the plugins it declares', async ({
+    page,
+  }) => {
+    await disableExtensions(page, [DECLARING_EXTENSION], [PLUGIN_ID]);
+
+    await page.goto('lab/index.html');
+
+    expect(await listedThemes(page)).toContain(THEME);
   });
 
   test.describe('Deferred loading', () => {
