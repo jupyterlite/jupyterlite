@@ -107,6 +107,7 @@ async function jupyterConfigData() {
 
   // apply any final patches
   finalConfig = dedupFederatedExtensions(finalConfig);
+  finalConfig = addDisabledByExtensions(finalConfig);
 
   // hoist to cache
   _JUPYTER_CONFIG = finalConfig;
@@ -150,6 +151,32 @@ function dedupFederatedExtensions(config) {
   }
   let allExtensions = [...Object.values(named)];
   allExtensions.sort((a, b) => a.name.localeCompare(b.name));
+  return config;
+}
+
+/**
+ * Add the `disabledExtensions` that federated extensions declare in their
+ * `package.json`, as JupyterLab does when it builds the page config.
+ *
+ * Also like JupyterLab, skip the entries of an extension that the configuration
+ * disables by its package name, but not of one disabled by another extension.
+ */
+function addDisabledByExtensions(config) {
+  const disabled = config.disabledExtensions || [];
+  const added = new Set();
+  for (const extension of config.federated_extensions || []) {
+    if (disabled.includes(extension.name)) {
+      continue;
+    }
+    for (const entry of extension.disabledExtensions || []) {
+      if (!disabled.includes(entry)) {
+        added.add(entry);
+      }
+    }
+  }
+  if (added.size) {
+    config.disabledExtensions = [...disabled, ...added];
+  }
   return config;
 }
 

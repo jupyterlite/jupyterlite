@@ -70,6 +70,47 @@ def test_federated_extensions(  # noqa: PLR0913, PLR0917
     assert "extension" in smallest
     assert "mimeExtension" in smallest
     assert "style" in smallest
+    assert "disabledExtensions" not in smallest
 
     lab_build = output / "build"
     assert (lab_build / "themes/the-smallest-extension/index.css").exists()
+
+
+def test_federated_extension_disabled_extensions(an_empty_lite_dir, script_runner):
+    """does an extension keep the disabledExtensions of its package.json"""
+    disabled = ["@jupyterlab/application-extension:logo", "some-extension"]
+    package = {
+        "name": "my-extension",
+        "version": "0.1.0",
+        "jupyterlab": {
+            "_build": {"load": "static/remoteEntry.js", "extension": "./extension"},
+            "disabledExtensions": disabled,
+        },
+    }
+    extension_dir = an_empty_lite_dir / "my-extension"
+    (extension_dir / "static").mkdir(parents=True)
+    (extension_dir / "static/remoteEntry.js").write_text("", encoding="utf-8")
+    (extension_dir / "package.json").write_text(json.dumps(package), encoding="utf-8")
+
+    config = {
+        "LiteBuildConfig": {
+            "federated_extensions": ["my-extension"],
+            "ignore_sys_prefix": ["federated_extensions"],
+            "apps": ["lab"],
+        },
+    }
+    (an_empty_lite_dir / "jupyter_lite_config.json").write_text(json.dumps(config))
+
+    build = script_runner.run(["jupyter", "lite", "build"], cwd=str(an_empty_lite_dir))
+    assert build.success
+
+    check = script_runner.run(["jupyter", "lite", "check"], cwd=str(an_empty_lite_dir))
+    assert check.success
+
+    lite_json = an_empty_lite_dir / "_output/jupyter-lite.json"
+    config_data = json.loads(lite_json.read_text(encoding="utf-8"))["jupyter-config-data"]
+    [extension] = config_data["federated_extensions"]
+    assert extension["name"] == "my-extension"
+    assert extension["disabledExtensions"] == disabled
+    # the entries apply on page load, only if the site does not disable the extension
+    assert not set(disabled) & set(config_data.get("disabledExtensions", []))
