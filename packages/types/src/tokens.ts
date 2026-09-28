@@ -27,4 +27,8 @@ export interface IFederatedExtension {
    * Optional relative path to the mimeExtension
    */
   mimeExtension?: string;
+  /**
+   * Optional plugin ids and extension names the extension disables
+   */
+  disabledExtensions?: string[];
 }

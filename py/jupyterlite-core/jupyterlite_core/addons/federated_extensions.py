@@ -13,6 +13,7 @@ from traitlets import List, Unicode
 
 from ..constants import (
     ALL_FEDERATED_JSON,
+    DISABLED_EXTENSIONS,
     FEDERATED_EXTENSIONS,
     JSON_FMT,
     JUPYTER_CONFIG_DATA,
@@ -356,6 +357,11 @@ class FederatedExtensionAddon(BaseAddon):
             extension_data = {
                 **pkg_data["jupyterlab"]["_build"],
             }
+            # Kept per extension: `config-utils.js` applies them on page load, unless
+            # the merged runtime configuration disables the extension itself.
+            disabled_extensions = pkg_data["jupyterlab"].get(DISABLED_EXTENSIONS)
+            if disabled_extensions:
+                extension_data[DISABLED_EXTENSIONS] = disabled_extensions
             extensions += [dict(name=pkg_data["name"], **extension_data)]
 
         self.dedupe_federated_extensions(config[JUPYTER_CONFIG_DATA])
