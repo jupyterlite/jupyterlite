@@ -63,6 +63,26 @@ For more details on these changes and how to update your deployment, see the [mi
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.5
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.4...f5b2be2eb514fd3dee58f37d6ffc27154bae9f3b))
+
+### Maintenance and upkeep improvements
+
+- Pin `@yarnpkg/core` to fix the deduplicate script [#2060](https://github.com/jupyterlite/jupyterlite/pull/2060) ([@jtpio](https://github.com/jtpio))
+- Backport PR #2063: Apply the `disabledExtensions` declared by federated extensions) [#2064](https://github.com/jupyterlite/jupyterlite/pull/2064) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-09-22&to=2026-09-28&type=c))
+
+@jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-09-22..2026-09-28&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.4
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.3...adcd30b6d0dc6dd51b8e83f10197faec66e71553))
@@ -88,8 +108,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-08-20&to=2026-09-22&type=c))
 
 @guoliu ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aguoliu+updated%3A2026-08-20..2026-09-22&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-08-20..2026-09-22&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-08-20..2026-09-22&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.3
 
