@@ -163,8 +163,12 @@ function dedupFederatedExtensions(config) {
  */
 function addDisabledByExtensions(config) {
   const disabled = config.disabledExtensions || [];
+  // The closest configuration file wins for an extension listed more than once.
+  const extensions = new Map(
+    (config.federated_extensions || []).map((extension) => [extension.name, extension]),
+  );
   const added = new Set();
-  for (const extension of config.federated_extensions || []) {
+  for (const extension of extensions.values()) {
     if (disabled.includes(extension.name)) {
       continue;
     }
