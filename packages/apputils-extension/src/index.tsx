@@ -78,12 +78,12 @@ const extensionManagerModel: JupyterFrontEndPlugin<IExtensionManagerModel> = {
     app: JupyterFrontEnd,
     translator: ITranslator | null,
   ): IExtensionManagerModel => {
-    // the extensions are bundled with the site: nothing can be installed,
-    // enabled or disabled at runtime, so the manager is a read-only listing
+    // the extensions are bundled with the site: they cannot be installed at
+    // runtime, only enabled or disabled
     const metadata = JSON.parse(PageConfig.getOption('extensionManager') || '{}');
     PageConfig.setOption(
       'extensionManager',
-      JSON.stringify({ ...metadata, can_install: false, can_manage: false }),
+      JSON.stringify({ ...metadata, can_install: false }),
     );
     return new LiteExtensionListModel(app.serviceManager, translator ?? undefined);
   },
@@ -115,7 +115,7 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
       };
     }
 
-    const { commands, serviceManager, shell } = app;
+    const { commands, shell } = app;
 
     translator = translator ?? nullTranslator;
     const trans = translator.load('jupyterlab');
@@ -135,8 +135,17 @@ export const pluginManagerPlugin: JupyterFrontEndPlugin<IPluginManager> = {
           availablePlugins,
           availablePluginsChanged: info?.availablePluginsChanged,
         },
-        serverSettings: serviceManager.serverSettings,
-        extraLockedPlugins: [pluginManagerPlugin.id],
+        extraLockedPlugins: [
+          pluginManagerPlugin.id,
+          // the plugins JupyterLab locks, as the app cannot start without them
+          '@jupyterlab/services-extension:service-manager',
+          '@jupyterlab/application-extension:layout',
+          '@jupyterlite/apputils-extension:resolver',
+          // without the in-browser services, the app falls back to a server
+          ...availablePlugins
+            .filter((plugin) => plugin.extension === '@jupyterlite/services-extension')
+            .map((plugin) => plugin.id),
+        ],
         translator: translator ?? nullTranslator,
       });
       const content = new Plugins({

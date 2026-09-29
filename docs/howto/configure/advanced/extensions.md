@@ -71,6 +71,9 @@ ones it replaces, with the `jupyterlab.disabledExtensions` field of its `package
 These entries are added to the `disabledExtensions` of the site, unless the site
 disables the extension itself by its package name.
 
+Users can also disable extensions and plugins from the browser, on top of this list: see
+[Managing the extensions shipped with the website](../simple_extensions.md#managing-the-extensions-shipped-with-the-website).
+
 ## Specifying extra paths to look for extensions
 
 The `jupyter-lite` CLI supports providing extra paths to look for extensions.

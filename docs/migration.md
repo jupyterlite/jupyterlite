@@ -34,9 +34,11 @@ file, you will need to update the plugin IDs as follows:
 
 The JupyterLab interface now includes the Extension Manager in the left sidebar,
 displayed by default. It lists the extensions shipped with the website, with their
-versions, so users can check which extensions are installed on the JupyterLite site. The
-listing is read-only: extensions cannot be installed, enabled or disabled from the
-browser.
+versions, so users can check which extensions are installed on the JupyterLite site.
+Extensions cannot be installed or uninstalled from the browser, but users can disable
+and enable them. Users can also disable and enable single plugins from the Advanced
+Plugin Manager. These choices are stored in the browser and apply once the page is
+reloaded.
 
 If you prefer not to display the Extension Manager on your site, disable it in your
 `jupyter-lite.json` file:
@@ -51,7 +53,7 @@ If you prefer not to display the Extension Manager on your site, disable it in y
 ```
 
 See
-[Listing the extensions shipped with the website](./howto/configure/simple_extensions.md#listing-the-extensions-shipped-with-the-website)
+[Managing the extensions shipped with the website](./howto/configure/simple_extensions.md#managing-the-extensions-shipped-with-the-website)
 for more details.
 
 ## `v0.7.0` to `v0.8.0`

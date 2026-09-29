@@ -50,7 +50,10 @@ async function disableExtensions(
 /**
  * Open the plugin manager from the command palette, filtered on the extension.
  */
-async function openPluginManager(page: IJupyterLabPageFixture): Promise<Locator> {
+async function openPluginManager(
+  page: IJupyterLabPageFixture,
+  filter = EXTENSION,
+): Promise<Locator> {
   await page.keyboard.press('ControlOrMeta+Shift+C');
   await page.keyboard.type('Advanced Plugin Manager');
   // The page can show before the command is added to the palette.
@@ -58,7 +61,7 @@ async function openPluginManager(page: IJupyterLabPageFixture): Promise<Locator>
     .locator('.lm-CommandPalette-item', { hasText: 'Advanced Plugin Manager' })
     .click();
   const pluginManager = page.locator('.jp-pluginmanager');
-  await pluginManager.getByRole('searchbox').fill(EXTENSION);
+  await pluginManager.getByRole('searchbox').fill(filter);
   await expect(
     pluginManager.getByRole('columnheader', { name: 'Plugin' }),
   ).toBeVisible();
@@ -68,8 +71,8 @@ async function openPluginManager(page: IJupyterLabPageFixture): Promise<Locator>
 /**
  * The row of the plugin in the plugin manager.
  */
-function pluginRow(pluginManager: Locator): Locator {
-  return pluginManager.getByRole('row').filter({ hasText: PLUGIN_ID });
+function pluginRow(pluginManager: Locator, pluginId = PLUGIN_ID): Locator {
+  return pluginManager.getByRole('row').filter({ hasText: pluginId });
 }
 
 /**
@@ -197,5 +200,72 @@ test.describe('Disabled federated extensions in Notebook', () => {
     await code.release();
 
     await expectThemeNotAdded(page);
+  });
+});
+
+test.describe('Extensions disabled by the user', () => {
+  test.use({ waitForApplication: firefoxWaitForApplication });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('lab/index.html');
+  });
+
+  test('A core plugin is disabled and enabled from the plugin manager', async ({
+    page,
+  }) => {
+    const pluginId = '@jupyterlab/theme-dark-extension:plugin';
+    const theme = 'JupyterLab Dark';
+    const setEnabled = async (enabled: boolean) => {
+      const pluginManager = await openPluginManager(page, pluginId);
+      await pluginManager.getByRole('checkbox', { name: /I understand/ }).check();
+      const checkbox = pluginRow(pluginManager, pluginId).getByRole('checkbox');
+      await checkbox.click();
+      await expect(checkbox).toBeChecked({ checked: enabled });
+    };
+
+    await setEnabled(false);
+    await page.reload();
+    expect(await listedThemes(page)).not.toContain(theme);
+
+    await setEnabled(true);
+    await page.reload();
+    expect(await listedThemes(page)).toContain(theme);
+  });
+
+  test('The in-browser services cannot be disabled', async ({ page }) => {
+    const pluginId = '@jupyterlite/services-extension:settings';
+    const pluginManager = await openPluginManager(page, pluginId);
+    await pluginManager.getByRole('checkbox', { name: /I understand/ }).check();
+
+    await expect(
+      pluginRow(pluginManager, pluginId).getByRole('checkbox'),
+    ).toBeDisabled();
+  });
+
+  test('An extension is disabled and enabled from the extension manager', async ({
+    page,
+  }) => {
+    const toggle = async (action: 'Disable' | 'Enable', button: 'Reload' | 'Close') => {
+      await page.sidebar.openTab('extensionmanager.main-view');
+      await page
+        .locator('.jp-extensionmanager-entry', { hasText: EXTENSION })
+        .getByRole('button', { name: action })
+        .click();
+      await page
+        .locator('.jp-Dialog')
+        .getByRole('button', { name: button, exact: true })
+        .click();
+    };
+
+    const reloaded = page.waitForEvent('load');
+    await toggle('Disable', 'Reload');
+    await reloaded;
+    await page.waitForSelector('.jp-LauncherCard');
+    await expectThemeNotAdded(page);
+
+    await toggle('Enable', 'Close');
+    await expect(page.locator('.jp-Dialog')).toHaveCount(0);
+    await page.reload();
+    expect(await listedThemes(page)).toContain(THEME);
   });
 });
