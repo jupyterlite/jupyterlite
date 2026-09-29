@@ -90,6 +90,25 @@ the extensions shipped with the website, with their versions. Since the extensio
 bundled at build time, the listing is read-only: extensions cannot be installed, enabled
 or disabled from the browser. Extensions listed in `disabledExtensions` are not shown.
 
+The Extension Manager is displayed by default. To hide it, disable the
+`@jupyterlab/extensionmanager-extension:plugin` plugin with the following
+`jupyter-lite.json`:
+
+```json
+{
+  "jupyter-lite-schema-version": 0,
+  "jupyter-config-data": {
+    "disabledExtensions": ["@jupyterlab/extensionmanager-extension:plugin"]
+  }
+}
+```
+
+```{note}
+The `enabled` setting of the Extension Manager has no effect in JupyterLite, since it
+only applies to an Extension Manager that can install extensions. Use
+`disabledExtensions` instead, as described above.
+```
+
 ## The case of Jupyter Widgets and custom renderers
 
 Some extensions like Jupyter Widgets and custom renderers also need a Python package to
