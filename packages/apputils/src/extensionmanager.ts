@@ -53,7 +53,8 @@ export class LiteExtensionListModel extends ListModel {
   }
 
   /**
-   * Store the extension enabled or disabled by the user, applied on page reload.
+   * Store the extension enabled or disabled by the user, and offer to reload the
+   * page to apply it.
    */
   protected async performAction(action: string, entry: IEntry): Promise<IActionReply> {
     await UserDisabledExtensions.set(entry.name, action === 'disable');
@@ -64,7 +65,14 @@ export class LiteExtensionListModel extends ListModel {
         'You will need to %1 to apply the changes.',
         trans.__('refresh the web page'),
       ),
-      buttons: [Dialog.okButton({ label: trans.__('Ok') })],
+      buttons: [
+        Dialog.cancelButton({ label: trans.__('Close') }),
+        Dialog.okButton({ label: trans.__('Reload') }),
+      ],
+    }).then((result) => {
+      if (result.button.accept) {
+        window.location.reload();
+      }
     });
     return { status: 'ok', needs_restart: ['frontend'] };
   }

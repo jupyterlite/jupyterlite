@@ -245,20 +245,26 @@ test.describe('Extensions disabled by the user', () => {
   test('An extension is disabled and enabled from the extension manager', async ({
     page,
   }) => {
-    const toggle = async (action: 'Disable' | 'Enable') => {
+    const toggle = async (action: 'Disable' | 'Enable', button: 'Reload' | 'Close') => {
       await page.sidebar.openTab('extensionmanager.main-view');
       await page
         .locator('.jp-extensionmanager-entry', { hasText: EXTENSION })
         .getByRole('button', { name: action })
         .click();
-      await page.getByRole('button', { name: 'Ok', exact: true }).click();
+      await page
+        .locator('.jp-Dialog')
+        .getByRole('button', { name: button, exact: true })
+        .click();
     };
 
-    await toggle('Disable');
-    await page.reload();
+    const reloaded = page.waitForEvent('load');
+    await toggle('Disable', 'Reload');
+    await reloaded;
+    await page.waitForSelector('.jp-LauncherCard');
     await expectThemeNotAdded(page);
 
-    await toggle('Enable');
+    await toggle('Enable', 'Close');
+    await expect(page.locator('.jp-Dialog')).toHaveCount(0);
     await page.reload();
     expect(await listedThemes(page)).toContain(THEME);
   });
