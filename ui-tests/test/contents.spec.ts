@@ -10,6 +10,7 @@ import { test } from '@jupyterlab/galata';
 import { expect } from '@playwright/test';
 
 import {
+  confirmClearBrowserData,
   createNewDirectory,
   deleteItem,
   download,
@@ -447,11 +448,7 @@ test.describe('Clear Browser Data', () => {
     await page.menu.clickMenuItem('Help>Clear Browser Data');
 
     // Checkboxes are checked by default
-    await page.getByRole('button', { name: 'Clear' }).click();
-
-    // The page should reload, wait for it to be ready again
-    await page.waitForLoadState('networkidle');
-    await page.locator('.jp-Launcher').waitFor();
+    await confirmClearBrowserData(page);
 
     // Check that the notebook is gone after reload
     await refreshFilebrowser({ page });
@@ -480,15 +477,11 @@ test.describe('Clear Browser Data', () => {
     await page.locator('input#jp-ClearData-settings').check();
     await page.locator('input#jp-ClearData-contents').uncheck();
 
-    await page.getByRole('button', { name: 'Clear' }).click();
-
-    // The page should reload, wait for it to be ready again
-    await page.waitForLoadState('networkidle');
-    await page.locator('.jp-Launcher').waitFor();
+    await confirmClearBrowserData(page);
 
     // Check that the notebook still exists after reload
     await refreshFilebrowser({ page });
-    expect(await page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
+    await expect.poll(() => page.filebrowser.isFileListedInBrowser(name)).toBeTruthy();
   });
 
   test('Clear settings should reset theme to light theme', async ({ page }) => {
@@ -502,11 +495,7 @@ test.describe('Clear Browser Data', () => {
     await page.locator('input#jp-ClearData-settings').check();
     await page.locator('input#jp-ClearData-contents').uncheck();
 
-    await page.getByRole('button', { name: 'Clear' }).click();
-
-    // The page should reload, wait for it to be ready again
-    await page.waitForLoadState('networkidle');
-    await page.locator('.jp-Launcher').waitFor();
+    await confirmClearBrowserData(page);
 
     // Verify theme is reset to light theme (default)
     expect(await page.theme.getTheme()).toBe('JupyterLab Light');
