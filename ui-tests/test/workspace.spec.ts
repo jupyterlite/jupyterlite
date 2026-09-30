@@ -40,6 +40,9 @@ test.describe('Workspace Tests', () => {
     await page.notebook.runCellByCell();
     await page.notebook.save();
 
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
+    await page.waitForTimeout(1000);
+
     await page.reload();
     await page.sidebar.close('left');
 
