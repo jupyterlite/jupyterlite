@@ -78,7 +78,7 @@ jobs:
           python -m pip install --group build
           cd ui-tests
           jlpm
-          jlpm playwright install --with-deps
+          jlpm playwright install --with-deps ${{ matrix.browser }}
 
       - name: Test
         env:
