@@ -196,9 +196,12 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
           }
 
           if (msg.header.msg_type === 'input_reply') {
-            if (this._stdinPromise !== undefined) {
+            const parentHeader = msg.parent_header as KernelMessage.IHeader;
+            const stdinPromise = this._stdinPromises.get(parentHeader.msg_id);
+            if (stdinPromise !== undefined) {
               // Stdin handled by Service Worker.
-              this._stdinPromise.resolve(msg as KernelMessage.IInputReplyMsg);
+              this._stdinPromises.delete(parentHeader.msg_id);
+              stdinPromise.resolve(msg as KernelMessage.IInputReplyMsg);
             } else {
               // Stdin handled by SharedArrayBuffer which is like conventional message
               // passing to kernel except we cannot use processMsg as the mutex is
@@ -432,7 +435,10 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   async handleStdin(
     inputRequest: KernelMessage.IInputRequestMsg,
   ): Promise<KernelMessage.IInputReplyMsg> {
-    this._stdinPromise = new PromiseDelegate<KernelMessage.IInputReplyMsg>();
+    // Multiple kernels may be waiting for stdin at the same time, so keep one promise per
+    // input request and resolve it from the input reply that has that request as parent.
+    const stdinPromise = new PromiseDelegate<KernelMessage.IInputReplyMsg>();
+    this._stdinPromises.set(inputRequest.header.msg_id, stdinPromise);
 
     const clientId = inputRequest.parent_header.session;
     const kernelId = this._getClientKernel(clientId);
@@ -444,7 +450,7 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
     }
 
     // Promise is resolved by input reply message.
-    return this._stdinPromise.promise;
+    return stdinPromise.promise;
   }
 
   /**
@@ -465,7 +471,10 @@ export class LiteKernelClient implements Kernel.IKernelAPIClient {
   private _kernelspecs: IKernelSpecs;
   private _serverSettings: ServerConnection.ISettings;
   private _changed = new Signal<this, IObservableMap.IChangedArgs<IKernel>>(this);
-  private _stdinPromise?: PromiseDelegate<KernelMessage.IInputReplyMsg>;
+  private _stdinPromises = new Map<
+    string,
+    PromiseDelegate<KernelMessage.IInputReplyMsg>
+  >();
   private _kernelSends = new ObservableMap<(msg: KernelMessage.IMessage) => void>();
   private _cancelReason = new WeakMap<
     Mutex,
