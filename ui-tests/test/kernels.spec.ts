@@ -374,6 +374,56 @@ test.describe('Kernels', () => {
     expect(output![0]).toEqual("('abc', 'xyz')");
   });
 
+  // regression test: stdin requests from several kernels in the same browsing
+  // context go through the same service worker, and each reply must only reach
+  // the kernel that asked for it
+  test('Stdin with two kernels waiting for input', async ({ page }) => {
+    // this test uses two Pyodide kernels, which take a while to start
+    test.setTimeout(180000);
+
+    await page.goto('lab/index.html');
+
+    // first notebook, waiting for input
+    await page.notebook.open('stdin.ipynb');
+    await page.notebook.runCell(0);
+    let output = await page.notebook.getCellTextOutput(0);
+    expect(output![0]).toEqual('3');
+    await page.notebook.selectCells(1);
+    await page.keyboard.press('Control+Enter');
+    const firstPrompt = page.locator('.jp-Stdin', { hasText: 'Prompt:' });
+    await firstPrompt.waitFor();
+
+    // second notebook with its own kernel, also waiting for input
+    const second = await page.notebook.createNew(undefined, { kernel: 'python' });
+    expect(second).toBeTruthy();
+    await page.notebook.setCell(0, 'code', 'answer = input("Second:")');
+    await page.notebook.selectCells(0);
+    await page.keyboard.press('Control+Enter');
+    const secondPrompt = page.locator('.jp-Stdin', { hasText: 'Second:' });
+    await secondPrompt.waitFor();
+
+    // answer the second prompt: only the second kernel must receive it
+    await secondPrompt.locator('input').click();
+    await page.keyboard.insertText('two');
+    await page.keyboard.press('Enter');
+    await secondPrompt.waitFor({ state: 'detached' });
+    await page.notebook.addCell('code', 'answer');
+    await page.notebook.runCell(1);
+    output = await page.notebook.getCellTextOutput(1);
+    expect(output![0]).toEqual("'two'");
+
+    // the first kernel must still be waiting, then answer its prompt
+    await page.notebook.activate('stdin.ipynb');
+    await expect(firstPrompt).toBeVisible();
+    await firstPrompt.locator('input').click();
+    await page.keyboard.insertText('one');
+    await page.keyboard.press('Enter');
+    await firstPrompt.waitFor({ state: 'detached' });
+    await page.notebook.runCell(2);
+    output = await page.notebook.getCellTextOutput(2);
+    expect(output![0]).toEqual("'one'");
+  });
+
   test('Restart Kernel and Run All Cells with error stops execution', async ({
     page,
   }) => {
