@@ -217,7 +217,7 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     }
 
     if (pathname.includes('/api/stdin/')) {
-      this._onStdinMessage(pathname, data);
+      this._onStdinMessage(pathname, data, requestId);
     } else {
       this._onDriveMessage(data, requestId);
     }
@@ -236,7 +236,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     });
   };
 
-  private _onStdinMessage = async (pathname: string, data: any): Promise<void> => {
+  private _onStdinMessage = async (
+    pathname: string,
+    data: any,
+    requestId?: string,
+  ): Promise<void> => {
     // Expecting pathname of the form '<optional something>/api/stdin/<suffix>' from which
     // suffix is used to identify which stdinHandler to call.
     // `data: any` because ServiceWorkerManager accepts any data and passes it through
@@ -245,9 +249,11 @@ export class ServiceWorkerManager implements IServiceWorkerManager {
     const stdinHandler = this._stdinHandlers.get(suffix);
     if (stdinHandler !== undefined) {
       const response = await stdinHandler(data);
+      // pass the browsingContextId and requestId along so the Service Worker can identify the request
       this._broadcastChannel.postMessage({
         response,
         browsingContextId: this._browsingContextId,
+        requestId,
       });
     } else {
       console.warn(`No stdin handler registered for '${pathname}'`);
