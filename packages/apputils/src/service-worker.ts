@@ -139,13 +139,19 @@ function shouldDrop(request: Request, url: URL): boolean {
  */
 async function broadcastOne(request: Request, url: URL): Promise<Response> {
   const message = await request.json();
+
+  // Unique id to match the reply to this request, as multiple kernels or terminals in the
+  // same browsing context may be waiting for stdin at the same time.
+  const requestId: string = message.requestId ?? crypto.randomUUID();
+  message.requestId = requestId;
+
   const promise = new Promise<Response>((resolve) => {
     const messageHandler = (event: MessageEvent) => {
       const data = event.data;
       // Match both browsingContextId AND requestId to ensure correct correlation
       if (
         data.browsingContextId !== message.browsingContextId ||
-        data.requestId !== message.requestId
+        data.requestId !== requestId
       ) {
         // bail if the message is not for us
         return;
