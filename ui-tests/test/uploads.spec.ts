@@ -216,6 +216,26 @@ test.describe('Upload Tests', () => {
       binaryFile.sha256,
     );
   });
+
+  test('Opening a binary file in the text editor shows an error', async ({ page }) => {
+    const binaryFile = createBinaryFile('07-upload-no-viewer.bin', 4096, 43);
+
+    await uploadFiles(page, [binaryFile]);
+    expect(await page.filebrowser.isFileListedInBrowser(binaryFile.name)).toBeTruthy();
+
+    await page.locator('.jp-DirListing-item', { hasText: binaryFile.name }).dblclick();
+
+    const dialog = page.locator('.jp-Dialog');
+    await expect(dialog).toContainText(`File Load Error for ${binaryFile.name}`);
+    await expect(dialog).toContainText(`${binaryFile.name} is not UTF-8 encoded`);
+    await dialog.getByRole('button', { name: 'Close' }).click();
+    await expect(page.locator('.jp-FileEditor')).toHaveCount(0);
+
+    const uploadedBinary = await getFileModel(page, binaryFile.name, 'base64');
+    expect(uploadedBinary.format).toBe('base64');
+    expect(uploadedBinary.size).toBe(binaryFile.size);
+    expect(uploadedBinary.content).toBe(binaryFile.base64);
+  });
 });
 
 function createBinaryFile(
