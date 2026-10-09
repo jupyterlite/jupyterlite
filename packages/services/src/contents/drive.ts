@@ -210,7 +210,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * Get the download URL
    */
   async getDownloadUrl(path: string): Promise<string> {
-    path = decodeURIComponent(path.replace(/^\//, ''));
+    path = path.replace(/^\//, '');
 
     const storage = await this.storage;
     const localItem = (await storage.getItem(path)) as IModel | null;
@@ -516,7 +516,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
 
     // Otherwise fallback to our default drive implementation
     // remove leading slash
-    path = decodeURIComponent(path.replace(/^\//, ''));
+    path = path.replace(/^\//, '');
 
     if (path === '') {
       const folder = await this._getFolder(path);
@@ -610,10 +610,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @returns A promise which resolves with the new file content model when the file is renamed.
    */
   async rename(oldLocalPath: string, newLocalPath: string): Promise<IModel> {
-    const path = decodeURIComponent(oldLocalPath);
-    const file = await this.get(path, { content: true }).catch(() => null);
+    const file = await this.get(oldLocalPath, { content: true }).catch(() => null);
     if (!file) {
-      throw Error(`Could not find file with path ${path}`);
+      throw Error(`Could not find file with path ${oldLocalPath}`);
     }
     await this._ensureParentDirectoryExists(newLocalPath);
     const modified = new Date().toISOString();
@@ -627,9 +626,9 @@ export class BrowserStorageDrive implements Contents.IDrive {
     const storage = await this.storage;
     await storage.setItem(newLocalPath, newFile);
     // remove the old file
-    await storage.removeItem(path);
+    await storage.removeItem(oldLocalPath);
     // remove the corresponding checkpoint
-    await (await this.checkpoints).removeItem(path);
+    await (await this.checkpoints).removeItem(oldLocalPath);
     // if a directory, recurse through all children
     if (file.type === 'directory') {
       let child: IModel;
@@ -682,7 +681,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
     }
 
     // Otherwise fallback to our default drive implementation
-    path = decodeURIComponent(path);
     await this._ensureParentDirectoryExists(path);
 
     // process the file if coming from an upload
@@ -819,7 +817,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @param path - The path to the file.
    */
   async delete(path: string): Promise<void> {
-    path = decodeURIComponent(path);
     const slashed = `${path}/`;
     const toDelete = (await (await this.storage).keys()).filter(
       (key) => key === path || key.startsWith(slashed),
@@ -854,7 +851,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
    */
   async createCheckpoint(path: string): Promise<Contents.ICheckpointModel> {
     const checkpoints = await this.checkpoints;
-    path = decodeURIComponent(path);
     const item = await this.get(path, { content: true }).catch(() => null);
     if (!item) {
       throw Error(`Could not find file with path ${path}`);
@@ -898,7 +894,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @returns A promise which resolves when the checkpoint is restored.
    */
   async restoreCheckpoint(path: string, checkpointID: string): Promise<void> {
-    path = decodeURIComponent(path);
     const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     const item = copies[id];
@@ -914,7 +909,6 @@ export class BrowserStorageDrive implements Contents.IDrive {
    * @returns A promise which resolves when the checkpoint is deleted.
    */
   async deleteCheckpoint(path: string, checkpointID: string): Promise<void> {
-    path = decodeURIComponent(path);
     const copies = ((await (await this.checkpoints).getItem(path)) || []) as IModel[];
     const id = parseInt(checkpointID);
     copies.splice(id, 1);
@@ -1034,7 +1028,11 @@ export class BrowserStorageDrive implements Contents.IDrive {
         const serverContents = await this._getServerDirectory(path);
         model = { ...model, content: Array.from(serverContents.values()) };
       } else {
-        const fileUrl = URLExt.join(PageConfig.getBaseUrl(), 'files', path);
+        const fileUrl = URLExt.join(
+          PageConfig.getBaseUrl(),
+          'files',
+          URLExt.encodeParts(path),
+        );
         const response = await fetch(fileUrl);
         if (!response.ok) {
           return null;
@@ -1111,7 +1109,7 @@ export class BrowserStorageDrive implements Contents.IDrive {
       const apiURL = URLExt.join(
         PageConfig.getBaseUrl(),
         'api/contents',
-        path,
+        URLExt.encodeParts(path),
         contentsAllJsonFile,
       );
 

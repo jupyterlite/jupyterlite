@@ -683,8 +683,7 @@ const opener: JupyterFrontEndPlugin<void> = {
           }
           return;
         }
-        const files = paths.map((path) => decodeURIComponent(path));
-        const [file] = files;
+        const [file] = paths;
 
         if (page === 'tree' || page === 'notebooks' || page === 'edit') {
           let model: Contents.IModel;
@@ -721,7 +720,7 @@ const opener: JupyterFrontEndPlugin<void> = {
         }
 
         // open all files in the lab interface
-        files.forEach((file) => docManager.openOrReveal(file));
+        paths.forEach((file) => docManager.openOrReveal(file));
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
         // only remove the path
         url.searchParams.delete('path');
