@@ -10,6 +10,11 @@ const blobOptions = process.env.BLOB_FILENAME
 module.exports = {
   ...baseConfig,
   retries: 1,
+  expect: {
+    // Give assertions made right after a page load, a reload or an upload
+    // more room than the 5 seconds Playwright uses by default.
+    timeout: 15000,
+  },
   tag: process.env.PLAYWRIGHT_TEST_TAG,
   reporter: process.env.CI
     ? [

@@ -5,6 +5,8 @@ import { Buffer } from 'buffer';
 
 import { test } from '@jupyterlab/galata';
 
+import type { IJupyterLabPageFixture } from '@jupyterlab/galata';
+
 import { expect } from '@playwright/test';
 
 import {
@@ -19,6 +21,25 @@ import {
 test.use({
   waitForApplication: firefoxWaitForApplication,
 });
+
+/**
+ * Answer a stdin prompt and wait for its input widget to be removed
+ *
+ * JupyterLab keeps the stdin widget in the output area for a short while after
+ * the reply has been echoed. Reading the cell outputs during that window is
+ * racy, so wait for the widget to be gone before returning.
+ */
+async function answerStdin(
+  page: IJupyterLabPageFixture,
+  prompt: string,
+  value: string,
+): Promise<void> {
+  const stdin = page.locator('.jp-Stdin', { hasText: prompt });
+  await stdin.waitFor();
+  await page.keyboard.insertText(value);
+  await page.keyboard.press('Enter');
+  await stdin.waitFor({ state: 'detached' });
+}
 
 test.describe('Kernels', () => {
   test('Basic code execution', async ({ page }) => {
@@ -318,9 +339,7 @@ test.describe('Kernels', () => {
 
     // Run cell containing `input`.
     const cell1 = page.notebook.runCell(1); // Do not await yet.
-    await page.locator('.jp-Stdin >> text=Prompt:').waitFor();
-    await page.keyboard.insertText('My Name');
-    await page.keyboard.press('Enter');
+    await answerStdin(page, 'Prompt:', 'My Name');
     await cell1; // await end of cell.
 
     output = await page.notebook.getCellTextOutput(1);
@@ -333,9 +352,7 @@ test.describe('Kernels', () => {
 
     // Run cell containing `getpass`
     const cell3 = page.notebook.runCell(3); // Do not await yet.
-    await page.locator('.jp-Stdin >> text=Password:').waitFor();
-    await page.keyboard.insertText('hidden123');
-    await page.keyboard.press('Enter');
+    await answerStdin(page, 'Password:', 'hidden123');
     await cell3; // await end of cell.
 
     output = await page.notebook.getCellTextOutput(3);
@@ -348,17 +365,63 @@ test.describe('Kernels', () => {
 
     // Check multiple `input` in the same cell.
     const cell5 = page.notebook.runCell(5); // Do not await yet.
-    await page.locator('.jp-Stdin >> text=n0:').waitFor();
-    await page.keyboard.insertText('abc');
-    await page.keyboard.press('Enter');
-    await page.locator('.jp-Stdin >> text=n1:').waitFor();
-    await page.keyboard.insertText('xyz');
-    await page.keyboard.press('Enter');
+    await answerStdin(page, 'n0:', 'abc');
+    await answerStdin(page, 'n1:', 'xyz');
     await cell5; // await end of cell.
 
     await page.notebook.runCell(6);
     output = await page.notebook.getCellTextOutput(6);
     expect(output![0]).toEqual("('abc', 'xyz')");
+  });
+
+  // regression test: stdin requests from several kernels in the same browsing
+  // context go through the same service worker, and each reply must only reach
+  // the kernel that asked for it
+  test('Stdin with two kernels waiting for input', async ({ page }) => {
+    // this test uses two Pyodide kernels, which take a while to start
+    test.setTimeout(180000);
+
+    await page.goto('lab/index.html');
+
+    // first notebook, waiting for input
+    await page.notebook.open('stdin.ipynb');
+    await page.notebook.runCell(0);
+    let output = await page.notebook.getCellTextOutput(0);
+    expect(output![0]).toEqual('3');
+    await page.notebook.selectCells(1);
+    await page.keyboard.press('Control+Enter');
+    const firstPrompt = page.locator('.jp-Stdin', { hasText: 'Prompt:' });
+    await firstPrompt.waitFor();
+
+    // second notebook with its own kernel, also waiting for input
+    const second = await page.notebook.createNew(undefined, { kernel: 'python' });
+    expect(second).toBeTruthy();
+    await page.notebook.setCell(0, 'code', 'answer = input("Second:")');
+    await page.notebook.selectCells(0);
+    await page.keyboard.press('Control+Enter');
+    const secondPrompt = page.locator('.jp-Stdin', { hasText: 'Second:' });
+    await secondPrompt.waitFor();
+
+    // answer the second prompt: only the second kernel must receive it
+    await secondPrompt.locator('input').click();
+    await page.keyboard.insertText('two');
+    await page.keyboard.press('Enter');
+    await secondPrompt.waitFor({ state: 'detached' });
+    await page.notebook.addCell('code', 'answer');
+    await page.notebook.runCell(1);
+    output = await page.notebook.getCellTextOutput(1);
+    expect(output![0]).toEqual("'two'");
+
+    // the first kernel must still be waiting, then answer its prompt
+    await page.notebook.activate('stdin.ipynb');
+    await expect(firstPrompt).toBeVisible();
+    await firstPrompt.locator('input').click();
+    await page.keyboard.insertText('one');
+    await page.keyboard.press('Enter');
+    await firstPrompt.waitFor({ state: 'detached' });
+    await page.notebook.runCell(2);
+    output = await page.notebook.getCellTextOutput(2);
+    expect(output![0]).toEqual("'one'");
   });
 
   test('Restart Kernel and Run All Cells with error stops execution', async ({

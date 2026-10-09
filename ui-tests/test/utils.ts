@@ -130,6 +130,22 @@ export async function createNewDirectory({
 }
 
 /**
+ * Confirm the "Clear Browser Data" dialog and wait for the page to reload
+ *
+ * The page reloads only once the selected data has been cleared, so waiting for
+ * `networkidle` or for the launcher right after the click could resolve on the
+ * old page, before the reload even started.
+ */
+export async function confirmClearBrowserData(
+  page: IJupyterLabPageFixture,
+): Promise<void> {
+  const reloaded = page.waitForEvent('load');
+  await page.getByRole('button', { name: 'Clear' }).click();
+  await reloaded;
+  await page.locator('.jp-Launcher').waitFor();
+}
+
+/**
  * Workaround for Galata being stuck when testing on Firefox:
  * https://github.com/jupyterlab/jupyterlab/issues/15093
  */
