@@ -40,11 +40,14 @@ test.describe('Workspace Tests', () => {
     await page.notebook.runCellByCell();
     await page.notebook.save();
 
+    // Allow JupyterLab's debounced workspace/layout save to flush to storage
+    await page.waitForTimeout(1000);
+
     await page.reload();
     await page.sidebar.close('left');
 
     await refreshFilebrowser({ page });
-    expect(await page.notebook.isOpen(notebook)).toBeTruthy();
+    await expect.poll(() => page.notebook.isOpen(notebook)).toBeTruthy();
   });
 
   test('Create new workspace from UI using menu entry', async ({ page }) => {
@@ -180,8 +183,8 @@ test.describe('Workspace Tests', () => {
 
     // Verify workspace switch occurred
     expect(page.url()).toContain(`workspace=${workspace1}`);
-    expect(await page.notebook.isOpen(notebook1)).toBeTruthy();
-    expect(await page.notebook.isOpen(notebook2)).toBeFalsy();
+    await expect.poll(() => page.notebook.isOpen(notebook1)).toBeTruthy();
+    await expect.poll(() => page.notebook.isOpen(notebook2)).toBeFalsy();
 
     // Verify workspace indicator shows new workspace
     await expect(workspaceSelector).toContainText(workspace1);
@@ -200,8 +203,8 @@ test.describe('Workspace Tests', () => {
 
     // Verify switch back
     expect(page.url()).toContain(`workspace=${workspace2}`);
-    expect(await page.notebook.isOpen(notebook2)).toBeTruthy();
-    expect(await page.notebook.isOpen(notebook1)).toBeFalsy();
+    await expect.poll(() => page.notebook.isOpen(notebook2)).toBeTruthy();
+    await expect.poll(() => page.notebook.isOpen(notebook1)).toBeFalsy();
   });
 });
 
