@@ -6,26 +6,34 @@
 <html>
   <head>
     <script>
-      // Handle workspace URLs by extracting the workspace name and redirecting to lab with query parameter
+      // Handle workspace URLs by extracting the workspace name and redirecting to lab
+      // in single-document mode (the Simple Interface) with query parameters
       (function () {
-        const pathname = window.location.pathname;
-        const workspaceMatch = pathname.match(/\/doc\/workspaces\/([^\/]+)/);
-
-        if (workspaceMatch) {
-          // Extract workspace name from URL
-          const workspaceName = workspaceMatch[1];
-          const baseUrl = window.location.origin + window.location.pathname.replace(/\/workspaces\/[^\/]+.*$/, '');
-          const redirectUrl = `${baseUrl}/lab/index.html?workspace=${encodeURIComponent(workspaceName)}`;
-
-          console.log('Workspace redirect:', redirectUrl);
-          window.location.href = redirectUrl;
-        } else {
-          // Fallback: redirect to /lab by default
-          window.location.href = window.location.href.replace(
-            /(\/|\/index.html)?$/,
-            '/../../lab/index.html'
-          );
+        const url = new URL(window.location.href);
+        const workspaceMatch = url.pathname.match(/\/doc\/workspaces(?:\/([^\/]+))?/);
+        if (!workspaceMatch) {
+          return;
         }
+
+        const params = [];
+        // Extract workspace name from URL
+        const workspaceName = workspaceMatch[1];
+        if (
+          workspaceName &&
+          workspaceName !== 'index.html' &&
+          !url.searchParams.has('workspace')
+        ) {
+          params.push(`workspace=${encodeURIComponent(workspaceName)}`);
+        }
+        if (!url.searchParams.has('mode')) {
+          params.push('mode=single-document');
+        }
+
+        url.pathname = `${url.pathname.slice(0, workspaceMatch.index)}/lab/index.html`;
+        if (params.length) {
+          url.search += `${url.search ? '&' : '?'}${params.join('&')}`;
+        }
+        window.location.replace(url.href);
       }.call(this));
     </script>
   </head>

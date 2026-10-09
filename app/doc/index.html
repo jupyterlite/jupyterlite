@@ -10,7 +10,7 @@
       (function () {
         const url = new URL(window.location.href);
         const pathname = url.pathname.replace(
-          /\/doc\/tree(\/(index\.html)?)?$/,
+          /\/doc(\/(index\.html)?)?$/,
           '/lab/index.html'
         );
         if (pathname === url.pathname) {

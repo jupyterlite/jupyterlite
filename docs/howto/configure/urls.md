@@ -42,6 +42,15 @@ Use a different UI mode. `mode` can be one of `single-document` or `multiple-doc
 | -------- | ------------------------------------------------------------------------ |
 | no       | `https://jupyterlite.github.io/demo/lab/index.html?mode=single-document` |
 
+The `doc` page is a shortcut to the `single-document` mode, also known as the _Simple
+Interface_. It redirects to the `lab` page with `mode=single-document` and keeps the
+other parameters, such as `path`.
+
+| examples                                                           |
+| ------------------------------------------------------------------ |
+| `https://jupyterlite.github.io/demo/doc/index.html`                |
+| `https://jupyterlite.github.io/demo/doc/index.html?path=README.md` |
+
 ### `workspace`
 
 > `?workspace={:workspace-id}`

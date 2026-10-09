@@ -127,3 +127,42 @@ test.describe('Notebook pages routing', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('Simple Interface pages routing', () => {
+  const MAIN_DOCK_PANEL = '#jp-main-dock-panel';
+  const SIMPLE_INTERFACE_URL = '**/lab/index.html?mode=single-document';
+
+  for (const url of [
+    'doc/index.html',
+    'doc/',
+    'doc/tree/index.html',
+    'doc/workspaces/index.html',
+  ]) {
+    test(`Simple Interface page ${url} opens JupyterLab in single-document mode`, async ({
+      page,
+    }) => {
+      await page.goto(url);
+
+      await page.waitForURL(SIMPLE_INTERFACE_URL);
+      await expect(page.locator(MAIN_DOCK_PANEL)).toHaveAttribute(
+        'data-mode',
+        'single-document',
+      );
+    });
+  }
+
+  for (const url of ['doc/index.html', 'doc/tree/index.html']) {
+    test(`Simple Interface page ${url} with a path opens the file`, async ({
+      page,
+    }) => {
+      await page.goto(`${url}?path=empty.ipynb`);
+
+      await expect(page.locator('.jp-NotebookPanel')).toBeVisible();
+      await expect(page.locator(MAIN_DOCK_PANEL)).toHaveAttribute(
+        'data-mode',
+        'single-document',
+      );
+      await page.waitForURL(SIMPLE_INTERFACE_URL);
+    });
+  }
+});
