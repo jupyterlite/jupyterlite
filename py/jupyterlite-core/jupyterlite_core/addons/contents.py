@@ -257,9 +257,7 @@ class ContentsAddon(BaseAddon):
 
             pre-validated this structure with the ``jupyter_server`` API spec
         """
-        sde = datetime.datetime.fromtimestamp(
-            self.manager.source_date_epoch, tz=datetime.timezone.utc
-        )
+        sde = datetime.datetime.fromtimestamp(self.manager.source_date_epoch, tz=datetime.UTC)
 
         if isinstance(listing, dict):
             for field in ["created", "last_modified"]:

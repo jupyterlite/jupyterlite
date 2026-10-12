@@ -14,7 +14,7 @@ You'll need:
 
 - `git`
 - `nodejs >=24,<25`
-- `python >=3.10`
+- `python >=3.11`
 
 **Tip**: You can use any Python package manager you prefer (`pip`, `conda`, etc.) for
 installing Python dependencies.

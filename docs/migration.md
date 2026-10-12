@@ -56,6 +56,11 @@ See
 [Managing the extensions shipped with the website](./howto/configure/simple_extensions.md#managing-the-extensions-shipped-with-the-website)
 for more details.
 
+### `jupyterlite-core`
+
+Support for Python 3.10 has been dropped. `jupyterlite-core` now requires Python 3.11 or
+higher.
+
 ## `v0.7.0` to `v0.8.0`
 
 ### Extensions
