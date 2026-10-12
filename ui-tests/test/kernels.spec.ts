@@ -569,7 +569,7 @@ test.describe('Kernels', () => {
 
     // Expect the remaining four cells to be scheduled for execution
     const busyCells = page.locator('.jp-InputArea-prompt >> text="[*]:"');
-    expect(busyCells).toHaveCount(4);
+    await expect(busyCells).toHaveCount(4);
 
     // Interrupt the kernel while the second cell is executing
     await page.menu.clickMenuItem('Kernel>Interrupt Kernel');
@@ -582,7 +582,7 @@ test.describe('Kernels', () => {
     await interruptionError.waitFor();
 
     // Expect text explaining the error
-    expect(interruptionError).toHaveText(errorMessage);
+    await expect(interruptionError).toHaveText(errorMessage);
 
     // Expect the second cell to have produced an output
     const output = await page.notebook.getCellTextOutput(1);
@@ -594,7 +594,7 @@ test.describe('Kernels', () => {
 
     // Expect all remaining cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
-    expect(idleCells).toHaveCount(3);
+    await expect(idleCells).toHaveCount(3);
 
     // Expect the remaining cells to not have any output
     for (const i of [3, 4]) {
@@ -627,11 +627,11 @@ test.describe('Kernels', () => {
     await interruptionError.waitFor();
 
     // Expect text explaining the error
-    expect(interruptionError).toHaveText(errorMessage);
+    await expect(interruptionError).toHaveText(errorMessage);
 
     // Expect all cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
-    expect(idleCells).toHaveCount(5);
+    await expect(idleCells).toHaveCount(5);
   });
 
   test('Recreate a directory in the kernel after deletion in the file browser', async ({
@@ -775,7 +775,7 @@ test.describe('Kernel status and logs', () => {
     await page.waitForSelector('.jp-KernelStatus-success');
 
     // Check the Pyodide kernel logs are visible
-    expect(page.getByText('Loaded micropip')).toBeVisible();
+    await expect(page.getByText('Loaded micropip')).toBeVisible();
   });
 
   test('Kernel shows error state with invalid package configuration', async ({
@@ -808,6 +808,6 @@ test.describe('Kernel status and logs', () => {
     await page.waitForSelector('.jp-LogConsole');
     await page.waitForSelector('.jp-KernelStatus-error');
 
-    expect(page.getByText('unknownpackagetoload')).toBeVisible();
+    await expect(page.getByText('unknownpackagetoload')).toBeVisible();
   });
 });
