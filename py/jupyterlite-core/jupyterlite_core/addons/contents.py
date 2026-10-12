@@ -3,10 +3,10 @@
 
 """a JupyterLite addon for Jupyter Server-compatible contents"""
 
-import datetime
 import json
 import pprint
 import re
+from datetime import UTC, datetime
 from pathlib import Path
 
 from ..constants import (
@@ -257,7 +257,7 @@ class ContentsAddon(BaseAddon):
 
             pre-validated this structure with the ``jupyter_server`` API spec
         """
-        sde = datetime.datetime.fromtimestamp(self.manager.source_date_epoch, tz=datetime.UTC)
+        sde = datetime.fromtimestamp(self.manager.source_date_epoch, tz=UTC)
 
         if isinstance(listing, dict):
             for field in ["created", "last_modified"]:
@@ -282,7 +282,7 @@ class DateTimeEncoder(json.JSONEncoder):
     """A custom date-aware JSON encoder"""
 
     def default(self, o):
-        if isinstance(o, datetime.datetime):
+        if isinstance(o, datetime):
             return isoformat(o)
 
         return json.JSONEncoder.default(self, o)
