@@ -6,12 +6,21 @@
 <html>
   <head>
     <script>
-      // redirect to /lab by default
+      // redirect to /lab in single-document mode (the Simple Interface)
       (function () {
-        window.location.href = window.location.href.replace(
-          /(\/|\/index.html)?(\?.*)$/,
-          '/../../lab/index.html$2'
+        const url = new URL(window.location.href);
+        const pathname = url.pathname.replace(
+          /\/doc\/tree(\/(index\.html)?)?$/,
+          '/lab/index.html'
         );
+        if (pathname === url.pathname) {
+          return;
+        }
+        url.pathname = pathname;
+        if (!url.searchParams.has('mode')) {
+          url.search += `${url.search ? '&' : '?'}mode=single-document`;
+        }
+        window.location.replace(url.href);
       }.call(this));
     </script>
   </head>

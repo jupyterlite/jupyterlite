@@ -569,7 +569,7 @@ test.describe('Kernels', () => {
 
     // Expect the remaining four cells to be scheduled for execution
     const busyCells = page.locator('.jp-InputArea-prompt >> text="[*]:"');
-    expect(busyCells).toHaveCount(4);
+    await expect(busyCells).toHaveCount(4);
 
     // Interrupt the kernel while the second cell is executing
     await page.menu.clickMenuItem('Kernel>Interrupt Kernel');
@@ -582,7 +582,7 @@ test.describe('Kernels', () => {
     await interruptionError.waitFor();
 
     // Expect text explaining the error
-    expect(interruptionError).toHaveText(errorMessage);
+    await expect(interruptionError).toHaveText(errorMessage);
 
     // Expect the second cell to have produced an output
     const output = await page.notebook.getCellTextOutput(1);
@@ -594,7 +594,7 @@ test.describe('Kernels', () => {
 
     // Expect all remaining cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
-    expect(idleCells).toHaveCount(3);
+    await expect(idleCells).toHaveCount(3);
 
     // Expect the remaining cells to not have any output
     for (const i of [3, 4]) {
@@ -627,11 +627,11 @@ test.describe('Kernels', () => {
     await interruptionError.waitFor();
 
     // Expect text explaining the error
-    expect(interruptionError).toHaveText(errorMessage);
+    await expect(interruptionError).toHaveText(errorMessage);
 
     // Expect all cells to have cleared execution status
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
-    expect(idleCells).toHaveCount(5);
+    await expect(idleCells).toHaveCount(5);
   });
 
   test('Recreate a directory in the kernel after deletion in the file browser', async ({
@@ -665,6 +665,48 @@ test.describe('Kernels', () => {
     await page.notebook.runCell(1);
     output = await page.notebook.getCellTextOutput(1);
     expect(output?.[0]?.trim()).toBe('recreated');
+  });
+
+  test('Connect a console to a kernel started without a session', async ({ page }) => {
+    await page.goto('lab/index.html');
+
+    // Start a kernel without a session and define a variable in it, like an
+    // extension using the kernels API would do
+    const kernelId = await page.evaluate(async () => {
+      const kernel = await window.galata.app.serviceManager.kernels.startNew({
+        name: 'javascript',
+      });
+      await kernel.requestExecute({ code: 'var a = 42;' }).done;
+      return kernel.id;
+    });
+
+    await page.click(
+      '.jp-LauncherCard[title="JavaScript (Web Worker)"][data-category="Console"]',
+    );
+    await page.getByText('JavaScript (Web Worker) | Idle').waitFor();
+
+    // Connect the console to the kernel started without a session
+    await page.menu.clickMenuItem('Kernel>Change Kernel…');
+    const dialog = page.locator('.jp-Dialog');
+    await dialog
+      .locator('select')
+      .selectOption({ label: `javascript (${kernelId.split('-')[0]})` });
+    await dialog.locator('.jp-Dialog-button.jp-mod-accept').click();
+    await expect(dialog).toHaveCount(0);
+
+    const consoleInput = page.locator(
+      '.jp-CodeConsole-input .cm-content[contenteditable="true"]',
+    );
+    await consoleInput.fill('a');
+    await consoleInput.press('Shift+Enter');
+
+    await expect(
+      page.locator('.jp-CodeConsole-content .jp-OutputArea-output'),
+    ).toHaveText('42');
+
+    // The previous kernel of the console was shut down
+    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(1);
   });
 });
 
@@ -733,7 +775,7 @@ test.describe('Kernel status and logs', () => {
     await page.waitForSelector('.jp-KernelStatus-success');
 
     // Check the Pyodide kernel logs are visible
-    expect(page.getByText('Loaded micropip')).toBeVisible();
+    await expect(page.getByText('Loaded micropip')).toBeVisible();
   });
 
   test('Kernel shows error state with invalid package configuration', async ({
@@ -766,6 +808,6 @@ test.describe('Kernel status and logs', () => {
     await page.waitForSelector('.jp-LogConsole');
     await page.waitForSelector('.jp-KernelStatus-error');
 
-    expect(page.getByText('unknownpackagetoload')).toBeVisible();
+    await expect(page.getByText('unknownpackagetoload')).toBeVisible();
   });
 });

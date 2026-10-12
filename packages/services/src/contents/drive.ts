@@ -18,7 +18,7 @@ import { Signal } from '@lumino/signaling';
 import { FILE, MIME } from './tokens';
 
 import type localforage from 'localforage';
-import { notFoundError } from './tools';
+import { notFoundError, notUtf8Error } from './tools';
 
 type IModel = Contents.IModel;
 
@@ -39,6 +39,22 @@ const N_CHECKPOINTS = 5;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder('utf-8');
+const strictDecoder = new TextDecoder('utf-8', { fatal: true });
+
+/**
+ * Decode the base64 content of a model as UTF-8.
+ *
+ * Like Jupyter Server, reject binary data: a lossy decode would show garbled
+ * text, and saving it back would corrupt the file.
+ */
+function decodeBase64(model: Contents.IModel): string {
+  const bytes = Uint8Array.from(atob(model.content), (c) => c.charCodeAt(0));
+  try {
+    return strictDecoder.decode(bytes);
+  } catch {
+    throw notUtf8Error(model.path);
+  }
+}
 
 /**
  * Converts a contents model into JSON
@@ -59,13 +75,9 @@ function convertToJSON(model: Contents.IModel): Contents.IModel {
       };
     }
     case 'base64': {
-      const binary = atob(model.content);
-      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-      const decoded = new TextDecoder('utf-8').decode(bytes);
-
       return {
         ...model,
-        content: JSON.parse(decoded),
+        content: JSON.parse(decodeBase64(model)),
         format: 'json',
       };
     }
@@ -93,13 +105,9 @@ function convertToText(model: Contents.IModel): Contents.IModel {
       return model;
     }
     case 'base64': {
-      const binary = atob(model.content);
-      const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-      const decoded = new TextDecoder('utf-8').decode(bytes);
-
       return {
         ...model,
-        content: decoded,
+        content: decodeBase64(model),
         format: 'text',
       };
     }

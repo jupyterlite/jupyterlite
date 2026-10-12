@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+  Copyright (c) Jupyter Development Team.
+  Distributed under the terms of the Modified BSD License.
+-->
+<html>
+  <head>
+    <script>
+      // redirect to /lab in single-document mode (the Simple Interface)
+      (function () {
+        const url = new URL(window.location.href);
+        const pathname = url.pathname.replace(
+          /\/doc(\/(index\.html)?)?$/,
+          '/lab/index.html'
+        );
+        if (pathname === url.pathname) {
+          return;
+        }
+        url.pathname = pathname;
+        if (!url.searchParams.has('mode')) {
+          url.search += `${url.search ? '&' : '?'}mode=single-document`;
+        }
+        window.location.replace(url.href);
+      }.call(this));
+    </script>
+  </head>
+</html>

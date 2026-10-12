@@ -101,12 +101,12 @@ export class LiteSessionClient implements ISessionAPIClient {
     if (kernel) {
       // Kernel id takes precedence over name.
       if (kernel.id) {
-        const session = this._sessions.find(
-          (session) => session.kernel?.id === kernel?.id,
-        );
-        if (session) {
-          patched.kernel = session.kernel;
+        // The kernel may not belong to any session, e.g. when started from the kernels API.
+        const existingKernel = await this._kernelClient.getModel(kernel.id);
+        if (!existingKernel) {
+          throw Error(`No such kernel: ${kernel.id}`);
         }
+        patched.kernel = { id: existingKernel.id, name: existingKernel.name };
       } else if (kernel.name) {
         const newKernel = await this._kernelClient.startNew({
           id: UUID.uuid4(),
@@ -121,6 +121,18 @@ export class LiteSessionClient implements ISessionAPIClient {
     }
 
     this._sessions[index] = patched;
+
+    // Shut down the kernel that was replaced, like Jupyter Server does, unless
+    // another session still uses it.
+    const previousKernelId = session.kernel?.id;
+    if (
+      previousKernelId &&
+      previousKernelId !== patched.kernel?.id &&
+      !this._sessions.some((s) => s.kernel?.id === previousKernelId)
+    ) {
+      await this._kernelClient.shutdown(previousKernelId);
+    }
+
     return patched;
   }
 
@@ -140,12 +152,11 @@ export class LiteSessionClient implements ISessionAPIClient {
     // Check if we should reuse an existing kernel (kernel.id takes precedence over name).
     // Note: The Session.ISessionOptions type doesn't include kernel.id, but at runtime
     // it may be passed (e.g., from SessionContext._changeKernel when sharing a kernel).
+    // The kernel may not belong to any session, e.g. when started from the kernels API.
     const requestedKernelId = (options.kernel as { id?: string } | undefined)?.id;
     if (requestedKernelId) {
-      const existingSession = this._sessions.find(
-        (session) => session.kernel?.id === requestedKernelId,
-      );
-      if (existingSession) {
+      const existingKernel = await this._kernelClient.getModel(requestedKernelId);
+      if (existingKernel) {
         // Create a new session that shares the existing kernel
         const id = UUID.uuid4();
         const session: Session.IModel = {
@@ -153,7 +164,7 @@ export class LiteSessionClient implements ISessionAPIClient {
           path,
           name: name ?? path,
           type: 'notebook',
-          kernel: existingSession.kernel,
+          kernel: { id: existingKernel.id, name: existingKernel.name },
         };
         this._sessions.push(session);
         return session;

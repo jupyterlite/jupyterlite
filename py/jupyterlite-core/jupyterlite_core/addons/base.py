@@ -1,6 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import contextlib
 import email.utils
 import json
 import os
@@ -312,12 +313,8 @@ class BaseAddon(LoggingConfigurable):
         if self.should_use_libarchive_c:
             import libarchive
 
-            old_cwd = os.getcwd()
-            os.chdir(str(dest))
-            try:
+            with contextlib.chdir(dest):
                 libarchive.extract_file(str(archive))
-            finally:
-                os.chdir(old_cwd)
             return
 
         if archive.name.endswith(EXTENSION_ZIP):
@@ -336,7 +333,7 @@ class BaseAddon(LoggingConfigurable):
     def is_within_directory(self, directory, target):
         abs_directory = os.path.abspath(directory)
         abs_target = os.path.abspath(target)
-        prefix = os.path.commonprefix([abs_directory, abs_target])
+        prefix = os.path.commonpath([abs_directory, abs_target])
         return prefix == abs_directory
 
     def safe_extract_all(self, tar, path=".", members=None, *, numeric_owner=False):
