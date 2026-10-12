@@ -531,6 +531,48 @@ test.describe('Kernels', () => {
     const idleCells = page.locator('.jp-InputArea-prompt >> text="[ ]:"');
     expect(idleCells).toHaveCount(5);
   });
+
+  test('Connect a console to a kernel started without a session', async ({ page }) => {
+    await page.goto('lab/index.html');
+
+    // Start a kernel without a session and define a variable in it, like an
+    // extension using the kernels API would do
+    const kernelId = await page.evaluate(async () => {
+      const kernel = await window.galata.app.serviceManager.kernels.startNew({
+        name: 'javascript',
+      });
+      await kernel.requestExecute({ code: 'var a = 42;' }).done;
+      return kernel.id;
+    });
+
+    await page.click(
+      '.jp-LauncherCard[title="JavaScript (Web Worker)"][data-category="Console"]',
+    );
+    await page.getByText('JavaScript (Web Worker) | Idle').waitFor();
+
+    // Connect the console to the kernel started without a session
+    await page.menu.clickMenuItem('Kernel>Change Kernel…');
+    const dialog = page.locator('.jp-Dialog');
+    await dialog
+      .locator('select')
+      .selectOption({ label: `javascript (${kernelId.split('-')[0]})` });
+    await dialog.locator('.jp-Dialog-button.jp-mod-accept').click();
+    await expect(dialog).toHaveCount(0);
+
+    const consoleInput = page.locator(
+      '.jp-CodeConsole-input .cm-content[contenteditable="true"]',
+    );
+    await consoleInput.fill('a');
+    await consoleInput.press('Shift+Enter');
+
+    await expect(
+      page.locator('.jp-CodeConsole-content .jp-OutputArea-output'),
+    ).toHaveText('42');
+
+    // The previous kernel of the console was shut down
+    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(1);
+  });
 });
 
 test.describe('Kernel status and logs', () => {
