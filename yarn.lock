@@ -717,15 +717,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jupyter/eslint-plugin@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@jupyter/eslint-plugin@npm:1.0.1"
+"@jupyter/eslint-plugin@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@jupyter/eslint-plugin@npm:1.4.0"
   dependencies:
     "@typescript-eslint/utils": ^8.54.0
+    "@typescript-eslint/visitor-keys": ^8.54.0
     jsonc-eslint-parser: ^2.4.0
   peerDependencies:
     eslint: ">=9.0.0"
-  checksum: 74d79d31ce8bf5d9ad597984953d9baef300314570162ed34a40a2105041fadeda4842be96dd949c57338f47e3ee403f0e6380a99d5bfb558e467634a143dcb2
+  checksum: 9ac37ec79eff96e356c75d61ddb1aa64d5002f3075a50f7bc5821a8f6658aeefcf3248df6c2115620e0cdae36b06373847cbc099adc7f6a1539e58b4617e3cdf
   languageName: node
   linkType: hard
 
@@ -3275,7 +3276,7 @@ __metadata:
   resolution: "@jupyterlite/root@workspace:."
   dependencies:
     "@eslint/js": ^9.26.0
-    "@jupyter/eslint-plugin": ^1.0.1
+    "@jupyter/eslint-plugin": ^1.4.0
     "@stylistic/eslint-plugin": ^5.10.0
     eslint: ^9.26.0
     eslint-config-prettier: ^10.0.0
@@ -4664,6 +4665,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/types@npm:8.71.2":
+  version: 8.71.2
+  resolution: "@typescript-eslint/types@npm:8.71.2"
+  checksum: bb2abc0f345622ac71c429e996c2997e8baad9178b269c7a893afd3a1f82fc0638820ee2cdfdd0b78fb6b4869f1fdf8fdba85fa05001397d35b12c02e3bfc990
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/typescript-estree@npm:8.56.1":
   version: 8.56.1
   resolution: "@typescript-eslint/typescript-estree@npm:8.56.1"
@@ -4705,6 +4713,16 @@ __metadata:
     "@typescript-eslint/types": 8.56.1
     eslint-visitor-keys: ^5.0.0
   checksum: cd8cb26d855b09103bd8a5d5d3eb9eb9eecb7cf7276fd2bebf3f79deb6cd4d81b400b229fb8485cd7376e3c25bbd07b2d1674f47794ff84ffcc817859cd0cb62
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/visitor-keys@npm:^8.54.0":
+  version: 8.71.2
+  resolution: "@typescript-eslint/visitor-keys@npm:8.71.2"
+  dependencies:
+    "@typescript-eslint/types": 8.71.2
+    eslint-visitor-keys: ^5.0.0
+  checksum: 8284c36f45f8b0957a14a060d9f0dd6a16cb58821302561828c25fc3c2fa01083ea4a5d66289591b03379d89aafdb6ab6e5b98a0c77bbae88d2592116df28999
   languageName: node
   linkType: hard
 
