@@ -187,6 +187,7 @@ export async function waitForConsoleToSettle(target: Page | Frame): Promise<void
     // hide the cursor as its fractional width renders differently from
     // one page load to another, making screenshots flaky
     const style = document.createElement('style');
+    // eslint-disable-next-line jupyter/no-untranslated-string
     style.textContent = '.cm-cursorLayer { display: none !important; }';
     document.head.appendChild(style);
   });
