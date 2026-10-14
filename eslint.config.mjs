@@ -116,6 +116,7 @@ export default defineConfig([
       'jupyter/galata-prefer-context-menu-helper': 'error',
       'jupyter/galata-prefer-menu-helper': 'error',
       'jupyter/galata-prefer-sidebar-activity-helper': 'error',
+      'jupyter/no-untranslated-string': 'off',
     },
   },
   {
