@@ -171,7 +171,7 @@ test.describe('Kernels', () => {
     await page.notebook.close(true);
 
     // shut down the kernel
-    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await page.sidebar.openTab('jp-running-sessions');
     await page
       .locator(`.jp-RunningSessions-item.jp-TreeItem.jp-mod-kernel >> text="${name}"`)
       .first()
@@ -216,7 +216,7 @@ test.describe('Kernels', () => {
     await page.menu.clickMenuItem('Kernel>Shut Down Kernel');
 
     // wait until the kernel is gone from the running sessions panel
-    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await page.sidebar.openTab('jp-running-sessions');
     await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(0);
 
     // give any deferred error a chance to surface before asserting
@@ -263,7 +263,6 @@ test.describe('Kernels', () => {
 
   test('Multiple kernel restarts', async ({ page }) => {
     // Common selectors
-    const runningKernelsTab = page.getByTitle('Running Terminals and Kernels').first();
     const kernelSelector = '.jp-RunningSessions-item.jp-mod-kernel';
     const notebookReady = '.jp-Notebook.jp-mod-commandMode';
 
@@ -283,7 +282,7 @@ test.describe('Kernels', () => {
     expect(output![0].trim()).toBe('Initial run');
 
     // Verify only one kernel is running
-    await runningKernelsTab.click();
+    await page.sidebar.openTab('jp-running-sessions');
     await page.locator(kernelSelector).first().waitFor();
     const initialKernels = await page.locator(kernelSelector).count();
     expect(initialKernels).toBe(1);
@@ -310,7 +309,7 @@ test.describe('Kernels', () => {
       expect(output![0].trim()).toBe(`After restart ${i + 1}`);
 
       // Verify still only one kernel
-      await runningKernelsTab.click();
+      await page.sidebar.openTab('jp-running-sessions');
       const kernels = await page.locator(kernelSelector).count();
       expect(kernels).toBe(1);
     }
@@ -705,7 +704,7 @@ test.describe('Kernels', () => {
     ).toHaveText('42');
 
     // The previous kernel of the console was shut down
-    await page.getByTitle('Running Terminals and Kernels').first().click();
+    await page.sidebar.openTab('jp-running-sessions');
     await expect(page.locator('.jp-RunningSessions-item.jp-mod-kernel')).toHaveCount(1);
   });
 });

@@ -62,6 +62,9 @@ export default defineConfig([
     },
     rules: {
       'jupyter/command-described-by': 'error',
+      'jupyter/command-id-convention': 'error',
+      'jupyter/no-schema-enum': 'error',
+      'jupyter/plugin-id-convention': 'error',
       'jupyter/plugin-activation-args': 'error',
       'jupyter/plugin-description': 'error',
       'jupyter/token-format': 'error',
@@ -104,6 +107,24 @@ export default defineConfig([
     plugins: { jupyter: jupyterPlugin },
     rules: {
       'jupyter/no-schema-enum': 'error',
+    },
+  },
+  {
+    files: ['ui-tests/test/**/*.{ts,tsx}'],
+    plugins: { jupyter: jupyterPlugin },
+    rules: {
+      'jupyter/galata-prefer-context-menu-helper': 'error',
+      'jupyter/galata-prefer-menu-helper': 'error',
+      'jupyter/galata-prefer-sidebar-activity-helper': 'error',
+      'jupyter/no-untranslated-string': 'off',
+    },
+  },
+  {
+    // These tests use plain Playwright on purpose (Galata's page fixture waits
+    // for the app to load), so the `page.menu` helper is not available.
+    files: ['ui-tests/test/page.spec.ts'],
+    rules: {
+      'jupyter/galata-prefer-menu-helper': 'off',
     },
   },
   eslintPluginPrettierRecommended,
