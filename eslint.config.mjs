@@ -82,8 +82,8 @@ export default defineConfig([
         },
       ],
       'jupyter/prefer-signal-this-arg': 'error',
-      'jupyter/require-disposable-ownership': 'warn',
-      'jupyter/require-disposable-transfer': 'warn',
+      'jupyter/require-disposable-ownership': 'error',
+      'jupyter/require-disposable-transfer': 'error',
       'jupyter/require-signal-cleanup': 'error',
       'jupyter/require-signal-this-arg': 'error',
       '@typescript-eslint/naming-convention': [
