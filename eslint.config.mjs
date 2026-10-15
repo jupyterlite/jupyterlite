@@ -76,29 +76,9 @@ export default defineConfig([
       'jupyter/prefer-lazy-imports': [
         'error',
         {
-          // The plugin's defaults, plus the JupyterLite packages and the
-          // in-browser services stack, which are always loaded at startup.
-          allowedPackages: [
-            '@jupyterlab/*',
-            '@lumino/*',
-            '!@lumino/datagrid',
-            '@jupyter/ydoc',
-            '@jupyter/react-components',
-            '@jupyter/web-components',
-            '@codemirror/language',
-            '@codemirror/state',
-            '@codemirror/view',
-            '@lezer/common',
-            '@lezer/highlight',
-            '@microsoft/fast-element',
-            '@microsoft/fast-foundation',
-            'react',
-            'react-dom',
-            'yjs',
-            '@jupyterlite/*',
-            'localforage',
-            'mock-socket',
-          ],
+          // JupyterLite packages and the in-browser services stack are always
+          // loaded at startup.
+          ignoreImports: ['@jupyterlite/*', 'localforage', 'mock-socket'],
         },
       ],
       'jupyter/prefer-signal-this-arg': 'error',
