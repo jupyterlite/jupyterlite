@@ -53,7 +53,11 @@ test.describe('Media', () => {
     expect(playbackState.ended).toBe(true);
   });
 
-  test('Open a video file', async ({ page }) => {
+  test('Open a video file', async ({ page, browserName }) => {
+    test.skip(
+      browserName === 'webkit',
+      'MediaRecorder is not available in the Playwright WebKit build',
+    );
     test.slow();
 
     const videoFile = await createWebmVideoFile(page, '01-open-video.webm');
