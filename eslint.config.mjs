@@ -71,6 +71,21 @@ export default defineConfig([
       'jupyter/no-translation-concatenation': 'error',
       'jupyter/no-untranslated-string': 'error',
       'jupyter/require-soft-assertions-before-snapshots': 'error',
+      'jupyter/incorrect-translator-usage': 'error',
+      'jupyter/no-dynamic-translation': 'error',
+      'jupyter/prefer-lazy-imports': [
+        'error',
+        {
+          // JupyterLite packages and the in-browser services stack are always
+          // loaded at startup.
+          ignoreImports: ['@jupyterlite/*', 'localforage', 'mock-socket'],
+        },
+      ],
+      'jupyter/prefer-signal-this-arg': 'error',
+      'jupyter/require-disposable-ownership': 'error',
+      'jupyter/require-disposable-transfer': 'error',
+      'jupyter/require-signal-cleanup': 'error',
+      'jupyter/require-signal-this-arg': 'error',
       '@typescript-eslint/naming-convention': [
         'error',
         {
