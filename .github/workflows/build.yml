@@ -195,7 +195,9 @@ jobs:
       - name: Install JS dependencies
         run: jlpm
       - name: Docs (app)
-        run: jupyter lite build --contents examples --output-dir build/docs-app
+        run: |
+          chmod a-w examples/read-only.ipynb
+          jupyter lite build --contents examples --output-dir build/docs-app
       - name: Upload (docs app)
         uses: actions/upload-artifact@v7
         with:
