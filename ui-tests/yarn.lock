@@ -1087,7 +1087,7 @@ __metadata:
   resolution: "@jupyterlite/ui-tests@workspace:."
   dependencies:
     "@jupyterlab/galata": ~5.7.0-alpha.2
-    "@playwright/test": ^1.62.1
+    "@playwright/test": ^1.64.1
     rimraf: ^5
   languageName: unknown
   linkType: soft
@@ -1478,14 +1478,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.62.1":
-  version: 1.63.0
-  resolution: "@playwright/test@npm:1.63.0"
+"@playwright/test@npm:^1.62.1, @playwright/test@npm:^1.64.1":
+  version: 1.64.1
+  resolution: "@playwright/test@npm:1.64.1"
   dependencies:
-    playwright: 1.63.0
+    playwright: 1.64.1
   bin:
     playwright: cli.js
-  checksum: ed4a641d14f9d2f6740a86a36602e33aa7fef2287fb8f3a02112cd881812a3431ede800db0e5ba74fff9fdd65071cdc1af50a3e6677e62295f41f82dcca01e0a
+  checksum: 971aeb35bc50293984a5e1fa0d4f40be27fb845898edf0a6a6fa2bbd28aee0c1416f70149971ac09644784b873a7aa0cc24d002a4ffb7e1e34602b4736f043b0
   languageName: node
   linkType: hard
 
@@ -3620,23 +3620,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.63.0":
-  version: 1.63.0
-  resolution: "playwright-core@npm:1.63.0"
+"playwright-core@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright-core@npm:1.64.1"
   bin:
     playwright-core: cli.js
-  checksum: b4c190c4099d0620a9ba22a0e826194ad511c3149153a79c44dc632ac2058da7da01cf66f011ee3ee0f360bbd83aa2f67f04519eb3c7c2bea257c4f598537937
+  checksum: 614007bcdeaad5c6ff46465b623a81e0dbcae060f04022ba37e325d10c2eb618a9b70c44da2eb7b0857c80f83fca6db73c53f0600dcdf1d922c7942af1e0b701
   languageName: node
   linkType: hard
 
-"playwright@npm:1.63.0":
-  version: 1.63.0
-  resolution: "playwright@npm:1.63.0"
+"playwright@npm:1.64.1":
+  version: 1.64.1
+  resolution: "playwright@npm:1.64.1"
   dependencies:
-    playwright-core: 1.63.0
+    playwright-core: 1.64.1
   bin:
     playwright: cli.js
-  checksum: 6f90bca3d61f509667b9fdc4ef9c845833e4cb3cbb1c0d4e26672efb66b97b7f7db47d6a947a66772a23c191859639a6db0211c7753e6a1a5bc42293fd226c5a
+  checksum: 74861fdf4087b6d4c33dce1779c977390591d4e76bb590a904018b3823d35b20737b3b8f8bddf8bf32969953b1e9a37f72ab3e33b4b1cebed4b1bcc4a5e62738
   languageName: node
   linkType: hard
 

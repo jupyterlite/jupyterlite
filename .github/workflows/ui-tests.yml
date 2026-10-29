@@ -52,7 +52,9 @@ jobs:
   ui-tests:
     needs: [build]
     name: Visual Regression
-    runs-on: ubuntu-latest
+    # The Playwright WebKit build for Ubuntu 26.04 shuts down the hosted runner,
+    # so keep the UI tests on 24.04 until it is fixed.
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
