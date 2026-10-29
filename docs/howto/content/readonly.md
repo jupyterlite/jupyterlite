@@ -13,6 +13,10 @@ You can mark files as **read-only** so they are never saved to local storage. Wh
 read-only files are opened, the Save button is disabled and they always reflect the
 original content provided at build time.
 
+Read-only notebooks open in **view-only** mode: users can read, search and copy their
+content, but cannot edit, add, delete or run cells, or change the kernel. To work with a
+read-only notebook, users can save a copy with "Save As" first.
+
 ## How it works
 
 During the build (`jupyter lite build`), JupyterLite uses
