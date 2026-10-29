@@ -423,9 +423,15 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
   };
 
   rmdir = (parent: IEmscriptenFSNode | IEmscriptenStream, name: string): null => {
-    return this.fs.API.rmdir(
-      this.fs.PATH.join2(this.fs.realPath(this.node(parent)), name),
+    const path = this.fs.PATH.join2(this.fs.realPath(this.node(parent)), name);
+    // The drive deletes directories recursively, so refuse if not empty as POSIX rmdir does.
+    const entries = this.fs.API.readdir(path).filter(
+      (entry) => entry !== '.' && entry !== '..',
     );
+    if (entries.length > 0) {
+      throw new this.fs.FS.ErrnoError(this.fs.ERRNO_CODES['ENOTEMPTY']);
+    }
+    return this.fs.API.rmdir(path);
   };
 
   readdir = (value: IEmscriptenFSNode | IEmscriptenStream): string[] => {
