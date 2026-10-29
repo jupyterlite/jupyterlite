@@ -14,6 +14,7 @@ build:
       - jlpm pack:app
       - python -m pip install './py/jupyterlite-core[all]'
       - jlpm build:py
+      - chmod a-w examples/read-only.ipynb
       - cd examples && jupyter lite build && cd ..
       - jlpm docs
 sphinx:

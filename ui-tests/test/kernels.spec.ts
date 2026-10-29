@@ -101,9 +101,24 @@ test.describe('Kernels', () => {
     });
     await expect(readonlyIndicator).toBeVisible();
 
-    const cellIndex = await page.notebook.getCellCount();
-    await page.notebook.addCell(
-      'code',
+    // read-only notebooks are view-only, so run the code in a console for the notebook
+    const contextMenu = await page.menu.openContextMenuLocator('.jp-Notebook');
+    if (!contextMenu) {
+      throw new Error('Could not open the context menu');
+    }
+    await contextMenu.getByText('New Console for Notebook').click();
+
+    const consolePanel = page.locator('.jp-ConsolePanel');
+    const dialog = page.locator('.jp-Dialog');
+    await dialog.locator('select').selectOption({ label: 'Python (Pyodide)' });
+    await dialog.locator('.jp-Dialog-button.jp-mod-accept').click();
+    await expect(dialog).toHaveCount(0);
+
+    const consoleInput = consolePanel
+      .locator('.jp-CodeConsole-input')
+      .locator('.cm-editor .cm-content[contenteditable="true"]');
+    await consoleInput.waitFor();
+    await consoleInput.fill(
       [
         'import json',
         'from pathlib import Path',
@@ -117,10 +132,12 @@ test.describe('Kernels', () => {
         ')',
       ].join('\n'),
     );
-    await page.notebook.runCell(cellIndex);
+    await consoleInput.press('Shift+Enter');
 
-    const output = (await page.notebook.getCellTextOutput(cellIndex))![0];
-    expect(output.trim()).toBe('JupyterLite UI Tests');
+    await expect(consolePanel.locator('.jp-OutputArea-output').first()).toHaveText(
+      'JupyterLite UI Tests',
+      { timeout: 60000 },
+    );
 
     await browser.getByRole('listitem', { name: /^Name: lab/ }).dblclick();
     await expect(
