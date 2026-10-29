@@ -38,13 +38,13 @@
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/application": "~4.7.0-alpha.2",
-    "@jupyterlab/apputils": "~4.8.0-alpha.2",
-    "@jupyterlab/extensionmanager": "~4.7.0-alpha.2",
-    "@jupyterlab/logconsole": "~4.7.0-alpha.2",
-    "@jupyterlab/pluginmanager": "~4.7.0-alpha.2",
-    "@jupyterlab/translation": "~4.7.0-alpha.2",
-    "@jupyterlab/ui-components": "~4.7.0-alpha.2",
+    "@jupyterlab/application": "~4.7.0-beta.0",
+    "@jupyterlab/apputils": "~4.8.0-beta.0",
+    "@jupyterlab/extensionmanager": "~4.7.0-beta.0",
+    "@jupyterlab/logconsole": "~4.7.0-beta.0",
+    "@jupyterlab/pluginmanager": "~4.7.0-beta.0",
+    "@jupyterlab/translation": "~4.7.0-beta.0",
+    "@jupyterlab/ui-components": "~4.7.0-beta.0",
     "@jupyterlite/application": "^0.9.0-alpha.2",
     "@jupyterlite/apputils": "^0.9.0-alpha.2"
   },
