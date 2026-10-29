@@ -43,7 +43,7 @@ test.describe('Service Worker Tests', () => {
     // Execute all cells in the new tab
     // TODO: check if Galata can support multiple tabs: https://github.com/jupyterlab/jupyterlab/issues/17471
     await newTab.getByRole('menuitem', { name: 'Run', exact: true }).click();
-    await newTab.getByRole('menuitem', { name: 'Run All Cells', exact: true }).click();
+    await newTab.getByText('Run All Cells', { exact: true }).click();
 
     // wait for the execution to finish
     const expectedOutput = 'test_dir/data_99.npy';
@@ -74,7 +74,7 @@ test.describe('Service Worker Tests', () => {
     // Execute all cells in the new tab
     // TODO: check if Galata can support multiple tabs: https://github.com/jupyterlab/jupyterlab/issues/17471
     await newTab.getByRole('menuitem', { name: 'Run', exact: true }).click();
-    await newTab.getByRole('menuitem', { name: 'Run All Cells', exact: true }).click();
+    await newTab.getByText('Run All Cells', { exact: true }).click();
 
     const expectedOutput = 'done';
 

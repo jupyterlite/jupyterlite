@@ -48,7 +48,7 @@ test.describe('Page Tests', () => {
 
     await page.getByRole('menuitem', { name: 'Settings' }).click();
     await page.locator('li[data-type=submenu]', { hasText: /^Theme$/ }).click();
-    await page.getByRole('menuitem', { name: 'JupyterLab Dark', exact: true }).click();
+    await page.getByText('JupyterLab Dark', { exact: true }).click();
 
     await page.reload();
 
