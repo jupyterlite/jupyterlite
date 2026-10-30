@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlite/application-extension",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "description": "JupyterLite - Application Extension",
   "homepage": "https://github.com/jupyterlite/jupyterlite",
   "bugs": {
@@ -49,12 +49,12 @@
     "@jupyterlab/settingregistry": "~4.6.5",
     "@jupyterlab/translation": "~4.6.5",
     "@jupyterlab/ui-components": "~4.6.5",
-    "@jupyterlite/apputils": "^0.8.6",
-    "@jupyterlite/contents": "^0.8.6",
-    "@jupyterlite/kernel": "^0.8.6",
-    "@jupyterlite/server": "^0.8.6",
-    "@jupyterlite/services": "^0.8.6",
-    "@jupyterlite/ui-components": "^0.8.6",
+    "@jupyterlite/apputils": "^0.8.7",
+    "@jupyterlite/contents": "^0.8.7",
+    "@jupyterlite/kernel": "^0.8.7",
+    "@jupyterlite/server": "^0.8.7",
+    "@jupyterlite/services": "^0.8.7",
+    "@jupyterlite/ui-components": "^0.8.7",
     "@lumino/algorithm": "^2.0.4",
     "@lumino/coreutils": "^2.2.2",
     "@lumino/widgets": "^2.8.0"

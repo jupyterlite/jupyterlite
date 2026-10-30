@@ -63,6 +63,31 @@ For more details on these changes and how to update your deployment, see the [mi
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.8.7
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.6...a09dbd28c5e141f7fc07614041dd71c6bdc71071))
+
+### Bugs fixed
+
+- Backport PR #2081: Connect sessions to running kernels that have no session [#2091](https://github.com/jupyterlite/jupyterlite/pull/2091) ([@jtpio](https://github.com/jtpio))
+
+### Maintenance and upkeep improvements
+
+- Backport PR #2102: Fix drivefs `rmdir` of non-empty directory [#2104](https://github.com/jupyterlite/jupyterlite/pull/2104) ([@ianthomas23](https://github.com/ianthomas23), [@jtpio](https://github.com/jtpio))
+- Update to JupyterLab v4.6.5 and Notebook v7.6.4 [#2103](https://github.com/jupyterlite/jupyterlite/pull/2103) ([@jtpio](https://github.com/jtpio))
+- [0.8.x] Handle `ruff>=0.17` [#2083](https://github.com/jupyterlite/jupyterlite/pull/2083) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-10-07&to=2026-10-30&type=c))
+
+@ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-10-07..2026-10-30&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-10-07..2026-10-30&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.8.6
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.8.5...bd2c02332f8b9bc3d9c91309732ad2eee578dd7d))
@@ -79,8 +104,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-09-28&to=2026-10-07&type=c))
 
 @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-09-28..2026-10-07&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.8.5
 
