@@ -94,6 +94,10 @@ class LiteBuildConfig(LoggingConfigurable):
         False, help="Remove any shared packages not used by --apps"
     ).tag(config=True)
 
+    expose_app_in_browser: bool = Bool(
+        False, help="Expose the global app instance to browser via window.jupyterapp"
+    ).tag(config=True)
+
     # serving
     port: int = CInt(
         help=("[serve] the port to (insecurely) expose on http://127.0.0.1. env: JUPYTERLITE_PORT")
