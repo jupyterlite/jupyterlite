@@ -52,7 +52,8 @@ jobs:
   ui-tests:
     needs: [build]
     name: Visual Regression
-    runs-on: ubuntu-latest
+    # Playwright 1.60 does not support Ubuntu 26.04, so keep the UI tests on 24.04.
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
