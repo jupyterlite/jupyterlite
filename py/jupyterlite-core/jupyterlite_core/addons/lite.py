@@ -3,13 +3,18 @@
 
 """a JupyterLite addon for jupyterlite-specific tasks"""
 
+import json
 import re
 
 from ..constants import (
+    EXPOSE_APP_IN_BROWSER,
+    JSON_FMT,
+    JUPYTER_CONFIG_DATA,
     JUPYTERLITE_IPYNB,
     JUPYTERLITE_JSON,
     JUPYTERLITE_METADATA,
     JUPYTERLITE_SCHEMA,
+    UTF8,
 )
 from .base import BaseAddon
 
@@ -17,7 +22,7 @@ from .base import BaseAddon
 class LiteAddon(BaseAddon):
     """ensure jupyterlite files have been merged, and validate them"""
 
-    __all__ = ["build", "check", "status"]
+    __all__ = ["build", "check", "post_build", "status"]
 
     def status(self, manager):
         yield self.task(
@@ -57,6 +62,27 @@ class LiteAddon(BaseAddon):
                     (self.maybe_timestamp, [dest]),
                 ],
             )
+
+    def post_build(self, manager):
+        """ensure the root `jupyter-lite.json` exposes the app when requested"""
+        if not manager.expose_app_in_browser:
+            return
+
+        out_path = manager.output_dir / JUPYTERLITE_JSON
+
+        yield self.task(
+            name="patch:exposeAppInBrowser",
+            doc=f"ensure {out_path} exposes the app in the browser",
+            file_dep=[out_path],
+            actions=[(self.patch_expose_app_in_browser, [out_path])],
+        )
+
+    def patch_expose_app_in_browser(self, out_path):
+        """set the ``exposeAppInBrowser`` configuration value"""
+        config = json.loads(out_path.read_text(**UTF8))
+        config[JUPYTER_CONFIG_DATA][EXPOSE_APP_IN_BROWSER] = True
+        out_path.write_text(json.dumps(config, **JSON_FMT), **UTF8)
+        self.maybe_timestamp(out_path)
 
     def check(self, manager):
         """apply schema validation to all `jupyter-lite.json` in the `output_dir`"""
