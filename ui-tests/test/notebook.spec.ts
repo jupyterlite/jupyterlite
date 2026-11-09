@@ -109,6 +109,49 @@ test.describe('Notebook file opener', () => {
   });
 });
 
+test.describe('Notebooks without a kernel', () => {
+  test.use({
+    waitForApplication: treeWaitForApplication,
+  });
+
+  const KERNEL_NAME = 'Switch kernel';
+
+  test('Open a notebook without a kernel from the file browser', async ({ page }) => {
+    await page.goto('tree/index.html');
+
+    await page
+      .locator('.jp-DirListing-itemText', { hasText: 'empty.ipynb' })
+      .click({ button: 'right' });
+    await page.getByText('Open With', { exact: true }).hover();
+    const [notebook] = await Promise.all([
+      page.waitForEvent('popup'),
+      page.getByRole('menuitem', { name: 'Notebook (no kernel)' }).click(),
+    ]);
+
+    await expect(notebook.getByTitle(KERNEL_NAME)).toHaveText('No Kernel');
+    expect(new URL(notebook.url()).searchParams.get('kernel')).toBe('none');
+
+    // A reload still opens the notebook without a kernel
+    await notebook.reload();
+    await expect(notebook.getByTitle(KERNEL_NAME)).toHaveText('No Kernel');
+
+    // Starting a kernel drops the parameter, so a reload reconnects to it
+    await notebook.evaluate(async () => {
+      const app = (window as any).jupyterapp;
+      await app.started;
+      await app.shell.currentWidget.sessionContext.changeKernel({
+        name: 'javascript',
+      });
+    });
+    await expect
+      .poll(() => new URL(notebook.url()).searchParams.get('kernel'))
+      .toBeNull();
+    expect(new URL(notebook.url()).searchParams.get('path')).toBe('empty.ipynb');
+
+    await notebook.close();
+  });
+});
+
 test.describe('Notebook favicons', () => {
   test.use({
     waitForApplication: notebooksWaitForApplication,

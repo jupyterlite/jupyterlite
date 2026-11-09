@@ -139,6 +139,19 @@ priority.
 | -------- | ------------------------------------------------------------------------------------ |
 | no       | `https://jupyterlite.github.io/demo/tree/index.html?path=intro.ipynb&open-with=json` |
 
+### `kernel`
+
+> `?kernel=none`
+
+Opens the notebook given with `path` without a kernel. The "Notebook (no kernel)" entry
+of the "Open With" menu of the file browser uses this parameter. When a kernel starts,
+for example from the kernel selector, the page removes the parameter from the URL, so a
+reload connects to that kernel.
+
+| multiple | examples                                                                               |
+| -------- | -------------------------------------------------------------------------------------- |
+| no       | `https://jupyterlite.github.io/demo/notebooks/index.html?path=intro.ipynb&kernel=none` |
+
 ## REPL Features
 
 As the primary configuration tool, these are handled more thoroughly in the
