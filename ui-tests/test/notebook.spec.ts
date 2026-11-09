@@ -135,14 +135,14 @@ test.describe('Notebooks without a kernel', () => {
     await notebook.reload();
     await expect(notebook.getByTitle(KERNEL_NAME)).toHaveText('No Kernel');
 
-    // Starting a kernel drops the parameter, so a reload reconnects to it
-    await notebook.evaluate(async () => {
-      const app = (window as any).jupyterapp;
-      await app.started;
-      await app.shell.currentWidget.sessionContext.changeKernel({
-        name: 'javascript',
-      });
-    });
+    // Starting a kernel drops the parameter
+    await notebook.getByTitle(KERNEL_NAME).click();
+    const dialog = notebook.locator('.jp-Dialog');
+    await dialog.locator('select').selectOption({ label: 'JavaScript (Web Worker)' });
+    await dialog.locator('.jp-Dialog-button.jp-mod-accept').click();
+    await expect(notebook.getByTitle(KERNEL_NAME)).toHaveText(
+      'JavaScript (Web Worker)',
+    );
     await expect
       .poll(() => new URL(notebook.url()).searchParams.get('kernel'))
       .toBeNull();
