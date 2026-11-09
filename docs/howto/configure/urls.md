@@ -31,6 +31,21 @@ If one or more folders are given, the last folder will be opened in the file tre
 Learn more about [content](../content/files.md).
 ```
 
+### `open-with`
+
+> `?open-with={:viewer}`
+
+Opens the files given with `path` with a viewer that is not their default viewer. The
+value can be a widget factory name, a file type name or a file extension. For example,
+`txt` opens the text editor, `json` opens the JSON viewer and `ipynb` opens the notebook
+viewer. To write a space in a widget factory name, use `+` or `%20`, as in
+`Markdown+Preview`. When the value matches no viewer, the files open in their default
+viewer.
+
+| multiple | examples                                                                           |
+| -------- | ---------------------------------------------------------------------------------- |
+| no       | `https://jupyterlite.github.io/demo/lab/index.html?path=intro.ipynb&open-with=txt` |
+
 ### `mode`
 
 > `?mode={:mode}`
@@ -107,6 +122,35 @@ bookmarked or shared.
 | multiple | examples                                                                    |
 | -------- | --------------------------------------------------------------------------- |
 | no       | `https://jupyterlite.github.io/demo/notebooks/index.html?path=python.ipynb` |
+
+### `open-with`
+
+> `?open-with={:viewer}`
+
+Opens the file given with `path` with a viewer that is not its default viewer, with the
+same values as the [`open-with` parameter of JupyterLab](#open-with). The page redirects
+to the `notebooks` page for a notebook viewer, and to the `edit` page for other viewers.
+
+Older versions used the `factory` parameter instead, with the exact name of a widget
+factory. Links with `factory` still work. When a URL has both parameters, `factory` has
+priority.
+
+| multiple | examples                                                                             |
+| -------- | ------------------------------------------------------------------------------------ |
+| no       | `https://jupyterlite.github.io/demo/tree/index.html?path=intro.ipynb&open-with=json` |
+
+### `kernel`
+
+> `?kernel=none`
+
+Opens the notebook given with `path` without a kernel. The "Notebook (no kernel)" entry
+of the "Open With" menu of the file browser uses this parameter. When a kernel starts,
+for example from the kernel selector, the page removes the parameter from the URL, so a
+reload connects to that kernel.
+
+| multiple | examples                                                                               |
+| -------- | -------------------------------------------------------------------------------------- |
+| no       | `https://jupyterlite.github.io/demo/notebooks/index.html?path=intro.ipynb&kernel=none` |
 
 ## REPL Features
 

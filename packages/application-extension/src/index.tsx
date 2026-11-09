@@ -601,6 +601,67 @@ const opener: JupyterFrontEndPlugin<void> = {
     };
 
     /**
+     * Resolve an `open-with` value to a widget factory name.
+     *
+     * The value is a widget factory name, a file type name or a file extension,
+     * as for the `open-with` query parameter of JupyterLab and Jupyter Notebook.
+     */
+    const resolveOpenWith = (openWith: string): string | undefined => {
+      const factory = docRegistry.getWidgetFactory(openWith);
+      if (factory) {
+        return factory.name;
+      }
+      const extension = (
+        openWith.startsWith('.') ? openWith : `.${openWith}`
+      ).toLowerCase();
+      const fileType =
+        docRegistry.getFileType(openWith) ??
+        Array.from(docRegistry.fileTypes()).find((fileType) =>
+          fileType.extensions.some((value) => value.toLowerCase() === extension),
+        );
+      const name = fileType
+        ? docRegistry.preferredWidgetFactories(fileType)[0]?.name
+        : undefined;
+      if (!name) {
+        console.warn(
+          `No viewer matches open-with value "${openWith}", using the default viewer.`,
+        );
+      }
+      return name;
+    };
+
+    /**
+     * Resolve the `factory` and `open-with` query parameters to a widget factory
+     * name, or `undefined` for the default viewer.
+     *
+     * `factory` is kept for existing links: it takes an exact widget factory name
+     * and has priority.
+     */
+    const resolveFactory = (urlParams: URLSearchParams): string | undefined => {
+      const factory = urlParams.get('factory');
+      if (factory === null) {
+        const openWith = urlParams.get('open-with');
+        return openWith ? resolveOpenWith(openWith) : undefined;
+      }
+      // Older versions of the document opener wrote `default` in links.
+      if (factory === 'default') {
+        return undefined;
+      }
+      const widgetFactory = docRegistry.getWidgetFactory(factory);
+      if (!widgetFactory) {
+        console.warn(`No widget factory named "${factory}", using the default viewer.`);
+      }
+      return widgetFactory?.name;
+    };
+
+    /**
+     * The Notebook page for a widget factory: the notebook page and the edit
+     * page load different plugins.
+     */
+    const factoryPage = (factory: string): string =>
+      factory.includes('Notebook') ? 'notebooks' : 'edit';
+
+    /**
      * Report a path that cannot be opened, offering to open the file browser
      * from the single-document pages.
      */
@@ -704,13 +765,53 @@ const opener: JupyterFrontEndPlugin<void> = {
             return;
           }
           if (page === 'tree') {
-            const defaultFactory = docRegistry.defaultWidgetFactory(file);
-            const target = defaultFactory.name === 'Notebook' ? 'notebooks' : 'edit';
-            window.location.replace(pageUrl(target, urlParams));
+            const factory =
+              resolveFactory(urlParams) ?? docRegistry.defaultWidgetFactory(file).name;
+            window.location.replace(pageUrl(factoryPage(factory), urlParams));
             return;
           }
-          const factory = urlParams.get('factory') ?? (await findFactory(file));
-          docManager.openOrReveal(file, factory, undefined, { ref: '_noref' });
+          const defaultFactory = await findFactory(file);
+          const factory = resolveFactory(urlParams) ?? defaultFactory;
+          const isRequested = urlParams.has('factory') || urlParams.has('open-with');
+          if (isRequested && factoryPage(factory) !== page) {
+            urlParams.delete('factory');
+            if (factory === defaultFactory) {
+              urlParams.delete('open-with');
+            } else {
+              urlParams.set('open-with', factory);
+            }
+            window.location.replace(pageUrl(factoryPage(factory), urlParams));
+            return;
+          }
+          const kernelPreference =
+            urlParams.get('kernel') === 'none'
+              ? { shouldStart: false, shouldReuse: false }
+              : undefined;
+          const widget = docManager.openOrReveal(
+            file,
+            factory,
+            undefined,
+            { ref: '_noref' },
+            kernelPreference,
+          );
+          if (kernelPreference && widget) {
+            const { sessionContext } = widget.context;
+            /**
+             * `kernel=none` only describes how to open the notebook. Drop it
+             * as soon as a kernel runs, so a reload reconnects to that session.
+             */
+            const clearNoKernelQuery = () => {
+              if (!sessionContext.session?.kernel) {
+                return;
+              }
+              const url = new URL(window.location.href);
+              url.searchParams.delete('kernel');
+              window.history.replaceState(window.history.state, '', url.toString());
+              sessionContext.kernelChanged.disconnect(clearNoKernelQuery);
+            };
+            sessionContext.kernelChanged.connect(clearNoKernelQuery);
+            clearNoKernelQuery();
+          }
           return;
         }
 
@@ -720,10 +821,13 @@ const opener: JupyterFrontEndPlugin<void> = {
         }
 
         // open all files in the lab interface
-        paths.forEach((file) => docManager.openOrReveal(file));
+        const openWith = urlParams.get('open-with');
+        const factory = openWith ? resolveOpenWith(openWith) : undefined;
+        paths.forEach((file) => docManager.openOrReveal(file, factory));
         const url = new URL(URLExt.join(PageConfig.getBaseUrl(), request));
-        // only remove the path
+        // only remove the parameters of the files to open
         url.searchParams.delete('path');
+        url.searchParams.delete('open-with');
         const { pathname, search: labSearch } = url;
         router.navigate(`${pathname}${labSearch}`, { skipRouting: true });
 
