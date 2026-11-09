@@ -3,6 +3,7 @@
 
 """integration tests for overall CLI functionality"""
 
+import json
 import platform
 import re
 import time
@@ -10,7 +11,7 @@ import time
 from pytest import mark
 
 from jupyterlite_core import __version__
-from jupyterlite_core.constants import HOOKS
+from jupyterlite_core.constants import EXPOSE_APP_IN_BROWSER, HOOKS, JUPYTER_CONFIG_DATA
 
 PY_IMPL = platform.python_implementation()
 IS_PYPY = "pypy" in PY_IMPL.lower()
@@ -273,6 +274,17 @@ def test_build_repl_no_sourcemaps(an_empty_lite_dir, script_runner):
     assert status.success
 
     assert len(norm_files) == len(rebuild_files), "expected the same files"
+
+
+def test_build_expose_app_in_browser(an_empty_lite_dir, script_runner):
+    """does --expose-app-in-browser expose the app in the output config"""
+    args = ("jupyter", "lite", "build", "--expose-app-in-browser")
+    status = script_runner.run(args, cwd=str(an_empty_lite_dir))
+    assert status.success
+
+    out_config = an_empty_lite_dir / "_output" / "jupyter-lite.json"
+    config = json.loads(out_config.read_text(encoding="utf-8"))
+    assert config[JUPYTER_CONFIG_DATA][EXPOSE_APP_IN_BROWSER] is True
 
 
 def test_check_bad_workspace(an_empty_lite_dir, script_runner):

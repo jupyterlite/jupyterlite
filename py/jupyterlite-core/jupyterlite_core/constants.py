@@ -68,6 +68,9 @@ SETTINGS_FILE_TYPES = "fileTypes"
 #: configuration key for the contents all.json filename
 CONTENTS_ALL_JSON_FILE = "contentsAllJsonFile"
 
+#: configuration key for exposing the app in the browser
+EXPOSE_APP_IN_BROWSER = "exposeAppInBrowser"
+
 #: configuration key for the workspaces all.json filename
 WORKSPACES_ALL_JSON_FILE = "workspacesAllJsonFile"
 
