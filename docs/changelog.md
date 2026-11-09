@@ -63,6 +63,31 @@ For more details on these changes and how to update your deployment, see the [mi
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.9.0b1
+
+([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.9.0-beta.0...60f63e107eb02822549cfa77d2b3de2fd83b3404))
+
+### Bugs fixed
+
+- Fix drivefs `rmdir` of non-empty directory [#2102](https://github.com/jupyterlite/jupyterlite/pull/2102) ([@ianthomas23](https://github.com/ianthomas23), [@martinRenou](https://github.com/martinRenou))
+
+### Maintenance and upkeep improvements
+
+- Update to JupyterLab v4.7.0b1 and Notebook v7.7.0b1 [#2108](https://github.com/jupyterlite/jupyterlite/pull/2108) ([@jtpio](https://github.com/jtpio))
+- Bump lodash-es from 4.17.23 to 4.18.1 in /ui-tests [#2106](https://github.com/jupyterlite/jupyterlite/pull/2106) ([@jtpio](https://github.com/jtpio))
+- Stop skipping the releaser `check-python` step [#2105](https://github.com/jupyterlite/jupyterlite/pull/2105) ([@jtpio](https://github.com/jtpio))
+
+### Contributors to this release
+
+The following people contributed discussions, new ideas, code and documentation contributions, and review.
+See [our definition of contributors](https://github-activity.readthedocs.io/en/latest/use/#how-does-this-tool-define-contributions-in-the-reports).
+
+([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-10-29&to=2026-11-09&type=c))
+
+@ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-10-29..2026-11-09&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-10-29..2026-11-09&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-10-29..2026-11-09&type=Issues))
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.9.0b0
 
 ([Full Changelog](https://github.com/jupyterlite/jupyterlite/compare/@jupyterlite/application-extension@0.9.0-alpha.2...70299cc773342f761bd2dadc92539e05a8efceec))
@@ -117,8 +142,6 @@ See [our definition of contributors](https://github-activity.readthedocs.io/en/l
 ([GitHub contributors page for this release](https://github.com/jupyterlite/jupyterlite/graphs/contributors?from=2026-09-24&to=2026-10-29&type=c))
 
 @brichet ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Abrichet+updated%3A2026-09-24..2026-10-29&type=Issues)) | @Darshan808 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3ADarshan808+updated%3A2026-09-24..2026-10-29&type=Issues)) | @ianthomas23 ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Aianthomas23+updated%3A2026-09-24..2026-10-29&type=Issues)) | @jtpio ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Ajtpio+updated%3A2026-09-24..2026-10-29&type=Issues)) | @krassowski ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Akrassowski+updated%3A2026-09-24..2026-10-29&type=Issues)) | @martinRenou ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3AmartinRenou+updated%3A2026-09-24..2026-10-29&type=Issues)) | @monca-dev ([activity](https://github.com/search?q=repo%3Ajupyterlite%2Fjupyterlite+involves%3Amonca-dev+updated%3A2026-09-24..2026-10-29&type=Issues))
-
-<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 0.9.0a2
 
