@@ -94,6 +94,34 @@ test.describe('Notebook pages routing', () => {
     await expect(page.locator('.jp-NotebookPanel')).toBeVisible();
   });
 
+  test('File browser page with open-with opens the file in another viewer', async ({
+    page,
+  }) => {
+    await page.goto('tree/index.html?path=empty.ipynb&open-with=txt');
+
+    await page.waitForURL('**/edit/index.html?path=empty.ipynb&open-with=txt');
+    await expect(page.locator('.jp-FileEditor .cm-editor')).toBeVisible();
+    await expect(page.locator('.jp-NotebookPanel')).toHaveCount(0);
+  });
+
+  test('Notebook page with open-with for another viewer redirects to the editor page', async ({
+    page,
+  }) => {
+    await page.goto('notebooks/index.html?path=empty.ipynb&open-with=json');
+
+    await page.waitForURL('**/edit/index.html?path=empty.ipynb&open-with=JSON');
+    await expect(page.locator('.jp-RenderedJSON')).toBeVisible();
+  });
+
+  test('Editor page with open-with for the notebook viewer redirects to the notebook page', async ({
+    page,
+  }) => {
+    await page.goto('edit/index.html?path=empty.ipynb&open-with=ipynb');
+
+    await page.waitForURL('**/notebooks/index.html?path=empty.ipynb');
+    await expect(page.locator('.jp-NotebookPanel')).toBeVisible();
+  });
+
   test('Browsing a folder in the file browser keeps the URL loadable', async ({
     page,
   }) => {
@@ -165,4 +193,14 @@ test.describe('Simple Interface pages routing', () => {
       await page.waitForURL(SIMPLE_INTERFACE_URL);
     });
   }
+});
+
+test.describe('JupyterLab routing', () => {
+  test('Lab page with open-with opens the file in another viewer', async ({ page }) => {
+    await page.goto('lab/index.html?path=empty.ipynb&open-with=txt');
+
+    await expect(page.locator('.jp-FileEditor .cm-editor')).toBeVisible();
+    await expect(page.locator('.jp-NotebookPanel')).toHaveCount(0);
+    await expect(page).not.toHaveURL(/open-with/);
+  });
 });
