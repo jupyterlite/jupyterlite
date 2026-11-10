@@ -55,6 +55,7 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # p
     app_urls = [""]
     for app in ["lab", "tree", "repl"]:
         app_urls += [
+            f"{app}",
             f"{app}/",
             f"{app}/index.html",
         ]
@@ -67,6 +68,11 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # p
 
     try:
         assert not errors
+        response = httpclient.HTTPClient().fetch(
+            f"{url}notebooks?path=foo.ipynb", follow_redirects=False, raise_error=False
+        )
+        assert response.code == 301
+        assert response.headers["Location"] == f"{base_url}notebooks/?path=foo.ipynb"
     finally:
         _fetch_without_errors(f"{url}shutdown")
         server.wait(timeout=10)
