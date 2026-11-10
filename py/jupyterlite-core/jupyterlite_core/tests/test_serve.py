@@ -6,9 +6,13 @@
 import json
 import subprocess
 import time
+from unittest import mock
 
 import pytest
-from tornado import httpclient
+from tornado import httpclient, httpserver, httputil, web
+
+from jupyterlite_core.addons.serve import ServeAddon
+from jupyterlite_core.manager import LiteManager
 
 from .conftest import CI, DARWIN, LINUX, PYPY
 
@@ -76,6 +80,45 @@ def test_serve(an_empty_lite_dir, script_runner, base_url, an_unused_port):  # p
     finally:
         _fetch_without_errors(f"{url}shutdown")
         server.wait(timeout=10)
+
+
+def test_serve_refuses_protocol_relative_redirect(tmp_path, monkeypatch):
+    """the static handler refuses a ``//`` redirect itself, as tornado < 6.3.2 does not"""
+
+    class CapturedAppError(Exception):
+        pass
+
+    class FakeServer:
+        def __init__(self, app):
+            raise CapturedAppError(app)
+
+    monkeypatch.setattr(httpserver, "HTTPServer", FakeServer)
+    addon = ServeAddon(LiteManager(output_dir=tmp_path))
+    monkeypatch.setattr(addon, "_patch_mime", lambda: None)
+    with pytest.raises(CapturedAppError) as captured:
+        addon._serve_tornado()
+
+    app = captured.value.args[0]
+    rule = next(
+        rule for rule in app.wildcard_router.rules if issubclass(rule.target, web.StaticFileHandler)
+    )
+    # tornado < 6.3.2 redirects this path when it names a directory inside the output directory
+    uri = f"//evil.example/..{tmp_path.as_posix()}/lab"
+    request = httputil.HTTPServerRequest(
+        start_line=httputil.RequestStartLine("GET", uri, "HTTP/1.1"),
+        headers=httputil.HTTPHeaders({"Host": "127.0.0.1"}),
+        connection=mock.Mock(),
+    )
+    handler = rule.target(app, request, **rule.target_kwargs)
+    # only reached without the guard: keep that failure a plain "DID NOT RAISE"
+    monkeypatch.setattr(handler, "finish", lambda: None)
+
+    # tornado >= 6.3.2 refuses this path before redirecting, so call the redirect it would make
+    with pytest.raises(web.HTTPError) as error:
+        handler.redirect(f"{request.path}/", permanent=True)
+
+    assert error.value.status_code == 403
+    assert "Location" not in handler._headers
 
 
 def _fetch_without_errors(url, retries=15, expect_headers=None):  # pragma: no cover
