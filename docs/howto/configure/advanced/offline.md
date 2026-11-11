@@ -33,7 +33,7 @@ Use the `--pyodide` flag to specify the Pyodide distribution you would like to u
 example:
 
 ```bash
-jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/314.0.4/pyodide-314.0.4.tar.bz2
+jupyter lite build --pyodide https://github.com/pyodide/pyodide/releases/download/314.0.6/pyodide-314.0.6.tar.bz2
 ```
 
 ```{warning}
