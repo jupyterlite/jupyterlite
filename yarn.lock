@@ -3081,7 +3081,7 @@ __metadata:
     "@rspack/core": ^2.0.2
     fs-extra: ^9.0.1
     glob: ^7.2.0
-    handlebars: ^4.7.9
+    handlebars: ^4.7.10
     rimraf: ^5.0.1
     webpack-bundle-analyzer: ^4.8.0
     webpack-merge: ^5.9.0
@@ -3282,7 +3282,7 @@ __metadata:
     npm-run-all: ^4.1.5
     prettier: ^3.0.0
     rimraf: ^5.0.1
-    shell-quote: ^1.9.0
+    shell-quote: ^1.11.0
     svgo: ^3.3.5
     typedoc: ~0.28.17
     typedoc-plugin-markdown: ~4.6.2
@@ -6001,14 +6001,14 @@ __metadata:
   linkType: hard
 
 "dompurify@npm:^3.3.1":
-  version: 3.4.16
-  resolution: "dompurify@npm:3.4.16"
+  version: 3.4.17
+  resolution: "dompurify@npm:3.4.17"
   dependencies:
     "@types/trusted-types": ^2.0.7
   dependenciesMeta:
     "@types/trusted-types":
       optional: true
-  checksum: 8960f22f22ca06368772e52b2f97fb7270caa453711d027e99924d49974cb3d463d47539b9f7d45ee80c335efd26f73558f0dca09dd3cba0d4081600f1d762e6
+  checksum: 7db2c669f966047fc605321df29369acd8bf25265309b169eca620b79dfa30cc87142fa83b868ddca3636527e97e85afd76a583ea82b68303050218216e1c8b6
   languageName: node
   linkType: hard
 
@@ -6834,11 +6834,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.9":
-  version: 4.7.9
-  resolution: "handlebars@npm:4.7.9"
+"handlebars@npm:^4.7.10":
+  version: 4.7.10
+  resolution: "handlebars@npm:4.7.10"
   dependencies:
-    minimist: ^1.2.5
+    minimist: ^1.2.8
     neo-async: ^2.6.2
     source-map: ^0.6.1
     uglify-js: ^3.1.4
@@ -6848,7 +6848,7 @@ __metadata:
       optional: true
   bin:
     handlebars: bin/handlebars
-  checksum: ac39070fc1c3c76a654e4b526383eaf1601976eaa474547b263915b4806977f083600e586ca923709baeed7c82a42640bcc9cc04c37a7efd3fb444f49b8347d6
+  checksum: 4f5a03912fbc7f1d42d4a5ee8ec32440b0a519fc6d9a3251c9b6f0369d8e1e900484b4009f7d36befca0c191b424f999feccc1125613f9ad5e4926742c8b5172
   languageName: node
   linkType: hard
 
@@ -7714,8 +7714,8 @@ __metadata:
   linkType: hard
 
 "markdown-it@npm:^14.1.0":
-  version: 14.3.2
-  resolution: "markdown-it@npm:14.3.2"
+  version: 14.3.3
+  resolution: "markdown-it@npm:14.3.3"
   dependencies:
     argparse: ^2.0.1
     entities: ^4.5.0
@@ -7725,7 +7725,7 @@ __metadata:
     uc.micro: ^2.1.0
   bin:
     markdown-it: bin/markdown-it.mjs
-  checksum: 50e9de12e1dea0c108a85c51fc049324fbbc434a0f1bad916b701430917a91b68bd2420942797154cad8e27bc79ea38168beab727e70361da80b97013b0d75e0
+  checksum: 45e34ef755aca74d26cb35920b1b27d8fdfdc9ba42811658647735728670342d2cf771a2c54ea107679c3c5c7bead9d9a072313e357072c47bbc160aa94aca6e
   languageName: node
   linkType: hard
 
@@ -7911,7 +7911,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.5, minimist@npm:~1.2.0":
+"minimist@npm:^1.2.8, minimist@npm:~1.2.0":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
@@ -8423,12 +8423,12 @@ __metadata:
   linkType: hard
 
 "postcss-selector-parser@npm:^7.0.0":
-  version: 7.1.5
-  resolution: "postcss-selector-parser@npm:7.1.5"
+  version: 7.1.6
+  resolution: "postcss-selector-parser@npm:7.1.6"
   dependencies:
     cssesc: ^3.0.0
     util-deprecate: ^1.0.2
-  checksum: 37aa9ade80d14a218bf63abb8b58709dc3dbf7605d99fa8ba43f3988712f31d1aa5928f1265d471d8a5ee3f2b08db6e70e637c1880ada411e80adb65af610cca
+  checksum: 4588a63d378cc46b85e19bdbcd157431094bfad096d022deadf81569a804ce3d3aa80257b1f4f81206d50f10f952472438243a8e916f5b6f905ba5fbb052e4a1
   languageName: node
   linkType: hard
 
@@ -8979,10 +8979,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shell-quote@npm:^1.6.1, shell-quote@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "shell-quote@npm:1.9.0"
-  checksum: 2ec85fb903121c684c3536d051e377e98746cf88525e08c298baaa7b42c168de75c3201cef00db66556e89e340a8cf26bd4c18e7a3fd78799449a21cac43da2e
+"shell-quote@npm:^1.11.0, shell-quote@npm:^1.6.1":
+  version: 1.11.0
+  resolution: "shell-quote@npm:1.11.0"
+  checksum: e43545a68a9de0f2e17b5727aa2ab32135c1ea430c3de728b98bbe0a0aab9aadce21dcaf71c33135ee70ee560abd4acc7e1f26797913045f26f15b75ce6d4dd3
   languageName: node
   linkType: hard
 
