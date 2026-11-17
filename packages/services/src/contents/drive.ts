@@ -622,6 +622,11 @@ export class BrowserStorageDrive implements Contents.IDrive {
     if (!file) {
       throw Error(`Could not find file with path ${oldLocalPath}`);
     }
+    // Match Jupyter Server: a rename to the same path is a no-op. Without this
+    // check the setItem/removeItem sequence below would delete the file.
+    if (oldLocalPath === newLocalPath) {
+      return file;
+    }
     await this._ensureParentDirectoryExists(newLocalPath);
     const modified = new Date().toISOString();
     const name = PathExt.basename(newLocalPath);
