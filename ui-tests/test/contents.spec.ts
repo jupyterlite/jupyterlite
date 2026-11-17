@@ -211,6 +211,38 @@ test.describe('Contents Tests', () => {
     expect(result.missingDirectoryExists).toBe(false);
   });
 
+  test('Renaming a file to its own path leaves it in place', async ({ page }) => {
+    // Regression test for jupyterlite/jupyterlite#2111: dragging a file onto
+    // its own folder breadcrumb called rename(path, path) and the drive deleted
+    // the file because it stored the model at the new path and then removed
+    // the old path, which was the same path.
+    const result = await page.evaluate(async () => {
+      const contents = (window as any).galata.app.serviceManager.contents;
+      const path = 'same-path-rename.txt';
+      const body = 'content that must survive the no-op rename';
+
+      await contents.save(path, {
+        type: 'file',
+        format: 'text',
+        content: body,
+      });
+
+      const renamed = await contents.rename(path, path);
+
+      const after = await contents.get(path, { content: true });
+
+      return {
+        renamedPath: renamed.path,
+        renamedContent: renamed.content,
+        afterContent: after.content,
+      };
+    });
+
+    expect(result.renamedPath).toBe('same-path-rename.txt');
+    expect(result.renamedContent).toBe('content that must survive the no-op rename');
+    expect(result.afterContent).toBe('content that must survive the no-op rename');
+  });
+
   test('Download a notebook', async ({ page }) => {
     const name = await page.notebook.createNew();
     if (!name) {
