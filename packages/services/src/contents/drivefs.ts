@@ -20,7 +20,13 @@ import type {
   IEmscriptenFSNode,
   IStats,
 } from './emscripten';
-import { DIR_MODE, FILE_MODE, SEEK_CUR, SEEK_END, instanceOfStream } from './emscripten';
+import {
+  DIR_MODE,
+  FILE_MODE,
+  SEEK_CUR,
+  SEEK_END,
+  instanceOfStream,
+} from './emscripten';
 
 export const DRIVE_SEPARATOR = ':';
 
@@ -318,10 +324,7 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
     };
   };
 
-  setattr = (
-    value: IEmscriptenFSNode | IEmscriptenStream,
-    attr: IStats
-  ): void => {
+  setattr = (value: IEmscriptenFSNode | IEmscriptenStream, attr: IStats): void => {
     const node = this.node(value);
 
     // First apply to the in-memory node
@@ -500,7 +503,7 @@ export abstract class ContentsAPI {
         return {
           data: encoder.encode(serializedContent),
           format,
-          mode: FILE_MODE
+          mode: FILE_MODE,
         };
       case 'base64': {
         const binString = atob(serializedContent);
@@ -512,7 +515,7 @@ export abstract class ContentsAPI {
         return {
           data,
           format,
-          mode: FILE_MODE
+          mode: FILE_MODE,
         };
       }
       default:
