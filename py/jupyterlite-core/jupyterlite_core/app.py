@@ -39,6 +39,10 @@ lite_flags = {
         {"LiteBuildConfig": {"no_libarchive": True}},
         "Do not try to use libarchive-c for archive operations",
     ),
+    "expose-app-in-browser": (
+        {"LiteBuildConfig": {"expose_app_in_browser": True}},
+        "Expose the global app instance to browser via window.jupyterapp",
+    ),
 }
 
 lite_aliases = dict(
@@ -199,6 +203,8 @@ class ManagedApp(BaseLiteApp):
             kwargs["no_sourcemaps"] = self.no_sourcemaps
         if self.no_unused_shared_packages is not None:
             kwargs["no_unused_shared_packages"] = self.no_unused_shared_packages
+        if self.expose_app_in_browser is not None:
+            kwargs["expose_app_in_browser"] = self.expose_app_in_browser
         if self.output_archive:
             kwargs["output_archive"] = Path(self.output_archive)
         if self.disable_addons:
