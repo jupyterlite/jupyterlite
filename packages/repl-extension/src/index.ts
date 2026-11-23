@@ -309,6 +309,9 @@ const consolePlugin: JupyterFrontEndPlugin<void> = {
         showBanner,
       });
 
+      // setConfig only keeps the focus, so give it to the prompt on load
+      panel.activate();
+
       // TODO: find a better way to make sure the banner is removed if showBanner is false
       widget['_onKernelChanged']();
 
