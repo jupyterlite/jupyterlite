@@ -326,6 +326,13 @@ module.exports = [
     devtool: 'source-map',
     entry: allEntryPoints,
     resolve: {
+      alias: {
+        // Use the TeX font of JupyterLab for MathJax, so the default font
+        // (New Computer Modern) is not bundled.
+        '#default-font': '@mathjax/mathjax-tex-font/mjs',
+        // Keep the absolute path of the build folder out of the bundle.
+        '#root/root.js': '@jupyterlab/mathjax-extension/lib/mathjaxroot.js',
+      },
       fallback: {
         util: false,
       },
@@ -342,8 +349,6 @@ module.exports = [
       assetModuleFilename: '[name][ext][query]',
     },
     ignoreWarnings: [
-      // mathjax-full uses __dirname which gets mocked in browser builds
-      { module: /mathjax-full/, message: /__dirname/ },
       // Suppress license file warnings for Jupyter ecosystem packages
       // (handleMissingLicenseText provides the text, but warning is logged first)
       /license-webpack-plugin: could not find any license file for @jupyterlite\//,
@@ -352,6 +357,7 @@ module.exports = [
       /license-webpack-plugin: could not find any license file for @jupyter\//,
       /license-webpack-plugin: could not find any license file for @lumino\//,
       // Third-party packages without license files in their npm distributions
+      /license-webpack-plugin: could not find any license file for @mathjax\/mathjax-/,
       /license-webpack-plugin: could not find any license file for @microsoft\/fast-/,
       /license-webpack-plugin: could not find any license file for json-schema-merge-allof/,
       /license-webpack-plugin: could not find any license file for vega-lite/,
