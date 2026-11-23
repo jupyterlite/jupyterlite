@@ -31,7 +31,6 @@
   "scripts": {
     "build": "tsc -b",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "cleansvg": "svgo --config svgo.yaml",
     "docs": "typedoc src",
     "docs:init": "bash docs/build.sh",
     "prepublishOnly": "npm run build",
