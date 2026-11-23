@@ -287,6 +287,17 @@ def test_build_expose_app_in_browser(an_empty_lite_dir, script_runner):
     assert config[JUPYTER_CONFIG_DATA][EXPOSE_APP_IN_BROWSER] is True
 
 
+def test_status_expose_app_in_browser(an_empty_lite_dir, script_runner):
+    """does status report whether --expose-app-in-browser is set"""
+    for flag, expected in [
+        (["--expose-app-in-browser"], "True"),
+        ([], "False"),
+    ]:
+        status = script_runner.run(["jupyter", "lite", "status", *flag], cwd=str(an_empty_lite_dir))
+        assert status.success
+        assert f"expose in browser: {expected}" in status.stdout
+
+
 def test_check_bad_workspace(an_empty_lite_dir, script_runner):
     workspace = an_empty_lite_dir / "bad/default.jupyterlab-workspace"
     workspace.parent.mkdir()

@@ -41,3 +41,10 @@ this,
 [source maps](https://developer.mozilla.org/en-US/docs/Tools/Debugger/How_to/Use_a_source_map),
 are also provided to provide pointers to the original source code, and while _much_
 larger, are only loaded when debugging in browser consoles.
+
+## Exposing the App in the Browser
+
+Provide `--expose-app-in-browser`, or configure `LiteBuildConfig/expose_app_in_browser`,
+to set `jupyter-config-data.exposeAppInBrowser` in the built `jupyter-lite.json`. This
+exposes the global app instance as `window.jupyterapp`, mirroring the JupyterLab flag
+of the same name, which is what tests driving the site from the browser need.
