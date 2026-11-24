@@ -20,7 +20,13 @@ import type {
   IEmscriptenFSNode,
   IStats,
 } from './emscripten';
-import { DIR_MODE, SEEK_CUR, SEEK_END, instanceOfStream } from './emscripten';
+import {
+  DIR_MODE,
+  FILE_MODE,
+  SEEK_CUR,
+  SEEK_END,
+  instanceOfStream,
+} from './emscripten';
 
 export const DRIVE_SEPARATOR = ':';
 
@@ -37,6 +43,7 @@ export type TDriveMethod =
   | 'lookup'
   | 'mknod'
   | 'getattr'
+  | 'setattr'
   | 'get'
   | 'put';
 
@@ -102,6 +109,7 @@ type TDriveResponses = {
   lookup: DriveFS.ILookup;
   mknod: null;
   getattr: IStats | null;
+  setattr: null;
   get: {
     /**
      * The returned file content
@@ -318,6 +326,8 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
 
   setattr = (value: IEmscriptenFSNode | IEmscriptenStream, attr: IStats): void => {
     const node = this.node(value);
+
+    // First apply to the in-memory node
     for (const [key, value] of Object.entries(attr)) {
       switch (key) {
         case 'mode':
@@ -335,41 +345,14 @@ export class DriveFSEmscriptenNodeOps implements IEmscriptenNodeOps {
         case 'ctime':
           node.ctime = value;
           break;
-        case 'size': {
-          const size = value;
-          const path = this.fs.realPath(node);
-          if (this.fs.FS.isFile(node.mode) && size >= 0) {
-            let file;
-            try {
-              file = this.fs.API.get(path);
-            } catch {
-              // TODO: Should do anything here? Should we create the file?
-              break;
-            }
-
-            const oldData = file.data ? file.data : new Uint8Array();
-            if (size !== oldData.length) {
-              if (size < oldData.length) {
-                file.data = file.data.slice(0, size);
-              } else {
-                file.data = new Uint8Array(size);
-                file.data.set(oldData);
-              }
-              this.fs.API.put(path, file);
-            }
-          } else {
-            console.warn('setattr size of', size, 'on', node, 'not yet implemented');
-          }
-          break;
-        }
-        case 'dontFollow':
-          // Ignore for now
-          break;
         default:
-          console.warn('setattr', key, 'of', value, 'on', node, 'not yet implemented');
           break;
       }
     }
+
+    // Then apply on the storage
+    const path = this.fs.realPath(node);
+    this.fs.API.setattr(path, attr);
   };
 
   lookup = (
@@ -520,6 +503,7 @@ export abstract class ContentsAPI {
         return {
           data: encoder.encode(serializedContent),
           format,
+          mode: FILE_MODE,
         };
       case 'base64': {
         const binString = atob(serializedContent);
@@ -531,6 +515,7 @@ export abstract class ContentsAPI {
         return {
           data,
           format,
+          mode: FILE_MODE,
         };
       }
       default:
@@ -588,6 +573,47 @@ export abstract class ContentsAPI {
     // ensure a non-undefined size (0 isn't great, though)
     stats.size = stats.size || 0;
     return stats;
+  }
+
+  setattr(path: string, attrs: IStats) {
+    for (const [key, value] of Object.entries(attrs)) {
+      switch (key) {
+        case 'mode':
+        case 'timestamp':
+        case 'atime':
+        case 'mtime':
+        case 'ctime':
+        case 'dontFollow':
+          // no-op. The Jupyter contents API does not support this
+          break;
+        case 'size': {
+          const size = value;
+
+          let file;
+          try {
+            file = this.get(path);
+          } catch {
+            // TODO: Should do anything here? Should we create the file?
+            break;
+          }
+
+          const oldData = file.data ? file.data : new Uint8Array();
+          if (size !== oldData.length) {
+            if (size < oldData.length) {
+              file.data = file.data.slice(0, size);
+            } else {
+              file.data = new Uint8Array(size);
+              file.data.set(oldData);
+            }
+            this.put(path, file);
+          }
+          break;
+        }
+        default:
+          console.warn('setattr', key, 'of', value, 'on', path, 'not yet implemented');
+          break;
+      }
+    }
   }
 
   /**
@@ -837,6 +863,7 @@ export namespace DriveFS {
   export interface IFile {
     data: Uint8Array;
     format: 'json' | 'text' | 'base64';
+    mode?: number;
   }
 
   /**
