@@ -25,11 +25,7 @@ test.describe('Renderers', () => {
       // Count 404 for MathJax fonts
       if (
         msg.type() === 'error' &&
-        msg
-          .location()
-          .url.match(
-            /js\/output\/chtml\/fonts\/tex-woff-v2\/MathJax_(Zero|Math-Italic|Main-Regular)\.woff$/,
-          )
+        msg.location().url.match(/mjx-tex-[a-z0-9]+\.woff2$/)
       ) {
         errorLogs += 1;
       }
@@ -54,7 +50,7 @@ $$
     await page.notebook.save();
 
     // wait for MathJax to render
-    await page.locator('.MathJax').last().isVisible();
+    await page.locator('mjx-container[display="true"]').waitFor();
 
     const cell = await page.notebook.getCell(0);
     expect(await cell!.screenshot()).toMatchSnapshot('latex.png');

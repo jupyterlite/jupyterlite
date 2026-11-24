@@ -31,14 +31,13 @@
   "scripts": {
     "build": "tsc -b",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "cleansvg": "svgo --config svgo.yaml",
     "docs": "typedoc src",
     "docs:init": "bash docs/build.sh",
     "prepublishOnly": "npm run build",
     "watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@jupyterlab/ui-components": "~4.7.0-beta.1"
+    "@jupyterlab/ui-components": "~4.7.0-beta.2"
   },
   "devDependencies": {
     "rimraf": "~5.0.1",
