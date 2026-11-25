@@ -83,7 +83,7 @@ class ServeAddon(BaseAddon):
 
             return mime_map
 
-    def _serve_tornado(self):
+    def _serve_tornado(self):  # noqa: C901
         from tornado import httpserver, ioloop, web
 
         self._patch_mime()
@@ -110,11 +110,23 @@ class ServeAddon(BaseAddon):
                     url_path = url_path + "index.html"
                 return url_path
 
+            def redirect(self, url, *args, **kwargs):
+                # tornado < 6.3.2 does not refuse this open redirect itself
+                if url.startswith("//"):
+                    raise web.HTTPError(403, "cannot redirect path with two initial slashes")
+                # keep the query string when redirecting a directory to its trailing slash
+                query = self.request.query
+                super().redirect(f"{url}?{query}" if query else url, *args, **kwargs)
+
         path = str(manager.output_dir)
         app = web.Application(
             [
                 (manager.base_url + "shutdown", ShutdownHandler),
-                (manager.base_url + "(.*)", StaticHandler, {"path": path}),
+                (
+                    manager.base_url + "(.*)",
+                    StaticHandler,
+                    {"path": path, "default_filename": "index.html"},
+                ),
             ],
             debug=True,
         )
