@@ -46,5 +46,5 @@ larger, are only loaded when debugging in browser consoles.
 
 Provide `--expose-app-in-browser`, or configure `LiteBuildConfig/expose_app_in_browser`,
 to set `jupyter-config-data.exposeAppInBrowser` in the built `jupyter-lite.json`. This
-exposes the global app instance as `window.jupyterapp`, mirroring the JupyterLab flag
-of the same name, which is what tests driving the site from the browser need.
+exposes the global app instance as `window.jupyterapp`, mirroring the JupyterLab flag of
+the same name, which is what tests driving the site from the browser need.
