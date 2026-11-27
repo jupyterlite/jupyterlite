@@ -48,6 +48,7 @@ class StaticAddon(BaseAddon):
                 lambda: print(
                     f"""    unused packages: {not self.manager.no_unused_shared_packages}"""
                 ),
+                lambda: print(f"""    expose in browser: {self.manager.expose_app_in_browser}"""),
             ],
         )
 
